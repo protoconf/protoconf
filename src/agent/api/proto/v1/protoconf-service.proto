@@ -1,0 +1,14 @@
+syntax = "proto3";
+package v1;
+
+message ConfigSubscriptionRequest {
+    string path = 1;
+}
+
+message ConfigUpdate {
+    bytes value = 1;
+}
+
+service ProtoconfService{
+    rpc SubscribeForConfig(ConfigSubscriptionRequest) returns (stream ConfigUpdate);
+}

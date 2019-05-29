@@ -1,0 +1,13 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "libprotoconf",
+    srcs = ["libprotoconf.go"],
+    importpath = "protoconf.com/libprotoconf",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_github_docker_libkv//:go_default_library",
+        "@com_github_docker_libkv//store:go_default_library",
+        "@com_github_docker_libkv//store/consul:go_default_library",
+    ],
+)

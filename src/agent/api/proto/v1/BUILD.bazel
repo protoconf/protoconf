@@ -1,0 +1,15 @@
+load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
+
+proto_library(
+    name = "protoconf-service_proto",
+    srcs = ["protoconf-service.proto"],
+    visibility = ["//visibility:public"],
+)
+
+go_proto_library(
+    name = "protoconf-service_go_proto",
+    compiler = "@io_bazel_rules_go//proto:go_grpc",
+    importpath = "protoconf.com/agent/api/proto/v1/protoconfservice",
+    proto = ":protoconf-service_proto",
+    visibility = ["//visibility:public"],
+)
