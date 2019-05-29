@@ -10,7 +10,7 @@ cd src && bazel build //agent //examples/agent_client
 1. Make sure Consul is listening locally on default port (you can achieve this with `consul agent -dev`)
 2. Run the agent: `bazel run //agent`
 3. Run the example agent client: `bazel run //examples/agent_client example/consul/path`
-4. Change `example/consul/path` (e.g. ```consul kv put example/consul/path "`date`"```) and see the client gets notified
+4. Change `example/consul/path` (`bazel run //examples/agent_client:inserter` or `./examples/agent_client/inserter.sh`) and see the client gets notified
 
 ## Future Work
 * Compiler (& validator)

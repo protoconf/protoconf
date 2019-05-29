@@ -5,7 +5,40 @@ go_binary(
     srcs = ["main.go"],
     deps = [
         "//agent/api/proto/v1:protoconf-service_go_proto",
+        "//examples/agent_client:my-config_go_proto",
+        "@com_github_golang_protobuf//ptypes:go_default_library",
         "@org_golang_google_grpc//:go_default_library",
         "@org_golang_x_net//context:go_default_library",
     ],
+)
+
+go_binary(
+    name = "inserter",
+    srcs = ["inserter.go"],
+    deps = [
+        "//examples/agent_client:my-config_go_proto",
+        "//types/proto/v1:protoconf-value_go_proto",
+        "@com_github_docker_libkv//:go_default_library",
+        "@com_github_docker_libkv//store:go_default_library",
+        "@com_github_docker_libkv//store/consul:go_default_library",
+        "@com_github_golang_protobuf//jsonpb:go_default_library",
+        "@com_github_golang_protobuf//proto:go_default_library",
+        "@com_github_golang_protobuf//ptypes:go_default_library",
+    ],
+)
+
+load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
+
+proto_library(
+    name = "my-config_proto",
+    srcs = ["my-config.proto"],
+    visibility = ["//visibility:public"],
+)
+
+go_proto_library(
+    name = "my-config_go_proto",
+    compiler = "@io_bazel_rules_go//proto:go_grpc",
+    importpath = "protoconf.com/examples/agent_client/myconfig",
+    proto = ":my-config_proto",
+    visibility = ["//visibility:public"],
 )

@@ -17,12 +17,20 @@ const (
 type server struct{}
 
 func (s server) SubscribeForConfig(request *pc.ConfigSubscriptionRequest, srv pc.ProtoconfService_SubscribeForConfigServer) error {
-	log.Printf("path=%s", request.GetPath())
-	time.Sleep(4 * time.Second)
-	resp := pc.ConfigUpdate{Value: libprotoconf.Get(request.GetPath())}
-	if err := srv.Send(&resp); err != nil {
-		log.Printf("send error err=%v", err) // FIXME: better error
-		return err
+	path := request.GetPath()
+	log.Printf("path=%s", path)
+	for {
+		config, err := libprotoconf.Get(path)
+		if err != nil {
+			log.Printf("Error reading config, key=%s err=%v", path, err)
+			return err
+		}
+		resp := pc.ConfigUpdate{Value: config}
+		if err := srv.Send(&resp); err != nil {
+			log.Printf("Error sending config update, path=%s srv=%v err=%v", path, srv, err)
+			return err
+		}
+		time.Sleep(4 * time.Second)
 	}
 	return nil
 }
