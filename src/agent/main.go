@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 	"net"
-	"time"
 
 	"google.golang.org/grpc"
 	pc "protoconf.com/agent/api/proto/v1/protoconfservice"
@@ -18,20 +17,23 @@ type server struct{}
 
 func (s server) SubscribeForConfig(request *pc.ConfigSubscriptionRequest, srv pc.ProtoconfService_SubscribeForConfigServer) error {
 	path := request.GetPath()
-	log.Printf("path=%s", path)
+	log.Printf("Watching path=%s", path)
+
+	watchCh, err := libprotoconf.Watch(path)
+	if err != nil {
+		log.Printf("Error watching config, key=%s err=%v", path, err)
+		return err
+	}
+
 	for {
-		config, err := libprotoconf.Get(path)
-		if err != nil {
-			log.Printf("Error reading config, key=%s err=%v", path, err)
-			return err
-		}
+		config := <-watchCh
 		resp := pc.ConfigUpdate{Value: config}
 		if err := srv.Send(&resp); err != nil {
 			log.Printf("Error sending config update, path=%s srv=%v err=%v", path, srv, err)
 			return err
 		}
-		time.Sleep(4 * time.Second)
 	}
+
 	return nil
 }
 

@@ -15,19 +15,31 @@ var (
 	kv store.Store
 )
 
-// Get a value given its key
-func Get(key string) (*any.Any, error) {
-	value, err := kv.Get(key)
-	if err != nil {
-		log.Printf("Error getting key from the store, key=%s", key)
-		return nil, err
-	}
-	config := &pb.ProtoconfValue{}
-	if err = proto.Unmarshal(value.Value, config); err != nil {
-		log.Printf("Error unmarshaling config key=%s value=%v err=%v", key, value.Value, err)
-		return nil, err
-	}
-	return config.GetValue(), nil
+// Watch a value given its key
+func Watch(key string) (<-chan *any.Any, error) {
+	watchCh := make(chan *any.Any)
+
+	go func() {
+		defer close(watchCh)
+		kVWatchCh, err := kv.Watch(key, nil)
+		if err != nil {
+			log.Printf("Error getting key from the store, key=%s", key)
+			return
+		}
+
+		config := &pb.ProtoconfValue{}
+		for {
+			kVPair := <-kVWatchCh
+			if err = proto.Unmarshal(kVPair.Value, config); err != nil {
+				log.Printf("Error unmarshaling config key=%s value=%v err=%v", key, kVPair.Value, err)
+				return
+			}
+
+			watchCh <- config.GetValue()
+		}
+	}()
+
+	return watchCh, nil
 }
 
 // Setup the kv backend connection
