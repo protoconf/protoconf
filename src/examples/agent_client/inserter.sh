@@ -10,9 +10,9 @@ fi
 
 cd "$(dirname "$0")"
 
-consul_key=${1:-"example/consul/path"}
+consul_path=${1:-"example/consul/path"}
 my_config_value=${2:-"$(date)"}
 
 my_config_message=$(echo 'value: "'"$my_config_value"'"'| protoc my-config.proto --encode=MyConfig | sed -z 's/\n/\\n/g')
 protoconf_value_message=$(echo 'value: {type_url: "type.googleapis.com/MyConfig", value: "'"$my_config_message"'"}'| protoc -I../../ ../../types/proto/v1/protoconf-value.proto --encode=v1.ProtoconfValue)
-consul kv put "$consul_key" "$protoconf_value_message"
+consul kv put "$consul_path" "$protoconf_value_message"

@@ -16,15 +16,15 @@ import (
 )
 
 const (
-	defaultKey = "example/consul/path"
+	defaultPath = "example/consul/path"
 )
 
 func main() {
-	var key string
+	var path string
 	if len(os.Args) > 1 {
-		key = os.Args[1]
+		path = os.Args[1]
 	} else {
-		key = defaultKey
+		path = defaultPath
 	}
 
 	var value string
@@ -48,7 +48,7 @@ func main() {
 		log.Fatalf("Error marshaling ProtoconfValue to JSON, value=%v", protoconfValue)
 	}
 
-	log.Printf("Writing to consul, key=%s json-value=%s", key, str)
+	log.Printf("Writing to consul, path=%s json-value=%s", path, str)
 
 	consul.Register()
 	kv, err := libkv.NewStore(
@@ -62,7 +62,7 @@ func main() {
 		log.Fatalf("Error marshaling ProtoconfValue to bytes, value=%v", protoconfValue)
 	}
 
-	if err := kv.Put(key, data, nil); err != nil {
-		log.Fatalf("Error writing to consul, key=%s json-value=%s", key, str)
+	if err := kv.Put(path, data, nil); err != nil {
+		log.Fatalf("Error writing to consul, path=%s json-value=%s", path, str)
 	}
 }

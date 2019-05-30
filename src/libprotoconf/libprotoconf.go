@@ -15,15 +15,15 @@ var (
 	kv store.Store
 )
 
-// Watch a value given its key
-func Watch(key string) (<-chan *any.Any, error) {
+// Watch a value given its path
+func Watch(path string) (<-chan *any.Any, error) {
 	watchCh := make(chan *any.Any)
 
 	go func() {
 		defer close(watchCh)
-		kVWatchCh, err := kv.Watch(key, nil)
+		kVWatchCh, err := kv.Watch(path, nil)
 		if err != nil {
-			log.Printf("Error getting key from the store, key=%s", key)
+			log.Printf("Error getting path from the store, path=%s", path)
 			return
 		}
 
@@ -31,7 +31,7 @@ func Watch(key string) (<-chan *any.Any, error) {
 		for {
 			kVPair := <-kVWatchCh
 			if err = proto.Unmarshal(kVPair.Value, config); err != nil {
-				log.Printf("Error unmarshaling config key=%s value=%v err=%v", key, kVPair.Value, err)
+				log.Printf("Error unmarshaling config path=%s value=%v err=%v", path, kVPair.Value, err)
 				return
 			}
 

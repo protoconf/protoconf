@@ -21,7 +21,7 @@ func (s server) SubscribeForConfig(request *pc.ConfigSubscriptionRequest, srv pc
 
 	watchCh, err := libprotoconf.Watch(path)
 	if err != nil {
-		log.Printf("Error watching config, key=%s err=%v", path, err)
+		log.Printf("Error watching config, path=%s err=%v", path, err)
 		return err
 	}
 
