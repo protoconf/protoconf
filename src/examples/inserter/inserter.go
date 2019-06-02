@@ -11,12 +11,12 @@ import (
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes"
-	pb "protoconf.com/examples/agent_client/myconfig"
+	pb "protoconf.com/examples/go_client/clientconfig"
 	pc "protoconf.com/types/proto/v1/protoconfvalue"
 )
 
 const (
-	defaultPath = "example/consul/path"
+	defaultPath = "my_client_config"
 )
 
 func main() {
@@ -34,7 +34,7 @@ func main() {
 		value = time.Now().String()
 	}
 
-	myConfig := &pb.MyConfig{Value: value}
+	myConfig := &pb.ClientConfig{Value: value}
 	any, err := ptypes.MarshalAny(myConfig)
 	if err != nil {
 		log.Fatalf("Error marshaling MyConfig to Any, config=%s", myConfig)

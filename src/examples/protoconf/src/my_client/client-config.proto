@@ -1,5 +1,5 @@
 syntax = "proto3";
 
-message MyConfig {
+message ClientConfig {
     string value = 1;
 }

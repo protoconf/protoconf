@@ -9,12 +9,12 @@ import (
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	pc "protoconf.com/agent/api/proto/v1/protoconfservice"
-	pb "protoconf.com/examples/agent_client/myconfig"
+	pb "protoconf.com/examples/go_client/clientconfig"
 )
 
 const (
-	address     = ":4300" // FIXME: can we get this from somewhere?
-	defaultPath = "example/consul/path"
+	address     = ":4300"
+	defaultPath = "my_client_config"
 )
 
 func main() {
@@ -42,7 +42,7 @@ func listenToChanges(path string) {
 	}
 
 	firstRead := true
-	config := &pb.MyConfig{}
+	config := &pb.ClientConfig{}
 	for {
 		update, err := stream.Recv()
 

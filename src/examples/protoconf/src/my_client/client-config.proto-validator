@@ -1,0 +1,9 @@
+load("client-config.proto", "ClientConfig")
+
+
+def test_value_len(c):
+    if len(c.value) < 10:
+        fail()
+
+
+add_validator(ClientConfig, test_value_len)

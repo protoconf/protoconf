@@ -1,0 +1,27 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary")
+
+go_binary(
+    name = "compiler",
+    srcs = [
+        "file_reader.go",
+        "main.go",
+        "proto_enum.go",
+        "proto_message.go",
+        "proto_message_type.go",
+    ],
+    deps = [
+        "//agent/api/proto/v1:protoconf-service_go_proto",
+        "//types/proto/v1:protoconf-value_go_proto",
+        "@com_github_golang_protobuf//jsonpb:go_default_library",
+        "@com_github_golang_protobuf//proto:go_default_library",
+        "@com_github_golang_protobuf//protoc-gen-go/descriptor:go_default_library",
+        "@com_github_golang_protobuf//ptypes:go_default_library",
+        "@com_github_jhump_protoreflect//desc:go_default_library",
+        "@com_github_jhump_protoreflect//desc/protoparse:go_default_library",
+        "@com_github_jhump_protoreflect//dynamic:go_default_library",
+        "@com_github_jhump_protoreflect//dynamic/msgregistry:go_default_library",
+        "@net_starlark_go//starlark:go_default_library",
+        "@net_starlark_go//starlarkstruct:go_default_library",
+        "@net_starlark_go//syntax:go_default_library",
+    ],
+)
