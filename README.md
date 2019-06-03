@@ -15,3 +15,9 @@ cd src && bazel build //agent //examples/agent_client
 ## Future Work
 * Compiler (& validator)
 * Canary service
+
+## Run CI
+
+* Download `drone-cli` from https://github.com/drone/drone-cli/releases.
+* Copy the drone command line to your `$PATH` and make it executable.
+* Run: `drone exec --pipeline default`

@@ -1,0 +1,11 @@
+kind: pipline
+name: default
+
+steps:
+- name: build
+  image: insready/bazel
+  commands:
+    - apt-get update && apt-get install patch -y
+    - cd src/
+    - bazel build //...
+
