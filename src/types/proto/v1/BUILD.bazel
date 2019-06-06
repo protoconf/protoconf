@@ -1,8 +1,8 @@
 load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
 
 proto_library(
-    name = "protoconf-value_proto",
-    srcs = ["protoconf-value.proto"],
+    name = "protoconf_value_proto",
+    srcs = ["protoconf_value.proto"],
     deps = [
         "@com_google_protobuf//:any_proto",
     ],
@@ -10,9 +10,9 @@ proto_library(
 )
 
 go_proto_library(
-    name = "protoconf-value_go_proto",
+    name = "protoconf_value_go_proto",
     compiler = "@io_bazel_rules_go//proto:go_grpc",
     importpath = "protoconf.com/types/proto/v1/protoconfvalue",
-    proto = ":protoconf-value_proto",
+    proto = ":protoconf_value_proto",
     visibility = ["//visibility:public"],
 )

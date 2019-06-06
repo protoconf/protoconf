@@ -4,8 +4,8 @@ go_binary(
     name = "go_client",
     srcs = ["main.go"],
     deps = [
-        ":client-config_go_proto",
-        "//agent/api/proto/v1:protoconf-service_go_proto",
+        ":client_config_go_proto",
+        "//agent/api/proto/v1:protoconf_service_go_proto",
         "@com_github_golang_protobuf//ptypes:go_default_library",
         "@org_golang_google_grpc//:go_default_library",
         "@org_golang_x_net//context:go_default_library",
@@ -15,9 +15,9 @@ go_binary(
 load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
 
 go_proto_library(
-    name = "client-config_go_proto",
+    name = "client_config_go_proto",
     compiler = "@io_bazel_rules_go//proto:go_grpc",
     importpath = "protoconf.com/examples/go_client/clientconfig",
-    proto = "//examples/protoconf/src/my_client:client-config_proto",
+    proto = "//examples/protoconf/src/my_client:client_config_proto",
     visibility = ["//visibility:public"],
 )

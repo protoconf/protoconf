@@ -1,5 +1,5 @@
 load("service_name.pinc", "service_name")
-load("client-config.proto", "ClientConfig")
+load("client_config.proto", "ClientConfig")
 
 
 def main():
