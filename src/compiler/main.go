@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"os"
@@ -10,6 +11,8 @@ import (
 	"strings"
 
 	"github.com/golang/protobuf/jsonpb"
+	dpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/desc/protoparse"
 	"github.com/jhump/protoreflect/dynamic"
 	"github.com/jhump/protoreflect/dynamic/msgregistry"
@@ -19,11 +22,12 @@ import (
 )
 
 const (
-	compiledConfigExtension = ".materialized_JSON"
-	compiledConfigPath      = "materialized_config/"
-	configExtension         = ".pconf"
-	configPath              = "src/"
-	protoExtension          = ".proto"
+	compiledConfigExtension  = ".materialized_JSON"
+	compiledConfigPath       = "materialized_config/"
+	configExtension          = ".pconf"
+	configPath               = "src/"
+	protoExtension           = ".proto"
+	validatorExtensionSuffix = "-validator"
 )
 
 func main() {
@@ -76,12 +80,12 @@ func compileConfig(filename string, protoconfRoot string, registry *msgregistry.
 	configfile, err := load(filename, protoconfRoot, registry)
 
 	if err != nil {
-		return nil, fmt.Errorf("Error loading %s: %v", filename, err)
+		return nil, fmt.Errorf("error loading %s: %v", filename, err)
 	}
 
 	mainOutput, err := configfile.main()
 	if err != nil {
-		return nil, fmt.Errorf("Error evaluating %s: %v", configfile.filename, err)
+		return nil, fmt.Errorf("error evaluating %s: %v", configfile.filename, err)
 	}
 
 	proto, ok := toProtoMessage(mainOutput)
@@ -89,14 +93,18 @@ func compileConfig(filename string, protoconfRoot string, registry *msgregistry.
 		return nil, fmt.Errorf("`main' returned something that's not a protobuf (a %s)", mainOutput.Type())
 	}
 
-	// FIXME: run validator(s - recursively) on proto
+	if err := configfile.validate(proto); err != nil {
+		return nil, err
+	}
+
 	return proto, nil
 }
 
 type config struct {
-	filename string
-	globals  starlark.StringDict
-	locals   starlark.StringDict
+	filename   string
+	globals    starlark.StringDict
+	locals     starlark.StringDict
+	validators map[*desc.MessageDescriptor]*starlark.Function
 }
 
 func load(filename string, protoconfRoot string, registry *msgregistry.MessageRegistry) (*config, error) {
@@ -110,6 +118,12 @@ func load(filename string, protoconfRoot string, registry *msgregistry.MessageRe
 		err     error
 	}
 	cache := make(map[string]*cacheEntry)
+	protoFilesLoaded := &[]string{}
+
+	accessor := func(name string) (io.ReadCloser, error) {
+		*protoFilesLoaded = append(*protoFilesLoaded, name)
+		return os.Open(name)
+	}
 
 	var load func(thread *starlark.Thread, moduleName string) (starlark.StringDict, error)
 	load = func(thread *starlark.Thread, moduleName string) (starlark.StringDict, error) {
@@ -136,7 +150,7 @@ func load(filename string, protoconfRoot string, registry *msgregistry.MessageRe
 		var globals starlark.StringDict
 
 		if strings.HasSuffix(modulePath, protoExtension) {
-			parser := &protoparse.Parser{ImportPaths: []string{configDir}}
+			parser := &protoparse.Parser{ImportPaths: []string{configDir}, Accessor: accessor}
 			if !strings.HasPrefix(modulePath, configDir) {
 				log.Fatalf("Error, proto file must be under dir=%s, file=%s", configDir, modulePath)
 			}
@@ -156,7 +170,8 @@ func load(filename string, protoconfRoot string, registry *msgregistry.MessageRe
 			}
 			err = nil
 		} else {
-			moduleSource, err := reader.ReadFile(context.Background(), modulePath)
+			var moduleSource []byte
+			moduleSource, err = reader.ReadFile(context.Background(), modulePath)
 			if err != nil {
 				cache[modulePath] = &cacheEntry{nil, err}
 				return nil, err
@@ -178,10 +193,34 @@ func load(filename string, protoconfRoot string, registry *msgregistry.MessageRe
 		return nil, err
 	}
 
+	validators := make(map[*desc.MessageDescriptor]*starlark.Function)
+	modules["add_validator"] = starlark.NewBuiltin("add_validator", getAddValidator(&validators))
+	for _, proto := range *protoFilesLoaded {
+		validatorFile := proto + validatorExtensionSuffix
+		if stat, err := os.Stat(validatorFile); err == nil {
+			if stat.IsDir() {
+				return nil, fmt.Errorf("expected validator file and not a directory, file=%s", validatorFile)
+			}
+		} else if os.IsNotExist(err) {
+			continue
+		} else {
+			return nil, err
+		}
+		_, err := load(&starlark.Thread{
+			Print: starPrint,
+			Load:  load,
+		}, validatorFile)
+
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	return &config{
-		filename: absFilename,
-		globals:  starlark.StringDict{},
-		locals:   locals,
+		filename:   absFilename,
+		globals:    starlark.StringDict{},
+		locals:     locals,
+		validators: validators,
 	}, nil
 }
 
@@ -206,6 +245,33 @@ func (c *config) main() (starlark.Value, error) {
 	return mainVal, nil
 }
 
+func (c *config) validate(proto *dynamic.Message) error {
+	if validator, ok := c.validators[proto.GetMessageDescriptor()]; ok {
+		thread := &starlark.Thread{
+			Print: starPrint,
+		}
+		args := starlark.Tuple([]starlark.Value{
+			newStarProtoMessage(proto),
+		})
+		if _, err := starlark.Call(thread, validator, args, nil); err != nil {
+			return err
+		}
+	}
+
+	for _, field := range proto.GetMessageDescriptor().GetFields() {
+		if field.GetType() == dpb.FieldDescriptorProto_TYPE_MESSAGE {
+			if protoField, ok := proto.GetField(field).(*dynamic.Message); !ok {
+				if err := c.validate(protoField); err != nil {
+					return err
+				}
+			} else {
+				return fmt.Errorf("expecting a message field, got=%v", field)
+			}
+		}
+	}
+	return nil
+}
+
 func starPrint(t *starlark.Thread, msg string) {
 	log.Printf("[%v] %s", t.Caller().Position(), msg)
 }
@@ -225,4 +291,32 @@ func starFail(t *starlark.Thread, fn *starlark.Builtin, args starlark.Tuple, kwa
 	buf := new(strings.Builder)
 	t.Caller().WriteBacktrace(buf)
 	return nil, fmt.Errorf("[%s] %s\n%s", t.Caller().Position(), msg, buf.String())
+}
+
+func getAddValidator(mp *map[*desc.MessageDescriptor]*starlark.Function) func(*starlark.Thread, *starlark.Builtin, starlark.Tuple, []starlark.Tuple) (starlark.Value, error) {
+	addValidator := func(t *starlark.Thread, fn *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
+		var arg1 starlark.Value
+		var arg2 starlark.Value
+		if err := starlark.UnpackPositionalArgs(fn.Name(), args, kwargs, 2, &arg1, &arg2); err != nil {
+			return nil, err
+		}
+
+		messageType, ok := arg1.(*starProtoMessageType)
+		if !ok {
+			return nil, fmt.Errorf("expected a proto message type, got=%v", arg1)
+		}
+
+		validator, ok := arg2.(*starlark.Function)
+		if ok {
+			if numParams := validator.NumParams(); numParams != 1 {
+				return nil, fmt.Errorf("expected a function that get 1 param, got=%d", numParams)
+			}
+		} else {
+			return nil, fmt.Errorf("expected a function, got=%v", validator)
+		}
+
+		(*mp)[messageType.desc] = validator
+		return starlark.None, nil
+	}
+	return addValidator
 }
