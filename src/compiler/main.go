@@ -19,10 +19,10 @@ import (
 )
 
 const (
-	compiledConfigDir       = "materialized_config/"
 	compiledConfigExtension = ".materialized_JSON"
-	configDir               = "src/"
+	compiledConfigPath      = "materialized_config/"
 	configExtension         = ".pconf"
+	configPath              = "src/"
 	protoExtension          = ".proto"
 )
 
@@ -38,12 +38,8 @@ func main() {
 		log.Fatalf("Config must be a %s file, given: %s", configExtension, configToCompile)
 	}
 
-	if !strings.HasPrefix(configToCompile, configDir) {
-		log.Fatalf("Config must be under %s directory, given: %s", configDir, configToCompile)
-	}
-
 	registry := msgregistry.NewMessageRegistryWithDefaults()
-	mainProto, err := compileConfig(filepath.Join(protoconfRoot, configToCompile), registry)
+	mainProto, err := compileConfig(configToCompile, protoconfRoot, registry)
 	if err != nil {
 		log.Fatalf("Error compiling config, err: %s", err)
 	}
@@ -64,7 +60,7 @@ func main() {
 		log.Fatalf("Error marshaling ProtoconfValue to JSON, value=%v", protoconfValue)
 	}
 
-	outputFile := filepath.Join(protoconfRoot, compiledConfigDir, strings.TrimPrefix(strings.TrimSuffix(configToCompile, configExtension), configDir)+compiledConfigExtension)
+	outputFile := filepath.Join(protoconfRoot, compiledConfigPath, strings.TrimSuffix(configToCompile, configExtension)+compiledConfigExtension)
 	log.Printf("Config compiled successfully, writing to %s: %v", outputFile, string(jsonData))
 
 	if err := os.MkdirAll(filepath.Dir(outputFile), 0644); err != nil {
@@ -76,8 +72,8 @@ func main() {
 	}
 }
 
-func compileConfig(filename string, registry *msgregistry.MessageRegistry) (*dynamic.Message, error) {
-	configfile, err := load(filename, registry)
+func compileConfig(filename string, protoconfRoot string, registry *msgregistry.MessageRegistry) (*dynamic.Message, error) {
+	configfile, err := load(filename, protoconfRoot, registry)
 
 	if err != nil {
 		return nil, fmt.Errorf("Error loading %s: %v", filename, err)
@@ -85,7 +81,7 @@ func compileConfig(filename string, registry *msgregistry.MessageRegistry) (*dyn
 
 	mainOutput, err := configfile.main()
 	if err != nil {
-		return nil, fmt.Errorf("Error evaluating %s: %v\n", configfile.filename, err)
+		return nil, fmt.Errorf("Error evaluating %s: %v", configfile.filename, err)
 	}
 
 	proto, ok := toProtoMessage(mainOutput)
@@ -103,8 +99,10 @@ type config struct {
 	locals   starlark.StringDict
 }
 
-func load(filename string, registry *msgregistry.MessageRegistry) (*config, error) {
-	reader := LocalFileReader(filepath.Dir(filename))
+func load(filename string, protoconfRoot string, registry *msgregistry.MessageRegistry) (*config, error) {
+	configDir := filepath.Join(protoconfRoot, configPath)
+	absFilename := filepath.Join(configDir, filename)
+	reader := LocalFileReader(filepath.Dir(absFilename))
 	modules := getModules()
 
 	type cacheEntry struct {
@@ -138,10 +136,14 @@ func load(filename string, registry *msgregistry.MessageRegistry) (*config, erro
 		var globals starlark.StringDict
 
 		if strings.HasSuffix(modulePath, protoExtension) {
-			parser := &protoparse.Parser{}
-			descriptors, err := parser.ParseFiles(modulePath)
+			parser := &protoparse.Parser{ImportPaths: []string{configDir}}
+			if !strings.HasPrefix(modulePath, configDir) {
+				log.Fatalf("Error, proto file must be under dir=%s, file=%s", configDir, modulePath)
+			}
+			protoFilename := strings.TrimPrefix(modulePath, configDir)
+			descriptors, err := parser.ParseFiles(protoFilename)
 			if err != nil {
-				return nil, err
+				log.Fatalf("Error parsing proto file, file=%s err=%v", modulePath, err)
 			}
 			registry.AddFile("", descriptors[0])
 			globals = starlark.StringDict{}
@@ -170,14 +172,14 @@ func load(filename string, registry *msgregistry.MessageRegistry) (*config, erro
 	locals, err := load(&starlark.Thread{
 		Print: starPrint,
 		Load:  load,
-	}, filename)
+	}, absFilename)
 
 	if err != nil {
 		return nil, err
 	}
 
 	return &config{
-		filename: filename,
+		filename: absFilename,
 		globals:  starlark.StringDict{},
 		locals:   locals,
 	}, nil
