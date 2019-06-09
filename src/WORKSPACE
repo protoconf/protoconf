@@ -37,9 +37,8 @@ go_repository(
 
 go_repository(
     name = "com_github_jhump_protoreflect",
+    commit = "af618f5b4cc4a322d8e8e99a568d6d41a574ee18",
     importpath = "github.com/jhump/protoreflect",
-    patches = ["protoreflect/fix_base_url.diff"],
-    tag = "v1.4.1",
 )
 
 go_repository(
