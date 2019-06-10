@@ -1,0 +1,67 @@
+From e91709a02e0e8ff8b86b7aa913fdc9ae9498e825 Mon Sep 17 00:00:00 2001
+From: Joshua Humphries <jh@fullstory.com>
+Date: Tue, 9 Apr 2019 01:09:43 -0400
+Subject: [PATCH] fix indentation in jsonpb with Any messages
+
+* fix indentation when Any contains message that implements JSONPBMarshaler
+* add test
+---
+ jsonpb/jsonpb.go      |  7 ++++++-
+ jsonpb/jsonpb_test.go | 24 ++++++++++++++++++++++++
+ 2 files changed, 30 insertions(+), 1 deletion(-)
+
+diff --git a/jsonpb/jsonpb.go b/jsonpb/jsonpb.go
+index ada2b78e8..4e4ddc77b 100644
+--- a/jsonpb/jsonpb.go
++++ b/jsonpb/jsonpb.go
+@@ -182,7 +182,12 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeU
+ 				return fmt.Errorf("failed to marshal type URL %q to JSON: %v", typeURL, err)
+ 			}
+ 			js["@type"] = (*json.RawMessage)(&turl)
+-			if b, err = json.Marshal(js); err != nil {
++			if m.Indent != "" {
++				b, err = json.MarshalIndent(js, indent, m.Indent)
++			} else {
++				b, err = json.Marshal(js)
++			}
++			if err != nil {
+ 				return err
+ 			}
+ 		}
+diff --git a/jsonpb/jsonpb_test.go b/jsonpb/jsonpb_test.go
+index 45a13d45a..5e876bc59 100644
+--- a/jsonpb/jsonpb_test.go
++++ b/jsonpb/jsonpb_test.go
+@@ -598,8 +598,32 @@ func TestMarshalAnyJSONPBMarshaler(t *testing.T) {
+ 	if str != expected {
+ 		t.Errorf("marshalling JSON produced incorrect output: got %s, wanted %s", str, expected)
+ 	}
++
++	// Do it again, but this time with indentation:
++
++	marshaler := Marshaler{Indent: "  "}
++	str, err = marshaler.MarshalToString(a)
++	if err != nil {
++		t.Errorf("an unexpected error occurred when marshalling Any to JSON: %v", err)
++	}
++	// same as expected above, but pretty-printed w/ indentation
++	expected =
++`{
++  "@type": "type.googleapis.com/` + dynamicMessageName + `",
++  "baz": [
++    0,
++    1,
++    2,
++    3
++  ],
++  "foo": "bar"
++}`
++	if str != expected {
++		t.Errorf("marshalling JSON produced incorrect output: got %s, wanted %s", str, expected)
++	}
+ }
+ 
++
+ func TestMarshalWithCustomValidation(t *testing.T) {
+ 	msg := dynamicMessage{RawJson: `{ "foo": "bar", "baz": [0, 1, 2, 3] }`, Dummy: &dynamicMessage{}}
+ 

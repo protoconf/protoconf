@@ -14,7 +14,7 @@ import (
 
 const (
 	address     = ":4300"
-	defaultPath = "my_client_config"
+	defaultPath = "my_client/my_client_config"
 )
 
 func main() {

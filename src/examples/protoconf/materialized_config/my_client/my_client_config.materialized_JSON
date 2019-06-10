@@ -1,1 +1,7 @@
-{"value":{"@type":"https://ClientConfig","value":"This is the config for My Client!"}}
+{
+  "protoFile": "/my_client/client_config.proto",
+  "value": {
+    "@type": "https://ClientConfig",
+    "value": "This is the config for My Client!"
+  }
+}

@@ -4,5 +4,6 @@ package v1;
 import "google/protobuf/any.proto";
 
 message ProtoconfValue {
-    google.protobuf.Any value = 1;
+    string proto_file = 1;
+    google.protobuf.Any value = 2;
 }

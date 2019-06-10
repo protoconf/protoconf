@@ -4,13 +4,13 @@ go_binary(
     name = "inserter",
     srcs = ["inserter.go"],
     deps = [
-        "//examples/go_client:client_config_go_proto",
         "//types/proto/v1:protoconf_value_go_proto",
         "@com_github_docker_libkv//:go_default_library",
         "@com_github_docker_libkv//store:go_default_library",
         "@com_github_docker_libkv//store/consul:go_default_library",
         "@com_github_golang_protobuf//jsonpb:go_default_library",
         "@com_github_golang_protobuf//proto:go_default_library",
-        "@com_github_golang_protobuf//ptypes:go_default_library",
+        "@com_github_jhump_protoreflect//desc/protoparse:go_default_library",
+        "@com_github_jhump_protoreflect//dynamic/msgregistry:go_default_library",
     ],
 )

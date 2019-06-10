@@ -53,19 +53,25 @@ func main() {
 		log.Fatalf("Error marshaling MyConfig to Any, config=%s", mainProto)
 	}
 
-	protoconfValue, err := dynamic.AsDynamicMessage(&pc.ProtoconfValue{Value: any})
+	protoconfValue, err := dynamic.AsDynamicMessage(
+		&pc.ProtoconfValue{
+			ProtoFile: mainProto.GetMessageDescriptor().GetFile().GetName(),
+			Value: any,
+		})
+
 	if err != nil {
 		log.Fatalf("Error converting ProtoconfValue to dynamic, err: %s", err)
 	}
 
-	m := &jsonpb.Marshaler{AnyResolver: registry}
+	m := &jsonpb.Marshaler{AnyResolver: registry, Indent: "  "}
 	jsonData, err := m.MarshalToString(protoconfValue)
 	if err != nil {
 		log.Fatalf("Error marshaling ProtoconfValue to JSON, value=%v", protoconfValue)
 	}
+	jsonData += "\n"
 
 	outputFile := filepath.Join(protoconfRoot, compiledConfigPath, strings.TrimSuffix(configToCompile, configExtension)+compiledConfigExtension)
-	log.Printf("Config compiled successfully, writing to %s: %v", outputFile, string(jsonData))
+	fmt.Printf("Config compiled successfully, writing to %s: %v", outputFile, string(jsonData))
 
 	if err := os.MkdirAll(filepath.Dir(outputFile), 0644); err != nil {
 		log.Fatalf("Error creating output directory %s, err: %s", filepath.Dir(outputFile), err)
