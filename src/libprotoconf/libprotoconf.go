@@ -36,6 +36,7 @@ func Watch(path string) (<-chan *any.Any, error) {
 			}
 
 			watchCh <- config.GetValue()
+			log.Println(config)
 		}
 	}()
 
@@ -45,11 +46,10 @@ func Watch(path string) (<-chan *any.Any, error) {
 // Setup the kv backend connection
 func Setup() {
 	consul.Register()
-	var err error
-	kv, err = libkv.NewStore(
+	// FIXME: do something with err
+	kv, _ = libkv.NewStore(
 		store.CONSUL,
 		[]string{""},
 		nil,
 	)
-	log.Println("hello from libprotoconf setup", kv, err)
 }

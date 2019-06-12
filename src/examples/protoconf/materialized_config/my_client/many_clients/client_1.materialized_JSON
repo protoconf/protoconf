@@ -1,0 +1,7 @@
+{
+  "protoFile": "/my_client/client_config.proto",
+  "value": {
+    "@type": "https://ClientConfig",
+    "value": "I'm client number 1"
+  }
+}

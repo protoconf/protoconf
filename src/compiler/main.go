@@ -26,84 +26,129 @@ const (
 	compiledConfigPath       = "materialized_config/"
 	configExtension          = ".pconf"
 	configPath               = "src/"
+	multiConfigExtension     = ".mpconf"
 	protoExtension           = ".proto"
 	validatorExtensionSuffix = "-validator"
 )
 
 func main() {
-	// FIXME: support more than 1 config file
 	if len(os.Args) < 3 {
-		log.Fatalf("Usage: %s protoconf_root config_to_compile", os.Args[0])
+		log.Fatalf("Usage: %s protoconf_root config_to_compile...", os.Args[0])
 	}
-	protoconfRoot := strings.TrimSpace(os.Args[1])
-	configToCompile := strings.TrimSpace(os.Args[2])
 
-	if !strings.HasSuffix(configToCompile, configExtension) {
-		log.Fatalf("Config must be a %s file, given: %s", configExtension, configToCompile)
+	protoconfRoot := strings.TrimSpace(os.Args[1])
+
+	for i := 2; i < len(os.Args); i++ {
+		filename := strings.TrimSpace(os.Args[i])
+		if err := compileFile(filename, protoconfRoot); err != nil {
+			log.Fatalf("Error compiling config %s, err: %s", filename, err)
+		}
+	}
+}
+
+func compileFile(filename string, protoconfRoot string) error {
+	multiConfig := false
+	if strings.HasSuffix(filename, configExtension) {
+	} else if strings.HasSuffix(filename, multiConfigExtension) {
+		multiConfig = true
+	} else {
+		return fmt.Errorf("config file must end with either %s or %s, got: %s", configExtension, multiConfigExtension, filename)
 	}
 
 	registry := msgregistry.NewMessageRegistryWithDefaults()
-	mainProto, err := compileConfig(configToCompile, protoconfRoot, registry)
+	mainOutput, configFile, err := runConfig(filename, protoconfRoot, registry)
 	if err != nil {
-		log.Fatalf("Error compiling config, err: %s", err)
+		return err
 	}
 
-	any, err := registry.MarshalAny(mainProto)
+	configs := make(map[string]*dynamic.Message)
+
+	if multiConfig {
+		starDict, ok := mainOutput.(*starlark.Dict)
+		if !ok {
+			return fmt.Errorf("`main' returned something that's not a dict, got: %s", mainOutput.Type())
+		}
+
+		outputDir := filepath.Join(protoconfRoot, compiledConfigPath, strings.TrimSuffix(filename, multiConfigExtension))
+		for _, item := range starDict.Items() {
+			key, ok := item[0].(starlark.String)
+			if !ok {
+				return fmt.Errorf("`main' returned a dict with non-string key, got: %s", item[0].Type())
+			}
+			value, ok := toProtoMessage(item[1])
+			if !ok {
+				return fmt.Errorf("`main' returned a dict with non-protobuf value, got: %s", item[1].Type())
+			}
+			configs[filepath.Join(outputDir, string(key))+compiledConfigExtension] = value
+		}
+	} else {
+		proto, ok := toProtoMessage(mainOutput)
+		if !ok {
+			return fmt.Errorf("`main' returned something that's not a protobuf, got: %s", mainOutput.Type())
+		}
+		outputFile := filepath.Join(protoconfRoot, compiledConfigPath, strings.TrimSuffix(filename, configExtension)+compiledConfigExtension)
+		configs[outputFile] = proto
+	}
+
+	for outputFile, proto := range configs {
+		if err := configFile.validate(proto); err != nil {
+			return err
+		}
+		if err := writeConfig(proto, outputFile, registry); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func writeConfig(proto *dynamic.Message, filename string, registry *msgregistry.MessageRegistry) error {
+	any, err := registry.MarshalAny(proto)
 	if err != nil {
-		log.Fatalf("Error marshaling MyConfig to Any, config=%s", mainProto)
+		return fmt.Errorf("error marshaling proto to Any, proto=%s", proto)
 	}
 
 	protoconfValue, err := dynamic.AsDynamicMessage(
 		&pc.ProtoconfValue{
-			ProtoFile: mainProto.GetMessageDescriptor().GetFile().GetName(),
-			Value: any,
+			ProtoFile: proto.GetMessageDescriptor().GetFile().GetName(),
+			Value:     any,
 		})
 
 	if err != nil {
-		log.Fatalf("Error converting ProtoconfValue to dynamic, err: %s", err)
+		return fmt.Errorf("error converting ProtoconfValue to dynamic, err: %s", err)
 	}
 
 	m := &jsonpb.Marshaler{AnyResolver: registry, Indent: "  "}
 	jsonData, err := m.MarshalToString(protoconfValue)
 	if err != nil {
-		log.Fatalf("Error marshaling ProtoconfValue to JSON, value=%v", protoconfValue)
+		return fmt.Errorf("error marshaling ProtoconfValue to JSON, value=%v", protoconfValue)
 	}
 	jsonData += "\n"
 
-	outputFile := filepath.Join(protoconfRoot, compiledConfigPath, strings.TrimSuffix(configToCompile, configExtension)+compiledConfigExtension)
-	fmt.Printf("Config compiled successfully, writing to %s: %v", outputFile, string(jsonData))
-
-	if err := os.MkdirAll(filepath.Dir(outputFile), 0644); err != nil {
-		log.Fatalf("Error creating output directory %s, err: %s", filepath.Dir(outputFile), err)
+	if err := os.MkdirAll(filepath.Dir(filename), 0755); err != nil {
+		return fmt.Errorf("error creating output directory %s, err: %s", filepath.Dir(filename), err)
 	}
 
-	if err := ioutil.WriteFile(outputFile, []byte(jsonData), 0644); err != nil {
-		log.Fatalf("Error writing to file %s, err: %s", outputFile, err)
+	if err := ioutil.WriteFile(filename, []byte(jsonData), 0644); err != nil {
+		return fmt.Errorf("error writing to file %s, err: %s", filename, err)
 	}
+
+	return nil
 }
 
-func compileConfig(filename string, protoconfRoot string, registry *msgregistry.MessageRegistry) (*dynamic.Message, error) {
-	configfile, err := load(filename, protoconfRoot, registry)
+func runConfig(filename string, protoconfRoot string, registry *msgregistry.MessageRegistry) (starlark.Value, *config, error) {
+	configFile, err := load(filename, protoconfRoot, registry)
 
 	if err != nil {
-		return nil, fmt.Errorf("error loading %s: %v", filename, err)
+		return nil, nil, fmt.Errorf("error loading %s: %v", filename, err)
 	}
 
-	mainOutput, err := configfile.main()
+	mainOutput, err := configFile.main()
 	if err != nil {
-		return nil, fmt.Errorf("error evaluating %s: %v", configfile.filename, err)
+		return nil, nil, fmt.Errorf("error evaluating %s: %v", configFile.filename, err)
 	}
 
-	proto, ok := toProtoMessage(mainOutput)
-	if !ok {
-		return nil, fmt.Errorf("`main' returned something that's not a protobuf (a %s)", mainOutput.Type())
-	}
-
-	if err := configfile.validate(proto); err != nil {
-		return nil, err
-	}
-
-	return proto, nil
+	return mainOutput, configFile, nil
 }
 
 type config struct {
