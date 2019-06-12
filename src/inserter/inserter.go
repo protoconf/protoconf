@@ -26,19 +26,36 @@ const (
 )
 
 func main() {
-	// FIXME: support more than 1 config file
-	protoconfRoot := strings.TrimSpace(os.Args[1])
-	configToInsert := strings.TrimSpace(os.Args[2])
-
-	if !strings.HasSuffix(configToInsert, compiledConfigExtension) {
-		log.Fatalf("config must be a %s file, given: %s", compiledConfigExtension, configToInsert)
+	if len(os.Args) < 3 {
+		log.Fatalf("Usage: %s protoconf_root config_to_insert...", os.Args[0])
 	}
-	kvPath := strings.TrimSuffix(configToInsert, compiledConfigExtension)
 
-	configFile := filepath.Join(protoconfRoot, compiledConfigPath, configToInsert)
-	configReader, err := os.Open(configFile)
+	protoconfRoot := strings.TrimSpace(os.Args[1])
+
+	consul.Register()
+	kvStore, err := libkv.NewStore(store.CONSUL, []string{""}, nil)
 	if err != nil {
-		log.Fatalf("error opening config file, file=%s", configFile)
+		log.Fatalf("Error connecting to key-value store, err=%s", err)
+	}
+
+	for i := 2; i < len(os.Args); i++ {
+		configName := strings.TrimSpace(os.Args[i])
+		if err := insertFile(configName, protoconfRoot, kvStore); err != nil {
+			log.Fatalf("Error inserting file %s, err=%s", configName, err)
+		}
+	}
+}
+
+func insertFile(configName string, protoconfRoot string, kvStore store.Store) error {
+	if !strings.HasSuffix(configName, compiledConfigExtension) {
+		return fmt.Errorf("config must be a %s file, file=%s", compiledConfigExtension, configName)
+	}
+	kvPath := strings.TrimSuffix(configName, compiledConfigExtension)
+
+	configFilename := filepath.Join(protoconfRoot, compiledConfigPath, configName)
+	configReader, err := os.Open(configFilename)
+	if err != nil {
+		return fmt.Errorf("error opening config file, file=%s", configFilename)
 	}
 	defer configReader.Close()
 
@@ -47,43 +64,37 @@ func main() {
 	}
 	var configJSON configJSONType
 	if err := json.NewDecoder(configReader).Decode(&configJSON); err != nil {
-		log.Fatal(err) // FIXME
+		return err
 	}
 
 	parser := &protoparse.Parser{ImportPaths: []string{filepath.Join(protoconfRoot, configPath)}}
 	descriptors, err := parser.ParseFiles(configJSON.ProtoFile)
 	if err != nil {
-		log.Fatalf("error parsing proto file, file=%s err=%v", configJSON.ProtoFile, err)
+		return fmt.Errorf("error parsing proto file, file=%s err=%v", configJSON.ProtoFile, err)
 	}
 
 	registry := msgregistry.NewMessageRegistryWithDefaults()
 	registry.AddFile("", descriptors[0])
 
 	if _, err := configReader.Seek(0, 0); err != nil {
-		log.Fatal(err) // FIXME
+		return err
 	}
 
 	um := jsonpb.Unmarshaler{AnyResolver: registry}
 	protoconfValue := pc.ProtoconfValue{}
 	if err := um.Unmarshal(configReader, &protoconfValue); err != nil {
-		log.Fatalf("error unmarshaling, err=%s", err)
+		return fmt.Errorf("error unmarshaling, err=%s", err)
 	}
-
-	consul.Register()
-	kv, err := libkv.NewStore(
-		store.CONSUL,
-		[]string{""},
-		nil,
-	)
 
 	data, err := proto.Marshal(&protoconfValue)
 	if err != nil {
-		log.Fatalf("error marshaling ProtoconfValue to bytes, value=%v", protoconfValue)
+		return fmt.Errorf("error marshaling ProtoconfValue to bytes, value=%v", protoconfValue)
 	}
 
-	if err := kv.Put(kvPath, data, nil); err != nil {
-		log.Fatalf("error writing to consul, path=%s", kvPath)
+	if err := kvStore.Put(kvPath, data, nil); err != nil {
+		return fmt.Errorf("error writing to consul, path=%s", kvPath)
 	}
 
-	fmt.Printf("Path %s written successfully\n", kvPath)
+	fmt.Printf("Path %s inserted successfully\n", kvPath)
+	return nil
 }
