@@ -38,16 +38,16 @@ func LocalFileReader(root string) FileReader {
 }
 
 func (r *localFileReader) Resolve(ctx context.Context, name, fromPath string) (string, error) {
-	if fromPath == "" {
-		return name, nil
-	}
 	if filepath.Separator != '/' && strings.ContainsRune(name, filepath.Separator) {
 		return "", fmt.Errorf("load(%q): invalid character in module name", name)
 	}
-	resolved := filepath.Join(r.root, filepath.FromSlash(path.Clean("/"+name)))
-	return resolved, nil
+	canonicalPath := filepath.FromSlash(path.Clean(name))
+	if strings.HasPrefix(canonicalPath, string(filepath.Separator)) {
+		return canonicalPath, nil
+	}
+	return filepath.Join(filepath.Dir(fromPath), canonicalPath), nil
 }
 
 func (r *localFileReader) ReadFile(ctx context.Context, path string) ([]byte, error) {
-	return ioutil.ReadFile(path)
+	return ioutil.ReadFile(filepath.Join(r.root, path))
 }

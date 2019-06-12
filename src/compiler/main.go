@@ -160,8 +160,7 @@ type config struct {
 
 func load(filename string, protoconfRoot string, registry *msgregistry.MessageRegistry) (*config, error) {
 	configDir := filepath.Join(protoconfRoot, configPath)
-	absFilename := filepath.Join(configDir, filename)
-	reader := LocalFileReader(filepath.Dir(absFilename))
+	reader := LocalFileReader(configDir)
 	modules := getModules()
 
 	type cacheEntry struct {
@@ -172,7 +171,10 @@ func load(filename string, protoconfRoot string, registry *msgregistry.MessageRe
 	protoFilesLoaded := &[]string{}
 
 	accessor := func(name string) (io.ReadCloser, error) {
-		*protoFilesLoaded = append(*protoFilesLoaded, name)
+		if !strings.HasPrefix(name, configDir) {
+			return nil, fmt.Errorf("proto path must be under %s, got=%s", configDir, name)
+		}
+		*protoFilesLoaded = append(*protoFilesLoaded, strings.TrimPrefix(name, configDir))
 		return os.Open(name)
 	}
 
@@ -202,11 +204,7 @@ func load(filename string, protoconfRoot string, registry *msgregistry.MessageRe
 
 		if strings.HasSuffix(modulePath, protoExtension) {
 			parser := &protoparse.Parser{ImportPaths: []string{configDir}, Accessor: accessor}
-			if !strings.HasPrefix(modulePath, configDir) {
-				log.Fatalf("Error, proto file must be under dir=%s, file=%s", configDir, modulePath)
-			}
-			protoFilename := strings.TrimPrefix(modulePath, configDir)
-			descriptors, err := parser.ParseFiles(protoFilename)
+			descriptors, err := parser.ParseFiles(modulePath)
 			if err != nil {
 				log.Fatalf("Error parsing proto file, file=%s err=%v", modulePath, err)
 			}
@@ -238,7 +236,7 @@ func load(filename string, protoconfRoot string, registry *msgregistry.MessageRe
 	locals, err := load(&starlark.Thread{
 		Print: starPrint,
 		Load:  load,
-	}, absFilename)
+	}, filename)
 
 	if err != nil {
 		return nil, err
@@ -268,7 +266,7 @@ func load(filename string, protoconfRoot string, registry *msgregistry.MessageRe
 	}
 
 	return &config{
-		filename:   absFilename,
+		filename:   filename,
 		globals:    starlark.StringDict{},
 		locals:     locals,
 		validators: validators,
