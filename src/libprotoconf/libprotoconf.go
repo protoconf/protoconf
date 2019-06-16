@@ -1,6 +1,7 @@
 package libprotoconf
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/docker/libkv"
@@ -15,41 +16,54 @@ var (
 	kv store.Store
 )
 
+// Result of the Watch operation or erro
+type Result struct {
+	Value *any.Any
+	Error error
+}
+
 // Watch a value given its path
-func Watch(path string) (<-chan *any.Any, error) {
-	watchCh := make(chan *any.Any)
+func Watch(path string) <-chan Result {
+	watchCh := make(chan Result)
 
 	go func() {
 		defer close(watchCh)
+		// FIXME: reimplement Watch with Get to deal with missing keys
 		kVWatchCh, err := kv.Watch(path, nil)
 		if err != nil {
-			log.Printf("Error getting path from the store, path=%s", path)
+			watchCh <- Result{nil, err}
 			return
 		}
 
 		config := &pb.ProtoconfValue{}
 		for {
 			kVPair := <-kVWatchCh
-			if err = proto.Unmarshal(kVPair.Value, config); err != nil {
-				log.Printf("Error unmarshaling config path=%s value=%v err=%v", path, kVPair.Value, err)
+			if kVPair == nil {
+				watchCh <- Result{nil, fmt.Errorf("error reading path %s", path)}
 				return
 			}
 
-			watchCh <- config.GetValue()
+			if err = proto.Unmarshal(kVPair.Value, config); err != nil {
+				watchCh <- Result{nil, fmt.Errorf("error unmarshaling config path=%s value=%v err=%v", path, kVPair.Value, err)}
+				return
+			}
+
+			watchCh <- Result{config.GetValue(), nil}
 			log.Println(config)
 		}
 	}()
 
-	return watchCh, nil
+	return watchCh
 }
 
 // Setup the kv backend connection
-func Setup() {
+func Setup() error {
 	consul.Register()
-	// FIXME: do something with err
-	kv, _ = libkv.NewStore(
+	var err error
+	kv, err = libkv.NewStore(
 		store.CONSUL,
 		[]string{""},
 		nil,
 	)
+	return err
 }

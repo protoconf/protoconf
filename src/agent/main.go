@@ -19,15 +19,16 @@ func (s server) SubscribeForConfig(request *pc.ConfigSubscriptionRequest, srv pc
 	path := request.GetPath()
 	log.Printf("Watching path=%s", path)
 
-	watchCh, err := libprotoconf.Watch(path)
-	if err != nil {
-		log.Printf("Error watching config, path=%s err=%v", path, err)
-		return err
-	}
+	watchCh := libprotoconf.Watch(path)
 
 	for {
 		config := <-watchCh
-		resp := pc.ConfigUpdate{Value: config}
+		if config.Error != nil {
+			log.Printf("Error watching config, path=%s err=%v", path, config.Error)
+			return config.Error
+		}
+
+		resp := pc.ConfigUpdate{Value: config.Value}
 		if err := srv.Send(&resp); err != nil {
 			log.Printf("Error sending config update, path=%s srv=%v err=%v", path, srv, err)
 			return err
@@ -38,7 +39,10 @@ func (s server) SubscribeForConfig(request *pc.ConfigSubscriptionRequest, srv pc
 }
 
 func main() {
-	libprotoconf.Setup()
+	err := libprotoconf.Setup()
+	if err != nil {
+		log.Fatalf("Error setting up protoconf err=%v", err)
+	}
 
 	listener, err := net.Listen("tcp", address)
 	if err != nil {
