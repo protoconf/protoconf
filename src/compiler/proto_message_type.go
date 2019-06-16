@@ -10,6 +10,14 @@ import (
 	"go.starlark.net/starlark"
 )
 
+func newMessageTypeByDesc(registry *msgregistry.MessageRegistry, desc *desc.MessageDescriptor) starlark.Value {
+	mt := &starProtoMessageType{
+		registry: registry,
+		desc:     desc,
+	}
+	return mt
+}
+
 func newMessageType(registry *msgregistry.MessageRegistry, name string) (starlark.Value, error) {
 	desc, err := registry.FindMessageTypeByUrl(name)
 	if err != nil {
@@ -48,17 +56,13 @@ func (mt *starProtoMessageType) Name() string {
 }
 
 func (mt *starProtoMessageType) Attr(attrName string) (starlark.Value, error) {
-	msgName := fmt.Sprintf("%s.%s", mt.desc.GetName(), attrName)
-	if pkg := mt.desc.GetFile().GetPackage(); pkg != "" {
-		msgName = fmt.Sprintf("%s.%s", pkg, msgName)
-	}
+	fullName := fmt.Sprintf("%s.%s", mt.desc.GetFullyQualifiedName(), attrName)
 
-	enum, err := mt.registry.FindEnumTypeByUrl(msgName)
-	if err != nil {
+	if enum, err := mt.registry.FindEnumTypeByUrl(fullName); enum != nil && err == nil {
 		return &starProtoEnumType{desc: enum}, nil
 	}
 
-	return newMessageType(mt.registry, msgName)
+	return newMessageType(mt.registry, fullName)
 }
 
 func (mt *starProtoMessageType) AttrNames() []string {

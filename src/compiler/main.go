@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/golang/protobuf/jsonpb"
+	pbproto "github.com/golang/protobuf/proto"
 	dpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/desc/protoparse"
@@ -208,14 +209,11 @@ func load(filename string, protoconfRoot string, registry *msgregistry.MessageRe
 			if err != nil {
 				log.Fatalf("Error parsing proto file, file=%s err=%v", modulePath, err)
 			}
-			registry.AddFile("", descriptors[0])
+			fileDescriptor := descriptors[0]
+			registry.AddFile("", fileDescriptor)
 			globals = starlark.StringDict{}
-			for _, message := range descriptors[0].GetMessageTypes() {
-				messageType, err := newMessageType(registry, message.GetName())
-				if err != nil {
-					return nil, err
-				}
-				globals[message.GetName()] = messageType
+			for _, message := range fileDescriptor.GetMessageTypes() {
+				globals[message.GetName()] = newMessageTypeByDesc(registry, message)
 			}
 			err = nil
 		} else {
@@ -246,9 +244,10 @@ func load(filename string, protoconfRoot string, registry *msgregistry.MessageRe
 	modules["add_validator"] = starlark.NewBuiltin("add_validator", getAddValidator(&validators))
 	for _, proto := range *protoFilesLoaded {
 		validatorFile := proto + validatorExtensionSuffix
-		if stat, err := os.Stat(validatorFile); err == nil {
+		validatorAbsPath := filepath.Join(configDir, validatorFile)
+		if stat, err := os.Stat(validatorAbsPath); err == nil {
 			if stat.IsDir() {
-				return nil, fmt.Errorf("expected validator file and not a directory, file=%s", validatorFile)
+				return nil, fmt.Errorf("expected validator file and not a directory, file=%s", validatorAbsPath)
 			}
 		} else if os.IsNotExist(err) {
 			continue
@@ -294,27 +293,61 @@ func (c *config) main() (starlark.Value, error) {
 	return mainVal, nil
 }
 
-func (c *config) validate(proto *dynamic.Message) error {
-	if validator, ok := c.validators[proto.GetMessageDescriptor()]; ok {
+func (c *config) validate(proto interface{}) error {
+	protoMessage, ok := proto.(*dynamic.Message)
+	if !ok {
+		if _, ok := proto.(pbproto.Message); ok {
+			return nil
+		}
+		return fmt.Errorf("expecting a proto message to validate, got=%v", proto)
+	}
+
+	if protoMessage == nil {
+		return nil
+	}
+
+	if validator, ok := c.validators[protoMessage.GetMessageDescriptor()]; ok {
 		thread := &starlark.Thread{
 			Print: starPrint,
 		}
 		args := starlark.Tuple([]starlark.Value{
-			newStarProtoMessage(proto),
+			newStarProtoMessage(protoMessage),
 		})
 		if _, err := starlark.Call(thread, validator, args, nil); err != nil {
 			return err
 		}
 	}
 
-	for _, field := range proto.GetMessageDescriptor().GetFields() {
-		if field.GetType() == dpb.FieldDescriptorProto_TYPE_MESSAGE {
-			if protoField, ok := proto.GetField(field).(*dynamic.Message); !ok {
-				if err := c.validate(protoField); err != nil {
+	for _, field := range protoMessage.GetMessageDescriptor().GetFields() {
+		if field.GetType() != dpb.FieldDescriptorProto_TYPE_MESSAGE {
+			continue
+		}
+		if field.IsRepeated() {
+			length := len(protoMessage.GetField(field).([]interface{}))
+			for i := 0; i < length; i++ {
+				if err := c.validate(protoMessage.GetRepeatedField(field, i)); err != nil {
 					return err
 				}
-			} else {
-				return fmt.Errorf("expecting a message field, got=%v", field)
+			}
+		} else if field.IsMap() {
+			mp := protoMessage.GetField(field).(map[interface{}]interface{})
+			if field.GetMapKeyType().GetType() == dpb.FieldDescriptorProto_TYPE_MESSAGE {
+				for key := range mp {
+					if err := c.validate(key); err != nil {
+						return err
+					}
+				}
+			}
+			if field.GetMapValueType().GetType() == dpb.FieldDescriptorProto_TYPE_MESSAGE {
+				for _, value := range mp {
+					if err := c.validate(value); err != nil {
+						return err
+					}
+				}
+			}
+		} else {
+			if err := c.validate(protoMessage.GetField(field)); err != nil {
+				return err
 			}
 		}
 	}

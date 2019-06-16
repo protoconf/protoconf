@@ -5,8 +5,8 @@ import (
 	"math"
 	"sort"
 
-	"github.com/golang/protobuf/jsonpb"
 	dpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	pbproto "github.com/golang/protobuf/proto"
 	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/dynamic"
 	"go.starlark.net/starlark"
@@ -62,16 +62,8 @@ func (msg *starProtoMessage) CompareSameType(op syntax.Token, y starlark.Value, 
 }
 
 func (msg *starProtoMessage) Hash() (uint32, error) {
+	// FIXME
 	return 0, fmt.Errorf("starProtoMessage.Hash: TODO")
-}
-
-func (msg *starProtoMessage) MarshalJSON() ([]byte, error) {
-	var jsonMarshaler = &jsonpb.Marshaler{OrigName: true}
-	jsonData, err := msg.msg.MarshalJSONPB(jsonMarshaler)
-	if err != nil {
-		return nil, err
-	}
-	return []byte(jsonData), nil
 }
 
 func newStarProtoMessage(msg *dynamic.Message) *starProtoMessage {
@@ -215,12 +207,16 @@ func scalarToStarlark(t *desc.FieldDescriptor, val interface{}) starlark.Value {
 	case dpb.FieldDescriptorProto_TYPE_ENUM:
 		return &starProtoEnumValue{desc: t.GetEnumType().FindValueByNumber(val.(int32))}
 	case dpb.FieldDescriptorProto_TYPE_MESSAGE:
-		return newStarProtoMessage(val.(*dynamic.Message))
+		message, err := dynamic.AsDynamicMessage(val.(pbproto.Message))
+		if err != nil {
+			panic(fmt.Errorf("scalarToStarlark: error converting proto.Message to dynamic.Message %v", err))
+		}
+		return newStarProtoMessage(message)
 	}
 
 	// This should be impossible, because the set of types present
 	// in a generated protobuf struct is small and limited.
-	panic(fmt.Errorf("valueToStarlark: unknown type %v", t))
+	panic(fmt.Errorf("scalarToStarlark: unknown type %v", t))
 }
 
 func valueFromStarlark(t *desc.FieldDescriptor, star starlark.Value) (interface{}, error) {
