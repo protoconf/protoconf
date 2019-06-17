@@ -1,4 +1,4 @@
-load("@io_bazel_rules_go//go:def.bzl", "go_binary")
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_test")
 
 go_binary(
     name = "compiler",
@@ -23,4 +23,11 @@ go_binary(
         "@net_starlark_go//starlarkstruct:go_default_library",
         "@net_starlark_go//syntax:go_default_library",
     ],
+)
+
+go_test(
+    name = "compiler_test",
+    srcs = ["main_test.go"],
+    data = glob(["testdata/**"]),
+    importpath = "protoconf.com/compiler/test",
 )
