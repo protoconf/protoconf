@@ -14,6 +14,7 @@ fn main() {
     req.set_path("/my_client/my_client_config".to_owned());
 
     let stream = client.subscribe_for_config(grpc::RequestOptions::new(), req);
+    let mut firat_read = true;
     match stream.wait() {
         Err(e) => panic!("{:?}", e),
         Ok((_, stream)) => {
@@ -26,7 +27,12 @@ fn main() {
                 match client_config.merge_from(&mut bytes) {
                     Err(e) => panic!("{:?}", e),
                     Ok(_) => {
-                        println!("{}", client_config.get_value());
+                        if firat_read {
+                            firat_read = false;
+                            println!("Config initial value: {}", client_config.get_value());
+                        } else {
+                            println!("Config changed, new value: {}", client_config.get_value());
+                        }
                     }
 
                 }
