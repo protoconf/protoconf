@@ -16,7 +16,7 @@ cd src && bazel build //...
 7. Change the config file at `examples/protoconf/src/my_client/my_client_config.pconf`
 8. Repeat steps 4 & 5 to recompile and re-insert the config, observe the client got the updated config
 
-- Bonus: run the python client with `cd examples/python_asyncio_client && bazel run :python_asyncio_client`
+- Bonus: run the python client with `cd examples/python_asyncio_client && bazel run :python_asyncio_client`, and the rust client with ``cd examples/rust_client && bazel run :rust_client``
 
 ## Future Work
 * Canary service
