@@ -63,7 +63,6 @@ func listenToChanges(path string) {
 			log.Printf("Config %s initial value: %s", path, value)
 		} else {
 			log.Printf("Config %s changed, new value: %s", path, value)
-
 		}
 	}
 }

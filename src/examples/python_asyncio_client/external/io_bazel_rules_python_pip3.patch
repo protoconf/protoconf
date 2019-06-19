@@ -1,0 +1,11 @@
+--- python/pip.bzl	2019-06-18 06:54:07.872132523 +0000
++++ python/pip.bzl	2019-06-18 06:53:55.316188680 +0000
+@@ -24,7 +24,7 @@
+ 
+     # To see the output, pass: quiet=False
+     result = repository_ctx.execute([
+-        "python",
++        "python3",
+         repository_ctx.path(repository_ctx.attr._script),
+         "--name",
+         repository_ctx.attr.name,

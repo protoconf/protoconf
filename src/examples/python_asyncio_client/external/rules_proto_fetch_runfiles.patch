@@ -1,0 +1,71 @@
+--- aspect.bzl	2019-06-18 20:58:04.818405617 +0000
++++ aspect.bzl	2019-06-19 08:35:25.030710748 +0000
+@@ -213,7 +213,7 @@
+     for plugin in plugins:
+         if plugin.executable:
+             plugin_tools[plugin.name] = plugin.executable
+-        data += plugin.data + get_plugin_runfiles(plugin.tool)
++        data += plugin.data
+ 
+         filename = _get_plugin_out(ctx, plugin)
+         if not filename:
+@@ -295,7 +295,7 @@
+ 
+     mnemonic = "ProtoCompile"  # SAME
+ 
+-    command = " ".join([protoc.path] + args)  # SAME
++    command = "rm -f " + " ".join([output.path for output in outputs]) + "; " + " ".join([protoc.path] + args)
+ 
+     inputs = import_files.to_list() + descriptor_sets.to_list() + data
+     tools = [protoc] + plugin_tools.values()
+@@ -317,16 +317,19 @@
+         for arg in args:
+             print("ARG:", arg)
+ 
++    resolved_inputs, input_manifests = ctx.resolve_tools(tools=[plugin.tool for plugin in plugins if plugin.executable])
++
+     ctx.actions.run_shell(
+         mnemonic = mnemonic,  # SAME
+         command = command,  # SAME
+ 
+         # This is different!
+-        inputs = inputs,
++        inputs = inputs + resolved_inputs.to_list(),
+         tools = tools,
+ 
+         # outputs = outputs + [descriptor] + ctx.outputs.outputs, # compile.bzl
+         outputs = outputs,
++        input_manifests=input_manifests,
+     )
+ 
+     #
+@@ -692,29 +695,3 @@
+ #         # print("Using sibling file '%s' for '%s' => '%s'" % (sibling.path, filename, output.path))
+ #         outputs.append(output)
+ #     return outputs
+-
+-def get_plugin_runfiles(tool):
+-    """Gather runfiles for a plugin.
+-    """
+-    files = []
+-    if not tool:
+-        return files
+-
+-    info = tool[DefaultInfo]
+-    if not info:
+-        return files
+-
+-    if info.files:
+-        files += info.files.to_list()
+-
+-    if info.default_runfiles:
+-        runfiles = info.default_runfiles
+-        if runfiles.files:
+-            files += runfiles.files.to_list()
+-
+-    if info.data_runfiles:
+-        runfiles = info.data_runfiles
+-        if runfiles.files:
+-            files += runfiles.files.to_list()
+-
+-    return files
