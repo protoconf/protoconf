@@ -1,0 +1,27 @@
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+local_repository(
+    name = "protoconf",
+    path = "../../",
+)
+
+http_archive(
+    name = "build_stack_rules_proto",
+    sha256 = "c62f0b442e82a6152fcd5b1c0b7c4028233a9e314078952b6b04253421d56d61",
+    strip_prefix = "rules_proto-b93b544f851fdcd3fc5c3d47aee3b7ca158a8841",
+    urls = ["https://github.com/stackb/rules_proto/archive/b93b544f851fdcd3fc5c3d47aee3b7ca158a8841.tar.gz"],
+)
+
+load("@build_stack_rules_proto//java:deps.bzl", "java_grpc_library", "java_proto_library")
+
+java_proto_library()
+
+load("@build_stack_rules_proto//:deps.bzl", "io_grpc_grpc_java")
+
+io_grpc_grpc_java()
+
+load("@io_grpc_grpc_java//:repositories.bzl", "grpc_java_repositories")
+
+grpc_java_repositories(omit_com_google_protobuf = True)
+
+java_grpc_library()

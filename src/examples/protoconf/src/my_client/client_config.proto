@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+option java_package = "com.protoconf.examples.my_client";
+
 message ClientConfig {
     string value = 1;
 }
