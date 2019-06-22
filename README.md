@@ -20,6 +20,7 @@ cd src && bazel build //...
 - Python: `cd examples/python_asyncio_client && bazel run :python_asyncio_client`
 - Rust `cd examples/rust_client && bazel run :rust_client`
 - Java: `cd examples/java_client && bazel run :java_client`
+- Ruby: `cd examples/ruby_client && bazel run :ruby_client`
 
 ## Future Work
 * Canary service

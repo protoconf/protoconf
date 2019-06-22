@@ -41,7 +41,7 @@ public class JavaClient {
             }
         });
 
-        // Program code runs here while config asynchronously arrive
+        // Program code runs here while config asynchronously arrives
         try {
             Thread.sleep(1000 * 60 *60);
         } catch (InterruptedException e) {

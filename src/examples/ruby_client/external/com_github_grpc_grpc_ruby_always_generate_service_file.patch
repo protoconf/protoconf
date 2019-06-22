@@ -1,0 +1,12 @@
+--- src/compiler/ruby_plugin.cc	2019-06-21 11:13:41.196622431 +0000
++++ src/compiler/ruby_plugin.cc	2019-06-21 11:13:57.048611624 +0000
+@@ -34,9 +34,6 @@
+                 grpc::protobuf::compiler::GeneratorContext* context,
+                 grpc::string* error) const {
+     grpc::string code = grpc_ruby_generator::GetServices(file);
+-    if (code.size() == 0) {
+-      return true;  // don't generate a file if there are no services
+-    }
+ 
+     // Get output file name.
+     grpc::string file_name;

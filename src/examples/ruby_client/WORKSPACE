@@ -1,0 +1,48 @@
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+local_repository(
+    name = "protoconf",
+    path = "../../",
+)
+
+http_archive(
+    name = "com_github_grpc_grpc",
+    sha256 = "ba8b08a697b66e14af35da07753583cf32ff3d14dcd768f91b1bbe2e6c07c349",
+    strip_prefix = "grpc-1.20.1",
+    urls = ["https://github.com/grpc/grpc/archive/1.20.1.tar.gz"],
+    patch_args = ["-p0"],
+    patches = [
+        "com_github_grpc_grpc_ruby_always_generate_service_file.patch",
+    ],
+)
+
+http_archive(
+    name = "build_stack_rules_proto",
+    sha256 = "c62f0b442e82a6152fcd5b1c0b7c4028233a9e314078952b6b04253421d56d61",
+    strip_prefix = "rules_proto-b93b544f851fdcd3fc5c3d47aee3b7ca158a8841",
+    urls = ["https://github.com/stackb/rules_proto/archive/b93b544f851fdcd3fc5c3d47aee3b7ca158a8841.tar.gz"],
+    patch_args = ["-p0"],
+    patches = [
+        "rules_proto_fetch_runfiles.patch",
+    ],
+)
+
+load("@build_stack_rules_proto//ruby:deps.bzl", "ruby_grpc_library")
+
+ruby_grpc_library()
+
+load("@com_github_yugui_rules_ruby//ruby:def.bzl", "ruby_register_toolchains")
+
+ruby_register_toolchains()
+
+load("@com_github_grpc_grpc//bazel:grpc_deps.bzl", "grpc_deps")
+
+grpc_deps()
+
+load("@com_github_yugui_rules_ruby//ruby/private:bundle.bzl", "bundle_install")
+
+bundle_install(
+    name = "gems_bundle",
+    gemfile = "//:Gemfile",
+    gemfile_lock = "//:Gemfile.lock",
+)

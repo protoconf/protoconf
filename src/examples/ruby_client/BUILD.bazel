@@ -1,0 +1,27 @@
+load("@build_stack_rules_proto//ruby:ruby_proto_library.bzl", "ruby_proto_library")
+load("@build_stack_rules_proto//ruby:ruby_grpc_library.bzl", "ruby_grpc_library")
+load("@com_github_yugui_rules_ruby//ruby:def.bzl", "ruby_binary")
+
+
+ruby_grpc_library(
+    name = "protoconf_service_ruby_proto",
+    includes = ["./external/protoconf/"],
+    deps = ["@protoconf//agent/api/proto/v1:protoconf_service_proto"],
+)
+
+ruby_proto_library(
+    name = "client_config_ruby_proto",
+    includes = ["./external/protoconf/"],
+    deps = ["@protoconf//examples/protoconf/src/my_client:client_config_proto"],
+)
+
+ruby_binary(
+    name = "ruby_client",
+    srcs = ["ruby_client.rb"],
+    includes = ["./external/protoconf/"],
+    deps = [
+        ":client_config_ruby_proto",
+        ":protoconf_service_ruby_proto",
+        "@gems_bundle//:libs",
+    ],
+)
