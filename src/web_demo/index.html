@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" /> 
+<title>Protoconf - a modern approach to software configuration</title>
+<style type="text/css" media="screen">
+    body {
+        margin: 0;
+        background-color: #151515;
+    }
+    #container {
+        position: absolute;
+        display: flex;
+        align-content: stretch;
+        align-items: stretch;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        flex-direction: row;
+
+    }
+    #container > div {
+        padding: 3px;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        align-content: stretch;
+        align-items: stretch;
+        flex-basis: 100%;
+    }
+    .editor {
+        flex-grow: 1;
+    }
+    #compileButton {
+        position: absolute;
+        top: 10px;
+        right: 30px;
+        z-index: 5;
+        font-weight: bold;
+    }
+    .errorToast {
+        font-family: 'consolas';
+        font-size: 80%;
+        white-space: pre-wrap;
+    }
+    .filename {
+        font-family: 'consolas';
+        color: #888888;
+        margin: 3px;
+        font-size: 80%;
+    }
+</style>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+</head>
+<body>
+<div id="container">
+<div>
+<div class="filename">/src/address_book/my_address_book.pconf</div>
+<div class="editor" id="protoconf-editor">load("address_book.proto", "AddressBook", "Person")
+
+def main():
+    people = []
+    
+    for i in range(3):
+        person = Person()
+        person.name = "Person " + str(i)
+        person.id = 10000 + i
+        if i % 2:
+            person.email = "myemail" + str(7 * i) + "@gmail.com"
+        person.phones = [
+            Person.PhoneNumber(number="1800-800800", type=Person.PhoneType.WORK) for j in range(i)
+        ]
+        people.append(person)
+    
+    return AddressBook(people=people)
+</div>
+<div class="filename">/src/address_book/address_book.proto</div>
+<div class="editor" id="protobuf-editor">syntax = "proto3";
+
+message Person {
+  string name = 1;
+  int32 id = 2; // Unique ID number for this person.
+  string email = 3;
+  enum PhoneType {
+    MOBILE = 0;
+    HOME = 1;
+    WORK = 2;
+  }
+  message PhoneNumber {
+    string number = 1;
+    PhoneType type = 2;
+  }
+  repeated PhoneNumber phones = 4;
+}
+
+message AddressBook {
+    repeated Person people = 1;
+}
+</div>
+</div>
+<div>
+<div class="filename">/materialized_config/address_book/my_address_book.materialized_JSON</div>
+<div class="editor" id="protoconf-output">{
+  "protoFile": "address_book/address_book.proto",
+  "value": {
+    "@type": "https://AddressBook",
+    "people": [
+      {
+        "name": "Person 0",
+        "id": 10000
+      },
+      {
+        "name": "Person 1",
+        "id": 10001,
+        "email": "myemail7@gmail.com",
+        "phones": [
+          {
+            "number": "1800-800800",
+            "type": "WORK"
+          }
+        ]
+      },
+      {
+        "name": "Person 2",
+        "id": 10002,
+        "phones": [
+          {
+            "number": "1800-800800",
+            "type": "WORK"
+          },
+          {
+            "number": "1800-800800",
+            "type": "WORK"
+          }
+        ]
+      }
+    ]
+  }
+}
+</div>
+<div class="filename">/src/address_book/address_book.proto-validator</div>
+<div class="editor" id="validator-editor">load("address_book.proto", "AddressBook", "Person")
+
+def test_address_book_not_empty(a):
+    if len(a.people) < 1:
+        fail("Address book can't be empty")
+
+add_validator(AddressBook, test_address_book_not_empty)
+
+def test_person_id_in_range(p):
+    MIN_ID = 10000
+    if p.id < MIN_ID:
+        fail("Person id must be at least %d, got %d" % (MIN_ID, p.id))
+
+add_validator(Person, test_person_id_in_range)
+</div>
+</div>
+</div>
+<button onClick="compile();" id="compileButton" disabled>Compile (⌃/⌘+S)</button>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.5/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+function configEditor(editorId) {
+    editor = ace.edit(editorId);
+    editor.setTheme("ace/theme/monokai");
+    editor.setShowPrintMargin(false);
+    editor.commands.addCommand({
+        name: 'compile',
+        bindKey: {win: 'Ctrl-S',  mac: 'Command-S'},
+        exec: function(editor) {
+            compile();
+        },
+        readOnly: true
+    });
+    return editor;
+}
+var files = {};
+
+var protobufEditor = configEditor("protobuf-editor");
+protobufEditor.session.setMode("ace/mode/protobuf");
+files["/src/address_book/address_book.proto"] = protobufEditor
+
+var protoconfEditor = configEditor("protoconf-editor");
+protoconfEditor.session.setMode("ace/mode/python");
+files["/src/address_book/my_address_book.pconf"] = protoconfEditor
+
+
+var validatorEditor = configEditor("validator-editor");
+validatorEditor.session.setMode("ace/mode/python");
+files["/src/address_book/address_book.proto-validator"] = validatorEditor
+
+
+var protoconfOutput = configEditor("protoconf-output");
+protoconfOutput.session.setMode("ace/mode/json");
+protoconfOutput.setReadOnly(true);
+files["/materialized_config/address_book/my_address_book.materialized_JSON"] = protoconfOutput
+
+function readFile(filename) {
+    if (!(filename in files)) {
+        return null;
+    }
+    return files[filename].getValue();
+}
+
+function writeFile(filename, bytes) {
+    if (!(filename in files)) {
+        return false;
+    }
+    files[filename].session.setValue(bytes);
+    return true;
+}
+
+</script>
+<script src="wasm_exec.js"></script>
+<script>
+if (!WebAssembly.instantiateStreaming) { // polyfill
+    WebAssembly.instantiateStreaming = async (resp, importObject) => {
+        const source = await (await resp).arrayBuffer();
+        return await WebAssembly.instantiate(source, importObject);
+    };
+}
+const go = new Go();
+let mod, inst;
+WebAssembly.instantiateStreaming(fetch("compiler.wasm"), go.importObject).then((result) => {
+    mod = result.module;
+    inst = result.instance;
+    go.run(inst);
+    document.getElementById("compileButton").disabled = false;
+}).catch((err) => {
+    console.error(err);
+});
+async function compile() {
+    if (typeof protoconfCompile !== 'undefined') {
+        protoconfCompile("address_book/my_address_book.pconf");
+    }
+}
+</script>
+<script src="https://unpkg.com/hotkeys-js/dist/hotkeys.min.js"></script>
+<script>
+hotkeys('ctrl+s,command+s', function(event,handler) {
+    switch(handler.key){
+        case "ctrl+s":
+        case "command+s":
+            compile();
+            break;
+    }
+    return false;
+});
+</script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script>
+function toast(message) {
+Toastify({
+    text: message,
+    duration: 3000,
+    newWindow: true,
+    close: true,
+    gravity: "bottom",
+    positionLeft: true,
+    backgroundColor: "linear-gradient(to top, #ED213A, #93291E)",
+    stopOnFocus: true, // Prevents dismissing of toast on hover
+    className: "errorToast"
+    }).showToast();
+}
+</script>
+</body>
+</html>

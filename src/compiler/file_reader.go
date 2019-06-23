@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"path"
 	"strings"
 
@@ -46,8 +45,4 @@ func (r *localFileReader) Resolve(ctx context.Context, name, fromPath string) (s
 		return canonicalPath, nil
 	}
 	return filepath.Join(filepath.Dir(fromPath), canonicalPath), nil
-}
-
-func (r *localFileReader) ReadFile(ctx context.Context, path string) ([]byte, error) {
-	return ioutil.ReadFile(filepath.Join(r.root, path))
 }

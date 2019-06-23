@@ -1,10 +1,25 @@
-load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_test")
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
 
 go_binary(
     name = "compiler",
+    embed = [":compiler_library"],
+)
+
+go_binary(
+    name = "compiler_wasm",
+    embed = [":compiler_library"],
+    goarch = "wasm",
+    goos = "js",
+    pure = "on",
+)
+
+go_library(
+    name = "compiler_library",
     srcs = [
+        "compiler.go",
         "file_reader.go",
         "main.go",
+        "main_js.go",
         "proto_enum.go",
         "proto_message.go",
         "proto_message_type.go",
@@ -23,6 +38,7 @@ go_binary(
         "@net_starlark_go//starlarkstruct:go_default_library",
         "@net_starlark_go//syntax:go_default_library",
     ],
+    importpath = "protoconf.com/compiler"
 )
 
 go_test(
