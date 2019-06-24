@@ -42,7 +42,7 @@ func (r *localFileReader) Resolve(ctx context.Context, name, fromPath string) (s
 	}
 	canonicalPath := filepath.FromSlash(path.Clean(name))
 	if strings.HasPrefix(canonicalPath, string(filepath.Separator)) {
-		return canonicalPath, nil
+		return strings.TrimPrefix(canonicalPath, string(filepath.Separator)), nil
 	}
 	return filepath.Join(filepath.Dir(fromPath), canonicalPath), nil
 }

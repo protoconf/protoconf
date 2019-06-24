@@ -5,7 +5,8 @@
     "people": [
       {
         "name": "Person 0",
-        "id": 10000
+        "id": 10000,
+        "lastUpdated": "2019-06-24T16:13:20Z"
       },
       {
         "name": "Person 1",
@@ -16,7 +17,8 @@
             "number": "1800-800800",
             "type": "WORK"
           }
-        ]
+        ],
+        "lastUpdated": "2019-06-24T16:13:20Z"
       },
       {
         "name": "Person 2",
@@ -30,7 +32,8 @@
             "number": "1800-800800",
             "type": "WORK"
           }
-        ]
+        ],
+        "lastUpdated": "2019-06-24T16:13:20Z"
       }
     ]
   }
