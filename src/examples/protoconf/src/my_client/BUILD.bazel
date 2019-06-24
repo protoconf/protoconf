@@ -1,5 +1,0 @@
-proto_library(
-    name = "client_config_proto",
-    srcs = ["client_config.proto"],
-    visibility = ["//visibility:public"],
-)

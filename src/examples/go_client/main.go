@@ -9,12 +9,12 @@ import (
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	pc "protoconf.com/agent/api/proto/v1/protoconfservice"
-	pb "protoconf.com/examples/go_client/clientconfig"
+	pb "protoconf.com/examples/go_client/addressbook"
 )
 
 const (
 	address     = ":4300"
-	defaultPath = "my_client/my_client_config"
+	defaultPath = "address_book/my_address_book"
 )
 
 func main() {
@@ -42,7 +42,7 @@ func listenToChanges(path string) {
 	}
 
 	firstRead := true
-	config := &pb.ClientConfig{}
+	config := &pb.AddressBook{}
 	for {
 		update, err := stream.Recv()
 
@@ -57,12 +57,11 @@ func listenToChanges(path string) {
 			log.Fatalf("Error unmarshaling config path=%s value=%v err=%v", path, update.Value, err)
 		}
 
-		value := config.GetValue()
 		if firstRead {
 			firstRead = false
-			log.Printf("Config %s initial value: %s", path, value)
+			log.Printf("Config %s initial value: %s", path, config)
 		} else {
-			log.Printf("Config %s changed, new value: %s", path, value)
+			log.Printf("Config %s changed, new value: %s", path, config)
 		}
 	}
 }

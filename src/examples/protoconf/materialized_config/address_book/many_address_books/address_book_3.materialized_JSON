@@ -1,0 +1,12 @@
+{
+  "protoFile": "address_book/address_book.proto",
+  "value": {
+    "@type": "https://AddressBook",
+    "people": [
+      {
+        "name": "I'm a person on address book number 3",
+        "id": 15000
+      }
+    ]
+  }
+}

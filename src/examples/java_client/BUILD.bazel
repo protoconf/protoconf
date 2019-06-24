@@ -2,8 +2,8 @@ load("@build_stack_rules_proto//java:java_proto_library.bzl", "java_proto_librar
 load("@build_stack_rules_proto//java:java_grpc_library.bzl", "java_grpc_library")
 
 java_proto_library(
-    name = "client_config_java_proto",
-    deps = ["@protoconf//examples/protoconf/src/my_client:client_config_proto"],
+    name = "address_book_java_proto",
+    deps = ["@protoconf//examples/protoconf/src/address_book:address_book_proto"],
 )
 
 java_grpc_library(
@@ -16,7 +16,7 @@ java_binary(
     srcs = ["java/com/protoconf/examples/JavaClient.java"],
     main_class = "com.protoconf.examples.JavaClient",
     deps = [
-        ":client_config_java_proto",
+        ":address_book_java_proto",
         ":protoconf_service_java_proto",
         "@build_stack_rules_proto//java:grpc_netty",
     ],

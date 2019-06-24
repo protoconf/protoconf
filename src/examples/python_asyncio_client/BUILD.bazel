@@ -40,8 +40,8 @@ python_grpclib_library(
 )
 
 python_proto_library(
-    name = "client_config_python_proto",
-    deps = ["@protoconf//examples/protoconf/src/my_client:client_config_proto"],
+    name = "address_book_python_proto",
+    deps = ["@protoconf//examples/protoconf/src/address_book:address_book_proto"],
 )
 
 py_binary(
@@ -51,7 +51,7 @@ py_binary(
     ],
     imports = ["."],
     deps = [
-        ":client_config_python_proto",
+        ":address_book_python_proto",
         ":protoconf_service_python_proto",
         requirement("grpclib"),
         requirement("hpack"),

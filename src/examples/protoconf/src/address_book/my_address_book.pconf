@@ -1,0 +1,18 @@
+load("address_book.proto", "AddressBook", "Person")
+load("domain_name.pinc", "domain_name")
+
+def main():
+    people = []
+    
+    for i in range(3):
+        person = Person()
+        person.name = "Person " + str(i)
+        person.id = 10000 + i
+        if i % 2:
+            person.email = "myemail" + str(7 * i) + "@" + domain_name
+        person.phones = [
+            Person.PhoneNumber(number="1800-800800", type=Person.PhoneType.WORK) for j in range(i)
+        ]
+        people.append(person)
+    
+    return AddressBook(people=people)

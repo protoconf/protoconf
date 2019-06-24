@@ -1,6 +1,0 @@
-load("service_name.pinc", "service_name")
-load("client_config.proto", "ClientConfig")
-
-
-def main():
-    return ClientConfig(value="This is the config for " + service_name)

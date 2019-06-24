@@ -1,9 +1,0 @@
-load("client_config.proto", "ClientConfig")
-
-
-def test_value_len(c):
-    if len(c.value) < 10:
-        fail("value can't be shorter than 10")
-
-
-add_validator(ClientConfig, test_value_len)

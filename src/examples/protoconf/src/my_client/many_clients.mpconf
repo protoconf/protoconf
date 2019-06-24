@@ -1,4 +1,0 @@
-load("client_config.proto", "ClientConfig")
-
-def main():
-    return {"client_%d" % i: ClientConfig(value="I'm client number %d" % i) for i in range(4)}

@@ -8,15 +8,15 @@ rust_grpc_library(
 )
 
 rust_proto_library(
-    name = "client_config_rust_proto",
-    deps = ["@protoconf//examples/protoconf/src/my_client:client_config_proto"],
+    name = "address_book_rust_proto",
+    deps = ["@protoconf//examples/protoconf/src/address_book:address_book_proto"],
 )
 
 rust_binary(
     name = "rust_client",
     srcs = ["rust_client.rs"],
     deps = [
-        ":client_config_rust_proto",
+        ":address_book_rust_proto",
         ":protoconf_service_rust_proto",
     ] + GRPC_COMPILE_DEPS,
 )

@@ -10,9 +10,9 @@ ruby_grpc_library(
 )
 
 ruby_proto_library(
-    name = "client_config_ruby_proto",
+    name = "address_book_ruby_proto",
     includes = ["./external/protoconf/"],
-    deps = ["@protoconf//examples/protoconf/src/my_client:client_config_proto"],
+    deps = ["@protoconf//examples/protoconf/src/address_book:address_book_proto"],
 )
 
 ruby_binary(
@@ -20,7 +20,7 @@ ruby_binary(
     srcs = ["ruby_client.rb"],
     includes = ["./external/protoconf/"],
     deps = [
-        ":client_config_ruby_proto",
+        ":address_book_ruby_proto",
         ":protoconf_service_ruby_proto",
         "@gems_bundle//:libs",
     ],

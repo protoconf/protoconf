@@ -1,0 +1,37 @@
+{
+  "protoFile": "address_book/address_book.proto",
+  "value": {
+    "@type": "https://AddressBook",
+    "people": [
+      {
+        "name": "Person 0",
+        "id": 10000
+      },
+      {
+        "name": "Person 1",
+        "id": 10001,
+        "email": "myemail7@gmail.com",
+        "phones": [
+          {
+            "number": "1800-800800",
+            "type": "WORK"
+          }
+        ]
+      },
+      {
+        "name": "Person 2",
+        "id": 10002,
+        "phones": [
+          {
+            "number": "1800-800800",
+            "type": "WORK"
+          },
+          {
+            "number": "1800-800800",
+            "type": "WORK"
+          }
+        ]
+      }
+    ]
+  }
+}
