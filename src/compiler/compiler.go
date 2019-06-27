@@ -302,14 +302,7 @@ func (c *config) validate(proto interface{}) error {
 		if field.GetType() != dpb.FieldDescriptorProto_TYPE_MESSAGE {
 			continue
 		}
-		if field.IsRepeated() {
-			length := len(protoMessage.GetField(field).([]interface{}))
-			for i := 0; i < length; i++ {
-				if err := c.validate(protoMessage.GetRepeatedField(field, i)); err != nil {
-					return err
-				}
-			}
-		} else if field.IsMap() {
+		if field.IsMap() {
 			mp := protoMessage.GetField(field).(map[interface{}]interface{})
 			if field.GetMapKeyType().GetType() == dpb.FieldDescriptorProto_TYPE_MESSAGE {
 				for key := range mp {
@@ -323,6 +316,13 @@ func (c *config) validate(proto interface{}) error {
 					if err := c.validate(value); err != nil {
 						return err
 					}
+				}
+			}
+		} else if field.IsRepeated() {
+			length := len(protoMessage.GetField(field).([]interface{}))
+			for i := 0; i < length; i++ {
+				if err := c.validate(protoMessage.GetRepeatedField(field, i)); err != nil {
+					return err
 				}
 			}
 		} else {

@@ -152,18 +152,6 @@ type fieldValue struct {
 }
 
 func valueToStarlark(val *fieldValue) starlark.Value {
-	if val.desc.IsRepeated() {
-		var items []starlark.Value
-		length := len(val.msg.GetField(val.desc).([]interface{}))
-		for i := 0; i < length; i++ {
-			items = append(items, scalarToStarlark(val.desc, val.msg.GetRepeatedField(val.desc, i)))
-		}
-		return &protoRepeated{
-			field: val,
-			list:  starlark.NewList(items),
-		}
-	}
-
 	if val.desc.IsMap() {
 		dict := &starlark.Dict{}
 		keyType := val.desc.GetMapKeyType()
@@ -179,6 +167,18 @@ func valueToStarlark(val *fieldValue) starlark.Value {
 		return &protoMap{
 			field: val,
 			dict:  dict,
+		}
+	}
+
+	if val.desc.IsRepeated() {
+		var items []starlark.Value
+		length := len(val.msg.GetField(val.desc).([]interface{}))
+		for i := 0; i < length; i++ {
+			items = append(items, scalarToStarlark(val.desc, val.msg.GetRepeatedField(val.desc, i)))
+		}
+		return &protoRepeated{
+			field: val,
+			list:  starlark.NewList(items),
 		}
 	}
 	return scalarToStarlark(val.desc, val.msg.GetField(val.desc))
