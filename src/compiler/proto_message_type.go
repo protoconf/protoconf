@@ -21,7 +21,11 @@ func newMessageTypeByDesc(registry *msgregistry.MessageRegistry, desc *desc.Mess
 func newMessageType(registry *msgregistry.MessageRegistry, name string) (starlark.Value, error) {
 	desc, err := registry.FindMessageTypeByUrl(name)
 	if err != nil {
-		return nil, fmt.Errorf("Protobuf message type %q not found", name)
+		return nil, fmt.Errorf("error finding protobuf message type=%s err=%s", name, err)
+	}
+
+	if desc == nil {
+		return nil, fmt.Errorf("protobuf message type %s not found", name)
 	}
 
 	mt := &starProtoMessageType{
