@@ -1,0 +1,8 @@
+proto_library(
+    name = "crawler_proto",
+    srcs = ["protoconf/src/crawler/crawler.proto"],
+    deps = [
+        "@com_google_protobuf//:timestamp_proto",
+    ],
+    visibility = ["//visibility:public"],
+)

@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option java_package = "com.protoconf.examples.crawler";
+
+message Crawler {
+  string user_agent = 1;
+  int32 http_timeout = 2;
+  bool follow_redirects = 3;
+}
+
+message CrawlerService {
+  repeated Crawler crawlers = 1;
+  enum AdminPermission {
+    READ_WRITE = 0;
+    GOD_MODE = 1;
+  }
+  map<string, AdminPermission> admins = 2;
+  int32 log_level = 3;
+}

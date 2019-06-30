@@ -1,0 +1,14 @@
+load("crawler.proto", "Crawler", "CrawlerService")
+
+def test_crawlers_not_empty(cs):
+    if len(cs.crawlers) < 1:
+        fail("Crawlers can't be empty")
+
+add_validator(CrawlerService, test_crawlers_not_empty)
+
+def test_http_timeout(c):
+    MIN_TIMEOUT = 10
+    if c.http_timeout < MIN_TIMEOUT:
+        fail("Crawler HTTP timeout must be at least %d, got %d" % (MIN_TIMEOUT, c.http_timeout))
+
+add_validator(Crawler, test_http_timeout)

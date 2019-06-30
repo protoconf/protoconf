@@ -1,0 +1,14 @@
+load("crawler.proto", "CrawlerService")
+load("text_crawler.pconf", "default_crawler")
+
+CRAWLER_ZONES = ['nyc', 'lon']
+
+def main():
+    return {
+        "crawler_%s" % zone:
+            CrawlerService(
+                crawlers=[default_crawler()],
+                admins={'admin_%s' % zone: CrawlerService.AdminPermission.READ_WRITE}
+            )
+        for zone in CRAWLER_ZONES
+    }

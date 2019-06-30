@@ -1,8 +1,0 @@
-proto_library(
-    name = "address_book_proto",
-    srcs = ["address_book.proto"],
-    deps = [
-        "@com_google_protobuf//:timestamp_proto",
-    ],
-    visibility = ["//visibility:public"],
-)

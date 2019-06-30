@@ -2,158 +2,146 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" /> 
-<title>Protoconf - a modern approach to software configuration</title>
+<title>Protoconf - codify configuration, instant delivery</title>
 <style type="text/css" media="screen">
-    body {
-        margin: 0;
-        background-color: #151515;
-    }
-    #container {
-        position: absolute;
-        display: flex;
-        align-content: stretch;
-        align-items: stretch;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        flex-direction: row;
+  body {
+      margin: 0;
+      background-color: #151515;
+  }
+  #container {
+      position: absolute;
+      display: flex;
+      align-content: stretch;
+      align-items: stretch;
+      top: 54px;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      flex-direction: row;
 
-    }
-    #container > div {
-        padding: 3px;
-        display: flex;
-        flex-direction: column;
-        flex-grow: 1;
-        align-content: stretch;
-        align-items: stretch;
-        flex-basis: 100%;
-    }
-    .editor {
-        flex-grow: 1;
-    }
-    #compileButton {
-        position: absolute;
-        top: 10px;
-        right: 30px;
-        z-index: 5;
-        font-weight: bold;
-    }
-    .errorToast {
-        font-family: 'consolas';
-        font-size: 80%;
-        white-space: pre-wrap;
-    }
-    .filename {
-        font-family: 'consolas';
-        color: #888888;
-        margin: 3px;
-        font-size: 80%;
-    }
+  }
+  #container > div {
+      padding: 3px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      align-content: stretch;
+      align-items: stretch;
+      flex-basis: 100%;
+  }
+  .editor {
+      flex-grow: 1;
+  }
+  #compileButton {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      z-index: 5;
+      font-weight: bold;
+  }
+  .errorToast {
+      font-family: 'consolas';
+      font-size: 80%;
+      white-space: pre-wrap;
+  }
+  .filename {
+      font-family: 'consolas';
+      color: #888888;
+      margin: 3px;
+      font-size: 80%;
+  }
 </style>
+<link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 </head>
 <body>
+<div style="position: absolute; height: 54px; padding-top: 4px; padding-left: 16px; left: 0; top: 0; right: 0; background-color: #0f0f0f; display: flex; color: white; font-family: 'Open Sans',sans-serif; align-items: center; ">
+<img src="protoconf.svg" style="height: 50px; margin-right: 4px;" /><span>Protoconf<br/><small>codify configuration, instant delivery</small></span>
+</div>
 <div id="container">
 <div>
-<div class="filename">/src/address_book/my_address_book.pconf</div>
-<div class="editor" id="protoconf-editor">load("address_book.proto", "AddressBook", "Person")
+<div class="filename">/src/crawler/text_crawler.pconf</div>
+<div class="editor" id="protoconf-editor">load("crawler.proto", "Crawler", "CrawlerService")
+
+def default_crawler():
+    return Crawler(user_agent="Linux", http_timeout=30)
 
 def main():
-    people = []
-    
+    crawlers = []
+
     for i in range(3):
-        person = Person()
-        person.name = "Person " + str(i)
-        person.id = 10000 + i
-        if i % 2:
-            person.email = "myemail" + str(7 * i) + "@gmail.com"
-        person.phones = [
-            Person.PhoneNumber(number="1800-800800", type=Person.PhoneType.WORK) for j in range(i)
-        ]
-        people.append(person)
-    
-    return AddressBook(people=people)
+        crawler = default_crawler()
+        crawler.http_timeout = 30 + 30*i
+        if i == 0:
+            crawler.follow_redirects = True
+        crawlers.append(crawler)
+
+    admins = {'superuser': CrawlerService.AdminPermission.GOD_MODE}
+    return CrawlerService(crawlers=crawlers, admins=admins, log_level=2)
 </div>
-<div class="filename">/src/address_book/address_book.proto</div>
+<div class="filename">/src/crawler/crawler.proto</div>
 <div class="editor" id="protobuf-editor">syntax = "proto3";
 
-message Person {
-  string name = 1;
-  int32 id = 2; // Unique ID number for this person.
-  string email = 3;
-  enum PhoneType {
-    MOBILE = 0;
-    HOME = 1;
-    WORK = 2;
-  }
-  message PhoneNumber {
-    string number = 1;
-    PhoneType type = 2;
-  }
-  repeated PhoneNumber phones = 4;
+message Crawler {
+  string user_agent = 1;
+  int32 http_timeout = 2;
+  bool follow_redirects = 3;
 }
 
-message AddressBook {
-    repeated Person people = 1;
+message CrawlerService {
+  repeated Crawler crawlers = 1;
+  enum AdminPermission {
+    READ_WRITE = 0;
+    GOD_MODE = 1;
+  }
+  map&lt;string, AdminPermission&gt; admins = 2;
+  int32 log_level = 3;
 }
 </div>
 </div>
 <div>
-<div class="filename">/materialized_config/address_book/my_address_book.materialized_JSON</div>
+<div class="filename">/materialized_config/crawler/text_crawler.materialized_JSON</div>
 <div class="editor" id="protoconf-output">{
-  "protoFile": "address_book/address_book.proto",
+  "protoFile": "crawler/crawler.proto",
   "value": {
-    "@type": "https://AddressBook",
-    "people": [
+    "@type": "https://CrawlerService",
+    "admins": {
+      "superuser": "GOD_MODE"
+    },
+    "crawlers": [
       {
-        "name": "Person 0",
-        "id": 10000
+        "userAgent": "Linux",
+        "httpTimeout": 30,
+        "followRedirects": true
       },
       {
-        "name": "Person 1",
-        "id": 10001,
-        "email": "myemail7@gmail.com",
-        "phones": [
-          {
-            "number": "1800-800800",
-            "type": "WORK"
-          }
-        ]
+        "userAgent": "Linux",
+        "httpTimeout": 60
       },
       {
-        "name": "Person 2",
-        "id": 10002,
-        "phones": [
-          {
-            "number": "1800-800800",
-            "type": "WORK"
-          },
-          {
-            "number": "1800-800800",
-            "type": "WORK"
-          }
-        ]
+        "userAgent": "Linux",
+        "httpTimeout": 90
       }
-    ]
+    ],
+    "logLevel": 2
   }
 }
 </div>
-<div class="filename">/src/address_book/address_book.proto-validator</div>
-<div class="editor" id="validator-editor">load("address_book.proto", "AddressBook", "Person")
+<div class="filename">/src/crawler/crawler.proto-validator</div>
+<div class="editor" id="validator-editor">load("crawler.proto", "Crawler", "CrawlerService")
 
-def test_address_book_not_empty(a):
-    if len(a.people) < 1:
-        fail("Address book can't be empty")
+def test_crawlers_not_empty(cs):
+    if len(cs.crawlers) < 1:
+        fail("Crawlers can't be empty")
 
-add_validator(AddressBook, test_address_book_not_empty)
+add_validator(CrawlerService, test_crawlers_not_empty)
 
-def test_person_id_in_range(p):
-    MIN_ID = 10000
-    if p.id < MIN_ID:
-        fail("Person id must be at least %d, got %d" % (MIN_ID, p.id))
+def test_http_timeout(c):
+    MIN_TIMEOUT = 10
+    if c.http_timeout < MIN_TIMEOUT:
+        fail("Crawler HTTP timeout must be at least %d, got %d" % (MIN_TIMEOUT, c.http_timeout))
 
-add_validator(Person, test_person_id_in_range)
+add_validator(Crawler, test_http_timeout)
 </div>
 </div>
 </div>
@@ -178,22 +166,22 @@ var files = {};
 
 var protobufEditor = configEditor("protobuf-editor");
 protobufEditor.session.setMode("ace/mode/protobuf");
-files["/src/address_book/address_book.proto"] = protobufEditor
+files["/src/crawler/crawler.proto"] = protobufEditor
 
 var protoconfEditor = configEditor("protoconf-editor");
 protoconfEditor.session.setMode("ace/mode/python");
-files["/src/address_book/my_address_book.pconf"] = protoconfEditor
+files["/src/crawler/text_crawler.pconf"] = protoconfEditor
 
 
 var validatorEditor = configEditor("validator-editor");
 validatorEditor.session.setMode("ace/mode/python");
-files["/src/address_book/address_book.proto-validator"] = validatorEditor
+files["/src/crawler/crawler.proto-validator"] = validatorEditor
 
 
 var protoconfOutput = configEditor("protoconf-output");
 protoconfOutput.session.setMode("ace/mode/json");
 protoconfOutput.setReadOnly(true);
-files["/materialized_config/address_book/my_address_book.materialized_JSON"] = protoconfOutput
+files["/materialized_config/crawler/text_crawler.materialized_JSON"] = protoconfOutput
 
 function readFile(filename) {
     if (!(filename in files)) {
@@ -231,7 +219,7 @@ WebAssembly.instantiateStreaming(fetch("compiler.wasm"), go.importObject).then((
 });
 async function compile() {
     if (typeof protoconfCompile !== 'undefined') {
-        protoconfCompile("address_book/my_address_book.pconf");
+        protoconfCompile("crawler/text_crawler.pconf");
     }
 }
 </script>
