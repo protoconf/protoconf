@@ -1,37 +1,57 @@
 package main
 
 import (
+	"errors"
 	"log"
 	"net"
+	"os"
 
 	"google.golang.org/grpc"
-	pc "protoconf.com/agent/api/proto/v1/protoconfservice"
+	protoconfservice "protoconf.com/agent/api/proto/v1/protoconfservice"
+	"protoconf.com/consts"
 	"protoconf.com/libprotoconf"
 )
 
-const (
-	address = ":4300"
-)
+type server struct {
+	watcher libprotoconf.Watcher
+}
 
-type server struct{}
-
-func (s server) SubscribeForConfig(request *pc.ConfigSubscriptionRequest, srv pc.ProtoconfService_SubscribeForConfigServer) error {
+func (s server) SubscribeForConfig(request *protoconfservice.ConfigSubscriptionRequest, srv protoconfservice.ProtoconfService_SubscribeForConfigServer) error {
 	path := request.GetPath()
 	log.Printf("Watching path=%s", path)
 
-	watchCh := libprotoconf.Watch(path)
+	stopCh := make(chan struct{})
+	watchCh, err := s.watcher.Watch(path, stopCh)
+	if err != nil {
+		return err
+	}
 
+	defer func() {
+		stopCh <- struct{}{}
+		close(stopCh)
+	}()
+
+	ctx := srv.Context()
 	for {
-		config := <-watchCh
-		if config.Error != nil {
-			log.Printf("Error watching config, path=%s err=%v", path, config.Error)
-			return config.Error
-		}
+		select {
+		case <-ctx.Done():
+			return ctx.Err()
+		case config, ok := <-watchCh:
+			if !ok {
+				log.Printf("Watch channel closed for path=%s", path)
+				return errors.New("watch channel closed")
+			}
 
-		resp := pc.ConfigUpdate{Value: config.Value}
-		if err := srv.Send(&resp); err != nil {
-			log.Printf("Error sending config update, path=%s srv=%v err=%v", path, srv, err)
-			return err
+			if config.Error != nil {
+				log.Printf("Error watching config, path=%s err=%v", path, config.Error)
+				return config.Error
+			}
+
+			resp := protoconfservice.ConfigUpdate{Value: config.Value}
+			if err := srv.Send(&resp); err != nil {
+				log.Printf("Error sending config update, path=%s srv=%v err=%v", path, srv, err)
+				return err
+			}
 		}
 	}
 
@@ -39,20 +59,31 @@ func (s server) SubscribeForConfig(request *pc.ConfigSubscriptionRequest, srv pc
 }
 
 func main() {
-	err := libprotoconf.Setup()
-	if err != nil {
-		log.Fatalf("Error setting up protoconf err=%v", err)
+	agentServer := &server{}
+	var err error
+	if len(os.Args) > 1 {
+		agentServer.watcher, err = libprotoconf.NewFileWatcher(os.Args[1])
+	} else {
+		agentServer.watcher, err = libprotoconf.NewConsulWatcher()
 	}
 
+	if err != nil {
+		log.Fatalf("Error setting up protoconf err=%s", err)
+	}
+
+	defer agentServer.watcher.Close()
+
+	address := consts.DefaultAgentAddress
 	listener, err := net.Listen("tcp", address)
 	if err != nil {
-		log.Fatalf("Error listening on address=%s err=%v", address, err)
+		log.Fatalf("Error listening on address=%s err=%s", address, err)
 	}
 
-	s := grpc.NewServer()
-	pc.RegisterProtoconfServiceServer(s, server{})
+	rpcServer := grpc.NewServer()
+	protoconfservice.RegisterProtoconfServiceServer(rpcServer, agentServer)
 
-	if err := s.Serve(listener); err != nil {
-		log.Fatalf("Error serving, err=%v", err)
+	err = rpcServer.Serve(listener)
+	if err != nil {
+		log.Fatalf("Error serving gRPC, err=%s", err)
 	}
 }

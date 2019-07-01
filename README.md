@@ -205,7 +205,7 @@ Step by step instructions to start developing with Protoconf, with an example fr
 
 ## Build from source
 1. Install Bazel: https://docs.bazel.build/versions/master/install.html
-2. Checkout Protoconf from gitlab: `git checkout git@gitlab.com:protoconf/protoconf.git`
+2. Clone Protoconf from gitlab: `git clone git@gitlab.com:protoconf/protoconf.git`
 3. Build the binary: `cd protoconf/src && bazel build :protoconf`
 4. Copy the binary to your `$PATH`, for example: `sudo cp bazel-bin/agent/linux_amd64_stripped/protoconf /usr/local/bin/`
 

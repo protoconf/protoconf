@@ -4,6 +4,8 @@ go_binary(
     name = "inserter",
     srcs = ["inserter.go"],
     deps = [
+        "//consts:consts",
+        "//libprotoconf:libprotoconf",
         "//types/proto/v1:protoconf_value_go_proto",
         "@com_github_docker_libkv//:go_default_library",
         "@com_github_docker_libkv//store:go_default_library",

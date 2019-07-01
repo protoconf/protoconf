@@ -9,11 +9,11 @@ import (
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	pc "protoconf.com/agent/api/proto/v1/protoconfservice"
+	"protoconf.com/consts"
 	pb "protoconf.com/examples/go_client/crawler"
 )
 
 const (
-	address     = ":4300"
 	defaultPath = "crawler/text_crawler"
 )
 
@@ -29,6 +29,7 @@ func main() {
 }
 
 func listenToChanges(path string) {
+	address := consts.DefaultAgentAddress
 	conn, err := grpc.Dial(address, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Error connecting to server address=%s err=%v", address, err)

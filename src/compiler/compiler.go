@@ -16,26 +16,17 @@ import (
 	"github.com/jhump/protoreflect/dynamic/msgregistry"
 	"go.starlark.net/starlark"
 	"go.starlark.net/starlarkstruct"
+	"protoconf.com/consts"
 	pc "protoconf.com/types/proto/v1/protoconfvalue"
-)
-
-const (
-	compiledConfigExtension  = ".materialized_JSON"
-	compiledConfigPath       = "materialized_config/"
-	configExtension          = ".pconf"
-	configPath               = "src/"
-	multiConfigExtension     = ".mpconf"
-	protoExtension           = ".proto"
-	validatorExtensionSuffix = "-validator"
 )
 
 func compileFile(filename string, protoconfRoot string) error {
 	multiConfig := false
-	if strings.HasSuffix(filename, configExtension) {
-	} else if strings.HasSuffix(filename, multiConfigExtension) {
+	if strings.HasSuffix(filename, consts.ConfigExtension) {
+	} else if strings.HasSuffix(filename, consts.MultiConfigExtension) {
 		multiConfig = true
 	} else {
-		return fmt.Errorf("config file must end with either %s or %s, got: %s", configExtension, multiConfigExtension, filename)
+		return fmt.Errorf("config file must end with either %s or %s, got: %s", consts.ConfigExtension, consts.MultiConfigExtension, filename)
 	}
 
 	registry := msgregistry.NewMessageRegistryWithDefaults()
@@ -52,7 +43,7 @@ func compileFile(filename string, protoconfRoot string) error {
 			return fmt.Errorf("`main' returned something that's not a dict, got: %s", mainOutput.Type())
 		}
 
-		outputDir := filepath.Join(protoconfRoot, compiledConfigPath, strings.TrimSuffix(filename, multiConfigExtension))
+		outputDir := filepath.Join(protoconfRoot, consts.CompiledConfigPath, strings.TrimSuffix(filename, consts.MultiConfigExtension))
 		for _, item := range starDict.Items() {
 			key, ok := item[0].(starlark.String)
 			if !ok {
@@ -62,14 +53,14 @@ func compileFile(filename string, protoconfRoot string) error {
 			if !ok {
 				return fmt.Errorf("`main' returned a dict with non-protobuf value, got: %s", item[1].Type())
 			}
-			configs[filepath.Join(outputDir, string(key))+compiledConfigExtension] = value
+			configs[filepath.Join(outputDir, string(key))+consts.CompiledConfigExtension] = value
 		}
 	} else {
 		proto, ok := toProtoMessage(mainOutput)
 		if !ok {
 			return fmt.Errorf("`main' returned something that's not a protobuf, got: %s", mainOutput.Type())
 		}
-		outputFile := filepath.Join(protoconfRoot, compiledConfigPath, strings.TrimSuffix(filename, configExtension)+compiledConfigExtension)
+		outputFile := filepath.Join(protoconfRoot, consts.CompiledConfigPath, strings.TrimSuffix(filename, consts.ConfigExtension)+consts.CompiledConfigExtension)
 		configs[outputFile] = proto
 	}
 
@@ -142,7 +133,7 @@ type config struct {
 }
 
 func load(filename string, protoconfRoot string, registry *msgregistry.MessageRegistry) (*config, error) {
-	configDir := filepath.Join(protoconfRoot, configPath)
+	configDir := filepath.Join(protoconfRoot, consts.ConfigPath)
 	reader := LocalFileReader(configDir)
 	modules := getModules()
 
@@ -185,7 +176,7 @@ func load(filename string, protoconfRoot string, registry *msgregistry.MessageRe
 
 		var globals starlark.StringDict
 
-		if strings.HasSuffix(modulePath, protoExtension) {
+		if strings.HasSuffix(modulePath, consts.ProtoExtension) {
 			parser := &protoparse.Parser{ImportPaths: []string{configDir}, Accessor: accessor}
 			descriptors, err := parser.ParseFiles(modulePath)
 			if err != nil {
@@ -225,7 +216,7 @@ func load(filename string, protoconfRoot string, registry *msgregistry.MessageRe
 	validators := make(map[string]*starlark.Function)
 	modules["add_validator"] = starlark.NewBuiltin("add_validator", getAddValidator(&validators))
 	for _, proto := range *protoFilesLoaded {
-		validatorFile := proto + validatorExtensionSuffix
+		validatorFile := proto + consts.ValidatorExtensionSuffix
 		validatorAbsPath := filepath.Join(configDir, validatorFile)
 		if exists, isDir, err := stat(validatorAbsPath); err != nil {
 			return nil, err

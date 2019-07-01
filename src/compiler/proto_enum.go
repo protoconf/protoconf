@@ -57,7 +57,7 @@ func (v *starProtoEnumValue) Hash() (uint32, error) {
 func enumFromStarlark(t *desc.EnumDescriptor, star *starProtoEnumValue) (int32, error) {
 	// FIXME: is pointer equality appropriate here? Consider GetFullyQualifiedName() string
 	if t != star.desc.GetEnum() {
-		return 0, fmt.Errorf("TypeError: value %s can't be assigned to type `%s'", star, t)
+		return 0, fmt.Errorf("type error: value %s can't be assigned to type `%s'", star, t)
 	}
 	return star.desc.GetNumber(), nil
 }

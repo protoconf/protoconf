@@ -45,6 +45,12 @@ go_repository(
     importpath = "go.starlark.net",
 )
 
+go_repository(
+    name = "com_github_fsnotify_fsnotify",
+    commit = "1d13583d846ea9d66dcabbfefbfb9d8e6fb05216",
+    importpath = "github.com/fsnotify/fsnotify",
+)
+
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 git_repository(

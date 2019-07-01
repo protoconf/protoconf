@@ -54,7 +54,7 @@ func openFile(path string) (io.ReadCloser, error) {
 func writeFile(filename string, contents []byte) error {
 	written := js.Global().Call("writeFile", filename, string(contents)).Bool()
 	if !written {
-		return fmt.Errorf("Error writing to %s", filename)
+		return fmt.Errorf("error writing to %s", filename)
 	}
 	return nil
 }
