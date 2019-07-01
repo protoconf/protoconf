@@ -21,14 +21,21 @@
     </a>
     <span> | </span>
     <a href="https://lior2b.github.io/temp/">
-      Web demo
+      Web IDE
     </a>
   </h3>
 </div>
 
 ## Introduction
-ToDo: Value props, common configuration pitfalls, inspired by Facebook's Configerator
+ToDo: Value props, common configuration pitfalls, inspired by [Facebook's Configerator](https://research.fb.com/publications/holistic-configuration-management-at-facebook/).
 
+<div align="center">
+  <img src="https://lior2b.github.io/temp/protoconf_flow.png">
+</div>
+
+<div align="center">
+  <img src="https://lior2b.github.io/temp/protoconf_api.png" width="600">
+</div>
 Languages supported, Protobuf overview https://developers.google.com/protocol-buffers/docs/overview
 
 ## Quick start
