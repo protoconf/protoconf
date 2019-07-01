@@ -27,16 +27,38 @@
 </div>
 
 ## Introduction
-ToDo: Value props, common configuration pitfalls, inspired by [Facebook's Configerator](https://research.fb.com/publications/holistic-configuration-management-at-facebook/).
+Modern services are comprised of many dynamic variables, that need to be changed regularly. Today, the process is unstructured and error prone. From ML model variables, kill switches, gradual rollout configuration, A/B experiment configuration and more - developers want their code to allow to be configured to the finer details.
+
+**Protoconf is a modern approach to software configuration**, inspired by [Facebook's Configerator](https://research.fb.com/publications/holistic-configuration-management-at-facebook/).
+
+Using Protoconf enables:
+
+* **Code review for configuration changes**
+  Enables the battle tested flow of pull-request & code-review. Configuration auditing out of the box (who did what, when?). The repository is the source of truth for the configuration deployed to production.
+* **No service restart required to pick up changes**
+  Instant delivery of configuration updates. Encourages writing software that doesn't know downtime.
+* **Clear representation of complex configuration**
+  Write configuration in Starlark (a Python dialect), no more copying & pasting from huge JSON files.
+* **Automated validation**
+  Config follows a fully-typed (Protobuf) schema. This allows writing validation code in Starlark, to verify your configuration before it is committed.
+
+
+
+#### Configuration update flow
 
 <div align="center">
   <img src="https://lior2b.github.io/temp/protoconf_flow.png">
 </div>
 
+#### How this looks from the service's eyes
+
+This is roughly how configuration is consumed by a service. This paradigm encourages you to write software that can reconfigure itself in runtime rather than require a restart:
+
 <div align="center">
   <img src="https://lior2b.github.io/temp/protoconf_api.png" width="600">
 </div>
-Languages supported, Protobuf overview https://developers.google.com/protocol-buffers/docs/overview
+
+As Protoconf uses Protobuf and gRPC, it supports delivering configuration to [all major languages](https://github.com/protocolbuffers/protobuf/blob/master/docs/third_party.md). See also: [Protobuf overview](https://developers.google.com/protocol-buffers/docs/overview).
 
 ## Quick start
 Step by step instructions to start developing with Protoconf, with an example from an imaginary Python web crawler service. See full example under `src/examples/`.
@@ -89,7 +111,7 @@ Step by step instructions to start developing with Protoconf, with an example fr
    ```
 
 4. Write a config
-	1. A Starlark `.pconf` file. Modular, load `.pinc` files, write functions etc.
+	1. A Starlark `.pconf` file. Your code can be modular, export functions (ideally in `.pinc` files), and build a complete custom stack for your configuration needs.
 	2. For example: `protoconf/src/crawler/text_crawler.pconf`
 	
 	   ```python
@@ -202,5 +224,4 @@ Step by step instructions to start developing with Protoconf, with an example fr
 1. Download `drone-cli` from https://github.com/drone/drone-cli/releases.
 2. Copy the drone binary to your `$PATH` and make it executable
 3. Run: `drone exec --pipeline default`
-
 
