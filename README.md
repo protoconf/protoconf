@@ -61,7 +61,7 @@ This is roughly how configuration is consumed by a service. This paradigm encour
 As Protoconf uses Protobuf and gRPC, it supports delivering configuration to [all major languages](https://github.com/protocolbuffers/protobuf/blob/master/docs/third_party.md). See also: [Protobuf overview](https://developers.google.com/protocol-buffers/docs/overview).
 
 ## Quick start
-Step by step instructions to start developing with Protoconf, with an example from an imaginary Python web crawler service. See full example under `src/examples/`.
+Step by step instructions to start developing with Protoconf, with an example from an imaginary Python web crawler service. See full example under `examples/`.
 1. Install the `protoconf` binary (see [build from source](#build-from-source))
 
 2. Write a Protobuf schema under `protoconf/src/`(syntax guide https://developers.google.com/protocol-buffers/docs/proto3)
@@ -181,9 +181,9 @@ Step by step instructions to start developing with Protoconf, with an example fr
 	Other languages can use the `protoc` binary (https://developers.google.com/protocol-buffers/docs/tutorials).
 	2. Install the Protoconf Python library:
 	```bash
-	cd src; pip3 install -r python/requirements.txt python/
+	pip3 install -r python/requirements.txt python/
 	```
-	3. In your code, setup a connection to Protoconf and get the config. See full example under `src/examples/`. The code mainly consists of:
+	3. In your code, setup a connection to Protoconf and get the config. See full example under `examples/`. The code mainly consists of:
 	```python
 	from protoconf import ProtoconfSync
 	from crawler.crawler_pb2 import CrawlerService
@@ -206,7 +206,7 @@ Step by step instructions to start developing with Protoconf, with an example fr
 ## Build from source
 1. Install Bazel: https://docs.bazel.build/versions/master/install.html
 2. Clone Protoconf from gitlab: `git clone git@gitlab.com:protoconf/protoconf.git`
-3. Build the binary: `cd protoconf/src && bazel build :protoconf`
+3. Build the binary: `cd protoconf && bazel build :protoconf`
 4. Copy the binary to your `$PATH`, for example: `sudo cp bazel-bin/agent/linux_amd64_stripped/protoconf /usr/local/bin/`
 
 ## Trying the example
