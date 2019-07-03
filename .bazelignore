@@ -1,0 +1,6 @@
+# nested bazel workspaces
+examples/grpc_clients/java_client/
+examples/grpc_clients/ruby_client/
+examples/grpc_clients/rust_client/
+examples/grpc_clients/python_asyncio_client/
+

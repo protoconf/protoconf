@@ -71,10 +71,10 @@ class Protoconf(object):
 
 
 class ProtoconfSync(object):
-    def __init__(self, host="127.0.0.1", port=4300):
+    def __init__(self, host="127.0.0.1", port=4300, executor=None):
         self._asyncio_thread = None
         self._protoconf = Protoconf(host, port)
-        self._executor = ThreadPoolExecutor()
+        self._executor = executor if executor != None else ThreadPoolExecutor()
 
     def get_and_subscribe(self, path, protobuf_type, callback):
         config = None
@@ -98,7 +98,7 @@ class ProtoconfSync(object):
 
             self._loop = asyncio.new_event_loop()
             self._should_close = asyncio.Event(loop=self._loop)
-            self._asyncio_thread = threading.Thread(target=run_loop)
+            self._asyncio_thread = threading.Thread(target=run_loop) # should this use the executor?
             self._asyncio_thread.start()
 
         asyncio.run_coroutine_threadsafe(async_subscribe(), self._loop)

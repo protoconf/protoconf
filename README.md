@@ -55,7 +55,7 @@ Using Protoconf enables:
 This is roughly how configuration is consumed by a service. This paradigm encourages you to write software that can reconfigure itself in runtime rather than require a restart:
 
 <div align="center">
-  <img src="https://lior2b.github.io/temp/protoconf_api.png" width="600">
+  <img src="https://lior2b.github.io/temp/protoconf_api.png" width="400">
 </div>
 
 As Protoconf uses Protobuf and gRPC, it supports delivering configuration to [all major languages](https://github.com/protocolbuffers/protobuf/blob/master/docs/third_party.md). See also: [Protobuf overview](https://developers.google.com/protocol-buffers/docs/overview).
