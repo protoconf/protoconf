@@ -88,9 +88,9 @@ func (w *libkvWatcher) Close() {
 }
 
 // NewConsulWatcher creates a new consul-backed protoconf watcher
-func NewConsulWatcher() (Watcher, error) {
+func NewConsulWatcher(address string) (Watcher, error) {
 	consul.Register()
-	store, err := libkv.NewStore(store.CONSUL, []string{""}, nil)
+	store, err := libkv.NewStore(store.CONSUL, []string{address}, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -105,7 +105,7 @@ type fileWatcher struct {
 
 // Watch a value given its path
 func (w *fileWatcher) Watch(path string, stopCh <-chan struct{}) (<-chan Result, error) {
-	if path != filepath.Clean(path) || path == "" {
+	if path != filepath.ToSlash(filepath.Clean(path)) || path == "" {
 		return nil, fmt.Errorf("invalid path to watch, path=%s", path)
 	}
 

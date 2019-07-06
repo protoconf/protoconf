@@ -1,4 +1,4 @@
-package main
+package compiler
 
 import (
 	"context"
@@ -20,7 +20,15 @@ import (
 	pc "protoconf.com/types/proto/v1/protoconfvalue"
 )
 
-func compileFile(filename string, protoconfRoot string) error {
+type Compiler struct {
+	verboseLogging bool
+}
+
+func NewCompiler(verboseLogging bool) *Compiler {
+	return &Compiler{verboseLogging: verboseLogging}
+}
+
+func (c *Compiler) CompileFile(filename string, protoconfRoot string) error {
 	multiConfig := false
 	if strings.HasSuffix(filename, consts.ConfigExtension) {
 	} else if strings.HasSuffix(filename, consts.MultiConfigExtension) {
@@ -68,7 +76,7 @@ func compileFile(filename string, protoconfRoot string) error {
 		if err := configFile.validate(proto); err != nil {
 			return err
 		}
-		if err := writeConfig(proto, outputFile, registry); err != nil {
+		if err := c.writeConfig(proto, outputFile, registry); err != nil {
 			return err
 		}
 	}
@@ -76,7 +84,7 @@ func compileFile(filename string, protoconfRoot string) error {
 	return nil
 }
 
-func writeConfig(proto *dynamic.Message, filename string, registry *msgregistry.MessageRegistry) error {
+func (c *Compiler) writeConfig(proto *dynamic.Message, filename string, registry *msgregistry.MessageRegistry) error {
 	any, err := registry.MarshalAny(proto)
 	if err != nil {
 		return fmt.Errorf("error marshaling proto to Any, proto=%s", proto)
@@ -84,7 +92,7 @@ func writeConfig(proto *dynamic.Message, filename string, registry *msgregistry.
 
 	protoconfValue, err := dynamic.AsDynamicMessage(
 		&pc.ProtoconfValue{
-			ProtoFile: proto.GetMessageDescriptor().GetFile().GetName(),
+			ProtoFile: filepath.ToSlash(proto.GetMessageDescriptor().GetFile().GetName()),
 			Value:     any,
 		})
 
@@ -105,6 +113,10 @@ func writeConfig(proto *dynamic.Message, filename string, registry *msgregistry.
 
 	if err := writeFile(filename, []byte(jsonData)); err != nil {
 		return fmt.Errorf("error writing to file %s, err: %s", filename, err)
+	}
+
+	if c.verboseLogging {
+		log.Printf("Writing to %s:\n%s", filename, jsonData)
 	}
 
 	return nil
@@ -207,7 +219,7 @@ func load(filename string, protoconfRoot string, registry *msgregistry.MessageRe
 	locals, err := load(&starlark.Thread{
 		Print: starPrint,
 		Load:  load,
-	}, filename)
+	}, filepath.ToSlash(filename))
 
 	if err != nil {
 		return nil, err
@@ -228,7 +240,7 @@ func load(filename string, protoconfRoot string, registry *msgregistry.MessageRe
 		_, err := load(&starlark.Thread{
 			Print: starPrint,
 			Load:  load,
-		}, validatorFile)
+		}, filepath.ToSlash(validatorFile))
 
 		if err != nil {
 			return nil, err

@@ -51,6 +51,61 @@ go_repository(
     importpath = "github.com/fsnotify/fsnotify",
 )
 
+go_repository(
+    name = "com_github_mitchellh_cli",
+    importpath = "github.com/mitchellh/cli",
+    tag = "v1.0.0",
+)
+
+# Used by cli
+go_repository(
+    name = "com_github_posener_complete",
+    importpath = "github.com/posener/complete",
+    tag = "v1.1.1",
+)
+
+# Used by cli
+go_repository(
+    name = "com_github_mattn_go_isatty",
+    importpath = "github.com/mattn/go-isatty",
+    tag = "v0.0.3",
+)
+
+# Used by cli
+go_repository(
+    name = "com_github_bgentry_speakeasy",
+    importpath = "github.com/bgentry/speakeasy",
+    tag = "v0.1.0",
+)
+
+# Used by cli
+go_repository(
+    name = "com_github_armon_go_radix",
+    commit = "7fddfc383310abc091d79a27f116d30cf0424032",
+    importpath = "github.com/armon/go-radix",
+)
+
+# Used by cli
+go_repository(
+    name = "com_github_fatih_color",
+    importpath = "github.com/fatih/color",
+    tag = "v1.7.0",
+)
+
+# Used by cli
+go_repository(
+    name = "com_github_hashicorp_go_multierror",
+    importpath = "github.com/hashicorp/go-multierror",
+    tag = "v1.0.0",
+)
+
+# Implicitly used by cli
+go_repository(
+    name = "com_github_hashicorp_errwrap",
+    importpath = "github.com/hashicorp/errwrap",
+    tag = "v1.0.0",
+)
+
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 git_repository(

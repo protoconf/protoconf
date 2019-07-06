@@ -206,15 +206,14 @@ Step by step instructions to start developing with Protoconf, with an example fr
 ## Build from source
 1. Install Bazel: https://docs.bazel.build/versions/master/install.html
 2. Clone Protoconf from gitlab: `git clone git@gitlab.com:protoconf/protoconf.git`
-3. Build the binary: `cd protoconf && bazel build :protoconf`
-4. Copy the binary to your `$PATH`, for example: `sudo cp bazel-bin/agent/linux_amd64_stripped/protoconf /usr/local/bin/`
+3. Build the binary: `cd protoconf && bazel build protoconf`
+4. Copy the binary to your `$PATH`, for example: `sudo cp bazel-bin/cmd/protoconf/linux_amd64_stripped/protoconf /usr/local/bin/`
 
 ## Trying the example
 1. Make sure Consul is listening locally on default port (you can achieve this with `consul agent -dev`)
-2. `cd src`
-3. Run the agent: `bazel run //agent`
-4. Compile the Protoconf config: `bazel run //compiler "$(pwd)/examples/protoconf" crawler/text_crawler.pconf`
-5. Insert the Protoconf config to Consul: `bazel run //inserter "$(pwd)/examples/protoconf" crawler/text_crawler.materialized_JSON`
+3. Run the agent: `bazel run protoconf agent`
+4. Compile the Protoconf config: `bazel run protoconf compile "$(pwd)/examples/protoconf" crawler/text_crawler.pconf`
+5. Insert the Protoconf config to Consul: `bazel run protoconf insert "$(pwd)/examples/protoconf" crawler/text_crawler.materialized_JSON`
 6. Run the Go client: `bazel run //examples/grpc_clients/go_client`, the client will get the config from the agent and will listen to changes
 7. Change the config file at `examples/protoconf/src/crawler/text_crawler.pconf`
 8. Repeat steps 4 & 5 to recompile and re-insert the config, observe the client got the updated config
@@ -224,4 +223,3 @@ Step by step instructions to start developing with Protoconf, with an example fr
 1. Download `drone-cli` from https://github.com/drone/drone-cli/releases.
 2. Copy the drone binary to your `$PATH` and make it executable
 3. Run: `drone exec --pipeline default`
-

@@ -5,8 +5,9 @@ const (
 	CompiledConfigPath       = "materialized_config/"
 	ConfigExtension          = ".pconf"
 	ConfigPath               = "src/"
-  DefaultAgentAddress = ":4300"
-  MultiConfigExtension     = ".mpconf"
+	DefaultAgentAddress      = ":4300"
+	MultiConfigExtension     = ".mpconf"
 	ProtoExtension           = ".proto"
 	ValidatorExtensionSuffix = "-validator"
+	Version                  = "0.0.1"
 )

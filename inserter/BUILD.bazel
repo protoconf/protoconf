@@ -1,9 +1,10 @@
-load("@io_bazel_rules_go//go:def.bzl", "go_binary")
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
 
-go_binary(
+go_library(
     name = "inserter",
     srcs = ["inserter.go"],
     deps = [
+        "//command:command",
         "//consts:consts",
         "//libprotoconf:libprotoconf",
         "//types/proto/v1:protoconf_value_go_proto",
@@ -14,5 +15,8 @@ go_binary(
         "@com_github_golang_protobuf//proto:go_default_library",
         "@com_github_jhump_protoreflect//desc/protoparse:go_default_library",
         "@com_github_jhump_protoreflect//dynamic/msgregistry:go_default_library",
+        "@com_github_mitchellh_cli//:go_default_library",
     ],
+    visibility = ["//visibility:public"],
+    importpath = "protoconf.com/inserter",
 )

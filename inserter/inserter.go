@@ -1,41 +1,103 @@
-package main
+package inserter
 
 import (
+	"bytes"
+	"flag"
 	"fmt"
 	"log"
-	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/docker/libkv"
 	"github.com/docker/libkv/store"
 	"github.com/docker/libkv/store/consul"
 	"github.com/golang/protobuf/proto"
+	"github.com/mitchellh/cli"
+	"protoconf.com/command"
 	"protoconf.com/consts"
 	"protoconf.com/libprotoconf"
 )
 
-func main() {
-	if len(os.Args) < 3 {
-		log.Fatalf("Usage: %s protoconf_root config_to_insert...", os.Args[0])
-	}
+type cliCommand struct{}
 
-	protoconfRoot := strings.TrimSpace(os.Args[1])
-
-	consul.Register()
-	kvStore, err := libkv.NewStore(store.CONSUL, []string{""}, nil)
-	if err != nil {
-		log.Fatalf("Error connecting to key-value store, err=%s", err)
-	}
-
-	for i := 2; i < len(os.Args); i++ {
-		configName := strings.TrimSpace(os.Args[i])
-		if err := insertFile(configName, protoconfRoot, kvStore); err != nil {
-			log.Fatalf("Error inserting file %s, err=%s", configName, err)
-		}
-	}
+type cliConfig struct {
+	delete bool
 }
 
-func insertFile(configName string, protoconfRoot string, kvStore store.Store) error {
+func newFlagSet() (*flag.FlagSet, *cliConfig, *command.KVStoreConfig) {
+	flags := flag.NewFlagSet("", flag.ExitOnError)
+	flags.Usage = func() {
+		fmt.Fprintln(flags.Output(), "Usage: [OPTION]... [protoconf_root] config...")
+		flags.PrintDefaults()
+	}
+
+	kVConfig := &command.KVStoreConfig{}
+	command.AddKVStoreFlags(flags, kVConfig)
+
+	config := &cliConfig{}
+	flags.BoolVar(&config.delete, "d", false, "Delete a config from the key-value store")
+
+	return flags, config, kVConfig
+}
+
+func (c *cliCommand) Run(args []string) int {
+	flags, config, kVConfig := newFlagSet()
+	flags.Parse(args)
+
+	if flags.NArg() < 1 || (!config.delete && flags.NArg() < 2) {
+		flags.Usage()
+		return 1
+	}
+
+	consul.Register()
+	kvStore, err := libkv.NewStore(store.CONSUL, []string{kVConfig.Address}, nil)
+	if err != nil {
+		log.Printf("Error connecting to key-value store, err=%s", err)
+		return 1
+	}
+
+	if config.delete {
+		for i := 0; i < flags.NArg(); i++ {
+			configName := filepath.ToSlash(strings.TrimSpace(flags.Args()[i]))
+			if err := kvStore.Delete(configName); err != nil {
+				log.Printf("Error deleting config %s, err=%s", configName, err)
+				return 1
+			}
+		}
+	} else {
+		protoconfRoot := strings.TrimSpace(flags.Args()[0])
+		for i := 1; i < flags.NArg(); i++ {
+			configName := filepath.ToSlash(strings.TrimSpace(flags.Args()[i]))
+			if err := insertConfig(configName, protoconfRoot, kvStore); err != nil {
+				log.Printf("Error inserting config %s, err=%s", configName, err)
+				return 1
+			}
+		}
+	}
+
+	return 0
+}
+
+func (c *cliCommand) Help() string {
+	var b bytes.Buffer
+	b.WriteString(c.Synopsis())
+	b.WriteString("\n")
+	flags, _, _ := newFlagSet()
+	flags.SetOutput(&b)
+	flags.Usage()
+	return b.String()
+}
+
+func (c *cliCommand) Synopsis() string {
+	return "Insert a materialized config to the key-value store"
+}
+
+// Command is a cli.CommandFactory
+func Command() (cli.Command, error) {
+	return &cliCommand{}, nil
+}
+
+func insertConfig(configName string, protoconfRoot string, kvStore store.Store) error {
 	if !strings.HasSuffix(configName, consts.CompiledConfigExtension) {
 		return fmt.Errorf("config must be a %s file, file=%s", consts.CompiledConfigExtension, configName)
 	}

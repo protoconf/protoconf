@@ -1,0 +1,4 @@
+alias(
+    name = "protoconf",
+    actual = "//cmd/protoconf",
+)

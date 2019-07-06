@@ -1,31 +1,14 @@
 // +build !js
 
-package main
+package compiler
 
 import (
 	"context"
 	"io"
 	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
-	"strings"
 )
-
-func main() {
-	if len(os.Args) < 3 {
-		log.Fatalf("Usage: %s protoconf_root config_to_compile...", os.Args[0])
-	}
-
-	protoconfRoot := strings.TrimSpace(os.Args[1])
-
-	for i := 2; i < len(os.Args); i++ {
-		filename := strings.TrimSpace(os.Args[i])
-		if err := compileFile(filename, protoconfRoot); err != nil {
-			log.Fatalf("Error compiling config %s, err: %s", filename, err)
-		}
-	}
-}
 
 func (r *localFileReader) ReadFile(ctx context.Context, path string) ([]byte, error) {
 	return ioutil.ReadFile(filepath.Join(r.root, path))

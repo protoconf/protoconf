@@ -1,4 +1,4 @@
-package main
+package compiler
 
 import (
 	"bytes"
@@ -10,19 +10,6 @@ import (
 	"path/filepath"
 	"syscall/js"
 )
-
-func compile(this js.Value, args []js.Value) interface{} {
-	if err := compileFile(args[0].String(), "/"); err != nil {
-		js.Global().Call("toast", fmt.Sprintf("Error compiling config, err: %s", err))
-	}
-	return nil
-}
-
-func main() {
-	js.Global().Set("protoconfCompile", js.FuncOf(compile))
-	c := make(chan struct{}, 0)
-	<-c
-}
 
 func (r *localFileReader) ReadFile(ctx context.Context, path string) ([]byte, error) {
 	absPath := filepath.Join(r.root, path)
