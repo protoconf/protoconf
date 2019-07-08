@@ -5,9 +5,12 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/mitchellh/cli"
+	"protoconf.com/consts"
 )
 
 type cliCommand struct{}
@@ -41,17 +44,23 @@ func (c *cliCommand) Run(args []string) int {
 	compiler := NewCompiler(config.verboseLogging)
 	protoconfRoot := strings.TrimSpace(flags.Args()[0])
 
+	var configs []string
 	if flags.NArg() == 1 {
-		// FIXME
-		log.Printf("Error: compiling all the configs in the directory isn't supported yet")
-		return 1
+		var err error
+		configs, err = getAllConfigs(protoconfRoot)
+		if err != nil {
+			log.Printf("Error getting all configs from %s, err: %s", protoconfRoot, err)
+			return 1
+		}
 	} else {
-		for i := 1; i < flags.NArg(); i++ {
-			filename := strings.TrimSpace(flags.Args()[i])
-			if err := compiler.CompileFile(filename, protoconfRoot); err != nil {
-				log.Printf("Error compiling config %s, err: %s", filename, err)
-				return 1
-			}
+		configs = flags.Args()[1:]
+	}
+
+	for _, config := range configs {
+		filename := strings.TrimSpace(config)
+		if err := compiler.CompileFile(filename, protoconfRoot); err != nil {
+			log.Printf("Error compiling config %s, err: %s", filename, err)
+			return 1
 		}
 	}
 
@@ -75,4 +84,26 @@ func (c *cliCommand) Synopsis() string {
 // Command is a cli.CommandFactory
 func Command() (cli.Command, error) {
 	return &cliCommand{}, nil
+}
+
+func getAllConfigs(protoconfRoot string) ([]string, error) {
+	configDir, err := filepath.Abs(filepath.Join(protoconfRoot, consts.ConfigPath))
+	if err != nil {
+		return nil, err
+	}
+
+	var configs []string
+	err = filepath.Walk(configDir, func(path string, f os.FileInfo, err error) error {
+		ext := filepath.Ext(path)
+		if ext == consts.ConfigExtension || ext == consts.MultiConfigExtension {
+			configs = append(configs, strings.TrimPrefix(path, configDir))
+		}
+		return nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return configs, nil
 }
