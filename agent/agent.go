@@ -19,13 +19,14 @@ import (
 type cliCommand struct{}
 
 type cliConfig struct {
+	devProtoconfRoot string
 	grpcAddress string
 }
 
 func newFlagSet() (*flag.FlagSet, *cliConfig, *command.KVStoreConfig) {
 	flags := flag.NewFlagSet("", flag.ExitOnError)
 	flags.Usage = func() {
-		fmt.Fprintln(flags.Output(), "Usage: [OPTION]... [protoconf_root]")
+		fmt.Fprintln(flags.Output(), "Usage: [OPTION]...")
 		flags.PrintDefaults()
 	}
 
@@ -33,6 +34,7 @@ func newFlagSet() (*flag.FlagSet, *cliConfig, *command.KVStoreConfig) {
 	command.AddKVStoreFlags(flags, kVConfig)
 
 	config := &cliConfig{}
+	flags.StringVar(&config.devProtoconfRoot, "dev", "", "Development mode - watch a local Protoconf directory for file changes")
 	flags.StringVar(&config.grpcAddress, "grpc-address", consts.DefaultAgentAddress, "Agent gRPC address")
 
 	return flags, config, kVConfig
@@ -43,14 +45,9 @@ func (c *cliCommand) Run(args []string) int {
 	flags.Parse(args)
 
 	agentServer := &server{}
-	if flags.NArg() > 1 {
-		flags.Usage()
-		return 1
-	}
-
 	var err error
-	if flags.NArg() > 0 {
-		agentServer.watcher, err = libprotoconf.NewFileWatcher(flags.Args()[0])
+	if config.devProtoconfRoot != "" {
+		agentServer.watcher, err = libprotoconf.NewFileWatcher(config.devProtoconfRoot)
 	} else {
 		agentServer.watcher, err = libprotoconf.NewConsulWatcher(kVConfig.Address)
 	}
