@@ -8,7 +8,7 @@ import (
 )
 
 func compile(this js.Value, args []js.Value) interface{} {
-	if err := compiler.NewCompiler(false).CompileFile(args[0].String(), "/"); err != nil {
+	if err := compiler.NewCompiler("/", false).CompileFile(args[0].String()); err != nil {
 		js.Global().Call("toast", fmt.Sprintf("Error compiling config, err: %s", err))
 	}
 	return nil

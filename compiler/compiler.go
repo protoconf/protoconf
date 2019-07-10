@@ -1,34 +1,33 @@
 package compiler
 
 import (
-	"context"
 	"fmt"
-	"io"
 	"log"
 	"path/filepath"
 	"strings"
 
 	"github.com/golang/protobuf/jsonpb"
-	pbproto "github.com/golang/protobuf/proto"
-	dpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
-	"github.com/jhump/protoreflect/desc/protoparse"
+	"github.com/golang/protobuf/ptypes"
 	"github.com/jhump/protoreflect/dynamic"
-	"github.com/jhump/protoreflect/dynamic/msgregistry"
 	"go.starlark.net/starlark"
-	"go.starlark.net/starlarkstruct"
+	"protoconf.com/compiler/proto"
 	"protoconf.com/consts"
 	pc "protoconf.com/types/proto/v1/protoconfvalue"
 )
 
-type Compiler struct {
+func NewCompiler(protoconfRoot string, verboseLogging bool) *compiler {
+	return &compiler{
+		protoconfRoot:  protoconfRoot,
+		verboseLogging: verboseLogging,
+	}
+}
+
+type compiler struct {
+	protoconfRoot  string
 	verboseLogging bool
 }
 
-func NewCompiler(verboseLogging bool) *Compiler {
-	return &Compiler{verboseLogging: verboseLogging}
-}
-
-func (c *Compiler) CompileFile(filename string, protoconfRoot string) error {
+func (c *compiler) CompileFile(filename string) error {
 	multiConfig := false
 	if strings.HasSuffix(filename, consts.ConfigExtension) {
 	} else if strings.HasSuffix(filename, consts.MultiConfigExtension) {
@@ -37,8 +36,7 @@ func (c *Compiler) CompileFile(filename string, protoconfRoot string) error {
 		return fmt.Errorf("config file must end with either %s or %s, got: %s", consts.ConfigExtension, consts.MultiConfigExtension, filename)
 	}
 
-	registry := msgregistry.NewMessageRegistryWithDefaults()
-	mainOutput, configFile, err := runConfig(filename, protoconfRoot, registry)
+	mainOutput, configFile, err := c.runConfig(filename)
 	if err != nil {
 		return err
 	}
@@ -51,32 +49,32 @@ func (c *Compiler) CompileFile(filename string, protoconfRoot string) error {
 			return fmt.Errorf("`main' returned something that's not a dict, got: %s", mainOutput.Type())
 		}
 
-		outputDir := filepath.Join(protoconfRoot, consts.CompiledConfigPath, strings.TrimSuffix(filename, consts.MultiConfigExtension))
+		outputDir := filepath.Join(c.protoconfRoot, consts.CompiledConfigPath, strings.TrimSuffix(filename, consts.MultiConfigExtension))
 		for _, item := range starDict.Items() {
 			key, ok := item[0].(starlark.String)
 			if !ok {
 				return fmt.Errorf("`main' returned a dict with non-string key, got: %s", item[0].Type())
 			}
-			value, ok := toProtoMessage(item[1])
+			value, ok := proto.ToProtoMessage(item[1])
 			if !ok {
 				return fmt.Errorf("`main' returned a dict with non-protobuf value, got: %s", item[1].Type())
 			}
 			configs[filepath.Join(outputDir, string(key))+consts.CompiledConfigExtension] = value
 		}
 	} else {
-		proto, ok := toProtoMessage(mainOutput)
+		message, ok := proto.ToProtoMessage(mainOutput)
 		if !ok {
 			return fmt.Errorf("`main' returned something that's not a protobuf, got: %s", mainOutput.Type())
 		}
-		outputFile := filepath.Join(protoconfRoot, consts.CompiledConfigPath, strings.TrimSuffix(filename, consts.ConfigExtension)+consts.CompiledConfigExtension)
-		configs[outputFile] = proto
+		outputFile := filepath.Join(c.protoconfRoot, consts.CompiledConfigPath, strings.TrimSuffix(filename, consts.ConfigExtension)+consts.CompiledConfigExtension)
+		configs[outputFile] = message
 	}
 
-	for outputFile, proto := range configs {
-		if err := configFile.validate(proto); err != nil {
+	for outputFile, message := range configs {
+		if err := configFile.validate(message); err != nil {
 			return err
 		}
-		if err := c.writeConfig(proto, outputFile, registry); err != nil {
+		if err := c.writeConfig(message, outputFile); err != nil {
 			return err
 		}
 	}
@@ -84,23 +82,23 @@ func (c *Compiler) CompileFile(filename string, protoconfRoot string) error {
 	return nil
 }
 
-func (c *Compiler) writeConfig(proto *dynamic.Message, filename string, registry *msgregistry.MessageRegistry) error {
-	any, err := registry.MarshalAny(proto)
+func (c *compiler) writeConfig(message *dynamic.Message, filename string) error {
+	any, err := ptypes.MarshalAny(message)
 	if err != nil {
-		return fmt.Errorf("error marshaling proto to Any, proto=%s", proto)
+		return fmt.Errorf("error marshaling proto to Any, message=%s", message)
 	}
 
-	protoconfValue, err := dynamic.AsDynamicMessage(
-		&pc.ProtoconfValue{
-			ProtoFile: filepath.ToSlash(proto.GetMessageDescriptor().GetFile().GetName()),
-			Value:     any,
-		})
-
-	if err != nil {
-		return fmt.Errorf("error converting ProtoconfValue to dynamic, err: %s", err)
+	protoconfValue := &pc.ProtoconfValue{
+		ProtoFile: filepath.ToSlash(message.GetMessageDescriptor().GetFile().GetName()),
+		Value:     any,
 	}
 
-	m := &jsonpb.Marshaler{AnyResolver: registry, Indent: "  "}
+	if err != nil {
+		return fmt.Errorf("error converting ProtoconfValue to dynamic, err=%s", err)
+	}
+
+	// FIXME: support nested Any types by traversing FileDescriptors on starProtoMessage
+	m := &jsonpb.Marshaler{AnyResolver: dynamic.AnyResolver(nil, message.GetMessageDescriptor().GetFile()), Indent: "  "}
 	jsonData, err := m.MarshalToString(protoconfValue)
 	if err != nil {
 		return fmt.Errorf("error marshaling ProtoconfValue to JSON, value=%v", protoconfValue)
@@ -122,8 +120,8 @@ func (c *Compiler) writeConfig(proto *dynamic.Message, filename string, registry
 	return nil
 }
 
-func runConfig(filename string, protoconfRoot string, registry *msgregistry.MessageRegistry) (starlark.Value, *config, error) {
-	configFile, err := load(filename, protoconfRoot, registry)
+func (c *compiler) runConfig(filename string) (starlark.Value, *config, error) {
+	configFile, err := c.load(filename)
 
 	if err != nil {
 		return nil, nil, fmt.Errorf("error loading %s: %v", filename, err)
@@ -137,252 +135,24 @@ func runConfig(filename string, protoconfRoot string, registry *msgregistry.Mess
 	return mainOutput, configFile, nil
 }
 
-type config struct {
-	filename   string
-	globals    starlark.StringDict
-	locals     starlark.StringDict
-	validators map[string]*starlark.Function
-}
+func (c *compiler) load(filename string) (*config, error) {
 
-func load(filename string, protoconfRoot string, registry *msgregistry.MessageRegistry) (*config, error) {
-	configDir := filepath.Join(protoconfRoot, consts.ConfigPath)
-	reader := LocalFileReader(configDir)
-	modules := getModules()
-
-	type cacheEntry struct {
-		globals starlark.StringDict
-		err     error
-	}
-	cache := make(map[string]*cacheEntry)
-	protoFilesLoaded := &[]string{}
-
-	accessor := func(name string) (io.ReadCloser, error) {
-		if !strings.HasPrefix(name, configDir) {
-			return nil, fmt.Errorf("proto path must be under %s, got=%s", configDir, name)
-		}
-		*protoFilesLoaded = append(*protoFilesLoaded, strings.TrimPrefix(name, configDir))
-		return openFile(name)
+	loader := &starlarkLoader{
+		cache:            make(map[string]*cacheEntry),
+		modules:          getModules(),
+		mutableDir:       filepath.Join(c.protoconfRoot, consts.MutableConfigPath),
+		protoFilesLoaded: &[]string{},
+		srcDir:           filepath.Join(c.protoconfRoot, consts.SrcPath),
 	}
 
-	var load func(thread *starlark.Thread, moduleName string) (starlark.StringDict, error)
-	load = func(thread *starlark.Thread, moduleName string) (starlark.StringDict, error) {
-		var fromPath string
-		if thread.TopFrame() != nil {
-			fromPath = thread.TopFrame().Position().Filename()
-		}
-		modulePath, err := reader.Resolve(context.Background(), moduleName, fromPath)
-		if err != nil {
-			return nil, err
-		}
-
-		e, ok := cache[modulePath]
-		if e != nil {
-			return e.globals, e.err
-		}
-		if ok {
-			return nil, fmt.Errorf("cycle in load graph")
-		}
-
-		// Init to nil while parsing to detect cycles
-		cache[modulePath] = nil
-
-		var globals starlark.StringDict
-
-		if strings.HasSuffix(modulePath, consts.ProtoExtension) {
-			parser := &protoparse.Parser{ImportPaths: []string{configDir}, Accessor: accessor}
-			descriptors, err := parser.ParseFiles(modulePath)
-			if err != nil {
-				return nil, fmt.Errorf("Error parsing proto file, file=%s err=%v", modulePath, err)
-			}
-			fileDescriptor := descriptors[0]
-			registry.AddFile("", fileDescriptor)
-			globals = starlark.StringDict{}
-			for _, message := range fileDescriptor.GetMessageTypes() {
-				globals[message.GetName()] = newMessageTypeByDesc(registry, message)
-			}
-			err = nil
-		} else {
-			var moduleSource []byte
-			moduleSource, err = reader.ReadFile(context.Background(), modulePath)
-			if err != nil {
-				cache[modulePath] = &cacheEntry{nil, err}
-				return nil, err
-			}
-
-			globals, err = starlark.ExecFile(thread, modulePath, moduleSource, modules)
-		}
-
-		cache[modulePath] = &cacheEntry{globals, err}
-
-		return globals, err
-	}
-	locals, err := load(&starlark.Thread{
-		Print: starPrint,
-		Load:  load,
-	}, filepath.ToSlash(filename))
-
+	locals, validators, err := loader.loadConfig(filepath.ToSlash(filename))
 	if err != nil {
 		return nil, err
-	}
-
-	validators := make(map[string]*starlark.Function)
-	modules["add_validator"] = starlark.NewBuiltin("add_validator", getAddValidator(&validators))
-	for _, proto := range *protoFilesLoaded {
-		validatorFile := proto + consts.ValidatorExtensionSuffix
-		validatorAbsPath := filepath.Join(configDir, validatorFile)
-		if exists, isDir, err := stat(validatorAbsPath); err != nil {
-			return nil, err
-		} else if isDir {
-			return nil, fmt.Errorf("expected validator file and not a directory, file=%s", validatorAbsPath)
-		} else if !exists {
-			continue
-		}
-		_, err := load(&starlark.Thread{
-			Print: starPrint,
-			Load:  load,
-		}, filepath.ToSlash(validatorFile))
-
-		if err != nil {
-			return nil, err
-		}
 	}
 
 	return &config{
 		filename:   filename,
-		globals:    starlark.StringDict{},
 		locals:     locals,
 		validators: validators,
 	}, nil
-}
-
-func (c *config) main() (starlark.Value, error) {
-	mainVal, ok := c.locals["main"]
-	if !ok {
-		return nil, fmt.Errorf("no `main' function found in %q", c.filename)
-	}
-	main, ok := mainVal.(starlark.Callable)
-	if !ok {
-		return nil, fmt.Errorf("`main' must be a function (got a %s)", mainVal.Type())
-	}
-
-	thread := &starlark.Thread{
-		Print: starPrint,
-	}
-
-	mainVal, err := starlark.Call(thread, main, nil, nil)
-	if err != nil {
-		return nil, err
-	}
-	return mainVal, nil
-}
-
-func (c *config) validate(proto interface{}) error {
-	protoMessage, ok := proto.(*dynamic.Message)
-	if !ok {
-		if _, ok := proto.(pbproto.Message); ok {
-			return nil
-		}
-		return fmt.Errorf("expecting a proto message to validate, got=%v", proto)
-	}
-
-	if protoMessage == nil {
-		return nil
-	}
-
-	if validator, ok := c.validators[protoMessage.GetMessageDescriptor().GetFullyQualifiedName()]; ok {
-		thread := &starlark.Thread{
-			Print: starPrint,
-		}
-		args := starlark.Tuple([]starlark.Value{
-			newStarProtoMessage(protoMessage),
-		})
-		if _, err := starlark.Call(thread, validator, args, nil); err != nil {
-			return err
-		}
-	}
-
-	for _, field := range protoMessage.GetMessageDescriptor().GetFields() {
-		if field.GetType() != dpb.FieldDescriptorProto_TYPE_MESSAGE {
-			continue
-		}
-		if field.IsMap() {
-			mp := protoMessage.GetField(field).(map[interface{}]interface{})
-			if field.GetMapKeyType().GetType() == dpb.FieldDescriptorProto_TYPE_MESSAGE {
-				for key := range mp {
-					if err := c.validate(key); err != nil {
-						return err
-					}
-				}
-			}
-			if field.GetMapValueType().GetType() == dpb.FieldDescriptorProto_TYPE_MESSAGE {
-				for _, value := range mp {
-					if err := c.validate(value); err != nil {
-						return err
-					}
-				}
-			}
-		} else if field.IsRepeated() {
-			length := len(protoMessage.GetField(field).([]interface{}))
-			for i := 0; i < length; i++ {
-				if err := c.validate(protoMessage.GetRepeatedField(field, i)); err != nil {
-					return err
-				}
-			}
-		} else {
-			if err := c.validate(protoMessage.GetField(field)); err != nil {
-				return err
-			}
-		}
-	}
-	return nil
-}
-
-func starPrint(t *starlark.Thread, msg string) {
-	log.Printf("[%v] %s", t.Caller().Position(), msg)
-}
-
-func getModules() starlark.StringDict {
-	return starlark.StringDict{
-		"fail":   starlark.NewBuiltin("fail", starFail),
-		"struct": starlark.NewBuiltin("struct", starlarkstruct.Make),
-	}
-}
-
-func starFail(t *starlark.Thread, fn *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
-	var msg string
-	if err := starlark.UnpackPositionalArgs(fn.Name(), args, kwargs, 1, &msg); err != nil {
-		return nil, err
-	}
-	buf := new(strings.Builder)
-	t.Caller().WriteBacktrace(buf)
-	return nil, fmt.Errorf("[%s] %s\n%s", t.Caller().Position(), msg, buf.String())
-}
-
-func getAddValidator(mp *map[string]*starlark.Function) func(*starlark.Thread, *starlark.Builtin, starlark.Tuple, []starlark.Tuple) (starlark.Value, error) {
-	addValidator := func(t *starlark.Thread, fn *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
-		var arg1 starlark.Value
-		var arg2 starlark.Value
-		if err := starlark.UnpackPositionalArgs(fn.Name(), args, kwargs, 2, &arg1, &arg2); err != nil {
-			return nil, err
-		}
-
-		messageType, ok := arg1.(*starProtoMessageType)
-		if !ok {
-			return nil, fmt.Errorf("expected a proto message type, got=%v", arg1)
-		}
-
-		validator, ok := arg2.(*starlark.Function)
-		if ok {
-			if numParams := validator.NumParams(); numParams != 1 {
-				return nil, fmt.Errorf("expected a function that get 1 param, got=%d", numParams)
-			}
-		} else {
-			return nil, fmt.Errorf("expected a function, got=%v", validator)
-		}
-
-		(*mp)[messageType.desc.GetFullyQualifiedName()] = validator
-
-		return starlark.None, nil
-	}
-	return addValidator
 }

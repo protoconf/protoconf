@@ -1,5 +1,6 @@
 load("crawler.proto", "Crawler", "CrawlerService")
 load("user_agents.pinc", "iphone")
+load("mutable:crawler/extra_crawler", extra_crawler="value")
 
 def default_crawler():
     return Crawler(user_agent=iphone, http_timeout=30)
@@ -13,6 +14,8 @@ def main():
         if i == 0:
             crawler.follow_redirects = True
         crawlers.append(crawler)
+
+    crawlers.append(extra_crawler)
 
     admins = {'superuser': CrawlerService.AdminPermission.GOD_MODE}
     return CrawlerService(crawlers=crawlers, admins=admins, log_level=2)

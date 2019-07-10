@@ -3,16 +3,10 @@
 package compiler
 
 import (
-	"context"
 	"io"
 	"io/ioutil"
 	"os"
-	"path/filepath"
 )
-
-func (r *localFileReader) ReadFile(ctx context.Context, path string) ([]byte, error) {
-	return ioutil.ReadFile(filepath.Join(r.root, path))
-}
 
 func mkdirAll(path string, perm os.FileMode) error {
 	return os.MkdirAll(path, perm)

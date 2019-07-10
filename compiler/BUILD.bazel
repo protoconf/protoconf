@@ -4,16 +4,17 @@ go_library(
     name = "compiler_library",
     srcs = [
         "compiler.go",
-        "file_reader.go",
+        "config.go",
         "filesystem.go",
         "filesystem_js.go",
-        "proto_enum.go",
-        "proto_message.go",
-        "proto_message_type.go",
+        "starlark_functions.go",
+        "starlark_loader.go",
     ],
     deps = [
+        "//compiler/proto",
         "//consts:consts",
         "//types/proto/v1:protoconf_value_go_proto",
+        "//utils:utils",
         "@com_github_golang_protobuf//jsonpb:go_default_library",
         "@com_github_golang_protobuf//proto:go_default_library",
         "@com_github_golang_protobuf//protoc-gen-go/descriptor:go_default_library",
@@ -21,19 +22,17 @@ go_library(
         "@com_github_jhump_protoreflect//desc:go_default_library",
         "@com_github_jhump_protoreflect//desc/protoparse:go_default_library",
         "@com_github_jhump_protoreflect//dynamic:go_default_library",
-        "@com_github_jhump_protoreflect//dynamic/msgregistry:go_default_library",
         "@net_starlark_go//starlark:go_default_library",
         "@net_starlark_go//starlarkstruct:go_default_library",
-        "@net_starlark_go//syntax:go_default_library",
     ],
     importpath = "protoconf.com/compiler_library",
-    visibility = ["//visibility:public"],
+    visibility = [":__subpackages__"],
 )
 
 go_library(
     name = "compiler",
     srcs = [
-        "command.go"
+        "command.go",
     ],
     deps = [
         "@com_github_mitchellh_cli//:go_default_library",
@@ -45,7 +44,7 @@ go_library(
 
 go_test(
     name = "compiler_test",
-    srcs = ["main_test.go"],
+    srcs = ["compiler_test.go"],
     data = glob(["testdata/**"]),
     importpath = "protoconf.com/compiler/test",
 )

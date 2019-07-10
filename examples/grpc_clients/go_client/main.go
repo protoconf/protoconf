@@ -29,7 +29,7 @@ func main() {
 }
 
 func listenToChanges(path string) {
-	address := consts.DefaultAgentAddress
+	address := consts.AgentDefaultAddress
 	conn, err := grpc.Dial(address, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Error connecting to server address=%s err=%v", address, err)

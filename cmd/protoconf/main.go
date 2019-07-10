@@ -6,6 +6,7 @@ import (
 	"protoconf.com/agent"
 	"protoconf.com/compiler"
 	"protoconf.com/inserter"
+	"protoconf.com/server"
 )
 
 func main() {
@@ -14,6 +15,7 @@ func main() {
 			"agent": agent.Command,
 			"compile": compiler.Command,
 			"insert": inserter.Command,
+			"serve": server.Command,
 		},
 	)
 }

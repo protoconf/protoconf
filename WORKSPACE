@@ -35,13 +35,13 @@ go_repository(
 
 go_repository(
     name = "com_github_jhump_protoreflect",
-    commit = "af618f5b4cc4a322d8e8e99a568d6d41a574ee18",
+    commit = "ae7b4b3963474bfc47797d6b008f0456d0e3c645",
     importpath = "github.com/jhump/protoreflect",
 )
 
 go_repository(
     name = "net_starlark_go",
-    commit = "24246af8ff5f56427b506403ba62aadbcf5413a0",
+    commit = "23d87667016eca2fede83894bc3c28ec09b7f1d7",
     importpath = "go.starlark.net",
 )
 

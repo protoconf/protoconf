@@ -1,52 +1,36 @@
-package compiler
+package proto
 
 import (
 	"fmt"
 
 	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/dynamic"
-	"github.com/jhump/protoreflect/dynamic/msgregistry"
 
 	"go.starlark.net/starlark"
 )
 
-func newMessageTypeByDesc(registry *msgregistry.MessageRegistry, desc *desc.MessageDescriptor) starlark.Value {
-	mt := &starProtoMessageType{
-		registry: registry,
-		desc:     desc,
+func MessageTypeName(val starlark.Value) (string, bool) {
+	if msg, ok := val.(*starProtoMessageType); ok {
+		return msg.desc.GetFullyQualifiedName(), true
 	}
-	return mt
+	return "", false
 }
 
-func newMessageType(registry *msgregistry.MessageRegistry, name string) (starlark.Value, error) {
-	desc, err := registry.FindMessageTypeByUrl(name)
-	if err != nil {
-		return nil, fmt.Errorf("error finding protobuf message type=%s err=%s", name, err)
-	}
-
-	if desc == nil {
-		return nil, fmt.Errorf("protobuf message type %s not found", name)
-	}
-
+func NewMessageType(desc *desc.MessageDescriptor) starlark.Value {
 	mt := &starProtoMessageType{
-		registry: registry,
-		desc:     desc,
+		desc: desc,
 	}
-	return mt, nil
+	return mt
 }
 
 // A Starlark built-in type representing a Protobuf message type. This is the
 // message type itself rather than any particular message value.
 type starProtoMessageType struct {
-	registry *msgregistry.MessageRegistry
-	desc     *desc.MessageDescriptor
+	desc *desc.MessageDescriptor
 }
 
-var _ starlark.HasAttrs = (*starProtoMessageType)(nil)
-var _ starlark.Callable = (*starProtoMessageType)(nil)
-
 func (mt *starProtoMessageType) String() string {
-	return fmt.Sprintf("<proto.MessageType %q>", mt.Name())
+	return fmt.Sprintf("<proto.MessageType %s>", mt.Name())
 }
 func (mt *starProtoMessageType) Type() string         { return "proto.MessageType" }
 func (mt *starProtoMessageType) Freeze()              {}
@@ -60,17 +44,24 @@ func (mt *starProtoMessageType) Name() string {
 }
 
 func (mt *starProtoMessageType) Attr(attrName string) (starlark.Value, error) {
-	fullName := fmt.Sprintf("%s.%s", mt.desc.GetFullyQualifiedName(), attrName)
-
-	if enum, err := mt.registry.FindEnumTypeByUrl(fullName); enum != nil && err == nil {
-		return &starProtoEnumType{desc: enum}, nil
+	for _, enum := range mt.desc.GetNestedEnumTypes() {
+		if attrName == enum.GetName() {
+			return &starProtoEnumType{desc: enum}, nil
+		}
 	}
 
-	return newMessageType(mt.registry, fullName)
+	for _, message := range mt.desc.GetNestedMessageTypes() {
+		if attrName == message.GetName() {
+			return NewMessageType(message), nil
+		}
+	}
+
+	// FIXME: iterate nested extensions as well?
+	return nil, nil
 }
 
 func (mt *starProtoMessageType) AttrNames() []string {
-	// FIXME
+	// FIXME: fields, nested enum/message types, nested extensions?
 	return nil
 }
 
@@ -82,7 +73,7 @@ func (mt *starProtoMessageType) CallInternal(thread *starlark.Thread, args starl
 		return nil, err
 	}
 
-	wrapper := newStarProtoMessage(dynamic.NewMessage(mt.desc))
+	wrapper := NewStarProtoMessage(dynamic.NewMessage(mt.desc))
 
 	// Parse the kwarg set into a map[string]starlark.Value, containing one
 	// entry for each provided kwarg. Keys are the original protobuf field names.
@@ -111,3 +102,8 @@ func (mt *starProtoMessageType) CallInternal(thread *starlark.Thread, args starl
 	}
 	return wrapper, nil
 }
+
+var (
+	_ starlark.HasAttrs = (*starProtoMessageType)(nil)
+	_ starlark.Callable = (*starProtoMessageType)(nil)
+)

@@ -1,5 +1,4 @@
-load("@protoconf_pip_install//:requirements.bzl", "requirement")
-load("@build_stack_rules_proto//:plugin.bzl", "proto_plugin", "ProtoPluginInfo")
+load("@build_stack_rules_proto//:plugin.bzl", "ProtoPluginInfo")
 load("@protobuf_py_deps//:requirements.bzl", protobuf_requirements = "all_requirements")
 load("@grpc_py_deps//:requirements.bzl", grpc_requirements = "all_requirements")
 load(

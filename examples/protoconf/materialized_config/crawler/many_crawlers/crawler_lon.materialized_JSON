@@ -1,7 +1,7 @@
 {
   "protoFile": "crawler/crawler.proto",
   "value": {
-    "@type": "https://CrawlerService",
+    "@type": "type.googleapis.com/CrawlerService",
     "admins": {
       "admin_lon": "READ_WRITE"
     },

@@ -1,0 +1,8 @@
+{
+  "protoFile": "crawler/crawler.proto",
+  "value": {
+    "@type": "type.googleapis.com/Crawler",
+    "httpTimeout": 30,
+    "userAgent": "Linux/ time=1562845087"
+  }
+}

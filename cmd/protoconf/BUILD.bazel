@@ -8,6 +8,7 @@ go_binary(
         "//command:command",
         "//compiler:compiler",
         "//inserter:inserter",
+        "//server:server",
         "@com_github_mitchellh_cli//:go_default_library",
     ],
     visibility = ["//visibility:public"],

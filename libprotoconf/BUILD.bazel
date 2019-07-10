@@ -2,20 +2,22 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library")
 
 go_library(
     name = "libprotoconf",
-    srcs = ["libprotoconf.go"],
+    srcs = [
+        "file_watcher.go",
+        "kv_watcher.go",
+        "libprotoconf.go",
+    ],
     importpath = "protoconf.com/libprotoconf",
     visibility = ["//visibility:public"],
     deps = [
         "//consts:consts",
         "//types/proto/v1:protoconf_value_go_proto",
+        "//utils:utils",
         "@com_github_docker_libkv//:go_default_library",
         "@com_github_docker_libkv//store:go_default_library",
         "@com_github_docker_libkv//store/consul:go_default_library",
         "@com_github_fsnotify_fsnotify//:go_default_library",
-        "@com_github_golang_protobuf//jsonpb:go_default_library",
         "@com_github_golang_protobuf//proto:go_default_library",
-        "@com_github_jhump_protoreflect//desc/protoparse:go_default_library",
-        "@com_github_jhump_protoreflect//dynamic/msgregistry:go_default_library",
         "@com_github_golang_protobuf//ptypes/any:go_default_library",
     ],
 )

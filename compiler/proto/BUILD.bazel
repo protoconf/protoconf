@@ -1,0 +1,25 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "proto",
+    srcs = [
+        "enum_type.go",
+        "enum.go",
+        "field.go",
+        "map.go",
+        "message_type.go",
+        "message.go",
+        "repeated.go",
+    ],
+    deps = [
+        "//consts:consts",
+        "@com_github_golang_protobuf//proto:go_default_library",
+        "@com_github_golang_protobuf//protoc-gen-go/descriptor:go_default_library",
+        "@com_github_jhump_protoreflect//desc:go_default_library",
+        "@com_github_jhump_protoreflect//dynamic:go_default_library",
+        "@net_starlark_go//starlark:go_default_library",
+        "@net_starlark_go//syntax:go_default_library",
+    ],
+    importpath = "protoconf.com/compiler/proto",
+    visibility = ["//compiler:__pkg__"],
+)

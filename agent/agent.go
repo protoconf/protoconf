@@ -35,7 +35,7 @@ func newFlagSet() (*flag.FlagSet, *cliConfig, *command.KVStoreConfig) {
 
 	config := &cliConfig{}
 	flags.StringVar(&config.devProtoconfRoot, "dev", "", "Development mode - watch a local Protoconf directory for file changes")
-	flags.StringVar(&config.grpcAddress, "grpc-address", consts.DefaultAgentAddress, "Agent gRPC address")
+	flags.StringVar(&config.grpcAddress, "grpc-address", consts.AgentDefaultAddress, "Agent gRPC address")
 
 	return flags, config, kVConfig
 }

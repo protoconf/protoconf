@@ -1,0 +1,18 @@
+syntax = "proto3";
+package v1;
+
+option java_package = "com.protoconf.server.api.v1";
+
+import "types/proto/v1/protoconf_value.proto";
+
+message ConfigMutationRequest {
+  string path = 1;
+  ProtoconfValue value = 2;
+  string script_metadata = 3;
+}
+
+message ConfigMutationResponse {}
+
+service ProtoconfMutationService {
+  rpc MutateConfig(ConfigMutationRequest) returns (ConfigMutationResponse);
+}

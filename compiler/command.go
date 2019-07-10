@@ -41,15 +41,15 @@ func (c *cliCommand) Run(args []string) int {
 		return 1
 	}
 
-	compiler := NewCompiler(config.verboseLogging)
 	protoconfRoot := strings.TrimSpace(flags.Args()[0])
+	compiler := NewCompiler(protoconfRoot, config.verboseLogging)
 
 	var configs []string
 	if flags.NArg() == 1 {
 		var err error
 		configs, err = getAllConfigs(protoconfRoot)
 		if err != nil {
-			log.Printf("Error getting all configs from %s, err: %s", protoconfRoot, err)
+			log.Printf("Error getting all configs from %s, err=%s", protoconfRoot, err)
 			return 1
 		}
 	} else {
@@ -58,8 +58,8 @@ func (c *cliCommand) Run(args []string) int {
 
 	for _, config := range configs {
 		filename := strings.TrimSpace(config)
-		if err := compiler.CompileFile(filename, protoconfRoot); err != nil {
-			log.Printf("Error compiling config %s, err: %s", filename, err)
+		if err := compiler.CompileFile(filename); err != nil {
+			log.Printf("Error compiling config %s, err=%s", filename, err)
 			return 1
 		}
 	}
@@ -87,16 +87,16 @@ func Command() (cli.Command, error) {
 }
 
 func getAllConfigs(protoconfRoot string) ([]string, error) {
-	configDir, err := filepath.Abs(filepath.Join(protoconfRoot, consts.ConfigPath))
+	srcDir, err := filepath.Abs(filepath.Join(protoconfRoot, consts.SrcPath))
 	if err != nil {
 		return nil, err
 	}
 
 	var configs []string
-	err = filepath.Walk(configDir, func(path string, f os.FileInfo, err error) error {
+	err = filepath.Walk(srcDir, func(path string, f os.FileInfo, err error) error {
 		ext := filepath.Ext(path)
 		if ext == consts.ConfigExtension || ext == consts.MultiConfigExtension {
-			configs = append(configs, strings.TrimPrefix(path, configDir))
+			configs = append(configs, strings.TrimPrefix(path, srcDir))
 		}
 		return nil
 	})

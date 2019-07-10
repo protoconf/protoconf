@@ -15,7 +15,7 @@ import (
 	"github.com/mitchellh/cli"
 	"protoconf.com/command"
 	"protoconf.com/consts"
-	"protoconf.com/libprotoconf"
+	"protoconf.com/utils"
 )
 
 type cliCommand struct{}
@@ -103,10 +103,12 @@ func insertConfig(configName string, protoconfRoot string, kvStore store.Store) 
 	}
 	kvPath := strings.TrimSuffix(configName, consts.CompiledConfigExtension)
 
-	protoconfValue, err := libprotoconf.ReadConfig(protoconfRoot, kvPath)
+	protoconfValue, err := utils.ReadConfig(protoconfRoot, kvPath)
 	if err != nil {
 		return err
 	}
+	log.Printf("%s", protoconfValue)
+	return nil
 
 	data, err := proto.Marshal(protoconfValue)
 	if err != nil {
