@@ -67,7 +67,9 @@ func mutate(path string, value descriptor.Message, scriptMetadata string) error 
 	defer conn.Close()
 
 	c := pc.NewProtoconfMutationServiceClient(conn)
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	// Wait until the server finishes long git operations
+	timeout := 60*time.Second
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
 	if _, err := c.MutateConfig(ctx, request); err != nil {
