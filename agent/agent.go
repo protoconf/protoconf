@@ -44,7 +44,7 @@ func (c *cliCommand) Run(args []string) int {
 	flags, config, kVConfig := newFlagSet()
 	flags.Parse(args)
 
-	agentServer := &server{}
+	agentServer := &server{prefix: kVConfig.Prefix}
 	var err error
 	if config.devProtoconfRoot != "" {
 		agentServer.watcher, err = libprotoconf.NewFileWatcher(config.devProtoconfRoot)
@@ -98,10 +98,11 @@ func Command() (cli.Command, error) {
 
 type server struct {
 	watcher libprotoconf.Watcher
+	prefix string
 }
 
 func (s server) SubscribeForConfig(request *protoconfservice.ConfigSubscriptionRequest, srv protoconfservice.ProtoconfService_SubscribeForConfigServer) error {
-	path := request.GetPath()
+	path := fmt.Sprintf("%s%s", s.prefix, request.GetPath())
 	log.Printf("Watching path=%s", path)
 
 	stopCh := make(chan struct{})

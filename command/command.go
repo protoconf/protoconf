@@ -51,9 +51,11 @@ func run(commandName string, args []string, subcommands map[string]cli.CommandFa
 // KVStoreConfig holds the key-value store configuration set from the command line
 type KVStoreConfig struct {
 	Address string
+	Prefix string
 }
 
 // AddKVStoreFlags adds to an existing flagset the command lines flags to configure the key-value store connection
 func AddKVStoreFlags(fs *flag.FlagSet, kv *KVStoreConfig) {
 	fs.StringVar(&kv.Address, "kv", "", "Key-value store address")
+	fs.StringVar(&kv.Prefix, "prefix", "", "Key-value store key prefix")
 }

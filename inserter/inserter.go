@@ -59,7 +59,7 @@ func (c *cliCommand) Run(args []string) int {
 	if config.delete {
 		for i := 0; i < flags.NArg(); i++ {
 			configName := filepath.ToSlash(strings.TrimSpace(flags.Args()[i]))
-			if err := kvStore.Delete(configName); err != nil {
+			if err := kvStore.Delete(fmt.Sprintf("%s%s", kVConfig.Prefix, configName)); err != nil {
 				log.Printf("Error deleting config %s, err=%s", configName, err)
 				return 1
 			}
@@ -68,7 +68,7 @@ func (c *cliCommand) Run(args []string) int {
 		protoconfRoot := strings.TrimSpace(flags.Args()[0])
 		for i := 1; i < flags.NArg(); i++ {
 			configName := filepath.ToSlash(strings.TrimSpace(flags.Args()[i]))
-			if err := insertConfig(configName, protoconfRoot, kvStore); err != nil {
+			if err := insertConfig(configName, protoconfRoot, kvStore, kVConfig.Prefix); err != nil {
 				log.Printf("Error inserting config %s, err=%s", configName, err)
 				return 1
 			}
@@ -97,24 +97,23 @@ func Command() (cli.Command, error) {
 	return &cliCommand{}, nil
 }
 
-func insertConfig(configName string, protoconfRoot string, kvStore store.Store) error {
-	if !strings.HasSuffix(configName, consts.CompiledConfigExtension) {
-		return fmt.Errorf("config must be a %s file, file=%s", consts.CompiledConfigExtension, configName)
+func insertConfig(configFile string, protoconfRoot string, kvStore store.Store, prefix string) error {
+	if !strings.HasSuffix(configFile, consts.CompiledConfigExtension) {
+		return fmt.Errorf("config must be a %s file, file=%s", consts.CompiledConfigExtension, configFile)
 	}
-	kvPath := strings.TrimSuffix(configName, consts.CompiledConfigExtension)
+	configName := strings.TrimSuffix(configFile, consts.CompiledConfigExtension)
 
-	protoconfValue, err := utils.ReadConfig(protoconfRoot, kvPath)
+	protoconfValue, err := utils.ReadConfig(protoconfRoot, configName)
 	if err != nil {
 		return err
 	}
-	log.Printf("%s", protoconfValue)
-	return nil
 
 	data, err := proto.Marshal(protoconfValue)
 	if err != nil {
 		return fmt.Errorf("error marshaling ProtoconfValue to bytes, value=%v", protoconfValue)
 	}
 
+	kvPath := fmt.Sprintf("%s%s", prefix, configName)
 	if err := kvStore.Put(kvPath, data, nil); err != nil {
 		return fmt.Errorf("error writing to consul, path=%s", kvPath)
 	}
