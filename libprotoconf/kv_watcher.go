@@ -11,21 +11,27 @@ import (
 )
 
 // NewConsulWatcher creates a new consul-backed Protoconf watcher
-func NewConsulWatcher(address string) (Watcher, error) {
+func NewConsulWatcher(address string, prefix string) (Watcher, error) {
 	consul.Register()
 	store, err := libkv.NewStore(store.CONSUL, []string{address}, nil)
 	if err != nil {
 		return nil, err
 	}
-	return &libkvWatcher{store: store}, nil
+	return &libkvWatcher{
+		prefix: prefix,
+		store:  store,
+	}, nil
 }
 
 type libkvWatcher struct {
-	store store.Store
+	prefix string
+	store  store.Store
 }
 
 // Watch a value given its path
-func (w *libkvWatcher) Watch(path string, stopCh <-chan struct{}) (<-chan Result, error) {
+func (w *libkvWatcher) Watch(pathNoPrefix string, stopCh <-chan struct{}) (<-chan Result, error) {
+	path := fmt.Sprintf("%s%s", w.prefix, pathNoPrefix)
+
 	watchCh := make(chan Result)
 	kVStopCh := make(chan struct{})
 

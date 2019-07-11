@@ -20,7 +20,7 @@ type cliCommand struct{}
 
 type cliConfig struct {
 	devProtoconfRoot string
-	grpcAddress string
+	grpcAddress      string
 }
 
 func newFlagSet() (*flag.FlagSet, *cliConfig, *command.KVStoreConfig) {
@@ -44,12 +44,12 @@ func (c *cliCommand) Run(args []string) int {
 	flags, config, kVConfig := newFlagSet()
 	flags.Parse(args)
 
-	agentServer := &server{prefix: kVConfig.Prefix}
+	agentServer := &server{}
 	var err error
 	if config.devProtoconfRoot != "" {
 		agentServer.watcher, err = libprotoconf.NewFileWatcher(config.devProtoconfRoot)
 	} else {
-		agentServer.watcher, err = libprotoconf.NewConsulWatcher(kVConfig.Address)
+		agentServer.watcher, err = libprotoconf.NewConsulWatcher(kVConfig.Address, kVConfig.Prefix)
 	}
 
 	if err != nil {
@@ -98,11 +98,10 @@ func Command() (cli.Command, error) {
 
 type server struct {
 	watcher libprotoconf.Watcher
-	prefix string
 }
 
 func (s server) SubscribeForConfig(request *protoconfservice.ConfigSubscriptionRequest, srv protoconfservice.ProtoconfService_SubscribeForConfigServer) error {
-	path := fmt.Sprintf("%s%s", s.prefix, request.GetPath())
+	path := request.GetPath()
 	log.Printf("Watching path=%s", path)
 
 	stopCh := make(chan struct{})
