@@ -1,9 +1,6 @@
 proto_library(
     name = "crawler_proto",
     srcs = ["protoconf/src/crawler/crawler.proto"],
-    deps = [
-        "@com_google_protobuf//:timestamp_proto",
-    ],
     strip_import_prefix = "protoconf/src/",
     visibility = ["//visibility:public"],
 )

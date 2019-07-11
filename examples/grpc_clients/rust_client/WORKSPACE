@@ -7,11 +7,11 @@ local_repository(
 
 http_archive(
     name = "io_bazel_rules_rust",
-    sha256 = "29d9fc1cdbd737c51db5983d1ac8e64cdc684c4683bafbcc624d3d81de92a32f",
-    strip_prefix = "rules_rust-8417c8954efbd0cefc8dd84517b2afff5e907d5a",
+    sha256 = "eab3d241d445219909ad8434cc37da3ebd78adc44fc2281de2ecb59c4499f116",
+    strip_prefix = "rules_rust-3cd4c637289a8e0a3b45ea799c29e13a53154970",
     urls = [
-        # Master branch as of 2019-06-04
-        "https://github.com/bazelbuild/rules_rust/archive/8417c8954efbd0cefc8dd84517b2afff5e907d5a.tar.gz",
+        # Master branch as of 2019-07-08
+        "https://github.com/bazelbuild/rules_rust/archive/3cd4c637289a8e0a3b45ea799c29e13a53154970.tar.gz",
     ],
 )
 

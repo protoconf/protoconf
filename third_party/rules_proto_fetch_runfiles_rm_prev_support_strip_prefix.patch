@@ -1,0 +1,108 @@
+index 2e76c9e..a43d98c 100644
+--- aspect.bzl
++++ aspect.bzl
+@@ -213,7 +213,7 @@ def proto_compile_aspect_impl(target, ctx):
+     for plugin in plugins:
+         if plugin.executable:
+             plugin_tools[plugin.name] = plugin.executable
+-        data += plugin.data + get_plugin_runfiles(plugin.tool)
++        data += plugin.data
+ 
+         filename = _get_plugin_out(ctx, plugin)
+         if not filename:
+@@ -286,16 +286,20 @@ def proto_compile_aspect_impl(target, ctx):
+     #     args += [get_plugin_out_arg(ctx, outdir, plugin, plugin_outfiles)]
+ 
+     # DIFFERENT: aspect impl also passes in the plugin_options argument
++ 
++    strip_prefix = ""
++    if node.attr.strip_import_prefix:
++        strip_prefix = node.attr.srcs[0].label.package + "/" + node.attr.strip_import_prefix
+     for plugin in plugins:
+-        args += [get_plugin_out_arg(ctx, outdir, plugin, plugin_outfiles, plugin_options)]
++        args += [get_plugin_out_arg(ctx, outdir, plugin, plugin_outfiles, plugin_options)+(("/" + strip_prefix) if strip_prefix else "")]
+ 
+     args += ["--plugin=protoc-gen-%s=%s" % (k, v.path) for k, v in plugin_tools.items()]  # SAME
+ 
+-    args += [_proto_path(f) for f in protos]
++    args += [_proto_path(f, strip_prefix) for f in protos]
+ 
+     mnemonic = "ProtoCompile"  # SAME
+ 
+-    command = " ".join([protoc.path] + args)  # SAME
++    command = "rm -f " + " ".join([output.path for output in outputs]) + "; " + " ".join([protoc.path] + args)
+ 
+     inputs = import_files.to_list() + descriptor_sets.to_list() + data
+     tools = [protoc] + plugin_tools.values()
+@@ -317,16 +321,20 @@ def proto_compile_aspect_impl(target, ctx):
+         for arg in args:
+             print("ARG:", arg)
+ 
+-    ctx.actions.run_shell(
++    resolved_inputs, input_manifests = ctx.resolve_tools(tools=[plugin.tool for plugin in plugins if plugin.executable])
++
++    ctx.actions.run(
+         mnemonic = mnemonic,  # SAME
+-        command = command,  # SAME
++	executable = "bash",
++	arguments = ["-c", command],
+ 
+         # This is different!
+-        inputs = inputs,
++        inputs = inputs + resolved_inputs.to_list(),
+         tools = tools,
+ 
+         # outputs = outputs + [descriptor] + ctx.outputs.outputs, # compile.bzl
+         outputs = outputs,
++        input_manifests=input_manifests,
+     )
+ 
+     #
+@@ -386,7 +394,7 @@ def get_plugin_out_arg(ctx, outdir, plugin, plugin_outfiles, plugin_options):
+     return "--%s_out=%s" % (plugin.name, arg)
+ 
+ # Shamelessly taken from https://github.com/bazelbuild/rules_go
+-def _proto_path(proto):
++def _proto_path(proto, strip_prefix):
+     """
+     The proto path is not really a file path
+     It's the path to the proto that was seen when the descriptor file was generated.
+@@ -402,6 +410,8 @@ def _proto_path(proto):
+         path = path[len(ws):]
+     if path.startswith("/"):
+         path = path[1:]
++    if path.startswith(strip_prefix):
++        path = path[len(strip_prefix):]
+     return path
+ 
+ def _get_plugin_outputs(ctx, descriptor, outputs, proto, plugin):
+@@ -692,29 +702,3 @@ def _apply_plugin_transitivity_rules(ctx, targets, plugin):
+ #         # print("Using sibling file '%s' for '%s' => '%s'" % (sibling.path, filename, output.path))
+ #         outputs.append(output)
+ #     return outputs
+-
+-def get_plugin_runfiles(tool):
+-    """Gather runfiles for a plugin.
+-    """
+-    files = []
+-    if not tool:
+-        return files
+-
+-    info = tool[DefaultInfo]
+-    if not info:
+-        return files
+-
+-    if info.files:
+-        files += info.files.to_list()
+-
+-    if info.default_runfiles:
+-        runfiles = info.default_runfiles
+-        if runfiles.files:
+-            files += runfiles.files.to_list()
+-
+-    if info.data_runfiles:
+-        runfiles = info.data_runfiles
+-        if runfiles.files:
+-            files += runfiles.files.to_list()
+-
+-    return files

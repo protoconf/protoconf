@@ -20,7 +20,7 @@ http_archive(
     name = "build_stack_rules_proto",
     patch_args = ["-p0"],
     patches = [
-        "@protoconf//third_party:rules_proto_fetch_runfiles.patch",
+        "@protoconf//third_party:rules_proto_fetch_runfiles_rm_prev_support_strip_prefix.patch",
     ],
     sha256 = "c62f0b442e82a6152fcd5b1c0b7c4028233a9e314078952b6b04253421d56d61",
     strip_prefix = "rules_proto-b93b544f851fdcd3fc5c3d47aee3b7ca158a8841",
