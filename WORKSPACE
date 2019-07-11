@@ -113,9 +113,9 @@ git_repository(
     commit = "c823c79ea1570fb5ff454033735a8e68575d1d0f",  # v1.3.0, as of 2019-03-03
     patch_args = ["-p1"],
     patches = [
-        "com_github_golang_protobuf-gazelle.patch",
+        "//third_party:com_github_golang_protobuf-gazelle.patch",
         "@io_bazel_rules_go//third_party:com_github_golang_protobuf-extras.patch",
-        "protobuf_fix_any_indentation.patch",
+        "//third_party:protobuf_fix_any_indentation.patch",
     ],
     remote = "https://github.com/golang/protobuf",
     shallow_since = "1549405252 -0800",
