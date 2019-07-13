@@ -6,14 +6,33 @@ import (
 	"github.com/docker/libkv"
 	"github.com/docker/libkv/store"
 	"github.com/docker/libkv/store/consul"
+	"github.com/docker/libkv/store/zookeeper"
 	"github.com/golang/protobuf/proto"
 	protoconfvalue "protoconf.com/types/proto/v1/protoconfvalue"
 )
 
-// NewConsulWatcher creates a new consul-backed Protoconf watcher
-func NewConsulWatcher(address string, prefix string) (Watcher, error) {
-	consul.Register()
-	store, err := libkv.NewStore(store.CONSUL, []string{address}, nil)
+type KVStore int
+
+const (
+	Consul KVStore = iota
+	Zookeeper
+)
+
+// NewWatcher creates a new kv-backed Protoconf watcher
+func NewKVWatcher(kvType KVStore, address string, prefix string) (Watcher, error) {
+	var backend store.Backend
+	switch kvType {
+	case Consul:
+		consul.Register()
+		backend = store.CONSUL
+	case Zookeeper:
+		zookeeper.Register()
+		backend = store.ZK
+	default:
+		return nil, fmt.Errorf("unknown kvType=%d", kvType)
+	}
+
+	store, err := libkv.NewStore(backend, []string{address}, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +56,10 @@ func (w *libkvWatcher) Watch(pathNoPrefix string, stopCh <-chan struct{}) (<-cha
 
 	go func() {
 		defer func() {
-			kVStopCh <- struct{}{}
+			select {
+			case kVStopCh <- struct{}{}:
+			default:
+			}
 			close(kVStopCh)
 			close(watchCh)
 		}()
@@ -63,7 +85,7 @@ func (w *libkvWatcher) Watch(pathNoPrefix string, stopCh <-chan struct{}) (<-cha
 				}
 
 				if err = proto.Unmarshal(kVPair.Value, protoconfValue); err != nil {
-					watchCh <- Result{nil, fmt.Errorf("error unmarshaling config path=%s value=%v err=%v", path, kVPair.Value, err)}
+					watchCh <- Result{nil, fmt.Errorf("error unmarshaling config path=%s value=%s err=%s", path, kVPair.Value, err)}
 					return
 				}
 

@@ -24,6 +24,9 @@ go_repository(
     name = "com_github_docker_libkv",
     commit = "458977154600b9f23984d9f4b82e79570b5ae12b",
     importpath = "github.com/docker/libkv",
+    patches = [
+        "//third_party:consul_fail_on_missing_key.patch",
+    ],
 )
 
 # Implicitly used by libkv
@@ -31,6 +34,20 @@ go_repository(
     name = "com_github_hashicorp_consul",
     importpath = "github.com/hashicorp/consul",
     tag = "v1.0.7",
+)
+
+# Implicitly used by libkv
+go_repository(
+    name = "com_github_samuel_go_zookeeper",
+    commit = "c4fab1ac1bec58281ad0667dc3f0907a9476ac47",
+    importpath = "github.com/samuel/go-zookeeper",
+)
+
+# Used by zookeeper
+go_repository(
+    name = "com_github_coreos_go_semver",
+    importpath = "github.com/coreos/go-semver",
+    tag = "v0.2.0",
 )
 
 go_repository(

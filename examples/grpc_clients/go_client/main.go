@@ -51,11 +51,11 @@ func listenToChanges(path string) {
 			log.Fatalf("Connection closed while streaming config path=%s", path)
 		}
 		if err != nil {
-			log.Fatalf("Error while streaming config path=%s err=%v", path, err)
+			log.Fatalf("Error while streaming config path=%s err=%s", path, err)
 		}
 
 		if err = ptypes.UnmarshalAny(update.GetValue(), config); err != nil {
-			log.Fatalf("Error unmarshaling config path=%s value=%v err=%v", path, update.Value, err)
+			log.Fatalf("Error unmarshaling config path=%s value=%s err=%s", path, update.Value, err)
 		}
 
 		if firstRead {

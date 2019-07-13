@@ -11,6 +11,7 @@ import (
 	"github.com/docker/libkv"
 	"github.com/docker/libkv/store"
 	"github.com/docker/libkv/store/consul"
+	"github.com/docker/libkv/store/zookeeper"
 	"github.com/golang/protobuf/proto"
 	"github.com/mitchellh/cli"
 	"protoconf.com/command"
@@ -49,8 +50,24 @@ func (c *cliCommand) Run(args []string) int {
 		return 1
 	}
 
-	consul.Register()
-	kvStore, err := libkv.NewStore(store.CONSUL, []string{kVConfig.Address}, nil)
+	var kvStore store.Store
+	var err error
+	if (kVConfig.Store == command.KVStoreConsul) {
+		consul.Register()
+		kvStore, err = libkv.NewStore(store.CONSUL, []string{kVConfig.Address}, nil)
+	} else if (kVConfig.Store == command.KVStoreZookeeper) {
+		zookeeper.Register()
+		var address string
+		if kVConfig.Address != "" {
+			address = kVConfig.Address
+		} else {
+			address = consts.ZookeeperDefaultAddress
+		}
+		kvStore, err = libkv.NewStore(store.ZK, []string{address}, nil)
+	} else {
+		log.Fatalf("Unknown key-value store %s", kVConfig.Store)
+	}
+
 	if err != nil {
 		log.Printf("Error connecting to key-value store, err=%s", err)
 		return 1
@@ -115,7 +132,7 @@ func insertConfig(configFile string, protoconfRoot string, kvStore store.Store, 
 
 	kvPath := fmt.Sprintf("%s%s", prefix, configName)
 	if err := kvStore.Put(kvPath, data, nil); err != nil {
-		return fmt.Errorf("error writing to consul, path=%s", kvPath)
+		return fmt.Errorf("error writing to key-value store, path=%s", kvPath)
 	}
 
 	fmt.Printf("Path %s inserted successfully\n", kvPath)

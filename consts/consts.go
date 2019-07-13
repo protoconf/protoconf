@@ -13,4 +13,5 @@ const (
 	SrcPath                  = "src/"
 	ValidatorExtensionSuffix = "-validator"
 	Version                  = "0.0.1"
+	ZookeeperDefaultAddress  = "127.0.0.1:2181"
 )

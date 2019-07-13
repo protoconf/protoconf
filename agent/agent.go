@@ -52,8 +52,20 @@ func (c *cliCommand) Run(args []string) int {
 		log.Printf("Using dev mode, watching directory protoconf_root=\"%s\"", config.devProtoconfRoot)
 		agentServer.watcher, err = libprotoconf.NewFileWatcher(config.devProtoconfRoot)
 	} else {
-		log.Printf("Connecting to Consul at \"%s\", config path prefix=\"%s\"", kVConfig.Address, kVConfig.Prefix)
-		agentServer.watcher, err = libprotoconf.NewConsulWatcher(kVConfig.Address, kVConfig.Prefix)
+		log.Printf("Connecting to %s at \"%s\", config path prefix=\"%s\"", kVConfig.Store, kVConfig.Address, kVConfig.Prefix)
+		if (kVConfig.Store == command.KVStoreConsul) {
+			agentServer.watcher, err = libprotoconf.NewKVWatcher(libprotoconf.Consul, kVConfig.Address, kVConfig.Prefix)
+		} else if (kVConfig.Store == command.KVStoreZookeeper) {
+			var address string
+			if kVConfig.Address != "" {
+				address = kVConfig.Address
+			} else {
+				address = consts.ZookeeperDefaultAddress
+			}
+			agentServer.watcher, err = libprotoconf.NewKVWatcher(libprotoconf.Zookeeper, address, kVConfig.Prefix)
+		} else {
+			log.Fatalf("Unknown key-value store %s", kVConfig.Store)
+		}
 	}
 
 	if err != nil {
@@ -116,7 +128,10 @@ func (s server) SubscribeForConfig(request *protoconfservice.ConfigSubscriptionR
 	}
 
 	defer func() {
-		stopCh <- struct{}{}
+		select {
+		case stopCh <- struct{}{}:
+		default:
+		}
 		close(stopCh)
 	}()
 

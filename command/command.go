@@ -48,14 +48,21 @@ func run(commandName string, args []string, subcommands map[string]cli.CommandFa
 	os.Exit(exitStatus)
 }
 
+const (
+	KVStoreConsul = "consul"
+	KVStoreZookeeper = "zookeeper"
+)
+
 // KVStoreConfig holds the key-value store configuration set from the command line
 type KVStoreConfig struct {
 	Address string
+	Store string
 	Prefix string
 }
 
 // AddKVStoreFlags adds to an existing flagset the command lines flags to configure the key-value store connection
 func AddKVStoreFlags(fs *flag.FlagSet, kv *KVStoreConfig) {
-	fs.StringVar(&kv.Address, "kv", "", "Key-value store address")
+	fs.StringVar(&kv.Address, "store-address", "", "Key-value store address")
+	fs.StringVar(&kv.Store, "store", KVStoreConsul, "Key-value store type (consul/zookeeper)")
 	fs.StringVar(&kv.Prefix, "prefix", "", "Key-value store key prefix")
 }
