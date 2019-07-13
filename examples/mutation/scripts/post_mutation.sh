@@ -2,6 +2,8 @@
 set -e
 set -x
 
+export GIT_TERMINAL_PROMPT=0
+
 SCRIPTPATH=$(dirname $(realpath $0))
 protoconf compile "$SCRIPTPATH/../../protoconf/"
 git -C "$SCRIPTPATH" add "$SCRIPTPATH/../../protoconf/"
