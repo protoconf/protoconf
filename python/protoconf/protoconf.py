@@ -12,9 +12,16 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "."))
 from agent.api.proto.v1.protoconf_service_pb2 import ConfigSubscriptionRequest
 from agent.api.proto.v1.protoconf_service_grpc import ProtoconfServiceStub
 
+from server.api.proto.v1.protoconf_mutation_pb2 import ConfigMutationRequest
+from server.api.proto.v1.protoconf_mutation_grpc import ProtoconfMutationServiceStub
+
+from types.proto.v1.protoconf_value_pb2 import ProtoconfValue
+
+AGENT_DEFAULT_PORT = 4300
+SERVER_DEFAULT_PORT = 4301
 
 class Protoconf(object):
-    def __init__(self, host="127.0.0.1", port=4300):
+    def __init__(self, host="127.0.0.1", port=AGENT_DEFAULT_PORT):
         self._host = host
         self._port = port
         self._clear_state()
@@ -71,7 +78,7 @@ class Protoconf(object):
 
 
 class ProtoconfSync(object):
-    def __init__(self, host="127.0.0.1", port=4300, executor=None):
+    def __init__(self, host="127.0.0.1", port=AGENT_DEFAULT_PORT, executor=None):
         self._asyncio_thread = None
         self._protoconf = Protoconf(host, port)
         self._executor = executor if executor != None else ThreadPoolExecutor()
@@ -115,3 +122,51 @@ class ProtoconfSync(object):
 
         asyncio.run_coroutine_threadsafe(set_should_close(), self._loop)
         self._asyncio_thread.join()
+
+
+class ProtoconfMutation(object):
+    def __init__(self, host="127.0.0.1", port=SERVER_DEFAULT_PORT):
+        self._host = host
+        self._port = port
+        self._clear_state()
+
+    def _clear_state(self):
+        self._channel = None
+
+    async def mutate_config(self, path, value, script_metadata):
+        if self._channel == None:
+            self._channel = Channel(self._host, self._port)
+
+        protoconf_service = ProtoconfServiceStub(self._channel)
+
+        config = ProtoconfValue()
+        config.proto_file = value.DESCRIPTOR.file.name
+        config.value.Pack(value)
+
+        await protoconf_service.MutateConfig(ConfigMutationRequest(path=path, value=config, script_metadata=script_metadata))
+
+    def close(self):
+        self._channel.close()
+        self._clear_state()
+
+class ProtoconfMutationSync(object):
+    def __init__(self, host="127.0.0.1", port=SERVER_DEFAULT_PORT):
+        self._protoconf = ProtoconfMutation(host, port)
+
+    def mutate_config(self, path, value, script_metadata):
+        async def async_mutate():
+            await self._protoconf.mutate_config(path, value, script_metadata)
+
+        loop = asyncio.new_event_loop()
+        def run_loop():
+            asyncio.set_event_loop(loop)
+            loop.run_until_complete(self.async_mutate())
+
+        asyncio_thread = threading.Thread(target=run_loop)
+        asyncio_thread.start()
+
+        asyncio.run_coroutine_threadsafe(async_mutate(), loop)
+        asyncio_thread.join()
+
+    def close(self):
+        self._protoconf.close()
