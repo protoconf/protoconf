@@ -57,6 +57,9 @@ func (c *cliCommand) Run(args []string) int {
 	protoconfRoot := strings.TrimSpace(flags.Args()[0])
 	protoconfServer := &server{config: config, protoconfRoot: protoconfRoot}
 
+	log.Printf("Starting Protoconf server at \"%s\", version %s", config.grpcAddress, consts.Version)
+	log.Printf("Config: protoconf_root=\"%s\" pre-mutation-script=\"%s\" post-mutation-script=\"%s\"", protoconfRoot, config.preMutationScript, config.postMutationScript)
+
 	listener, err := net.Listen("tcp", config.grpcAddress)
 	if err != nil {
 		log.Printf("Error listening on address=%s err=%s", config.grpcAddress, err)
@@ -66,6 +69,7 @@ func (c *cliCommand) Run(args []string) int {
 	rpcServer := grpc.NewServer()
 	protoconfmutation.RegisterProtoconfMutationServiceServer(rpcServer, protoconfServer)
 
+	log.Println("Protoconf server running")
 	err = rpcServer.Serve(listener)
 	if err != nil {
 		log.Printf("Error serving gRPC, err=%s", err)
@@ -100,45 +104,51 @@ type server struct {
 }
 
 func (s server) MutateConfig(ctx context.Context, in *protoconfmutation.ConfigMutationRequest) (*protoconfmutation.ConfigMutationResponse, error) {
+	log.Printf("Mutating path=%s", in.Path)
 	filename := filepath.Join(s.protoconfRoot, consts.MutableConfigPath, filepath.Clean(in.Path)+consts.CompiledConfigExtension)
 
 	parser := &protoparse.Parser{ImportPaths: []string{filepath.Join(s.protoconfRoot, consts.SrcPath)}}
 	descriptors, err := parser.ParseFiles(in.Value.ProtoFile)
 	if err != nil {
-		return nil, fmt.Errorf("error parsing proto file, file=%s err=%v", in.Value.ProtoFile, err)
+		return nil, logError(fmt.Errorf("error parsing proto file, file=%s err=%v", in.Value.ProtoFile, err))
 	}
 
 	anyResolver := dynamic.AnyResolver(nil, descriptors[0])
 	m := &jsonpb.Marshaler{AnyResolver: anyResolver, Indent: "  "}
 	jsonData, err := m.MarshalToString(in.Value)
 	if err != nil {
-		return nil, fmt.Errorf("error marshaling ProtoconfValue to JSON, value=%s", in.Value)
+		return nil, logError(fmt.Errorf("error marshaling ProtoconfValue to JSON, value=%s", in.Value))
 	}
 	jsonData += "\n"
 
 	if s.config.preMutationScript != "" {
 		if err := runScript(s.config.preMutationScript, in.ScriptMetadata); err != nil {
-			return nil, fmt.Errorf("error running pre mutation script, err=%s", err)
+			return nil, logError(fmt.Errorf("error running pre mutation script, err=%s", err))
 		}
 	}
 
 	if err := os.MkdirAll(filepath.Dir(filename), 0755); err != nil {
-		return nil, fmt.Errorf("error creating output directory %s, err: %s", filepath.Dir(filename), err)
+		return nil, logError(fmt.Errorf("error creating output directory %s, err: %s", filepath.Dir(filename), err))
 	}
 
 	if err := ioutil.WriteFile(filename, []byte(jsonData), 0644); err != nil {
-		return nil, fmt.Errorf("error writing to file %s, err: %s", filename, err)
+		return nil, logError(fmt.Errorf("error writing to file %s, err: %s", filename, err))
 	}
 
 	log.Printf("Written to %s", filename)
 
 	if s.config.postMutationScript != "" {
 		if err := runScript(s.config.postMutationScript, in.ScriptMetadata); err != nil {
-			return nil, fmt.Errorf("error running post mutation script, err=%s", err)
+			return nil, logError(fmt.Errorf("error running post mutation script, err=%s", err))
 		}
 	}
 
 	return &protoconfmutation.ConfigMutationResponse{}, nil
+}
+
+func logError(err error) error {
+	log.Printf("Error: %s", err)
+	return err
 }
 
 func runScript(filename string, argument string) error {

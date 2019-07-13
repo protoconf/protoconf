@@ -44,16 +44,20 @@ func (c *cliCommand) Run(args []string) int {
 	flags, config, kVConfig := newFlagSet()
 	flags.Parse(args)
 
+	log.Printf("Starting Protoconf agent at \"%s\", version %s", config.grpcAddress, consts.Version)
+
 	agentServer := &server{}
 	var err error
 	if config.devProtoconfRoot != "" {
+		log.Printf("Using dev mode, watching directory protoconf_root=\"%s\"", config.devProtoconfRoot)
 		agentServer.watcher, err = libprotoconf.NewFileWatcher(config.devProtoconfRoot)
 	} else {
+		log.Printf("Connecting to Consul at \"%s\", config path prefix=\"%s\"", kVConfig.Address, kVConfig.Prefix)
 		agentServer.watcher, err = libprotoconf.NewConsulWatcher(kVConfig.Address, kVConfig.Prefix)
 	}
 
 	if err != nil {
-		log.Printf("Error setting up protoconf err=%s", err)
+		log.Printf("Error setting up Protoconf err=%s", err)
 		return 1
 	}
 
@@ -61,13 +65,14 @@ func (c *cliCommand) Run(args []string) int {
 
 	listener, err := net.Listen("tcp", config.grpcAddress)
 	if err != nil {
-		log.Printf("Error listening on address=%s err=%s", config.grpcAddress, err)
+		log.Printf("Error listening on address=\"%s\" err=%s", config.grpcAddress, err)
 		return 1
 	}
 
 	rpcServer := grpc.NewServer()
 	protoconfservice.RegisterProtoconfServiceServer(rpcServer, agentServer)
 
+	log.Println("Protoconf agent running")
 	err = rpcServer.Serve(listener)
 	if err != nil {
 		log.Printf("Error serving gRPC, err=%s", err)
@@ -119,6 +124,7 @@ func (s server) SubscribeForConfig(request *protoconfservice.ConfigSubscriptionR
 	for {
 		select {
 		case <-ctx.Done():
+			log.Printf("Client stopped watching path=%s", path)
 			return ctx.Err()
 		case config, ok := <-watchCh:
 			if !ok {
@@ -127,13 +133,14 @@ func (s server) SubscribeForConfig(request *protoconfservice.ConfigSubscriptionR
 			}
 
 			if config.Error != nil {
-				log.Printf("Error watching config, path=%s err=%v", path, config.Error)
+				log.Printf("Error watching config, path=%s err=%s", path, config.Error)
 				return config.Error
 			}
 
+			log.Printf("Sending update on path=%s", path)
 			resp := protoconfservice.ConfigUpdate{Value: config.Value}
 			if err := srv.Send(&resp); err != nil {
-				log.Printf("Error sending config update, path=%s srv=%v err=%v", path, srv, err)
+				log.Printf("Error sending config update, path=%s srv=%s err=%s", path, srv, err)
 				return err
 			}
 		}
