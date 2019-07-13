@@ -1,0 +1,10 @@
+load("crawler_helper.pinc", "crawler_service_helper")
+load("../crawler.proto", "Crawler")
+
+
+def main():
+    service = crawler_service_helper()
+    service.add_crawlers(10)
+    service.proto.crawlers.append(Crawler(http_timeout=999))
+    service.set_follow_redirects()
+    return service.proto

@@ -1,0 +1,62 @@
+{
+  "protoFile": "crawler/crawler.proto",
+  "value": {
+    "@type": "type.googleapis.com/CrawlerService",
+    "crawlers": [
+      {
+        "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 6_0_1 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A525 Safari/8536.25",
+        "httpTimeout": 30,
+        "followRedirects": true
+      },
+      {
+        "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 6_0_1 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A525 Safari/8536.25",
+        "httpTimeout": 30,
+        "followRedirects": true
+      },
+      {
+        "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 6_0_1 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A525 Safari/8536.25",
+        "httpTimeout": 30,
+        "followRedirects": true
+      },
+      {
+        "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 6_0_1 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A525 Safari/8536.25",
+        "httpTimeout": 30,
+        "followRedirects": true
+      },
+      {
+        "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 6_0_1 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A525 Safari/8536.25",
+        "httpTimeout": 30,
+        "followRedirects": true
+      },
+      {
+        "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 6_0_1 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A525 Safari/8536.25",
+        "httpTimeout": 30,
+        "followRedirects": true
+      },
+      {
+        "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 6_0_1 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A525 Safari/8536.25",
+        "httpTimeout": 30,
+        "followRedirects": true
+      },
+      {
+        "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 6_0_1 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A525 Safari/8536.25",
+        "httpTimeout": 30,
+        "followRedirects": true
+      },
+      {
+        "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 6_0_1 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A525 Safari/8536.25",
+        "httpTimeout": 30,
+        "followRedirects": true
+      },
+      {
+        "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 6_0_1 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A525 Safari/8536.25",
+        "httpTimeout": 30,
+        "followRedirects": true
+      },
+      {
+        "httpTimeout": 999,
+        "followRedirects": true
+      }
+    ]
+  }
+}

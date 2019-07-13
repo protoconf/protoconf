@@ -1,0 +1,21 @@
+load("crawler.proto", "Crawler", "CrawlerService")
+
+def main():
+    return CrawlerService(
+      admins={
+        "anubis": CrawlerService.AdminPermission.GOD_MODE,
+        "ra": CrawlerService.AdminPermission.READ_WRITE,
+        },
+      crawlers=[
+        Crawler(
+          user_agent="Linux/",
+          http_timeout=30,
+        ),
+        Crawler(
+          user_agent="Android/",
+          http_timeout=15,
+          follow_redirects=True,
+        ),
+      ],
+      log_level=2,
+    )

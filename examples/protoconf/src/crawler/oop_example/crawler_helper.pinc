@@ -1,0 +1,27 @@
+load("../crawler.proto", "Crawler", "CrawlerService")
+load("../text_crawler.pconf", "default_crawler")
+
+def add_crawlers(proto, num):
+  for i in range(num):
+    proto.crawlers.append(default_crawler())
+
+def set_follow_redirects(proto):
+  for crawler in proto.crawlers:
+    crawler.follow_redirects = True
+
+def add_and_print(proto):
+  add_crawlers(proto, 3)
+  print(proto)
+
+def crawler_service_helper(proto=None, **kwargs):
+  if proto == None:
+    proto = CrawlerService(**kwargs)
+
+  helper = struct(
+    proto = proto,
+    add_crawlers = lambda a: add_crawlers(proto, a),
+    set_follow_redirects = lambda: set_follow_redirects(proto),
+    add_and_print = lambda: add_and_print(proto),
+  )
+
+  return helper

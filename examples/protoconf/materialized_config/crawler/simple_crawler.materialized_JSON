@@ -1,0 +1,22 @@
+{
+  "protoFile": "crawler/crawler.proto",
+  "value": {
+    "@type": "type.googleapis.com/CrawlerService",
+    "admins": {
+      "anubis": "GOD_MODE",
+      "ra": "READ_WRITE"
+    },
+    "crawlers": [
+      {
+        "userAgent": "Linux/",
+        "httpTimeout": 30
+      },
+      {
+        "userAgent": "Android/",
+        "httpTimeout": 15,
+        "followRedirects": true
+      }
+    ],
+    "logLevel": 2
+  }
+}
