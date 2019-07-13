@@ -41,8 +41,15 @@ go_repository(
 
 go_repository(
     name = "net_starlark_go",
-    commit = "23d87667016eca2fede83894bc3c28ec09b7f1d7",
+    commit = "d6561f809f318cb4098a9e17073b3dfbf45d3289",
     importpath = "go.starlark.net",
+)
+
+# Used by starlark
+go_repository(
+    name = "com_github_chzyer_readline",
+    commit = "2972be24d48e78746da79ba8e24e8b488c9880de",
+    importpath = "github.com/chzyer/readline",
 )
 
 go_repository(

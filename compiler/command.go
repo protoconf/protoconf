@@ -10,12 +10,15 @@ import (
 	"strings"
 
 	"github.com/mitchellh/cli"
+	"go.starlark.net/repl"
+	"go.starlark.net/starlark"
 	"protoconf.com/consts"
 )
 
 type cliCommand struct{}
 
 type cliConfig struct {
+	repl           bool
 	verboseLogging bool
 }
 
@@ -27,6 +30,7 @@ func newFlagSet() (*flag.FlagSet, *cliConfig) {
 	}
 
 	config := &cliConfig{}
+	flags.BoolVar(&config.repl, "repl", false, "Interactive REPL mode")
 	flags.BoolVar(&config.verboseLogging, "V", false, "Verbose logging")
 
 	return flags, config
@@ -44,7 +48,13 @@ func (c *cliCommand) Run(args []string) int {
 	protoconfRoot := strings.TrimSpace(flags.Args()[0])
 	compiler := NewCompiler(protoconfRoot, config.verboseLogging)
 
+	if config.repl {
+		compiler.REPL()
+		return 0
+	}
+
 	var configs []string
+
 	if flags.NArg() == 1 {
 		var err error
 		configs, err = getAllConfigs(protoconfRoot)
@@ -106,4 +116,15 @@ func getAllConfigs(protoconfRoot string) ([]string, error) {
 	}
 
 	return configs, nil
+}
+
+func (c *compiler) REPL() {
+	fmt.Printf("Protoconf %s\n", consts.Version)
+
+	loader := c.getLoader()
+	thread := &starlark.Thread{
+		Load: loader.load,
+	}
+
+	repl.REPL(thread, loader.modules)
 }

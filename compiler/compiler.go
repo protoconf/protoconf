@@ -9,6 +9,7 @@ import (
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/jhump/protoreflect/dynamic"
+	"go.starlark.net/resolve"
 	"go.starlark.net/starlark"
 	"protoconf.com/compiler/proto"
 	"protoconf.com/consts"
@@ -16,6 +17,13 @@ import (
 )
 
 func NewCompiler(protoconfRoot string, verboseLogging bool) *compiler {
+	resolve.AllowNestedDef = true      // allow def statements within function bodies
+	resolve.AllowLambda = true         // allow lambda expressions
+	resolve.AllowFloat = true          // allow floating point literals, the 'float' built-in, and x / y
+	resolve.AllowSet = true            // allow the 'set' built-in
+	resolve.AllowGlobalReassign = true // allow reassignment to top-level names; also, allow if/for/while at top-level
+	resolve.AllowRecursion = true      // allow while statements and recursive functions
+
 	return &compiler{
 		protoconfRoot:  protoconfRoot,
 		verboseLogging: verboseLogging,
@@ -137,14 +145,7 @@ func (c *compiler) runConfig(filename string) (starlark.Value, *config, error) {
 
 func (c *compiler) load(filename string) (*config, error) {
 
-	loader := &starlarkLoader{
-		cache:            make(map[string]*cacheEntry),
-		modules:          getModules(),
-		mutableDir:       filepath.Join(c.protoconfRoot, consts.MutableConfigPath),
-		protoFilesLoaded: &[]string{},
-		srcDir:           filepath.Join(c.protoconfRoot, consts.SrcPath),
-	}
-
+	loader := c.getLoader()
 	locals, validators, err := loader.loadConfig(filepath.ToSlash(filename))
 	if err != nil {
 		return nil, err
@@ -155,4 +156,14 @@ func (c *compiler) load(filename string) (*config, error) {
 		locals:     locals,
 		validators: validators,
 	}, nil
+}
+
+func (c *compiler) getLoader() *starlarkLoader {
+	return &starlarkLoader{
+		cache:            make(map[string]*cacheEntry),
+		modules:          getModules(),
+		mutableDir:       filepath.Join(c.protoconfRoot, consts.MutableConfigPath),
+		protoFilesLoaded: &[]string{},
+		srcDir:           filepath.Join(c.protoconfRoot, consts.SrcPath),
+	}
 }

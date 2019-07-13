@@ -22,6 +22,7 @@ go_library(
         "@com_github_jhump_protoreflect//desc:go_default_library",
         "@com_github_jhump_protoreflect//desc/protoparse:go_default_library",
         "@com_github_jhump_protoreflect//dynamic:go_default_library",
+        "@net_starlark_go//resolve:go_default_library",
         "@net_starlark_go//starlark:go_default_library",
         "@net_starlark_go//starlarkstruct:go_default_library",
     ],
@@ -36,6 +37,7 @@ go_library(
     ],
     deps = [
         "@com_github_mitchellh_cli//:go_default_library",
+        "@net_starlark_go//repl:go_default_library",
     ],
     embed = [":compiler_library"],
     importpath = "protoconf.com/compiler",
