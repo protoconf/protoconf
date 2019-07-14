@@ -10,7 +10,7 @@ import (
 	"github.com/jhump/protoreflect/desc/protoparse"
 	"github.com/jhump/protoreflect/dynamic"
 	"protoconf.com/consts"
-	protoconfvalue "protoconf.com/types/proto/v1/protoconfvalue"
+	protoconfvalue "protoconf.com/datatypes/proto/v1/protoconfvalue"
 )
 
 // ReadConfig reads a materialized config

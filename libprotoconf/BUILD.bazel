@@ -11,7 +11,7 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "//consts:consts",
-        "//types/proto/v1:protoconf_value_go_proto",
+        "//datatypes/proto/v1:protoconf_value_go_proto",
         "//utils:utils",
         "@com_github_docker_libkv//:go_default_library",
         "@com_github_docker_libkv//store:go_default_library",

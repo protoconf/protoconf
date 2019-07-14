@@ -72,7 +72,7 @@ func (msg *starProtoMessage) CompareSameType(op syntax.Token, y starlark.Value, 
 }
 
 func (msg *starProtoMessage) Hash() (uint32, error) {
-	// FIXME
+	// FIXME now-ish
 	return 0, fmt.Errorf("starProtoMessage.Hash: TODO")
 }
 
@@ -130,7 +130,7 @@ func (msg *starProtoMessage) SetField(name string, star starlark.Value) error {
 
 	if oneof := field.GetOneOf(); oneof != nil {
 		for _, choice := range oneof.GetChoices() {
-			delete(msg.attrCache, choice.GetName()) // FIXME: is GetName the right name?
+			delete(msg.attrCache, choice.GetName()) // FIXME now: is GetName the right name?
 		}
 	} else {
 		delete(msg.attrCache, name)

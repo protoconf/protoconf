@@ -14,7 +14,7 @@ import (
 	"protoconf.com/consts"
 	pb "protoconf.com/examples/mutation/go_client/crawler"
 	pc "protoconf.com/server/api/proto/v1/protoconfmutation"
-	pv "protoconf.com/types/proto/v1/protoconfvalue"
+	pv "protoconf.com/datatypes/proto/v1/protoconfvalue"
 )
 
 const (

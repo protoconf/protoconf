@@ -1,1 +1,1 @@
-from .protoconf import Protoconf, ProtoconfSync
+from .protoconf import Protoconf, ProtoconfSync, ProtoconfMutation, ProtoconfMutationSync

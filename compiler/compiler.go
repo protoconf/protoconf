@@ -13,7 +13,7 @@ import (
 	"go.starlark.net/starlark"
 	"protoconf.com/compiler/proto"
 	"protoconf.com/consts"
-	pc "protoconf.com/types/proto/v1/protoconfvalue"
+	pc "protoconf.com/datatypes/proto/v1/protoconfvalue"
 )
 
 func NewCompiler(protoconfRoot string, verboseLogging bool) *compiler {

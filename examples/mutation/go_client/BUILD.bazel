@@ -9,7 +9,7 @@ go_binary(
         "//consts:consts",
         "//agent:protoconf_service_go_proto",
         "//server:protoconf_mutation_go_proto",
-        "//types/proto/v1:protoconf_value_go_proto",
+        "//datatypes/proto/v1:protoconf_value_go_proto",
         "@com_github_golang_protobuf//descriptor:go_default_library",
         "@com_github_golang_protobuf//ptypes:go_default_library",
         "@org_golang_google_grpc//:go_default_library",

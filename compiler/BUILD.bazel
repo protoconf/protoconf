@@ -13,7 +13,7 @@ go_library(
     deps = [
         "//compiler/proto",
         "//consts:consts",
-        "//types/proto/v1:protoconf_value_go_proto",
+        "//datatypes/proto/v1:protoconf_value_go_proto",
         "//utils:utils",
         "@com_github_golang_protobuf//jsonpb:go_default_library",
         "@com_github_golang_protobuf//proto:go_default_library",

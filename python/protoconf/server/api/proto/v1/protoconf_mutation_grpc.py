@@ -9,7 +9,7 @@ import grpclib.client
 if typing.TYPE_CHECKING:
     import grpclib.server
 
-import types.proto.v1.protoconf_value_pb2
+import datatypes.proto.v1.protoconf_value_pb2
 import server.api.proto.v1.protoconf_mutation_pb2
 
 

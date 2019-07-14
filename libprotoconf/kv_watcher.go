@@ -8,7 +8,7 @@ import (
 	"github.com/docker/libkv/store/consul"
 	"github.com/docker/libkv/store/zookeeper"
 	"github.com/golang/protobuf/proto"
-	protoconfvalue "protoconf.com/types/proto/v1/protoconfvalue"
+	protoconfvalue "protoconf.com/datatypes/proto/v1/protoconfvalue"
 )
 
 type KVStore int
@@ -64,7 +64,6 @@ func (w *libkvWatcher) Watch(pathNoPrefix string, stopCh <-chan struct{}) (<-cha
 			close(watchCh)
 		}()
 
-		// FIXME: reimplement Watch with Get to deal with missing keys
 		kVWatchCh, err := w.store.Watch(path, kVStopCh)
 		if err != nil {
 			watchCh <- Result{nil, err}

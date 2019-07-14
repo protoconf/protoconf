@@ -180,7 +180,7 @@ func valueFromStarlark(t *desc.FieldDescriptor, star starlark.Value) (interface{
 }
 
 func typeName(t *desc.FieldDescriptor) string {
-	// FIXME: Print scalar type for scalar, message name for message/enum, think about lists/maps etc.
+	// FIXME now: Print scalar type for scalar, message name for message/enum, think about lists/maps etc.
 	return "FIX_ME typeName"
 
 	// Special-case protobuf types to get more useful error messages when

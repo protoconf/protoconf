@@ -3,7 +3,7 @@ package v1;
 
 option java_package = "com.protoconf.server.api.v1";
 
-import "types/proto/v1/protoconf_value.proto";
+import "datatypes/proto/v1/protoconf_value.proto";
 
 message ConfigMutationRequest {
   string path = 1;

@@ -1,7 +1,7 @@
 syntax = "proto3";
 package v1;
 
-option java_package = "com.protoconf.types.v1";
+option java_package = "com.protoconf.datatypes.v1";
 
 import "google/protobuf/any.proto";
 

@@ -15,7 +15,7 @@ from agent.api.proto.v1.protoconf_service_grpc import ProtoconfServiceStub
 from server.api.proto.v1.protoconf_mutation_pb2 import ConfigMutationRequest
 from server.api.proto.v1.protoconf_mutation_grpc import ProtoconfMutationServiceStub
 
-from types.proto.v1.protoconf_value_pb2 import ProtoconfValue
+from datatypes.proto.v1.protoconf_value_pb2 import ProtoconfValue
 
 AGENT_DEFAULT_PORT = 4300
 SERVER_DEFAULT_PORT = 4301
@@ -137,7 +137,7 @@ class ProtoconfMutation(object):
         if self._channel == None:
             self._channel = Channel(self._host, self._port)
 
-        protoconf_service = ProtoconfServiceStub(self._channel)
+        protoconf_service = ProtoconfMutationServiceStub(self._channel)
 
         config = ProtoconfValue()
         config.proto_file = value.DESCRIPTOR.file.name
@@ -160,12 +160,10 @@ class ProtoconfMutationSync(object):
         loop = asyncio.new_event_loop()
         def run_loop():
             asyncio.set_event_loop(loop)
-            loop.run_until_complete(self.async_mutate())
+            loop.run_until_complete(async_mutate())
 
         asyncio_thread = threading.Thread(target=run_loop)
         asyncio_thread.start()
-
-        asyncio.run_coroutine_threadsafe(async_mutate(), loop)
         asyncio_thread.join()
 
     def close(self):

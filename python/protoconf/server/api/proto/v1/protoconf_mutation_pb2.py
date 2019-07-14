@@ -13,7 +13,7 @@ from google.protobuf import symbol_database as _symbol_database
 _sym_db = _symbol_database.Default()
 
 
-from types.proto.v1 import protoconf_value_pb2 as types_dot_proto_dot_v1_dot_protoconf__value__pb2
+from datatypes.proto.v1 import protoconf_value_pb2 as datatypes_dot_proto_dot_v1_dot_protoconf__value__pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(
@@ -21,9 +21,9 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='v1',
   syntax='proto3',
   serialized_options=_b('\n\033com.protoconf.server.api.v1'),
-  serialized_pb=_b('\n,server/api/proto/v1/protoconf_mutation.proto\x12\x02v1\x1a$types/proto/v1/protoconf_value.proto\"a\n\x15\x43onfigMutationRequest\x12\x0c\n\x04path\x18\x01 \x01(\t\x12!\n\x05value\x18\x02 \x01(\x0b\x32\x12.v1.ProtoconfValue\x12\x17\n\x0fscript_metadata\x18\x03 \x01(\t\"\x18\n\x16\x43onfigMutationResponse2a\n\x18ProtoconfMutationService\x12\x45\n\x0cMutateConfig\x12\x19.v1.ConfigMutationRequest\x1a\x1a.v1.ConfigMutationResponseB\x1d\n\x1b\x63om.protoconf.server.api.v1b\x06proto3')
+  serialized_pb=_b('\n,server/api/proto/v1/protoconf_mutation.proto\x12\x02v1\x1a(datatypes/proto/v1/protoconf_value.proto\"a\n\x15\x43onfigMutationRequest\x12\x0c\n\x04path\x18\x01 \x01(\t\x12!\n\x05value\x18\x02 \x01(\x0b\x32\x12.v1.ProtoconfValue\x12\x17\n\x0fscript_metadata\x18\x03 \x01(\t\"\x18\n\x16\x43onfigMutationResponse2a\n\x18ProtoconfMutationService\x12\x45\n\x0cMutateConfig\x12\x19.v1.ConfigMutationRequest\x1a\x1a.v1.ConfigMutationResponseB\x1d\n\x1b\x63om.protoconf.server.api.v1b\x06proto3')
   ,
-  dependencies=[types_dot_proto_dot_v1_dot_protoconf__value__pb2.DESCRIPTOR,])
+  dependencies=[datatypes_dot_proto_dot_v1_dot_protoconf__value__pb2.DESCRIPTOR,])
 
 
 
@@ -68,8 +68,8 @@ _CONFIGMUTATIONREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=90,
-  serialized_end=187,
+  serialized_start=94,
+  serialized_end=191,
 )
 
 
@@ -92,11 +92,11 @@ _CONFIGMUTATIONRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=189,
-  serialized_end=213,
+  serialized_start=193,
+  serialized_end=217,
 )
 
-_CONFIGMUTATIONREQUEST.fields_by_name['value'].message_type = types_dot_proto_dot_v1_dot_protoconf__value__pb2._PROTOCONFVALUE
+_CONFIGMUTATIONREQUEST.fields_by_name['value'].message_type = datatypes_dot_proto_dot_v1_dot_protoconf__value__pb2._PROTOCONFVALUE
 DESCRIPTOR.message_types_by_name['ConfigMutationRequest'] = _CONFIGMUTATIONREQUEST
 DESCRIPTOR.message_types_by_name['ConfigMutationResponse'] = _CONFIGMUTATIONRESPONSE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
@@ -124,8 +124,8 @@ _PROTOCONFMUTATIONSERVICE = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=215,
-  serialized_end=312,
+  serialized_start=219,
+  serialized_end=316,
   methods=[
   _descriptor.MethodDescriptor(
     name='MutateConfig',
