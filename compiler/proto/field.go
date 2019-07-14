@@ -180,23 +180,7 @@ func valueFromStarlark(t *desc.FieldDescriptor, star starlark.Value) (interface{
 }
 
 func typeName(t *desc.FieldDescriptor) string {
-	// FIXME now: Print scalar type for scalar, message name for message/enum, think about lists/maps etc.
-	return "FIX_ME typeName"
-
-	// Special-case protobuf types to get more useful error messages when
-	// the wrong protobuf type is assigned.
-	// messageType := reflect.TypeOf((*proto.Message)(nil)).Elem()
-	// if t.Implements(messageType) {
-	// 	return reflect.Zero(t).Interface().(proto.Message).XXX_MessageName()
-	// }
-	// enumType := reflect.TypeOf((*protoEnum)(nil)).Elem()
-	// if t.Implements(enumType) {
-	// 	return enumTypeName(reflect.Zero(t).Interface().(protoEnum))
-	// }
-	// if t.PkgPath() == "" {
-	// 	return t.String()
-	// }
-	// return fmt.Sprintf("%q.%s", t.PkgPath(), t.Name())
+	return t.String()
 }
 
 func typeError(t *desc.FieldDescriptor, star starlark.Value) error {

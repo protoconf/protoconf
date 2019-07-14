@@ -72,8 +72,7 @@ func (msg *starProtoMessage) CompareSameType(op syntax.Token, y starlark.Value, 
 }
 
 func (msg *starProtoMessage) Hash() (uint32, error) {
-	// FIXME now-ish
-	return 0, fmt.Errorf("starProtoMessage.Hash: TODO")
+	return 0, fmt.Errorf("unhashable type: %s", msg.Type())
 }
 
 func (msg *starProtoMessage) checkMutable(verb string) error {
@@ -130,7 +129,7 @@ func (msg *starProtoMessage) SetField(name string, star starlark.Value) error {
 
 	if oneof := field.GetOneOf(); oneof != nil {
 		for _, choice := range oneof.GetChoices() {
-			delete(msg.attrCache, choice.GetName()) // FIXME now: is GetName the right name?
+			delete(msg.attrCache, choice.GetName())
 		}
 	} else {
 		delete(msg.attrCache, name)
