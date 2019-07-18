@@ -1,0 +1,10 @@
+{
+  "linters": {
+    "python": {
+      "type": "pep8"
+    },
+    "golang": {
+      "type": "golint"
+    }
+  }
+}
