@@ -1,3 +1,7 @@
 {
-  "phabricator.uri": "https://protoconf.phacility.com/"
+  "phabricator.uri": "https://protoconf.phacility.com/",
+  "load": [
+    "tools/arc"
+  ],
+  "unit.engine": "BazelTestEngine"
 }

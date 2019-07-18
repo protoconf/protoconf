@@ -1,10 +1,20 @@
 {
   "linters": {
     "python": {
-      "type": "pep8"
+      "type": "pep8",
+      "include": ["(\\.py)"]
     },
     "golang": {
       "type": "golint"
+    },
+    "buildifier": {
+      "type": "buildifier",
+      "include": [
+        "(^BUILD$)",
+        "(\\.bzl$)",
+        "(\\.BUILD$)",
+        "(^WORKSPACE$)"
+      ]
     }
   }
 }
