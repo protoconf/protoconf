@@ -234,7 +234,7 @@ func toCanonicalPath(name string, fromPath string) (string, error) {
 	}
 
 	if isMutableConfig {
-		canonicalPath = fmt.Sprintf("%s%s", consts.MutableConfigPrefix, canonicalPath)
+		canonicalPath = filepath.Join(consts.MutableConfigPrefix, canonicalPath)
 	}
 
 	return canonicalPath, nil

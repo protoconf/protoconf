@@ -52,10 +52,10 @@ func (c *cliCommand) Run(args []string) int {
 
 	var kvStore store.Store
 	var err error
-	if (kVConfig.Store == command.KVStoreConsul) {
+	if kVConfig.Store == command.KVStoreConsul {
 		consul.Register()
 		kvStore, err = libkv.NewStore(store.CONSUL, []string{kVConfig.Address}, nil)
-	} else if (kVConfig.Store == command.KVStoreZookeeper) {
+	} else if kVConfig.Store == command.KVStoreZookeeper {
 		zookeeper.Register()
 		var address string
 		if kVConfig.Address != "" {
@@ -76,7 +76,7 @@ func (c *cliCommand) Run(args []string) int {
 	if config.delete {
 		for i := 0; i < flags.NArg(); i++ {
 			configName := filepath.ToSlash(strings.TrimSpace(flags.Args()[i]))
-			if err := kvStore.Delete(fmt.Sprintf("%s%s", kVConfig.Prefix, configName)); err != nil {
+			if err := kvStore.Delete(kVConfig.Prefix + configName); err != nil {
 				log.Printf("Error deleting config %s, err=%s", configName, err)
 				return 1
 			}
@@ -130,7 +130,7 @@ func insertConfig(configFile string, protoconfRoot string, kvStore store.Store, 
 		return fmt.Errorf("error marshaling ProtoconfValue to bytes, value=%v", protoconfValue)
 	}
 
-	kvPath := fmt.Sprintf("%s%s", prefix, configName)
+	kvPath := prefix + configName
 	if err := kvStore.Put(kvPath, data, nil); err != nil {
 		return fmt.Errorf("error writing to key-value store, path=%s", kvPath)
 	}

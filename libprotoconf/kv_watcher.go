@@ -49,7 +49,7 @@ type libkvWatcher struct {
 
 // Watch a value given its path
 func (w *libkvWatcher) Watch(pathNoPrefix string, stopCh <-chan struct{}) (<-chan Result, error) {
-	path := fmt.Sprintf("%s%s", w.prefix, pathNoPrefix)
+	path := w.prefix + pathNoPrefix
 
 	watchCh := make(chan Result)
 	kVStopCh := make(chan struct{})
