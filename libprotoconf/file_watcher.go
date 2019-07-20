@@ -54,7 +54,11 @@ func (w *fileWatcher) Watch(path string, stopCh <-chan struct{}) (<-chan Result,
 
 	watchCh := make(chan Result)
 	go func() {
-		defer close(watchCh)
+		defer func() {
+			close(watchCh)
+			_ = w.removeWatch(absPath, fsCh)
+		}()
+
 		for {
 			protoconfValue, err := utils.ReadConfig(w.protoconfRoot, path)
 			if err != nil {
@@ -68,7 +72,6 @@ func (w *fileWatcher) Watch(path string, stopCh <-chan struct{}) (<-chan Result,
 					return
 				}
 			case <-stopCh:
-				_ = w.removeWatch(absPath, fsCh)
 				return
 			}
 		}
