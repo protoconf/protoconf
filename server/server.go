@@ -19,6 +19,7 @@ import (
 	"github.com/mitchellh/cli"
 	"google.golang.org/grpc"
 	"protoconf.com/consts"
+	"protoconf.com/protostdlib"
 	protoconfmutation "protoconf.com/server/api/proto/v1/protoconfmutation"
 )
 
@@ -107,7 +108,7 @@ func (s server) MutateConfig(ctx context.Context, in *protoconfmutation.ConfigMu
 	log.Printf("Mutating path=%s", in.Path)
 	filename := filepath.Join(s.protoconfRoot, consts.MutableConfigPath, filepath.Clean(in.Path)+consts.CompiledConfigExtension)
 
-	parser := &protoparse.Parser{ImportPaths: []string{filepath.Join(s.protoconfRoot, consts.SrcPath)}}
+	parser := &protoparse.Parser{ImportPaths: []string{filepath.Join(s.protoconfRoot, consts.SrcPath)}, ProtoStdLib: protostdlib.ProtoStdLib}
 	descriptors, err := parser.ParseFiles(in.Value.ProtoFile)
 	if err != nil {
 		return nil, logError(fmt.Errorf("error parsing proto file, file=%s err=%v", in.Value.ProtoFile, err))

@@ -10,6 +10,7 @@ go_library(
         ":protoconf_mutation_go_proto",
         "//command",
         "//consts",
+        "//proto_std_lib",
         "@com_github_golang_protobuf//jsonpb:go_default_library",
         "@com_github_jhump_protoreflect//desc/protoparse:go_default_library",
         "@com_github_jhump_protoreflect//dynamic:go_default_library",

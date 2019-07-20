@@ -17,6 +17,7 @@ import (
 	"go.starlark.net/starlark"
 	"protoconf.com/compiler/proto"
 	"protoconf.com/consts"
+	"protoconf.com/protostdlib"
 	pc "protoconf.com/datatypes/proto/v1/protoconfvalue"
 )
 
@@ -150,7 +151,7 @@ func (l *starlarkLoader) loadMutable(modulePath string) (starlark.StringDict, er
 		return nil, err
 	}
 
-	parser := &protoparse.Parser{ImportPaths: []string{l.srcDir}, Accessor: l.protoAccessor}
+	parser := &protoparse.Parser{ImportPaths: []string{l.srcDir}, Accessor: l.protoAccessor, ProtoStdLib: protostdlib.ProtoStdLib}
 	descriptors, err := parser.ParseFiles(configJSON.ProtoFile)
 	if err != nil {
 		return nil, fmt.Errorf("error parsing proto file, file=%s err=%s", configJSON.ProtoFile, err)
@@ -189,7 +190,7 @@ func (l *starlarkLoader) loadMutable(modulePath string) (starlark.StringDict, er
 }
 
 func (l *starlarkLoader) loadProto(modulePath string) (starlark.StringDict, error) {
-	parser := &protoparse.Parser{ImportPaths: []string{l.srcDir}, Accessor: l.protoAccessor}
+	parser := &protoparse.Parser{ImportPaths: []string{l.srcDir}, Accessor: l.protoAccessor, ProtoStdLib: protostdlib.ProtoStdLib}
 	descriptors, err := parser.ParseFiles(modulePath)
 	if err != nil {
 		return nil, fmt.Errorf("error parsing proto file, file=%s err=%v", modulePath, err)

@@ -16,6 +16,7 @@ go_library(
         "//compiler/proto",
         "//consts",
         "//datatypes/proto/v1:protoconf_value_go_proto",
+        "//proto_std_lib",
         "//utils",
         "@com_github_golang_protobuf//jsonpb:go_default_library",
         "@com_github_golang_protobuf//proto:go_default_library",

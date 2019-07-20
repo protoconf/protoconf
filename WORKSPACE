@@ -68,8 +68,10 @@ go_repository(
 
 go_repository(
     name = "com_github_jhump_protoreflect",
-    commit = "ae7b4b3963474bfc47797d6b008f0456d0e3c645",
+    commit = "6c4c7792338ef4769325550489b407691790ffa1",
     importpath = "github.com/jhump/protoreflect",
+    patch_args = ["-p1"],
+    patches = ["//third_party:protoreflect_proto_std_lib.patch"],
 )
 
 go_repository(

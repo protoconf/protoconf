@@ -11,6 +11,7 @@ import (
 	"github.com/jhump/protoreflect/dynamic"
 	"protoconf.com/consts"
 	protoconfvalue "protoconf.com/datatypes/proto/v1/protoconfvalue"
+	"protoconf.com/protostdlib"
 )
 
 // ReadConfig reads a materialized config
@@ -31,7 +32,7 @@ func ReadConfig(protoconfRoot string, configName string) (*protoconfvalue.Protoc
 		return nil, err
 	}
 
-	parser := &protoparse.Parser{ImportPaths: []string{filepath.Join(protoconfRoot, consts.SrcPath)}}
+	parser := &protoparse.Parser{ImportPaths: []string{filepath.Join(protoconfRoot, consts.SrcPath)}, ProtoStdLib: protostdlib.ProtoStdLib}
 	descriptors, err := parser.ParseFiles(configJSON.ProtoFile)
 	if err != nil {
 		return nil, fmt.Errorf("error parsing proto file, file=%s err=%v", configJSON.ProtoFile, err)
