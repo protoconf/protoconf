@@ -2,6 +2,8 @@ syntax = "proto3";
 
 option java_package = "com.protoconf.examples.crawler";
 
+import "secret.proto";
+
 message Crawler {
   string user_agent = 1;
   int32 http_timeout = 2;
@@ -16,4 +18,5 @@ message CrawlerService {
   }
   map<string, AdminPermission> admins = 2;
   int32 log_level = 3;
+  Secret db_password = 4;
 }

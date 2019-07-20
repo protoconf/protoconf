@@ -3,12 +3,15 @@ package protostdlib
 import (
 	dpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/jhump/protoreflect/internal"
+	_ "protoconf.com/protostdlib/secret"
 )
 
 var ProtoStdLib map[string]*dpb.FileDescriptorProto
 
 func init() {
-	filenames := []string{}
+	filenames := []string{
+		"secret.proto",
+	}
 
 	ProtoStdLib = map[string]*dpb.FileDescriptorProto{}
 	for _, fn := range filenames {

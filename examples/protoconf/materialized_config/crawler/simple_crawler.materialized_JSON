@@ -17,6 +17,12 @@
         "followRedirects": true
       }
     ],
+    "dbPassword": {
+      "charSecret": {
+        "char": "x",
+        "length": 23
+      }
+    },
     "logLevel": 2
   }
 }

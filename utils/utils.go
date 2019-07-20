@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/golang/protobuf/descriptor"
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/jhump/protoreflect/desc/protoparse"
 	"github.com/jhump/protoreflect/dynamic"
@@ -49,4 +50,13 @@ func ReadConfig(protoconfRoot string, configName string) (*protoconfvalue.Protoc
 		return nil, fmt.Errorf("error unmarshaling, err=%s", err)
 	}
 	return protoconfValue, nil
+}
+
+func MessageFQN(msg descriptor.Message) string {
+	fileDesc, protoDesc := descriptor.ForMessage(msg)
+	fqn := protoDesc.GetName()
+	if fileDesc.GetPackage() != "" {
+		fqn = fileDesc.GetPackage() + "." + fqn
+	}
+	return fqn
 }

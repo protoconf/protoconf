@@ -10,7 +10,7 @@ import (
 	"google.golang.org/grpc"
 	pc "protoconf.com/agent/api/proto/v1/protoconfservice"
 	"protoconf.com/consts"
-	pb "protoconf.com/examples/go_client/crawler"
+	pb "protoconf.com/examples/crawler"
 )
 
 const (
