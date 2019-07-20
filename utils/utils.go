@@ -8,11 +8,14 @@ import (
 
 	"github.com/golang/protobuf/descriptor"
 	"github.com/golang/protobuf/jsonpb"
+	"github.com/golang/protobuf/ptypes"
+	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/desc/protoparse"
 	"github.com/jhump/protoreflect/dynamic"
 	"protoconf.com/consts"
 	protoconfvalue "protoconf.com/datatypes/proto/v1/protoconfvalue"
 	"protoconf.com/protostdlib"
+	"protoconf.com/protostdlib/secret"
 )
 
 // ReadConfig reads a materialized config
@@ -40,15 +43,20 @@ func ReadConfig(protoconfRoot string, configName string) (*protoconfvalue.Protoc
 	}
 	anyResolver := dynamic.AnyResolver(nil, descriptors[0])
 
-	if _, err := configReader.Seek(0, 0); err != nil {
+	if _, err = configReader.Seek(0, 0); err != nil {
 		return nil, err
 	}
 
 	protoconfValue := &protoconfvalue.ProtoconfValue{}
 	um := jsonpb.Unmarshaler{AnyResolver: anyResolver}
-	if err := um.Unmarshal(configReader, protoconfValue); err != nil {
+	if err = um.Unmarshal(configReader, protoconfValue); err != nil {
 		return nil, fmt.Errorf("error unmarshaling, err=%s", err)
 	}
+
+	if err = updateSecrets(protoconfValue, anyResolver); err != nil {
+		return nil, err
+	}
+
 	return protoconfValue, nil
 }
 
@@ -59,4 +67,35 @@ func MessageFQN(msg descriptor.Message) string {
 		fqn = fileDesc.GetPackage() + "." + fqn
 	}
 	return fqn
+}
+
+func updateSecrets(protoconfValue *protoconfvalue.ProtoconfValue, anyResolver jsonpb.AnyResolver) error {
+	name, err := ptypes.AnyMessageName(protoconfValue.Value)
+	if err != nil {
+		return err
+	}
+
+	value, err := anyResolver.Resolve(name)
+	if err != nil {
+		return err
+	}
+
+	message, err := dynamic.AsDynamicMessage(value)
+	if err != nil {
+		return err
+	}
+
+	secretFQN := MessageFQN(&secret.Secret{})
+	visitor := func(pos int, len int, msgDesc *desc.MessageDescriptor) {
+		if msgDesc.GetFullyQualifiedName() == secretFQN {
+			protoconfValue.Secrets = append(protoconfValue.Secrets, &protoconfvalue.SecretMetadata{Pos: int32(pos), Len: int32(len)})
+		}
+	}
+
+	d := decoder{msgDesc: message.GetMessageDescriptor(), visitor: visitor}
+	if err := d.Unmarshal(protoconfValue.Value.Value); err != nil {
+		return err
+	}
+
+	return nil
 }
