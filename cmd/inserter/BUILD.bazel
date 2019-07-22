@@ -4,7 +4,7 @@ go_binary(
     name = "inserter",
     srcs = ["main.go"],
     deps = [
-        "//command:command",
-        "//inserter:inserter",
+        "//command",
+        "//inserter",
     ],
 )

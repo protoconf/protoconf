@@ -3,38 +3,38 @@ load("@io_bazel_rules_docker//go:image.bzl", "go_image")
 load("@io_bazel_rules_docker//container:container.bzl", "container_push")
 
 go_binary(
-    name="protoconf",
-    srcs=["main.go"],
-    deps=[
-        "//agent:agent",
-        "//command:command",
-        "//compiler:compiler",
-        "//inserter:inserter",
-        "//server:server",
+    name = "protoconf",
+    srcs = ["main.go"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//agent",
+        "//command",
+        "//compiler",
+        "//inserter",
+        "//server",
         "@com_github_mitchellh_cli//:go_default_library",
     ],
-    visibility=["//visibility:public"],
 )
 
 go_image(
-    name="docker",
-    srcs=["main.go"],
-    deps=[
-        "//agent:agent",
-        "//command:command",
-        "//compiler:compiler",
-        "//inserter:inserter",
-        "//server:server",
+    name = "docker",
+    srcs = ["main.go"],
+    importpath = "protoconf.com/protoconf",
+    deps = [
+        "//agent",
+        "//command",
+        "//compiler",
+        "//inserter",
+        "//server",
         "@com_github_mitchellh_cli//:go_default_library",
     ],
-    importpath="protoconf.com/protoconf",
 )
 
 container_push(
-    name="push",
-    image=":docker",
-    format="Docker",
-    registry="index.docker.io",
-    repository="protoconf/protoconf",
-    tag="dev",
+    name = "push",
+    format = "Docker",
+    image = ":docker",
+    registry = "index.docker.io",
+    repository = "protoconf/protoconf",
+    tag = "dev",
 )

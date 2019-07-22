@@ -4,7 +4,7 @@ go_binary(
     name = "agent",
     srcs = ["main.go"],
     deps = [
-        "//agent:agent",
-        "//command:command",
+        "//agent",
+        "//command",
     ],
 )

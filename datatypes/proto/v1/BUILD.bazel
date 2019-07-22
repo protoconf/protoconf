@@ -3,10 +3,10 @@ load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
 proto_library(
     name = "protoconf_value_proto",
     srcs = ["protoconf_value.proto"],
+    visibility = ["//visibility:public"],
     deps = [
         "@com_google_protobuf//:any_proto",
     ],
-    visibility = ["//visibility:public"],
 )
 
 go_proto_library(

@@ -4,7 +4,7 @@ go_binary(
     name = "compiler",
     srcs = ["main.go"],
     deps = [
-        "//command:command",
-        "//compiler:compiler",
+        "//command",
+        "//compiler",
     ],
 )

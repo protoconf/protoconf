@@ -5,10 +5,10 @@ go_binary(
     srcs = [
         "main.go",
     ],
-    deps = [
-        "//compiler:compiler_library",
-    ],
     goarch = "wasm",
     goos = "js",
     pure = "on",
+    deps = [
+        "//compiler:compiler_library",
+    ],
 )

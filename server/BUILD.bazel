@@ -4,10 +4,12 @@ load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
 go_library(
     name = "server",
     srcs = ["server.go"],
+    importpath = "protoconf.com/server",
+    visibility = ["//visibility:public"],
     deps = [
         ":protoconf_mutation_go_proto",
-        "//command:command",
-        "//consts:consts",
+        "//command",
+        "//consts",
         "@com_github_golang_protobuf//jsonpb:go_default_library",
         "@com_github_jhump_protoreflect//desc/protoparse:go_default_library",
         "@com_github_jhump_protoreflect//dynamic:go_default_library",
@@ -15,8 +17,6 @@ go_library(
         "@org_golang_google_grpc//:go_default_library",
         "@org_golang_x_net//context:go_default_library",
     ],
-    visibility = ["//visibility:public"],
-    importpath = "protoconf.com/server",
 )
 
 go_test(
@@ -28,10 +28,10 @@ go_test(
 go_proto_library(
     name = "protoconf_mutation_go_proto",
     compiler = "@io_bazel_rules_go//proto:go_grpc",
-    deps = [
-        "//datatypes/proto/v1:protoconf_value_go_proto",
-    ],
     importpath = "protoconf.com/server/api/proto/v1/protoconfmutation",
     proto = "//server/api/proto/v1:protoconf_mutation_proto",
     visibility = ["//visibility:public"],
+    deps = [
+        "//datatypes/proto/v1:protoconf_value_go_proto",
+    ],
 )

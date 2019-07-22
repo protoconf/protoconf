@@ -4,7 +4,7 @@ go_binary(
     name = "server",
     srcs = ["main.go"],
     deps = [
-        "//command:command",
-        "//server:server",
+        "//command",
+        "//server",
     ],
 )

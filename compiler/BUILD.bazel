@@ -10,11 +10,13 @@ go_library(
         "starlark_functions.go",
         "starlark_loader.go",
     ],
+    importpath = "protoconf.com/compiler_library",
+    visibility = [":__subpackages__"],
     deps = [
         "//compiler/proto",
-        "//consts:consts",
+        "//consts",
         "//datatypes/proto/v1:protoconf_value_go_proto",
-        "//utils:utils",
+        "//utils",
         "@com_github_golang_protobuf//jsonpb:go_default_library",
         "@com_github_golang_protobuf//proto:go_default_library",
         "@com_github_golang_protobuf//protoc-gen-go/descriptor:go_default_library",
@@ -26,8 +28,6 @@ go_library(
         "@net_starlark_go//starlark:go_default_library",
         "@net_starlark_go//starlarkstruct:go_default_library",
     ],
-    importpath = "protoconf.com/compiler_library",
-    visibility = [":__subpackages__"],
 )
 
 go_library(
@@ -35,13 +35,13 @@ go_library(
     srcs = [
         "command.go",
     ],
+    embed = [":compiler_library"],
+    importpath = "protoconf.com/compiler",
+    visibility = ["//visibility:public"],
     deps = [
         "@com_github_mitchellh_cli//:go_default_library",
         "@net_starlark_go//repl:go_default_library",
     ],
-    embed = [":compiler_library"],
-    importpath = "protoconf.com/compiler",
-    visibility = ["//visibility:public"],
 )
 
 go_test(

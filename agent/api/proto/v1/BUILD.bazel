@@ -1,8 +1,8 @@
 proto_library(
     name = "protoconf_service_proto",
     srcs = ["protoconf_service.proto"],
+    visibility = ["//visibility:public"],
     deps = [
         "@com_google_protobuf//:any_proto",
     ],
-    visibility = ["//visibility:public"],
 )

@@ -11,8 +11,6 @@ load(
 )
 
 python_grpclib_compile_aspect = aspect(
-    implementation = proto_compile_aspect_impl,
-    provides = ["proto_compile", ProtoLibraryAspectNodeInfo],
     attr_aspects = ["deps"],
     attrs = dict(
         proto_compile_aspect_attrs,
@@ -25,18 +23,27 @@ python_grpclib_compile_aspect = aspect(
             ],
         ),
     ),
+    provides = [
+        "proto_compile",
+        ProtoLibraryAspectNodeInfo,
+    ],
+    implementation = proto_compile_aspect_impl,
 )
 
 _rule = rule(
-    implementation = proto_compile_impl,
     attrs = dict(
         proto_compile_attrs,
         deps = attr.label_list(
             mandatory = True,
-            providers = [ProtoInfo, "proto_compile", ProtoLibraryAspectNodeInfo],
+            providers = [
+                ProtoInfo,
+                "proto_compile",
+                ProtoLibraryAspectNodeInfo,
+            ],
             aspects = [python_grpclib_compile_aspect],
         ),
     ),
+    implementation = proto_compile_impl,
 )
 
 def python_grpclib_compile(**kwargs):
@@ -54,18 +61,18 @@ def python_grpclib_library(**kwargs):
     name_pb = name + "_pb"
     python_grpclib_compile(
         name = name_pb,
-        deps = deps,
-        visibility = visibility,
-        verbose = kwargs.pop("verbose", 0),
-        transitivity = kwargs.pop("transitivity", {}),
         transitive = kwargs.pop("transitive", True),
+        transitivity = kwargs.pop("transitivity", {}),
+        verbose = kwargs.pop("verbose", 0),
+        visibility = visibility,
+        deps = deps,
     )
 
-    native.py_library(
+    py_library(
         name = name,
         srcs = [name_pb],
-        deps = depset(protobuf_requirements + grpc_requirements).to_list(),
         # This magically adds REPOSITORY_NAME/PACKAGE_NAME/{name_pb} to PYTHONPATH
         imports = [name_pb],
         visibility = visibility,
+        deps = depset(protobuf_requirements + grpc_requirements).to_list(),
     )

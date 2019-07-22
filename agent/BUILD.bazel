@@ -4,17 +4,17 @@ load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
 go_library(
     name = "agent",
     srcs = ["agent.go"],
+    importpath = "protoconf.com/agent",
+    visibility = ["//visibility:public"],
     deps = [
         ":protoconf_service_go_proto",
-        "//command:command",
-        "//consts:consts",
-        "//libprotoconf:libprotoconf",
+        "//command",
+        "//consts",
+        "//libprotoconf",
         "@com_github_mitchellh_cli//:go_default_library",
         "@org_golang_google_grpc//:go_default_library",
         "@org_golang_x_net//context:go_default_library",
     ],
-    importpath = "protoconf.com/agent",
-    visibility = ["//visibility:public"],
 )
 
 go_proto_library(

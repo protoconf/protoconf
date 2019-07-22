@@ -1,9 +1,9 @@
 proto_library(
     name = "protoconf_mutation_proto",
     srcs = ["protoconf_mutation.proto"],
+    visibility = ["//visibility:public"],
     deps = [
         "//datatypes/proto/v1:protoconf_value_proto",
         "@com_google_protobuf//:any_proto",
     ],
-    visibility = ["//visibility:public"],
 )
