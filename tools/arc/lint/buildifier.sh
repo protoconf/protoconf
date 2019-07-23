@@ -1,3 +1,5 @@
 #!/bin/bash -e
 
-buildifier < $1
+bazel run --script_path=/tmp/buildifier buildifier
+
+/tmp/buildifier < $1
