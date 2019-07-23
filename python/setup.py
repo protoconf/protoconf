@@ -12,7 +12,12 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://gitlab.com/protoconf/protoconf/",
-    packages=['protoconf', 'protoconf.agent.api.proto.v1', 'protoconf.server.api.proto.v1', 'protoconf.datatypes.proto.v1'],
+    packages=[
+        "protoconf",
+        "protoconf.agent.api.proto.v1",
+        "protoconf.server.api.proto.v1",
+        "protoconf.datatypes.proto.v1",
+    ],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",

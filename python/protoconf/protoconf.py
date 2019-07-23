@@ -7,6 +7,7 @@ from concurrent.futures import ThreadPoolExecutor
 # Protobuf generated files use absolute imports
 import os
 import sys
+
 sys.path.append(os.path.join(os.path.dirname(__file__), "."))
 
 from agent.api.proto.v1.protoconf_service_pb2 import ConfigSubscriptionRequest
@@ -19,6 +20,7 @@ from datatypes.proto.v1.protoconf_value_pb2 import ProtoconfValue
 
 AGENT_DEFAULT_PORT = 4300
 SERVER_DEFAULT_PORT = 4301
+
 
 class Protoconf(object):
     def __init__(self, host="127.0.0.1", port=AGENT_DEFAULT_PORT):
@@ -105,7 +107,9 @@ class ProtoconfSync(object):
 
             self._loop = asyncio.new_event_loop()
             self._should_close = asyncio.Event(loop=self._loop)
-            self._asyncio_thread = threading.Thread(target=run_loop) # should this use the executor?
+            self._asyncio_thread = threading.Thread(
+                target=run_loop
+            )  # should this use the executor?
             self._asyncio_thread.start()
 
         asyncio.run_coroutine_threadsafe(async_subscribe(), self._loop)
@@ -143,11 +147,16 @@ class ProtoconfMutation(object):
         config.proto_file = value.DESCRIPTOR.file.name
         config.value.Pack(value)
 
-        await protoconf_service.MutateConfig(ConfigMutationRequest(path=path, value=config, script_metadata=script_metadata))
+        await protoconf_service.MutateConfig(
+            ConfigMutationRequest(
+                path=path, value=config, script_metadata=script_metadata
+            )
+        )
 
     def close(self):
         self._channel.close()
         self._clear_state()
+
 
 class ProtoconfMutationSync(object):
     def __init__(self, host="127.0.0.1", port=SERVER_DEFAULT_PORT):
@@ -158,6 +167,7 @@ class ProtoconfMutationSync(object):
             await self._protoconf.mutate_config(path, value, script_metadata)
 
         loop = asyncio.new_event_loop()
+
         def run_loop():
             asyncio.set_event_loop(loop)
             loop.run_until_complete(async_mutate())

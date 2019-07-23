@@ -7,6 +7,7 @@ from time import time
 # Protobuf generated files use absolute imports
 import os
 import sys
+
 sys.path.append(os.path.join(os.path.dirname(__file__), "."))
 
 from crawler.crawler_pb2 import CrawlerService, Crawler
@@ -32,10 +33,7 @@ class MutationExample(object):
         with closing(ProtoconfMutationSync()) as protoconf:
             protoconf.mutate_config(
                 "crawler/extra_crawler",
-                Crawler(
-                    user_agent="Linux/ time=%s"%int(time()),
-                    http_timeout=30,
-                ),
+                Crawler(user_agent="Linux/ time=%s" % int(time()), http_timeout=30),
                 script_metadata,
             )
 

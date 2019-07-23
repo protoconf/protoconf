@@ -2,7 +2,11 @@
   "linters": {
     "python": {
       "type": "black",
-      "include": ["(\\.py)"]
+      "include": ["(\\.py)"],
+      "exclude": [
+        "(\\_pb2.py)",
+        "(\\_grpc.py)"
+      ]
     },
     "golang": {
       "type": "govet",
