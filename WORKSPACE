@@ -203,12 +203,3 @@ load(
     docker_toolchain_configure = "toolchain_configure",
 )
 
-docker_toolchain_configure(
-    name = "docker_config",
-    # Replace this with a path to a directory which has a custom docker client
-    # config.json. Docker allows you to specify custom authentication credentials
-    # in the client configuration JSON file.
-    # See https://docs.docker.com/engine/reference/commandline/cli/#configuration-files
-    # for more details.
-    client_config = "/Users/smintz/.docker/config.json",
-)
