@@ -1,8 +1,12 @@
 {
   "linters": {
     "python": {
-      "type": "pep8",
+      "type": "black",
       "include": ["(\\.py)"]
+    },
+    "golang": {
+      "type": "govet",
+      "include": ["(\\.go)"]
     },
     "buildifier": {
       "type": "buildifier",

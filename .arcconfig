@@ -1,6 +1,7 @@
 {
   "phabricator.uri": "https://protoconf.phacility.com/",
   "load": [
+    "tools/arcanist-linters",
     "tools/arc"
   ],
   "unit.engine": "BazelTestEngine"
