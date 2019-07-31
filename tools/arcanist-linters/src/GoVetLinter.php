@@ -62,7 +62,7 @@ final class GoVetLinter extends ArcanistExternalLinter {
   }
 
   protected function getMandatoryFlags() {
-    return array('tool', 'vet');
+    return array('vet');
   }
 
   public function shouldExpectCommandErrors() {

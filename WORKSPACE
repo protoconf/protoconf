@@ -164,7 +164,7 @@ git_repository(
 
 go_rules_dependencies()
 
-go_register_toolchains()
+go_register_toolchains(nogo = "@//:protoconf_nogo")
 
 http_archive(
     name = "com_github_bazelbuild_buildtools",
@@ -197,9 +197,3 @@ load(
 )
 
 _go_image_repos()
-
-load(
-    "@io_bazel_rules_docker//toolchains/docker:toolchain.bzl",
-    docker_toolchain_configure = "toolchain_configure",
-)
-

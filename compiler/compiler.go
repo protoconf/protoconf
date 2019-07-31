@@ -101,10 +101,6 @@ func (c *compiler) writeConfig(message *dynamic.Message, filename string) error 
 		Value:     any,
 	}
 
-	if err != nil {
-		return fmt.Errorf("error converting ProtoconfValue to dynamic, err=%s", err)
-	}
-
 	// FIXME: support nested Any types by traversing FileDescriptors on starProtoMessage
 	m := &jsonpb.Marshaler{AnyResolver: dynamic.AnyResolver(nil, message.GetMessageDescriptor().GetFile()), Indent: "  "}
 	jsonData, err := m.MarshalToString(protoconfValue)

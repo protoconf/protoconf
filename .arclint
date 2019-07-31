@@ -8,10 +8,6 @@
         "(\\_grpc.py)"
       ]
     },
-    "golang": {
-      "type": "govet",
-      "include": ["(\\.go)"]
-    },
     "buildifier": {
       "type": "buildifier",
       "include": [

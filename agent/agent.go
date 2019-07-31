@@ -53,9 +53,9 @@ func (c *cliCommand) Run(args []string) int {
 		agentServer.watcher, err = libprotoconf.NewFileWatcher(config.devProtoconfRoot)
 	} else {
 		log.Printf("Connecting to %s at \"%s\", config path prefix=\"%s\"", kVConfig.Store, kVConfig.Address, kVConfig.Prefix)
-		if (kVConfig.Store == command.KVStoreConsul) {
+		if kVConfig.Store == command.KVStoreConsul {
 			agentServer.watcher, err = libprotoconf.NewKVWatcher(libprotoconf.Consul, kVConfig.Address, kVConfig.Prefix)
-		} else if (kVConfig.Store == command.KVStoreZookeeper) {
+		} else if kVConfig.Store == command.KVStoreZookeeper {
 			var address string
 			if kVConfig.Address != "" {
 				address = kVConfig.Address
@@ -160,6 +160,4 @@ func (s server) SubscribeForConfig(request *protoconfservice.ConfigSubscriptionR
 			}
 		}
 	}
-
-	return nil
 }
