@@ -1,5 +1,6 @@
 {
   "phabricator.uri": "https://protoconf.phacility.com/",
+  "git.default-relative-commit": "HEAD^",
   "load": [
     "tools/arcanist-linters",
     "tools/arc"
