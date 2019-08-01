@@ -1,0 +1,12 @@
+diff --git i/BUILD.bazel w/BUILD.bazel
+index fe131fb..6d74505 100755
+--- i/BUILD.bazel
++++ w/BUILD.bazel
+@@ -76,6 +76,7 @@ par_binary(
+     name = "digester",
+     srcs = ["tools/image_digester_.py"],
+     main = "tools/image_digester_.py",
++    python_version = "PY2",
+     visibility = ["//visibility:public"],
+     deps = [":containerregistry"],
+ )

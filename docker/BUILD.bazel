@@ -1,0 +1,16 @@
+load("@io_bazel_rules_docker//go:image.bzl", "go_image")
+load("@io_bazel_rules_docker//container:container.bzl", "container_push")
+
+go_image(
+    name = "protoconf_image",
+    embed = ["//cmd/protoconf"]
+)
+
+container_push(
+    name = "protoconf_dev",
+    format = "Docker",
+    image = ":protoconf_image",
+    registry = "index.docker.io",
+    repository = "protoconf/protoconf",
+    tag = "dev",
+)

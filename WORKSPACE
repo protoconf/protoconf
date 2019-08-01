@@ -178,6 +178,15 @@ buildifier_dependencies()
 
 # Docker
 http_archive(
+    name = "containerregistry",
+    sha256 = "a8cdf2452323e0fefa4edb01c08b2ec438c9fa3192bc9f408b89287598c12abc",
+    strip_prefix = "containerregistry-0.0.36",
+    urls = ["https://github.com/google/containerregistry/archive/v0.0.36.tar.gz"],
+    patch_args = ["-p1"],
+    patches = ["//third_party:containerregistry.patch"],
+)
+
+http_archive(
     name = "io_bazel_rules_docker",
     sha256 = "87fc6a2b128147a0a3039a2fd0b53cc1f2ed5adb8716f50756544a572999ae9a",
     strip_prefix = "rules_docker-0.8.1",
