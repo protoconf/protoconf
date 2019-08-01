@@ -1,0 +1,19 @@
+diff --git i/container/push.bzl w/container/push.bzl
+index ceac68c..984d236 100644
+--- i/container/push.bzl
++++ w/container/push.bzl
+@@ -177,12 +177,12 @@ container_push = rule(
+         ),
+         "_digester": attr.label(
+             default = "@containerregistry//:digester",
+-            cfg = "host",
++            cfg = "exec",
+             executable = True,
+         ),
+         "_pusher": attr.label(
+             default = Label("@containerregistry//:pusher"),
+-            cfg = "host",
++            cfg = "exec",
+             executable = True,
+             allow_files = True,
+         ),
