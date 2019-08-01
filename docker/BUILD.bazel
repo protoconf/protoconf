@@ -3,7 +3,7 @@ load("@io_bazel_rules_docker//go:image.bzl", "go_image")
 
 go_image(
     name = "protoconf_image",
-    embed = ["//cmd/protoconf"],
+    binary = "//cmd/protoconf",
 )
 
 container_push(
