@@ -170,8 +170,12 @@ go_register_toolchains(nogo = "@//:protoconf_nogo")
 
 http_archive(
     name = "com_github_bazelbuild_buildtools",
-    strip_prefix = "buildtools-0.28.0",
-    url = "https://github.com/bazelbuild/buildtools/archive/0.28.0.zip",
+    sha256 = "fabcd8a7f593f6dbe010fffb1d7e032438bd61342ccf0d4791e5211ea01e994a",
+    strip_prefix = "buildtools-f720930ceb608b8c0d09528440ce1adeb01e61e0",
+    urls = [
+        # Master branch as of 2019-07-31
+        "https://github.com/bazelbuild/buildtools/archive/f720930ceb608b8c0d09528440ce1adeb01e61e0.tar.gz",
+    ],
 )
 
 load("@com_github_bazelbuild_buildtools//buildifier:deps.bzl", "buildifier_dependencies")
@@ -181,20 +185,20 @@ buildifier_dependencies()
 # Docker
 http_archive(
     name = "containerregistry",
+    patch_args = ["-p1"],
+    patches = ["//third_party:containerregistry.patch"],
     sha256 = "a8cdf2452323e0fefa4edb01c08b2ec438c9fa3192bc9f408b89287598c12abc",
     strip_prefix = "containerregistry-0.0.36",
     urls = ["https://github.com/google/containerregistry/archive/v0.0.36.tar.gz"],
-    patch_args = ["-p1"],
-    patches = ["//third_party:containerregistry.patch"],
 )
 
 http_archive(
     name = "io_bazel_rules_docker",
+    patch_args = ["-p1"],
+    patches = ["//third_party:rules_docker_container_push.patch"],
     sha256 = "87fc6a2b128147a0a3039a2fd0b53cc1f2ed5adb8716f50756544a572999ae9a",
     strip_prefix = "rules_docker-0.8.1",
     urls = ["https://github.com/bazelbuild/rules_docker/archive/v0.8.1.tar.gz"],
-    patch_args = ["-p1"],
-    patches = ["//third_party:rules_docker_container_push.patch"],
 )
 
 load(

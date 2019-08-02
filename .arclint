@@ -11,10 +11,10 @@
     "buildifier": {
       "type": "buildifier",
       "include": [
-        "(^BUILD$)",
+        "((^|/)BUILD$)",
         "(\\.bzl$)",
-        "(\\.BUILD$)",
-        "(^WORKSPACE$)"
+        "(\\.bazel$)",
+        "((^|/)WORKSPACE$)"
       ]
     }
   }

@@ -2,4 +2,4 @@
 
 bazel run --script_path=/tmp/buildifier buildifier
 
-/tmp/buildifier < $1
+/tmp/buildifier -lint fix -warnings all -path $1 < $1
