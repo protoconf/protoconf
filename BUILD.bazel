@@ -2,11 +2,13 @@ load("@bazel_gazelle//:def.bzl", "gazelle")
 load("@io_bazel_rules_go//go:def.bzl", "nogo")
 
 # gazelle:prefix protoconf.com
-gazelle(name="gazelle")
+gazelle(name = "gazelle")
 
 nogo(
-    name="protoconf_nogo",
-    deps=[
+    name = "protoconf_nogo",
+    config = "//tools:nogo_config",
+    visibility = ["//visibility:public"],
+    deps = [
         "@org_golang_x_tools//go/analysis/passes/asmdecl:go_tool_library",
         "@org_golang_x_tools//go/analysis/passes/assign:go_tool_library",
         "@org_golang_x_tools//go/analysis/passes/atomic:go_tool_library",
@@ -28,6 +30,7 @@ nogo(
         "@org_golang_x_tools//go/analysis/passes/nilness:go_tool_library",
         "@org_golang_x_tools//go/analysis/passes/pkgfact:go_tool_library",
         "@org_golang_x_tools//go/analysis/passes/printf:go_tool_library",
+        "@org_golang_x_tools//go/analysis/passes/shadow:go_tool_library",
         "@org_golang_x_tools//go/analysis/passes/shift:go_tool_library",
         "@org_golang_x_tools//go/analysis/passes/stdmethods:go_tool_library",
         "@org_golang_x_tools//go/analysis/passes/structtag:go_tool_library",
@@ -36,12 +39,15 @@ nogo(
         "@org_golang_x_tools//go/analysis/passes/unreachable:go_tool_library",
         "@org_golang_x_tools//go/analysis/passes/unsafeptr:go_tool_library",
         "@org_golang_x_tools//go/analysis/passes/unusedresult:go_tool_library",
-        "@org_golang_x_tools//go/analysis/passes/shadow:go_tool_library",
     ],
-    config = "//tools:nogo_config",
-    visibility=["//visibility:public"],
 )
 
-alias(name="protoconf", actual="//cmd/protoconf")
+alias(
+    name = "protoconf",
+    actual = "//cmd/protoconf",
+)
 
-alias(name="buildifier", actual="@com_github_bazelbuild_buildtools//buildifier")
+alias(
+    name = "buildifier",
+    actual = "@com_github_bazelbuild_buildtools//buildifier",
+)

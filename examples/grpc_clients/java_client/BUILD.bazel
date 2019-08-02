@@ -1,5 +1,6 @@
-load("@build_stack_rules_proto//java:java_proto_library.bzl", "java_proto_library")
 load("@build_stack_rules_proto//java:java_grpc_library.bzl", "java_grpc_library")
+load("@build_stack_rules_proto//java:java_proto_library.bzl", "java_proto_library")
+load("@rules_java//java:defs.bzl", "java_binary")
 
 java_proto_library(
     name = "crawler_java_proto",

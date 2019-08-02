@@ -13,4 +13,3 @@ go_binary(
         "@com_github_mitchellh_cli//:go_default_library",
     ],
 )
-

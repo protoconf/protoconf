@@ -1,7 +1,7 @@
-load("@build_stack_rules_proto//python:python_proto_library.bzl", "python_proto_library")
-load("@protoconf_pip_install//:requirements.bzl", "requirement")
 load("@build_stack_rules_proto//:plugin.bzl", "proto_plugin")
+load("@build_stack_rules_proto//python:python_proto_library.bzl", "python_proto_library")
 load("@protobuf_py_deps//:requirements.bzl", protobuf_requirements = "all_requirements")
+load("@protoconf_pip_install//:requirements.bzl", "requirement")
 load(":python_grpclib_library.bzl", "python_grpclib_library")
 
 py_binary(
