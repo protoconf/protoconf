@@ -8,6 +8,7 @@ import (
 
 	"github.com/golang/protobuf/descriptor"
 	"github.com/golang/protobuf/jsonpb"
+	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/desc/protoparse"
@@ -67,6 +68,61 @@ func MessageFQN(msg descriptor.Message) string {
 		fqn = fileDesc.GetPackage() + "." + fqn
 	}
 	return fqn
+}
+
+func ReplaceProtoBytes(protoBytes []byte, pos int, length int, replacement []byte) ([]byte, error) {
+	cb := newCodedBuffer(protoBytes)
+	ret := &codedBuffer{}
+
+	for {
+		start := cb.index
+		_, wireType, err := cb.decodeTagAndWireType()
+		if err != nil {
+			return nil, err
+		}
+
+		dataStart := cb.index
+		if err = unmarshalUnknownField(wireType, cb); err != nil {
+			return nil, err
+		}
+		end := cb.index
+
+		if (wireType != proto.WireBytes && wireType != proto.WireStartGroup) || end < pos {
+			ret.buf = append(ret.buf, cb.buf[start:end]...)
+			ret.index = len(ret.buf)
+			continue
+		}
+
+		cb.index = dataStart
+		oldLength, err := cb.decodeVarint()
+		if err != nil {
+			return nil, err
+		}
+
+		var newBytes []byte
+		if cb.index == pos {
+			if wireType != proto.WireBytes {
+				return nil, fmt.Errorf("expecting wire type bytes got=%d", wireType)
+			}
+			if int(oldLength) != length {
+				return nil, fmt.Errorf("expecting length=%d got=%d", length, oldLength)
+			}
+			newBytes = replacement
+		} else {
+			newBytes, err = ReplaceProtoBytes(cb.buf[cb.index:cb.index+int(oldLength)], pos-cb.index, length, replacement)
+			if err != nil {
+				return nil, err
+			}
+		}
+		ret.buf = append(ret.buf, cb.buf[start:dataStart]...)
+		ret.index = len(ret.buf)
+		if err = ret.encodeRawBytes(newBytes); err != nil {
+			return nil, err
+		}
+		ret.buf = append(ret.buf, cb.buf[end:]...)
+		ret.index = len(ret.buf)
+		return ret.buf, nil
+	}
 }
 
 func updateSecrets(protoconfValue *protoconfvalue.ProtoconfValue, anyResolver jsonpb.AnyResolver) error {
