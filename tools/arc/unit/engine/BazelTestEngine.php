@@ -56,7 +56,7 @@ final class BazelTestEngine extends ArcanistUnitTestEngine {
 
     $cmd = $this->bazelCommand("query", ["%s"]);
     $tag_filter = join("|", self::$omit_tags);
-    $query = 'rdeps(//..., set('.$files.')) except attr(tags, "'.$tag_filter.'", //...)';
+    $query = 'same_pkg_direct_rdeps(set('.$files.')) except attr(tags, "'.$tag_filter.'", //...)';
     $this->debugPrint($query);
     $future = new ExecFuture($cmd, $query);
     $future->setCWD($this->project_root);

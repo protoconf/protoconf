@@ -161,7 +161,7 @@ func (l *starlarkLoader) loadMutable(modulePath string) (starlark.StringDict, er
 
 	protoconfValue := &pc.ProtoconfValue{}
 	um := jsonpb.Unmarshaler{AnyResolver: anyResolver}
-	if err := um.Unmarshal(ioutil.NopCloser(bytes.NewReader(jsonData)), protoconfValue); err != nil {
+	if err = um.Unmarshal(ioutil.NopCloser(bytes.NewReader(jsonData)), protoconfValue); err != nil {
 		return nil, fmt.Errorf("error unmarshaling, err=%s", err)
 	}
 
@@ -175,7 +175,7 @@ func (l *starlarkLoader) loadMutable(modulePath string) (starlark.StringDict, er
 		return nil, err
 	}
 
-	if err := ptypes.UnmarshalAny(protoconfValue.Value, value); err != nil {
+	if err = ptypes.UnmarshalAny(protoconfValue.Value, value); err != nil {
 		return nil, err
 	}
 

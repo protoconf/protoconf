@@ -28,7 +28,7 @@ func ReadConfig(protoconfRoot string, configName string) (*protoconfvalue.Protoc
 		ProtoFile string
 	}
 	var configJSON configJSONType
-	if err := json.NewDecoder(configReader).Decode(&configJSON); err != nil {
+	if err = json.NewDecoder(configReader).Decode(&configJSON); err != nil {
 		return nil, err
 	}
 
