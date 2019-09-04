@@ -1,54 +1,21 @@
-load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
-
-go_library(
-    name = "compiler_library",
-    srcs = [
-        "compiler.go",
-        "config.go",
-        "filesystem.go",
-        "filesystem_js.go",
-        "starlark_functions.go",
-        "starlark_loader.go",
-    ],
-    importpath = "protoconf.com/compiler_library",
-    visibility = [":__subpackages__"],
-    deps = [
-        "//compiler/proto",
-        "//consts",
-        "//datatypes/proto/v1:protoconf_value_go_proto",
-        "//proto_std_lib",
-        "//proto_std_lib:secret_go_proto",
-        "//utils",
-        "@com_github_golang_protobuf//jsonpb:go_default_library",
-        "@com_github_golang_protobuf//proto:go_default_library",
-        "@com_github_golang_protobuf//protoc-gen-go/descriptor:go_default_library",
-        "@com_github_golang_protobuf//ptypes:go_default_library",
-        "@com_github_jhump_protoreflect//desc:go_default_library",
-        "@com_github_jhump_protoreflect//desc/protoparse:go_default_library",
-        "@com_github_jhump_protoreflect//dynamic:go_default_library",
-        "@net_starlark_go//resolve:go_default_library",
-        "@net_starlark_go//starlark:go_default_library",
-        "@net_starlark_go//starlarkstruct:go_default_library",
-    ],
-)
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
 
 go_library(
     name = "compiler",
-    srcs = [
-        "command.go",
-    ],
-    embed = [":compiler_library"],
+    embed = [":go_default_library"],
+    visibility = ["//visibility:public"],
+)
+
+go_library(
+    name = "go_default_library",
+    srcs = ["command.go"],
     importpath = "protoconf.com/compiler",
     visibility = ["//visibility:public"],
     deps = [
+        "//compiler/lib:go_default_library",
+        "//consts",
         "@com_github_mitchellh_cli//:go_default_library",
         "@net_starlark_go//repl:go_default_library",
+        "@net_starlark_go//starlark:go_default_library",
     ],
-)
-
-go_test(
-    name = "compiler_test",
-    srcs = ["compiler_test.go"],
-    data = glob(["testdata/**"]),
-    importpath = "protoconf.com/compiler/test",
 )

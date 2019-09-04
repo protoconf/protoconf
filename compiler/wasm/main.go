@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"syscall/js"
 
-	compiler "protoconf.com/compiler_library"
+	compiler "protoconf.com/compiler/lib"
 )
 
 func compile(this js.Value, args []js.Value) interface{} {

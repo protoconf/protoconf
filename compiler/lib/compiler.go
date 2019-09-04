@@ -1,4 +1,4 @@
-package compiler
+package lib
 
 import (
 	"fmt"
@@ -16,7 +16,7 @@ import (
 	pc "protoconf.com/datatypes/proto/v1/protoconfvalue"
 )
 
-func NewCompiler(protoconfRoot string, verboseLogging bool) *compiler {
+func NewCompiler(protoconfRoot string, verboseLogging bool) *Compiler {
 	resolve.AllowNestedDef = true      // allow def statements within function bodies
 	resolve.AllowLambda = true         // allow lambda expressions
 	resolve.AllowFloat = true          // allow floating point literals, the 'float' built-in, and x / y
@@ -24,18 +24,18 @@ func NewCompiler(protoconfRoot string, verboseLogging bool) *compiler {
 	resolve.AllowGlobalReassign = true // allow reassignment to top-level names; also, allow if/for/while at top-level
 	resolve.AllowRecursion = true      // allow while statements and recursive functions
 
-	return &compiler{
+	return &Compiler{
 		protoconfRoot:  protoconfRoot,
 		verboseLogging: verboseLogging,
 	}
 }
 
-type compiler struct {
+type Compiler struct {
 	protoconfRoot  string
 	verboseLogging bool
 }
 
-func (c *compiler) CompileFile(filename string) error {
+func (c *Compiler) CompileFile(filename string) error {
 	multiConfig := false
 	if strings.HasSuffix(filename, consts.ConfigExtension) {
 	} else if strings.HasSuffix(filename, consts.MultiConfigExtension) {
@@ -90,7 +90,7 @@ func (c *compiler) CompileFile(filename string) error {
 	return nil
 }
 
-func (c *compiler) writeConfig(message *dynamic.Message, filename string) error {
+func (c *Compiler) writeConfig(message *dynamic.Message, filename string) error {
 	any, err := ptypes.MarshalAny(message)
 	if err != nil {
 		return fmt.Errorf("error marshaling proto to Any, message=%s", message)
@@ -124,7 +124,7 @@ func (c *compiler) writeConfig(message *dynamic.Message, filename string) error 
 	return nil
 }
 
-func (c *compiler) runConfig(filename string) (starlark.Value, *config, error) {
+func (c *Compiler) runConfig(filename string) (starlark.Value, *config, error) {
 	configFile, err := c.load(filename)
 
 	if err != nil {
@@ -139,9 +139,9 @@ func (c *compiler) runConfig(filename string) (starlark.Value, *config, error) {
 	return mainOutput, configFile, nil
 }
 
-func (c *compiler) load(filename string) (*config, error) {
+func (c *Compiler) load(filename string) (*config, error) {
 
-	loader := c.getLoader()
+	loader := c.GetLoader()
 	locals, validators, err := loader.loadConfig(filepath.ToSlash(filename))
 	if err != nil {
 		return nil, err
@@ -154,10 +154,10 @@ func (c *compiler) load(filename string) (*config, error) {
 	}, nil
 }
 
-func (c *compiler) getLoader() *starlarkLoader {
+func (c *Compiler) GetLoader() *starlarkLoader {
 	return &starlarkLoader{
 		cache:            make(map[string]*cacheEntry),
-		modules:          getModules(),
+		Modules:          getModules(),
 		mutableDir:       filepath.Join(c.protoconfRoot, consts.MutableConfigPath),
 		protoFilesLoaded: &[]string{},
 		srcDir:           filepath.Join(c.protoconfRoot, consts.SrcPath),

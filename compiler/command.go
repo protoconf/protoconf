@@ -13,6 +13,7 @@ import (
 	"go.starlark.net/repl"
 	"go.starlark.net/starlark"
 	"protoconf.com/consts"
+	compilerlib "protoconf.com/compiler/lib"
 )
 
 type cliCommand struct{}
@@ -46,10 +47,10 @@ func (c *cliCommand) Run(args []string) int {
 	}
 
 	protoconfRoot := strings.TrimSpace(flags.Args()[0])
-	compiler := NewCompiler(protoconfRoot, config.verboseLogging)
+	compiler := compilerlib.NewCompiler(protoconfRoot, config.verboseLogging)
 
 	if config.repl {
-		compiler.REPL()
+		REPL(compiler)
 		return 0
 	}
 
@@ -118,13 +119,13 @@ func getAllConfigs(protoconfRoot string) ([]string, error) {
 	return configs, nil
 }
 
-func (c *compiler) REPL() {
+func REPL(c *compilerlib.Compiler) {
 	fmt.Printf("Protoconf %s\n", consts.Version)
 
-	loader := c.getLoader()
+	loader := c.GetLoader()
 	thread := &starlark.Thread{
-		Load: loader.load,
+		Load: loader.Load,
 	}
 
-	repl.REPL(thread, loader.modules)
+	repl.REPL(thread, loader.Modules)
 }

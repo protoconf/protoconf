@@ -9,7 +9,7 @@
   "buildtag": { "exclude_files": { "external/.*": "" }},
   "cgocall": { "exclude_files": { "external/.*": "" }},
   "composites": { "exclude_files": { "external/.*": "" }},
-  "copylock": { "exclude_files": { "external/.*": "" }},
+  "copylocks": { "exclude_files": { "external/.*": "" }},
   "ctrlflow": { "exclude_files": { "external/.*": "" }},
   "deepequalerrors": { "exclude_files": { "external/.*": "" }},
   "findcall": { "exclude_files": { "external/.*": "" }},

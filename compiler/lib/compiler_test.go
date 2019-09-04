@@ -1,4 +1,4 @@
-package compiler
+package lib
 
 import (
 	"testing"

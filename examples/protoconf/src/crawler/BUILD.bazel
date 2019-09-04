@@ -1,0 +1,25 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
+load("@rules_proto//proto:defs.bzl", "proto_library")
+
+proto_library(
+    name = "crawler_proto",
+    srcs = ["crawler.proto"],
+    visibility = ["//visibility:public"],
+    deps = ["//:root_proto"],
+)
+
+go_proto_library(
+    name = "crawler_go_proto",
+    importpath = "protoconf.com/examples/protoconf/src/crawler",
+    proto = ":crawler_proto",
+    visibility = ["//visibility:public"],
+    deps = ["//:go_default_library"],
+)
+
+go_library(
+    name = "go_default_library",
+    embed = [":crawler_go_proto"],
+    importpath = "protoconf.com/examples/protoconf/src/crawler",
+    visibility = ["//visibility:public"],
+)

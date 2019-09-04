@@ -1,4 +1,4 @@
-package compiler
+package lib
 
 import (
 	"bytes"
@@ -28,7 +28,7 @@ type cacheEntry struct {
 
 type starlarkLoader struct {
 	cache            map[string]*cacheEntry
-	modules          starlark.StringDict
+	Modules          starlark.StringDict
 	mutableDir       string
 	protoFilesLoaded *[]string
 	srcDir           string
@@ -45,10 +45,10 @@ func (l *starlarkLoader) protoAccessor(name string) (io.ReadCloser, error) {
 func (l *starlarkLoader) loadConfig(moduleName string) (starlark.StringDict, map[string]*starlark.Function, error) {
 	thread := &starlark.Thread{
 		Print: starPrint,
-		Load:  l.load,
+		Load:  l.Load,
 	}
 
-	locals, err := l.load(thread, moduleName)
+	locals, err := l.Load(thread, moduleName)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -61,7 +61,7 @@ func (l *starlarkLoader) loadConfig(moduleName string) (starlark.StringDict, map
 	return locals, validators, nil
 }
 
-func (l *starlarkLoader) load(thread *starlark.Thread, moduleName string) (starlark.StringDict, error) {
+func (l *starlarkLoader) Load(thread *starlark.Thread, moduleName string) (starlark.StringDict, error) {
 	var fromPath string
 	if thread.CallStackDepth() > 0 {
 		fromPath = thread.CallFrame(0).Pos.Filename()
@@ -90,7 +90,7 @@ func (l *starlarkLoader) load(thread *starlark.Thread, moduleName string) (starl
 func (l *starlarkLoader) loadValidators() (map[string]*starlark.Function, error) {
 	validators := make(map[string]*starlark.Function)
 
-	l.modules["add_validator"] = starlark.NewBuiltin("add_validator", starAddValidator(&validators))
+	l.Modules["add_validator"] = starlark.NewBuiltin("add_validator", starAddValidator(&validators))
 	for _, protoFile := range *l.protoFilesLoaded {
 		validatorFile := protoFile + consts.ValidatorExtensionSuffix
 		validatorAbsPath := filepath.Join(l.srcDir, validatorFile)
@@ -103,10 +103,10 @@ func (l *starlarkLoader) loadValidators() (map[string]*starlark.Function, error)
 		}
 		thread := &starlark.Thread{
 			Print: starPrint,
-			Load:  l.load,
+			Load:  l.Load,
 		}
 
-		if _, err := l.load(thread, filepath.ToSlash(validatorFile)); err != nil {
+		if _, err := l.Load(thread, filepath.ToSlash(validatorFile)); err != nil {
 			return nil, err
 		}
 	}
@@ -214,7 +214,7 @@ func (l *starlarkLoader) loadStarlark(thread *starlark.Thread, modulePath string
 		return nil, err
 	}
 
-	return starlark.ExecFile(thread, modulePath, moduleSource, l.modules)
+	return starlark.ExecFile(thread, modulePath, moduleSource, l.Modules)
 }
 
 func toCanonicalPath(name string, fromPath string) (string, error) {

@@ -51,3 +51,16 @@ alias(
     name = "buildifier",
     actual = "@com_github_bazelbuild_buildtools//buildifier",
 )
+
+# `root_proto` and `go_default_library` helps with compiling examples which uses `import "secret.proto"`
+alias(
+    name = "root_proto",
+    actual = "//protostdlib/secret:secret_proto",
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "go_default_library",
+    actual = "//protostdlib/secret:go_default_library",
+    visibility = ["//visibility:public"],
+)

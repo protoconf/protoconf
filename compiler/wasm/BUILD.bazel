@@ -1,14 +1,13 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_binary")
 
+# gazelle:exclude
+
 go_binary(
     name = "wasm",
-    srcs = [
-        "main.go",
-    ],
+    srcs = ["main.go"],
     goarch = "wasm",
     goos = "js",
     pure = "on",
-    deps = [
-        "//compiler:compiler_library",
-    ],
+    visibility = ["//visibility:public"],
+    deps = ["//compiler/lib:go_default_library"],
 )

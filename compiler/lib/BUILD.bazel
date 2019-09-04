@@ -1,26 +1,38 @@
-load("@io_bazel_rules_go//go:def.bzl", "go_library")
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
-    name = "utils",
+    name = "go_default_library",
     srcs = [
-        "binary.go",
-        "codec.go",
-        "utils.go",
+        "compiler.go",
+        "config.go",
+        "filesystem.go",
+        "filesystem_js.go",
+        "starlark_functions.go",
+        "starlark_loader.go",
     ],
-    importpath = "protoconf.com/utils",
+    importpath = "protoconf.com/compiler/lib",
     visibility = ["//visibility:public"],
     deps = [
+        "//compiler/proto",
         "//consts",
         "//datatypes/proto/v1:protoconf_value_go_proto",
         "//protostdlib:go_default_library",
         "//protostdlib/secret:go_default_library",
-        "@com_github_golang_protobuf//descriptor:go_default_library_gen",
+        "//utils",
         "@com_github_golang_protobuf//jsonpb:go_default_library_gen",
         "@com_github_golang_protobuf//proto:go_default_library",
         "@com_github_golang_protobuf//ptypes:go_default_library_gen",
-        "@com_github_jhump_protoreflect//desc:go_default_library",
         "@com_github_jhump_protoreflect//desc/protoparse:go_default_library",
         "@com_github_jhump_protoreflect//dynamic:go_default_library",
         "@io_bazel_rules_go//proto/wkt:descriptor_go_proto",
+        "@net_starlark_go//resolve:go_default_library",
+        "@net_starlark_go//starlark:go_default_library",
+        "@net_starlark_go//starlarkstruct:go_default_library",
     ],
+)
+
+go_test(
+    name = "go_default_test",
+    srcs = ["compiler_test.go"],
+    embed = [":go_default_library"],
 )

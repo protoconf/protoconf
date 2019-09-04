@@ -1,16 +1,23 @@
-load("@io_bazel_rules_go//go:def.bzl", "go_binary")
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
 
 go_binary(
     name = "go_client",
+    embed = [":go_default_library"],
+    visibility = ["//visibility:public"],
+)
+
+go_library(
+    name = "go_default_library",
     srcs = ["main.go"],
+    importpath = "protoconf.com/examples/mutation/go_client",
+    visibility = ["//visibility:private"],
     deps = [
-        "//agent:protoconf_service_go_proto",
         "//consts",
         "//datatypes/proto/v1:protoconf_value_go_proto",
-        "//examples:crawler_go_proto",
+        "//examples/protoconf/src/crawler:go_default_library",
         "//server:protoconf_mutation_go_proto",
-        "@com_github_golang_protobuf//descriptor:go_default_library",
-        "@com_github_golang_protobuf//ptypes:go_default_library",
+        "@com_github_golang_protobuf//descriptor:go_default_library_gen",
+        "@com_github_golang_protobuf//ptypes:go_default_library_gen",
         "@org_golang_google_grpc//:go_default_library",
         "@org_golang_x_net//context:go_default_library",
     ],

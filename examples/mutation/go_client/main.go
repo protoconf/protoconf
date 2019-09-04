@@ -12,7 +12,7 @@ import (
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"protoconf.com/consts"
-	pb "protoconf.com/examples/crawler"
+	pb "protoconf.com/examples/protoconf/src/crawler"
 	pc "protoconf.com/server/api/proto/v1/protoconfmutation"
 	pv "protoconf.com/datatypes/proto/v1/protoconfvalue"
 )

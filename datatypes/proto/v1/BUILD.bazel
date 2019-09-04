@@ -1,3 +1,4 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
 load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
 load("@rules_proto//proto:defs.bzl", "proto_library")
 
@@ -15,5 +16,26 @@ go_proto_library(
     compiler = "@io_bazel_rules_go//proto:go_grpc",
     importpath = "protoconf.com/datatypes/proto/v1/protoconfvalue",
     proto = ":protoconf_value_proto",
+    visibility = ["//visibility:public"],
+)
+
+proto_library(
+    name = "v1_proto",
+    srcs = ["protoconf_value.proto"],
+    visibility = ["//visibility:public"],
+    deps = ["@com_google_protobuf//:any_proto"],
+)
+
+go_proto_library(
+    name = "v1_go_proto",
+    importpath = "protoconf.com/datatypes/proto/v1",
+    proto = ":v1_proto",
+    visibility = ["//visibility:public"],
+)
+
+go_library(
+    name = "go_default_library",
+    embed = [":v1_go_proto"],
+    importpath = "protoconf.com/datatypes/proto/v1",
     visibility = ["//visibility:public"],
 )

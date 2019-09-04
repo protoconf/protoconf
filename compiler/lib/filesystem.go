@@ -1,6 +1,6 @@
 // +build !js
 
-package compiler
+package lib
 
 import (
 	"io"
