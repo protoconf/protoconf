@@ -5,4 +5,7 @@ go_library(
     srcs = ["consts.go"],
     importpath = "protoconf.com/consts",
     visibility = ["//visibility:public"],
+    x_defs = {
+        "Version": "{STABLE_SCM_RELEASE}",
+    },
 )

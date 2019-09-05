@@ -4,13 +4,50 @@ load("@io_bazel_rules_docker//go:image.bzl", "go_image")
 go_image(
     name = "protoconf_image",
     binary = "//cmd/protoconf",
+    goarch = "amd64",
+    goos = "linux",
 )
 
 container_push(
-    name = "protoconf_dev",
+    name = "protoconf_release",
     format = "Docker",
     image = ":protoconf_image",
     registry = "index.docker.io",
     repository = "protoconf/protoconf",
-    tag = "dev",
+    tag = "{STABLE_SCM_RELEASE}",
+    visibility = ["//visibility:public"],
+)
+
+go_image(
+    name = "agent_image",
+    binary = "//cmd/agent",
+    goarch = "amd64",
+    goos = "linux",
+)
+
+container_push(
+    name = "agent_release",
+    format = "Docker",
+    image = ":agent_image",
+    registry = "index.docker.io",
+    repository = "protoconf/agent",
+    tag = "{STABLE_SCM_RELEASE}",
+    visibility = ["//visibility:public"],
+)
+
+go_image(
+    name = "server_image",
+    binary = "//cmd/server",
+    goarch = "amd64",
+    goos = "linux",
+)
+
+container_push(
+    name = "server_release",
+    format = "Docker",
+    image = ":server_image",
+    registry = "index.docker.io",
+    repository = "protoconf/server",
+    tag = "{STABLE_SCM_RELEASE}",
+    visibility = ["//visibility:public"],
 )

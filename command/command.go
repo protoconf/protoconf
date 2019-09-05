@@ -36,7 +36,7 @@ func run(commandName string, args []string, subcommands map[string]cli.CommandFa
 		}
 	}
 
-	c := cli.NewCLI(commandName, consts.Version)
+	c := cli.NewCLI(commandName, commandName+" "+consts.Version)
 	c.Args = args
 	c.Commands = subcommands
 
@@ -49,15 +49,15 @@ func run(commandName string, args []string, subcommands map[string]cli.CommandFa
 }
 
 const (
-	KVStoreConsul = "consul"
+	KVStoreConsul    = "consul"
 	KVStoreZookeeper = "zookeeper"
 )
 
 // KVStoreConfig holds the key-value store configuration set from the command line
 type KVStoreConfig struct {
 	Address string
-	Store string
-	Prefix string
+	Store   string
+	Prefix  string
 }
 
 // AddKVStoreFlags adds to an existing flagset the command lines flags to configure the key-value store connection

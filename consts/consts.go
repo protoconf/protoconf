@@ -1,5 +1,7 @@
 package consts
 
+var Version = "0.0.1"
+
 const (
 	AgentDefaultAddress      = ":4300"
 	CompiledConfigExtension  = ".materialized_JSON"
@@ -12,6 +14,5 @@ const (
 	ServerDefaultAddress     = ":4301"
 	SrcPath                  = "src/"
 	ValidatorExtensionSuffix = "-validator"
-	Version                  = "0.0.1"
 	ZookeeperDefaultAddress  = "127.0.0.1:2181"
 )

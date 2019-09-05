@@ -52,6 +52,23 @@ alias(
     actual = "@com_github_bazelbuild_buildtools//buildifier",
 )
 
+genrule(
+    name = "release",
+    outs = ["out.txt"],
+    cmd = "&&".join([
+        "$(location //docker:protoconf_release)",
+        "$(location //docker:agent_release)",
+        "$(location //docker:server_release)",
+        "echo 'echo done' > $@",
+    ]),
+    exec_tools = [
+        "//docker:protoconf_release",
+        "//docker:agent_release",
+        "//docker:server_release",
+    ],
+    executable = True,
+)
+
 # `root_proto` and `go_default_library` helps with compiling examples which uses `import "secret.proto"`
 alias(
     name = "root_proto",
