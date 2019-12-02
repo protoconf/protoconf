@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/mitchellh/cli"
-	"protoconf.com/consts"
+	"github.com/protoconf/protoconf/consts"
 )
 
 // RunCommand runs a single command

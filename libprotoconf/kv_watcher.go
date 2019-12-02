@@ -8,7 +8,7 @@ import (
 	"github.com/docker/libkv/store/consul"
 	"github.com/docker/libkv/store/zookeeper"
 	"github.com/golang/protobuf/proto"
-	protoconfvalue "protoconf.com/datatypes/proto/v1/protoconfvalue"
+	protoconfvalue "github.com/protoconf/protoconf/datatypes/proto/v1/protoconfvalue"
 )
 
 type KVStore int

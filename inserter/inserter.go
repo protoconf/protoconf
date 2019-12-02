@@ -14,9 +14,9 @@ import (
 	"github.com/docker/libkv/store/zookeeper"
 	"github.com/golang/protobuf/proto"
 	"github.com/mitchellh/cli"
-	"protoconf.com/command"
-	"protoconf.com/consts"
-	"protoconf.com/utils"
+	"github.com/protoconf/protoconf/command"
+	"github.com/protoconf/protoconf/consts"
+	"github.com/protoconf/protoconf/utils"
 )
 
 type cliCommand struct{}

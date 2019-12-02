@@ -9,10 +9,10 @@ go_binary(
 go_library(
     name = "go_default_library",
     srcs = ["main.go"],
-    importpath = "protoconf.com/cmd/agent",
+    importpath = "github.com/protoconf/protoconf/cmd/agent",
     visibility = ["//visibility:private"],
     deps = [
-        "//agent",
-        "//command",
+        "//agent:go_default_library",
+        "//command:go_default_library",
     ],
 )

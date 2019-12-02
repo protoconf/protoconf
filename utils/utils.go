@@ -13,10 +13,10 @@ import (
 	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/desc/protoparse"
 	"github.com/jhump/protoreflect/dynamic"
-	"protoconf.com/consts"
-	protoconfvalue "protoconf.com/datatypes/proto/v1/protoconfvalue"
-	"protoconf.com/protostdlib"
-	"protoconf.com/protostdlib/secret"
+	"github.com/protoconf/protoconf/consts"
+	protoconfvalue "github.com/protoconf/protoconf/datatypes/proto/v1/protoconfvalue"
+	"github.com/protoconf/protoconf/protostdlib"
+	"github.com/protoconf/protoconf/protostdlib/secret"
 )
 
 // ReadConfig reads a materialized config

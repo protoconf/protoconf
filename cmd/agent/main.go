@@ -1,8 +1,8 @@
 package main
 
 import (
-	"protoconf.com/command"
-	"protoconf.com/agent"
+	"github.com/protoconf/protoconf/agent"
+	"github.com/protoconf/protoconf/command"
 )
 
 func main() {

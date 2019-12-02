@@ -9,11 +9,11 @@ import (
 	"net"
 
 	"github.com/mitchellh/cli"
+	protoconfservice "github.com/protoconf/protoconf/agent/api/proto/v1/protoconfservice"
+	"github.com/protoconf/protoconf/command"
+	"github.com/protoconf/protoconf/consts"
+	"github.com/protoconf/protoconf/libprotoconf"
 	"google.golang.org/grpc"
-	protoconfservice "protoconf.com/agent/api/proto/v1/protoconfservice"
-	"protoconf.com/command"
-	"protoconf.com/consts"
-	"protoconf.com/libprotoconf"
 )
 
 type cliCommand struct{}

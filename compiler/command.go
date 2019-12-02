@@ -10,10 +10,10 @@ import (
 	"strings"
 
 	"github.com/mitchellh/cli"
+	compilerlib "github.com/protoconf/protoconf/compiler/lib"
+	"github.com/protoconf/protoconf/consts"
 	"go.starlark.net/repl"
 	"go.starlark.net/starlark"
-	"protoconf.com/consts"
-	compilerlib "protoconf.com/compiler/lib"
 )
 
 type cliCommand struct{}

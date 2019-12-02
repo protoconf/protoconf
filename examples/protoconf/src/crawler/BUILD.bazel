@@ -11,7 +11,7 @@ proto_library(
 
 go_proto_library(
     name = "crawler_go_proto",
-    importpath = "protoconf.com/examples/protoconf/src/crawler",
+    importpath = "github.com/protoconf/protoconf/examples/protoconf/src/crawler",
     proto = ":crawler_proto",
     visibility = ["//visibility:public"],
     deps = ["//:go_default_library"],
@@ -20,6 +20,6 @@ go_proto_library(
 go_library(
     name = "go_default_library",
     embed = [":crawler_go_proto"],
-    importpath = "protoconf.com/examples/protoconf/src/crawler",
+    importpath = "github.com/protoconf/protoconf/examples/protoconf/src/crawler",
     visibility = ["//visibility:public"],
 )

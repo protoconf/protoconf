@@ -9,11 +9,11 @@ import (
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/jhump/protoreflect/dynamic"
+	"github.com/protoconf/protoconf/compiler/proto"
+	"github.com/protoconf/protoconf/consts"
+	pc "github.com/protoconf/protoconf/datatypes/proto/v1/protoconfvalue"
 	"go.starlark.net/resolve"
 	"go.starlark.net/starlark"
-	"protoconf.com/compiler/proto"
-	"protoconf.com/consts"
-	pc "protoconf.com/datatypes/proto/v1/protoconfvalue"
 )
 
 func NewCompiler(protoconfRoot string, verboseLogging bool) *Compiler {

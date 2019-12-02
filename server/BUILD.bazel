@@ -10,11 +10,11 @@ go_library(
 go_library(
     name = "go_default_library",
     srcs = ["server.go"],
-    importpath = "protoconf.com/server",
+    importpath = "github.com/protoconf/protoconf/server",
     visibility = ["//visibility:public"],
     deps = [
         ":protoconf_mutation_go_proto",
-        "//consts",
+        "//consts:go_default_library",
         "//protostdlib:go_default_library",
         "@com_github_golang_protobuf//jsonpb:go_default_library_gen",
         "@com_github_jhump_protoreflect//desc/protoparse:go_default_library",
@@ -27,7 +27,7 @@ go_library(
 go_proto_library(
     name = "protoconf_mutation_go_proto",
     compiler = "@io_bazel_rules_go//proto:go_grpc",
-    importpath = "protoconf.com/server/api/proto/v1/protoconfmutation",
+    importpath = "github.com/protoconf/protoconf/server/api/proto/v1/protoconfmutation",
     proto = "//server/api/proto/v1:protoconf_mutation_proto",
     visibility = ["//visibility:public"],
     deps = [

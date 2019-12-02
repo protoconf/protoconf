@@ -14,11 +14,11 @@ import (
 	"github.com/golang/protobuf/ptypes"
 	"github.com/jhump/protoreflect/desc/protoparse"
 	"github.com/jhump/protoreflect/dynamic"
+	"github.com/protoconf/protoconf/compiler/proto"
+	"github.com/protoconf/protoconf/consts"
+	pc "github.com/protoconf/protoconf/datatypes/proto/v1/protoconfvalue"
+	"github.com/protoconf/protoconf/protostdlib"
 	"go.starlark.net/starlark"
-	"protoconf.com/compiler/proto"
-	"protoconf.com/consts"
-	"protoconf.com/protostdlib"
-	pc "protoconf.com/datatypes/proto/v1/protoconfvalue"
 )
 
 type cacheEntry struct {

@@ -9,13 +9,13 @@ go_binary(
 go_library(
     name = "go_default_library",
     srcs = ["main.go"],
-    importpath = "protoconf.com/cmd/protoconf",
+    importpath = "github.com/protoconf/protoconf/cmd/protoconf",
     visibility = ["//visibility:private"],
     deps = [
-        "//agent",
-        "//command",
+        "//agent:go_default_library",
+        "//command:go_default_library",
         "//compiler",
-        "//inserter",
+        "//inserter:go_default_library",
         "//server",
         "@com_github_mitchellh_cli//:go_default_library",
     ],

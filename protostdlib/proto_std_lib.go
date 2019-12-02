@@ -3,7 +3,7 @@ package protostdlib
 import (
 	dpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/jhump/protoreflect/internal"
-	_ "protoconf.com/protostdlib/secret"
+	_ "github.com/protoconf/protoconf/protostdlib/secret"
 )
 
 var ProtoStdLib map[string]*dpb.FileDescriptorProto

@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/protoconf/protoconf/compiler/proto"
 	"go.starlark.net/starlark"
 	"go.starlark.net/starlarkstruct"
-	"protoconf.com/compiler/proto"
 )
 
 func getModules() starlark.StringDict {

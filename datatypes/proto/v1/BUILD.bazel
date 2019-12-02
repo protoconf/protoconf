@@ -14,7 +14,7 @@ proto_library(
 go_proto_library(
     name = "protoconf_value_go_proto",
     compiler = "@io_bazel_rules_go//proto:go_grpc",
-    importpath = "protoconf.com/datatypes/proto/v1/protoconfvalue",
+    importpath = "github.com/protoconf/protoconf/datatypes/proto/v1/protoconfvalue",
     proto = ":protoconf_value_proto",
     visibility = ["//visibility:public"],
 )
@@ -28,7 +28,7 @@ proto_library(
 
 go_proto_library(
     name = "v1_go_proto",
-    importpath = "protoconf.com/datatypes/proto/v1",
+    importpath = "github.com/protoconf/protoconf/datatypes/proto/v1",
     proto = ":v1_proto",
     visibility = ["//visibility:public"],
 )
@@ -36,6 +36,6 @@ go_proto_library(
 go_library(
     name = "go_default_library",
     embed = [":v1_go_proto"],
-    importpath = "protoconf.com/datatypes/proto/v1",
+    importpath = "github.com/protoconf/protoconf/datatypes/proto/v1",
     visibility = ["//visibility:public"],
 )

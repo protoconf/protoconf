@@ -1,14 +1,14 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_library")
 
 go_library(
-    name = "inserter",
+    name = "go_default_library",
     srcs = ["inserter.go"],
-    importpath = "protoconf.com/inserter",
+    importpath = "github.com/protoconf/protoconf/inserter",
     visibility = ["//visibility:public"],
     deps = [
-        "//command",
-        "//consts",
-        "//utils",
+        "//command:go_default_library",
+        "//consts:go_default_library",
+        "//utils:go_default_library",
         "@com_github_docker_libkv//:go_default_library",
         "@com_github_docker_libkv//store:go_default_library",
         "@com_github_docker_libkv//store/consul:go_default_library",

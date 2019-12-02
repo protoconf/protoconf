@@ -1,16 +1,16 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_library")
 
 go_library(
-    name = "utils",
+    name = "go_default_library",
     srcs = [
         "binary.go",
         "codec.go",
         "utils.go",
     ],
-    importpath = "protoconf.com/utils",
+    importpath = "github.com/protoconf/protoconf/utils",
     visibility = ["//visibility:public"],
     deps = [
-        "//consts",
+        "//consts:go_default_library",
         "//datatypes/proto/v1:protoconf_value_go_proto",
         "//protostdlib:go_default_library",
         "//protostdlib/secret:go_default_library",

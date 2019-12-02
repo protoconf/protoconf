@@ -9,12 +9,12 @@ import (
 
 	"github.com/golang/protobuf/descriptor"
 	"github.com/golang/protobuf/ptypes"
+	"github.com/protoconf/protoconf/consts"
+	pv "github.com/protoconf/protoconf/datatypes/proto/v1/protoconfvalue"
+	pb "github.com/protoconf/protoconf/examples/protoconf/src/crawler"
+	pc "github.com/protoconf/protoconf/server/api/proto/v1/protoconfmutation"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
-	"protoconf.com/consts"
-	pb "protoconf.com/examples/protoconf/src/crawler"
-	pc "protoconf.com/server/api/proto/v1/protoconfmutation"
-	pv "protoconf.com/datatypes/proto/v1/protoconfvalue"
 )
 
 const (
@@ -68,7 +68,7 @@ func mutate(path string, value descriptor.Message, scriptMetadata string) error 
 
 	c := pc.NewProtoconfMutationServiceClient(conn)
 	// Wait until the server finishes long git operations
-	timeout := 60*time.Second
+	timeout := 60 * time.Second
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 

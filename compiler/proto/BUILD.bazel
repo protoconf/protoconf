@@ -1,7 +1,7 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_library")
 
 go_library(
-    name = "proto",
+    name = "go_default_library",
     srcs = [
         "enum.go",
         "enum_type.go",
@@ -11,7 +11,7 @@ go_library(
         "message_type.go",
         "repeated.go",
     ],
-    importpath = "protoconf.com/compiler/proto",
+    importpath = "github.com/protoconf/protoconf/compiler/proto",
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_golang_protobuf//proto:go_default_library",

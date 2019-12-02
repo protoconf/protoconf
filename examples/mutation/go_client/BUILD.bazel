@@ -9,10 +9,10 @@ go_binary(
 go_library(
     name = "go_default_library",
     srcs = ["main.go"],
-    importpath = "protoconf.com/examples/mutation/go_client",
+    importpath = "github.com/protoconf/protoconf/examples/mutation/go_client",
     visibility = ["//visibility:private"],
     deps = [
-        "//consts",
+        "//consts:go_default_library",
         "//datatypes/proto/v1:protoconf_value_go_proto",
         "//examples/protoconf/src/crawler:go_default_library",
         "//server:protoconf_mutation_go_proto",

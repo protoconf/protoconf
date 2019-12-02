@@ -6,11 +6,11 @@ import (
 	"os"
 
 	"github.com/golang/protobuf/ptypes"
+	pc "github.com/protoconf/protoconf/agent/api/proto/v1/protoconfservice"
+	"github.com/protoconf/protoconf/consts"
+	pb "github.com/protoconf/protoconf/examples/protoconf/src/crawler"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
-	pc "protoconf.com/agent/api/proto/v1/protoconfservice"
-	"protoconf.com/consts"
-	pb "protoconf.com/examples/protoconf/src/crawler"
 )
 
 const (

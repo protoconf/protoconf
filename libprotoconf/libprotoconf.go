@@ -8,9 +8,9 @@ import (
 
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes/any"
-	protoconfvalue "protoconf.com/datatypes/proto/v1/protoconfvalue"
-	"protoconf.com/protostdlib/secret"
-	"protoconf.com/utils"
+	protoconfvalue "github.com/protoconf/protoconf/datatypes/proto/v1/protoconfvalue"
+	"github.com/protoconf/protoconf/protostdlib/secret"
+	"github.com/protoconf/protoconf/utils"
 )
 
 // Watcher enables getting updates on protoconf paths

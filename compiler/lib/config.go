@@ -6,10 +6,10 @@ import (
 	pbproto "github.com/golang/protobuf/proto"
 	dpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/jhump/protoreflect/dynamic"
+	"github.com/protoconf/protoconf/compiler/proto"
+	"github.com/protoconf/protoconf/protostdlib/secret"
+	"github.com/protoconf/protoconf/utils"
 	"go.starlark.net/starlark"
-	"protoconf.com/compiler/proto"
-	"protoconf.com/protostdlib/secret"
-	"protoconf.com/utils"
 )
 
 type config struct {

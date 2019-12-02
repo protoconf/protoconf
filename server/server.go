@@ -17,10 +17,10 @@ import (
 	"github.com/jhump/protoreflect/desc/protoparse"
 	"github.com/jhump/protoreflect/dynamic"
 	"github.com/mitchellh/cli"
+	"github.com/protoconf/protoconf/consts"
+	"github.com/protoconf/protoconf/protostdlib"
+	protoconfmutation "github.com/protoconf/protoconf/server/api/proto/v1/protoconfmutation"
 	"google.golang.org/grpc"
-	"protoconf.com/consts"
-	"protoconf.com/protostdlib"
-	protoconfmutation "protoconf.com/server/api/proto/v1/protoconfmutation"
 )
 
 type cliCommand struct{}

@@ -6,8 +6,8 @@ import (
 	"sync"
 
 	"github.com/fsnotify/fsnotify"
-	"protoconf.com/consts"
-	"protoconf.com/utils"
+	"github.com/protoconf/protoconf/consts"
+	"github.com/protoconf/protoconf/utils"
 )
 
 // NewFileWatcher creates a new file-backed protoconf watcher

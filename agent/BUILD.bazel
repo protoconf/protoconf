@@ -1,25 +1,25 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_library")
 load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
 
-go_library(
-    name = "agent",
-    srcs = ["agent.go"],
-    importpath = "protoconf.com/agent",
-    visibility = ["//visibility:public"],
-    deps = [
-        ":protoconf_service_go_proto",
-        "//command",
-        "//consts",
-        "//libprotoconf",
-        "@com_github_mitchellh_cli//:go_default_library",
-        "@org_golang_google_grpc//:go_default_library",
-    ],
-)
-
 go_proto_library(
     name = "protoconf_service_go_proto",
     compiler = "@io_bazel_rules_go//proto:go_grpc",
-    importpath = "protoconf.com/agent/api/proto/v1/protoconfservice",
+    importpath = "github.com/protoconf/protoconf/agent/api/proto/v1/protoconfservice",
     proto = "//agent/api/proto/v1:protoconf_service_proto",
     visibility = ["//visibility:public"],
+)
+
+go_library(
+    name = "go_default_library",
+    srcs = ["agent.go"],
+    importpath = "github.com/protoconf/protoconf/agent",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":protoconf_service_go_proto",
+        "//command:go_default_library",
+        "//consts:go_default_library",
+        "//libprotoconf:go_default_library",
+        "@com_github_mitchellh_cli//:go_default_library",
+        "@org_golang_google_grpc//:go_default_library",
+    ],
 )
