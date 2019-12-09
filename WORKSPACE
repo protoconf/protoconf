@@ -114,3 +114,7 @@ buildifier_dependencies()
 load("@//:deps.bzl", "deps")
 
 deps()
+
+load("@//pc4tf:deps.bzl", pc4tf_deps="deps")
+
+pc4tf_deps()
