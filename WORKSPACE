@@ -6,17 +6,16 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 http_archive(
     name = "com_github_golang_protobuf",
     urls = [
-        "https://github.com/golang/protobuf/archive/v1.3.0.tar.gz",
-        # "https://github.com/golang/protobuf/releases/download/v1.3.0/protobuf-v1.3.0.tar.gz",
+        "https://github.com/golang/protobuf/archive/v1.3.1.tar.gz",
     ],
-    strip_prefix = "protobuf-1.3.0",
+    strip_prefix = "protobuf-1.3.1",
     patch_args = ["-p1"],
     patches = [
         "@//third_party:com_github_golang_protobuf-gazelle.patch",
         "@io_bazel_rules_go//third_party:com_github_golang_protobuf-extras.patch",
         "@//third_party:protobuf_fix_any_indentation.patch",
     ],
-    sha256 = "f44cfe140cdaf0031dac7d7376eee4d5b07084cce400d7ecfac4c46d33f18a52",
+    sha256 = "3f3a6123054a9847093c119895f1660612f301fe95358f3a6a1a33fd0933e6cf",
 )
 # gazelle args: -go_prefix github.com/golang/protobuf -proto disable_global
 
