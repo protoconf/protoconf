@@ -1,1 +1,2 @@
 build --stamp --workspace_status_command=tools/get_workspace_status
+test --test_output=errors
