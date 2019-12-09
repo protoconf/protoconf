@@ -3,17 +3,20 @@ workspace(name = "protoconf")
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
-git_repository(
+http_archive(
     name = "com_github_golang_protobuf",
-    commit = "c823c79ea1570fb5ff454033735a8e68575d1d0f",  # v1.3.0, as of 2019-03-03
+    urls = [
+        "https://github.com/golang/protobuf/archive/v1.3.0.tar.gz",
+        # "https://github.com/golang/protobuf/releases/download/v1.3.0/protobuf-v1.3.0.tar.gz",
+    ],
+    strip_prefix = "protobuf-1.3.0",
     patch_args = ["-p1"],
     patches = [
-        "//third_party:com_github_golang_protobuf-gazelle.patch",
+        "@//third_party:com_github_golang_protobuf-gazelle.patch",
         "@io_bazel_rules_go//third_party:com_github_golang_protobuf-extras.patch",
-        "//third_party:protobuf_fix_any_indentation.patch",
+        "@//third_party:protobuf_fix_any_indentation.patch",
     ],
-    remote = "https://github.com/golang/protobuf",
-    shallow_since = "1549405252 -0800",
+    sha256 = "f44cfe140cdaf0031dac7d7376eee4d5b07084cce400d7ecfac4c46d33f18a52",
 )
 # gazelle args: -go_prefix github.com/golang/protobuf -proto disable_global
 
