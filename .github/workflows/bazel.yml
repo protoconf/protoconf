@@ -1,4 +1,5 @@
 on: push
+runs-on: self-hosted
 name: Check
 jobs:
   checks:
