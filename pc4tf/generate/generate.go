@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"path/filepath"
 
 	tfplugin "github.com/hashicorp/terraform/plugin"
 	"github.com/hashicorp/terraform/plugin/discovery"
@@ -89,7 +90,13 @@ func (g *Generator) Save() error {
 }
 
 func (g *Generator) opener(name string) (io.WriteCloser, error) {
-	f, err := os.Create(g.OutputPath + "/" + name)
+	filePath := filepath.Join(g.OutputPath, name)
+	dirName := filepath.Dir(filePath)
+	err := os.MkdirAll(dirName, 0755)
+	if err != nil {
+		return nil, err
+	}
+	f, err := os.Create(filePath)
 	if err != nil {
 		return nil, err
 	}

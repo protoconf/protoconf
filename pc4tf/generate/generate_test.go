@@ -1,23 +1,23 @@
 package generate
 
 import (
-	"fmt"
+	"io/ioutil"
 	"log"
-	"os/user"
-	"path/filepath"
-	"runtime"
 	"testing"
 
 	// "github.com/jhump/protoreflect/desc/builder"
+	"github.com/protoconf/protoconf/pc4tf/provider_importer"
 	assert "github.com/stretchr/testify/require"
 )
 
 func TestGenerate(t *testing.T) {
-	u, err := user.Current()
+	dir, err := ioutil.TempDir("", "generate_test")
 	assert.NoError(t, err)
-	dir_postfix := filepath.Join(u.HomeDir, ".terraform.d", "plugins", fmt.Sprintf("%s_%s", runtime.GOOS, runtime.GOARCH))
-	dir, err := filepath.Abs(dir_postfix)
-	g := NewGenerator(dir, "/tmp/test")
+	err = provider_importer.DownloadPlugin(dir, "random", "2.2.1")
+	assert.NoError(t, err)
+	dst, err := ioutil.TempDir("", "generate_dest")
+	assert.NoError(t, err)
+	g := NewGenerator(dir, dst)
 	err = g.PopulateProviders()
 	assert.NoError(t, err)
 	for name, _ := range g.Providers {

@@ -4,27 +4,18 @@ import (
 	"log"
 	"testing"
 
-	// "github.com/jhump/protoreflect/desc/builder"
 	assert "github.com/stretchr/testify/require"
 )
 
-// func TestGetClient(t *testing.T) {
-// 	pluginName := "packet"
-// 	log.Println("starting")
-//
-// 	_, err := NewGRPCClient(pluginName)
-// 	assert.NoError(t, err)
-// }
-
 func TestBuilder(t *testing.T) {
 	log.Println("starting")
-	meta, err := findPlugin("provider", "packet")
+	meta, err := findPlugin("provider", "random", "2.2.1")
 	assert.NoError(t, err)
 	config := newGRPCClientConfig(meta)
 	client, err := NewGRPCClient(config)
 	assert.NoError(t, err)
 	defer client.Close()
-	p, err := NewProviderImporter("packet", client)
+	p, err := NewProviderImporter("random", client)
 	assert.NoError(t, err)
 	Print(p.Provider)
 	Print(p.Resources)

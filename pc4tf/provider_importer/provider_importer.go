@@ -2,10 +2,6 @@ package provider_importer
 
 import (
 	"fmt"
-	"log"
-	"os/user"
-	"path/filepath"
-	"runtime"
 
 	plugin "github.com/hashicorp/go-plugin"
 	tfplugin "github.com/hashicorp/terraform/plugin"
@@ -47,28 +43,6 @@ func populateResources(name string, b *builder.FileBuilder, schema map[string]pr
 		msg.AddField(f)
 	}
 	return msg
-}
-
-func findPlugin(pluginType, pluginName string) (*discovery.PluginMeta, error) {
-	u, err := user.Current()
-	if err != nil {
-		return &discovery.PluginMeta{}, err
-	}
-	log.Println("homedir:", u.HomeDir)
-	dir_postfix := filepath.Join(u.HomeDir, ".terraform.d", "plugins", fmt.Sprintf("%s_%s", runtime.GOOS, runtime.GOARCH))
-	dir, err := filepath.Abs(dir_postfix)
-	if err != nil {
-		return &discovery.PluginMeta{}, err
-	}
-	dirs := []string{dir}
-	log.Println("dirs:", dirs)
-	meta := discovery.FindPlugins(pluginType, dirs).WithName(pluginName)
-	for c, _ := range meta {
-		if c.Name == pluginName {
-			return &c, nil
-		}
-	}
-	return &discovery.PluginMeta{}, fmt.Errorf("could not find plugin %s", pluginName)
 }
 
 // NewGRPCClient creates a new GRPCClient instance.

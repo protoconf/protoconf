@@ -4,7 +4,11 @@ go_test(
     name = "go_default_test",
     srcs = ["provider_importer_test.go"],
     embed = [":go_default_library"],
-    deps = ["@com_github_stretchr_testify//require:go_default_library"],
+    deps = [
+        "@com_github_hashicorp_go_getter//:go_default_library",
+        "@com_github_hashicorp_terraform//plugin/discovery:go_default_library",
+        "@com_github_stretchr_testify//require:go_default_library",
+    ],
 )
 
 go_library(
@@ -12,10 +16,12 @@ go_library(
     srcs = [
         "provider_importer.go",
         "schema_to_proto.go",
+        "test_utils.go",
     ],
     importpath = "github.com/protoconf/protoconf/pc4tf/provider_importer",
     visibility = ["//visibility:public"],
     deps = [
+        "@com_github_hashicorp_go_getter//:go_default_library",
         "@com_github_hashicorp_go_plugin//:go_default_library",
         "@com_github_hashicorp_terraform//configs/configschema:go_default_library",
         "@com_github_hashicorp_terraform//plugin:go_default_library",
