@@ -1,0 +1,30 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "go_default_library",
+    srcs = [
+        "command.go",
+        "generate.go",
+    ],
+    importpath = "github.com/protoconf/protoconf/pc4tf/generate",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//pc4tf/provider_importer:go_default_library",
+        "@com_github_hashicorp_terraform//plugin:go_default_library",
+        "@com_github_hashicorp_terraform//plugin/discovery:go_default_library",
+        "@com_github_jhump_protoreflect//desc:go_default_library",
+        "@com_github_jhump_protoreflect//desc/builder:go_default_library",
+        "@com_github_jhump_protoreflect//desc/protoprint:go_default_library",
+        "@com_github_mitchellh_cli//:go_default_library",
+    ],
+)
+
+go_test(
+    name = "go_default_test",
+    srcs = ["generate_test.go"],
+    embed = [":go_default_library"],
+    deps = [
+        "//pc4tf/provider_importer:go_default_library",
+        "@com_github_stretchr_testify//require:go_default_library",
+    ],
+)
