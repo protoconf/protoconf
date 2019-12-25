@@ -115,6 +115,11 @@ load("@//:deps.bzl", "deps")
 
 deps()
 
-load("@//pc4tf:deps.bzl", pc4tf_deps="deps")
+load("@//pc4tf:deps.bzl", pc4tf_deps = "deps")
 
 pc4tf_deps()
+
+# local_repository(
+#     name = "libkv",
+#     path = "./libkv",
+# )

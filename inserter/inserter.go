@@ -8,14 +8,14 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/docker/libkv"
-	"github.com/docker/libkv/store"
-	"github.com/docker/libkv/store/consul"
-	"github.com/docker/libkv/store/zookeeper"
 	"github.com/golang/protobuf/proto"
 	"github.com/mitchellh/cli"
 	"github.com/protoconf/protoconf/command"
 	"github.com/protoconf/protoconf/consts"
+	"github.com/protoconf/protoconf/libkv"
+	"github.com/protoconf/protoconf/libkv/store"
+	"github.com/protoconf/protoconf/libkv/store/consul"
+	"github.com/protoconf/protoconf/libkv/store/zookeeper"
 	"github.com/protoconf/protoconf/utils"
 )
 

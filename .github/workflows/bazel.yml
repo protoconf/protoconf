@@ -4,6 +4,22 @@ jobs:
   checks:
     name: run
     runs-on: self-hosted
+    services:
+      consul:
+        image: consul:latest
+        ports:
+          - 8500
+      zookeeper:
+        image: zookeeper:latest
+        ports:
+          - 2181
+      etcd:
+        image: quay.io/coreos/etcd:latest
+        env:
+          ETCD_LISTEN_CLIENT_URLS: http://0.0.0.0:2379
+          ETCD_ADVERTISE_CLIENT_URLS: http://0.0.0.0:2379
+        ports:
+          - 2379
     steps:
     - uses: actions/checkout@master
     - name: build all
