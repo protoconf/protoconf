@@ -8,6 +8,7 @@ import (
 	"github.com/protoconf/protoconf/libkv"
 	"github.com/protoconf/protoconf/libkv/store"
 	"github.com/protoconf/protoconf/libkv/store/consul"
+	"github.com/protoconf/protoconf/libkv/store/etcd"
 	"github.com/protoconf/protoconf/libkv/store/zookeeper"
 )
 
@@ -16,6 +17,7 @@ type KVStore int
 const (
 	Consul KVStore = iota
 	Zookeeper
+	Etcd
 )
 
 // NewWatcher creates a new kv-backed Protoconf watcher
@@ -28,6 +30,9 @@ func NewKVWatcher(kvType KVStore, address string, prefix string) (Watcher, error
 	case Zookeeper:
 		zookeeper.Register()
 		backend = store.ZK
+	case Etcd:
+		etcd.Register()
+		backend = store.ETCD
 	default:
 		return nil, fmt.Errorf("unknown kvType=%d", kvType)
 	}

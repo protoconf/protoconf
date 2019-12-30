@@ -63,6 +63,14 @@ func (c *cliCommand) Run(args []string) int {
 				address = consts.ZookeeperDefaultAddress
 			}
 			agentServer.watcher, err = libprotoconf.NewKVWatcher(libprotoconf.Zookeeper, address, kVConfig.Prefix)
+		} else if kVConfig.Store == command.KVStoreEtcd {
+			var address string
+			if kVConfig.Address != "" {
+				address = kVConfig.Address
+			} else {
+				address = consts.EtcdDefaultAddress
+			}
+			agentServer.watcher, err = libprotoconf.NewKVWatcher(libprotoconf.Etcd, address, kVConfig.Prefix)
 		} else {
 			log.Fatalf("Unknown key-value store %s", kVConfig.Store)
 		}

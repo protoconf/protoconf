@@ -15,6 +15,7 @@ import (
 	"github.com/protoconf/protoconf/libkv"
 	"github.com/protoconf/protoconf/libkv/store"
 	"github.com/protoconf/protoconf/libkv/store/consul"
+	"github.com/protoconf/protoconf/libkv/store/etcd"
 	"github.com/protoconf/protoconf/libkv/store/zookeeper"
 	"github.com/protoconf/protoconf/utils"
 )
@@ -55,6 +56,15 @@ func (c *cliCommand) Run(args []string) int {
 	if kVConfig.Store == command.KVStoreConsul {
 		consul.Register()
 		kvStore, err = libkv.NewStore(store.CONSUL, []string{kVConfig.Address}, nil)
+	} else if kVConfig.Store == command.KVStoreEtcd {
+		etcd.Register()
+		var address string
+		if kVConfig.Address != "" {
+			address = kVConfig.Address
+		} else {
+			address = consts.EtcdDefaultAddress
+		}
+		kvStore, err = libkv.NewStore(store.ETCD, []string{address}, nil)
 	} else if kVConfig.Store == command.KVStoreZookeeper {
 		zookeeper.Register()
 		var address string
