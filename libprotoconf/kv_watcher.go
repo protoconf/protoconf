@@ -2,6 +2,7 @@ package libprotoconf
 
 import (
 	"fmt"
+	"encoding/base64"
 
 	"github.com/golang/protobuf/proto"
 	protoconfvalue "github.com/protoconf/protoconf/datatypes/proto/v1/protoconfvalue"
@@ -88,7 +89,11 @@ func (w *libkvWatcher) Watch(pathNoPrefix string, stopCh <-chan struct{}) (<-cha
 					return
 				}
 
-				if err = proto.Unmarshal(kVPair.Value, protoconfValue); err != nil {
+				data, err := base64.StdEncoding.DecodeString(string(kVPair.Value))
+				if err != nil {
+					watchCh <- Result{nil, fmt.Errorf("error decoding config path=%s value=%s err=%s", path, kVPair.Value, err)}
+				}
+				if err = proto.Unmarshal(data, protoconfValue); err != nil {
 					watchCh <- Result{nil, fmt.Errorf("error unmarshaling config path=%s value=%s err=%s", path, kVPair.Value, err)}
 					return
 				}

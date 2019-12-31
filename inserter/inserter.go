@@ -7,6 +7,7 @@ import (
 	"log"
 	"path/filepath"
 	"strings"
+	"encoding/base64"
 
 	"github.com/golang/protobuf/proto"
 	"github.com/mitchellh/cli"
@@ -141,7 +142,8 @@ func insertConfig(configFile string, protoconfRoot string, kvStore store.Store, 
 	}
 
 	kvPath := prefix + configName
-	if err := kvStore.Put(kvPath, data, nil); err != nil {
+	write := base64.StdEncoding.EncodeToString(data)
+	if err := kvStore.Put(kvPath, []byte(write), nil); err != nil {
 		return fmt.Errorf("error writing to key-value store, path=%s", kvPath)
 	}
 
