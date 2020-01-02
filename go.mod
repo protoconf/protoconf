@@ -4,9 +4,10 @@ go 1.13
 
 require (
 	github.com/census-instrumentation/opencensus-proto v0.2.1 // indirect
-	github.com/coreos/etcd v3.3.18+incompatible
+	github.com/coreos/etcd v3.3.18+incompatible // indirect
 	github.com/docker/libkv v0.2.1 // indirect
 	github.com/envoyproxy/protoc-gen-validate v0.1.0 // indirect
+	github.com/etcd-io/etcd v3.3.18+incompatible // indirect
 	github.com/fsnotify/fsnotify v1.4.7
 	github.com/golang/protobuf v1.3.2
 	github.com/hashicorp/consul v1.6.2 // indirect
@@ -21,6 +22,7 @@ require (
 	github.com/stretchr/testify v1.4.0
 	github.com/zclconf/go-cty v1.2.0
 	go.etcd.io/bbolt v1.3.3
+	go.etcd.io/etcd v3.3.18+incompatible
 	go.starlark.net v0.0.0-20191218235703-9fcb808a6221
 	golang.org/x/net v0.0.0-20191209160850-c0dbc17a3553
 	google.golang.org/genproto v0.0.0-20191223191004-3caeed10a8bf // indirect

@@ -11,6 +11,7 @@ go_library(
         "//libkv:go_default_library",
         "//libkv/store:go_default_library",
         "//libkv/store/consul:go_default_library",
+        "//libkv/store/etcd:go_default_library",
         "//libkv/store/zookeeper:go_default_library",
         "//utils:go_default_library",
         "@com_github_golang_protobuf//proto:go_default_library",

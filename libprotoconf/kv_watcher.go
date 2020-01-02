@@ -2,12 +2,14 @@ package libprotoconf
 
 import (
 	"fmt"
+	"encoding/base64"
 
 	"github.com/golang/protobuf/proto"
 	protoconfvalue "github.com/protoconf/protoconf/datatypes/proto/v1/protoconfvalue"
 	"github.com/protoconf/protoconf/libkv"
 	"github.com/protoconf/protoconf/libkv/store"
 	"github.com/protoconf/protoconf/libkv/store/consul"
+	"github.com/protoconf/protoconf/libkv/store/etcd"
 	"github.com/protoconf/protoconf/libkv/store/zookeeper"
 )
 
@@ -16,6 +18,7 @@ type KVStore int
 const (
 	Consul KVStore = iota
 	Zookeeper
+	Etcd
 )
 
 // NewWatcher creates a new kv-backed Protoconf watcher
@@ -28,6 +31,9 @@ func NewKVWatcher(kvType KVStore, address string, prefix string) (Watcher, error
 	case Zookeeper:
 		zookeeper.Register()
 		backend = store.ZK
+	case Etcd:
+		etcd.Register()
+		backend = store.ETCD
 	default:
 		return nil, fmt.Errorf("unknown kvType=%d", kvType)
 	}
@@ -83,7 +89,11 @@ func (w *libkvWatcher) Watch(pathNoPrefix string, stopCh <-chan struct{}) (<-cha
 					return
 				}
 
-				if err = proto.Unmarshal(kVPair.Value, protoconfValue); err != nil {
+				data, err := base64.StdEncoding.DecodeString(string(kVPair.Value))
+				if err != nil {
+					watchCh <- Result{nil, fmt.Errorf("error decoding config path=%s value=%s err=%s", path, kVPair.Value, err)}
+				}
+				if err = proto.Unmarshal(data, protoconfValue); err != nil {
 					watchCh <- Result{nil, fmt.Errorf("error unmarshaling config path=%s value=%s err=%s", path, kVPair.Value, err)}
 					return
 				}

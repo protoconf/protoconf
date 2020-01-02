@@ -7,6 +7,7 @@ import (
 	"log"
 	"path/filepath"
 	"strings"
+	"encoding/base64"
 
 	"github.com/golang/protobuf/proto"
 	"github.com/mitchellh/cli"
@@ -15,6 +16,7 @@ import (
 	"github.com/protoconf/protoconf/libkv"
 	"github.com/protoconf/protoconf/libkv/store"
 	"github.com/protoconf/protoconf/libkv/store/consul"
+	"github.com/protoconf/protoconf/libkv/store/etcd"
 	"github.com/protoconf/protoconf/libkv/store/zookeeper"
 	"github.com/protoconf/protoconf/utils"
 )
@@ -55,6 +57,15 @@ func (c *cliCommand) Run(args []string) int {
 	if kVConfig.Store == command.KVStoreConsul {
 		consul.Register()
 		kvStore, err = libkv.NewStore(store.CONSUL, []string{kVConfig.Address}, nil)
+	} else if kVConfig.Store == command.KVStoreEtcd {
+		etcd.Register()
+		var address string
+		if kVConfig.Address != "" {
+			address = kVConfig.Address
+		} else {
+			address = consts.EtcdDefaultAddress
+		}
+		kvStore, err = libkv.NewStore(store.ETCD, []string{address}, nil)
 	} else if kVConfig.Store == command.KVStoreZookeeper {
 		zookeeper.Register()
 		var address string
@@ -131,7 +142,8 @@ func insertConfig(configFile string, protoconfRoot string, kvStore store.Store, 
 	}
 
 	kvPath := prefix + configName
-	if err := kvStore.Put(kvPath, data, nil); err != nil {
+	write := base64.StdEncoding.EncodeToString(data)
+	if err := kvStore.Put(kvPath, []byte(write), nil); err != nil {
 		return fmt.Errorf("error writing to key-value store, path=%s", kvPath)
 	}
 

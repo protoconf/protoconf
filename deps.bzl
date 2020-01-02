@@ -172,6 +172,9 @@ def deps():
     )
     go_repository(
         name = "com_github_coreos_etcd",
+        build_directives = [
+            "gazelle:proto disable",
+        ],
         importpath = "github.com/coreos/etcd",
         sum = "h1:Zz1aXgDrFFi1nadh58tA9ktt06cmPTwNNP3dXwIq1lE=",
         version = "v3.3.18+incompatible",
@@ -1852,4 +1855,28 @@ def deps():
         importpath = "k8s.io/client-go",
         sum = "h1:tTI4hRmb1DRMl4fG6Vclfdi6nTM82oIrTT7HfitmxC4=",
         version = "v8.0.0+incompatible",
+    )
+    go_repository(
+        name = "io_etcd_go_etcd",
+        build_directives = [
+            "gazelle:proto disable",
+        ],
+        importpath = "go.etcd.io/etcd",
+        sum = "h1:5aomL5mqoKHxw6NG+oYgsowk8tU8aOalo2IdZxdWHkw=",
+        version = "v3.3.18+incompatible",
+    )
+    go_repository(
+        name = "com_github_etcd_io_etcd",
+        build_directives = [
+            "gazelle:proto disable",
+        ],
+        importpath = "github.com/etcd-io/etcd",
+        sum = "h1:iBOwlpFcpg+GJEiZ2ODqwkcu2UEK3y4aKFa3d8+LneM=",
+        version = "v3.3.18+incompatible",
+    )
+    go_repository(
+        name = "com_github_coreos_go_systemd_v22",
+        importpath = "github.com/coreos/go-systemd/v22",
+        sum = "h1:XJIw/+VlJ+87J+doOxznsAWIdmWuViOVhkQamW5YV28=",
+        version = "v22.0.0",
     )
