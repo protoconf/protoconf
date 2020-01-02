@@ -743,8 +743,13 @@ def deps():
     go_repository(
         name = "com_github_hashicorp_go_rootcerts",
         importpath = "github.com/hashicorp/go-rootcerts",
-        sum = "h1:DMo4fmknnz0E0evoNYnV48RjWndOsmd6OW+09R3cEP8=",
-        version = "v1.0.1",
+        patch_args = ["-p1"],
+        patches = ["@protoconf//third_party:go_rootcerts_fix_darwin_cross_build.patch"],
+        build_directives = [
+            "gazelle:exclude",
+        ],
+        sum = "h1:jzhAVGtqPKbwpyCPELlgNWhE1znq+qwJtW5Oi2viEzc=",
+        version = "v1.0.2",
     )
     go_repository(
         name = "com_github_hashicorp_go_safetemp",

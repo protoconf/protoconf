@@ -1,5 +1,7 @@
 load("@bazel_gazelle//:def.bzl", "gazelle")
 load("@io_bazel_rules_go//go:def.bzl", "nogo")
+load("@graknlabs_bazel_distribution//common:rules.bzl", "assemble_zip", "assemble_targz", "assemble_versioned")
+load("@graknlabs_bazel_distribution//github:rules.bzl", "deploy_github")
 
 # gazelle:prefix github.com/protoconf/protoconf
 gazelle(name = "gazelle")
@@ -81,4 +83,55 @@ alias(
     name = "go_default_library",
     actual = "//protostdlib/secret:go_default_library",
     visibility = ["//visibility:public"],
+)
+
+assemble_targz(
+    name = "protoconf-darwin",
+    additional_files = {
+        "//cmd/protoconf:protoconf-darwin": "./protoconf",
+    },
+    output_filename = "",
+)
+
+assemble_targz(
+    name = "protoconf-linux",
+    additional_files = {
+        "//cmd/protoconf:protoconf-linux": "./protoconf",
+    },
+    output_filename = "",
+)
+
+assemble_targz(
+    name = "windows-tgz",
+    additional_files = {
+        "//cmd/protoconf:protoconf-windows": "./protoconf.exe",
+    },
+    output_filename = "",
+)
+
+assemble_zip(
+    name = "protoconf-windows",
+    targets = [":windows-tgz"],
+    output_filename = "protoconf-windows",
+)
+
+assemble_versioned(
+    name = "protoconf-versioned-all",
+    version_file = "//:VERSION",
+    targets = [
+        ":protoconf-linux",
+        ":protoconf-darwin",
+        ":protoconf-windows",
+    ],
+)
+
+load("@graknlabs_bazel_distribution//github:rules.bzl", "deploy_github")
+
+deploy_github(
+    name = "deploy-github",
+    deployment_properties = "//:deployment.properties",
+    title = "protoconf",
+    title_append_version = False,
+    release_description = "//:RELEASE_TEMPLATE.md",
+    archive = ":protoconf-versioned-all",
 )
