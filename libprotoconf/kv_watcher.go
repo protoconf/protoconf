@@ -3,12 +3,12 @@ package libprotoconf
 import (
 	"fmt"
 
-	"github.com/docker/libkv"
-	"github.com/docker/libkv/store"
-	"github.com/docker/libkv/store/consul"
-	"github.com/docker/libkv/store/zookeeper"
 	"github.com/golang/protobuf/proto"
 	protoconfvalue "github.com/protoconf/protoconf/datatypes/proto/v1/protoconfvalue"
+	"github.com/protoconf/protoconf/libkv"
+	"github.com/protoconf/protoconf/libkv/store"
+	"github.com/protoconf/protoconf/libkv/store/consul"
+	"github.com/protoconf/protoconf/libkv/store/zookeeper"
 )
 
 type KVStore int

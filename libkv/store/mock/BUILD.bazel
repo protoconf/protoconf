@@ -1,0 +1,12 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "go_default_library",
+    srcs = ["mock.go"],
+    importpath = "github.com/protoconf/protoconf/libkv/store/mock",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//libkv/store:go_default_library",
+        "@com_github_stretchr_testify//mock:go_default_library",
+    ],
+)
