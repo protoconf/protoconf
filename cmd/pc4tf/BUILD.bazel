@@ -17,3 +17,28 @@ go_binary(
     embed = [":go_default_library"],
     visibility = ["//visibility:public"],
 )
+
+go_binary(
+    name = "pc4tf-darwin",
+    embed = [":go_default_library"],
+    goos = "darwin",
+    pure = "on",
+    goarch = "amd64",
+    visibility = ["//visibility:public"],
+)
+
+go_binary(
+    name = "pc4tf-linux",
+    embed = [":go_default_library"],
+    goos = "linux",
+    pure = "on",
+    visibility = ["//visibility:public"],
+)
+
+go_binary(
+    name = "pc4tf-windows",
+    embed = [":go_default_library"],
+    goos = "windows",
+    pure = "on",
+    visibility = ["//visibility:public"],
+)
