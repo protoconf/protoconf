@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-CURRENT_RELEASE="0.1.0"
+CURRENT_RELEASE=$(cat VERSION)
 
 # set -eu
 # https://stackoverflow.com/a/4025065

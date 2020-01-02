@@ -131,7 +131,8 @@ deploy_github(
     name = "deploy-github",
     deployment_properties = "//:deployment.properties",
     title = "protoconf",
-    title_append_version = False,
-    release_description = "//:RELEASE_TEMPLATE.md",
+    title_append_version = True,
+    version_file = "//:VERSION",
+    # release_description = "//:RELEASE_TEMPLATE.md",
     archive = ":protoconf-versioned-all",
 )
