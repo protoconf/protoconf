@@ -1,12 +1,11 @@
 #!/bin/bash
 
-
 CURRENT_RELEASE=$(cat VERSION)
 
 # set -eu
 # https://stackoverflow.com/a/4025065
-vercomp () {
-    if [[ $1 == $2 ]]
+compare_version () {
+    if [[ "$1" == "$2" ]]
     then
         return 0
     fi
@@ -42,10 +41,9 @@ git_rev=$(git rev-parse HEAD)
 echo "BUILD_SCM_REVISION ${git_rev}"
 
 git_tag="$(git tag --contains HEAD)"
-if vercomp "${CURRENT_RELEASE}" "${git_tag}" && git diff-index --quiet HEAD --; then
+if compare_version "${CURRENT_RELEASE}" "${git_tag}" && git diff-index --quiet HEAD --; then
   echo "BUILD_SCM_TAG ${git_tag}"
   echo "STABLE_SCM_RELEASE ${git_tag}"
 else
-  postfix="${BUILDABLEREVISION:-$git_rev}.${BUILDABLEDIFF:-0}"
-  echo "STABLE_SCM_RELEASE ${CURRENT_RELEASE}-${postfix}"
+  echo "STABLE_SCM_RELEASE ${CURRENT_RELEASE}-${git_rev}"
 fi
