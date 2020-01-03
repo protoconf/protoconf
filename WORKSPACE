@@ -1,5 +1,8 @@
-workspace(name = "protoconf")
+workspace(
+    name = "protoconf",
+)
 
+# gazelle:repository_macro deps.bzl%deps
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
@@ -119,7 +122,16 @@ load("@//pc4tf:deps.bzl", pc4tf_deps = "deps")
 
 pc4tf_deps()
 
-# local_repository(
-#     name = "libkv",
-#     path = "./libkv",
-# )
+git_repository(
+    name = "graknlabs_bazel_distribution",
+    remote = "https://github.com/graknlabs/bazel-distribution",
+    commit = "c24ce26390d7e818a6f16a0d2839ed5795ced3dc",  # sync-marker: do not remove this comment, this is used for sync-dependencies by @graknlabs_bazel_distribution
+)
+
+load("@graknlabs_bazel_distribution//common:dependencies.bzl", "bazelbuild_rules_pkg")
+
+bazelbuild_rules_pkg()
+
+load("@graknlabs_bazel_distribution//github:dependencies.bzl", "tcnksm_ghr")
+
+tcnksm_ghr()

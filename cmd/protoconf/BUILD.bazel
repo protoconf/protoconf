@@ -6,6 +6,31 @@ go_binary(
     visibility = ["//visibility:public"],
 )
 
+go_binary(
+    name = "protoconf-darwin",
+    embed = [":go_default_library"],
+    goos = "darwin",
+    pure = "on",
+    goarch = "amd64",
+    visibility = ["//visibility:public"],
+)
+
+go_binary(
+    name = "protoconf-linux",
+    embed = [":go_default_library"],
+    goos = "linux",
+    pure = "on",
+    visibility = ["//visibility:public"],
+)
+
+go_binary(
+    name = "protoconf-windows",
+    embed = [":go_default_library"],
+    goos = "windows",
+    pure = "on",
+    visibility = ["//visibility:public"],
+)
+
 go_library(
     name = "go_default_library",
     srcs = ["main.go"],
