@@ -3,6 +3,7 @@ package provider_importer
 import (
 	"fmt"
 	"log"
+	"sort"
 	"strings"
 
 	"github.com/hashicorp/terraform/configs/configschema"
@@ -36,8 +37,16 @@ func schemaToProtoMessage(name string, schema providers.Schema) *builder.Message
 	m := builder.NewMessage(name)
 	c := builder.Comments{LeadingComment: fmt.Sprintf("%s version is %d", name, schema.Version)}
 	m.SetComments(c)
-	for fieldName, attr := range schema.Block.Attributes {
-		attributeToProtoField(m, fieldName, attr)
+
+	attrs := schema.Block.Attributes
+	keys := make([]string, 0, len(attrs))
+	for k := range attrs {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	for _, fieldName := range keys {
+		attributeToProtoField(m, fieldName, attrs[fieldName])
 	}
 	return m
 }
