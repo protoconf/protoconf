@@ -135,3 +135,11 @@ bazelbuild_rules_pkg()
 load("@graknlabs_bazel_distribution//github:dependencies.bzl", "tcnksm_ghr")
 
 tcnksm_ghr()
+
+http_archive(
+    name = "build_bazel_rules_nodejs",
+    sha256 = "c97bf38546c220fa250ff2cc052c1a9eac977c662c1fc23eda797b0ce8e70a43",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/1.1.0/rules_nodejs-1.1.0.tar.gz"],
+)
+load("@build_bazel_rules_nodejs//:index.bzl", "node_repositories")
+node_repositories(package_json = ["//:package.json"])
