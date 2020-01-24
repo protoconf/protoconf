@@ -116,7 +116,6 @@ assemble_zip(
     output_filename = "protoconf-windows",
 )
 
-
 # Releasing pc4tf
 assemble_targz(
     name = "pc4tf-darwin",
