@@ -1,7 +1,6 @@
 on:
   push:
-    branches:
-      - release
+    tag
 
 name: Release
 jobs:
