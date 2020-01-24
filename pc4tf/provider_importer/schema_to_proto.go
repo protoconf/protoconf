@@ -11,7 +11,11 @@ import (
 	"github.com/jhump/protoreflect/desc/builder"
 	"github.com/jhump/protoreflect/desc/protoprint"
 	"github.com/zclconf/go-cty/cty"
+
+	"github.com/protoconf/protoconf/pc4tf/meta"
 )
+
+var metaFile *builder.FileBuilder = meta.MetaFile()
 
 func NewFile(name, postfix string) *builder.FileBuilder {
 	file := builder.NewFile(fmt.Sprintf("terraform/%s-%s.proto", name, postfix))
@@ -48,6 +52,16 @@ func schemaToProtoMessage(name string, schema providers.Schema) *builder.Message
 	for _, fieldName := range keys {
 		attributeToProtoField(m, fieldName, attrs[fieldName])
 	}
+
+	// Adding meta fields
+	metaMsg := metaFile.GetMessage("MetaFields")
+	for _, field := range metaMsg.GetChildren() {
+		f := metaMsg.GetField(field.GetName())
+		fBuilder := builder.NewField(f.GetName(), f.GetType())
+		m.AddField(fBuilder)
+	}
+	fieldLifecycle := builder.NewField("lifecycle", builder.FieldTypeMessage(metaFile.GetMessage("Lifecycle")))
+	m.AddField(fieldLifecycle)
 	return m
 }
 

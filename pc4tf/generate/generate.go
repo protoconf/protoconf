@@ -12,6 +12,8 @@ import (
 	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/desc/builder"
 	"github.com/jhump/protoreflect/desc/protoprint"
+
+	"github.com/protoconf/protoconf/pc4tf/meta"
 	"github.com/protoconf/protoconf/pc4tf/provider_importer"
 )
 
@@ -60,11 +62,11 @@ func (g *Generator) Save() error {
 	main := builder.NewMessage("Terraform")
 	resources := builder.NewMessage("Resources")
 
-	//
 	main.AddNestedMessage(resources)
 	main.AddField(builder.NewField("resource", builder.FieldTypeMessage(resources)).SetJsonName("resource"))
 
-	protoFiles := []*builder.FileBuilder{file}
+	metaFile := meta.MetaFile()
+	protoFiles := []*builder.FileBuilder{file, metaFile}
 
 	for name, p := range g.Providers {
 		log.Println("saving", name)
