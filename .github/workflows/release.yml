@@ -25,6 +25,10 @@ jobs:
         ports:
           - 2379
     steps:
+    - name: checkout
+      uses: actions/checkout@v2
+      run: |
+          git fetch --prune --unshallow
     - name: Log in to registry
       uses: azure/docker-login@v1
       with:
