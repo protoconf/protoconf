@@ -9,6 +9,13 @@ All notable changes to this project will be documented in this file. See [standa
 
 * **pc4tf:** add meta fields to all resources ([1d8aedd](https://github.com/protoconf/protoconf/commit/1d8aeddbb59a06a763e52b0432bcab3f2694c11f))
 
+### [0.1.1-0](https://github.com/protoconf/protoconf/compare/v0.1.0-pre2.0...v0.1.1-0) (2020-02-08)
+
+
+### Features
+
+* **pc4tf:** add meta fields to all resources ([1d8aedd](https://github.com/protoconf/protoconf/commit/1d8aeddbb59a06a763e52b0432bcab3f2694c11f))
+
 ## [0.1.0-pre2.0](https://github.com/protoconf/protoconf/compare/v0.1.0-pre2...v0.1.0-pre2.0) (2020-01-22)
 
 
