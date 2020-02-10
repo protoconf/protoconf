@@ -15,21 +15,21 @@ import (
 	"github.com/jhump/protoreflect/desc/protoprint"
 
 	"github.com/protoconf/protoconf/pc4tf/meta"
-	"github.com/protoconf/protoconf/pc4tf/provider_importer"
+	"github.com/protoconf/protoconf/pc4tf/providerimporter"
 )
 
 // Generator is used to create `terrafrom.proto` file with all of its
 // available resources from the provider used in the current directory
 // context.
 type Generator struct {
-	Providers  map[string]*provider_importer.ProviderImporter
+	Providers  map[string]*providerimporter.ProviderImporter
 	ImportPath string
 	OutputPath string
 }
 
 // NewGenerator creates a new Generator
 func NewGenerator(importPath, outputPath string) *Generator {
-	providers := make(map[string]*provider_importer.ProviderImporter)
+	providers := make(map[string]*providerimporter.ProviderImporter)
 	return &Generator{
 		ImportPath: importPath,
 		OutputPath: outputPath,
@@ -38,7 +38,7 @@ func NewGenerator(importPath, outputPath string) *Generator {
 }
 
 // PopulateProviders finds all providers available for the runtime context
-// and populate the Generator with proto schemas from `provider_importer`
+// and populate the Generator with proto schemas from `providerimporter`
 func (g *Generator) PopulateProviders() error {
 	dirs := []string{g.ImportPath}
 	log.Println(dirs)
@@ -47,11 +47,11 @@ func (g *Generator) PopulateProviders() error {
 
 	for c := range meta {
 		config := tfplugin.ClientConfig(c)
-		client, err := provider_importer.NewGRPCClient(config)
+		client, err := providerimporter.NewGRPCClient(config)
 		if err != nil {
 			return err
 		}
-		p, err := provider_importer.NewProviderImporter(c.Name, client)
+		p, err := providerimporter.NewProviderImporter(c.Name, client)
 		if err != nil {
 			return err
 		}
