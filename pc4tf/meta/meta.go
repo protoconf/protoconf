@@ -4,6 +4,8 @@ import (
 	"github.com/jhump/protoreflect/desc/builder"
 )
 
+// MetaFile creates a `meta.proto` file which includes meta arguments for
+// terraform resources.
 // https://www.terraform.io/docs/configuration/resources.html#meta-arguments
 func MetaFile() *builder.FileBuilder {
 	file := builder.NewFile("terraform/meta.proto")
@@ -13,7 +15,7 @@ func MetaFile() *builder.FileBuilder {
 	metaMsg := builder.NewMessage("MetaFields")
 
 	// depends_on
-	fieldDependsOn := builder.NewMapField("depends_on", builder.FieldTypeString(), builder.FieldTypeString())
+	fieldDependsOn := builder.NewMapField("depends_on", builder.FieldTypeString(), builder.FieldTypeString()).SetJsonName("depends_on")
 	metaMsg.AddField(fieldDependsOn)
 
 	// count
@@ -21,7 +23,7 @@ func MetaFile() *builder.FileBuilder {
 	metaMsg.AddField(fieldCount)
 
 	// for_each
-	fieldForEach := builder.NewMapField("for_each", builder.FieldTypeString(), builder.FieldTypeString())
+	fieldForEach := builder.NewMapField("for_each", builder.FieldTypeString(), builder.FieldTypeString()).SetJsonName("for_each")
 	metaMsg.AddField(fieldForEach)
 
 	// provider
@@ -30,9 +32,9 @@ func MetaFile() *builder.FileBuilder {
 
 	// lifecycle
 	lifecycleMsg := builder.NewMessage("Lifecycle")
-	fieldCreateBeforeDestroy := builder.NewField("create_before_destroy", builder.FieldTypeBool())
-	fieldPreventDestroy := builder.NewField("prevent_destroy", builder.FieldTypeBool())
-	fieldIgnoreChanges := builder.NewField("ignore_changes", builder.FieldTypeString()).SetRepeated()
+	fieldCreateBeforeDestroy := builder.NewField("create_before_destroy", builder.FieldTypeBool()).SetJsonName("create_before_destroy")
+	fieldPreventDestroy := builder.NewField("prevent_destroy", builder.FieldTypeBool()).SetJsonName("prevent_destroy")
+	fieldIgnoreChanges := builder.NewField("ignore_changes", builder.FieldTypeString()).SetRepeated().SetJsonName("ignore_changes")
 	lifecycleMsg.AddField(fieldCreateBeforeDestroy)
 	lifecycleMsg.AddField(fieldPreventDestroy)
 	lifecycleMsg.AddField(fieldIgnoreChanges)
