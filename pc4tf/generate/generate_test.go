@@ -5,7 +5,6 @@ import (
 	"log"
 	"testing"
 
-	// "github.com/jhump/protoreflect/desc/builder"
 	"github.com/protoconf/protoconf/pc4tf/provider_importer"
 	assert "github.com/stretchr/testify/require"
 )
@@ -20,7 +19,7 @@ func TestGenerate(t *testing.T) {
 	g := NewGenerator(dir, dst)
 	err = g.PopulateProviders()
 	assert.NoError(t, err)
-	for name, _ := range g.Providers {
+	for name := range g.Providers {
 		log.Println("found", name)
 	}
 	assert.Equal(t, "", "")

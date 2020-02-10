@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"sort"
 	"path/filepath"
 
 	tfplugin "github.com/hashicorp/terraform/plugin"
@@ -17,12 +18,16 @@ import (
 	"github.com/protoconf/protoconf/pc4tf/provider_importer"
 )
 
+// Generator is used to create `terrafrom.proto` file with all of its
+// available resources from the provider used in the current directory
+// context.
 type Generator struct {
 	Providers  map[string]*provider_importer.ProviderImporter
 	ImportPath string
 	OutputPath string
 }
 
+// NewGenerator creates a new Generator
 func NewGenerator(importPath, outputPath string) *Generator {
 	providers := make(map[string]*provider_importer.ProviderImporter)
 	return &Generator{
@@ -32,13 +37,15 @@ func NewGenerator(importPath, outputPath string) *Generator {
 	}
 }
 
+// PopulateProviders finds all providers available for the runtime context
+// and populate the Generator with proto schemas from `provider_importer`
 func (g *Generator) PopulateProviders() error {
 	dirs := []string{g.ImportPath}
 	log.Println(dirs)
 	meta := discovery.FindPlugins("provider", dirs)
 	log.Println(meta)
 
-	for c, _ := range meta {
+	for c := range meta {
 		config := tfplugin.ClientConfig(c)
 		client, err := provider_importer.NewGRPCClient(config)
 		if err != nil {
@@ -54,6 +61,7 @@ func (g *Generator) PopulateProviders() error {
 	return nil
 }
 
+// Save will write all protofiles to disk
 func (g *Generator) Save() error {
 	file := builder.NewFile("terraform/terraform.proto")
 	file.SetProto3(true)
@@ -68,7 +76,14 @@ func (g *Generator) Save() error {
 	metaFile := meta.MetaFile()
 	protoFiles := []*builder.FileBuilder{file, metaFile}
 
-	for name, p := range g.Providers {
+	keys := []string{}
+	for name := range g.Providers {
+		keys = append(keys, name)
+	}
+	sort.Strings(keys)
+
+	for _, name := range keys {
+		p := g.Providers[name]
 		log.Println("saving", name)
 		protoFiles = append(protoFiles, p.Resources)
 		protoFiles = append(protoFiles, p.Datasources)
@@ -102,16 +117,16 @@ func (g *Generator) opener(name string) (io.WriteCloser, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &MyWriteCloser{f, bufio.NewWriter(f)}, nil
+	return &myWriteCloser{f, bufio.NewWriter(f)}, nil
 }
 
-type MyWriteCloser struct {
+type myWriteCloser struct {
 	f *os.File
 	*bufio.Writer
 }
 
 // https://stackoverflow.com/questions/43115699/how-to-get-a-bufio-writer-that-implements-io-writecloser
-func (mwc *MyWriteCloser) Close() error {
+func (mwc *myWriteCloser) Close() error {
 	if err := mwc.Flush(); err != nil {
 		return err
 	}

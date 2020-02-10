@@ -2,6 +2,7 @@ package provider_importer
 
 import (
 	"fmt"
+	"sort"
 
 	plugin "github.com/hashicorp/go-plugin"
 	tfplugin "github.com/hashicorp/terraform/plugin"
@@ -10,6 +11,8 @@ import (
 	"github.com/jhump/protoreflect/desc/builder"
 )
 
+// ProviderImporter queries a Terraform provider binary for its schema
+// and returns a proto FileBuilder
 type ProviderImporter struct {
 	Resources   *builder.FileBuilder
 	Datasources *builder.FileBuilder
@@ -17,25 +20,33 @@ type ProviderImporter struct {
 	config      *builder.MessageBuilder
 }
 
+// NewProviderImporter returns a ProviderImporter
 func NewProviderImporter(name string, client providers.Interface) (*ProviderImporter, error) {
 	p := &ProviderImporter{}
 
-	schema_response := client.GetSchema()
+	schemaResponse := client.GetSchema()
 	defer client.Close()
 
 	p.Resources = NewFile(name, "resources")
 	p.Datasources = NewFile(name, "data")
 	p.Provider = NewFile(name, "provider")
 
-	p.Provider.AddMessage(populateResources("resources", p.Resources, schema_response.ResourceTypes))
-	p.Provider.AddMessage(populateResources("data", p.Datasources, schema_response.DataSources))
+	p.Provider.AddMessage(populateResources("resources", p.Resources, schemaResponse.ResourceTypes))
+	p.Provider.AddMessage(populateResources("data", p.Datasources, schemaResponse.DataSources))
 
 	return p, nil
 }
 
 func populateResources(name string, b *builder.FileBuilder, schema map[string]providers.Schema) *builder.MessageBuilder {
 	msg := builder.NewMessage(name)
-	for n, s := range schema {
+	keys := []string{}
+	for n := range schema {
+		keys = append(keys, n)
+	}
+	sort.Strings(keys)
+
+	for _, n := range keys {
+		s := schema[n]
 		m := schemaToProtoMessage(capitalizeMessageName(n), s)
 		b.TryAddMessage(m)
 		f := builder.NewMapField(n, builder.FieldTypeString(), builder.FieldTypeMessage(m))

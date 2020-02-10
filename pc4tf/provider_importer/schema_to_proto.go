@@ -17,6 +17,7 @@ import (
 
 var metaFile *builder.FileBuilder = meta.MetaFile()
 
+// NewFile returns a FileBuilder prepared with the required filename format
 func NewFile(name, postfix string) *builder.FileBuilder {
 	file := builder.NewFile(fmt.Sprintf("terraform/%s-%s.proto", name, postfix))
 	file.SetProto3(true)
@@ -24,6 +25,7 @@ func NewFile(name, postfix string) *builder.FileBuilder {
 	return file
 }
 
+// Print prints a FileBuilder to stderr
 func Print(b *builder.FileBuilder) {
 	p := &protoprint.Printer{}
 	desc, err := b.Build()
@@ -75,8 +77,14 @@ func attributeToProtoField(msg *builder.MessageBuilder, name string, attr *confi
 	}
 	if t.IsObjectType() {
 		m := builder.NewMessage(capitalizeMessageName(name))
-		for n, t1 := range t.AttributeTypes() {
-			m.TryAddField(ctyTypeToProtoField(n, t1))
+		keys := []string{}
+		for n := range t.AttributeTypes() {
+			keys = append(keys, n)
+		}
+		sort.Strings(keys)
+
+		for _, n := range keys {
+			m.TryAddField(ctyTypeToProtoField(n, t.AttributeType(n)))
 		}
 		log.Println("trying to add nested message", name)
 		if err := msg.TryAddNestedMessage(m); err != nil {
@@ -123,7 +131,7 @@ func ctyTypeToProtoFieldType(t cty.Type) *builder.FieldType {
 	case "bool":
 		return builder.FieldTypeBool()
 	default:
-		log.Fatalf("unkown type: %v", x)
+		log.Fatalf("unknown type: %v", x)
 	}
 	return ft
 }
