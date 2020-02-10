@@ -5,14 +5,14 @@ import (
 	"log"
 	"testing"
 
-	"github.com/protoconf/protoconf/pc4tf/provider_importer"
+	"github.com/protoconf/protoconf/pc4tf/providerimporter"
 	assert "github.com/stretchr/testify/require"
 )
 
 func TestGenerate(t *testing.T) {
 	dir, err := ioutil.TempDir("", "generate_test")
 	assert.NoError(t, err)
-	err = provider_importer.DownloadPlugin(dir, "random", "2.2.1")
+	err = providerimporter.DownloadPlugin(dir, "random", "2.2.1")
 	assert.NoError(t, err)
 	dst, err := ioutil.TempDir("", "generate_dest")
 	assert.NoError(t, err)

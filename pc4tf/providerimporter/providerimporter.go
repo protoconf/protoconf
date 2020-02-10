@@ -1,4 +1,4 @@
-package provider_importer
+package providerimporter
 
 import (
 	"fmt"
