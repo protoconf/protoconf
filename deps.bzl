@@ -175,6 +175,7 @@ def deps():
         build_directives = [
             "gazelle:proto disable",
         ],
+        build_file_generation = "on",
         importpath = "github.com/coreos/etcd",
         sum = "h1:Zz1aXgDrFFi1nadh58tA9ktt06cmPTwNNP3dXwIq1lE=",
         version = "v3.3.18+incompatible",
@@ -1863,6 +1864,7 @@ def deps():
     )
     go_repository(
         name = "io_etcd_go_etcd",
+        build_file_generation = "on",
         build_directives = [
             "gazelle:proto disable",
         ],
@@ -1872,6 +1874,7 @@ def deps():
     )
     go_repository(
         name = "com_github_etcd_io_etcd",
+        build_file_generation = "on",
         build_directives = [
             "gazelle:proto disable",
         ],
