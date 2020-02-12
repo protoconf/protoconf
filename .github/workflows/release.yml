@@ -1,7 +1,7 @@
 on:
   push:
-    branches:
-      - release
+    tags:
+    - '*'
 
 name: Release
 jobs:
@@ -26,8 +26,8 @@ jobs:
           - 2379
     steps:
     - uses: actions/checkout@v2
-    - run: |
-          git fetch --prune --unshallow
+    - name: fetch tags
+      run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
     - name: Log in to registry
       uses: azure/docker-login@v1
       with:
