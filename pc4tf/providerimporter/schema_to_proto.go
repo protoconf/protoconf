@@ -72,9 +72,6 @@ func attributeToProtoField(msg *builder.MessageBuilder, name string, attr *confi
 	t := attr.Type
 	f := ctyTypeToProtoField(name, t)
 
-	if t.IsListType() || t.IsSetType() {
-		t = t.ElementType()
-	}
 	if t.IsObjectType() {
 		m := builder.NewMessage(capitalizeMessageName(name))
 		keys := []string{}
@@ -91,6 +88,9 @@ func attributeToProtoField(msg *builder.MessageBuilder, name string, attr *confi
 			log.Fatal(err)
 		}
 		f.SetType(builder.FieldTypeMessage(m))
+	}
+	if t.IsListType() || t.IsSetType() {
+		t = t.ElementType()
 	}
 
 	c := builder.Comments{LeadingComment: attr.Description}
@@ -114,7 +114,7 @@ func ctyTypeToProtoField(name string, t cty.Type) *builder.FieldBuilder {
 		return f
 	}
 	if t.IsObjectType() {
-		log.Println(name, "is an object, returning")
+		log.Println(name, "is an object, returning", t)
 		return f
 	}
 	f.SetType(ctyTypeToProtoFieldType(t))
