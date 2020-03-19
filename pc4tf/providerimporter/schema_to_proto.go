@@ -11,6 +11,7 @@ import (
 	"github.com/jhump/protoreflect/desc/builder"
 	"github.com/jhump/protoreflect/desc/protoprint"
 	"github.com/zclconf/go-cty/cty"
+	"go.uber.org/zap"
 
 	"github.com/protoconf/protoconf/pc4tf/meta"
 )
@@ -40,9 +41,8 @@ func Print(b *builder.FileBuilder) {
 }
 
 func (p *ProviderImporter) schemaToProtoMessage(name string, schema providers.Schema) *builder.MessageBuilder {
-	log := p.logger.WithField("message", name)
+	log := p.logger.With(zap.String("message", name))
 	log.Info("handling message")
-	p.logger = log
 
 	m := builder.NewMessage(name)
 	c := builder.Comments{LeadingComment: fmt.Sprintf("%s version is %d", name, schema.Version)}
@@ -72,8 +72,7 @@ func (p *ProviderImporter) schemaToProtoMessage(name string, schema providers.Sc
 }
 
 func (p *ProviderImporter) attributeToProtoField(msg *builder.MessageBuilder, name string, attr *configschema.Attribute) *builder.MessageBuilder {
-	log := p.logger.WithField("attr", name)
-	p.logger = log
+	p.logger.With(zap.String("attr", name)).Debug("got attr")
 	t := attr.Type
 	p.handleCty(msg, name, t, attr.Description)
 	return msg
@@ -96,7 +95,7 @@ func (p *ProviderImporter) handleCty(parent *builder.MessageBuilder, fieldName s
 }
 
 func (p *ProviderImporter) handleObject(name string, t cty.Type, f *builder.FieldBuilder, msg *builder.MessageBuilder) {
-	log := p.logger.WithField("object_name", name)
+	log := p.logger.With(zap.String("object_name", name))
 	m := builder.NewMessage(capitalizeMessageName(name))
 	keys := []string{}
 	for n := range t.AttributeTypes() {
@@ -119,9 +118,9 @@ func (p *ProviderImporter) handleObject(name string, t cty.Type, f *builder.Fiel
 		m.TryAddField(f2)
 	}
 
-	log.WithField("submessage", capitalizeMessageName(name)).Info("trying to add nested message")
+	log.Info("trying to add nested message", zap.String("submessage", capitalizeMessageName(name)))
 	if err := msg.TryAddNestedMessage(m); err != nil {
-		log.WithError(err).Fatal("failed to add message")
+		log.Fatal("failed to add message", zap.Error(err))
 	}
 	f.SetType(builder.FieldTypeMessage(m))
 }
@@ -132,12 +131,12 @@ func (p *ProviderImporter) ctyTypeToProtoField(name string, t cty.Type) *builder
 	f.SetJsonName(name)
 
 	if t.IsListType() || t.IsSetType() {
-		log.Info("detected as list of ", t.ElementType().FriendlyName())
+		log.Info("detected as list", zap.String("type", t.ElementType().FriendlyName()))
 		t = t.ElementType()
 		f.SetRepeated()
 	}
 	if t.IsMapType() {
-		log.Info("detected as map of ", t.ElementType().FriendlyName())
+		log.Info("detected as map", zap.String("type", t.ElementType().FriendlyName()))
 		f = builder.NewMapField(name, builder.FieldTypeString(), builder.FieldTypeString())
 		return f
 	}

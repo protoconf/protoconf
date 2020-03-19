@@ -9,7 +9,7 @@ import (
 	"github.com/hashicorp/terraform/plugin/discovery"
 	"github.com/hashicorp/terraform/providers"
 	"github.com/jhump/protoreflect/desc/builder"
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 )
 
 // ProviderImporter queries a Terraform provider binary for its schema
@@ -19,13 +19,18 @@ type ProviderImporter struct {
 	Datasources *builder.FileBuilder
 	Provider    *builder.FileBuilder
 	config      *builder.MessageBuilder
-	logger      *logrus.Entry
+	logger      *zap.Logger
 }
 
 // NewProviderImporter returns a ProviderImporter
 func NewProviderImporter(name string, client providers.Interface) (*ProviderImporter, error) {
 	p := &ProviderImporter{}
-	p.logger = logrus.New().WithField("provider_name", name)
+	logger, err := zap.NewDevelopment()
+	if err != nil {
+		return nil, err
+	}
+	p.logger = logger.With(zap.String("provider_name", name))
+	// p.logger = zap.New.WithField("provider_name", name)
 	p.logger.Info("invoking provider importer")
 
 	schemaResponse := client.GetSchema()
@@ -42,7 +47,7 @@ func NewProviderImporter(name string, client providers.Interface) (*ProviderImpo
 }
 
 func (p *ProviderImporter) populateResources(name string, b *builder.FileBuilder, schema map[string]providers.Schema) *builder.MessageBuilder {
-	log := p.logger.WithField("file", name)
+	log := p.logger.With(zap.String("file", name))
 	log.Info("populating resources")
 	p.logger = log
 	msg := builder.NewMessage(name)

@@ -746,14 +746,14 @@ def deps():
     )
     go_repository(
         name = "com_github_hashicorp_go_rootcerts",
-        importpath = "github.com/hashicorp/go-rootcerts",
-        patch_args = ["-p1"],
-        patches = ["@protoconf//third_party:go_rootcerts_fix_darwin_cross_build.patch"],
         build_directives = [
             "gazelle:exclude",
         ],
-        sum = "h1:jzhAVGtqPKbwpyCPELlgNWhE1znq+qwJtW5Oi2viEzc=",
-        version = "v1.0.2",
+        importpath = "github.com/hashicorp/go-rootcerts",
+        patch_args = ["-p1"],
+        patches = ["@protoconf//third_party:go_rootcerts_fix_darwin_cross_build.patch"],
+        sum = "h1:DMo4fmknnz0E0evoNYnV48RjWndOsmd6OW+09R3cEP8=",
+        version = "v1.0.1",
     )
     go_repository(
         name = "com_github_hashicorp_go_safetemp",
@@ -1864,20 +1864,20 @@ def deps():
     )
     go_repository(
         name = "io_etcd_go_etcd",
-        build_file_generation = "on",
         build_directives = [
             "gazelle:proto disable",
         ],
+        build_file_generation = "on",
         importpath = "go.etcd.io/etcd",
         sum = "h1:5aomL5mqoKHxw6NG+oYgsowk8tU8aOalo2IdZxdWHkw=",
         version = "v3.3.18+incompatible",
     )
     go_repository(
         name = "com_github_etcd_io_etcd",
-        build_file_generation = "on",
         build_directives = [
             "gazelle:proto disable",
         ],
+        build_file_generation = "on",
         importpath = "github.com/etcd-io/etcd",
         sum = "h1:iBOwlpFcpg+GJEiZ2ODqwkcu2UEK3y4aKFa3d8+LneM=",
         version = "v3.3.18+incompatible",
