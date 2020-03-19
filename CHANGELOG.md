@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.1-beta4.0](https://github.com/protoconf/protoconf/compare/v0.1.1-beta3.0...v0.1.1-beta4.0) (2020-03-19)
+
+
+### Bug Fixes
+
+* **pc4tf:** nested messages ([d169061](https://github.com/protoconf/protoconf/commit/d16906115106cea66ee80bbaec93bca453f98adc))
+* **pc4tf:** replace logrus with zap logger ([c55e8ea](https://github.com/protoconf/protoconf/commit/c55e8eabbe6f3eb75d5af4ac1871bf5b5d686797))
+
 ### [0.1.1-beta3.0](https://github.com/protoconf/protoconf/compare/v0.1.1-pre2.0...v0.1.1-beta3.0) (2020-03-18)
 
 
