@@ -19,11 +19,13 @@ require (
 	github.com/mitchellh/cli v1.0.0
 	github.com/prometheus/client_model v0.0.0-20190812154241-14fe0d1b01d4 // indirect
 	github.com/samuel/go-zookeeper v0.0.0-20190923202752-2cc03de413da
+	github.com/sirupsen/logrus v1.2.0
 	github.com/stretchr/testify v1.4.0
 	github.com/zclconf/go-cty v1.2.0
 	go.etcd.io/bbolt v1.3.3
 	go.etcd.io/etcd v3.3.18+incompatible
 	go.starlark.net v0.0.0-20191218235703-9fcb808a6221
+	go.uber.org/zap v1.9.1
 	golang.org/x/net v0.0.0-20191209160850-c0dbc17a3553
 	google.golang.org/genproto v0.0.0-20191223191004-3caeed10a8bf // indirect
 	google.golang.org/grpc v1.23.0
