@@ -39,7 +39,11 @@ func Print(b *builder.FileBuilder) {
 	log.Println(str)
 }
 
-func schemaToProtoMessage(name string, schema providers.Schema) *builder.MessageBuilder {
+func (p *ProviderImporter) schemaToProtoMessage(name string, schema providers.Schema) *builder.MessageBuilder {
+	log := p.logger.WithField("message", name)
+	log.Info("handling message")
+	p.logger = log
+
 	m := builder.NewMessage(name)
 	c := builder.Comments{LeadingComment: fmt.Sprintf("%s version is %d", name, schema.Version)}
 	m.SetComments(c)
@@ -52,7 +56,7 @@ func schemaToProtoMessage(name string, schema providers.Schema) *builder.Message
 	sort.Strings(keys)
 
 	for _, fieldName := range keys {
-		attributeToProtoField(m, fieldName, attrs[fieldName])
+		p.attributeToProtoField(m, fieldName, attrs[fieldName])
 	}
 
 	// Adding meta fields
@@ -67,54 +71,78 @@ func schemaToProtoMessage(name string, schema providers.Schema) *builder.Message
 	return m
 }
 
-func attributeToProtoField(msg *builder.MessageBuilder, name string, attr *configschema.Attribute) *builder.MessageBuilder {
-	// f := builder.NewField(name, builder.FieldTypeString())
+func (p *ProviderImporter) attributeToProtoField(msg *builder.MessageBuilder, name string, attr *configschema.Attribute) *builder.MessageBuilder {
+	log := p.logger.WithField("attr", name)
+	p.logger = log
 	t := attr.Type
-	f := ctyTypeToProtoField(name, t)
-
-	if t.IsObjectType() {
-		m := builder.NewMessage(capitalizeMessageName(name))
-		keys := []string{}
-		for n := range t.AttributeTypes() {
-			keys = append(keys, n)
-		}
-		sort.Strings(keys)
-
-		for _, n := range keys {
-			m.TryAddField(ctyTypeToProtoField(n, t.AttributeType(n)))
-		}
-		log.Println("trying to add nested message", name)
-		if err := msg.TryAddNestedMessage(m); err != nil {
-			log.Fatal(err)
-		}
-		f.SetType(builder.FieldTypeMessage(m))
-	}
-	if t.IsListType() || t.IsSetType() {
-		t = t.ElementType()
-	}
-
-	c := builder.Comments{LeadingComment: attr.Description}
-	f.SetComments(c)
-	msg.TryAddField(f)
+	p.handleCty(msg, name, t, attr.Description)
 	return msg
 }
 
-func ctyTypeToProtoField(name string, t cty.Type) *builder.FieldBuilder {
+func (p *ProviderImporter) handleCty(parent *builder.MessageBuilder, fieldName string, t cty.Type, description string) error {
+	f := p.ctyTypeToProtoField(fieldName, t)
+
+	if t.IsListType() || t.IsSetType() {
+		t = t.ElementType()
+	}
+	if t.IsObjectType() {
+		p.handleObject(fieldName, t, f, parent)
+	}
+
+	c := builder.Comments{LeadingComment: description}
+	f.SetComments(c)
+	parent.TryAddField(f)
+	return nil
+}
+
+func (p *ProviderImporter) handleObject(name string, t cty.Type, f *builder.FieldBuilder, msg *builder.MessageBuilder) {
+	log := p.logger.WithField("object_name", name)
+	m := builder.NewMessage(capitalizeMessageName(name))
+	keys := []string{}
+	for n := range t.AttributeTypes() {
+		keys = append(keys, n)
+	}
+	sort.Strings(keys)
+
+	for _, n := range keys {
+		t2 := t.AttributeType(n)
+		f2 := p.ctyTypeToProtoField(n, t2)
+		c := builder.Comments{LeadingComment: fmt.Sprintf("%v: %s", n, t2.FriendlyName())}
+		if t2.IsListType() || t2.IsSetType() {
+			t2 = t2.ElementType()
+			f2.SetRepeated()
+		}
+		if t2.IsObjectType() {
+			p.handleObject(n, t2, f2, m)
+		}
+		f2.SetComments(c)
+		m.TryAddField(f2)
+	}
+
+	log.WithField("submessage", capitalizeMessageName(name)).Info("trying to add nested message")
+	if err := msg.TryAddNestedMessage(m); err != nil {
+		log.WithError(err).Fatal("failed to add message")
+	}
+	f.SetType(builder.FieldTypeMessage(m))
+}
+
+func (p *ProviderImporter) ctyTypeToProtoField(name string, t cty.Type) *builder.FieldBuilder {
+	log := p.logger
 	f := builder.NewField(name, builder.FieldTypeString())
 	f.SetJsonName(name)
 
 	if t.IsListType() || t.IsSetType() {
-		log.Println(name, "is a list of", t.ElementType().FriendlyName())
+		log.Info("detected as list of ", t.ElementType().FriendlyName())
 		t = t.ElementType()
 		f.SetRepeated()
 	}
 	if t.IsMapType() {
-		log.Println(name, "is a map of", t.ElementType().FriendlyName())
+		log.Info("detected as map of ", t.ElementType().FriendlyName())
 		f = builder.NewMapField(name, builder.FieldTypeString(), builder.FieldTypeString())
 		return f
 	}
 	if t.IsObjectType() {
-		log.Println(name, "is an object, returning", t)
+		log.Info("detected as object, returning")
 		return f
 	}
 	f.SetType(ctyTypeToProtoFieldType(t))
