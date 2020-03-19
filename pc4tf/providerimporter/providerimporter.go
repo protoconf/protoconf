@@ -9,6 +9,7 @@ import (
 	"github.com/hashicorp/terraform/plugin/discovery"
 	"github.com/hashicorp/terraform/providers"
 	"github.com/jhump/protoreflect/desc/builder"
+	"github.com/sirupsen/logrus"
 )
 
 // ProviderImporter queries a Terraform provider binary for its schema
@@ -18,11 +19,14 @@ type ProviderImporter struct {
 	Datasources *builder.FileBuilder
 	Provider    *builder.FileBuilder
 	config      *builder.MessageBuilder
+	logger      *logrus.Entry
 }
 
 // NewProviderImporter returns a ProviderImporter
 func NewProviderImporter(name string, client providers.Interface) (*ProviderImporter, error) {
 	p := &ProviderImporter{}
+	p.logger = logrus.New().WithField("provider_name", name)
+	p.logger.Info("invoking provider importer")
 
 	schemaResponse := client.GetSchema()
 	defer client.Close()
@@ -31,13 +35,16 @@ func NewProviderImporter(name string, client providers.Interface) (*ProviderImpo
 	p.Datasources = NewFile(name, "data")
 	p.Provider = NewFile(name, "provider")
 
-	p.Provider.AddMessage(populateResources("resources", p.Resources, schemaResponse.ResourceTypes))
-	p.Provider.AddMessage(populateResources("data", p.Datasources, schemaResponse.DataSources))
+	p.Provider.AddMessage(p.populateResources("resources", p.Resources, schemaResponse.ResourceTypes))
+	p.Provider.AddMessage(p.populateResources("data", p.Datasources, schemaResponse.DataSources))
 
 	return p, nil
 }
 
-func populateResources(name string, b *builder.FileBuilder, schema map[string]providers.Schema) *builder.MessageBuilder {
+func (p *ProviderImporter) populateResources(name string, b *builder.FileBuilder, schema map[string]providers.Schema) *builder.MessageBuilder {
+	log := p.logger.WithField("file", name)
+	log.Info("populating resources")
+	p.logger = log
 	msg := builder.NewMessage(name)
 	keys := []string{}
 	for n := range schema {
@@ -47,7 +54,7 @@ func populateResources(name string, b *builder.FileBuilder, schema map[string]pr
 
 	for _, n := range keys {
 		s := schema[n]
-		m := schemaToProtoMessage(capitalizeMessageName(n), s)
+		m := p.schemaToProtoMessage(capitalizeMessageName(n), s)
 		b.TryAddMessage(m)
 		f := builder.NewMapField(n, builder.FieldTypeString(), builder.FieldTypeMessage(m))
 		f.SetJsonName(n)
