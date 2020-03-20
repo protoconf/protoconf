@@ -5,8 +5,8 @@ import (
 	"io"
 	"log"
 	"os"
-	"sort"
 	"path/filepath"
+	"sort"
 
 	tfplugin "github.com/hashicorp/terraform/plugin"
 	"github.com/hashicorp/terraform/plugin/discovery"
@@ -69,9 +69,12 @@ func (g *Generator) Save() error {
 
 	main := builder.NewMessage("Terraform")
 	resources := builder.NewMessage("Resources")
+	data := builder.NewMessage("Datasources")
 
 	main.AddNestedMessage(resources)
 	main.AddField(builder.NewField("resource", builder.FieldTypeMessage(resources)).SetJsonName("resource"))
+	main.AddNestedMessage(data)
+	main.AddField(builder.NewField("data", builder.FieldTypeMessage(data)).SetJsonName("data"))
 
 	metaFile := meta.MetaFile()
 	protoFiles := []*builder.FileBuilder{file, metaFile}
@@ -90,6 +93,10 @@ func (g *Generator) Save() error {
 		for _, b := range p.Provider.GetMessage("resources").GetChildren() {
 			f := p.Provider.GetMessage("resources").GetField(b.GetName())
 			resources.AddField(f)
+		}
+		for _, b := range p.Provider.GetMessage("data").GetChildren() {
+			f := p.Provider.GetMessage("data").GetField(b.GetName())
+			data.AddField(f)
 		}
 	}
 	file.AddMessage(main)
