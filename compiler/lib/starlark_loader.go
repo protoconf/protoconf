@@ -18,6 +18,7 @@ import (
 	"github.com/protoconf/protoconf/consts"
 	pc "github.com/protoconf/protoconf/datatypes/proto/v1/protoconfvalue"
 	"github.com/protoconf/protoconf/protostdlib"
+	"github.com/qri-io/starlib"
 	"go.starlark.net/starlark"
 )
 
@@ -62,6 +63,12 @@ func (l *starlarkLoader) loadConfig(moduleName string) (starlark.StringDict, map
 }
 
 func (l *starlarkLoader) Load(thread *starlark.Thread, moduleName string) (starlark.StringDict, error) {
+	starlibResult, err := starlib.Loader(thread, moduleName)
+	if err == nil {
+		return starlibResult, nil
+	} else {
+		err = nil
+	}
 	var fromPath string
 	if thread.CallStackDepth() > 0 {
 		fromPath = thread.CallFrame(0).Pos.Filename()
