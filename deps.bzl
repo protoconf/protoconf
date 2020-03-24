@@ -1016,8 +1016,8 @@ def deps():
     go_repository(
         name = "com_github_mattn_go_runewidth",
         importpath = "github.com/mattn/go-runewidth",
-        sum = "h1:2BvfKmzob6Bmd4YsL0zygOqfdFnK7GR4QL06Do4/p7Y=",
-        version = "v0.0.4",
+        sum = "h1:Ei8KR0497xHyKJPAv59M1dkC+rOZCMBJ+t3fZ+twI54=",
+        version = "v0.0.7",
     )
     go_repository(
         name = "com_github_mattn_go_shellwords",
@@ -3609,4 +3609,16 @@ def deps():
         importpath = "gotest.tools/gotestsum",
         sum = "h1:LdVJDg3RHrci4MbupUgSkwPCikz4kTzDHWtUahDAleY=",
         version = "v0.3.4",
+    )
+    go_repository(
+        name = "com_github_ernesto_jimenez_gogen",
+        importpath = "github.com/ernesto-jimenez/gogen",
+        sum = "h1:cTavhURetDkezJCvxFggiyLeP40Mrk/TtVg2+ycw1Es=",
+        version = "v0.0.0-20180125220232-d7d4131e6607",
+    )
+    go_repository(
+        name = "com_github_olekukonko_tablewriter",
+        importpath = "github.com/olekukonko/tablewriter",
+        sum = "h1:vHD/YYe1Wolo78koG299f7V/VAS08c6IpCLn+Ejf/w8=",
+        version = "v0.0.4",
     )

@@ -7,6 +7,7 @@ require (
 	github.com/coreos/etcd v3.3.18+incompatible // indirect
 	github.com/docker/libkv v0.2.1 // indirect
 	github.com/envoyproxy/protoc-gen-validate v0.1.0 // indirect
+	github.com/ernesto-jimenez/gogen v0.0.0-20180125220232-d7d4131e6607 // indirect
 	github.com/etcd-io/etcd v3.3.18+incompatible // indirect
 	github.com/fsnotify/fsnotify v1.4.7
 	github.com/golang/protobuf v1.3.2
