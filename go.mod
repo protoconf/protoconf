@@ -9,6 +9,7 @@ require (
 	github.com/envoyproxy/protoc-gen-validate v0.1.0 // indirect
 	github.com/ernesto-jimenez/gogen v0.0.0-20180125220232-d7d4131e6607 // indirect
 	github.com/etcd-io/etcd v3.3.18+incompatible // indirect
+	github.com/fatih/structtag v1.2.0
 	github.com/fsnotify/fsnotify v1.4.7
 	github.com/golang/protobuf v1.3.2
 	github.com/golangci/golangci-lint v1.18.0 // indirect
@@ -30,6 +31,7 @@ require (
 	go.starlark.net v0.0.0-20191218235703-9fcb808a6221
 	go.uber.org/zap v1.9.1
 	golang.org/x/net v0.0.0-20191209160850-c0dbc17a3553
+	golang.org/x/tools v0.0.0-20190909030654-5b82db07426d
 	google.golang.org/genproto v0.0.0-20191223191004-3caeed10a8bf // indirect
 	google.golang.org/grpc v1.23.0
 	sigs.k8s.io/yaml v1.1.0 // indirect

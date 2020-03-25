@@ -3622,3 +3622,9 @@ def deps():
         sum = "h1:vHD/YYe1Wolo78koG299f7V/VAS08c6IpCLn+Ejf/w8=",
         version = "v0.0.4",
     )
+    go_repository(
+        name = "com_github_fatih_structtag",
+        importpath = "github.com/fatih/structtag",
+        sum = "h1:/OdNE99OxoI/PqaW/SuSK9uxxT3f/tcSZgon/ssNSx4=",
+        version = "v1.2.0",
+    )
