@@ -1,21 +1,21 @@
-package generate
+package terraformimporter
 
 import (
 	"io/ioutil"
 	"log"
 	"testing"
 
-	"github.com/protoconf/protoconf/pc4tf/providerimporter"
 	assert "github.com/stretchr/testify/require"
 )
 
 func TestGenerate(t *testing.T) {
 	dir, err := ioutil.TempDir("", "generate_test")
 	assert.NoError(t, err)
-	err = providerimporter.DownloadPlugin(dir, "random", "2.2.1")
+	err = DownloadPlugin(dir, "random", "2.2.1")
 	assert.NoError(t, err)
 	dst, err := ioutil.TempDir("", "generate_dest")
 	assert.NoError(t, err)
+	dst = "/tmp/importers/terraform"
 	g := NewGenerator(dir, dst)
 	err = g.PopulateProviders()
 	assert.NoError(t, err)

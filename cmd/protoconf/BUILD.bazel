@@ -41,6 +41,7 @@ go_library(
         "//command:go_default_library",
         "//compiler",
         "//importers/golang_importer:go_default_library",
+        "//importers/terraform_importer:go_default_library",
         "//inserter:go_default_library",
         "//server",
         "@com_github_mitchellh_cli//:go_default_library",

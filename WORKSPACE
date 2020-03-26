@@ -118,10 +118,6 @@ load("@//:deps.bzl", "deps")
 
 deps()
 
-load("@//pc4tf:deps.bzl", pc4tf_deps = "deps")
-
-pc4tf_deps()
-
 git_repository(
     name = "graknlabs_bazel_distribution",
     remote = "https://github.com/graknlabs/bazel-distribution",

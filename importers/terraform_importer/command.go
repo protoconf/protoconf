@@ -1,4 +1,4 @@
-package generate
+package terraformimporter
 
 import (
 	"bytes"
@@ -22,7 +22,7 @@ type cliConfig struct {
 func newFlagSet() (*flag.FlagSet, *cliConfig) {
 	flags := flag.NewFlagSet("", flag.ExitOnError)
 	flags.Usage = func() {
-		fmt.Fprintln(flags.Output(), "Usage: [OPTION]... protoconf_root [config]...")
+		fmt.Fprintln(flags.Output(), "Usage: [OPTION]...")
 		flags.PrintDefaults()
 	}
 
@@ -34,7 +34,6 @@ func newFlagSet() (*flag.FlagSet, *cliConfig) {
 }
 
 func (c *cliCommand) Run(args []string) int {
-	log.Println("starting")
 	flags, config := newFlagSet()
 	flags.Parse(args)
 
@@ -63,7 +62,7 @@ func (c *cliCommand) Help() string {
 }
 
 func (c *cliCommand) Synopsis() string {
-	return "Compile configs"
+	return "Creates proto files from terraform providers schema"
 }
 
 // Command is a cli.CommandFactory

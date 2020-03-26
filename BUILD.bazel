@@ -116,37 +116,6 @@ assemble_zip(
     output_filename = "protoconf-windows",
 )
 
-# Releasing pc4tf
-assemble_targz(
-    name = "pc4tf-darwin",
-    additional_files = {
-        "//cmd/pc4tf:pc4tf-darwin": "./pc4tf",
-    },
-    output_filename = "",
-)
-
-assemble_targz(
-    name = "pc4tf-linux",
-    additional_files = {
-        "//cmd/pc4tf:pc4tf-linux": "./pc4tf",
-    },
-    output_filename = "",
-)
-
-assemble_targz(
-    name = "pc4tf-windows-tgz",
-    additional_files = {
-        "//cmd/pc4tf:pc4tf-windows": "./pc4tf.exe",
-    },
-    output_filename = "",
-)
-
-assemble_zip(
-    name = "pc4tf-windows",
-    targets = [":pc4tf-windows-tgz"],
-    output_filename = "pc4tf-windows",
-)
-
 assemble_versioned(
     name = "protoconf-versioned-all",
     version_file = "//:VERSION",
@@ -154,9 +123,6 @@ assemble_versioned(
         ":protoconf-linux",
         ":protoconf-darwin",
         ":protoconf-windows",
-        ":pc4tf-linux",
-        ":pc4tf-darwin",
-        ":pc4tf-windows",
     ],
 )
 

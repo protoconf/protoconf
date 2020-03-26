@@ -1,38 +1,32 @@
-package generate
+package terraformimporter
 
 import (
-	"bufio"
-	"io"
 	"log"
-	"os"
-	"path/filepath"
 	"sort"
 
 	tfplugin "github.com/hashicorp/terraform/plugin"
 	"github.com/hashicorp/terraform/plugin/discovery"
-	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/desc/builder"
-	"github.com/jhump/protoreflect/desc/protoprint"
 
-	"github.com/protoconf/protoconf/pc4tf/meta"
-	"github.com/protoconf/protoconf/pc4tf/providerimporter"
+	"github.com/protoconf/protoconf/importers"
+	"github.com/protoconf/protoconf/importers/terraform_importer/meta"
 )
 
 // Generator is used to create `terrafrom.proto` file with all of its
 // available resources from the provider used in the current directory
 // context.
 type Generator struct {
-	Providers  map[string]*providerimporter.ProviderImporter
+	Providers  map[string]*ProviderImporter
 	ImportPath string
-	OutputPath string
+	Importer *importers.Importer
 }
 
 // NewGenerator creates a new Generator
 func NewGenerator(importPath, outputPath string) *Generator {
-	providers := make(map[string]*providerimporter.ProviderImporter)
+	providers := make(map[string]*ProviderImporter)
 	return &Generator{
 		ImportPath: importPath,
-		OutputPath: outputPath,
+		Importer: importers.NewImporter("terraform/terraform.proto", outputPath),
 		Providers:  providers,
 	}
 }
@@ -47,11 +41,11 @@ func (g *Generator) PopulateProviders() error {
 
 	for c := range meta {
 		config := tfplugin.ClientConfig(c)
-		client, err := providerimporter.NewGRPCClient(config)
+		client, err := NewGRPCClient(config)
 		if err != nil {
 			return err
 		}
-		p, err := providerimporter.NewProviderImporter(c.Name, client)
+		p, err := NewProviderImporter(c.Name, client)
 		if err != nil {
 			return err
 		}
@@ -63,7 +57,7 @@ func (g *Generator) PopulateProviders() error {
 
 // Save will write all protofiles to disk
 func (g *Generator) Save() error {
-	file := builder.NewFile("terraform/terraform.proto")
+	file := g.Importer.MasterFile
 	file.SetProto3(true)
 	file.SetPackageName("terraform")
 
@@ -100,42 +94,10 @@ func (g *Generator) Save() error {
 		}
 	}
 	file.AddMessage(main)
-	descriptors := []*desc.FileDescriptor{}
-	for _, f := range protoFiles {
-		d, err := f.Build()
-		if err != nil {
-			return err
-		}
-		descriptors = append(descriptors, d)
+	for _,f := range protoFiles {
+		g.Importer.RegisterFile(f)
 	}
 
-	pr := &protoprint.Printer{}
-	return pr.PrintProtoFiles(descriptors, g.opener)
-}
+	return g.Importer.SaveAll()
 
-func (g *Generator) opener(name string) (io.WriteCloser, error) {
-	filePath := filepath.Join(g.OutputPath, name)
-	dirName := filepath.Dir(filePath)
-	err := os.MkdirAll(dirName, 0755)
-	if err != nil {
-		return nil, err
-	}
-	f, err := os.Create(filePath)
-	if err != nil {
-		return nil, err
-	}
-	return &myWriteCloser{f, bufio.NewWriter(f)}, nil
-}
-
-type myWriteCloser struct {
-	f *os.File
-	*bufio.Writer
-}
-
-// https://stackoverflow.com/questions/43115699/how-to-get-a-bufio-writer-that-implements-io-writecloser
-func (mwc *myWriteCloser) Close() error {
-	if err := mwc.Flush(); err != nil {
-		return err
-	}
-	return mwc.f.Close()
 }
