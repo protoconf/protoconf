@@ -1,4 +1,4 @@
-package providerimporter
+package terraformimporter
 
 import (
 	"log"

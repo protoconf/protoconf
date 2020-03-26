@@ -1,4 +1,4 @@
-package providerimporter
+package terraformimporter
 
 import (
 	"fmt"
@@ -13,7 +13,7 @@ import (
 	"github.com/zclconf/go-cty/cty"
 	"go.uber.org/zap"
 
-	"github.com/protoconf/protoconf/pc4tf/meta"
+	"github.com/protoconf/protoconf/importers/terraform_importer/meta"
 )
 
 var metaFile *builder.FileBuilder = meta.MetaFile()

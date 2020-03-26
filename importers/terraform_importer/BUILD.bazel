@@ -1,23 +1,19 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
 
-go_test(
-    name = "go_default_test",
-    srcs = ["providerimporter_test.go"],
-    embed = [":go_default_library"],
-    deps = ["@com_github_stretchr_testify//require:go_default_library"],
-)
-
 go_library(
     name = "go_default_library",
     srcs = [
+        "command.go",
         "providerimporter.go",
         "schema_to_proto.go",
+        "terraform_importer.go",
         "test_utils.go",
     ],
-    importpath = "github.com/protoconf/protoconf/pc4tf/providerimporter",
+    importpath = "github.com/protoconf/protoconf/importers/terraform_importer",
     visibility = ["//visibility:public"],
     deps = [
-        "//pc4tf/meta:go_default_library",
+        "//importers:go_default_library",
+        "//importers/terraform_importer/meta:go_default_library",
         "@com_github_hashicorp_go_getter//:go_default_library",
         "@com_github_hashicorp_go_plugin//:go_default_library",
         "@com_github_hashicorp_terraform//configs/configschema:go_default_library",
@@ -26,7 +22,18 @@ go_library(
         "@com_github_hashicorp_terraform//providers:go_default_library",
         "@com_github_jhump_protoreflect//desc/builder:go_default_library",
         "@com_github_jhump_protoreflect//desc/protoprint:go_default_library",
+        "@com_github_mitchellh_cli//:go_default_library",
         "@com_github_zclconf_go_cty//cty:go_default_library",
         "@org_uber_go_zap//:go_default_library",
     ],
+)
+
+go_test(
+    name = "go_default_test",
+    srcs = [
+        "providerimporter_test.go",
+        "terraform_importer_test.go",
+    ],
+    embed = [":go_default_library"],
+    deps = ["@com_github_stretchr_testify//require:go_default_library"],
 )
