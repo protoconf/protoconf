@@ -20,6 +20,7 @@ require (
 	github.com/hashicorp/terraform v0.12.18
 	github.com/jhump/protoreflect v1.4.5-0.20190719031800-6c4c7792338e
 	github.com/mitchellh/cli v1.0.0
+	github.com/mitchellh/go-homedir v1.1.0
 	github.com/olekukonko/tablewriter v0.0.4 // indirect
 	github.com/prometheus/client_model v0.0.0-20190812154241-14fe0d1b01d4 // indirect
 	github.com/qri-io/starlib v0.4.1
