@@ -58,6 +58,91 @@ func getFilesForBuilder(b builder.Builder, registry map[string]*builder.FileBuil
 	return registry
 }
 
+type requiredMessage struct {
+	File    string
+	Message string
+}
+
+func (r *requiredMessage) String() string {
+	return fmt.Sprintf("{File: %s, Message: %s}", r.File, r.Message)
+}
+
+// GetMessageFromFile returns a message from Files
+func (i *Importer) GetMessageFromFile(fileName, msgName string) *builder.MessageBuilder {
+	if !strings.HasSuffix(fileName, ".proto") {
+		fileName = fileName + ".proto"
+	}
+	file, ok := i.Files[fileName]
+	if !ok {
+		return nil
+	}
+	return file.GetMessage(msgName)
+}
+
+func (i *Importer) FindRequiredMessages(fileName, msgName string) []*requiredMessage {
+	rmsgs := []*requiredMessage{}
+	msg := i.GetMessageFromFile(fileName, msgName)
+	if msg == nil {
+		return rmsgs
+	}
+	file := msg.GetFile()
+	if file != nil {
+		rmsgs = append(rmsgs, &requiredMessage{File: file.GetName(), Message: msg.GetName()})
+	}
+
+	for _, child := range msg.GetChildren() {
+		if field, ok := child.(*builder.FieldBuilder); ok {
+			fTypeName := field.GetType().GetTypeName()
+			if fTypeName != "" {
+				ret := strings.Split(fTypeName, ".")
+				log.Println(ret)
+				if len(ret) == 1 {
+					rmsgs = append(rmsgs, &requiredMessage{File: msg.GetFile().GetName(), Message: ret[0]})
+				} else if len(ret) == 2 {
+					for _, myMsg := range i.FindRequiredMessages(ret[0], ret[1]) {
+						rmsgs = append(rmsgs, myMsg)
+					}
+				}
+			}
+		}
+	}
+
+	return rmsgs
+}
+
+func (i Importer) FilterFilesAndMessages(fileName, msgName string) map[string]*builder.FileBuilder {
+	rmsgs := i.FindRequiredMessages(fileName, msgName)
+	outcome := map[string]*builder.FileBuilder{}
+
+	for _, rmsg := range rmsgs {
+		file := builder.NewFile(rmsg.File).SetProto3(true)
+		if newFile, ok := outcome[rmsg.File]; ok {
+			file = newFile
+		} else {
+			outcome[rmsg.File] = file
+		}
+		msg := i.GetMessageFromFile(rmsg.File, rmsg.Message)
+		if msg != nil {
+
+			file.TryAddMessage(msg)
+		}
+	}
+
+	return outcome
+}
+
+func (i Importer) FilterFiles(fileName, msgName string) map[string]*builder.FileBuilder {
+
+	rmsgs := i.FindRequiredMessages(fileName, msgName)
+	outcome := map[string]*builder.FileBuilder{}
+
+	for _, rmsg := range rmsgs {
+		outcome[rmsg.File] = i.Files[rmsg.File]
+	}
+
+	return outcome
+}
+
 // SaveAll will write all the proto files
 func (i *Importer) SaveAll() error {
 	i.RegisterFile(i.MasterFile)
