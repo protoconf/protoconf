@@ -224,6 +224,11 @@ func (p *GolangImporter) GetMessageFromFile(filename, messageName string) *build
 	return my[filename+".proto"].GetMessage(messageName)
 }
 
+// GetFileNameFor will assist the command line to detect the file of the top config struct
+func (p *GolangImporter) GetFileNameFor(pkgName, pkgID string) string {
+	return p.protoFilesRegistry.GetProtoFile(pkgName, pkgID).GetName()
+}
+
 // func (p *GolangImporter) ImportMessageFromFile(fileName, msgName string) {
 // 	msg := p.GetMessageFromFile(fileName, msgName)
 // 	if msg == nil {

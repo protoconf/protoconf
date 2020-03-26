@@ -18,6 +18,10 @@ func newProtoFilesRegistry() *protoFilesRegistry {
 	}
 }
 
+func (p *protoFilesRegistry) GetNameFor(pkgName, pkgID string) string {
+	return p.nameFor(pkgName, pkgID)
+}
+
 func (p *protoFilesRegistry) nameFor(pkgName, pkgID string) string {
 	if pkg, ok := p.reg[pkgName]; ok {
 		pkgLen := len(pkg)
