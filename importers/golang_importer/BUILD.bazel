@@ -3,6 +3,7 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
 go_library(
     name = "go_default_library",
     srcs = [
+        "command.go",
         "go_proto_files_registry.go",
         "go_to_proto_type.go",
         "golang_importer.go",
@@ -14,6 +15,8 @@ go_library(
         "@com_github_fatih_structtag//:go_default_library",
         "@com_github_jhump_protoreflect//desc:go_default_library",
         "@com_github_jhump_protoreflect//desc/builder:go_default_library",
+        "@com_github_mitchellh_cli//:go_default_library",
+        "@com_github_mitchellh_go_homedir//:go_default_library",
         "@io_bazel_rules_go//proto/wkt:descriptor_go_proto",
         "@org_golang_x_tools//go/packages:go_default_library",
     ],
@@ -24,6 +27,7 @@ go_test(
     srcs = ["golang_importer_test.go"],
     embed = [":go_default_library"],
     deps = [
+        "@com_github_jhump_protoreflect//desc/builder:go_default_library",
         "@com_github_mitchellh_go_homedir//:go_default_library",
         "@com_github_stretchr_testify//require:go_default_library",
     ],

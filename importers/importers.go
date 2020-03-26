@@ -47,12 +47,6 @@ func getFilesForBuilder(b builder.Builder, registry map[string]*builder.FileBuil
 	for _, child := range b.GetChildren() {
 		log.Println(child.GetName())
 		registry = getFilesForBuilder(child, registry)
-		// if field, ok := child.(*builder.FieldBuilder); ok {
-		// 	ft := field.GetType()
-		// 	if ft.localMsgType != nil {
-		// 		registry = getFilesForBuilder(ft.localMsgType, registry)
-		// 	}
-		// }
 	}
 
 	return registry
@@ -79,7 +73,8 @@ func (i *Importer) GetMessageFromFile(fileName, msgName string) *builder.Message
 	return file.GetMessage(msgName)
 }
 
-func (i *Importer) FindRequiredMessages(fileName, msgName string) []*requiredMessage {
+// findRequiredMessages returns a list of messages required by the top message
+func (i *Importer) findRequiredMessages(fileName, msgName string) []*requiredMessage {
 	rmsgs := []*requiredMessage{}
 	msg := i.GetMessageFromFile(fileName, msgName)
 	if msg == nil {
@@ -99,7 +94,7 @@ func (i *Importer) FindRequiredMessages(fileName, msgName string) []*requiredMes
 				if len(ret) == 1 {
 					rmsgs = append(rmsgs, &requiredMessage{File: msg.GetFile().GetName(), Message: ret[0]})
 				} else if len(ret) == 2 {
-					for _, myMsg := range i.FindRequiredMessages(ret[0], ret[1]) {
+					for _, myMsg := range i.findRequiredMessages(ret[0], ret[1]) {
 						rmsgs = append(rmsgs, myMsg)
 					}
 				}
@@ -110,8 +105,9 @@ func (i *Importer) FindRequiredMessages(fileName, msgName string) []*requiredMes
 	return rmsgs
 }
 
+// FilterFilesAndMessages filter out messages which are not requird by the top config strunt
 func (i Importer) FilterFilesAndMessages(fileName, msgName string) map[string]*builder.FileBuilder {
-	rmsgs := i.FindRequiredMessages(fileName, msgName)
+	rmsgs := i.findRequiredMessages(fileName, msgName)
 	outcome := map[string]*builder.FileBuilder{}
 
 	for _, rmsg := range rmsgs {
@@ -131,9 +127,10 @@ func (i Importer) FilterFilesAndMessages(fileName, msgName string) map[string]*b
 	return outcome
 }
 
+// FilterFiles filter out files which are not required by the top config struct
 func (i Importer) FilterFiles(fileName, msgName string) map[string]*builder.FileBuilder {
 
-	rmsgs := i.FindRequiredMessages(fileName, msgName)
+	rmsgs := i.findRequiredMessages(fileName, msgName)
 	outcome := map[string]*builder.FileBuilder{}
 
 	for _, rmsg := range rmsgs {
