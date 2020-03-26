@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.1-beta5.0](https://github.com/protoconf/protoconf/compare/v0.1.1-beta4.0...v0.1.1-beta5.0) (2020-03-26)
+
+
+### Features
+
+* **compiler:** add support for starlib modules ([2295f7d](https://github.com/protoconf/protoconf/commit/2295f7d340a9a28878ec8ba7bd774f81d5bf3cd6))
+* **golang_importer:** import proto files from golang structs ([6c2767e](https://github.com/protoconf/protoconf/commit/6c2767e83d729dde0d4f6c645ca4cbd6d2dfaf09))
+* **importers:** add command for golang importer ([679d967](https://github.com/protoconf/protoconf/commit/679d9675773bf5f3e15be63f9ac60d437b964ca4))
+* **importers:** filter helpers ([89101cd](https://github.com/protoconf/protoconf/commit/89101cd165fcb47778928b08ee20dc77b53e9062))
+* framework for import cfg structs as protobuf ([d4c87e8](https://github.com/protoconf/protoconf/commit/d4c87e80f7eac25bb0e3b051a7d69916689a9e33))
+* **pc4tf:** support datasources ([2b49d2d](https://github.com/protoconf/protoconf/commit/2b49d2d00302b3a6567d654da2f23d69fc48c07e))
+
+
+### Bug Fixes
+
+* **importers:** LoadAllSyntax loading go packages ([42b823e](https://github.com/protoconf/protoconf/commit/42b823e47117f38bd210b4c6d07a08344ce7fa56))
+
 ### [0.1.1-beta4.0](https://github.com/protoconf/protoconf/compare/v0.1.1-beta3.0...v0.1.1-beta4.0) (2020-03-19)
 
 
