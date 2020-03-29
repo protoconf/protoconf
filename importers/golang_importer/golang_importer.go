@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"go/token"
 	"go/types"
-	"log"
 	"path/filepath"
 	"strings"
 
@@ -12,6 +11,7 @@ import (
 	dpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/jhump/protoreflect/desc/builder"
 	"github.com/protoconf/protoconf/importers"
+	zap "go.uber.org/zap"
 	"golang.org/x/tools/go/packages"
 )
 
@@ -21,11 +21,17 @@ type GolangImporter struct {
 	pkgs               []*packages.Package
 	pkgID              string
 	protoFilesRegistry *protoFilesRegistry
+	targetTags         []string
 	errors             []error
+	logger             *zap.Logger
 }
 
 // NewGolangImporter creates a new GolangImporter
 func NewGolangImporter(pkg, outputDir, goSrcPath string, env ...string) (*GolangImporter, error) {
+	logger, err := zap.NewDevelopment()
+	if err != nil {
+		return nil, err
+	}
 	fset := token.NewFileSet()
 	cfg := &packages.Config{
 		Dir:  goSrcPath,
@@ -37,13 +43,21 @@ func NewGolangImporter(pkg, outputDir, goSrcPath string, env ...string) (*Golang
 	if err != nil {
 		return nil, err
 	}
-	log.Println(packages)
+	logger.Sugar().Debugw("packages", "packages", packages)
 	return &GolangImporter{
 		pkgID:              pkg,
 		pkgs:               packages,
 		Importer:           importers.NewImporter("go_imported.proto", outputDir),
 		protoFilesRegistry: newProtoFilesRegistry(),
+		targetTags:         []string{"json", "yaml", "mapstructure"},
+		logger:             logger,
 	}, nil
+}
+
+// SetTargetTags allows setting the go tag names in struct to be used as `json_name` and protobuf key name
+func (p *GolangImporter) SetTargetTags(tags []string) {
+	p.logger.Debug("setting target tags", zap.String("tags", fmt.Sprintf("%v", tags)))
+	p.targetTags = tags
 }
 
 func (p *GolangImporter) goFieldToProtoField(f *types.Var, tagstr string) *builder.FieldBuilder {
@@ -52,15 +66,13 @@ func (p *GolangImporter) goFieldToProtoField(f *types.Var, tagstr string) *build
 	b := builder.NewField(f.Name(), builder.FieldTypeString())
 
 	if tag, err := structtag.Parse(tagstr); err == nil {
-		if y, e := tag.Get("yaml"); e == nil {
-			b.SetJsonName(y.Name)
-			if y.Name != "" {
-				b.SetName(y.Name)
+		for _, targetTag := range p.targetTags {
+			if y, e := tag.Get(targetTag); e == nil {
+				b.SetJsonName(y.Name)
+				if y.Name != "" && y.Name != "-" {
+					b.TrySetName(y.Name)
+				}
 			}
-		}
-		if j, e := tag.Get("json"); e == nil {
-			// b.SetName(j.Name)
-			b.SetJsonName(j.Name)
 		}
 	}
 	if strings.HasPrefix(f.Type().String(), "func") {
@@ -74,10 +86,14 @@ func (p *GolangImporter) goFieldToProtoField(f *types.Var, tagstr string) *build
 		key := goFieldTypeToProtoFieldType(s.Key().Underlying().String())
 		val := goFieldTypeToProtoFieldType(s.Elem().Underlying().String())
 		if key != nil && val != nil && isValidKeyType(key) {
-			log.Println("new map field for", key.GetTypeName(), val.GetTypeName())
+			p.logger.Debug("new map field", zap.String("key", key.GetTypeName()), zap.String("value", val.GetTypeName()))
 			b = builder.NewMapField(f.Name(), key, val)
 		}
-		log.Println(pkg.Name(), f.Name(), "detected as map of", t1.String())
+		p.logger.Debug("detected as map",
+			zap.String("pkg", pkg.Name()),
+			zap.String("field", f.Name()),
+			zap.String("type", t1.String()),
+		)
 	}
 
 	// When a type is an Slice
@@ -85,20 +101,32 @@ func (p *GolangImporter) goFieldToProtoField(f *types.Var, tagstr string) *build
 		t1 = s.Elem()
 		t = goFieldTypeToProtoFieldType(s.Elem().String())
 		b.SetRepeated()
-		log.Println(pkg.Name(), f.Name(), "detected as slice of", t1.String())
+		p.logger.Debug("detected as slice",
+			zap.String("pkg", pkg.Name()),
+			zap.String("field", f.Name()),
+			zap.String("type", t1.String()),
+		)
 	}
 	// When a type is an array
 	if s, ok := t1.Underlying().(*types.Array); ok {
 		t1 = s.Elem()
 		t = goFieldTypeToProtoFieldType(s.Elem().String())
 		b.SetRepeated()
-		log.Println(pkg.Name(), f.Name(), "detected as array of", t1.String())
+		p.logger.Debug("detected as array",
+			zap.String("pkg", pkg.Name()),
+			zap.String("field", f.Name()),
+			zap.String("type", t1.String()),
+		)
 	}
 
 	// When a type is a pointer
 	if s, ok := t1.Underlying().(*types.Pointer); ok {
 		t1 = s.Elem()
-		log.Println(pkg.Name(), f.Name(), "detected as pointer of", t1.String())
+		p.logger.Debug("detected as pointer",
+			zap.String("pkg", pkg.Name()),
+			zap.String("field", f.Name()),
+			zap.String("type", t1.String()),
+		)
 	}
 
 	// When a type is another struct
@@ -115,14 +143,22 @@ func (p *GolangImporter) goFieldToProtoField(f *types.Var, tagstr string) *build
 			return nil
 		}
 		t = builder.FieldTypeMessage(msg)
-		log.Println(pkg.Name(), f.Name(), "detected as struct of", t1.String())
+		p.logger.Debug("detected as struct",
+			zap.String("pkg", pkg.Name()),
+			zap.String("field", f.Name()),
+			zap.String("type", t1.String()),
+		)
 	}
 
 	if b.IsMap() {
 		return b
 	}
 	if t != nil {
-		log.Println(pkg.Name(), f.Name(), "detected as", t1.String())
+		p.logger.Debug("detected as",
+			zap.String("pkg", pkg.Name()),
+			zap.String("field", f.Name()),
+			zap.String("type", t1.String()),
+		)
 		b.SetType(t)
 		return b
 	}
@@ -147,9 +183,10 @@ func isValidKeyType(keyTyp *builder.FieldType) bool {
 
 func (p *GolangImporter) pre(pkg *packages.Package) bool {
 	file := p.protoFilesRegistry.GetProtoFile(pkg.Name, pkg.ID)
-	log.Println("preparing", file.GetName())
+	log := p.logger.With(zap.String("file", file.GetName()), zap.String("func", "pre"))
+	log.Info("preparing")
 	if pkg.TypesInfo == nil {
-		log.Println("TypesInfo is empty :(")
+		log.Debug("TypesInfo is empty :(")
 		return true
 	}
 	for _, t := range pkg.TypesInfo.Defs {
@@ -163,7 +200,7 @@ func (p *GolangImporter) pre(pkg *packages.Package) bool {
 			msg := builder.NewMessage(t.Name())
 			err := file.TryAddMessage(msg)
 			if err != nil {
-				log.Println("failed to add message", file.GetName(), msg.GetName(), "error:", err)
+				log.Error("failed to add message", zap.String("msg", msg.GetName()), zap.Error(err))
 			}
 		}
 	}
@@ -172,6 +209,7 @@ func (p *GolangImporter) pre(pkg *packages.Package) bool {
 
 func (p *GolangImporter) post(pkg *packages.Package) {
 	file := p.protoFilesRegistry.GetProtoFile(pkg.Name, pkg.ID)
+	log := p.logger.With(zap.String("file", file.GetName()), zap.String("func", "post"))
 	if pkg.TypesInfo == nil {
 		return
 	}
@@ -183,10 +221,10 @@ func (p *GolangImporter) post(pkg *packages.Package) {
 			continue
 		}
 		if s, ok := t.Type().Underlying().(*types.Struct); ok {
-			log.Println("*******", pkg.ID, t.Id(), "******")
+			log = log.With(zap.String("pkg", pkg.ID), zap.String("t", t.Id()))
 			msg := file.GetMessage(t.Name())
 			if msg == nil {
-				log.Println("could not find message for", t.Name(), file.GetName())
+				log.Error("could not find message")
 				continue
 			}
 			for i := 0; i < s.NumFields(); i++ {
@@ -205,10 +243,10 @@ func (p *GolangImporter) post(pkg *packages.Package) {
 
 // Visit will run the packages visit logic
 func (p *GolangImporter) Visit() {
-	log.Println("visiting packages")
+	p.logger.Info("visiting packages")
 	packages.Visit(p.pkgs, p.pre, p.post)
 	for _, err := range p.errors {
-		log.Println(err)
+		p.logger.Error("", zap.Error(err))
 	}
 	for _, fbuilder := range p.protoFilesRegistry.GetAllFiles() {
 		p.Importer.RegisterFile(fbuilder)
@@ -252,7 +290,7 @@ func (p *GolangImporter) GetFileNameFor(pkgName, pkgID string) string {
 
 // GetImporter returns the importers.Importer generated by GolangImporter
 func (p *GolangImporter) GetImporter() *importers.Importer {
-	log.Println("getting importer")
+	p.logger.Info("getting importer")
 	p.Visit()
 	return p.Importer
 }
