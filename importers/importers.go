@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -45,7 +44,6 @@ func getFilesForBuilder(b builder.Builder, registry map[string]*builder.FileBuil
 	registry[file.GetName()] = file
 
 	for _, child := range b.GetChildren() {
-		log.Println(child.GetName())
 		registry = getFilesForBuilder(child, registry)
 	}
 
@@ -90,7 +88,6 @@ func (i *Importer) findRequiredMessages(fileName, msgName string) []*requiredMes
 			fTypeName := field.GetType().GetTypeName()
 			if fTypeName != "" {
 				ret := strings.Split(fTypeName, ".")
-				log.Println(ret)
 				if len(ret) == 1 {
 					rmsgs = append(rmsgs, &requiredMessage{File: msg.GetFile().GetName(), Message: ret[0]})
 				} else if len(ret) == 2 {
@@ -111,7 +108,8 @@ func (i Importer) FilterFilesAndMessages(fileName, msgName string) map[string]*b
 	outcome := map[string]*builder.FileBuilder{}
 
 	for _, rmsg := range rmsgs {
-		file := builder.NewFile(rmsg.File).SetProto3(true)
+		oldFile := i.Files[rmsg.File]
+		file := builder.NewFile(rmsg.File).SetProto3(true).SetOptions(oldFile.Options).SetPackageName(oldFile.Package)
 		if newFile, ok := outcome[rmsg.File]; ok {
 			file = newFile
 		} else {
@@ -144,7 +142,6 @@ func (i Importer) FilterFiles(fileName, msgName string) map[string]*builder.File
 func (i *Importer) SaveAll() error {
 	i.RegisterFile(i.MasterFile)
 	descriptors := []*desc.FileDescriptor{}
-	log.Println(i.Files)
 	for _, b := range i.Files {
 		d, err := b.Build()
 		if err != nil {
@@ -152,26 +149,6 @@ func (i *Importer) SaveAll() error {
 		}
 		descriptors = append(descriptors, d)
 	}
-	// // build all children files
-	// for _, child := range i.MasterFile.GetChildren() {
-	// 	if file, ok := child.(*builder.FileBuilder); ok {
-	// 		log.Println(child.GetName(), "is a file")
-	// 		if d, err := file.Build(); err != nil {
-	// 			return err
-	// 		} else {
-	// 			descriptors = append(descriptors, d)
-	// 		}
-	// 	} else {
-	// 		log.Println(child.GetName(), "is not a file")
-	// 	}
-	// }
-
-	// // Build master file
-	// if d, err := i.MasterFile.Build(); err != nil {
-	// 	return err
-	// } else {
-	// 	descriptors = append(descriptors, d)
-	// }
 
 	pr := &protoprint.Printer{}
 	return pr.PrintProtoFiles(descriptors, i.opener)

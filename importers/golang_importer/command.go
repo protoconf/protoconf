@@ -26,6 +26,21 @@ var ui = &cli.BasicUi{
 	ErrorWriter: os.Stderr,
 }
 
+type targetTagsArray []string
+
+func (i *targetTagsArray) String() string {
+	arr := []string{}
+	for _, s := range *i {
+		arr = append(arr, s)
+	}
+	return fmt.Sprintf("%v", arr)
+}
+
+func (i *targetTagsArray) Set(value string) error {
+	*i = append(*i, value)
+	return nil
+}
+
 type cliConfig struct {
 	pkg                    string
 	top                    string
@@ -33,6 +48,7 @@ type cliConfig struct {
 	goSrcHome              string
 	filterFiles            bool
 	filterFilesAndMessages bool
+	targetTags             targetTagsArray
 }
 
 func newFlagSet() (*flag.FlagSet, *cliConfig) {
@@ -54,6 +70,7 @@ func newFlagSet() (*flag.FlagSet, *cliConfig) {
 	flags.BoolVar(&config.filterFiles, "filter_files", false, "Remove files which are not required by -top message")
 	flags.BoolVar(&config.filterFilesAndMessages, "filter_messages", false, "Same as -filter_files but also clean up the files from unused messages")
 	flags.StringVar(&config.goSrcHome, "gopath", filepath.Join(os.Getenv("GOPATH"), "src"), "Override $GOPATH/src path")
+	flags.Var(&config.targetTags, "tag", "A tag to be used as `json_name` (can repeat)")
 
 	return flags, config
 }
@@ -80,6 +97,9 @@ func (c *cliCommand) Run(args []string) int {
 		return 1
 	}
 	importer := i.GetImporter()
+	if len(config.targetTags) > 0 {
+		i.SetTargetTags(config.targetTags)
+	}
 
 	mainFileForFiltering := i.GetFileNameFor(filepath.Base(config.pkg), config.pkg)
 	ui.Warn(mainFileForFiltering)
