@@ -3,6 +3,8 @@ module github.com/protoconf/protoconf
 go 1.13
 
 require (
+	github.com/apex/log v1.1.2 // indirect
+	github.com/bazelbuild/bazel-gazelle v0.20.0
 	github.com/census-instrumentation/opencensus-proto v0.2.1 // indirect
 	github.com/coreos/etcd v3.3.18+incompatible // indirect
 	github.com/docker/libkv v0.2.1 // indirect
@@ -11,6 +13,8 @@ require (
 	github.com/etcd-io/etcd v3.3.18+incompatible // indirect
 	github.com/fatih/structtag v1.2.0
 	github.com/fsnotify/fsnotify v1.4.7
+	github.com/ghodss/yaml v1.0.0
+	github.com/gogo/protobuf v1.2.1
 	github.com/golang/protobuf v1.3.2
 	github.com/golangci/golangci-lint v1.18.0 // indirect
 	github.com/hashicorp/consul v1.6.2 // indirect
@@ -21,20 +25,25 @@ require (
 	github.com/jhump/protoreflect v1.4.5-0.20190719031800-6c4c7792338e
 	github.com/mitchellh/cli v1.0.0
 	github.com/mitchellh/go-homedir v1.1.0
+	github.com/neverlee/keymutex v0.0.0-20171121013845-f593aa834bf9
 	github.com/olekukonko/tablewriter v0.0.4 // indirect
+	github.com/pkg/errors v0.8.1
 	github.com/prometheus/client_model v0.0.0-20190812154241-14fe0d1b01d4 // indirect
 	github.com/qri-io/starlib v0.4.1
+	github.com/rs/zerolog v1.18.0 // indirect
 	github.com/samuel/go-zookeeper v0.0.0-20190923202752-2cc03de413da
 	github.com/stretchr/testify v1.4.0
 	github.com/zclconf/go-cty v1.2.0
 	go.etcd.io/bbolt v1.3.3
 	go.etcd.io/etcd v3.3.18+incompatible
+	go.pedge.io/lion v0.0.0-20190619200210-304b2f426641 // indirect
 	go.starlark.net v0.0.0-20191218235703-9fcb808a6221
 	go.uber.org/zap v1.9.1
 	golang.org/x/net v0.0.0-20191209160850-c0dbc17a3553
 	golang.org/x/tools v0.0.0-20190909030654-5b82db07426d
 	google.golang.org/genproto v0.0.0-20191223191004-3caeed10a8bf // indirect
 	google.golang.org/grpc v1.23.0
+	gopkg.in/inconshreveable/log15.v2 v2.0.0-20200109203555-b30bc20e4fd1 // indirect
 	sigs.k8s.io/yaml v1.1.0 // indirect
 )
 

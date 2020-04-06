@@ -37,12 +37,16 @@ func ReadConfig(protoconfRoot string, configName string) (*protoconfvalue.Protoc
 		return nil, err
 	}
 
-	parser := &protoparse.Parser{ImportPaths: []string{filepath.Join(protoconfRoot, consts.SrcPath)}, ProtoStdLib: protostdlib.ProtoStdLib}
-	descriptors, err := parser.ParseFiles(configJSON.ProtoFile)
+	// parser := &protoparse.Parser{ImportPaths: []string{filepath.Join(protoconfRoot, consts.SrcPath)}, ProtoStdLib: protostdlib.ProtoStdLib}
+	// descriptors, err := parser.ParseFiles(configJSON.ProtoFile)
+	// if err != nil {
+	// 	return nil, fmt.Errorf("error parsing proto file, file=%s err=%v", configJSON.ProtoFile, err)
+	// }
+	// anyResolver := dynamic.AnyResolver(nil, descriptors[0])
+	anyResolver, err := LoadAnyResolver(filepath.Join(protoconfRoot, consts.SrcPath), configJSON.ProtoFile)
 	if err != nil {
-		return nil, fmt.Errorf("error parsing proto file, file=%s err=%v", configJSON.ProtoFile, err)
+		return nil, err
 	}
-	anyResolver := dynamic.AnyResolver(nil, descriptors[0])
 
 	if _, err = configReader.Seek(0, 0); err != nil {
 		return nil, err
@@ -59,6 +63,16 @@ func ReadConfig(protoconfRoot string, configName string) (*protoconfvalue.Protoc
 	}
 
 	return protoconfValue, nil
+}
+
+// LoadAnyResolver is a util that helps resolve `Any` messages
+func LoadAnyResolver(rootPath, parseFile string) (jsonpb.AnyResolver, error) {
+	parser := &protoparse.Parser{ImportPaths: []string{rootPath}, ProtoStdLib: protostdlib.ProtoStdLib}
+	descriptors, err := parser.ParseFiles(parseFile)
+	if err != nil {
+		return nil, fmt.Errorf("error parsing proto file, file=%s err=%v", parseFile, err)
+	}
+	return dynamic.AnyResolver(nil, descriptors[0]), nil
 }
 
 func MessageFQN(msg descriptor.Message) string {

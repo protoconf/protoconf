@@ -1,0 +1,33 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "go_default_library",
+    srcs = [
+        "command.go",
+        "exec.go",
+        "watcher.go",
+    ],
+    importpath = "github.com/protoconf/protoconf/exec",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//agent/api/proto/v1:go_default_library",
+        "//exec/config:go_default_library",
+        "//utils:go_default_library",
+        "@com_github_ghodss_yaml//:go_default_library",
+        "@com_github_golang_protobuf//ptypes:go_default_library_gen",
+        "@com_github_jhump_protoreflect//dynamic:go_default_library",
+        "@com_github_mitchellh_cli//:go_default_library",
+        "@com_github_pkg_errors//:go_default_library",
+        "@org_golang_google_grpc//:go_default_library",
+        "@org_golang_google_grpc//codes:go_default_library",
+        "@org_golang_google_grpc//status:go_default_library",
+        "@org_uber_go_zap//:go_default_library",
+    ],
+)
+
+go_test(
+    name = "go_default_test",
+    srcs = ["exec_test.go"],
+    embed = [":go_default_library"],
+    deps = ["@com_github_stretchr_testify//require:go_default_library"],
+)
