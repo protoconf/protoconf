@@ -1,0 +1,106 @@
+syntax = "proto3";
+
+package exec_config;
+
+import "google/protobuf/duration.proto";
+option go_package = "github.com/protoconf/protoconf/exec/config";
+
+message Config {
+    repeated WatcherConfig items = 1;
+    enum Serializer {
+        JSON = 0;
+        PB = 1;
+        YAML = 2;
+        INI = 3;
+        TOML = 4;
+    }
+}
+
+
+message WatcherConfig {
+    string path = 1;
+    string proto_file = 2;
+    repeated Action actions = 3;
+    string main_process_cmdline = 4;
+    string pid_file = 5;
+
+    google.protobuf.Duration kill_timeout = 17;
+    google.protobuf.Duration splay = 18;
+    google.protobuf.Duration timeout = 19;
+}
+
+
+message ActionTypeWriteToFile {
+    string path = 1;
+    string mode = 2;
+    string owner = 3;
+    string group = 4;
+    oneof output {
+        string template = 16;
+        Config.Serializer serializer = 17;
+    }
+}
+
+message ActionTypeHttp {
+    string uri = 1;
+    string method = 2;
+    map<string, string> headers = 3;
+    Config.Serializer serializer = 16;
+}
+
+message ActionTypeRestart {
+}
+
+message ActionTypeSignal {
+    Signal signal = 1;
+    string pid_file = 2;
+    enum Signal {
+        NONE          =  0;
+        SIGHUP        =  1;
+        SIGINT        =  2;
+        SIGQUIT       =  3;
+        SIGILL        =  4;
+        SIGTRAP       =  5;
+        SIGABRT       =  6;
+        SIGBUS        =  7;
+        SIGFPE        =  8;
+        SIGKILL       =  9;
+        SIGUSR1       = 10;
+        SIGSEGV       = 11;
+        SIGUSR2       = 12;
+        SIGPIPE       = 13;
+        SIGALRM       = 14;
+        SIGTERM       = 15;
+        SIGSTKFLT     = 16;
+        SIGCHLD       = 17;
+        SIGCONT       = 18;
+        SIGSTOP       = 19;
+        SIGTSTP       = 20;
+        SIGTTIN       = 21;
+        SIGTTOU       = 22;
+        SIGURG        = 23;
+        SIGXCPU       = 24;
+        SIGXFSZ       = 25;
+        SIGVTALRM     = 26;
+        SIGPROF       = 27;
+        SIGWINCH      = 28;
+        SIGIO         = 29;
+        SIGPWR        = 30;
+        SIGSYS        = 31;
+    }
+}
+
+message Action {
+    oneof action {
+        ActionTypeWriteToFile file = 1;
+        ActionTypeHttp http = 2;
+        ActionTypeRestart restart = 3;
+        ActionTypeSignal signal = 4;
+    }
+    repeated Action then = 5;
+    repeated Action on_error = 6;
+
+    google.protobuf.Duration kill_timeout = 17;
+    google.protobuf.Duration splay = 18;
+    google.protobuf.Duration timeout = 19;
+}

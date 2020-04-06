@@ -40,6 +40,7 @@ go_library(
         "//agent:go_default_library",
         "//command:go_default_library",
         "//compiler",
+        "//exec:go_default_library",
         "//importers/golang_importer:go_default_library",
         "//importers/terraform_importer:go_default_library",
         "//inserter:go_default_library",

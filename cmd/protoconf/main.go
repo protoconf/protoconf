@@ -9,6 +9,7 @@ import (
 	terraformimporter "github.com/protoconf/protoconf/importers/terraform_importer"
 	"github.com/protoconf/protoconf/inserter"
 	"github.com/protoconf/protoconf/server"
+	"github.com/protoconf/protoconf/exec"
 )
 
 func main() {
@@ -16,6 +17,7 @@ func main() {
 		map[string]cli.CommandFactory{
 			"agent":   agent.Command,
 			"compile": compiler.Command,
+			"exec": exec.Command,
 			"import golang":  golangimporter.Command,
 			"import terraform":  terraformimporter.Command,
 			"insert":  inserter.Command,
