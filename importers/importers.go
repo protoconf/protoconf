@@ -71,6 +71,8 @@ func (i *Importer) GetMessageFromFile(fileName, msgName string) *builder.Message
 	return file.GetMessage(msgName)
 }
 
+var visited = map[string]bool{}
+
 // findRequiredMessages returns a list of messages required by the top message
 func (i *Importer) findRequiredMessages(fileName, msgName string) []*requiredMessage {
 	rmsgs := []*requiredMessage{}
@@ -86,6 +88,10 @@ func (i *Importer) findRequiredMessages(fileName, msgName string) []*requiredMes
 	for _, child := range msg.GetChildren() {
 		if field, ok := child.(*builder.FieldBuilder); ok {
 			fTypeName := field.GetType().GetTypeName()
+			if _, exists := visited[fTypeName]; exists {
+				continue
+			}
+			visited[fTypeName] = true
 			if fTypeName != "" {
 				ret := strings.Split(fTypeName, ".")
 				if len(ret) == 1 {
