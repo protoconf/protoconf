@@ -80,6 +80,15 @@ func (p *GolangImporter) goFieldToProtoField(f *types.Var, tagstr string) *build
 	}
 	t := goFieldTypeToProtoFieldType(t1.Underlying().String())
 
+	// When a type is a pointer
+	if s, ok := t1.Underlying().(*types.Pointer); ok {
+		t1 = s.Elem()
+		p.logger.Debug("detected as pointer",
+			zap.String("pkg", pkg.Name()),
+			zap.String("field", f.Name()),
+			zap.String("type", t1.String()),
+		)
+	}
 	// When a type is map
 	if s, ok := t1.Underlying().(*types.Map); ok {
 		t1 = s.Elem()
@@ -162,7 +171,9 @@ func (p *GolangImporter) goFieldToProtoField(f *types.Var, tagstr string) *build
 		b.SetType(t)
 		return b
 	}
-	p.errors = append(p.errors, fmt.Errorf("could not understand field for %v %v, underlying: %v", f.Name(), f.Type(), t1.Underlying()))
+	err := fmt.Errorf("could not understand field for %v %v, underlying: %v", f.Name(), f.Type(), t1.Underlying())
+	p.logger.Info("could not understand field", zap.String("name", f.Name()), zap.String("type", f.Type().String()), zap.String("underlying", t1.Underlying().String()))
+	p.errors = append(p.errors, err)
 	return nil
 }
 
