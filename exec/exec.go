@@ -95,20 +95,20 @@ func (e *Executor) Start(ctx context.Context) error {
 			return err
 		}
 
-		for _, w := range econf.Items {
-			myfunc := func() {
-				e.logger.Info("found item", zap.String("item", w.Path))
+		for _, w := range econf.GetItems() {
+			l := e.logger.With(zap.String("item", w.Path))
+			l.Info("found item")
 
-				watcher := e.watcher(w)
-				mctx, cancel := context.WithCancel(ctx)
-				cancelGroup = append(cancelGroup, cancel)
+			watcher := e.watcher(w)
+			mctx, cancel := context.WithCancel(ctx)
+			cancelGroup = append(cancelGroup, cancel)
+			go func() {
 				err = watcher.Start(mctx)
 				if err != nil {
-					e.logger.Info("error", zap.Error(err))
+					l.Info("error", zap.Error(err))
 				}
-				e.logger.Debug("watcher finished", zap.String("item", w.Path))
-			}
-			go myfunc()
+				l.Debug("watcher finished")
+			}()
 		}
 		e.logger.Debug("finished starting watchers")
 	}

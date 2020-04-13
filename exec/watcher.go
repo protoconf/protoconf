@@ -29,7 +29,7 @@ type watcher struct {
 func newWatcher(config *exec_config.WatcherConfig, executor *Executor, client pc.ProtoconfServiceClient, logger *zap.Logger) *watcher {
 	return &watcher{
 		config:   config,
-		logger:   logger,
+		logger:   logger.With(zap.String("item", config.Path)),
 		client:   client,
 		executor: executor,
 	}
