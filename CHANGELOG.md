@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.1-beta7.0](https://github.com/protoconf/protoconf/compare/v0.1.1-beta6.0...v0.1.1-beta7.0) (2020-04-13)
+
+
+### Bug Fixes
+
+* **importers:** skip visited types when filtering ([669b957](https://github.com/protoconf/protoconf/commit/669b95797a39d58c3d366294334648152e1740e9))
+* **importers/golang:** when field is a pointer to underlying struct ([672c6da](https://github.com/protoconf/protoconf/commit/672c6daf901d5f30b4e6b9f2cc236e244360cca9))
+
 ### [0.1.1-beta6.0](https://github.com/protoconf/protoconf/compare/v0.1.1-beta5.0...v0.1.1-beta6.0) (2020-04-06)
 
 
