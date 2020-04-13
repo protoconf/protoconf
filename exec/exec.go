@@ -66,8 +66,15 @@ func (e *Executor) Start(ctx context.Context) error {
 		return err
 	}
 
+	econf := &exec_config.Config{}
+	cancelGroup := []context.CancelFunc{}
 	for {
+		e.logger.Info("waiting for update")
 		update, err := stream.Recv()
+		e.logger.Info("got update")
+		for _, cancel := range cancelGroup {
+			cancel()
+		}
 
 		if err == io.EOF {
 			return errors.Errorf("Connection closed while streaming config path=%s", e.path)
@@ -83,7 +90,6 @@ func (e *Executor) Start(ctx context.Context) error {
 			return errors.Errorf("Error while streaming config path=%s err=%v", e.path, err)
 		}
 
-		econf := &exec_config.Config{}
 		err = ptypes.UnmarshalAny(update.GetValue(), econf)
 		if err != nil {
 			return err
@@ -94,13 +100,17 @@ func (e *Executor) Start(ctx context.Context) error {
 				e.logger.Info("found item", zap.String("item", w.Path))
 
 				watcher := e.watcher(w)
-				err = watcher.Start(ctx)
+				mctx, cancel := context.WithCancel(ctx)
+				cancelGroup = append(cancelGroup, cancel)
+				err = watcher.Start(mctx)
 				if err != nil {
 					e.logger.Info("error", zap.Error(err))
 				}
+				e.logger.Debug("watcher finished", zap.String("item", w.Path))
 			}
 			go myfunc()
 		}
+		e.logger.Debug("finished starting watchers")
 	}
 
 }

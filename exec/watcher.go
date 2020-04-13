@@ -42,14 +42,14 @@ func (w *watcher) SetConfig(config *exec_config.WatcherConfig) {
 
 // Start watches for changes on a specific config
 func (w *watcher) Start(ctx context.Context) error {
-	w.mutex.Lock()
-	defer w.mutex.Unlock()
 	stream, err := w.client.SubscribeForConfig(ctx, &pc.ConfigSubscriptionRequest{Path: w.config.Path})
 	if err != nil {
 		return err
 	}
 	for {
+		w.logger.Info("waiting for update")
 		update, err := stream.Recv()
+		w.logger.Info("got update")
 
 		if err == io.EOF {
 			return errors.Errorf("Connection closed while streaming config path=%s", w.config.Path)
