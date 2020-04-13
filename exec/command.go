@@ -5,6 +5,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"log"
 	"os"
 	"os/signal"
 
@@ -52,11 +53,11 @@ func (c *cliCommand) Run(args []string) int {
 
 	ch := make(chan os.Signal, 1)
 	signal.Notify(ch, os.Interrupt)
-	defer func(){
+	defer func() {
 		signal.Stop(ch)
 		cancel()
 	}()
-	go func(){
+	go func() {
 		select {
 		case <-ch:
 			cancel()
@@ -65,7 +66,7 @@ func (c *cliCommand) Run(args []string) int {
 	}()
 	err = e.Start(ctx)
 	if err != nil {
-		return 1
+		log.Fatal(err)
 	}
 
 	return 0

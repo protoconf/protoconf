@@ -145,19 +145,23 @@ func (w *watcher) runWriteAction(ctx context.Context, action *exec_config.Action
 	logger := w.logger.With(zap.String("func", "runWriteAction"))
 	var marshaledBytes []byte
 	var marshalErr error = nil
+	marshalerName := "unknown"
 	switch action.GetSerializer() {
 	case exec_config.Config_JSON:
 		logger.Debug("json marshaler")
+		marshalerName = "json"
 		marshaledBytes, marshalErr = msg.MarshalJSONIndent()
 	case exec_config.Config_YAML:
 		logger.Debug("yaml marshaler")
+		marshalerName = "yaml"
 		b, err := msg.MarshalJSONIndent()
 		if err != nil {
-			return nil
+			return err
 		}
 		marshaledBytes, marshalErr = yaml.JSONToYAML(b)
 	case exec_config.Config_PB:
 		logger.Debug("protobuf text marshaler")
+		marshalerName = "protobuf_text"
 		marshaledBytes, marshalErr = msg.MarshalTextIndent()
 	default:
 		return errors.Errorf("could not find marshaler for %s", action.GetSerializer())
@@ -165,11 +169,13 @@ func (w *watcher) runWriteAction(ctx context.Context, action *exec_config.Action
 	if marshalErr != nil {
 		return marshalErr
 	}
-	err := ioutil.WriteFile(action.Path, marshaledBytes, 0644)
+	bytesToWrite := append([]byte(action.GetHeader()), marshaledBytes...)
+	bytesToWrite = append(bytesToWrite, []byte(action.GetFooter())...)
+	err := ioutil.WriteFile(action.Path, bytesToWrite, 0644)
 	if err != nil {
 		return err
 	}
-	logger.Debug("content", zap.String("json", string(marshaledBytes)))
+	logger.Debug("content", zap.String(marshalerName, string(bytesToWrite)))
 
 	return nil
 }
