@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.1-beta8.0](https://github.com/protoconf/protoconf/compare/v0.1.1-beta7.0...v0.1.1-beta8.0) (2020-04-13)
+
+
+### Bug Fixes
+
+* **exec:** cancel watchers on exec configs updates ([bac10c2](https://github.com/protoconf/protoconf/commit/bac10c2bed40f3952d069ec8d21c56b9b61d5d9d))
+
 ### [0.1.1-beta7.0](https://github.com/protoconf/protoconf/compare/v0.1.1-beta6.0...v0.1.1-beta7.0) (2020-04-13)
 
 
