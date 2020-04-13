@@ -35,6 +35,8 @@ message ActionTypeWriteToFile {
     string mode = 2;
     string owner = 3;
     string group = 4;
+    string header = 5;
+    string footer = 6;
     oneof output {
         string template = 16;
         Config.Serializer serializer = 17;

@@ -45,7 +45,6 @@ func NewExecutor(path string, protosDir string) (*Executor, error) {
 		return nil, err
 	}
 	logger = logger.With(zap.String("path", path))
-	logger.Info("starting executor")
 	client, conn := getProtoconfClient()
 	executor := &Executor{
 		path:      path,
@@ -61,6 +60,7 @@ func NewExecutor(path string, protosDir string) (*Executor, error) {
 
 // Start the executor loop
 func (e *Executor) Start(ctx context.Context) error {
+	e.logger.Info("starting executor")
 	stream, err := e.client.SubscribeForConfig(ctx, &pc.ConfigSubscriptionRequest{Path: e.path})
 	if err != nil {
 		return err
