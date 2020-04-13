@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.1-beta9.0](https://github.com/protoconf/protoconf/compare/v0.1.1-beta8.0...v0.1.1-beta9.0) (2020-04-13)
+
+
+### Bug Fixes
+
+* **exec:** move exec setup outside anon func ([906668d](https://github.com/protoconf/protoconf/commit/906668da0830ac81869dd2a0284b5caa89d6ea9c))
+
 ### [0.1.1-beta8.0](https://github.com/protoconf/protoconf/compare/v0.1.1-beta7.0...v0.1.1-beta8.0) (2020-04-13)
 
 
