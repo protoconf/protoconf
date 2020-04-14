@@ -166,6 +166,7 @@ func (s server) SubscribeForConfig(request *protoconfservice.ConfigSubscriptionR
 				log.Printf("Error sending config update, path=%s srv=%s err=%s", path, srv, err)
 				return err
 			}
+			log.Printf("Update sent successfuly path=%s", path)
 		}
 	}
 }
