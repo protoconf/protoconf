@@ -42,46 +42,64 @@ func (w *watcher) SetConfig(config *exec_config.WatcherConfig) {
 
 // Start watches for changes on a specific config
 func (w *watcher) Start(ctx context.Context) error {
+	w.mutex.Lock()
+	defer w.mutex.Unlock()
 	stream, err := w.client.SubscribeForConfig(ctx, &pc.ConfigSubscriptionRequest{Path: w.config.Path})
 	if err != nil {
 		return err
 	}
+	updateCh := make(chan *pc.ConfigUpdate)
+	errCh := make(chan error)
+	go func() {
+		for {
+			w.logger.Info("waiting for update")
+			update, err := stream.Recv()
+
+			if err == io.EOF {
+				errCh <- errors.Errorf("Connection closed while streaming config path=%s", w.config.Path)
+			}
+
+			if err != nil {
+				errCh <- errors.Errorf("Error while streaming config path=%s err=%v", w.config.Path, err)
+			}
+			w.logger.Info("got update")
+			updateCh <- update
+		}
+	}()
 	for {
-		w.logger.Info("waiting for update")
-		update, err := stream.Recv()
-		w.logger.Info("got update")
-
-		if err == io.EOF {
-			return errors.Errorf("Connection closed while streaming config path=%s", w.config.Path)
-		}
-
-		if err != nil {
-			return errors.Errorf("Error while streaming config path=%s err=%v", w.config.Path, err)
-		}
-
-		value := update.GetValue()
-		anyResolver, err := utils.LoadAnyResolver(w.executor.protosDir, w.config.ProtoFile)
-		if err != nil {
-			return errors.Wrap(err, "failed to get AnyResolver")
-		}
-
-		name, err := anyResolver.Resolve(value.GetTypeUrl())
-		if err != nil {
-			return errors.Wrapf(err, "could not find typeUrl for %s", value.GetTypeUrl())
-		}
-
-		msg, err := dynamic.AsDynamicMessage(name)
-		if err != nil {
+		select {
+		case <-ctx.Done():
+			w.logger.Info("got context done signal")
+			return nil
+		case err := <-errCh:
 			return err
-		}
+		case update := <-updateCh:
 
-		err = msg.Unmarshal(value.GetValue())
-		if err != nil {
-			return err
-		}
+			value := update.GetValue()
+			anyResolver, err := utils.LoadAnyResolver(w.executor.protosDir, w.config.ProtoFile)
+			if err != nil {
+				return errors.Wrap(err, "failed to get AnyResolver")
+			}
 
-		for _, action := range w.config.Actions {
-			go w.runAction(ctx, action, msg)
+			name, err := anyResolver.Resolve(value.GetTypeUrl())
+			if err != nil {
+				return errors.Wrapf(err, "could not find typeUrl for %s", value.GetTypeUrl())
+			}
+
+			msg, err := dynamic.AsDynamicMessage(name)
+			if err != nil {
+				return err
+			}
+
+			err = msg.Unmarshal(value.GetValue())
+			if err != nil {
+				return err
+			}
+
+			for _, action := range w.config.Actions {
+				w.runAction(ctx, action, msg)
+			}
+			w.logger.Info("finished running actions")
 		}
 	}
 
