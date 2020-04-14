@@ -67,13 +67,15 @@ func (e *Executor) Start(ctx context.Context) error {
 	}
 
 	econf := &exec_config.Config{}
-	cancelGroup := []context.CancelFunc{}
+	cancelGroup := map[string]context.CancelFunc{}
 	for {
 		e.logger.Info("waiting for update")
 		update, err := stream.Recv()
 		e.logger.Info("got update")
-		for _, cancel := range cancelGroup {
+		for path, cancel := range cancelGroup {
+			e.logger.Info("canceling context", zap.String("path", path))
 			cancel()
+			delete(cancelGroup, path)
 		}
 
 		if err == io.EOF {
@@ -101,7 +103,7 @@ func (e *Executor) Start(ctx context.Context) error {
 
 			watcher := e.watcher(w)
 			mctx, cancel := context.WithCancel(ctx)
-			cancelGroup = append(cancelGroup, cancel)
+			cancelGroup[w.Path] = cancel
 			go func() {
 				err = watcher.Start(mctx)
 				if err != nil {
