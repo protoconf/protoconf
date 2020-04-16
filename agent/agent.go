@@ -2,25 +2,31 @@ package agent
 
 import (
 	"bytes"
+	"context"
 	"errors"
 	"flag"
 	"fmt"
 	"log"
 	"net"
+	"net/http"
 
 	"github.com/mitchellh/cli"
+	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	protoconfservice "github.com/protoconf/protoconf/agent/api/proto/v1/protoconfservice"
 	"github.com/protoconf/protoconf/command"
 	"github.com/protoconf/protoconf/consts"
 	"github.com/protoconf/protoconf/libprotoconf"
+	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
 )
 
 type cliCommand struct{}
 
 type cliConfig struct {
-	devProtoconfRoot string
-	grpcAddress      string
+	devProtoconfRoot  string
+	grpcAddress       string
+	prometheusAddress string
 }
 
 func newFlagSet() (*flag.FlagSet, *cliConfig, *command.KVStoreConfig) {
@@ -36,6 +42,7 @@ func newFlagSet() (*flag.FlagSet, *cliConfig, *command.KVStoreConfig) {
 	config := &cliConfig{}
 	flags.StringVar(&config.devProtoconfRoot, "dev", "", "Development mode - watch a local Protoconf directory for file changes")
 	flags.StringVar(&config.grpcAddress, "grpc-address", consts.AgentDefaultAddress, "Agent gRPC address")
+	flags.StringVar(&config.prometheusAddress, "http-address", ":9143", "Prometheus http address")
 
 	return flags, config, kVConfig
 }
@@ -89,11 +96,18 @@ func (c *cliCommand) Run(args []string) int {
 		return 1
 	}
 
-	rpcServer := grpc.NewServer()
+	rpcServer := grpc.NewServer(
+		grpc.StreamInterceptor(grpc_prometheus.StreamServerInterceptor),
+		grpc.UnaryInterceptor(grpc_prometheus.UnaryServerInterceptor),
+	)
 	protoconfservice.RegisterProtoconfServiceServer(rpcServer, agentServer)
-
+	grpc_prometheus.Register(rpcServer)
+	http.Handle("/metrics", promhttp.Handler())
 	log.Println("Protoconf agent running")
-	err = rpcServer.Serve(listener)
+	g, _ := errgroup.WithContext(context.TODO())
+	g.Go(func() error { return rpcServer.Serve(listener) })
+	g.Go(func() error { return http.ListenAndServe(config.prometheusAddress, nil) })
+	err = g.Wait()
 	if err != nil {
 		log.Printf("Error serving gRPC, err=%s", err)
 		return 1
@@ -162,11 +176,13 @@ func (s server) SubscribeForConfig(request *protoconfservice.ConfigSubscriptionR
 
 			log.Printf("Sending update on path=%s", path)
 			resp := protoconfservice.ConfigUpdate{Value: config.Value}
-			if err := srv.Send(&resp); err != nil {
-				log.Printf("Error sending config update, path=%s srv=%s err=%s", path, srv, err)
-				return err
-			}
-			log.Printf("Update sent successfuly path=%s", path)
+			go func() {
+				if err := srv.Send(&resp); err != nil {
+					log.Printf("Error sending config update, path=%s srv=%s err=%s", path, srv, err)
+				} else {
+					log.Printf("Update sent successfuly path=%s", path)
+				}
+			}()
 		}
 	}
 }
