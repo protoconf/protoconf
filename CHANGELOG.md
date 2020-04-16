@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.1-beta12.0](https://github.com/protoconf/protoconf/compare/v0.1.1-beta11.0...v0.1.1-beta12.0) (2020-04-16)
+
+
+### Bug Fixes
+
+* **exec:** break loop when channel closed ([bbf4413](https://github.com/protoconf/protoconf/commit/bbf44132de149be1a557b1e719ca7508e8cbd631))
+
 ### [0.1.1-beta11.0](https://github.com/protoconf/protoconf/compare/v0.1.1-beta10.0...v0.1.1-beta11.0) (2020-04-16)
 
 
