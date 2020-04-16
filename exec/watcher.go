@@ -73,7 +73,10 @@ func (w *watcher) Start(ctx context.Context) error {
 			return nil
 		case err := <-errCh:
 			return err
-		case update := <-updateCh:
+		case update, ok := <-updateCh:
+			if !ok {
+				break
+			}
 
 			value := update.GetValue()
 			anyResolver, err := utils.LoadAnyResolver(w.executor.protosDir, w.config.ProtoFile)
