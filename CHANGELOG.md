@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.1-beta11.0](https://github.com/protoconf/protoconf/compare/v0.1.1-beta10.0...v0.1.1-beta11.0) (2020-04-16)
+
+
+### Bug Fixes
+
+* **exec:** better loop in exec.go ([82e9969](https://github.com/protoconf/protoconf/commit/82e9969c9fb50762fdf7d9941f86e3141958e18a))
+
 ### [0.1.1-beta10.0](https://github.com/protoconf/protoconf/compare/v0.1.1-beta9.0...v0.1.1-beta10.0) (2020-04-14)
 
 ### [0.1.1-beta9.0](https://github.com/protoconf/protoconf/compare/v0.1.1-beta8.0...v0.1.1-beta9.0) (2020-04-13)
