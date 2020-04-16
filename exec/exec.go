@@ -104,7 +104,10 @@ func (e *Executor) Start(ctx context.Context) error {
 		case err := <-errCh:
 			e.logger.Info("got error", zap.Error(err))
 			return err
-		case update := <-updateCh:
+		case update, ok := <-updateCh:
+			if !ok {
+				break
+			}
 
 			err := ptypes.UnmarshalAny(update.GetValue(), econf)
 			if err != nil {
