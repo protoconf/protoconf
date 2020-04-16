@@ -61,58 +61,73 @@ func NewExecutor(path string, protosDir string) (*Executor, error) {
 // Start the executor loop
 func (e *Executor) Start(ctx context.Context) error {
 	e.logger.Info("starting executor")
-	stream, err := e.client.SubscribeForConfig(ctx, &pc.ConfigSubscriptionRequest{Path: e.path})
-	if err != nil {
-		return err
+	stream, err1 := e.client.SubscribeForConfig(ctx, &pc.ConfigSubscriptionRequest{Path: e.path})
+	if err1 != nil {
+		return err1
 	}
 
-	econf := &exec_config.Config{}
-	cancelGroup := map[string]context.CancelFunc{}
-	for {
-		e.logger.Info("waiting for update")
+	updateCh := make(chan *pc.ConfigUpdate)
+	errCh := make(chan error)
+	go func() {
 		update, err := stream.Recv()
-		e.logger.Info("got update")
-		for path, cancel := range cancelGroup {
-			e.logger.Info("canceling context", zap.String("path", path))
-			cancel()
-			delete(cancelGroup, path)
+		if err != nil {
+			errCh <- err
 		}
-
 		if err == io.EOF {
-			return errors.Errorf("Connection closed while streaming config path=%s", e.path)
+			errCh <- errors.Errorf("Connection closed while streaming config path=%s", e.path)
 		}
 
 		if st, failed := status.FromError(err); failed {
 			if st.Code() == codes.Canceled {
-				return nil
+				return
 			}
 		}
 
 		if err != nil {
-			return errors.Errorf("Error while streaming config path=%s err=%v", e.path, err)
+			errCh <- errors.Errorf("Error while streaming config path=%s err=%v", e.path, err)
 		}
+		updateCh <- update
 
-		err = ptypes.UnmarshalAny(update.GetValue(), econf)
-		if err != nil {
+	}()
+	econf := &exec_config.Config{}
+	cancelGroup := map[string]context.CancelFunc{}
+	for {
+		select {
+		case <-ctx.Done():
+			e.logger.Info("context canceled")
+			for path, cancel := range cancelGroup {
+				e.logger.Info("canceling context", zap.String("path", path))
+				cancel()
+				delete(cancelGroup, path)
+			}
+			return nil
+		case err := <-errCh:
+			e.logger.Info("got error", zap.Error(err))
 			return err
-		}
+		case update := <-updateCh:
 
-		for _, w := range econf.GetItems() {
-			l := e.logger.With(zap.String("item", w.Path))
-			l.Info("found item")
+			err := ptypes.UnmarshalAny(update.GetValue(), econf)
+			if err != nil {
+				return err
+			}
 
-			watcher := e.watcher(w)
-			mctx, cancel := context.WithCancel(ctx)
-			cancelGroup[w.Path] = cancel
-			go func() {
-				err = watcher.Start(mctx)
-				if err != nil {
-					l.Info("error", zap.Error(err))
-				}
-				l.Debug("watcher finished")
-			}()
+			for _, w := range econf.GetItems() {
+				l := e.logger.With(zap.String("item", w.Path))
+				l.Info("found item")
+
+				watcher := e.watcher(w)
+				mctx, cancel := context.WithCancel(ctx)
+				cancelGroup[w.Path] = cancel
+				go func() {
+					err = watcher.Start(mctx)
+					if err != nil {
+						l.Info("error", zap.Error(err))
+					}
+					l.Debug("watcher finished")
+				}()
+			}
+			e.logger.Debug("finished starting watchers")
 		}
-		e.logger.Debug("finished starting watchers")
 	}
 
 }
