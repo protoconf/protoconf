@@ -55,7 +55,7 @@ func ReadConfig(protoconfRoot string, configName string) (*protoconfvalue.Protoc
 	protoconfValue := &protoconfvalue.ProtoconfValue{}
 	um := jsonpb.Unmarshaler{AnyResolver: anyResolver}
 	if err = um.Unmarshal(configReader, protoconfValue); err != nil {
-		return nil, fmt.Errorf("error unmarshaling, err=%s", err)
+		return nil, fmt.Errorf("error marshaling, err=%s", err)
 	}
 
 	if err = updateSecrets(protoconfValue, anyResolver); err != nil {
@@ -75,6 +75,7 @@ func LoadAnyResolver(rootPath, parseFile string) (jsonpb.AnyResolver, error) {
 	return dynamic.AnyResolver(nil, descriptors[0]), nil
 }
 
+// MessageFQN returns a fully qualified name of a message descriptor
 func MessageFQN(msg descriptor.Message) string {
 	fileDesc, protoDesc := descriptor.ForMessage(msg)
 	fqn := protoDesc.GetName()
@@ -84,6 +85,7 @@ func MessageFQN(msg descriptor.Message) string {
 	return fqn
 }
 
+// ReplaceProtoBytes replaces the information inside a proto serialized byte array
 func ReplaceProtoBytes(protoBytes []byte, pos int, length int, replacement []byte) ([]byte, error) {
 	cb := newCodedBuffer(protoBytes)
 	ret := &codedBuffer{}

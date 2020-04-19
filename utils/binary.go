@@ -31,9 +31,8 @@ func (d *decoder) unmarshal(buf *codedBuffer, isGroup bool) error {
 			if isGroup {
 				// finished parsing group
 				return nil
-			} else {
-				return proto.ErrInternalBadWireType
 			}
+			return proto.ErrInternalBadWireType
 		}
 		fd := d.msgDesc.FindFieldByNumber(tagNumber)
 		if fd == nil {
@@ -78,7 +77,7 @@ func (d *decoder) unmarshalKnownField(fd *desc.FieldDescriptor, encoding int8, b
 				}
 
 				visitor := func(pos int, len int, msgDesc *desc.MessageDescriptor) {
-					d.visitor(startData + pos, len, msgDesc)
+					d.visitor(startData+pos, len, msgDesc)
 				}
 				newDecoder := &decoder{msgDesc: fd.GetMessageType(), visitor: visitor}
 				err = newDecoder.Unmarshal(raw)
