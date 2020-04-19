@@ -10,8 +10,8 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/mitchellh/cli"
 	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
+	"github.com/mitchellh/cli"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	protoconfservice "github.com/protoconf/protoconf/agent/api/proto/v1/protoconfservice"
 	"github.com/protoconf/protoconf/command"
@@ -180,7 +180,7 @@ func (s server) SubscribeForConfig(request *protoconfservice.ConfigSubscriptionR
 				if err := srv.Send(&resp); err != nil {
 					log.Printf("Error sending config update, path=%s srv=%s err=%s", path, srv, err)
 				} else {
-					log.Printf("Update sent successfuly path=%s", path)
+					log.Printf("Update sent successfully path=%s", path)
 				}
 			}()
 		}
