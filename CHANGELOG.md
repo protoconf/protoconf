@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.1](https://github.com/protoconf/protoconf/compare/v0.1.1-beta12.0...v0.1.1) (2020-04-20)
+
+
+### Features
+
+* **mutate:** add mutate cli ([729d822](https://github.com/protoconf/protoconf/commit/729d822fb011002e24daf45702fac93586e5e140))
+
 ### [0.1.1-beta12.0](https://github.com/protoconf/protoconf/compare/v0.1.1-beta11.0...v0.1.1-beta12.0) (2020-04-16)
 
 
