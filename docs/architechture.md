@@ -7,7 +7,7 @@
 
 ## Infrastructure Diagram
 
-![Image: Protoconf Reference Architecture](https://protoconf.github.com/docs/Protoconf_Reference_Architechture.png)
+![Image: Protoconf Reference Architecture](https://raw.githubusercontent.com/protoconf/protoconf/master/docs/Protoconf_Reference_Architecture.png)
 
 ### protoconf insert
 
