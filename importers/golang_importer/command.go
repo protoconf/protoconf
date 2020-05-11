@@ -96,10 +96,10 @@ func (c *cliCommand) Run(args []string) int {
 		ui.Error(fmt.Sprintf("Failed to initialize the golang importer: %v", err))
 		return 1
 	}
-	importer := i.GetImporter()
 	if len(config.targetTags) > 0 {
 		i.SetTargetTags(config.targetTags)
 	}
+	importer := i.GetImporter()
 
 	mainFileForFiltering := i.GetFileNameFor(filepath.Base(config.pkg), config.pkg)
 	ui.Warn(mainFileForFiltering)
