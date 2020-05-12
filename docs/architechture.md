@@ -2,7 +2,7 @@
 
 ## Infrastructure Requirements
 
-1. A git repository hooked to your favourite CI/CD pipeline (We recommend Github/Gitlab)
+1. A git repository hooked to your favorite CI/CD pipeline (We recommend Github/Gitlab)
 2. A cluster of either consul, etcd or zookeeper. Consult the production guides of the respected software.
 
 ## Infrastructure Diagram
@@ -74,7 +74,7 @@ The `protoconf agent` is the grpc server used to subscribe for the config change
 Here are few considerations:
 
 1. Are you planning to use protoconf to retrieve secrets from a secret store (Vault, KMS etc)? In future versions, we are planning to support dynamic values plugins that will allow the agent to replace static values with dynamic ones like secrets from a secret store. In this case, you should run the agent as close as possible to the context of the task requires the secret, so you can manage the access to the secret appropriately.
-2. Does most of your workload run on PaaS/FaaS? If so, injecting sidecars might be hard and you should use a centralised cluster of agents behind a load balancer.
+2. Does most of your workload run on PaaS/FaaS? If so, injecting sidecars might be hard and you should use a centralized cluster of agents behind a load balancer.
 
 ## Datacenter Design
 
