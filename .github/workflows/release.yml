@@ -1,13 +1,14 @@
 on:
   push:
     tags:
-    - '*'
+      - "*"
 
 name: Release
 jobs:
   checks:
     name: run
     runs-on: self-hosted
+    container: ubuntu:18.04
     services:
       consul:
         image: consul:latest
@@ -25,39 +26,39 @@ jobs:
         ports:
           - 2379
     steps:
-    - uses: actions/checkout@v2
-    - name: fetch tags
-      run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-    - name: Log in to registry
-      uses: azure/docker-login@v1
-      with:
-        username: ${{ secrets.DOCKER_USER }}
-        password: ${{ secrets.DOCKER_TOKEN }}
+      - uses: actions/checkout@v2
+      - name: fetch tags
+        run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+      - name: Log in to registry
+        uses: azure/docker-login@v1
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_TOKEN }}
 
-    - name: Install bazelisk
-      run: |
-        curl -LO "https://github.com/bazelbuild/bazelisk/releases/download/v1.1.0/bazelisk-linux-amd64"
-        mkdir -p "${GITHUB_WORKSPACE}/bin/"
-        mv bazelisk-linux-amd64 "${GITHUB_WORKSPACE}/bin/bazel"
-        chmod +x "${GITHUB_WORKSPACE}/bin/bazel"
+      - name: Install bazelisk
+        run: |
+          curl -LO "https://github.com/bazelbuild/bazelisk/releases/download/v1.1.0/bazelisk-linux-amd64"
+          mkdir -p "${GITHUB_WORKSPACE}/bin/"
+          mv bazelisk-linux-amd64 "${GITHUB_WORKSPACE}/bin/bazel"
+          chmod +x "${GITHUB_WORKSPACE}/bin/bazel"
 
-    - name: test all
-      uses: ngalaiko/bazel-action/1.2.1@master
-      with:
-        args: test //...
+      - name: test all
+        uses: ngalaiko/bazel-action/1.2.1@master
+        with:
+          args: test //...
 
-    - name: Release to GitHub
-      env:
-        DEPLOY_GITHUB_TOKEN: ${{secrets.DEPLOY_GITHUB_TOKEN}}
-      run: |
-        "${GITHUB_WORKSPACE}/bin/bazel" run //:deploy-github -- ${{ github.sha }}
+      - name: Release to GitHub
+        env:
+          DEPLOY_GITHUB_TOKEN: ${{secrets.DEPLOY_GITHUB_TOKEN}}
+        run: |
+          "${GITHUB_WORKSPACE}/bin/bazel" run //:deploy-github -- ${{ github.sha }}
 
-    - name: Release `protoconf` to Docker Hub
-      run: |
-        "${GITHUB_WORKSPACE}/bin/bazel" run //docker:protoconf_release
-    - name: Release `agent` to Docker Hub
-      run: |
-        "${GITHUB_WORKSPACE}/bin/bazel" run //docker:agent_release
-    - name: Release `server` to Docker Hub
-      run: |
-        "${GITHUB_WORKSPACE}/bin/bazel" run //docker:server_release
+      - name: Release `protoconf` to Docker Hub
+        run: |
+          "${GITHUB_WORKSPACE}/bin/bazel" run //docker:protoconf_release
+      - name: Release `agent` to Docker Hub
+        run: |
+          "${GITHUB_WORKSPACE}/bin/bazel" run //docker:agent_release
+      - name: Release `server` to Docker Hub
+        run: |
+          "${GITHUB_WORKSPACE}/bin/bazel" run //docker:server_release

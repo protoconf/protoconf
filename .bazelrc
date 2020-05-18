@@ -1,2 +1,3 @@
 build --stamp --workspace_status_command=tools/get_workspace_status
+build --copt=-DGRPC_BAZEL_BUILD
 test --test_output=errors
