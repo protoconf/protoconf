@@ -278,18 +278,6 @@ func (s *Consul) DeleteTree(directory string) error {
 // be used to stop watching.
 func (s *Consul) Watch(key string, stopCh <-chan struct{}) (<-chan *store.KVPair, error) {
 	kv := s.client.KV()
-	opts := &api.QueryOptions{WaitTime: DefaultWatchWaitTime}
-
-	// Get the key
-	pair, meta, err := kv.Get(key, opts)
-	if err != nil {
-		return nil, err
-	}
-
-	if pair == nil {
-		return nil, errors.New("missing key")
-	}
-
 	watchCh := make(chan *store.KVPair)
 
 	go func() {
@@ -297,6 +285,7 @@ func (s *Consul) Watch(key string, stopCh <-chan struct{}) (<-chan *store.KVPair
 
 		// Use a wait time in order to check if we should quit
 		// from time to time.
+		opts := &api.QueryOptions{WaitTime: DefaultWatchWaitTime}
 
 		for {
 			// Check if we should quit
@@ -304,6 +293,12 @@ func (s *Consul) Watch(key string, stopCh <-chan struct{}) (<-chan *store.KVPair
 			case <-stopCh:
 				return
 			default:
+			}
+
+			// Get the key
+			pair, meta, err := kv.Get(key, opts)
+			if err != nil {
+				return
 			}
 
 			// If LastIndex didn't change then it means `Get` returned
@@ -321,12 +316,6 @@ func (s *Consul) Watch(key string, stopCh <-chan struct{}) (<-chan *store.KVPair
 					Value:     pair.Value,
 					LastIndex: pair.ModifyIndex,
 				}
-			}
-
-			// Get the key
-			pair, meta, err = kv.Get(key, opts)
-			if err != nil {
-				return
 			}
 		}
 	}()
