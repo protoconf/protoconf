@@ -8,6 +8,7 @@ jobs:
   checks:
     name: run
     runs-on: self-hosted
+    container: mattinsler/bazelisk:latest
     services:
       consul:
         image: consul:latest
@@ -25,12 +26,17 @@ jobs:
         ports:
           - 2379
     steps:
-    - uses: actions/checkout@master
-    - name: build all
-      uses: ngalaiko/bazel-action/1.2.1@master
-      with:
-        args: build //...
-    - name: test all
-      uses: ngalaiko/bazel-action/1.2.1@master
-      with:
-        args: test //...
+      # - name: Install bazelisk
+      #   run: |
+      #     apt-get update && apt-get install curl -y
+      #     curl -LO "https://github.com/bazelbuild/bazelisk/releases/download/v1.1.0/bazelisk-linux-amd64"
+      #     mkdir -p "${GITHUB_WORKSPACE}/bin/"
+      #     mv bazelisk-linux-amd64 "${GITHUB_WORKSPACE}/bin/bazel"
+      #     chmod +x "${GITHUB_WORKSPACE}/bin/bazel"
+      - uses: actions/checkout@master
+      - name: build all
+        run: |
+          bazel build //...
+      - name: test all
+        run: |
+          bazel test //...
