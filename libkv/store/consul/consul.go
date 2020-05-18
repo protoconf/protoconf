@@ -8,9 +8,9 @@ import (
 	"sync"
 	"time"
 
-	api "github.com/hashicorp/consul/api"
 	"github.com/protoconf/protoconf/libkv"
 	"github.com/protoconf/protoconf/libkv/store"
+	api "github.com/hashicorp/consul/api"
 )
 
 const (
@@ -306,13 +306,6 @@ func (s *Consul) Watch(key string, stopCh <-chan struct{}) (<-chan *store.KVPair
 			default:
 			}
 
-			// Get the key
-			pair, meta, err = kv.Get(key, opts)
-			if err != nil {
-				return
-
-			}
-
 			// If LastIndex didn't change then it means `Get` returned
 			// because of the WaitTime and the key didn't changed.
 			if opts.WaitIndex == meta.LastIndex {
@@ -330,6 +323,11 @@ func (s *Consul) Watch(key string, stopCh <-chan struct{}) (<-chan *store.KVPair
 				}
 			}
 
+			// Get the key
+			pair, meta, err = kv.Get(key, opts)
+			if err != nil {
+				return
+			}
 		}
 	}()
 
