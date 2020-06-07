@@ -44,20 +44,9 @@ func (p *ProviderImporter) schemaToProtoMessage(name string, schema providers.Sc
 	log := p.logger.With(zap.String("message", name))
 	log.Info("handling message")
 
-	m := builder.NewMessage(name)
+	m := p.msgBuilderFromBlock(name, schema.Block)
 	c := builder.Comments{LeadingComment: fmt.Sprintf("%s version is %d", name, schema.Version)}
 	m.SetComments(c)
-
-	attrs := schema.Block.Attributes
-	keys := make([]string, 0, len(attrs))
-	for k := range attrs {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-
-	for _, fieldName := range keys {
-		p.attributeToProtoField(m, fieldName, attrs[fieldName])
-	}
 
 	// Adding meta fields
 	metaMsg := metaFile.GetMessage("MetaFields")
@@ -68,6 +57,28 @@ func (p *ProviderImporter) schemaToProtoMessage(name string, schema providers.Sc
 	}
 	fieldLifecycle := builder.NewField("lifecycle", builder.FieldTypeMessage(metaFile.GetMessage("Lifecycle")))
 	m.AddField(fieldLifecycle)
+	return m
+}
+
+func (p *ProviderImporter) msgBuilderFromBlock(name string, b *configschema.Block) *builder.MessageBuilder {
+	m := builder.NewMessage(name)
+	attrs := b.Attributes
+	keys := make([]string, 0, len(attrs))
+	for k := range attrs {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	for _, fieldName := range keys {
+		p.attributeToProtoField(m, fieldName, attrs[fieldName])
+	}
+	for n, nb := range b.BlockTypes {
+		nm := p.msgBuilderFromBlock(capitalizeMessageName(n), &nb.Block)
+		f := builder.NewField(n, builder.FieldTypeMessage(nm))
+		f.SetJsonName(n)
+		m.TryAddField(f)
+		m.TryAddNestedMessage(nm)
+	}
 	return m
 }
 
