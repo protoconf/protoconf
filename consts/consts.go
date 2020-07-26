@@ -7,7 +7,7 @@ const (
 	CompiledConfigExtension  = ".materialized_JSON"
 	CompiledConfigPath       = "materialized_config/"
 	ConfigExtension          = ".pconf"
-	EtcdDefaultAddress  = "127.0.0.1:2379"
+	EtcdDefaultAddress       = "127.0.0.1:2379"
 	MultiConfigExtension     = ".mpconf"
 	MutableConfigPath        = "mutable_config/"
 	MutableConfigPrefix      = "mutable:"

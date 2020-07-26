@@ -27,12 +27,19 @@ func NewCompiler(protoconfRoot string, verboseLogging bool) *Compiler {
 	return &Compiler{
 		protoconfRoot:  protoconfRoot,
 		verboseLogging: verboseLogging,
+		disableWriting: false,
 	}
 }
 
 type Compiler struct {
 	protoconfRoot  string
 	verboseLogging bool
+	disableWriting bool
+}
+
+func (c *Compiler) DisableWriting() error {
+	c.disableWriting = true
+	return nil
 }
 
 func (c *Compiler) CompileFile(filename string) error {
@@ -91,6 +98,9 @@ func (c *Compiler) CompileFile(filename string) error {
 }
 
 func (c *Compiler) writeConfig(message *dynamic.Message, filename string) error {
+	if c.disableWriting {
+		return nil
+	}
 	any, err := ptypes.MarshalAny(message)
 	if err != nil {
 		return fmt.Errorf("error marshaling proto to Any, message=%s", message)

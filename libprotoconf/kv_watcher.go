@@ -1,8 +1,8 @@
 package libprotoconf
 
 import (
-	"fmt"
 	"encoding/base64"
+	"fmt"
 
 	"github.com/golang/protobuf/proto"
 	protoconfvalue "github.com/protoconf/protoconf/datatypes/proto/v1/protoconfvalue"

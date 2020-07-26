@@ -35,5 +35,7 @@ go_library(
 go_test(
     name = "go_default_test",
     srcs = ["compiler_test.go"],
+    data = ["testdata"],
     embed = [":go_default_library"],
+    deps = ["@com_github_stretchr_testify//require:go_default_library"],
 )

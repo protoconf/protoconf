@@ -18,7 +18,7 @@ import (
 type Generator struct {
 	Providers  map[string]*ProviderImporter
 	ImportPath string
-	Importer *importers.Importer
+	Importer   *importers.Importer
 }
 
 // NewGenerator creates a new Generator
@@ -26,7 +26,7 @@ func NewGenerator(importPath, outputPath string) *Generator {
 	providers := make(map[string]*ProviderImporter)
 	return &Generator{
 		ImportPath: importPath,
-		Importer: importers.NewImporter("terraform/terraform.proto", outputPath),
+		Importer:   importers.NewImporter("terraform/terraform.proto", outputPath),
 		Providers:  providers,
 	}
 }
@@ -94,7 +94,7 @@ func (g *Generator) Save() error {
 		}
 	}
 	file.AddMessage(main)
-	for _,f := range protoFiles {
+	for _, f := range protoFiles {
 		g.Importer.RegisterFile(f)
 	}
 

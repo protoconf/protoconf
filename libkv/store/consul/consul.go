@@ -8,9 +8,9 @@ import (
 	"sync"
 	"time"
 
+	api "github.com/hashicorp/consul/api"
 	"github.com/protoconf/protoconf/libkv"
 	"github.com/protoconf/protoconf/libkv/store"
-	api "github.com/hashicorp/consul/api"
 )
 
 const (

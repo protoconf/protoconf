@@ -1,0 +1,10 @@
+load("test.proto", "MessageWithEnum")
+
+def main():
+    m=MessageWithEnum(e=MessageWithEnum.TestEnum.ONE)
+    if m.e == MessageWithEnum.TestEnum.TWO:
+        fail("%s and %s should not match" % (m.e, MessageWithEnum.TestEnum.TWO))
+    if m.e != MessageWithEnum.TestEnum.ONE:
+        fail("%s and %s should match" % (m.e, MessageWithEnum.TestEnum.ONE))
+
+    return m

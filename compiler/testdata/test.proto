@@ -1,5 +1,0 @@
-syntax = "proto3";
-
-message TestMessage {
-    string stringValue = 1;
-}

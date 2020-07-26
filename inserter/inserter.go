@@ -2,12 +2,12 @@ package inserter
 
 import (
 	"bytes"
+	"encoding/base64"
 	"flag"
 	"fmt"
 	"log"
 	"path/filepath"
 	"strings"
-	"encoding/base64"
 
 	"github.com/golang/protobuf/proto"
 	"github.com/mitchellh/cli"

@@ -109,7 +109,7 @@ func testPutGetDeleteExists(t *testing.T, kv store.Store) {
 		if err != nil {
 			t.Fatalf("could not get key pair: %s, %v", failMsg, err)
 		}
-		assert.NoError(t, err, failMsg) 
+		assert.NoError(t, err, failMsg)
 		if assert.NotNil(t, pair, failMsg) {
 			assert.NotNil(t, pair.Value, failMsg)
 		}
