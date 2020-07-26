@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+message TestMessage {
+    string stringValue = 1;
+}
+
+message AnotherMessageWithEnum {
+    enum AnotherTestEnum {
+        ZERO = 0;
+        ONE = 1;
+        TWO = 2;
+    }
+    AnotherTestEnum e = 1;
+}
+
+message MessageWithEnum {
+    enum TestEnum {
+        ZERO = 0;
+        ONE = 1;
+        TWO = 2;
+    }
+    TestEnum e = 1;
+}

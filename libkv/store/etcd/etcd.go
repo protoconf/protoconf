@@ -10,9 +10,9 @@ import (
 	"strings"
 	"time"
 
-	etcd "go.etcd.io/etcd/client"
 	"github.com/protoconf/protoconf/libkv"
 	"github.com/protoconf/protoconf/libkv/store"
+	etcd "go.etcd.io/etcd/client"
 )
 
 var (

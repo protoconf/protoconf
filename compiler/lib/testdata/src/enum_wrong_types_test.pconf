@@ -1,0 +1,8 @@
+load("test.proto", "MessageWithEnum", "AnotherMessageWithEnum")
+
+def main():
+    m=MessageWithEnum(e=MessageWithEnum.TestEnum.ONE)
+    if m.e == AnotherMessageWithEnum.AnotherTestEnum.ONE:
+        fail("we should not see this message")
+
+    return m

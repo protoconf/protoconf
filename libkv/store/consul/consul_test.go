@@ -1,9 +1,9 @@
 package consul
 
 import (
+	"sync"
 	"testing"
 	"time"
-	"sync"
 
 	"github.com/protoconf/protoconf/libkv"
 	"github.com/protoconf/protoconf/libkv/store"
