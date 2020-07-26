@@ -3,7 +3,7 @@
   "devDependencies": {
     "@bazel/bazel": "^2.0.0",
     "@bazel/ibazel": "^0.11.1",
-    "standard-version": "^7.1.0"
+    "standard-version": "^8.0.1"
   },
   "dependencies": {},
   "scripts": {
