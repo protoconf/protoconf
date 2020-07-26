@@ -7,7 +7,7 @@ name: Check
 jobs:
   checks:
     name: run
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     container: mattinsler/bazelisk:latest
     services:
       consul:
