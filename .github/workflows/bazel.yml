@@ -26,17 +26,17 @@ jobs:
         ports:
           - 2379
     steps:
-      # - name: Install bazelisk
-      #   run: |
-      #     apt-get update && apt-get install curl -y
-      #     curl -LO "https://github.com/bazelbuild/bazelisk/releases/download/v1.1.0/bazelisk-linux-amd64"
-      #     mkdir -p "${GITHUB_WORKSPACE}/bin/"
-      #     mv bazelisk-linux-amd64 "${GITHUB_WORKSPACE}/bin/bazel"
-      #     chmod +x "${GITHUB_WORKSPACE}/bin/bazel"
-      - uses: actions/checkout@master
-      - name: build all
-        run: |
-          bazel build //...
+      - uses: actions/checkout@v2
+      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        with:
+          version: '290.0.1'
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+      - run: gcloud info
       - name: test all
         run: |
-          bazel test //...
+          bazel test --config github //...
+      - name: build all
+        run: |
+          bazel build --config github //...

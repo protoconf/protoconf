@@ -1,3 +1,6 @@
 build --stamp --workspace_status_command=tools/get_workspace_status
 build --copt=-DGRPC_BAZEL_BUILD
 test --test_output=errors
+
+build:github --remote_cache=https://storage.googleapis.com/protoconf-bazel-cache
+build:github --google_default_credentials
