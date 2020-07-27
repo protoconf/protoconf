@@ -1,0 +1,6 @@
+load("//test.proto", "ValidateMe")
+
+def validateme_validator(v):
+    if v.notempty == "":
+        fail("should not be empty")
+add_validator(ValidateMe, validateme_validator)

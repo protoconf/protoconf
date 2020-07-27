@@ -21,3 +21,7 @@ message MessageWithEnum {
     }
     TestEnum e = 1;
 }
+
+message ValidateMe {
+    string notempty = 1;
+}
