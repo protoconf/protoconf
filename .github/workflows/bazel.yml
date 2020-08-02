@@ -36,7 +36,16 @@ jobs:
       - run: gcloud info
       - name: test all
         run: |
-          bazel test --config github //...
+          bazel coverage --config github //...
+      - name: aggregate coverage files
+        run: bazel build --config github //:aggregate_cov_files
+      - name: install curl
+        run: |
+          apt-get update && apt-get install -y curl bash
+          cp bazel-bin/coverage.dat coverage.txt
+      - uses: codecov/codecov-action@v1
+        with:
+          file: coverage.txt
       - name: build all
         run: |
           bazel build --config github //...
