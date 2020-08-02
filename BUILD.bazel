@@ -137,3 +137,17 @@ deploy_github(
     # release_description = "//:RELEASE_TEMPLATE.md",
     archive = ":protoconf-versioned-all",
 )
+
+
+filegroup(
+  name = "coverage_files",
+  srcs = glob(["bazel-out/**/coverage.dat"]),
+)
+
+genrule(
+  name = "aggregate_cov_files",
+  srcs = [":coverage_files"],
+  cmd = "echo 'mode: set' > $@; grep -h -v '^mode: set$$' $(locations :coverage_files) >> $@",
+  tags = ["manual"],
+  outs = ["coverage.dat"],
+)
