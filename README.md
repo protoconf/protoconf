@@ -26,6 +26,10 @@
   </h3>
 </div>
 
+![Test](https://github.com/protoconf/protoconf/workflows/Check/badge.svg)
+![Release](https://github.com/protoconf/protoconf/workflows/Release/badge.svg)
+[![codecov](https://codecov.io/gh/protoconf/protoconf/branch/master/graph/badge.svg)](https://codecov.io/gh/protoconf/protoconf)
+
 ## Introduction
 Modern services are comprised of many dynamic variables, that need to be changed regularly. Today, the process is unstructured and error prone. From ML model variables, kill switches, gradual rollout configuration, A/B experiment configuration and more - developers want their code to allow to be configured to the finer details.
 
