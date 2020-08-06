@@ -1,0 +1,10 @@
+load("//test.proto", "ValidateMe")
+
+
+def main():
+    """
+    This shall pass all validations
+    """
+    return ValidateMe(
+        notempty="notempty", repeated_string=["hello"], validate_map={"hello": "world"}
+    )

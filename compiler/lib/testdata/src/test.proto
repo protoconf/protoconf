@@ -24,4 +24,7 @@ message MessageWithEnum {
 
 message ValidateMe {
     string notempty = 1;
+    map<string, string> validate_map = 2;
+    TestMessage nested = 3;
+    repeated string repeated_string = 4;
 }

@@ -1,6 +1,22 @@
 load("//test.proto", "ValidateMe")
 
+
 def validateme_validator(v):
     if v.notempty == "":
         fail("should not be empty")
+
+
+def validateme_repeated_validator(v):
+    if len(v.repeated_string) == 0:
+        fail("should have at least one repeated string in repeated string")
+
+
+def validateme_map_validator(v):
+    if len(v.validate_map) == 0:
+        fail("map should have at least one key")
+
+
 add_validator(ValidateMe, validateme_validator)
+add_validator(ValidateMe, validateme_repeated_validator)
+add_validator(ValidateMe, validateme_map_validator)
+
