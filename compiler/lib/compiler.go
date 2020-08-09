@@ -9,9 +9,11 @@ import (
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/jhump/protoreflect/dynamic"
+	"github.com/pkg/errors"
 	"github.com/protoconf/protoconf/compiler/proto"
 	"github.com/protoconf/protoconf/consts"
 	pc "github.com/protoconf/protoconf/datatypes/proto/v1/protoconfvalue"
+	"github.com/protoconf/protoconf/utils"
 	"go.starlark.net/resolve"
 	"go.starlark.net/starlark"
 )
@@ -111,11 +113,14 @@ func (c *Compiler) writeConfig(message *dynamic.Message, filename string) error 
 		Value:     any,
 	}
 
-	// FIXME: support nested Any types by traversing FileDescriptors on starProtoMessage
-	m := &jsonpb.Marshaler{AnyResolver: dynamic.AnyResolver(nil, message.GetMessageDescriptor().GetFile()), Indent: "  "}
+	anyResolver, err := utils.LoadAnyResolver(filepath.Join(c.protoconfRoot, "src"), protoconfValue.ProtoFile)
+	if err != nil {
+		return err
+	}
+	m := &jsonpb.Marshaler{AnyResolver: anyResolver, Indent: "  "}
 	jsonData, err := m.MarshalToString(protoconfValue)
 	if err != nil {
-		return fmt.Errorf("error marshaling ProtoconfValue to JSON, value=%v", protoconfValue)
+		return errors.Wrapf(err, "error marshaling ProtoconfValue to JSON, value=%v", protoconfValue)
 	}
 	jsonData += "\n"
 

@@ -72,7 +72,7 @@ func LoadAnyResolver(rootPath, parseFile string) (jsonpb.AnyResolver, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error parsing proto file, file=%s err=%v", parseFile, err)
 	}
-	return dynamic.AnyResolver(nil, descriptors[0]), nil
+	return dynamic.AnyResolver(nil, descriptors...), nil
 }
 
 // MessageFQN returns a fully qualified name of a message descriptor

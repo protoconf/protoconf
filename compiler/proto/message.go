@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"sort"
 
+	"github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/ptypes"
 	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/dynamic"
 	"go.starlark.net/starlark"
@@ -134,8 +136,21 @@ func (msg *starProtoMessage) SetField(name string, star starlark.Value) error {
 	} else {
 		delete(msg.attrCache, name)
 	}
-	msg.msg.SetField(field, val)
-	return nil
+
+	e := msg.msg.TrySetField(field, val)
+	if e != nil {
+		// field type might be ptypes.Any
+		v, ok := val.(proto.Message)
+		if !ok {
+			return fmt.Errorf("%v does not implement proto.Message", val)
+		}
+		m, err := ptypes.MarshalAny(v)
+		if err != nil {
+			return err
+		}
+		return msg.msg.TrySetField(field, m)
+	}
+	return e
 }
 
 var (
