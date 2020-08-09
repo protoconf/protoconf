@@ -3,6 +3,7 @@ package terraformimporter
 import (
 	"fmt"
 	"log"
+	"regexp"
 	"sort"
 	"strings"
 
@@ -138,8 +139,13 @@ func (p *ProviderImporter) handleObject(name string, t cty.Type, f *builder.Fiel
 
 func (p *ProviderImporter) ctyTypeToProtoField(name string, t cty.Type) *builder.FieldBuilder {
 	log := p.logger
+	jsonName := name
+	var validFieldName = regexp.MustCompile(`^[a-z]`)
+	if !validFieldName.MatchString(name) {
+		name = "_" + name
+	}
 	f := builder.NewField(name, builder.FieldTypeString())
-	f.SetJsonName(name)
+	f.SetJsonName(jsonName)
 
 	if t.IsListType() || t.IsSetType() {
 		log.Info("detected as list", zap.String("type", t.ElementType().FriendlyName()))
