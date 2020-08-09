@@ -1,7 +1,10 @@
 syntax = "proto3";
 
+import "google/protobuf/any.proto";
+
 message TestMessage {
     string stringValue = 1;
+    google.protobuf.Any any_field = 3;
 }
 
 message AnotherMessageWithEnum {
