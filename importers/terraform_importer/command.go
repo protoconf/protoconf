@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+
 	// "path/filepath"
 	"runtime"
 	// "strings"
@@ -27,7 +28,7 @@ func newFlagSet() (*flag.FlagSet, *cliConfig) {
 	}
 
 	config := &cliConfig{}
-	flags.StringVar(&config.importPath, "import_path", fmt.Sprintf(".terraform/plugins/%s_%s", runtime.GOOS, runtime.GOARCH), "Path of terraform plugins")
+	flags.StringVar(&config.importPath, "import_path", fmt.Sprintf(".terraform/plugins/**/%s_%s", runtime.GOOS, runtime.GOARCH), "Path of terraform plugins")
 	flags.StringVar(&config.outputPath, "output", "src", "Path to write proto files to.")
 
 	return flags, config
