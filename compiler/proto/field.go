@@ -3,6 +3,7 @@ package proto
 import (
 	"fmt"
 	"math"
+	"reflect"
 
 	pbproto "github.com/golang/protobuf/proto"
 	dpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
@@ -49,7 +50,21 @@ func valueToStarlark(val *fieldValue) starlark.Value {
 	return scalarToStarlark(val.desc, val.msg.GetField(val.desc))
 }
 
+func isNil(i interface{}) bool {
+	if i == nil {
+		return true
+	}
+	switch reflect.TypeOf(i).Kind() {
+	case reflect.Ptr, reflect.Map, reflect.Array, reflect.Chan, reflect.Slice:
+		return reflect.ValueOf(i).IsNil()
+	}
+	return false
+}
+
 func scalarToStarlark(t *desc.FieldDescriptor, val interface{}) starlark.Value {
+	if isNil(val) {
+		return starlark.None
+	}
 	switch t.GetType() {
 	case dpb.FieldDescriptorProto_TYPE_INT32, dpb.FieldDescriptorProto_TYPE_SINT32, dpb.FieldDescriptorProto_TYPE_SFIXED32:
 		return starlark.MakeInt64(int64(val.(int32)))

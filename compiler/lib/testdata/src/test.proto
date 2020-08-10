@@ -31,3 +31,11 @@ message ValidateMe {
     TestMessage nested = 3;
     repeated string repeated_string = 4;
 }
+
+message MessageWithSubMessage {
+    message SubMessage {
+        string value = 1;
+    }
+
+    SubMessage sub = 1;
+}

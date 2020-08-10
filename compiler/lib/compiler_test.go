@@ -20,4 +20,5 @@ func Test(t *testing.T) {
 	assert.NoError(t, c.CompileFile("include_pinc_test.pconf"))
 	assert.NoError(t, c.CompileFile("load_mutable_test.pconf"))
 	assert.NoError(t, c.CompileFile("field_type_any_test.pconf"))
+	assert.NoError(t, c.CompileFile("uninitialized_msg_test.pconf"))
 }
