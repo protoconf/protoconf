@@ -2,7 +2,6 @@ package proto
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/jhump/protoreflect/desc"
 	"go.starlark.net/starlark"
@@ -25,7 +24,6 @@ func (v *starProtoEnumValue) Hash() (uint32, error) {
 func (v *starProtoEnumValue) CompareSameType(op syntax.Token, y starlark.Value, depth int) (bool, error) {
 	// false means no diff
 	n := y.(*starProtoEnumValue)
-	log.Println(op, v.desc.GetEnum(), n.desc.GetEnum())
 	if v.desc.GetEnum() != n.desc.GetEnum() {
 		return true, fmt.Errorf("enums %v and %v are not from the same type", v.desc.GetEnum().GetName(), n.desc.GetEnum().GetName())
 	}
