@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.1-0](https://github.com/protoconf/protoconf/compare/v0.1.1...v0.1.1-0) (2020-08-10)
+
+
+### Features
+
+* **compiler:** support nested ptypes.Any ([4563ad3](https://github.com/protoconf/protoconf/commit/4563ad36260ee3916c7e823e789b5b8dcec163f3))
+
+
+### Bug Fixes
+
+* **compiler:** field return NoneType if value is nil ([0317def](https://github.com/protoconf/protoconf/commit/0317def1e589c7c29e62bc89bacbb3d362ef5bd2))
+* **import/golang:** set tag before struct visit ([51d33bd](https://github.com/protoconf/protoconf/commit/51d33bdda406115cdb16f2aab8b1d1fa03e265b1))
+* **libkv/consul:** fix ([229d9df](https://github.com/protoconf/protoconf/commit/229d9df0c87d663cb0a88e796945ce5190b5e60d))
+* **libkv/consul:** revert bad fix ([8c15c72](https://github.com/protoconf/protoconf/commit/8c15c7270d47cd93fea128fb29932cb3e131b7ee))
+* **libkv/consul:** tight loop when timeout expires ([b5da114](https://github.com/protoconf/protoconf/commit/b5da114c51b921c68d116211842da1f9d292fcb5))
+* **terraform_importer:** support for nested blocks ([c9082ac](https://github.com/protoconf/protoconf/commit/c9082ac3234495aa0eba560862e7b990257b623c))
+* **tf:** invalid field names ([1401569](https://github.com/protoconf/protoconf/commit/14015693b2b42edf13aa538fc635f2e1b97df17b))
+* image path in docs/architechture ([8a0b3db](https://github.com/protoconf/protoconf/commit/8a0b3db309f07756f8d91a0cb843a5313fcfe2f7))
+
 ### [0.1.1](https://github.com/protoconf/protoconf/compare/v0.1.1-beta12.0...v0.1.1) (2020-04-20)
 
 
