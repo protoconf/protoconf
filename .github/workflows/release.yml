@@ -7,8 +7,8 @@ name: Release
 jobs:
   checks:
     name: run
-    runs-on: self-hosted
-    container: ubuntu:18.04
+    runs-on: ubuntu-latest
+    container: mattinsler/bazelisk:latest
     services:
       consul:
         image: consul:latest
@@ -27,38 +27,38 @@ jobs:
           - 2379
     steps:
       - uses: actions/checkout@v2
-      - name: fetch tags
-        run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+        with:
+          fetch-depth: 0
       - name: Log in to registry
         uses: azure/docker-login@v1
         with:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_TOKEN }}
-
-      - name: Install bazelisk
-        run: |
-          curl -LO "https://github.com/bazelbuild/bazelisk/releases/download/v1.1.0/bazelisk-linux-amd64"
-          mkdir -p "${GITHUB_WORKSPACE}/bin/"
-          mv bazelisk-linux-amd64 "${GITHUB_WORKSPACE}/bin/bazel"
-          chmod +x "${GITHUB_WORKSPACE}/bin/bazel"
-
-      - name: test all
-        uses: ngalaiko/bazel-action/1.2.1@master
+      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
         with:
-          args: test //...
-
+          version: "290.0.1"
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+      - run: gcloud info
+      - name: test all
+        run: |
+          bazel test --config github //...
+      - name: build all
+        run: |
+          bazel build --config github //...
       - name: Release to GitHub
         env:
           DEPLOY_GITHUB_TOKEN: ${{secrets.DEPLOY_GITHUB_TOKEN}}
         run: |
-          "${GITHUB_WORKSPACE}/bin/bazel" run //:deploy-github -- ${{ github.sha }}
+          bazel run --config github //:deploy-github -- ${{ github.sha }}
 
       - name: Release `protoconf` to Docker Hub
         run: |
-          "${GITHUB_WORKSPACE}/bin/bazel" run //docker:protoconf_release
+          bazel run --config github //docker:protoconf_release
       - name: Release `agent` to Docker Hub
         run: |
-          "${GITHUB_WORKSPACE}/bin/bazel" run //docker:agent_release
+          bazel run --config github //docker:agent_release
       - name: Release `server` to Docker Hub
         run: |
-          "${GITHUB_WORKSPACE}/bin/bazel" run //docker:server_release
+          bazel run --config github //docker:server_release
