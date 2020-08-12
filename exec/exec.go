@@ -16,6 +16,7 @@ import (
 	"context"
 	"io"
 	"log"
+	"os"
 
 	"github.com/golang/protobuf/ptypes"
 	"github.com/pkg/errors"
@@ -151,6 +152,9 @@ func (e *Executor) Close() {
 
 func getProtoconfClient() (pc.ProtoconfServiceClient, *grpc.ClientConn) {
 	address := "localhost:4300"
+	if address_, ok := os.LookupEnv("PROTOCONF_AGENT_ADDR"); ok {
+		address = address_
+	}
 	conn, err := grpc.Dial(address, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Error connecting to server address=%s err=%v", address, err)
