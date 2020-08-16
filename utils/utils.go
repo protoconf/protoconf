@@ -15,7 +15,6 @@ import (
 	"github.com/jhump/protoreflect/dynamic"
 	"github.com/protoconf/protoconf/consts"
 	protoconfvalue "github.com/protoconf/protoconf/datatypes/proto/v1/protoconfvalue"
-	"github.com/protoconf/protoconf/protostdlib"
 	"github.com/protoconf/protoconf/protostdlib/secret"
 )
 
@@ -67,7 +66,7 @@ func ReadConfig(protoconfRoot string, configName string) (*protoconfvalue.Protoc
 
 // LoadAnyResolver is a util that helps resolve `Any` messages
 func LoadAnyResolver(rootPath, parseFile string) (jsonpb.AnyResolver, error) {
-	parser := &protoparse.Parser{ImportPaths: []string{rootPath}, ProtoStdLib: protostdlib.ProtoStdLib}
+	parser := &protoparse.Parser{ImportPaths: []string{rootPath}}
 	descriptors, err := parser.ParseFiles(parseFile)
 	if err != nil {
 		return nil, fmt.Errorf("error parsing proto file, file=%s err=%v", parseFile, err)

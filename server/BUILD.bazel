@@ -15,7 +15,6 @@ go_library(
     deps = [
         ":protoconf_mutation_go_proto",
         "//consts:go_default_library",
-        "//protostdlib:go_default_library",
         "@com_github_golang_protobuf//jsonpb:go_default_library_gen",
         "@com_github_jhump_protoreflect//desc/protoparse:go_default_library",
         "@com_github_jhump_protoreflect//dynamic:go_default_library",

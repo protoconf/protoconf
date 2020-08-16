@@ -17,7 +17,6 @@ import (
 	"github.com/protoconf/protoconf/compiler/proto"
 	"github.com/protoconf/protoconf/consts"
 	pc "github.com/protoconf/protoconf/datatypes/proto/v1/protoconfvalue"
-	"github.com/protoconf/protoconf/protostdlib"
 	"github.com/qri-io/starlib"
 	"go.starlark.net/starlark"
 )
@@ -158,7 +157,7 @@ func (l *starlarkLoader) loadMutable(modulePath string) (starlark.StringDict, er
 		return nil, err
 	}
 
-	parser := &protoparse.Parser{ImportPaths: []string{l.srcDir}, Accessor: l.protoAccessor, ProtoStdLib: protostdlib.ProtoStdLib}
+	parser := &protoparse.Parser{ImportPaths: []string{l.srcDir}, Accessor: l.protoAccessor}
 	descriptors, err := parser.ParseFiles(configJSON.ProtoFile)
 	if err != nil {
 		return nil, fmt.Errorf("error parsing proto file, file=%s err=%s", configJSON.ProtoFile, err)
@@ -197,7 +196,7 @@ func (l *starlarkLoader) loadMutable(modulePath string) (starlark.StringDict, er
 }
 
 func (l *starlarkLoader) loadProto(modulePath string) (starlark.StringDict, error) {
-	parser := &protoparse.Parser{ImportPaths: []string{l.srcDir}, Accessor: l.protoAccessor, ProtoStdLib: protostdlib.ProtoStdLib}
+	parser := &protoparse.Parser{ImportPaths: []string{l.srcDir}, Accessor: l.protoAccessor}
 	descriptors, err := parser.ParseFiles(modulePath)
 	if err != nil {
 		return nil, fmt.Errorf("error parsing proto file, file=%s err=%v", modulePath, err)
