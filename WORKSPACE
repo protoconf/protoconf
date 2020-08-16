@@ -100,6 +100,7 @@ load(
 )
 
 container_repositories()
+
 load("@io_bazel_rules_docker//repositories:deps.bzl", container_deps = "deps")
 
 container_deps()
