@@ -9,6 +9,7 @@ message ProtoconfValue {
     string proto_file = 1;
     google.protobuf.Any value = 2;
     repeated SecretMetadata secrets = 3;
+    repeated string additional_proto_files = 4;
 }
 
 message SecretMetadata {

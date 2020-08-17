@@ -5,6 +5,7 @@ import (
 	"context"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"strings"
 	"sync"
@@ -79,7 +80,8 @@ func (w *watcher) Start(ctx context.Context) error {
 			}
 
 			value := update.GetValue()
-			anyResolver, err := utils.LoadAnyResolver(w.executor.protosDir, w.config.ProtoFile)
+			log.Println(w.config.AdditionalProtoFiles)
+			anyResolver, err := utils.LoadAnyResolver(w.executor.protosDir, append(w.config.AdditionalProtoFiles, w.config.ProtoFile)...)
 			if err != nil {
 				return errors.Wrap(err, "failed to get AnyResolver")
 			}

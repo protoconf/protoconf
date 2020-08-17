@@ -30,7 +30,7 @@ type starlarkLoader struct {
 	cache            map[string]*cacheEntry
 	Modules          starlark.StringDict
 	mutableDir       string
-	protoFilesLoaded *[]string
+	protoFilesLoaded *protoFiles
 	srcDir           string
 }
 
@@ -38,7 +38,7 @@ func (l *starlarkLoader) protoAccessor(name string) (io.ReadCloser, error) {
 	if !strings.HasPrefix(name, l.srcDir) {
 		return nil, fmt.Errorf("proto path must be under %s, got=%s", l.srcDir, name)
 	}
-	*l.protoFilesLoaded = append(*l.protoFilesLoaded, strings.TrimPrefix(name, l.srcDir))
+	l.protoFilesLoaded.setFileName(strings.TrimPrefix(name, l.srcDir))
 	return openFile(name)
 }
 
@@ -97,7 +97,7 @@ func (l *starlarkLoader) loadValidators() (map[string]*starlark.Function, error)
 	validators := make(map[string]*starlark.Function)
 
 	l.Modules["add_validator"] = starlark.NewBuiltin("add_validator", starAddValidator(&validators))
-	for _, protoFile := range *l.protoFilesLoaded {
+	for _, protoFile := range l.protoFilesLoaded.getFileNames() {
 		validatorFile := protoFile + consts.ValidatorExtensionSuffix
 		validatorAbsPath := filepath.Join(l.srcDir, validatorFile)
 		if exists, isDir, err := stat(validatorAbsPath); err != nil {

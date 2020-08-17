@@ -29,20 +29,15 @@ func ReadConfig(protoconfRoot string, configName string) (*protoconfvalue.Protoc
 	defer configReader.Close()
 
 	type configJSONType struct {
-		ProtoFile string
+		ProtoFile            string
+		AdditionalProtoFiles []string
 	}
 	var configJSON configJSONType
 	if err = json.NewDecoder(configReader).Decode(&configJSON); err != nil {
 		return nil, err
 	}
 
-	// parser := &protoparse.Parser{ImportPaths: []string{filepath.Join(protoconfRoot, consts.SrcPath)}, ProtoStdLib: protostdlib.ProtoStdLib}
-	// descriptors, err := parser.ParseFiles(configJSON.ProtoFile)
-	// if err != nil {
-	// 	return nil, fmt.Errorf("error parsing proto file, file=%s err=%v", configJSON.ProtoFile, err)
-	// }
-	// anyResolver := dynamic.AnyResolver(nil, descriptors[0])
-	anyResolver, err := LoadAnyResolver(filepath.Join(protoconfRoot, consts.SrcPath), configJSON.ProtoFile)
+	anyResolver, err := LoadAnyResolver(filepath.Join(protoconfRoot, consts.SrcPath), append(configJSON.AdditionalProtoFiles, configJSON.ProtoFile)...)
 	if err != nil {
 		return nil, err
 	}
@@ -65,9 +60,9 @@ func ReadConfig(protoconfRoot string, configName string) (*protoconfvalue.Protoc
 }
 
 // LoadAnyResolver is a util that helps resolve `Any` messages
-func LoadAnyResolver(rootPath, parseFile string) (jsonpb.AnyResolver, error) {
+func LoadAnyResolver(rootPath string, parseFile ...string) (jsonpb.AnyResolver, error) {
 	parser := &protoparse.Parser{ImportPaths: []string{rootPath}}
-	descriptors, err := parser.ParseFiles(parseFile)
+	descriptors, err := parser.ParseFiles(parseFile...)
 	if err != nil {
 		return nil, fmt.Errorf("error parsing proto file, file=%s err=%v", parseFile, err)
 	}

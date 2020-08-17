@@ -3868,3 +3868,21 @@ def deps():
         sum = "h1:KU7oHjnv3XNWfa5COkzUifxZmxp1TyI7ImMXqFxLwvQ=",
         version = "v0.2.0",
     )
+    go_repository(
+        name = "com_github_otiai10_copy",
+        importpath = "github.com/otiai10/copy",
+        sum = "h1:HvG945u96iNadPoG2/Ja2+AUJeW5YuFQMixq9yirC+k=",
+        version = "v1.2.0",
+    )
+    go_repository(
+        name = "com_github_otiai10_curr",
+        importpath = "github.com/otiai10/curr",
+        sum = "h1:TJIWdbX0B+kpNagQrjgq8bCMrbhiuX73M2XwgtDMoOI=",
+        version = "v1.0.0",
+    )
+    go_repository(
+        name = "com_github_otiai10_mint",
+        importpath = "github.com/otiai10/mint",
+        sum = "h1:BCmzIS3n71sGfHB5NMNDB3lHYPz8fWSkCAErHed//qc=",
+        version = "v1.3.1",
+    )

@@ -23,6 +23,7 @@ message WatcherConfig {
     repeated Action actions = 3;
     string main_process_cmdline = 4;
     string pid_file = 5;
+    repeated string additional_proto_files = 6;
 
     google.protobuf.Duration kill_timeout = 17;
     google.protobuf.Duration splay = 18;

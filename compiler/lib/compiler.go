@@ -8,6 +8,7 @@ import (
 
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/ptypes"
+	"github.com/jhump/protoreflect/desc/builder"
 	"github.com/jhump/protoreflect/dynamic"
 	"github.com/pkg/errors"
 	"github.com/protoconf/protoconf/compiler/proto"
@@ -27,16 +28,37 @@ func NewCompiler(protoconfRoot string, verboseLogging bool) *Compiler {
 	resolve.AllowRecursion = true      // allow while statements and recursive functions
 
 	return &Compiler{
-		protoconfRoot:  protoconfRoot,
-		verboseLogging: verboseLogging,
-		disableWriting: false,
+		protoconfRoot:    protoconfRoot,
+		verboseLogging:   verboseLogging,
+		disableWriting:   false,
+		protoFilesLoaded: &protoFiles{},
 	}
 }
 
+type protoFiles map[string]bool
+
+func (p *protoFiles) getFileNames() []string {
+	var keys []string
+	for k, _ := range *p {
+		keys = append(keys, k)
+	}
+	return keys
+}
+
+func (p protoFiles) setFileName(name string) {
+	p[name] = true
+}
+
+func (p protoFiles) has(name string) bool {
+	_, ok := p[name]
+	return ok
+}
+
 type Compiler struct {
-	protoconfRoot  string
-	verboseLogging bool
-	disableWriting bool
+	protoconfRoot    string
+	verboseLogging   bool
+	disableWriting   bool
+	protoFilesLoaded *protoFiles
 }
 
 func (c *Compiler) DisableWriting() error {
@@ -113,7 +135,29 @@ func (c *Compiler) writeConfig(message *dynamic.Message, filename string) error 
 		Value:     any,
 	}
 
-	anyResolver, err := utils.LoadAnyResolver(filepath.Join(c.protoconfRoot, "src"), protoconfValue.ProtoFile)
+	d, err := builder.FromMessage(message.GetMessageDescriptor())
+	if err != nil {
+		return err
+	}
+	findNestedAnyMessages(d)
+	originalFiles, err := getFileNamesForDescriptor(d, &protoFiles{})
+	if err != nil {
+		return errors.Wrapf(err, "cannot get file names for message %v", message)
+	}
+	var files []string
+	for _, f := range c.protoFilesLoaded.getFileNames() {
+		if !strings.HasPrefix(f, "/google/protobuf") && !originalFiles.has(strings.TrimPrefix(f, "/")) {
+			files = append(files, strings.TrimPrefix(f, "/"))
+		}
+	}
+	if len(files) > 0 {
+		protoconfValue.AdditionalProtoFiles = files
+	}
+
+	anyResolver, err := utils.LoadAnyResolver(
+		filepath.Join(c.protoconfRoot, "src"),
+		append(files, protoconfValue.ProtoFile)...,
+	)
 	if err != nil {
 		return err
 	}
@@ -174,7 +218,26 @@ func (c *Compiler) GetLoader() *starlarkLoader {
 		cache:            make(map[string]*cacheEntry),
 		Modules:          getModules(),
 		mutableDir:       filepath.Join(c.protoconfRoot, consts.MutableConfigPath),
-		protoFilesLoaded: &[]string{},
+		protoFilesLoaded: c.protoFilesLoaded,
 		srcDir:           filepath.Join(c.protoconfRoot, consts.SrcPath),
 	}
+}
+
+func findNestedAnyMessages(b builder.Builder) {
+	for _, bb := range b.GetChildren() {
+		d, _ := bb.BuildDescriptor()
+		log.Println(d)
+		findNestedAnyMessages(bb)
+	}
+}
+
+func getFileNamesForDescriptor(d builder.Builder, files *protoFiles) (*protoFiles, error) {
+	files.setFileName(d.GetFile().GetName())
+	for _, c := range d.GetChildren() {
+		_, err := getFileNamesForDescriptor(c, files)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return files, nil
 }
