@@ -16,7 +16,6 @@ require (
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-gl/glfw v0.0.0-20190409004039-e6da0acd62b1 // indirect
 	github.com/go-sql-driver/mysql v1.5.0 // indirect
-	github.com/gogo/protobuf v1.2.1 // indirect
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
 	github.com/golang/mock v1.4.3 // indirect
 	github.com/golang/protobuf v1.3.5
@@ -38,16 +37,17 @@ require (
 	github.com/pkg/errors v0.8.1
 	github.com/pkg/sftp v1.11.0 // indirect
 	github.com/prometheus/client_golang v0.9.3
-	github.com/qri-io/starlib v0.4.1
+	github.com/qri-io/dataset v0.1.1 // indirect
+	github.com/qri-io/starlib v0.4.2
 	github.com/rs/zerolog v1.18.0 // indirect
 	github.com/samuel/go-zookeeper v0.0.0-20190923202752-2cc03de413da
-	github.com/stretchr/testify v1.4.0
+	github.com/stretchr/testify v1.5.1
 	github.com/zclconf/go-cty v1.2.0
 	go.etcd.io/bbolt v1.3.3
 	go.etcd.io/etcd v3.3.18+incompatible
 	go.opencensus.io v0.22.3 // indirect
 	go.pedge.io/lion v0.0.0-20190619200210-304b2f426641 // indirect
-	go.starlark.net v0.0.0-20191218235703-9fcb808a6221
+	go.starlark.net v0.0.0-20200330013621-be5394c419b6
 	go.uber.org/zap v1.9.1
 	golang.org/x/exp v0.0.0-20200224162631-6cc2880d07d6 // indirect
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b // indirect
