@@ -51,8 +51,8 @@ def deps():
     go_repository(
         name = "net_starlark_go",
         importpath = "go.starlark.net",
-        sum = "h1:GMoeMjox1bR6zacPH+6Z1biOylJzpDbnzven0ymPRg8=",
-        version = "v0.0.0-20191218235703-9fcb808a6221",
+        sum = "h1:S2s+dYPyDg/vF7KbcRIB2831xVimJoR4zebfoVBzn7Q=",
+        version = "v0.0.0-20200330013621-be5394c419b6",
     )
 
     # Used by starlark
@@ -555,8 +555,8 @@ def deps():
     go_repository(
         name = "com_github_gogo_protobuf",
         importpath = "github.com/gogo/protobuf",
-        sum = "h1:/s5zKNz0uPFCZ5hddgPdo2TK2TVrUNMn0OOX8/aZMTE=",
-        version = "v1.2.1",
+        sum = "h1:G8O7TerXerS4F6sx9OV7/nRfJdnXgHZu/S/7F2SN+UE=",
+        version = "v1.3.0",
     )
     go_repository(
         name = "com_github_golang_glog",
@@ -1268,8 +1268,8 @@ def deps():
     go_repository(
         name = "com_github_stretchr_testify",
         importpath = "github.com/stretchr/testify",
-        sum = "h1:2E4SXV/wtOkTonXsotYi4li6zVWxYlZuYNCXe9XRJyk=",
-        version = "v1.4.0",
+        sum = "h1:nOGnQDM7FYENwehXlg/kFVnos3rEvtKTjRvOWSzb6H4=",
+        version = "v1.5.1",
     )
     go_repository(
         name = "com_github_svanharmelen_jsonapi",
@@ -1373,8 +1373,8 @@ def deps():
     go_repository(
         name = "in_gopkg_check_v1",
         importpath = "gopkg.in/check.v1",
-        sum = "h1:qIbj1fsPNlZgppZ+VLlY7N33q108Sa+fhmuc+sWQYwY=",
-        version = "v1.0.0-20180628173108-788fd7840127",
+        sum = "h1:BLraFXnmrev5lT+xlilqcH8XK9/i0At2xKjWk4p6zsU=",
+        version = "v1.0.0-20200227125254-8fa46927fb4f",
     )
     go_repository(
         name = "in_gopkg_cheggaaa_pb_v1",
@@ -1409,8 +1409,8 @@ def deps():
     go_repository(
         name = "in_gopkg_yaml_v2",
         importpath = "gopkg.in/yaml.v2",
-        sum = "h1:ZCJp+EgiOT7lHqUV2J862kp8Qj64Jo6az82+3Td9dZw=",
-        version = "v2.2.2",
+        sum = "h1:obN1ZagJSUGI0Ek/LBmuj4SNLPfIny3KsKFopxRdj10=",
+        version = "v2.2.8",
     )
     go_repository(
         name = "io_k8s_sigs_yaml",
@@ -1891,8 +1891,8 @@ def deps():
     go_repository(
         name = "com_github_qri_io_starlib",
         importpath = "github.com/qri-io/starlib",
-        sum = "h1:aXcKv4p8WRoGElC+ZpfyKMP1OmT2KP5+iISPfXJXk6M=",
-        version = "v0.4.1",
+        sum = "h1:ZGzmzT9fOqdluezcwhAZAbTn/v6kMg1tC6ALVjQPhpQ=",
+        version = "v0.4.2",
     )
     go_repository(
         name = "cc_mvdan_interfacer",
@@ -1933,8 +1933,8 @@ def deps():
     go_repository(
         name = "com_github_andybalholm_cascadia",
         importpath = "github.com/andybalholm/cascadia",
-        sum = "h1:hOCXnnZ5A+3eVDX8pvgl4kofXv2ELss0bKcqRySc45o=",
-        version = "v1.0.0",
+        sum = "h1:BuuO6sSfQNFRu1LppgbD25Hr2vLYW25JvxHs5zzsLTo=",
+        version = "v1.1.0",
     )
     go_repository(
         name = "com_github_bifurcation_mint",
@@ -3205,8 +3205,8 @@ def deps():
     go_repository(
         name = "com_github_paulmach_orb",
         importpath = "github.com/paulmach/orb",
-        sum = "h1:Wa1nzU269Zv7V9paVEY1COWW8FCqv4PC/KJRbJSimpM=",
-        version = "v0.1.3",
+        sum = "h1:GUcATabvxciqEzGd+c01/9ek3B6pUp9OdcIHFSDDSSg=",
+        version = "v0.1.5",
     )
     go_repository(
         name = "com_github_pborman_uuid",
@@ -3235,8 +3235,8 @@ def deps():
     go_repository(
         name = "com_github_puerkitobio_goquery",
         importpath = "github.com/PuerkitoBio/goquery",
-        sum = "h1:uGvmFXOA73IKluu/F84Xd1tt/z07GYm8X49XKHP7EJk=",
-        version = "v1.5.0",
+        sum = "h1:PSPBGne8NIUWw+/7vFBV+kG2J/5MOjbzc7154OaKCSE=",
+        version = "v1.5.1",
     )
     go_repository(
         name = "com_github_qri_io_compare",
@@ -3867,4 +3867,10 @@ def deps():
         importpath = "golang.org/x/mod",
         sum = "h1:KU7oHjnv3XNWfa5COkzUifxZmxp1TyI7ImMXqFxLwvQ=",
         version = "v0.2.0",
+    )
+    go_repository(
+        name = "com_github_niemeyer_pretty",
+        importpath = "github.com/niemeyer/pretty",
+        sum = "h1:fD57ERR4JtEqsWbfPhv4DMiApHyliiK5xCTNVSPiaAs=",
+        version = "v0.0.0-20200227124842-a10e7caefd8e",
     )
