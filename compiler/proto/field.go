@@ -199,6 +199,6 @@ func typeName(t *desc.FieldDescriptor) string {
 }
 
 func typeError(t *desc.FieldDescriptor, star starlark.Value) error {
-	return fmt.Errorf("type error: value %s (type `%s') can't be assigned to type `%s'",
-		star.String(), star.Type(), typeName(t))
+	return fmt.Errorf("type error: value %s (type `%s') can't be assigned to field %s (proto type `%s')",
+		star.String(), star.Type(), t.GetFullyQualifiedName(), t.GetType())
 }

@@ -32,7 +32,7 @@ type starProtoMessageType struct {
 func (mt *starProtoMessageType) String() string {
 	return fmt.Sprintf("<proto.MessageType %s>", mt.Name())
 }
-func (mt *starProtoMessageType) Type() string         { return "proto.MessageType" }
+func (mt *starProtoMessageType) Type() string         { return mt.desc.GetFullyQualifiedName() }
 func (mt *starProtoMessageType) Freeze()              {}
 func (mt *starProtoMessageType) Truth() starlark.Bool { return starlark.True }
 func (mt *starProtoMessageType) Hash() (uint32, error) {
