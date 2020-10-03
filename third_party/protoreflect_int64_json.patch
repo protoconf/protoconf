@@ -1,0 +1,24 @@
+diff --git i/dynamic/json.go w/dynamic/json.go
+index 38e5632..274335a 100644
+--- i/dynamic/json.go
++++ w/dynamic/json.go
+@@ -383,7 +383,8 @@ func marshalKnownFieldValueJSON(b *indentBuffer, fd *desc.FieldDescriptor, v int
+ 	rv := reflect.ValueOf(v)
+ 	switch rv.Kind() {
+ 	case reflect.Int64:
+-		return writeJsonString(b, strconv.FormatInt(rv.Int(), 10))
++		_, err := b.WriteString(strconv.FormatInt(rv.Int(), 10))
++		return err
+ 	case reflect.Int32:
+ 		ed := fd.GetEnumType()
+ 		if !opts.EnumsAsInts && ed != nil {
+@@ -400,7 +401,8 @@ func marshalKnownFieldValueJSON(b *indentBuffer, fd *desc.FieldDescriptor, v int
+ 			return err
+ 		}
+ 	case reflect.Uint64:
+-		return writeJsonString(b, strconv.FormatUint(rv.Uint(), 10))
++		_, err := b.WriteString(strconv.FormatUint(rv.Uint(), 10))
++		return err
+ 	case reflect.Uint32:
+ 		_, err := b.WriteString(strconv.FormatUint(rv.Uint(), 10))
+ 		return err

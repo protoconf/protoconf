@@ -42,8 +42,8 @@ def deps():
             "gazelle:go_visibility @protoconf//:__subpackages__",
         ],
         importpath = "github.com/jhump/protoreflect",
-        # patch_args = ["-p1"],
-        # patches = ["@protoconf//third_party:protoreflect_proto_std_lib.patch"],
+        patch_args = ["-p1"],
+        patches = ["@protoconf//third_party:protoreflect_int64_json.patch"],
         sum = "h1:qJ7piXPrjP3mDrfHf5ATkxfLix8ANs226vpo0aACOn0=",
         version = "v1.7.0",
     )
