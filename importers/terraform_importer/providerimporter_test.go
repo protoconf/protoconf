@@ -23,5 +23,6 @@ func TestBuilder(t *testing.T) {
 	// Print(p.Provider)
 	Print(p.Resources)
 	Print(p.Datasources)
+	Print(p.Provider)
 	// t.Fail()
 }

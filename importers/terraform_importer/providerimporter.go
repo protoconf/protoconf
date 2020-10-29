@@ -42,6 +42,14 @@ func NewProviderImporter(name string, client providers.Interface) (*ProviderImpo
 
 	p.Provider.AddMessage(p.populateResources("resources", p.Resources, schemaResponse.ResourceTypes))
 	p.Provider.AddMessage(p.populateResources("data", p.Datasources, schemaResponse.DataSources))
+	providerConfigMsg := p.schemaToProtoMessage(capitalizeMessageName(name), schemaResponse.Provider)
+	providerConfigMsg.AddField(builder.NewField("alias", builder.FieldTypeString()))
+	p.Provider.AddMessage(providerConfigMsg)
+	providersMsg := builder.NewMessage("provider")
+	providersMsg.AddField(builder.NewField(name, builder.FieldTypeMessage(providerConfigMsg)).SetRepeated())
+	p.Provider.AddMessage(providersMsg)
+
+	// p.Provider.AddMessage(p.populateResources("provider", p.Provider, map[string]providers.Schema{name: schemaResponse.Provider}))
 
 	return p, nil
 }

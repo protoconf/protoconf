@@ -64,11 +64,14 @@ func (g *Generator) Save() error {
 	main := builder.NewMessage("Terraform")
 	resources := builder.NewMessage("Resources")
 	data := builder.NewMessage("Datasources")
+	providers := builder.NewMessage("Providers")
 
 	main.AddNestedMessage(resources)
 	main.AddField(builder.NewField("resource", builder.FieldTypeMessage(resources)).SetJsonName("resource"))
 	main.AddNestedMessage(data)
 	main.AddField(builder.NewField("data", builder.FieldTypeMessage(data)).SetJsonName("data"))
+	main.AddNestedMessage(providers)
+	main.AddField(builder.NewField("provider", builder.FieldTypeMessage(providers)).SetJsonName("provider"))
 
 	metaFile := meta.MetaFile()
 	protoFiles := []*builder.FileBuilder{file, metaFile}
@@ -84,6 +87,7 @@ func (g *Generator) Save() error {
 		log.Println("saving", name)
 		protoFiles = append(protoFiles, p.Resources)
 		protoFiles = append(protoFiles, p.Datasources)
+		protoFiles = append(protoFiles, p.Provider)
 		for _, b := range p.Provider.GetMessage("resources").GetChildren() {
 			f := p.Provider.GetMessage("resources").GetField(b.GetName())
 			resources.AddField(f)
@@ -91,6 +95,10 @@ func (g *Generator) Save() error {
 		for _, b := range p.Provider.GetMessage("data").GetChildren() {
 			f := p.Provider.GetMessage("data").GetField(b.GetName())
 			data.AddField(f)
+		}
+		for _, b := range p.Provider.GetMessage("provider").GetChildren() {
+			f := p.Provider.GetMessage("provider").GetField(b.GetName())
+			providers.AddField(f)
 		}
 	}
 	file.AddMessage(main)
