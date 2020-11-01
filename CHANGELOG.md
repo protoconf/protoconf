@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.2-rc2.0](https://github.com/protoconf/protoconf/compare/v0.1.2-rc1.0...v0.1.2-rc2.0) (2020-11-01)
+
+
+### Features
+
+* **terraform_importer:** add "provider" configuration ([2e341c2](https://github.com/protoconf/protoconf/commit/2e341c2493004b4871a28e7c0571c1c1460bbf1c))
+
+
+### Bug Fixes
+
+* marshal (u)int64 values as numberic json fields ([8304bf9](https://github.com/protoconf/protoconf/commit/8304bf99bb93751280c597a8f85831ab2c8e2aec))
+* release version should start with v ([60e8a19](https://github.com/protoconf/protoconf/commit/60e8a19e4b98feb1316fa205673853a736353d59))
+
 ### [0.1.2-rc1.0](https://github.com/protoconf/protoconf/compare/v0.1.2...v0.1.2-rc1.0) (2020-09-20)
 
 ### [0.1.2](https://github.com/protoconf/protoconf/compare/v0.1.1...v0.1.2) (2020-08-10)
