@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CURRENT_RELEASE=$(cat VERSION)
+CURRENT_RELEASE=v$(cat VERSION)
 
 # set -eu
 # https://stackoverflow.com/a/4025065
