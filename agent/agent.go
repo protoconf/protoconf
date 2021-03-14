@@ -13,7 +13,7 @@ import (
 	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 	"github.com/mitchellh/cli"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	protoconfservice "github.com/protoconf/protoconf/agent/api/proto/v1/protoconfservice"
+	protoconfservice "github.com/protoconf/protoconf/agent/api/proto/v1"
 	"github.com/protoconf/protoconf/command"
 	"github.com/protoconf/protoconf/consts"
 	"github.com/protoconf/protoconf/libprotoconf"

@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/golang/protobuf/ptypes"
-	pc "github.com/protoconf/protoconf/agent/api/proto/v1/protoconfservice"
+	pc "github.com/protoconf/protoconf/agent/api/proto/v1"
 	"github.com/protoconf/protoconf/consts"
 	pb "github.com/protoconf/protoconf/examples/protoconf/src/crawler"
 	"golang.org/x/net/context"

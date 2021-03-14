@@ -1,13 +1,4 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_library")
-load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
-
-go_proto_library(
-    name = "protoconf_service_go_proto",
-    compiler = "@io_bazel_rules_go//proto:go_grpc",
-    importpath = "github.com/protoconf/protoconf/agent/api/proto/v1/protoconfservice",
-    proto = "//agent/api/proto/v1:protoconf_service_proto",
-    visibility = ["//visibility:public"],
-)
 
 go_library(
     name = "go_default_library",
@@ -15,7 +6,7 @@ go_library(
     importpath = "github.com/protoconf/protoconf/agent",
     visibility = ["//visibility:public"],
     deps = [
-        ":protoconf_service_go_proto",
+        "//agent/api/proto/v1:go_default_library",
         "//command:go_default_library",
         "//consts:go_default_library",
         "//libprotoconf:go_default_library",
