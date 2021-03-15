@@ -12,7 +12,7 @@ go_library(
     importpath = "github.com/protoconf/protoconf/examples/grpc_clients/go_client",
     visibility = ["//visibility:private"],
     deps = [
-        "//agent:protoconf_service_go_proto",
+        "//agent/api/proto/v1:go_default_library",
         "//consts:go_default_library",
         "//examples/protoconf/src/crawler:go_default_library",
         "@com_github_golang_protobuf//ptypes:go_default_library_gen",
