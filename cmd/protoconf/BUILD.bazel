@@ -9,9 +9,9 @@ go_binary(
 go_binary(
     name = "protoconf-darwin",
     embed = [":go_default_library"],
+    goarch = "amd64",
     goos = "darwin",
     pure = "on",
-    goarch = "amd64",
     visibility = ["//visibility:public"],
 )
 

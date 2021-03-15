@@ -21,7 +21,7 @@ go_library(
 )
 
 filegroup(
-    visibility = ["//visibility:public"],
     name = "testdata",
     srcs = glob(["testdata/**/*"]),
+    visibility = ["//visibility:public"],
 )

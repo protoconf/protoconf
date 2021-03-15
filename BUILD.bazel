@@ -1,6 +1,6 @@
 load("@bazel_gazelle//:def.bzl", "gazelle")
 load("@io_bazel_rules_go//go:def.bzl", "nogo")
-load("@graknlabs_bazel_distribution//common:rules.bzl", "assemble_zip", "assemble_targz", "assemble_versioned")
+load("@graknlabs_bazel_distribution//common:rules.bzl", "assemble_targz", "assemble_versioned", "assemble_zip")
 load("@graknlabs_bazel_distribution//github:rules.bzl", "deploy_github")
 
 # gazelle:prefix github.com/protoconf/protoconf
@@ -68,8 +68,8 @@ genrule(
         "//docker:agent_release",
         "//docker:server_release",
     ],
-    tags = ["manual"],
     executable = True,
+    tags = ["manual"],
 )
 
 # `root_proto` and `go_default_library` helps with compiling examples which uses `import "secret.proto"`
@@ -112,30 +112,30 @@ assemble_targz(
 
 assemble_zip(
     name = "protoconf-windows",
-    targets = [":protoconf-windows-tgz"],
     output_filename = "protoconf-windows",
+    targets = [":protoconf-windows-tgz"],
 )
 
 assemble_versioned(
     name = "protoconf-versioned-all",
-    version_file = "//:VERSION",
     targets = [
         ":protoconf-linux",
         ":protoconf-darwin",
         ":protoconf-windows",
     ],
+    version_file = "//:VERSION",
 )
 
 load("@graknlabs_bazel_distribution//github:rules.bzl", "deploy_github")
 
 deploy_github(
     name = "deploy-github",
+    # release_description = "//:RELEASE_TEMPLATE.md",
+    archive = ":protoconf-versioned-all",
     deployment_properties = "//:deployment.properties",
     title = "protoconf",
     title_append_version = True,
     version_file = "//:VERSION",
-    # release_description = "//:RELEASE_TEMPLATE.md",
-    archive = ":protoconf-versioned-all",
 )
 
 filegroup(
@@ -146,7 +146,7 @@ filegroup(
 genrule(
     name = "aggregate_cov_files",
     srcs = [":coverage_files"],
+    outs = ["coverage.dat"],
     cmd = "echo 'mode: set' > $@; grep -h -v '^mode: set$$' $(locations :coverage_files) >> $@",
     tags = ["manual"],
-    outs = ["coverage.dat"],
 )

@@ -3281,18 +3281,6 @@ def deps():
         version = "v0.1.0",
     )
     go_repository(
-        name = "com_github_quasilyte_go_consistent",
-        importpath = "github.com/Quasilyte/go-consistent",
-        sum = "h1:1EBYo2g4jmrQYzTN/GXwdkZGDJpMDdygqXq99yllHPM=",
-        version = "v0.0.0-20181230194409-8f8379e70f99",
-    )
-    go_repository(
-        name = "com_github_quasilyte_go_consistent",
-        importpath = "github.com/quasilyte/go-consistent",
-        sum = "h1:JoUA0uz9U0FVFq5p4LjEq4C0VgQ0El320s3Ms0V4eww=",
-        version = "v0.0.0-20190521200055-c6f3937de18c",
-    )
-    go_repository(
         name = "com_github_rogpeppe_go_internal",
         importpath = "github.com/rogpeppe/go-internal",
         sum = "h1:RR9dF3JtopPvtkroDZuVD7qquD0bnHlKSqaQhgwt8yk=",
