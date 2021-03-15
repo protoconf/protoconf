@@ -1,3 +1,4 @@
+// +js -build
 package lib
 
 import (
@@ -15,12 +16,12 @@ func mkdirAll(path string, perm os.FileMode) error {
 
 func stat(path string) (bool, bool, error) {
 	contents := js.Global().Call("readFile", path)
-	return contents != js.Null(), false, nil
+	return !contents.IsNull(), false, nil
 }
 
 func openFile(path string) (io.ReadCloser, error) {
 	contents := js.Global().Call("readFile", path)
-	if contents == js.Null() {
+	if contents.IsNull() {
 		return nil, fmt.Errorf("error reading %s", path)
 	}
 	readCloser := ioutil.NopCloser(bytes.NewReader([]byte(contents.String())))
