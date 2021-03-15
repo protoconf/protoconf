@@ -12,13 +12,11 @@ func TestGenerate(t *testing.T) {
 	dir, err := ioutil.TempDir("", "generate_test")
 	assert.NoError(t, err)
 	provider := "google"
-	version := "3.13.0"
+	version := "3.59.0"
 	err = DownloadPlugin(dir, provider, version)
-	// err = DownloadPlugin(dir, "random", "2.2.1")
 	assert.NoError(t, err)
 	dst, err := ioutil.TempDir("", "generate_dest")
 	assert.NoError(t, err)
-	dst = "/tmp/importers/terraform"
 	g := NewGenerator(dir, dst)
 	err = g.PopulateProviders()
 	assert.NoError(t, err)

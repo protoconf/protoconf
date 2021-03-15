@@ -9,15 +9,16 @@ go_binary(
 go_binary(
     name = "protoconf-darwin",
     embed = [":go_default_library"],
+    goarch = "amd64",
     goos = "darwin",
     pure = "on",
-    goarch = "amd64",
     visibility = ["//visibility:public"],
 )
 
 go_binary(
     name = "protoconf-linux",
     embed = [":go_default_library"],
+    goarch = "amd64",
     goos = "linux",
     pure = "on",
     visibility = ["//visibility:public"],
@@ -26,6 +27,7 @@ go_binary(
 go_binary(
     name = "protoconf-windows",
     embed = [":go_default_library"],
+    goarch = "amd64",
     goos = "windows",
     pure = "on",
     visibility = ["//visibility:public"],
