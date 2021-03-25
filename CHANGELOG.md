@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.2-rc3.0](https://github.com/protoconf/protoconf/compare/v0.1.2-rc2.0...v0.1.2-rc3.0) (2021-03-25)
+
+
+### Bug Fixes
+
+* **exec:** allow set protoconf agent addr ([#66](https://github.com/protoconf/protoconf/issues/66)) ([49a662c](https://github.com/protoconf/protoconf/commit/49a662cfe9d299b39d91670f48f602ba08559596))
+
 ### [0.1.2-rc2.0](https://github.com/protoconf/protoconf/compare/v0.1.2-rc1.0...v0.1.2-rc2.0) (2020-11-01)
 
 
