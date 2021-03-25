@@ -9,7 +9,7 @@ import (
 )
 
 func TestExecutor(t *testing.T) {
-	e, err := NewExecutor("executor/test", "/Users/smintz/git/protoconf/protocorp/src")
+	e, err := NewExecutor("executor/test", "/Users/smintz/git/protoconf/protocorp/src", "localhost:4300")
 	assert.NoError(t, err, "failed to create executor")
 	defer e.Close()
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
