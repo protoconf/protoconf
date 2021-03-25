@@ -39,13 +39,13 @@ type Executor struct {
 }
 
 // NewExecutor returns an Executor instance
-func NewExecutor(path string, protosDir string) (*Executor, error) {
+func NewExecutor(path, protosDir, protoconfAgentAddr string) (*Executor, error) {
 	logger, err := zap.NewDevelopment()
 	if err != nil {
 		return nil, err
 	}
 	logger = logger.With(zap.String("path", path))
-	client, conn := getProtoconfClient()
+	client, conn := getProtoconfClient(protoconfAgentAddr)
 	executor := &Executor{
 		path:      path,
 		client:    client,
@@ -149,8 +149,7 @@ func (e *Executor) Close() {
 	e.conn.Close()
 }
 
-func getProtoconfClient() (pc.ProtoconfServiceClient, *grpc.ClientConn) {
-	address := "localhost:4300"
+func getProtoconfClient(address string) (pc.ProtoconfServiceClient, *grpc.ClientConn) {
 	conn, err := grpc.Dial(address, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Error connecting to server address=%s err=%v", address, err)

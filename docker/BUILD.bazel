@@ -51,3 +51,20 @@ container_push(
     tag = "{STABLE_SCM_RELEASE}",
     visibility = ["//visibility:public"],
 )
+
+go_image(
+    name = "exec_image",
+    binary = "//cmd/exec",
+    goarch = "amd64",
+    goos = "linux",
+)
+
+container_push(
+    name = "exec_release",
+    format = "Docker",
+    image = ":exec_image",
+    registry = "index.docker.io",
+    repository = "protoconf/exec",
+    tag = "{STABLE_SCM_RELEASE}",
+    visibility = ["//visibility:public"],
+)
