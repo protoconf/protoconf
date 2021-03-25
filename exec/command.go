@@ -23,8 +23,9 @@ var ui = &cli.BasicUi{
 }
 
 type cliConfig struct {
-	protoconfPath string
-	protosDir     string
+	protoconfPath      string
+	protosDir          string
+	protoconfAgentAddr string
 }
 
 func newFlagSet() (*flag.FlagSet, *cliConfig) {
@@ -37,6 +38,7 @@ func newFlagSet() (*flag.FlagSet, *cliConfig) {
 	config := &cliConfig{}
 	flags.StringVar(&config.protoconfPath, "config", "", "The path of the protoconf config.")
 	flags.StringVar(&config.protosDir, "proto_dir", "", "The path on disk where the .proto files could be found.")
+	flags.StringVar(&config.protoconfAgentAddr, "protoconf_agent_addr", "localhost:4300", "The address to call on the protoconf agent.")
 
 	return flags, config
 }
@@ -44,7 +46,7 @@ func newFlagSet() (*flag.FlagSet, *cliConfig) {
 func (c *cliCommand) Run(args []string) int {
 	flags, config := newFlagSet()
 	flags.Parse(args)
-	e, err := NewExecutor(config.protoconfPath, config.protosDir)
+	e, err := NewExecutor(config.protoconfPath, config.protosDir, config.protoconfAgentAddr)
 	if err != nil {
 		return 1
 	}
