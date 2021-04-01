@@ -2,12 +2,14 @@ package proto
 
 import (
 	"fmt"
+	"hash/fnv"
 	"sort"
 
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/dynamic"
+	"github.com/pkg/errors"
 	"go.starlark.net/starlark"
 	"go.starlark.net/syntax"
 )
@@ -74,7 +76,17 @@ func (msg *starProtoMessage) CompareSameType(op syntax.Token, y starlark.Value, 
 }
 
 func (msg *starProtoMessage) Hash() (uint32, error) {
-	return 0, fmt.Errorf("unhashable type: %s", msg.Type())
+	h := fnv.New32()
+	b, err := msg.msg.Marshal()
+	if err != nil {
+		return 0, errors.Wrap(err, "failed to hash")
+	}
+	_, err = h.Write(b)
+	if err != nil {
+		return 0, errors.Wrap(err, "failed to hash")
+	}
+
+	return h.Sum32(), nil
 }
 
 func (msg *starProtoMessage) checkMutable(verb string) error {
