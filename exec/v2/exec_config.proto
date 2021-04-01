@@ -1,0 +1,288 @@
+syntax = "proto3";
+
+package protoconf.exec.v2;
+
+import "google/protobuf/duration.proto";
+option go_package = "github.com/protoconf/protoconf/exec/v2";
+
+// ExecConfig is the root configuration object for the protoconf executor.
+message ExecConfig {
+    // multiple `WatcherConfig`s can be set to watch different
+    // protoconf configs and initiate their action pipelines.
+    repeated WatcherConfig configs = 1;
+}
+
+// Serializer is used to configure the way to serialize the output
+// of the config been watched.
+message Serializer {
+    oneof result {
+        JsonSerializer json = 10;
+        ProtobufSerializer pb = 11;
+        ProtobufTextSerializer pb_text = 12;
+        YamlSerializer yaml = 13;
+        TomlSerializer toml = 14;
+        IniSerializer ini = 15;
+        TemplateSerializer template = 16;
+    }
+    message JsonSerializer {
+        bool orig_name = 1;
+        bool enums_as_ints = 2;
+        bool emit_defaults = 3;
+        string indent = 4;
+    }
+    message ProtobufSerializer {}
+    message ProtobufTextSerializer {}
+    message YamlSerializer {}
+    message TomlSerializer {}
+    message IniSerializer {}
+    message TemplateSerializer {}
+}
+
+// WatcherConfig 
+message WatcherConfig {
+    // path sets the config path to be watched within protoconf
+    string path = 1;
+
+    // proto_files defines the .proto files to be used in order to dynamically
+    // parse the protobuf message from protoconf.
+    // if a file is being included from another .proto file, it doesn't have
+    // to be added here. Add additional .proto files only if being used by an
+    // unincluded `Any` type.
+    repeated string proto_files = 2;
+    
+    // actions to be taken when a config is being changed. Actions run in parallel.
+    repeated Action actions = 3;
+}
+
+// ActionTypeWriteToFile allows you to write the content of the config
+// from WatcherConfig to the local disk.
+message ActionTypeWriteToFile {
+    // path sets the location for the file to be written.
+    string path = 1;
+
+    // mode sets the unix mode of the file, it recieves either the numerical ("0644")
+    // or the alphabet ("rw-r--r--") styles.
+    // Default: "0644".
+    string mode = 2;
+
+    // owner of the file
+    // Default: same user as the process runner.
+    string owner = 3;
+
+    // group ownership for the file.
+    string group = 4;
+
+    // header is a string to be prefixed before the serialized output
+    string header = 5;
+
+    // footer is a string to be postfixed after the serialized output
+    string footer = 6;
+
+    // serializer to be used for this config.
+    Serializer serializer = 7;
+}
+
+// ActionTypeHttp can be used when you want to make an http call.
+message ActionTypeHttp {
+    // uri for the http action.
+    // can use `consul-template` to dynamically format this value.
+    string uri = 1;
+
+    // method to be used for the http action.
+    Method method = 2;
+
+    // headers to be added to the command.
+    // can use `consul-template` to dynamically format.
+    map<string, string> headers = 3;
+
+    // success_codes to be considered as successful responses.
+    // If the return code is not in this list, the action will be considered
+    // failed.
+    repeated uint32 success_codes = 4;
+
+    // content is used for the body of the http request when method is
+    // PUT or POST
+    oneof content {
+        // serializer is used when the content of the http request 
+        // should be the content of WatcherConfig object. 
+        Serializer serializer = 16;
+
+        // from_action_output should be used when the content for
+        // the http request should be an output from another action.
+        string from_action_outout = 17;
+    }
+
+    enum Method {
+        GET = 0;
+        POST = 1;
+        PUT = 2;
+        DELETE = 3;
+    }
+}
+
+// ActionTypeSignal send a POSIX signal to a pid set in a pid_file.
+message ActionTypeSignal {
+    // signal to be send to the process.
+    Signal signal = 1;
+
+    // pid_file to read the pid from.
+    string pid_file = 2;
+
+    enum Signal {
+        NONE          =  0;
+        SIGHUP        =  1;
+        SIGINT        =  2;
+        SIGQUIT       =  3;
+        SIGILL        =  4;
+        SIGTRAP       =  5;
+        SIGABRT       =  6;
+        SIGBUS        =  7;
+        SIGFPE        =  8;
+        SIGKILL       =  9;
+        SIGUSR1       = 10;
+        SIGSEGV       = 11;
+        SIGUSR2       = 12;
+        SIGPIPE       = 13;
+        SIGALRM       = 14;
+        SIGTERM       = 15;
+        SIGSTKFLT     = 16;
+        SIGCHLD       = 17;
+        SIGCONT       = 18;
+        SIGSTOP       = 19;
+        SIGTSTP       = 20;
+        SIGTTIN       = 21;
+        SIGTTOU       = 22;
+        SIGURG        = 23;
+        SIGXCPU       = 24;
+        SIGXFSZ       = 25;
+        SIGVTALRM     = 26;
+        SIGPROF       = 27;
+        SIGWINCH      = 28;
+        SIGIO         = 29;
+        SIGPWR        = 30;
+        SIGSYS        = 31;
+    }
+}
+
+// ActionTypeRunCommand runs a command
+message ActionTypeRunCommand {
+    // command name
+    string command = 1;
+
+    // args are arguments to pass for the command
+    repeated string args = 2;
+
+    // envs sets additional enviroment varialbles to the execution.
+    map<string,string> env = 3;
+
+    // cwd is the working directory to run the command from
+    string cwd = 4;
+}
+
+// ActionTypeSpawnCommand spawn a command and doesn't wait for it to complete.
+message ActionTypeSpawnCommand {
+    // command to run.
+    ActionTypeRunCommand command = 1;
+
+    // pid_file stores the pid of the process 
+    string pid_file = 2;
+
+    // respawn will make the executor rerspawn the action if died.
+    bool respawn = 3;
+
+    // If command is already running and nothing changed, the state of the action
+    // will be a failure.
+    bool fail_if_already_running = 4;
+}
+
+// LockBackend is used to set the K/V store to be used for locking and leadership mechanism.
+// The LockBackend can be set globaly for an executor instance.
+message LockBackend {
+    // Sets the software type used for this backend
+    BackendType type = 1;
+
+    // A connection string to be used for the lock backend
+    string address = 2;
+    
+    enum BackendType {
+        CONSUL = 0;
+        ETCD = 1;
+        ZOOKEEPER = 2;
+    }
+}
+
+// ActionTypeLock will allow you to aquire a lock on a specific key
+// the pipeline will hold until the lock is aquired.
+message ActionTypeLock {
+    // path of the key to aquire a lock on.
+    string key = 1;
+
+    // Specific options for this lock.
+    Options options = 2;
+
+    // Overrides the global lock backend
+    LockBackend backend = 10;
+
+    message Options {
+        string value = 1;
+        google.protobuf.Duration ttl = 2;
+    }
+}
+
+// ActionTypeUnlock will release the lock of the specific key
+// so others can aquire it.
+message ActionTypeUnlock {
+    // path of the key to unlock.
+    string key = 1;
+
+    // Overrides the global lock backend
+    LockBackend backend = 10;
+}
+
+// ActionTypeAquireLeadership will 
+message ActionTypeAcquireLeadership {
+    string key = 1;
+    string candidate_id = 2;
+
+    LockBackend backend = 10;
+}
+
+message ActionTypeResignLeadership {
+    string key = 1;
+    string candidate_id = 2;
+
+    LockBackend backend = 10;
+}
+
+
+message Retry {
+    uint32 attempts = 1;
+    google.protobuf.Duration delay = 2;
+}
+
+message Action {
+    string id = 1;
+    repeated string wait_for = 4;
+    string store_output = 5;
+    string store_errors = 6;
+    Retry retry = 7;
+
+    google.protobuf.Duration wait = 20;
+    google.protobuf.Duration splay = 21;
+    google.protobuf.Duration timeout = 22;
+
+    oneof action {
+        ActionTypeWriteToFile file = 30;
+        ActionTypeHttp http = 31;
+        ActionTypeRunCommand command = 32;
+        ActionTypeSpawnCommand spawn = 33;
+        ActionTypeSignal signal = 34;
+        ActionTypeLock lock = 35;
+        ActionTypeUnlock unlock = 36;
+        ActionTypeAcquireLeadership leadership = 37;
+        ActionTypeResignLeadership resign = 38;
+    }
+    repeated Action then = 70;
+    repeated Action on_error = 71;
+    repeated Action rollback = 72;
+}
