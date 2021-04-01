@@ -54,6 +54,9 @@ func (p *ProviderImporter) schemaToProtoMessage(name string, schema providers.Sc
 	for _, field := range metaMsg.GetChildren() {
 		f := metaMsg.GetField(field.GetName())
 		fBuilder := builder.NewField(f.GetName(), f.GetType())
+		if f.IsRepeated() {
+			fBuilder.SetRepeated()
+		}
 		m.AddField(fBuilder)
 	}
 	fieldLifecycle := builder.NewField("lifecycle", builder.FieldTypeMessage(metaFile.GetMessage("Lifecycle")))

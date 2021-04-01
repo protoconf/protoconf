@@ -15,7 +15,7 @@ func MetaFile() *builder.FileBuilder {
 	metaMsg := builder.NewMessage("MetaFields")
 
 	// depends_on
-	fieldDependsOn := builder.NewMapField("depends_on", builder.FieldTypeString(), builder.FieldTypeString()).SetJsonName("depends_on")
+	fieldDependsOn := builder.NewField("depends_on", builder.FieldTypeString()).SetRepeated().SetJsonName("depends_on")
 	metaMsg.AddField(fieldDependsOn)
 
 	// count
