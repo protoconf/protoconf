@@ -27,16 +27,18 @@ func NewCompiler(protoconfRoot string, verboseLogging bool) *Compiler {
 	resolve.AllowRecursion = true      // allow while statements and recursive functions
 
 	return &Compiler{
-		protoconfRoot:  protoconfRoot,
-		verboseLogging: verboseLogging,
-		disableWriting: false,
+		protoconfRoot:    protoconfRoot,
+		verboseLogging:   verboseLogging,
+		disableWriting:   false,
+		protoFilesLoaded: make(map[string]interface{}),
 	}
 }
 
 type Compiler struct {
-	protoconfRoot  string
-	verboseLogging bool
-	disableWriting bool
+	protoconfRoot    string
+	verboseLogging   bool
+	disableWriting   bool
+	protoFilesLoaded map[string]interface{}
 }
 
 func (c *Compiler) DisableWriting() error {
@@ -113,7 +115,13 @@ func (c *Compiler) writeConfig(message *dynamic.Message, filename string) error 
 		Value:     any,
 	}
 
-	anyResolver, err := utils.LoadAnyResolver(filepath.Join(c.protoconfRoot, "src"), protoconfValue.ProtoFile)
+	var protoFilesToLoad []string
+	for k := range c.protoFilesLoaded {
+		if len(k) > 0 {
+		protoFilesToLoad = append(protoFilesToLoad, strings.TrimPrefix(k, "/"))
+		}
+	}
+	anyResolver, err := utils.LoadAnyResolver(filepath.Join(c.protoconfRoot, "src"), protoFilesToLoad...)
 	if err != nil {
 		return err
 	}
@@ -158,6 +166,9 @@ func (c *Compiler) load(filename string) (*config, error) {
 
 	loader := c.GetLoader()
 	locals, validators, err := loader.loadConfig(filepath.ToSlash(filename))
+	for _, f := range *loader.protoFilesLoaded {
+		c.protoFilesLoaded[f] = true
+	}
 	if err != nil {
 		return nil, err
 	}
