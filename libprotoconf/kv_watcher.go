@@ -4,13 +4,13 @@ import (
 	"encoding/base64"
 	"fmt"
 
+	"github.com/abronan/valkeyrie"
+	"github.com/abronan/valkeyrie/store"
+	"github.com/abronan/valkeyrie/store/consul"
+	etcd "github.com/abronan/valkeyrie/store/etcd/v2"
+	"github.com/abronan/valkeyrie/store/zookeeper"
 	"github.com/golang/protobuf/proto"
 	protoconfvalue "github.com/protoconf/protoconf/datatypes/proto/v1/protoconfvalue"
-	"github.com/protoconf/protoconf/libkv"
-	"github.com/protoconf/protoconf/libkv/store"
-	"github.com/protoconf/protoconf/libkv/store/consul"
-	"github.com/protoconf/protoconf/libkv/store/etcd"
-	"github.com/protoconf/protoconf/libkv/store/zookeeper"
 )
 
 type KVStore int
@@ -38,7 +38,7 @@ func NewKVWatcher(kvType KVStore, address string, prefix string) (Watcher, error
 		return nil, fmt.Errorf("unknown kvType=%d", kvType)
 	}
 
-	store, err := libkv.NewStore(backend, []string{address}, nil)
+	store, err := valkeyrie.NewStore(backend, []string{address}, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -70,7 +70,7 @@ func (w *libkvWatcher) Watch(pathNoPrefix string, stopCh <-chan struct{}) (<-cha
 			close(watchCh)
 		}()
 
-		kVWatchCh, err := w.store.Watch(path, kVStopCh)
+		kVWatchCh, err := w.store.Watch(path, kVStopCh, &store.ReadOptions{})
 		if err != nil {
 			watchCh <- Result{nil, err}
 			return
