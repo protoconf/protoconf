@@ -9,15 +9,15 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/abronan/valkeyrie"
+	"github.com/abronan/valkeyrie/store"
+	"github.com/abronan/valkeyrie/store/consul"
+	"github.com/abronan/valkeyrie/store/etcd/v2"
+	"github.com/abronan/valkeyrie/store/zookeeper"
 	"github.com/golang/protobuf/proto"
 	"github.com/mitchellh/cli"
 	"github.com/protoconf/protoconf/command"
 	"github.com/protoconf/protoconf/consts"
-	"github.com/protoconf/protoconf/libkv"
-	"github.com/protoconf/protoconf/libkv/store"
-	"github.com/protoconf/protoconf/libkv/store/consul"
-	"github.com/protoconf/protoconf/libkv/store/etcd"
-	"github.com/protoconf/protoconf/libkv/store/zookeeper"
 	"github.com/protoconf/protoconf/utils"
 )
 
@@ -56,7 +56,7 @@ func (c *cliCommand) Run(args []string) int {
 	var err error
 	if kVConfig.Store == command.KVStoreConsul {
 		consul.Register()
-		kvStore, err = libkv.NewStore(store.CONSUL, []string{kVConfig.Address}, nil)
+		kvStore, err = valkeyrie.NewStore(store.CONSUL, []string{kVConfig.Address}, nil)
 	} else if kVConfig.Store == command.KVStoreEtcd {
 		etcd.Register()
 		var address string
@@ -65,7 +65,7 @@ func (c *cliCommand) Run(args []string) int {
 		} else {
 			address = consts.EtcdDefaultAddress
 		}
-		kvStore, err = libkv.NewStore(store.ETCD, []string{address}, nil)
+		kvStore, err = valkeyrie.NewStore(store.ETCD, []string{address}, nil)
 	} else if kVConfig.Store == command.KVStoreZookeeper {
 		zookeeper.Register()
 		var address string
@@ -74,7 +74,7 @@ func (c *cliCommand) Run(args []string) int {
 		} else {
 			address = consts.ZookeeperDefaultAddress
 		}
-		kvStore, err = libkv.NewStore(store.ZK, []string{address}, nil)
+		kvStore, err = valkeyrie.NewStore(store.ZK, []string{address}, nil)
 	} else {
 		log.Fatalf("Unknown key-value store %s", kVConfig.Store)
 	}

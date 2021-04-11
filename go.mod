@@ -4,6 +4,7 @@ go 1.13
 
 require (
 	cloud.google.com/go/pubsub v1.0.1 // indirect
+	github.com/abronan/valkeyrie v0.1.0
 	github.com/anaskhan96/soup v1.1.1 // indirect
 	github.com/apex/log v1.1.2 // indirect
 	github.com/bazelbuild/bazel-gazelle v0.20.0 // indirect
@@ -36,19 +37,19 @@ require (
 	github.com/olekukonko/tablewriter v0.0.4 // indirect
 	github.com/pkg/errors v0.8.1
 	github.com/pkg/sftp v1.11.0 // indirect
-	github.com/prometheus/client_golang v0.9.3
+	github.com/prometheus/client_golang v1.1.0
 	github.com/qri-io/dataset v0.1.1 // indirect
 	github.com/qri-io/starlib v0.4.2
 	github.com/rs/zerolog v1.18.0 // indirect
 	github.com/samuel/go-zookeeper v0.0.0-20190923202752-2cc03de413da
 	github.com/stretchr/testify v1.5.1
 	github.com/zclconf/go-cty v1.2.0
-	go.etcd.io/bbolt v1.3.3
+	go.etcd.io/bbolt v1.3.4
 	go.etcd.io/etcd v3.3.18+incompatible
 	go.opencensus.io v0.22.3 // indirect
 	go.pedge.io/lion v0.0.0-20190619200210-304b2f426641 // indirect
 	go.starlark.net v0.0.0-20200330013621-be5394c419b6
-	go.uber.org/zap v1.9.1
+	go.uber.org/zap v1.10.0
 	golang.org/x/exp v0.0.0-20200224162631-6cc2880d07d6 // indirect
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b // indirect
 	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e
@@ -75,4 +76,5 @@ replace (
 	github.com/golangci/lint-1 v0.0.0-20180610141402-ee948d087217 => github.com/golangci/lint-1 v0.0.0-20190420132249-ee948d087217
 	google.golang.org/genproto v0.0.0-20170818100345-ee236bd376b0 => google.golang.org/genproto v0.0.0-20170818010345-ee236bd376b0
 	mvdan.cc/unparam v0.0.0-20190124213536-fbb59629db34 => mvdan.cc/unparam v0.0.0-20190209190245-fbb59629db34
+  github.com/Quasilyte/go-consistent v0.0.0-20181230194409-8f8379e70f99 => github.com/quasilyte/go-consistent v0.0.0-20190521200055-c6f3937de18c
 )
