@@ -2,6 +2,7 @@ package compiler
 
 import (
 	"bytes"
+	"context"
 	"flag"
 	"fmt"
 	"log"
@@ -14,6 +15,7 @@ import (
 	"github.com/protoconf/protoconf/consts"
 	"go.starlark.net/repl"
 	"go.starlark.net/starlark"
+	"golang.org/x/sync/errgroup"
 )
 
 type cliCommand struct{}
@@ -67,12 +69,22 @@ func (c *cliCommand) Run(args []string) int {
 		configs = flags.Args()[1:]
 	}
 
+	g, _ := errgroup.WithContext(context.Background())
+
 	for _, config := range configs {
 		filename := strings.TrimSpace(config)
-		if err := compiler.CompileFile(filename); err != nil {
-			log.Printf("Error compiling config %s, err=%s", filename, err)
-			return 1
-		}
+		g.Go(func() error {
+			err := compiler.CompileFile(filename)
+			if err != nil {
+				log.Printf("Error compiling config %s, err=%s", filename, err)
+			}
+			return err
+		})
+	}
+	err := g.Wait()
+	if err != nil {
+		log.Println(err)
+		return 1
 	}
 
 	return 0

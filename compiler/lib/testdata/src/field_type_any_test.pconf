@@ -1,4 +1,8 @@
 load("//test.proto", "TestMessage", "MessageWithEnum")
 
+
 def main():
-    return TestMessage(any_field=MessageWithEnum())
+    return TestMessage(
+        any_field=TestMessage(stringValue="test_any"),
+        any_repeated=[TestMessage(stringValue="test_any_repeated")],
+    )

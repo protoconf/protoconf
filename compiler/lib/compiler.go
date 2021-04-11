@@ -27,16 +27,20 @@ func NewCompiler(protoconfRoot string, verboseLogging bool) *Compiler {
 	resolve.AllowRecursion = true      // allow while statements and recursive functions
 
 	return &Compiler{
-		protoconfRoot:  protoconfRoot,
-		verboseLogging: verboseLogging,
-		disableWriting: false,
+		protoconfRoot:    protoconfRoot,
+		verboseLogging:   verboseLogging,
+		disableWriting:   false,
+		protoFilesLoaded: make(map[string]interface{}),
+		MaterializedDir:  filepath.Join(protoconfRoot, consts.CompiledConfigPath),
 	}
 }
 
 type Compiler struct {
-	protoconfRoot  string
-	verboseLogging bool
-	disableWriting bool
+	protoconfRoot    string
+	verboseLogging   bool
+	disableWriting   bool
+	protoFilesLoaded map[string]interface{}
+	MaterializedDir  string
 }
 
 func (c *Compiler) DisableWriting() error {
@@ -66,7 +70,7 @@ func (c *Compiler) CompileFile(filename string) error {
 			return fmt.Errorf("`main' returned something that's not a dict, got: %s", mainOutput.Type())
 		}
 
-		outputDir := filepath.Join(c.protoconfRoot, consts.CompiledConfigPath, strings.TrimSuffix(filename, consts.MultiConfigExtension))
+		outputDir := filepath.Join(c.MaterializedDir, strings.TrimSuffix(filename, consts.MultiConfigExtension))
 		for _, item := range starDict.Items() {
 			key, ok := item[0].(starlark.String)
 			if !ok {
@@ -83,7 +87,7 @@ func (c *Compiler) CompileFile(filename string) error {
 		if !ok {
 			return fmt.Errorf("`main' returned something that's not a protobuf, got: %s", mainOutput.Type())
 		}
-		outputFile := filepath.Join(c.protoconfRoot, consts.CompiledConfigPath, strings.TrimSuffix(filename, consts.ConfigExtension)+consts.CompiledConfigExtension)
+		outputFile := filepath.Join(c.MaterializedDir, strings.TrimSuffix(filename, consts.ConfigExtension)+consts.CompiledConfigExtension)
 		configs[outputFile] = message
 	}
 
@@ -113,7 +117,13 @@ func (c *Compiler) writeConfig(message *dynamic.Message, filename string) error 
 		Value:     any,
 	}
 
-	anyResolver, err := utils.LoadAnyResolver(filepath.Join(c.protoconfRoot, "src"), protoconfValue.ProtoFile)
+	var protoFilesToLoad []string
+	for k := range c.protoFilesLoaded {
+		if len(k) > 0 {
+			protoFilesToLoad = append(protoFilesToLoad, strings.TrimPrefix(k, "/"))
+		}
+	}
+	anyResolver, err := utils.LoadAnyResolver(filepath.Join(c.protoconfRoot, "src"), protoFilesToLoad...)
 	if err != nil {
 		return err
 	}
@@ -158,6 +168,9 @@ func (c *Compiler) load(filename string) (*config, error) {
 
 	loader := c.GetLoader()
 	locals, validators, err := loader.loadConfig(filepath.ToSlash(filename))
+	for _, f := range *loader.protoFilesLoaded {
+		c.protoFilesLoaded[f] = true
+	}
 	if err != nil {
 		return nil, err
 	}

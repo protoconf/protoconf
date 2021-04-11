@@ -151,16 +151,29 @@ func (msg *starProtoMessage) SetField(name string, star starlark.Value) error {
 
 	e := msg.msg.TrySetField(field, val)
 	if e != nil {
-		// field type might be ptypes.Any
-		v, ok := val.(proto.Message)
-		if !ok {
-			return fmt.Errorf("%v does not implement proto.Message", val)
+		switch v := val.(type) {
+		case []interface{}:
+			for _, x := range v {
+				if rv, ok := x.(proto.Message); ok {
+					m, err := ptypes.MarshalAny(rv)
+					if err != nil {
+						return err
+
+					}
+					err = msg.msg.TryAddRepeatedField(field, m)
+					if err != nil {
+						return errors.Wrapf(err, "failed to add repetated google.protobuf.Any %v (%T)", m, m)
+					}
+				}
+			}
+			return nil
+		case *dynamic.Message:
+			m, err := ptypes.MarshalAny(v)
+			if err != nil {
+				return err
+			}
+			return msg.msg.TrySetField(field, m)
 		}
-		m, err := ptypes.MarshalAny(v)
-		if err != nil {
-			return err
-		}
-		return msg.msg.TrySetField(field, m)
 	}
 	return e
 }
