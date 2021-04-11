@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"io/ioutil"
 	"testing"
 
 	assert "github.com/stretchr/testify/require"
@@ -8,7 +9,12 @@ import (
 
 func Test(t *testing.T) {
 	c := NewCompiler("testdata", true)
-	c.DisableWriting()
+	dir, err := ioutil.TempDir("", "compiler_output")
+	if err != nil {
+		t.Fatal("cannot create tmpdir", err)
+	}
+	t.Log("Test results written to", dir)
+	c.MaterializedDir = dir
 	assert.NoError(t, c.CompileFile("test.pconf"))
 	assert.Error(t, c.CompileFile("validator_test.pconf"))
 	assert.Error(t, c.CompileFile("validator_repeated_test.pconf"))
