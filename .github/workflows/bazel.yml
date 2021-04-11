@@ -9,38 +9,15 @@ jobs:
     name: run
     runs-on: ubuntu-latest
     container: mattinsler/bazelisk:latest
-    services:
-      consul:
-        image: consul:latest
-        ports:
-          - 8500
-      zookeeper:
-        image: zookeeper:latest
-        ports:
-          - 2181
-      etcd:
-        image: quay.io/coreos/etcd:latest
-        env:
-          ETCD_LISTEN_CLIENT_URLS: http://0.0.0.0:2379
-          ETCD_ADVERTISE_CLIENT_URLS: http://0.0.0.0:2379
-        ports:
-          - 2379
     steps:
       - uses: actions/checkout@v2
-      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
-        with:
-          version: '290.0.1'
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          export_default_credentials: true
-      - run: gcloud info
-      - name: Create certs
+      - name: Write BuildBuddy Certs
         run: |
           echo "${{ secrets.BUILDBUDDY_ORG_CERT }}">buildbuddy-cert.pem
           echo "${{ secrets.BUILDBUDDY_ORG_KEY }}">buildbuddy-key.pem
       - name: build all
         run: |
-          bazel build --config bb //cmd/protoconf
+          bazel build --config bb //...
       - name: test all
         run: |
           bazel coverage --config bb //...
@@ -53,18 +30,18 @@ jobs:
       - uses: codecov/codecov-action@v1
         with:
           file: coverage.txt
-      - uses: actions/upload-artifact@v2
-        name: upload protoconf-darwin-amd64
-        with:
-          name: protoconf-darwin-amd64
-          path: bazel-bin/cmd/protoconf/darwin_amd64_pure_stripped/protoconf-darwin.runfiles/protoconf/cmd/protoconf/darwin_amd64_pure_stripped/protoconf-darwin
-      - uses: actions/upload-artifact@v2
-        name: upload protoconf-linux-amd64
-        with:
-          name: protoconf-linux-amd64
-          path: bazel-bin/cmd/protoconf/linux_amd64_pure_stripped/protoconf-linux.runfiles/protoconf/cmd/protoconf/linux_amd64_pure_stripped/protoconf-linux
-      - uses: actions/upload-artifact@v2
-        name: upload protoconf-windows-amd64
-        with:
-          name: protoconf-windows-amd64
-          path: bazel-bin/cmd/protoconf/windows_amd64_pure_stripped/protoconf-windows.exe.runfiles/protoconf/cmd/protoconf/windows_amd64_pure_stripped/protoconf-windows.exe
+      # - uses: actions/upload-artifact@v2
+      #   name: upload protoconf-darwin-amd64
+      #   with:
+      #     name: protoconf-darwin-amd64
+      #     path: bazel-bin/cmd/protoconf/darwin_amd64_pure_stripped/protoconf-darwin.runfiles/protoconf/cmd/protoconf/darwin_amd64_pure_stripped/protoconf-darwin
+      # - uses: actions/upload-artifact@v2
+      #   name: upload protoconf-linux-amd64
+      #   with:
+      #     name: protoconf-linux-amd64
+      #     path: bazel-bin/cmd/protoconf/linux_amd64_pure_stripped/protoconf-linux.runfiles/protoconf/cmd/protoconf/linux_amd64_pure_stripped/protoconf-linux
+      # - uses: actions/upload-artifact@v2
+      #   name: upload protoconf-windows-amd64
+      #   with:
+      #     name: protoconf-windows-amd64
+      #     path: bazel-bin/cmd/protoconf/windows_amd64_pure_stripped/protoconf-windows.exe.runfiles/protoconf/cmd/protoconf/windows_amd64_pure_stripped/protoconf-windows.exe
