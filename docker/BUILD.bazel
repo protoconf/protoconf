@@ -16,6 +16,7 @@ container_push(
     repository = "protoconf/protoconf",
     tag = "{STABLE_SCM_RELEASE}",
     visibility = ["//visibility:public"],
+    tags = ["manual"],
 )
 
 go_image(
@@ -33,6 +34,7 @@ container_push(
     repository = "protoconf/agent",
     tag = "{STABLE_SCM_RELEASE}",
     visibility = ["//visibility:public"],
+    tags = ["manual"],
 )
 
 go_image(
@@ -50,6 +52,7 @@ container_push(
     repository = "protoconf/server",
     tag = "{STABLE_SCM_RELEASE}",
     visibility = ["//visibility:public"],
+    tags = ["manual"],
 )
 
 go_image(
@@ -67,4 +70,5 @@ container_push(
     repository = "protoconf/exec",
     tag = "{STABLE_SCM_RELEASE}",
     visibility = ["//visibility:public"],
+    tags = ["manual"],
 )

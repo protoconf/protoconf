@@ -1,7 +1,23 @@
-build --stamp --workspace_status_command=tools/get_workspace_status
+build --stamp --workspace_status_command=$(pwd)/tools/get_workspace_status
 build --copt=-DGRPC_BAZEL_BUILD
 test --test_output=errors
 test --test_tmpdir=/tmp
 
 build:github --remote_cache=https://storage.googleapis.com/protoconf-bazel-cache
 build:github --google_default_credentials
+
+build:remote --bes_results_url=https://app.buildbuddy.io/invocation/
+build:remote --bes_backend=grpcs://cloud.buildbuddy.io
+build:remote --remote_cache=grpcs://cloud.buildbuddy.io
+build:remote --remote_executor=grpcs://cloud.buildbuddy.io
+build:remote --remote_upload_local_results
+build:remote --host_platform=@buildbuddy_toolchain//:platform
+build:remote --platforms=@buildbuddy_toolchain//:platform
+build:remote --crosstool_top=@buildbuddy_toolchain//:toolchain
+build:remote --jobs=100
+
+build:bb --config=remote
+build:bb --tls_client_certificate=buildbuddy-cert.pem
+build:bb --tls_client_key=buildbuddy-key.pem
+build:bb --build_metadata=ROLE=CI
+build:bb --build_metadata=VISIBILITY=PUBLIC

@@ -10,4 +10,5 @@ go_binary(
     pure = "on",
     visibility = ["//visibility:public"],
     deps = ["//compiler/lib:go_default_library"],
+    tags = ["manual"],
 )
