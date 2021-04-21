@@ -6,18 +6,34 @@ test --test_tmpdir=/tmp
 build:github --remote_cache=https://storage.googleapis.com/protoconf-bazel-cache
 build:github --google_default_credentials
 
-build:remote --bes_results_url=https://app.buildbuddy.io/invocation/
-build:remote --bes_backend=grpcs://cloud.buildbuddy.io
-build:remote --remote_cache=grpcs://cloud.buildbuddy.io
-build:remote --remote_executor=grpcs://cloud.buildbuddy.io
-build:remote --remote_upload_local_results
-build:remote --host_platform=@buildbuddy_toolchain//:platform
-build:remote --platforms=@buildbuddy_toolchain//:platform
-build:remote --crosstool_top=@buildbuddy_toolchain//:toolchain
-build:remote --jobs=100
+build:bes --bes_results_url=https://app.buildbuddy.io/invocation/
+build:bes --bes_backend=grpcs://cloud.buildbuddy.io
 
-build:bb --config=remote
-build:bb --tls_client_certificate=buildbuddy-cert.pem
-build:bb --tls_client_key=buildbuddy-key.pem
-build:bb --build_metadata=ROLE=CI
-build:bb --build_metadata=VISIBILITY=PUBLIC
+build:cache_base --config=bes
+build:cache_base --remote_cache=grpcs://cloud.buildbuddy.io
+build:cache_base --remote_timeout=3600
+
+build:cache_full --config=cache_base
+build:cache_full --remote_upload_local_results
+
+build:cache_read_only --config=cache_base
+build:cache_read_only --noremote_upload_local_results
+
+build:cache_top_level --config=cache_base
+build:cache_top_lebel --remote_download_toplevel
+
+build:rbe --config=cache_full
+build:rbe --remote_executor=grpcs://cloud.buildbuddy.io
+build:rbe --host_platform=@buildbuddy_toolchain//:platform
+build:rbe --platforms=@buildbuddy_toolchain//:platform
+build:rbe --crosstool_top=@buildbuddy_toolchain//:toolchain
+build:rbe --jobs=100
+
+build:ci --config=rbe
+build:ci --tls_client_certificate=buildbuddy-cert.pem
+build:ci --tls_client_key=buildbuddy-key.pem
+build:ci --build_metadata=ROLE=CI
+build:ci --build_metadata=VISIBILITY=PUBLIC
+
+build:master --config=cache_read_only
+build:release --config=cache_read_only

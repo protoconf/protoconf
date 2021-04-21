@@ -34,25 +34,18 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_TOKEN }}
-      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
-        with:
-          version: "290.0.1"
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          export_default_credentials: true
-      - run: gcloud info
       - name: test all
         run: |
-          bazel test --config github //...
+          bazel test --config=release //...
       - name: build all
         run: |
-          bazel build --config github //...
+          bazel build --config=release //...
       - run: apt-get install -y unzip
       - name: Release to GitHub
         env:
           DEPLOY_GITHUB_TOKEN: ${{secrets.DEPLOY_GITHUB_TOKEN}}
         run: |
-          bazel run //:deploy-github -- ${{ github.sha }}
+          bazel run --config=release //:deploy-github -- ${{ github.sha }}
 
       - name: Release `protoconf` to Docker Hub
         run: |
