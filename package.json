@@ -1,5 +1,5 @@
 {
-  "version": "v0.1.1",
+  "version": "v0.1.2-rc4.0",
   "devDependencies": {
     "@bazel/bazel": "^2.0.0",
     "@bazel/ibazel": "^0.11.1",
