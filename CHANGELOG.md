@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.3](https://github.com/protoconf/protoconf/compare/v0.1.2-rc3.0...v0.1.3) (2021-04-25)
+
+
+### Features
+
+* **compiler:** make proto.Message hashable ([#68](https://github.com/protoconf/protoconf/issues/68)) ([9cd941a](https://github.com/protoconf/protoconf/commit/9cd941a6d25d2451307f8ed5023789a195425505))
+* **import:** add terraform std fields ([#65](https://github.com/protoconf/protoconf/issues/65)) ([16d83b2](https://github.com/protoconf/protoconf/commit/16d83b22e9a0f75c1c9f74caf82835357fb03c00))
+
+
+### Bug Fixes
+
+* master and release ci ([#72](https://github.com/protoconf/protoconf/issues/72)) ([4f9bfdd](https://github.com/protoconf/protoconf/commit/4f9bfdd08972affc519663b881c46cbc111d4701))
+* **compiler:** marshal repeated google.protobuf.Any ([#70](https://github.com/protoconf/protoconf/issues/70)) ([659f928](https://github.com/protoconf/protoconf/commit/659f9285d0d8c80865e576a3dbe2bbcb123497f6))
+
 ### [0.1.2-rc4.0](https://github.com/protoconf/protoconf/compare/v0.1.2-rc3.0...v0.1.2-rc4.0) (2021-04-21)
 
 
