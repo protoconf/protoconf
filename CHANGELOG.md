@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.3](https://github.com/protoconf/protoconf/compare/v0.1.2-rc4.0...v0.1.3) (2021-04-26)
+
 ### [0.1.2-rc4.0](https://github.com/protoconf/protoconf/compare/v0.1.2-rc3.0...v0.1.2-rc4.0) (2021-04-21)
 
 
