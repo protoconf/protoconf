@@ -14,7 +14,7 @@ import (
 	"github.com/jhump/protoreflect/desc/protoparse"
 	"github.com/jhump/protoreflect/dynamic"
 	"github.com/protoconf/protoconf/consts"
-	protoconfvalue "github.com/protoconf/protoconf/datatypes/proto/v1/protoconfvalue"
+	protoconfvalue "github.com/protoconf/protoconf/datatypes/proto/v1"
 	"github.com/protoconf/protoconf/protostdlib/secret"
 )
 

@@ -15,8 +15,8 @@ container_push(
     registry = "index.docker.io",
     repository = "protoconf/protoconf",
     tag = "{STABLE_SCM_RELEASE}",
-    visibility = ["//visibility:public"],
     tags = ["manual"],
+    visibility = ["//visibility:public"],
 )
 
 go_image(
@@ -33,8 +33,8 @@ container_push(
     registry = "index.docker.io",
     repository = "protoconf/agent",
     tag = "{STABLE_SCM_RELEASE}",
-    visibility = ["//visibility:public"],
     tags = ["manual"],
+    visibility = ["//visibility:public"],
 )
 
 go_image(
@@ -51,8 +51,8 @@ container_push(
     registry = "index.docker.io",
     repository = "protoconf/server",
     tag = "{STABLE_SCM_RELEASE}",
-    visibility = ["//visibility:public"],
     tags = ["manual"],
+    visibility = ["//visibility:public"],
 )
 
 go_image(
@@ -69,6 +69,6 @@ container_push(
     registry = "index.docker.io",
     repository = "protoconf/exec",
     tag = "{STABLE_SCM_RELEASE}",
-    visibility = ["//visibility:public"],
     tags = ["manual"],
+    visibility = ["//visibility:public"],
 )

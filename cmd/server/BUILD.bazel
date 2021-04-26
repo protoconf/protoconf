@@ -13,6 +13,6 @@ go_library(
     visibility = ["//visibility:private"],
     deps = [
         "//command:go_default_library",
-        "//server",
+        "//server:go_default_library",
     ],
 )

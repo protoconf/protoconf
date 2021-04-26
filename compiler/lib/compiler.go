@@ -12,7 +12,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/protoconf/protoconf/compiler/proto"
 	"github.com/protoconf/protoconf/consts"
-	pc "github.com/protoconf/protoconf/datatypes/proto/v1/protoconfvalue"
+	pc "github.com/protoconf/protoconf/datatypes/proto/v1"
 	"github.com/protoconf/protoconf/utils"
 	"go.starlark.net/resolve"
 	"go.starlark.net/starlark"

@@ -16,7 +16,7 @@ import (
 	"github.com/jhump/protoreflect/dynamic"
 	"github.com/protoconf/protoconf/compiler/proto"
 	"github.com/protoconf/protoconf/consts"
-	pc "github.com/protoconf/protoconf/datatypes/proto/v1/protoconfvalue"
+	pc "github.com/protoconf/protoconf/datatypes/proto/v1"
 	"github.com/qri-io/starlib"
 	"go.starlark.net/starlark"
 )
