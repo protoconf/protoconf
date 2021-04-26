@@ -1,11 +1,4 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
-load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
-
-go_library(
-    name = "server",
-    embed = ["go_default_library"],
-    visibility = ["//visibility:public"],
-)
 
 go_library(
     name = "go_default_library",
@@ -13,24 +6,13 @@ go_library(
     importpath = "github.com/protoconf/protoconf/server",
     visibility = ["//visibility:public"],
     deps = [
-        ":protoconf_mutation_go_proto",
         "//consts:go_default_library",
+        "//server/api/proto/v1:go_default_library",
         "@com_github_golang_protobuf//jsonpb:go_default_library_gen",
         "@com_github_jhump_protoreflect//desc/protoparse:go_default_library",
         "@com_github_jhump_protoreflect//dynamic:go_default_library",
         "@com_github_mitchellh_cli//:go_default_library",
         "@org_golang_google_grpc//:go_default_library",
-    ],
-)
-
-go_proto_library(
-    name = "protoconf_mutation_go_proto",
-    compiler = "@io_bazel_rules_go//proto:go_grpc",
-    importpath = "github.com/protoconf/protoconf/server/api/proto/v1/protoconfmutation",
-    proto = "//server/api/proto/v1:protoconf_mutation_proto",
-    visibility = ["//visibility:public"],
-    deps = [
-        "//datatypes/proto/v1:protoconf_value_go_proto",
     ],
 )
 

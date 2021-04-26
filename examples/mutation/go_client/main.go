@@ -10,9 +10,9 @@ import (
 	"github.com/golang/protobuf/descriptor"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/protoconf/protoconf/consts"
-	pv "github.com/protoconf/protoconf/datatypes/proto/v1/protoconfvalue"
+	pv "github.com/protoconf/protoconf/datatypes/proto/v1"
 	pb "github.com/protoconf/protoconf/examples/protoconf/src/crawler"
-	pc "github.com/protoconf/protoconf/server/api/proto/v1/protoconfmutation"
+	pc "github.com/protoconf/protoconf/server/api/proto/v1"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 )

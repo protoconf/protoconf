@@ -8,7 +8,7 @@ import (
 
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes/any"
-	protoconfvalue "github.com/protoconf/protoconf/datatypes/proto/v1/protoconfvalue"
+	protoconfvalue "github.com/protoconf/protoconf/datatypes/proto/v1"
 	"github.com/protoconf/protoconf/protostdlib/secret"
 	"github.com/protoconf/protoconf/utils"
 )

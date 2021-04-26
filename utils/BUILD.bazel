@@ -11,7 +11,7 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "//consts:go_default_library",
-        "//datatypes/proto/v1:protoconf_value_go_proto",
+        "//datatypes/proto/v1:go_default_library",
         "//protostdlib/secret:go_default_library",
         "@com_github_golang_protobuf//descriptor:go_default_library_gen",
         "@com_github_golang_protobuf//jsonpb:go_default_library_gen",

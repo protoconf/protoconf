@@ -6,8 +6,8 @@ go_library(
     importpath = "github.com/protoconf/protoconf/mutate",
     visibility = ["//visibility:public"],
     deps = [
-        "//datatypes/proto/v1:protoconf_value_go_proto",
-        "//server:protoconf_mutation_go_proto",
+        "//datatypes/proto/v1:go_default_library",
+        "//server/api/proto/v1:go_default_library",
         "//utils:go_default_library",
         "@com_github_golang_protobuf//ptypes:go_default_library_gen",
         "@com_github_jhump_protoreflect//dynamic:go_default_library",

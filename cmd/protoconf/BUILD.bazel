@@ -47,7 +47,7 @@ go_library(
         "//importers/terraform_importer:go_default_library",
         "//inserter:go_default_library",
         "//mutate:go_default_library",
-        "//server",
+        "//server:go_default_library",
         "@com_github_mitchellh_cli//:go_default_library",
     ],
 )

@@ -18,7 +18,7 @@ import (
 	"github.com/jhump/protoreflect/dynamic"
 	"github.com/mitchellh/cli"
 	"github.com/protoconf/protoconf/consts"
-	protoconfmutation "github.com/protoconf/protoconf/server/api/proto/v1/protoconfmutation"
+	protoconfmutation "github.com/protoconf/protoconf/server/api/proto/v1"
 	"google.golang.org/grpc"
 )
 

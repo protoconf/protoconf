@@ -10,7 +10,7 @@ import (
 	etcd "github.com/abronan/valkeyrie/store/etcd/v2"
 	"github.com/abronan/valkeyrie/store/zookeeper"
 	"github.com/golang/protobuf/proto"
-	protoconfvalue "github.com/protoconf/protoconf/datatypes/proto/v1/protoconfvalue"
+	protoconfvalue "github.com/protoconf/protoconf/datatypes/proto/v1"
 )
 
 type KVStore int
