@@ -3,7 +3,7 @@
 ### On Linux/MacOS
 
 ```
-export PROTOCONF_VERSION="0.1.1"
+export PROTOCONF_VERSION="0.1.3"
 export PROTOCONF_OS=$(uname | tr '[A-Z]' '[a-z]')
 curl -LO https://github.com/protoconf/protoconf/releases/download/${PROTOCONF_VERSION}/protoconf-${PROTOCONF_OS}-${PROTOCONF_VERSION}.tar.gz
 sudo tar xvf protoconf-${PROTOCONF_OS}-${PROTOCONF_VERSION}.tar.gz -C /usr/local/bin
