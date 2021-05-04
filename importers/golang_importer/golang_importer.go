@@ -41,7 +41,7 @@ func NewGolangImporter(pkg, outputDir, goSrcPath string, env ...string) (*Golang
 	}
 	packages, err := packages.Load(cfg, filepath.Join(goSrcPath, pkg))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to load packages: %v", err)
 	}
 	logger.Sugar().Debugw("packages", "packages", packages)
 	return &GolangImporter{
