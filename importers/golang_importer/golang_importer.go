@@ -34,10 +34,11 @@ func NewGolangImporter(pkg, outputDir, goSrcPath string, env ...string) (*Golang
 	}
 	fset := token.NewFileSet()
 	cfg := &packages.Config{
-		Dir:  goSrcPath,
+		Dir:  filepath.Join(goSrcPath, pkg),
 		Mode: packages.LoadAllSyntax,
 		Fset: fset,
 		Env:  env,
+		Logf: logger.Sugar().Debugf,
 	}
 	packages, err := packages.Load(cfg, filepath.Join(goSrcPath, pkg))
 	if err != nil {
