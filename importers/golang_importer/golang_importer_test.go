@@ -24,6 +24,10 @@ func TestGolangImporter(t *testing.T) {
 
 	packageID := "html/template"
 
+	filepath.Walk(filepath.Join(goSdkRoot, "bin"), func(path string, info os.FileInfo, err error) error {
+		log.Println(path)
+		return nil
+	})
 	i, err := NewGolangImporter(
 		packageID,
 		outputdir,
