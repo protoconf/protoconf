@@ -36,6 +36,7 @@ func NewGolangImporter(pkg, outputDir, goSrcPath string, env ...string) (*Golang
 		return nil, err
 	}
 	fset := token.NewFileSet()
+	logger.Debug(fmt.Sprintf("%v", env))
 	cfg := &packages.Config{
 		Dir:  filepath.Join(goSrcPath, pkg),
 		Mode: packages.LoadAllSyntax,
