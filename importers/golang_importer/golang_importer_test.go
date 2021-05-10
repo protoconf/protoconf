@@ -34,6 +34,7 @@ func TestGolangImporter(t *testing.T) {
 		filepath.Join(goSdkRoot, "src"),
 		"HOME="+userHome,
 		"PATH="+filepath.Join(goSdkRoot, "bin")+":"+os.Getenv("PATH"),
+		"GOROOT="+goSdkRoot,
 	)
 	assert.NoError(t, err, "failed to create GolangImporter")
 	importer := i.GetImporter()
