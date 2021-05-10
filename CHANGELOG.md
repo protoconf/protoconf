@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.4-beta.0](https://github.com/protoconf/protoconf/compare/v0.1.3...v0.1.4-beta.0) (2021-05-10)
+
+
+### Features
+
+* **importer:** Allow use of Any for interfaces ([#78](https://github.com/protoconf/protoconf/issues/78)) ([8604423](https://github.com/protoconf/protoconf/commit/860442323de2c122fe9da76164a504477ce50165))
+
+
+### Bug Fixes
+
+* **go-importer:** fix work dir for packages.Load ([#77](https://github.com/protoconf/protoconf/issues/77)) ([564236b](https://github.com/protoconf/protoconf/commit/564236b525df5ae5433d85f2bcddea695b89c896))
+* **terraform:** required_providers json name ([#80](https://github.com/protoconf/protoconf/issues/80)) ([3ec92c8](https://github.com/protoconf/protoconf/commit/3ec92c8d6b7970fae957e996f9aaafe7a524dc55))
+
 ### [0.1.3](https://github.com/protoconf/protoconf/compare/v0.1.2-rc4.0...v0.1.3) (2021-04-26)
 
 ### [0.1.2-rc4.0](https://github.com/protoconf/protoconf/compare/v0.1.2-rc3.0...v0.1.2-rc4.0) (2021-04-21)
