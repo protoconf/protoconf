@@ -5,7 +5,6 @@ go_library(
     srcs = [
         "command.go",
         "go_proto_files_registry.go",
-        "go_to_proto_type.go",
         "golang_importer.go",
     ],
     importpath = "github.com/protoconf/protoconf/importers/golang_importer",

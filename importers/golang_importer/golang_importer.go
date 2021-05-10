@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"go/token"
 	"go/types"
+	"log"
 	"path/filepath"
 	"strings"
 
 	"github.com/fatih/structtag"
 	dpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/desc/builder"
 	"github.com/protoconf/protoconf/importers"
 	zap "go.uber.org/zap"
@@ -24,6 +26,7 @@ type GolangImporter struct {
 	targetTags         []string
 	errors             []error
 	logger             *zap.Logger
+	InterfacesAsAny    bool
 }
 
 // NewGolangImporter creates a new GolangImporter
@@ -33,6 +36,7 @@ func NewGolangImporter(pkg, outputDir, goSrcPath string, env ...string) (*Golang
 		return nil, err
 	}
 	fset := token.NewFileSet()
+	logger.Debug(fmt.Sprintf("%v", env))
 	cfg := &packages.Config{
 		Dir:  filepath.Join(goSrcPath, pkg),
 		Mode: packages.LoadAllSyntax,
@@ -79,7 +83,7 @@ func (p *GolangImporter) goFieldToProtoField(f *types.Var, tagstr string) *build
 	if strings.HasPrefix(f.Type().String(), "func") {
 		return nil
 	}
-	t := goFieldTypeToProtoFieldType(t1.Underlying().String())
+	t := p.goFieldTypeToProtoFieldType(t1.Underlying().String())
 
 	// When a type is a pointer
 	if s, ok := t1.Underlying().(*types.Pointer); ok {
@@ -93,8 +97,8 @@ func (p *GolangImporter) goFieldToProtoField(f *types.Var, tagstr string) *build
 	// When a type is map
 	if s, ok := t1.Underlying().(*types.Map); ok {
 		t1 = s.Elem()
-		key := goFieldTypeToProtoFieldType(s.Key().Underlying().String())
-		val := goFieldTypeToProtoFieldType(s.Elem().Underlying().String())
+		key := p.goFieldTypeToProtoFieldType(s.Key().Underlying().String())
+		val := p.goFieldTypeToProtoFieldType(s.Elem().Underlying().String())
 		if key != nil && val != nil && isValidKeyType(key) {
 			p.logger.Debug("new map field", zap.String("key", key.GetTypeName()), zap.String("value", val.GetTypeName()))
 			b = builder.NewMapField(f.Name(), key, val)
@@ -109,7 +113,7 @@ func (p *GolangImporter) goFieldToProtoField(f *types.Var, tagstr string) *build
 	// When a type is an Slice
 	if s, ok := t1.Underlying().(*types.Slice); ok {
 		t1 = s.Elem()
-		t = goFieldTypeToProtoFieldType(s.Elem().String())
+		t = p.goFieldTypeToProtoFieldType(s.Elem().String())
 		b.SetRepeated()
 		p.logger.Debug("detected as slice",
 			zap.String("pkg", pkg.Name()),
@@ -120,7 +124,7 @@ func (p *GolangImporter) goFieldToProtoField(f *types.Var, tagstr string) *build
 	// When a type is an array
 	if s, ok := t1.Underlying().(*types.Array); ok {
 		t1 = s.Elem()
-		t = goFieldTypeToProtoFieldType(s.Elem().String())
+		t = p.goFieldTypeToProtoFieldType(s.Elem().String())
 		b.SetRepeated()
 		p.logger.Debug("detected as array",
 			zap.String("pkg", pkg.Name()),
@@ -305,4 +309,82 @@ func (p *GolangImporter) GetImporter() *importers.Importer {
 	p.logger.Info("getting importer")
 	p.Visit()
 	return p.Importer
+}
+
+var wkt = make(map[string]*builder.FileBuilder)
+
+func init() {
+	durationFile, err := desc.LoadFileDescriptor("google/protobuf/duration.proto")
+	if err != nil {
+		log.Fatal(err)
+	}
+	durationBuilder, err := builder.FromFile(durationFile)
+	if err != nil {
+		log.Fatal(err)
+	}
+	wkt["duration"] = durationBuilder
+
+	structFile, err := desc.LoadFileDescriptor("google/protobuf/struct.proto")
+	if err != nil {
+		log.Fatal(err)
+	}
+	structBuilder, err := builder.FromFile(structFile)
+	if err != nil {
+		log.Fatal(err)
+	}
+	wkt["struct"] = structBuilder
+
+	anyFile, err := desc.LoadFileDescriptor("google/protobuf/any.proto")
+	if err != nil {
+		log.Fatal(err)
+	}
+	anyBuilder, err := builder.FromFile(anyFile)
+	if err != nil {
+		log.Fatal(err)
+	}
+	wkt["any"] = anyBuilder
+}
+
+func (p *GolangImporter) goFieldTypeToProtoFieldType(x string) *builder.FieldType {
+	x = strings.Replace(x, "*", "", -1)
+	switch x {
+	case "bool":
+		return builder.FieldTypeBool()
+	case "byte":
+		return builder.FieldTypeBytes()
+	case "float":
+		return builder.FieldTypeFloat()
+	case "float64":
+		return builder.FieldTypeFloat()
+	case "int":
+		return builder.FieldTypeInt32()
+	case "int8":
+		return builder.FieldTypeInt32()
+	case "int32":
+		return builder.FieldTypeInt32()
+	case "int64":
+		return builder.FieldTypeInt64()
+	case "uint":
+		return builder.FieldTypeUInt32()
+	case "uint8":
+		return builder.FieldTypeUInt32()
+	case "uint16":
+		return builder.FieldTypeUInt32()
+	case "uint32":
+		return builder.FieldTypeUInt32()
+	case "uint64":
+		return builder.FieldTypeUInt64()
+	case "string":
+		return builder.FieldTypeString()
+	case "time.Duration":
+		return builder.FieldTypeMessage(wkt["duration"].GetMessage("Duration"))
+	case "interface{}":
+		if p.InterfacesAsAny {
+			return builder.FieldTypeMessage(wkt["any"].GetMessage("Any"))
+		}
+		return builder.FieldTypeMessage(wkt["struct"].GetMessage("Value"))
+	case "error":
+		return nil
+	}
+	return nil
 }

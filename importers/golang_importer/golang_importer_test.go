@@ -3,6 +3,7 @@ package golangimporter
 import (
 	"io/ioutil"
 	"log"
+	"os"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -18,22 +19,27 @@ func TestGolangImporter(t *testing.T) {
 	userHome, err := homedir.Dir()
 	assert.NoError(t, err, "could not get homedir")
 
-	// packageID := "github.com/hashicorp/nomad/api"
-	// outputdir = "/tmp/importers/golang/nomad"
+	oldPwd := os.Getenv("OLDPWD")
+	goSdkRoot := filepath.Join(strings.SplitN(oldPwd, "sandbox", 2)[0], "external", "go_sdk")
 
-	packageID := "github.com/prometheus/prometheus/config"
-	outputdir = "/tmp/importers/golang/prometheus"
+	packageID := "html/template"
 
+	filepath.Walk(filepath.Join(goSdkRoot), func(path string, info os.FileInfo, err error) error {
+		log.Println(path)
+		return nil
+	})
 	i, err := NewGolangImporter(
 		packageID,
 		outputdir,
-		filepath.Join(userHome, "go", "src"),
+		filepath.Join(goSdkRoot, "src"),
 		"HOME="+userHome,
+		"PATH="+filepath.Join(goSdkRoot, "bin")+":"+os.Getenv("PATH"),
+		"GOROOT="+goSdkRoot,
 	)
 	assert.NoError(t, err, "failed to create GolangImporter")
 	importer := i.GetImporter()
-	filtered := importer.FilterFiles("prometheus_config", "Config")
-	importer.Files = filtered
+	// filtered := importer.FilterFiles("prometheus_config", "Config")
+	// importer.Files = filtered
 	err = importer.SaveAll()
 	assert.NoError(t, err, "failed to save files")
 }

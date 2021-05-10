@@ -49,6 +49,7 @@ type cliConfig struct {
 	filterFiles            bool
 	filterFilesAndMessages bool
 	targetTags             targetTagsArray
+	interfacesAsAny        bool
 }
 
 func newFlagSet() (*flag.FlagSet, *cliConfig) {
@@ -69,6 +70,7 @@ func newFlagSet() (*flag.FlagSet, *cliConfig) {
 	flags.StringVar(&config.top, "top", "", "Name of the top config struct to be used (required by -filter_files and -filter_messages)")
 	flags.BoolVar(&config.filterFiles, "filter_files", false, "Remove files which are not required by -top message")
 	flags.BoolVar(&config.filterFilesAndMessages, "filter_messages", false, "Same as -filter_files but also clean up the files from unused messages")
+	flags.BoolVar(&config.interfacesAsAny, "interfaces_as_any", false, "When value typs is interface{} use any.Any")
 	flags.StringVar(&config.goSrcHome, "gopath", filepath.Join(os.Getenv("GOPATH"), "src"), "Override $GOPATH/src path")
 	flags.Var(&config.targetTags, "tag", "A tag to be used as `json_name` (can repeat)")
 
@@ -92,6 +94,7 @@ func (c *cliCommand) Run(args []string) int {
 		env = append(env, "HOME="+userHome)
 	}
 	i, err := NewGolangImporter(config.pkg, config.outputPath, config.goSrcHome, env...)
+	i.InterfacesAsAny = config.interfacesAsAny
 	if err != nil {
 		ui.Error(fmt.Sprintf("Failed to initialize the golang importer: %v", err))
 		return 1
