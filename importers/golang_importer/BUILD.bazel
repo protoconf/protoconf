@@ -26,6 +26,7 @@ go_test(
     name = "go_default_test",
     srcs = ["golang_importer_test.go"],
     embed = [":go_default_library"],
+    tags = ["manual"],
     deps = [
         "@com_github_jhump_protoreflect//desc/builder:go_default_library",
         "@com_github_mitchellh_go_homedir//:go_default_library",
