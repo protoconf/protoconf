@@ -101,9 +101,9 @@ http_archive(
     name = "containerregistry",
     patch_args = ["-p1"],
     patches = ["//third_party:containerregistry.patch"],
-    sha256 = "a8cdf2452323e0fefa4edb01c08b2ec438c9fa3192bc9f408b89287598c12abc",
-    strip_prefix = "containerregistry-0.0.36",
-    urls = ["https://github.com/google/containerregistry/archive/v0.0.36.tar.gz"],
+    sha256 = "a0c01fcc11db848212f8b11d89df168361f99a31eb7373ff60ce50c5d05cd74b",
+    strip_prefix = "containerregistry-0.0.38",
+    urls = ["https://github.com/google/containerregistry/archive/v0.0.38.tar.gz"],
 )
 
 http_archive(
