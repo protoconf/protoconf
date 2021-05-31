@@ -21,7 +21,7 @@ require (
 	github.com/hashicorp/terraform v0.12.18
 	github.com/jhump/protoreflect v1.7.0
 	github.com/miekg/dns v1.1.29 // indirect
-	github.com/mitchellh/cli v1.1.0
+	github.com/mitchellh/cli v1.1.2
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.6.0
@@ -32,7 +32,6 @@ require (
 	go.etcd.io/etcd v3.3.18+incompatible // indirect
 	go.starlark.net v0.0.0-20210511153848-cca21e7857d4
 	go.uber.org/zap v1.15.0
-	golang.org/x/crypto v0.0.0-20200510223506-06a226fb4e37 // indirect
 	golang.org/x/exp v0.0.0-20200224162631-6cc2880d07d6 // indirect
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b // indirect
 	golang.org/x/net v0.0.0-20210525063256-abc453219eb5
