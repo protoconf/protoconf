@@ -16,7 +16,7 @@ require (
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
 	github.com/hashicorp/consul/api v1.8.1 // indirect
-	github.com/hashicorp/go-getter v1.4.0
+	github.com/hashicorp/go-getter v1.5.3
 	github.com/hashicorp/go-plugin v1.0.1
 	github.com/hashicorp/terraform v0.12.18
 	github.com/jhump/protoreflect v1.7.0
