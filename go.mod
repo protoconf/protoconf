@@ -30,7 +30,7 @@ require (
 	github.com/stretchr/testify v1.6.1
 	github.com/zclconf/go-cty v1.2.0
 	go.etcd.io/etcd v3.3.18+incompatible // indirect
-	go.starlark.net v0.0.0-20210406145628-7a1108eaa012
+	go.starlark.net v0.0.0-20210511153848-cca21e7857d4
 	go.uber.org/zap v1.15.0
 	golang.org/x/crypto v0.0.0-20200510223506-06a226fb4e37 // indirect
 	golang.org/x/exp v0.0.0-20200224162631-6cc2880d07d6 // indirect
