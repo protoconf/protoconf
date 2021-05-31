@@ -38,7 +38,7 @@
   resolved "https://registry.yarnpkg.com/@bazel/bazel-win32_x64/-/bazel-win32_x64-2.0.0.tgz#f12ac0738d2eac0fd255f099776194807cedfe50"
   integrity sha512-5qs2qoa/paG/YYEM0yvrwuJIShoPVK2FX+Oz9jEWAQJsmU4drHA9Aq+gbBOirEFLmvYhleZ9XORCwu/5uAo8vA==
 
-"@bazel/bazel@^2.0.0":
+"@bazel/bazel@2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@bazel/bazel/-/bazel-2.0.0.tgz#feb8cf5a40ea6437ef69cac2a92072118b11c230"
   integrity sha512-KQbv5dHNSfutbhXCc3KVMuBXPpUh6Af/hT9IRIaMTuiB6Nq2gEW9Z3aNqncopdZqV848V/qYxnqPnQ+S37fMyQ==
@@ -54,7 +54,7 @@
   resolved "https://registry.yarnpkg.com/@bazel/hide-bazel-files/-/hide-bazel-files-1.1.0.tgz#a7d46a4aa3717150b54fde05b2f8b6bab733f493"
   integrity sha512-JJ9eMKPBodWugC4Wu0QLe0saDZ971RcP2kjZbG1vJfQHn/gnxvw+4nXDRwei5EzxBsGGuLxY1MkNDtRFIfZr5w==
 
-"@bazel/ibazel@^0.11.1":
+"@bazel/ibazel@0.11.1":
   version "0.11.1"
   resolved "https://registry.yarnpkg.com/@bazel/ibazel/-/ibazel-0.11.1.tgz#c07ceaded388f1e39d6aa732953e0dd04f3dbdf0"
   integrity sha512-qAdEquFAudYyN+CYfLzvuRWNubdsh6C8+o5CiViUEfchq1HQM5Rs8xAOE3fzGsTZ1EUsvgca/PY0kn0VIxckBA==
@@ -1372,7 +1372,7 @@ split@^1.0.0:
   dependencies:
     through "2"
 
-standard-version@^8.0.1:
+standard-version@8.0.1:
   version "8.0.1"
   resolved "https://registry.yarnpkg.com/standard-version/-/standard-version-8.0.1.tgz#4638d3cee1365c9d6773c3ac33429e4562f3f696"
   integrity sha512-FLZdjvL2tBdwlctfQeyBf4+dX+SFljwdWfUA0F3wPiU9Rn0+FSuD3I0WXuzC1RmcaWwU5WL3EyV4Aanejc8Pqg==
