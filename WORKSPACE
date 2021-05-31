@@ -40,7 +40,6 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 #     sha256 = "86c6d481b3f7aedc1d60c1c211c6f76da282ae197c3b3160f54bd3a8f847896f",
 # )
 
-
 http_archive(
     name = "io_bazel_rules_go",
     sha256 = "7904dbecbaffd068651916dce77ff3437679f9d20e1a7956bff43826e7645fcc",
@@ -59,13 +58,19 @@ http_archive(
     ],
 )
 
-load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
+load(
+    "@io_bazel_rules_go//go:deps.bzl",
+    "go_register_toolchains",
+    "go_rules_dependencies",
+)
 load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies")
 
 go_rules_dependencies()
 
-go_register_toolchains(version= "1.16", nogo = "@//:protoconf_nogo")
-
+go_register_toolchains(
+    nogo = "@//:protoconf_nogo",
+    version = "1.16",
+)
 
 gazelle_dependencies()
 
@@ -90,7 +95,11 @@ http_archive(
     ],
 )
 
-load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies", "rules_proto_toolchains")
+load(
+    "@rules_proto//proto:repositories.bzl",
+    "rules_proto_dependencies",
+    "rules_proto_toolchains",
+)
 
 rules_proto_dependencies()
 
@@ -108,9 +117,11 @@ http_archive(
 
 http_archive(
     name = "io_bazel_rules_docker",
-    sha256 = "4521794f0fba2e20f3bf15846ab5e01d5332e587e9ce81629c7f96c793bb7036",
-    strip_prefix = "rules_docker-0.14.4",
-    urls = ["https://github.com/bazelbuild/rules_docker/releases/download/v0.14.4/rules_docker-v0.14.4.tar.gz"],
+    sha256 = "59d5b42ac315e7eadffa944e86e90c2990110a1c8075f1cd145f487e999d22b3",
+    strip_prefix = "rules_docker-0.17.0",
+    urls = [
+        "https://github.com/bazelbuild/rules_docker/releases/download/v0.17.0/rules_docker-v0.17.0.tar.gz",
+    ],
 )
 
 load(
@@ -124,10 +135,6 @@ load("@io_bazel_rules_docker//repositories:deps.bzl", container_deps = "deps")
 
 container_deps()
 
-load("@io_bazel_rules_docker//repositories:pip_repositories.bzl", "pip_deps")
-
-pip_deps()
-
 load(
     "@io_bazel_rules_docker//go:image.bzl",
     _go_image_repos = "repositories",
@@ -135,7 +142,10 @@ load(
 
 _go_image_repos()
 
-load("@com_github_bazelbuild_buildtools//buildifier:deps.bzl", "buildifier_dependencies")
+load(
+    "@com_github_bazelbuild_buildtools//buildifier:deps.bzl",
+    "buildifier_dependencies",
+)
 
 buildifier_dependencies()
 
@@ -145,8 +155,8 @@ deps()
 
 git_repository(
     name = "graknlabs_bazel_distribution",
-    remote = "https://github.com/graknlabs/bazel-distribution",
     commit = "c24ce26390d7e818a6f16a0d2839ed5795ced3dc",  # sync-marker: do not remove this comment, this is used for sync-dependencies by @graknlabs_bazel_distribution
+    remote = "https://github.com/graknlabs/bazel-distribution",
 )
 
 load("@graknlabs_bazel_distribution//common:dependencies.bzl", "bazelbuild_rules_pkg")
@@ -160,7 +170,9 @@ tcnksm_ghr()
 http_archive(
     name = "build_bazel_rules_nodejs",
     sha256 = "84abf7ac4234a70924628baa9a73a5a5cbad944c4358cf9abdb4aab29c9a5b77",
-    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/1.7.0/rules_nodejs-1.7.0.tar.gz"],
+    urls = [
+        "https://github.com/bazelbuild/rules_nodejs/releases/download/1.7.0/rules_nodejs-1.7.0.tar.gz",
+    ],
 )
 
 load("@build_bazel_rules_nodejs//:index.bzl", "node_repositories")
@@ -171,7 +183,9 @@ http_archive(
     name = "io_buildbuddy_buildbuddy_toolchain",
     sha256 = "a97a87d72417dc4ddd5b434ed4eef6a09fcf7b1a3e87087e3814f50a7c5762d8",
     strip_prefix = "buildbuddy-toolchain-b2f5e7e3b126c6d7cf243227147478c0959bfc95",
-    urls = ["https://github.com/buildbuddy-io/buildbuddy-toolchain/archive/b2f5e7e3b126c6d7cf243227147478c0959bfc95.tar.gz"],
+    urls = [
+        "https://github.com/buildbuddy-io/buildbuddy-toolchain/archive/b2f5e7e3b126c6d7cf243227147478c0959bfc95.tar.gz",
+    ],
 )
 
 load("@io_buildbuddy_buildbuddy_toolchain//:deps.bzl", "buildbuddy_deps")
