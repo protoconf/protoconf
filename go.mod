@@ -16,7 +16,7 @@ require (
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
 	github.com/hashicorp/consul/api v1.8.1 // indirect
-	github.com/hashicorp/go-getter v1.5.3
+	github.com/hashicorp/go-getter v1.4.0
 	github.com/hashicorp/go-plugin v1.0.1
 	github.com/hashicorp/terraform v0.12.18
 	github.com/jhump/protoreflect v1.7.0
@@ -28,6 +28,7 @@ require (
 	github.com/qri-io/starlib v0.5.0
 	github.com/samuel/go-zookeeper v0.0.0-20190923202752-2cc03de413da // indirect
 	github.com/stretchr/testify v1.6.1
+	github.com/ulikunitz/xz v0.5.8 // indirect
 	github.com/zclconf/go-cty v1.2.0
 	go.etcd.io/etcd v3.3.18+incompatible // indirect
 	go.starlark.net v0.0.0-20210511153848-cca21e7857d4
