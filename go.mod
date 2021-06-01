@@ -29,7 +29,7 @@ require (
 	github.com/samuel/go-zookeeper v0.0.0-20190923202752-2cc03de413da // indirect
 	github.com/stretchr/testify v1.6.1
 	github.com/ulikunitz/xz v0.5.8 // indirect
-	github.com/zclconf/go-cty v1.2.0
+	github.com/zclconf/go-cty v1.8.3
 	go.etcd.io/etcd v3.3.18+incompatible // indirect
 	go.starlark.net v0.0.0-20210511153848-cca21e7857d4
 	go.uber.org/zap v1.15.0
