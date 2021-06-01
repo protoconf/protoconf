@@ -17,7 +17,7 @@ require (
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
 	github.com/hashicorp/consul/api v1.8.1 // indirect
 	github.com/hashicorp/go-getter v1.4.0
-	github.com/hashicorp/go-plugin v1.0.1
+	github.com/hashicorp/go-plugin v1.4.1
 	github.com/hashicorp/terraform v0.12.18
 	github.com/jhump/protoreflect v1.7.0
 	github.com/miekg/dns v1.1.29 // indirect
