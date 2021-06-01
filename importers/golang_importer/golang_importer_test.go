@@ -19,13 +19,15 @@ func TestGolangImporter(t *testing.T) {
 	userHome, err := homedir.Dir()
 	assert.NoError(t, err, "could not get homedir")
 
-	oldPwd := os.Getenv("OLDPWD")
-	goSdkRoot := filepath.Join(strings.SplitN(oldPwd, "sandbox", 2)[0], "external", "go_sdk")
+	// oldPwd := os.Getenv("OLDPWD")
+	// goSdkRoot := filepath.Join(strings.SplitN(oldPwd, "sandbox", 2)[0], "external", "go_sdk")
+	goSdkRoot := os.Getenv("GOROOT")
 
 	packageID := "html/template"
+	t.Log("GOROOT", goSdkRoot)
 
 	filepath.Walk(filepath.Join(goSdkRoot), func(path string, info os.FileInfo, err error) error {
-		log.Println(path)
+		t.Log(path)
 		return nil
 	})
 	i, err := NewGolangImporter(
@@ -34,7 +36,7 @@ func TestGolangImporter(t *testing.T) {
 		filepath.Join(goSdkRoot, "src"),
 		"HOME="+userHome,
 		"PATH="+filepath.Join(goSdkRoot, "bin")+":"+os.Getenv("PATH"),
-		"GOROOT="+goSdkRoot,
+		// "GOROOT="+goSdkRoot,
 	)
 	assert.NoError(t, err, "failed to create GolangImporter")
 	importer := i.GetImporter()
