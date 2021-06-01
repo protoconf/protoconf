@@ -7,8 +7,6 @@ import (
 	dpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/jhump/protoreflect/dynamic"
 	"github.com/protoconf/protoconf/compiler/proto"
-	"github.com/protoconf/protoconf/protostdlib/secret"
-	"github.com/protoconf/protoconf/utils"
 	"go.starlark.net/starlark"
 )
 
@@ -50,10 +48,6 @@ func (c *config) validate(value interface{}) error {
 
 	if message == nil {
 		return nil
-	}
-
-	if err := stdLibValidate(message); err != nil {
-		return err
 	}
 
 	if validator, ok := c.validators[message.GetMessageDescriptor().GetFullyQualifiedName()]; ok {
@@ -101,23 +95,5 @@ func (c *config) validate(value interface{}) error {
 			}
 		}
 	}
-	return nil
-}
-
-func stdLibValidate(message *dynamic.Message) error {
-	fqn := message.GetMessageDescriptor().GetFullyQualifiedName()
-	charSecret := &secret.CharSecret{}
-	if fqn == utils.MessageFQN(charSecret) {
-		if err := message.ConvertTo(charSecret); err != nil {
-			return fmt.Errorf("error converting message to CharSecret, message=%s err=%s", message, err)
-		}
-		if len(charSecret.GetChar()) != 1 {
-			return fmt.Errorf("CharSecret.char must have exactly one character, got char=%s", charSecret.GetChar())
-		}
-		if charSecret.GetLength() < 1 {
-			return fmt.Errorf("CharSecret.length must be greater than 0, got length=%d", charSecret.GetLength())
-		}
-	}
-
 	return nil
 }
