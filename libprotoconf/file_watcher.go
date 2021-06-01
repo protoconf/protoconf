@@ -66,12 +66,7 @@ func (w *fileWatcher) Watch(path string, stopCh <-chan struct{}) (<-chan Result,
 				return
 			}
 
-			any, err := injectSecrets(protoconfValue)
-			if err != nil {
-				watchCh <- Result{nil, fmt.Errorf("error injecting secrets path=%s protoconf_value=%s err=%s", path, protoconfValue, err)}
-				return
-			}
-			watchCh <- Result{any, nil}
+			watchCh <- Result{protoconfValue.Value, nil}
 
 			select {
 			case _, ok := <-fsCh:

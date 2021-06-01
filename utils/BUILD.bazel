@@ -12,11 +12,8 @@ go_library(
     deps = [
         "//consts:go_default_library",
         "//datatypes/proto/v1:go_default_library",
-        "//protostdlib/secret:go_default_library",
-        "@com_github_golang_protobuf//descriptor:go_default_library_gen",
         "@com_github_golang_protobuf//jsonpb:go_default_library_gen",
         "@com_github_golang_protobuf//proto:go_default_library",
-        "@com_github_golang_protobuf//ptypes:go_default_library_gen",
         "@com_github_jhump_protoreflect//desc:go_default_library",
         "@com_github_jhump_protoreflect//desc/protoparse:go_default_library",
         "@com_github_jhump_protoreflect//dynamic:go_default_library",

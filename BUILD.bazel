@@ -1,6 +1,11 @@
 load("@bazel_gazelle//:def.bzl", "gazelle")
 load("@io_bazel_rules_go//go:def.bzl", "nogo")
-load("@graknlabs_bazel_distribution//common:rules.bzl", "assemble_targz", "assemble_versioned", "assemble_zip")
+load(
+    "@graknlabs_bazel_distribution//common:rules.bzl",
+    "assemble_targz",
+    "assemble_versioned",
+    "assemble_zip",
+)
 load("@graknlabs_bazel_distribution//github:rules.bzl", "deploy_github")
 
 # gazelle:prefix github.com/protoconf/protoconf
@@ -57,13 +62,15 @@ alias(
 genrule(
     name = "release",
     outs = ["out.txt"],
-    cmd = "&&".join([
-        "$(location //docker:protoconf_release)",
-        "$(location //docker:agent_release)",
-        "$(location //docker:server_release)",
-        "$(location //docker:exec_release)",
-        "echo 'echo done' > $@",
-    ]),
+    cmd = "&&".join(
+        [
+            "$(location //docker:protoconf_release)",
+            "$(location //docker:agent_release)",
+            "$(location //docker:server_release)",
+            "$(location //docker:exec_release)",
+            "echo 'echo done' > $@",
+        ],
+    ),
     exec_tools = [
         "//docker:protoconf_release",
         "//docker:agent_release",
@@ -72,19 +79,6 @@ genrule(
     ],
     executable = True,
     tags = ["manual"],
-)
-
-# `root_proto` and `go_default_library` helps with compiling examples which uses `import "secret.proto"`
-alias(
-    name = "root_proto",
-    actual = "//protostdlib/secret:secret_proto",
-    visibility = ["//visibility:public"],
-)
-
-alias(
-    name = "go_default_library",
-    actual = "//protostdlib/secret:go_default_library",
-    visibility = ["//visibility:public"],
 )
 
 # Releasing protoconf

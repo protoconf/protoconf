@@ -98,13 +98,7 @@ func (w *libkvWatcher) Watch(pathNoPrefix string, stopCh <-chan struct{}) (<-cha
 					return
 				}
 
-				any, err := injectSecrets(protoconfValue)
-				if err != nil {
-					watchCh <- Result{nil, fmt.Errorf("error injecting secrets path=%s protoconf_value=%s err=%s", path, protoconfValue, err)}
-					return
-				}
-
-				watchCh <- Result{any, nil}
+				watchCh <- Result{protoconfValue.Value, nil}
 			case <-stopCh:
 				kVStopCh <- struct{}{}
 				return

@@ -16,7 +16,6 @@ go_library(
         "//compiler/proto:go_default_library",
         "//consts:go_default_library",
         "//datatypes/proto/v1:go_default_library",
-        "//protostdlib/secret:go_default_library",
         "//utils:go_default_library",
         "@com_github_golang_protobuf//jsonpb:go_default_library_gen",
         "@com_github_golang_protobuf//proto:go_default_library",

@@ -12,7 +12,6 @@ go_library(
     deps = [
         "//consts:go_default_library",
         "//datatypes/proto/v1:go_default_library",
-        "//protostdlib/secret:go_default_library",
         "//utils:go_default_library",
         "@com_github_abronan_valkeyrie//:go_default_library",
         "@com_github_abronan_valkeyrie//store:go_default_library",
