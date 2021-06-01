@@ -27,7 +27,7 @@ require (
 	github.com/prometheus/client_golang v1.6.0
 	github.com/qri-io/starlib v0.5.0
 	github.com/samuel/go-zookeeper v0.0.0-20190923202752-2cc03de413da // indirect
-	github.com/stretchr/testify v1.6.1
+	github.com/stretchr/testify v1.7.0
 	github.com/ulikunitz/xz v0.5.8 // indirect
 	github.com/zclconf/go-cty v1.2.0
 	go.etcd.io/etcd v3.3.18+incompatible // indirect
