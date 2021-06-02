@@ -18,7 +18,7 @@ require (
 	github.com/hashicorp/consul/api v1.8.1 // indirect
 	github.com/hashicorp/go-getter v1.4.0
 	github.com/hashicorp/go-plugin v1.4.1
-	github.com/hashicorp/terraform v0.12.18
+	github.com/hashicorp/terraform v0.15.4
 	github.com/jhump/protoreflect v1.8.2
 	github.com/miekg/dns v1.1.29 // indirect
 	github.com/mitchellh/cli v1.1.2
