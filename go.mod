@@ -32,7 +32,7 @@ require (
 	github.com/zclconf/go-cty v1.2.0
 	go.etcd.io/etcd v3.3.18+incompatible // indirect
 	go.starlark.net v0.0.0-20210511153848-cca21e7857d4
-	go.uber.org/zap v1.15.0
+	go.uber.org/zap v1.17.0
 	golang.org/x/exp v0.0.0-20200224162631-6cc2880d07d6 // indirect
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b // indirect
 	golang.org/x/net v0.0.0-20210525063256-abc453219eb5
