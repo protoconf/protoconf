@@ -1,0 +1,43 @@
+site_name: protoconf
+theme:
+  favicon: assets/images/favicon.ico
+  logo: assets/protoconf_new.svg
+  # logo: assets/images/favicon-32x32.png
+  icon:
+    # logo: fontawesome/solid/egg
+    repo: fontawesome/brands/github
+  name: material
+  palette:
+  - media: "(prefers-color-scheme: dark)"
+    scheme: slate
+    primary: blue
+    accent: yellow
+    toggle:
+      icon: material/weather-sunny
+      name: Switch to light mode
+  - media: "(prefers-color-scheme: light)"
+    scheme: default
+    primary: cyan
+    accent: yellow
+    toggle:
+      icon: material/weather-night
+      name: Switch to dark mode
+repo_url: https://github.com/protoconf/protoconf
+repo_name: protoconf/protoconf
+markdown_extensions:
+  - attr_list
+  - pymdownx.highlight
+  - pymdownx.superfences
+extra:
+  version:
+    provider: mike
+nav:
+  - Home: index.md
+  - Installation: installation.md
+  - Getting Started: getting-started.md
+  - Structure Your Code: structuring-your-code.md
+  - Multiple Outputs: multiple-outputs.md
+  - Protoconf Exec: protoconf-exec.md
+  - Mutation RPC: mutation-rpc.md
+  - Integrations:
+    - Terraform: integrations/terraform.md
