@@ -1,0 +1,911 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.ico">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.6">
+    
+    
+      
+        <title>Terraform - protoconf</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.875de78c.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.f1a3b89f.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="cyan" data-md-color-accent="yellow">
+  
+    
+    <script>function __prefix(e){return new URL("../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+      <script>var palette=__get("__palette");if(null!==palette&&"object"==typeof palette.color)for(var key in palette.color)document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#protoconf-integration-with-terraform" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="protoconf" class="md-header__button md-logo" aria-label="protoconf" data-md-component="logo">
+      
+  <img src="../../assets/protoconf_new.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            protoconf
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Terraform
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <form class="md-header__option" data-md-component="palette">
+        
+          
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="cyan" data-md-color-accent="yellow" type="radio" name="__palette" id="__palette_1">
+          
+            <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_2" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5c-.84 0-1.65.15-2.39.42L12 2M3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29L3.34 7m.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14L3.36 17M20.65 7l-1.77 3.79a7.023 7.023 0 0 0-2.38-4.15l4.15.36m-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29L20.64 17M12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44L12 22z"/></svg>
+            </label>
+          
+        
+          
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="cyan" data-md-color-accent="yellow" type="radio" name="__palette" id="__palette_2">
+          
+            <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3 3.19.09m3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95 2.06.05m-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31z"/></svg>
+            </label>
+          
+        
+      </form>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/protoconf/protoconf/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    protoconf/protoconf
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="protoconf" class="md-nav__button md-logo" aria-label="protoconf" data-md-component="logo">
+      
+  <img src="../../assets/protoconf_new.svg" alt="logo">
+
+    </a>
+    protoconf
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/protoconf/protoconf/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    protoconf/protoconf
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../installation/" class="md-nav__link">
+        Installation
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        Getting Started
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../structuring-your-code/" class="md-nav__link">
+        Structure Your Code
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../multiple-outputs/" class="md-nav__link">
+        Multiple Outputs
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../protoconf-exec/" class="md-nav__link">
+        Protoconf Exec
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mutation-rpc/" class="md-nav__link">
+        Mutation RPC
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8" type="checkbox" id="__nav_8" checked>
+      
+      <label class="md-nav__link" for="__nav_8">
+        Integrations
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Integrations" data-md-level="1">
+        <label class="md-nav__title" for="__nav_8">
+          <span class="md-nav__icon md-icon"></span>
+          Integrations
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Terraform
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Terraform
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequists" class="md-nav__link">
+    Prerequists
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prepare" class="md-nav__link">
+    Prepare
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#initialize-terraform" class="md-nav__link">
+    Initialize Terraform
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#copy-all-providers-binaries-to-same-directory" class="md-nav__link">
+    Copy all providers binaries to same directory
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#generate-the-terraform-protos" class="md-nav__link">
+    Generate the terraform protos
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-a-tfpconf-file" class="md-nav__link">
+    Create a .tf.pconf file
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compile-the-config" class="md-nav__link">
+    compile the config
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prepare-to-run-terraform" class="md-nav__link">
+    prepare to run terraform
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequists" class="md-nav__link">
+    Prerequists
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prepare" class="md-nav__link">
+    Prepare
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#initialize-terraform" class="md-nav__link">
+    Initialize Terraform
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#copy-all-providers-binaries-to-same-directory" class="md-nav__link">
+    Copy all providers binaries to same directory
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#generate-the-terraform-protos" class="md-nav__link">
+    Generate the terraform protos
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-a-tfpconf-file" class="md-nav__link">
+    Create a .tf.pconf file
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compile-the-config" class="md-nav__link">
+    compile the config
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prepare-to-run-terraform" class="md-nav__link">
+    prepare to run terraform
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/protoconf/protoconf/edit/master/docs/integrations/terraform.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                <h1 id="protoconf-integration-with-terraform">Protoconf integration with Terraform</h1>
+<h3 id="prerequists">Prerequists</h3>
+<ul>
+<li>The <code>terraform</code> binray in your <code>$PATH</code></li>
+<li>The <code>protoconf</code> binary in your <code>$PATH</code></li>
+</ul>
+<h3 id="prepare">Prepare</h3>
+<p>Create a <code>providers.tf</code> file containing the providers declarations you need.</p>
+<div class="highlight"><pre><span></span><code>provider &quot;random&quot; {}
+provider &quot;tls&quot; {}
+</code></pre></div>
+<h3 id="initialize-terraform">Initialize Terraform</h3>
+<div class="highlight"><pre><span></span><code>$ terraform init
+</code></pre></div>
+<h3 id="copy-all-providers-binaries-to-same-directory">Copy all providers binaries to same directory</h3>
+<div class="highlight"><pre><span></span><code>$ find .terraform -type f -exec cp <span class="o">{}</span> .terraform <span class="se">\;</span>
+</code></pre></div>
+<h3 id="generate-the-terraform-protos">Generate the terraform protos</h3>
+<div class="highlight"><pre><span></span><code>$ protoconf import terraform -import_path .terraform
+</code></pre></div>
+<p>Validate the outpus</p>
+<div class="highlight"><pre><span></span><code>$  ll src/terraform
+total 48K
+drwxr-xr-x <span class="m">10</span> smintz  <span class="m">320</span> May <span class="m">23</span> <span class="m">10</span>:46 .
+drwxr-xr-x  <span class="m">3</span> smintz   <span class="m">96</span> May <span class="m">23</span> <span class="m">10</span>:39 ..
+-rw-r--r--  <span class="m">1</span> smintz  <span class="m">461</span> May <span class="m">23</span> <span class="m">10</span>:46 meta.proto
+-rw-r--r--  <span class="m">1</span> smintz   <span class="m">51</span> May <span class="m">23</span> <span class="m">10</span>:46 random-data.proto
+-rw-r--r--  <span class="m">1</span> smintz  <span class="m">371</span> May <span class="m">23</span> <span class="m">10</span>:46 random-provider.proto
+-rw-r--r--  <span class="m">1</span> smintz <span class="m">8</span>.1K May <span class="m">23</span> <span class="m">10</span>:46 random-resources.proto
+-rw-r--r--  <span class="m">1</span> smintz <span class="m">4</span>.5K May <span class="m">23</span> <span class="m">10</span>:46 terraform.proto
+-rw-r--r--  <span class="m">1</span> smintz <span class="m">1</span>.9K May <span class="m">23</span> <span class="m">10</span>:46 tls-data.proto
+-rw-r--r--  <span class="m">1</span> smintz  <span class="m">362</span> May <span class="m">23</span> <span class="m">10</span>:46 tls-provider.proto
+-rw-r--r--  <span class="m">1</span> smintz <span class="m">6</span>.1K May <span class="m">23</span> <span class="m">10</span>:46 tls-resources.proto
+</code></pre></div>
+<p>The <code>src/terraform/terraform.proto</code> should looks like this:</p>
+<div class="highlight"><pre><span></span><code><span class="k">syntax</span> <span class="o">=</span> <span class="s">&quot;proto3&quot;</span><span class="p">;</span>
+
+<span class="kn">package</span> <span class="nn">terraform</span><span class="p">;</span>
+
+<span class="k">import</span> <span class="s">&quot;terraform/random-provider.proto&quot;</span><span class="p">;</span>
+
+<span class="k">import</span> <span class="s">&quot;terraform/random-resources.proto&quot;</span><span class="p">;</span>
+
+<span class="k">import</span> <span class="s">&quot;terraform/tls-data.proto&quot;</span><span class="p">;</span>
+
+<span class="k">import</span> <span class="s">&quot;terraform/tls-provider.proto&quot;</span><span class="p">;</span>
+
+<span class="k">import</span> <span class="s">&quot;terraform/tls-resources.proto&quot;</span><span class="p">;</span>
+
+<span class="kd">message</span> <span class="nc">Terraform</span> <span class="p">{</span>
+  <span class="n">Resources</span> <span class="na">resource</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+  <span class="n">Datasources</span> <span class="na">data</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+
+  <span class="n">Providers</span> <span class="na">provider</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+
+  <span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">Variable</span><span class="p">&gt;</span> <span class="na">variable</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
+
+  <span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">Output</span><span class="p">&gt;</span> <span class="na">output</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+
+  <span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="kt">string</span><span class="p">&gt;</span> <span class="na">locals</span> <span class="o">=</span> <span class="mi">6</span><span class="p">;</span>
+
+  <span class="n">Module</span> <span class="na">module</span> <span class="o">=</span> <span class="mi">7</span><span class="p">;</span>
+
+  <span class="n">TerraformSettings</span> <span class="na">terraform</span> <span class="o">=</span> <span class="mi">8</span><span class="p">;</span>
+
+  <span class="kd">message</span> <span class="nc">Resources</span> <span class="p">{</span>
+    <span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">random.resources.RandomId</span><span class="p">&gt;</span> <span class="na">random_id</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;random_id&quot;</span><span class="p">];</span>
+
+    <span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">random.resources.RandomInteger</span><span class="p">&gt;</span> <span class="na">random_integer</span> <span class="o">=</span> <span class="mi">2</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;random_integer&quot;</span><span class="p">];</span>
+
+    <span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">random.resources.RandomPassword</span><span class="p">&gt;</span> <span class="na">random_password</span> <span class="o">=</span> <span class="mi">3</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;random_password&quot;</span><span class="p">];</span>
+
+    <span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">random.resources.RandomPet</span><span class="p">&gt;</span> <span class="na">random_pet</span> <span class="o">=</span> <span class="mi">4</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;random_pet&quot;</span><span class="p">];</span>
+
+    <span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">random.resources.RandomShuffle</span><span class="p">&gt;</span> <span class="na">random_shuffle</span> <span class="o">=</span> <span class="mi">5</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;random_shuffle&quot;</span><span class="p">];</span>
+
+    <span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">random.resources.RandomString</span><span class="p">&gt;</span> <span class="na">random_string</span> <span class="o">=</span> <span class="mi">6</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;random_string&quot;</span><span class="p">];</span>
+
+    <span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">random.resources.RandomUuid</span><span class="p">&gt;</span> <span class="na">random_uuid</span> <span class="o">=</span> <span class="mi">7</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;random_uuid&quot;</span><span class="p">];</span>
+
+    <span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">tls.resources.TlsCertRequest</span><span class="p">&gt;</span> <span class="na">tls_cert_request</span> <span class="o">=</span> <span class="mi">8</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;tls_cert_request&quot;</span><span class="p">];</span>
+
+    <span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">tls.resources.TlsLocallySignedCert</span><span class="p">&gt;</span> <span class="na">tls_locally_signed_cert</span> <span class="o">=</span> <span class="mi">9</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;tls_locally_signed_cert&quot;</span><span class="p">];</span>
+
+    <span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">tls.resources.TlsPrivateKey</span><span class="p">&gt;</span> <span class="na">tls_private_key</span> <span class="o">=</span> <span class="mi">10</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;tls_private_key&quot;</span><span class="p">];</span>
+
+    <span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">tls.resources.TlsSelfSignedCert</span><span class="p">&gt;</span> <span class="na">tls_self_signed_cert</span> <span class="o">=</span> <span class="mi">11</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;tls_self_signed_cert&quot;</span><span class="p">];</span>
+  <span class="p">}</span>
+
+  <span class="kd">message</span> <span class="nc">Datasources</span> <span class="p">{</span>
+    <span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">tls.data.TlsCertificate</span><span class="p">&gt;</span> <span class="na">tls_certificate</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;tls_certificate&quot;</span><span class="p">];</span>
+
+    <span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">tls.data.TlsPublicKey</span><span class="p">&gt;</span> <span class="na">tls_public_key</span> <span class="o">=</span> <span class="mi">2</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;tls_public_key&quot;</span><span class="p">];</span>
+  <span class="p">}</span>
+
+  <span class="kd">message</span> <span class="nc">Providers</span> <span class="p">{</span>
+    <span class="k">repeated</span> <span class="n">random.provider.Random</span> <span class="na">random</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+    <span class="k">repeated</span> <span class="n">tls.provider.Tls</span> <span class="na">tls</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="kd">message</span> <span class="nc">Variable</span> <span class="p">{</span>
+    <span class="kt">string</span> <span class="na">type</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+    <span class="kt">string</span> <span class="na">description</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+
+    <span class="kt">string</span> <span class="k">default</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="kd">message</span> <span class="nc">Output</span> <span class="p">{</span>
+    <span class="kt">string</span> <span class="na">value</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="kd">message</span> <span class="nc">Module</span> <span class="p">{</span>
+  <span class="p">}</span>
+
+  <span class="kd">message</span> <span class="nc">TerraformSettings</span> <span class="p">{</span>
+    <span class="kt">string</span> <span class="na">required_version</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;required_version&quot;</span><span class="p">];</span>
+
+    <span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">Provider</span><span class="p">&gt;</span> <span class="na">required_providers</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+
+    <span class="n">Backend</span> <span class="na">backend</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+
+    <span class="kd">message</span> <span class="nc">Provider</span> <span class="p">{</span>
+      <span class="kt">string</span> <span class="na">source</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+      <span class="kt">string</span> <span class="na">version</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="kd">message</span> <span class="nc">Backend</span> <span class="p">{</span>
+      <span class="k">oneof</span> <span class="n">config</span> <span class="p">{</span>
+        <span class="n">BackendLocal</span> <span class="na">local</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+        <span class="n">BackendS3</span> <span class="na">s3</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+      <span class="p">}</span>
+
+      <span class="kd">message</span> <span class="nc">BackendLocal</span> <span class="p">{</span>
+        <span class="kt">string</span> <span class="na">path</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+        <span class="kt">string</span> <span class="na">workspace_dir</span> <span class="o">=</span> <span class="mi">2</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;workspace_dir&quot;</span><span class="p">];</span>
+      <span class="p">}</span>
+
+      <span class="kd">message</span> <span class="nc">BackendS3</span> <span class="p">{</span>
+        <span class="kt">string</span> <span class="na">region</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+        <span class="kt">string</span> <span class="na">access_key</span> <span class="o">=</span> <span class="mi">2</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;access_key&quot;</span><span class="p">];</span>
+
+        <span class="kt">string</span> <span class="na">secret_key</span> <span class="o">=</span> <span class="mi">3</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;secret_key&quot;</span><span class="p">];</span>
+
+        <span class="kt">string</span> <span class="na">iam_endpoint</span> <span class="o">=</span> <span class="mi">4</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;iam_endpoint&quot;</span><span class="p">];</span>
+
+        <span class="kt">string</span> <span class="na">max_retries</span> <span class="o">=</span> <span class="mi">5</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;max_retries&quot;</span><span class="p">];</span>
+
+        <span class="kt">string</span> <span class="na">profile</span> <span class="o">=</span> <span class="mi">6</span><span class="p">;</span>
+
+        <span class="kt">string</span> <span class="na">shared_credentials_file</span> <span class="o">=</span> <span class="mi">7</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;shared_credentials_file&quot;</span><span class="p">];</span>
+
+        <span class="kt">string</span> <span class="na">skip_credentials_validation</span> <span class="o">=</span> <span class="mi">8</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;skip_credentials_validation&quot;</span><span class="p">];</span>
+
+        <span class="kt">string</span> <span class="na">skip_region_validation</span> <span class="o">=</span> <span class="mi">9</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;skip_region_validation&quot;</span><span class="p">];</span>
+
+        <span class="kt">string</span> <span class="na">skip_metadata_api_check</span> <span class="o">=</span> <span class="mi">10</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;skip_metadata_api_check&quot;</span><span class="p">];</span>
+
+        <span class="kt">string</span> <span class="na">sts_endpoint</span> <span class="o">=</span> <span class="mi">11</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;sts_endpoint&quot;</span><span class="p">];</span>
+
+        <span class="kt">string</span> <span class="na">token</span> <span class="o">=</span> <span class="mi">12</span><span class="p">;</span>
+
+        <span class="kt">string</span> <span class="na">assume_role_duration_seconds</span> <span class="o">=</span> <span class="mi">13</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;assume_role_duration_seconds&quot;</span><span class="p">];</span>
+
+        <span class="kt">string</span> <span class="na">assume_role_policy</span> <span class="o">=</span> <span class="mi">14</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;assume_role_policy&quot;</span><span class="p">];</span>
+
+        <span class="kt">string</span> <span class="na">assume_role_policy_arns</span> <span class="o">=</span> <span class="mi">15</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;assume_role_policy_arns&quot;</span><span class="p">];</span>
+
+        <span class="kt">string</span> <span class="na">assume_role_tags</span> <span class="o">=</span> <span class="mi">16</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;assume_role_tags&quot;</span><span class="p">];</span>
+
+        <span class="kt">string</span> <span class="na">assume_role_transitive_tag_keys</span> <span class="o">=</span> <span class="mi">17</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;assume_role_transitive_tag_keys&quot;</span><span class="p">];</span>
+
+        <span class="kt">string</span> <span class="na">external_id</span> <span class="o">=</span> <span class="mi">18</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;external_id&quot;</span><span class="p">];</span>
+
+        <span class="kt">string</span> <span class="na">role_arn</span> <span class="o">=</span> <span class="mi">19</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;role_arn&quot;</span><span class="p">];</span>
+
+        <span class="kt">string</span> <span class="na">session_name</span> <span class="o">=</span> <span class="mi">20</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;session_name&quot;</span><span class="p">];</span>
+
+        <span class="kt">string</span> <span class="na">bucket</span> <span class="o">=</span> <span class="mi">21</span><span class="p">;</span>
+
+        <span class="kt">string</span> <span class="na">key</span> <span class="o">=</span> <span class="mi">22</span><span class="p">;</span>
+
+        <span class="kt">string</span> <span class="na">acl</span> <span class="o">=</span> <span class="mi">23</span><span class="p">;</span>
+
+        <span class="kt">string</span> <span class="na">encrypt</span> <span class="o">=</span> <span class="mi">24</span><span class="p">;</span>
+
+        <span class="kt">string</span> <span class="na">endpoint</span> <span class="o">=</span> <span class="mi">25</span><span class="p">;</span>
+
+        <span class="kt">string</span> <span class="na">force_path_style</span> <span class="o">=</span> <span class="mi">26</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;force_path_style&quot;</span><span class="p">];</span>
+
+        <span class="kt">string</span> <span class="na">kms_key_id</span> <span class="o">=</span> <span class="mi">27</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;kms_key_id&quot;</span><span class="p">];</span>
+
+        <span class="kt">string</span> <span class="na">sse_customer_key</span> <span class="o">=</span> <span class="mi">28</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;sse_customer_key&quot;</span><span class="p">];</span>
+
+        <span class="kt">string</span> <span class="na">workspace_key_prefix</span> <span class="o">=</span> <span class="mi">29</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;workspace_key_prefix&quot;</span><span class="p">];</span>
+
+        <span class="kt">string</span> <span class="na">dynamodb_endpoint</span> <span class="o">=</span> <span class="mi">30</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;dynamodb_endpoint&quot;</span><span class="p">];</span>
+
+        <span class="kt">string</span> <span class="na">dynamodb_table</span> <span class="o">=</span> <span class="mi">31</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;dynamodb_table&quot;</span><span class="p">];</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="create-a-tfpconf-file">Create a <code>.tf.pconf</code> file</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># vim: filetype=python</span>
+<span class="c1"># ./src/tfdemo/tfdemo.tf.pconf</span>
+<span class="n">load</span><span class="p">(</span><span class="s2">&quot;//terraform/terraform.proto&quot;</span><span class="p">,</span> <span class="s2">&quot;Terraform&quot;</span><span class="p">)</span>
+<span class="n">load</span><span class="p">(</span><span class="s2">&quot;//terraform/random-provider.proto&quot;</span><span class="p">,</span> <span class="s2">&quot;Random&quot;</span><span class="p">)</span>
+<span class="n">load</span><span class="p">(</span><span class="s2">&quot;//terraform/random-resources.proto&quot;</span><span class="p">,</span> <span class="s2">&quot;RandomPet&quot;</span><span class="p">)</span>
+
+<span class="n">tf</span> <span class="o">=</span> <span class="n">Terraform</span><span class="p">(</span>
+    <span class="n">provider</span><span class="o">=</span><span class="n">Terraform</span><span class="o">.</span><span class="n">Providers</span><span class="p">(</span><span class="n">random</span><span class="o">=</span><span class="p">[</span><span class="n">Random</span><span class="p">()]),</span>
+    <span class="n">resource</span><span class="o">=</span><span class="n">Terraform</span><span class="o">.</span><span class="n">Resources</span><span class="p">(),</span>
+    <span class="n">output</span><span class="o">=</span><span class="p">{},</span>
+<span class="p">)</span>
+
+<span class="n">tf</span><span class="o">.</span><span class="n">resource</span><span class="o">.</span><span class="n">random_pet</span><span class="p">[</span><span class="s2">&quot;my_dog_name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">RandomPet</span><span class="p">()</span>
+<span class="n">tf</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="s2">&quot;my_dog_name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Terraform</span><span class="o">.</span><span class="n">Output</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;$</span><span class="si">{random_pet.my_dog_name.id}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">tf</span>
+</code></pre></div>
+<h3 id="compile-the-config">compile the config</h3>
+<div class="highlight"><pre><span></span><code>$ protoconf compile .
+</code></pre></div>
+<p>Check the output</p>
+<div class="highlight"><pre><span></span><code>cat materialized_config/tfdemo/tfdemo.tf.materialized_JSON<span class="p">|</span> jq
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  <span class="nt">&quot;protoFile&quot;</span><span class="p">:</span> <span class="s2">&quot;terraform/terraform.proto&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;@type&quot;</span><span class="p">:</span> <span class="s2">&quot;type.googleapis.com/terraform.Terraform&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;output&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;my_dog_name&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;${random_pet.my_dog_name.id}&quot;</span>
+      <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;provider&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;random&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{}</span>
+      <span class="p">]</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;resource&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;random_pet&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;my_dog_name&quot;</span><span class="p">:</span> <span class="p">{}</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="prepare-to-run-terraform">prepare to run terraform</h3>
+<p><div class="highlight"><pre><span></span><code>$ mkdir tf
+$ cat materialized_config/tfdemo/tfdemo.tf.materialized_JSON <span class="p">|</span> jq <span class="s1">&#39;.value | del(.[&quot;@type&quot;])&#39;</span> &gt; tf/test.tf.json
+$ <span class="nb">cd</span> tf
+$ terraform init
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>$ terraform plan
+
+An execution plan has been generated and is shown below.
+Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  <span class="c1"># random_pet.my_dog_name will be created</span>
+  + resource <span class="s2">&quot;random_pet&quot;</span> <span class="s2">&quot;my_dog_name&quot;</span> <span class="o">{</span>
+      + <span class="nv">id</span>        <span class="o">=</span> <span class="o">(</span>known after apply<span class="o">)</span>
+      + <span class="nv">length</span>    <span class="o">=</span> <span class="m">2</span>
+      + <span class="nv">separator</span> <span class="o">=</span> <span class="s2">&quot;-&quot;</span>
+    <span class="o">}</span>
+
+Plan: <span class="m">1</span> to add, <span class="m">0</span> to change, <span class="m">0</span> to destroy.
+
+Changes to Outputs:
+  + <span class="nv">my_dog_name</span> <span class="o">=</span> <span class="o">(</span>known after apply<span class="o">)</span>
+
+------------------------------------------------------------------------
+
+Note: You didn<span class="s1">&#39;t specify an &quot;-out&quot; parameter to save this plan, so Terraform</span>
+<span class="s1">can&#39;</span>t guarantee that exactly these actions will be performed <span class="k">if</span>
+<span class="s2">&quot;terraform apply&quot;</span> is subsequently run.
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>$ terraform apply -auto-approve
+random_pet.my_dog_name: Creating...
+random_pet.my_dog_name: Creation <span class="nb">complete</span> after 0s <span class="o">[</span><span class="nv">id</span><span class="o">=</span>key-zebra<span class="o">]</span>
+
+Apply complete! Resources: <span class="m">1</span> added, <span class="m">0</span> changed, <span class="m">0</span> destroyed.
+
+Outputs:
+
+<span class="nv">my_dog_name</span> <span class="o">=</span> <span class="s2">&quot;key-zebra&quot;</span>
+</code></pre></div></p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        <a href="../../mutation-rpc/" class="md-footer__link md-footer__link--prev" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Mutation RPC
+            </div>
+          </div>
+        </a>
+      
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../assets/javascripts/workers/search.d351de03.min.js", "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.34eae1b6.min.js"></script>
+      
+    
+  </body>
+</html>
