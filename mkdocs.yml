@@ -10,7 +10,7 @@ theme:
   palette:
   - media: "(prefers-color-scheme: dark)"
     scheme: slate
-    primary: blue
+    primary: cyan
     accent: yellow
     toggle:
       icon: material/weather-sunny
