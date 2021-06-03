@@ -25,14 +25,20 @@ theme:
 repo_url: https://github.com/protoconf/protoconf
 repo_name: protoconf/protoconf
 markdown_extensions:
+  - def_list
   - attr_list
+  - pymdownx.tabbed
+  - pymdownx.superfences
   - pymdownx.highlight
   - pymdownx.superfences
+  - pymdownx.tasklist:
+      custom_checkbox: true
 extra:
   version:
     provider: mike
 nav:
   - Home: index.md
+  - Introduction: introduction.md
   - Installation: installation.md
   - Getting Started: getting-started.md
   - Structure Your Code: structuring-your-code.md

@@ -1,8 +1,7 @@
 ---
 title: protoconf
 ---
-![Protoconf](assets/protoconf_new.svg){ align=left }
-#### Codify configuration, Instant delivery
+![Protoconf](assets/protoconf_new.svg)
 
 ![Test](https://github.com/protoconf/protoconf/workflows/Bazel/badge.svg)
 ![Release](https://github.com/protoconf/protoconf/workflows/Release/badge.svg)
@@ -24,6 +23,28 @@ Using Protoconf enables:
 * **Automated validation**
   Config follows a fully-typed (Protobuf) schema. This allows writing validation code in Starlark, to verify your configuration before it is committed.
 
+### What is protoconf
+
+Protoconf is a configuration management framework. We call it a framework because it provides a platform to manage the entire life cycle of configuration files (configs).
+Protoconf is a tool to aid in the specification and distribution of configs.
+The goals of specification are to be robust, composable, and less error-prone.
+The goals of distribution are to reach all of your machines quickly, reliably, and to be highly available even in disaster scenarios.
+
+### When should you use Protoconf?
+
+- [x] You need to update and distribute configuration dynamically, often to a large number of hosts or services.
+- [x] You want to write your configuration with code.
+- [x] You need change history.
+- [x] You want to code review config changes.
+- [x] You want validation that config changes conform to a schema and do not violate invariants that you define.
+- [x] You want to canary (test) config changes before distributing them to production.
+- [x] You can tolerate eventual consistency; config updates are not atomic w.r.t. different consumers.
+- [x] You don't need config updates to propagate to your consumers within a certain SLA.
+- [x] Your configs are reasonably small
+- [x] You don't need very frequent config updates, more than about once every 5 mins.
+
+### How Protoconf works
+
 #### Configuration update flow
 
 <div align="center">
@@ -34,8 +55,22 @@ Using Protoconf enables:
 
 This is roughly how configuration is consumed by a service. This paradigm encourages you to write software that can reconfigure itself in runtime rather than require a restart:
 
-<div align="center">
-  <img src="https://lior2b.github.io/temp/protoconf_api.png" width="400">
-</div>
+=== "Python"
+
+	```python
+	#!/usr/bin/env python
+	import grpc
+	from v1.protoconf_service_pb2_grpc import ProtoconfServiceStub
+	from v1.protoconf_service_pb2 import ConfigSubscriptionRequest
+	from myproject.myconfig_pb2 import MyConfig
+
+	channel = grpc.insecure_channel("localhost:4300")
+	stub = ProtoconfServiceStub(channel)
+
+	config = MyConfig()
+	for update in stub.SubscribeForConfig(ConfigSubscriptionRequest(path="myproject/myconfig")):
+		update.value.Unpack(config)
+		print(config)
+	```
 
 As Protoconf uses Protobuf and gRPC, it supports delivering configuration to [all major languages](https://github.com/protocolbuffers/protobuf/blob/master/docs/third_party.md). See also: [Protobuf overview](https://developers.google.com/protocol-buffers/docs/overview).
