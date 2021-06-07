@@ -31,7 +31,7 @@ require (
 	github.com/ulikunitz/xz v0.5.8 // indirect
 	github.com/zclconf/go-cty v1.8.3
 	go.etcd.io/etcd v3.3.18+incompatible // indirect
-	go.starlark.net v0.0.0-20210511153848-cca21e7857d4
+	go.starlark.net v0.0.0-20210602144842-1cdb82c9e17a
 	go.uber.org/zap v1.17.0
 	golang.org/x/exp v0.0.0-20200224162631-6cc2880d07d6 // indirect
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b // indirect
