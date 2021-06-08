@@ -1,5 +1,5 @@
 site_name: protoconf
-site_url: docs.protoconf.com
+site_url: https://protoconf.github.io/protoconf
 theme:
   favicon: assets/images/favicon.ico
   logo: assets/protoconf_new.svg
