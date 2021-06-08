@@ -1,4 +1,5 @@
 site_name: protoconf
+site_url: docs.protoconf.com
 theme:
   favicon: assets/images/favicon.ico
   logo: assets/protoconf_new.svg
