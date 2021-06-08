@@ -20,6 +20,10 @@
       Build from source
     </a>
     <span> | </span>
+    <a href="https://protoconf.github.io/protoconf">
+      Documentation
+    </a>
+    <span> | </span>
     <a href="https://lior2b.github.io/temp/">
       Web IDE
     </a>
