@@ -24,7 +24,7 @@ require (
 	github.com/mitchellh/cli v1.1.2
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/pkg/errors v0.9.1
-	github.com/prometheus/client_golang v1.10.0
+	github.com/prometheus/client_golang v1.11.0
 	github.com/qri-io/starlib v0.5.0
 	github.com/samuel/go-zookeeper v0.0.0-20190923202752-2cc03de413da // indirect
 	github.com/stretchr/testify v1.7.0
