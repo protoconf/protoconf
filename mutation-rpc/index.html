@@ -578,8 +578,8 @@ $ chmod +x post.sh
 <div class="highlight"><pre><span></span><code>$ protoconf mutate -path myservice/mutation -proto myservice/myconfig.proto -msg MyConfig -field <span class="nv">timeout</span><span class="o">=</span><span class="m">3</span>
 </code></pre></div></p>
 <p>You will now notice a new file created under <code>mutable_config</code></p>
-<div class="highlight"><pre><span></span><code> find mutable_config
-$ mutable_config
+<div class="highlight"><pre><span></span><code>$ find mutable_config
+mutable_config
 mutable_config/myservice
 mutable_config/myservice/mutation.materialized_JSON
 </code></pre></div>
