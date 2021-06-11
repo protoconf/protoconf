@@ -62,7 +62,7 @@ mutable_config/myservice/mutation.materialized_JSON
 file: ./src/myservice/default.pconf
 """
 load("myconfig.proto", "MyConfig")
-load("mutate:myservice/mutation", "value")
+load("mutable:myservice/mutation", "value")
 
 config = MyConfig(name="config", timeout=value.timeout)
 
