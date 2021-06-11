@@ -588,7 +588,7 @@ mutable_config/myservice/mutation.materialized_JSON
 <span class="sd">file: ./src/myservice/default.pconf</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="n">load</span><span class="p">(</span><span class="s2">&quot;myconfig.proto&quot;</span><span class="p">,</span> <span class="s2">&quot;MyConfig&quot;</span><span class="p">)</span>
-<span class="n">load</span><span class="p">(</span><span class="s2">&quot;mutate:myservice/mutation&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
+<span class="n">load</span><span class="p">(</span><span class="s2">&quot;mutable:myservice/mutation&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
 
 <span class="n">config</span> <span class="o">=</span> <span class="n">MyConfig</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;config&quot;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">value</span><span class="o">.</span><span class="n">timeout</span><span class="p">)</span>
 
