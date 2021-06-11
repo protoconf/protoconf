@@ -50,8 +50,8 @@ $ protoconf mutate -path myservice/mutation -proto myservice/myconfig.proto -msg
 You will now notice a new file created under `mutable_config`
 
 ```shell
- find mutable_config
-$ mutable_config
+$ find mutable_config
+mutable_config
 mutable_config/myservice
 mutable_config/myservice/mutation.materialized_JSON
 ```
