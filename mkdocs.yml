@@ -37,6 +37,9 @@ markdown_extensions:
 extra:
   version:
     provider: mike
+google_analytics:
+  - G-H3NLBNNQD7
+  - auto
 nav:
   - Home: index.md
   - Installation: installation.md
