@@ -50,3 +50,4 @@ nav:
   - Mutation RPC: mutation-rpc.md
   - Integrations:
     - Terraform: integrations/terraform.md
+    - Terraform Kubernetes: integrations/terraform_kubernetes.md
