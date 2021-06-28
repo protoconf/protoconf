@@ -42,7 +42,7 @@ require (
 	golang.org/x/tools v0.1.3
 	google.golang.org/api v0.21.0 // indirect
 	google.golang.org/grpc v1.37.1
-	google.golang.org/protobuf v1.26.0
+	google.golang.org/protobuf v1.27.1
 )
 
 replace github.com/hashicorp/consul v0.0.0-20171026175957-610f3c86a089 => github.com/hashicorp/consul v1.8.1
