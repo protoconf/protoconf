@@ -73,15 +73,30 @@ func (p *ProviderImporter) msgBuilderFromBlock(name string, b *configschema.Bloc
 	}
 	sort.Strings(keys)
 
+	blocks := b.BlockTypes
+	block_keys := make([]string, 0, len(blocks))
+	for k := range blocks {
+		block_keys = append(block_keys, k)
+	}
+	sort.Strings(block_keys)
+
 	for _, fieldName := range keys {
 		p.attributeToProtoField(m, fieldName, attrs[fieldName])
 	}
-	for n, nb := range b.BlockTypes {
+
+	for _, n := range block_keys {
+		nb := blocks[n]
 		nm := p.msgBuilderFromBlock(capitalizeMessageName(n), &nb.Block)
 		f := builder.NewField(n, builder.FieldTypeMessage(nm))
+		if nb.MaxItems != 1 {
+			f.SetRepeated()
+		}
 		f.SetJsonName(n)
-		m.TryAddField(f)
-		m.TryAddNestedMessage(nm)
+		if err := m.TryAddField(f); err != nil {
+			log.Println(err)
+		} else {
+			m.TryAddNestedMessage(nm)
+		}
 	}
 	return m
 }
@@ -89,7 +104,10 @@ func (p *ProviderImporter) msgBuilderFromBlock(name string, b *configschema.Bloc
 func (p *ProviderImporter) attributeToProtoField(msg *builder.MessageBuilder, name string, attr *configschema.Attribute) *builder.MessageBuilder {
 	p.logger.With(zap.String("attr", name)).Debug("got attr")
 	t := attr.Type
-	p.handleCty(msg, name, t, attr.Description)
+	err := p.handleCty(msg, name, t, attr.Description)
+	if err != nil {
+		log.Fatal(err)
+	}
 	return msg
 }
 
@@ -98,6 +116,7 @@ func (p *ProviderImporter) handleCty(parent *builder.MessageBuilder, fieldName s
 
 	if t.IsListType() || t.IsSetType() {
 		t = t.ElementType()
+		f.SetRepeated()
 	}
 	if t.IsObjectType() {
 		p.handleObject(fieldName, t, f, parent)
@@ -105,12 +124,11 @@ func (p *ProviderImporter) handleCty(parent *builder.MessageBuilder, fieldName s
 
 	c := builder.Comments{LeadingComment: description}
 	f.SetComments(c)
-	parent.TryAddField(f)
-	return nil
+	return parent.TryAddField(f)
 }
 
 func (p *ProviderImporter) handleObject(name string, t cty.Type, f *builder.FieldBuilder, msg *builder.MessageBuilder) {
-	log := p.logger.With(zap.String("object_name", name))
+	log := p.logger.With(zap.String("object_name", name)).With(zap.Bool("repeated?", f.IsRepeated()))
 	m := builder.NewMessage(capitalizeMessageName(name))
 	keys := []string{}
 	for n := range t.AttributeTypes() {
@@ -141,7 +159,7 @@ func (p *ProviderImporter) handleObject(name string, t cty.Type, f *builder.Fiel
 }
 
 func (p *ProviderImporter) ctyTypeToProtoField(name string, t cty.Type) *builder.FieldBuilder {
-	log := p.logger
+	log := p.logger.With(zap.String("name", name))
 	jsonName := name
 	var validFieldName = regexp.MustCompile(`^[a-z]`)
 	if !validFieldName.MatchString(name) {
