@@ -175,7 +175,7 @@ func (p *ProviderImporter) ctyTypeToProtoField(name string, t cty.Type) *builder
 	}
 	if t.IsMapType() {
 		log.Info("detected as map", zap.String("type", t.ElementType().FriendlyName()))
-		f = builder.NewMapField(name, builder.FieldTypeString(), builder.FieldTypeString())
+		f = builder.NewMapField(name, builder.FieldTypeString(), builder.FieldTypeString()).SetJsonName(name)
 		return f
 	}
 	if t.IsObjectType() {
