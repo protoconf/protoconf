@@ -41,7 +41,7 @@ require (
 	golang.org/x/time v0.0.0-20191024005414-555d28b269f0 // indirect
 	golang.org/x/tools v0.1.4
 	google.golang.org/api v0.21.0 // indirect
-	google.golang.org/grpc v1.37.1
+	google.golang.org/grpc v1.39.0
 	google.golang.org/protobuf v1.27.1
 )
 
