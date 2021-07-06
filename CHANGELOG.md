@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.4-rc.0](https://github.com/protoconf/protoconf/compare/v0.1.4-beta.0...v0.1.4-rc.0) (2021-07-06)
+
+
+### Bug Fixes
+
+* **deps:** update go.starlark.net commit hash to 1cdb82c ([#120](https://github.com/protoconf/protoconf/issues/120)) ([b07d0ef](https://github.com/protoconf/protoconf/commit/b07d0ef1d141b783be6b823280f8df6cec793077))
+* **deps:** update go.starlark.net commit hash to cca21e7 ([#86](https://github.com/protoconf/protoconf/issues/86)) ([1045b0d](https://github.com/protoconf/protoconf/commit/1045b0dbd80529a7f2793aa995cad0d01b83ab9e))
+* **deps:** update golang.org/x/net commit hash to 04defd4 ([#138](https://github.com/protoconf/protoconf/issues/138)) ([2b98ca2](https://github.com/protoconf/protoconf/commit/2b98ca2728eef612267f89e77cfb9fda6d37d5cb))
+* **deps:** update golang.org/x/net commit hash to abc4532 ([#87](https://github.com/protoconf/protoconf/issues/87)) ([6fef1c5](https://github.com/protoconf/protoconf/commit/6fef1c5d7ff04019f494cff61d7589e7b2751d98))
+* **deps:** update golang.org/x/sync commit hash to 036812b ([#89](https://github.com/protoconf/protoconf/issues/89)) ([f716fc7](https://github.com/protoconf/protoconf/commit/f716fc7de210800ca452e87b563f1a88fd5251e7))
+* **deps:** update module github.com/golang/protobuf to v1.5.2 ([#101](https://github.com/protoconf/protoconf/issues/101)) ([c2629f8](https://github.com/protoconf/protoconf/commit/c2629f8c9b4f70abca11a0764d7d2695fb2aa6c4))
+* **deps:** update module github.com/hashicorp/go-getter to v1.5.3 ([#102](https://github.com/protoconf/protoconf/issues/102)) ([d5a21b9](https://github.com/protoconf/protoconf/commit/d5a21b9d796383a9b4b4b332aa1494e769ae6362))
+* **deps:** update module github.com/hashicorp/go-getter to v1.5.5 ([#141](https://github.com/protoconf/protoconf/issues/141)) ([2db2160](https://github.com/protoconf/protoconf/commit/2db216053a6c6c19f1dfba312de33885b0354ffd))
+* **deps:** update module github.com/hashicorp/go-getter to v2 ([#115](https://github.com/protoconf/protoconf/issues/115)) ([310689d](https://github.com/protoconf/protoconf/commit/310689d9ecedcf7f0e89b4cf7fd046a9920bcef4))
+* **deps:** update module github.com/hashicorp/go-plugin to v1.4.1 ([#104](https://github.com/protoconf/protoconf/issues/104)) ([3aaa121](https://github.com/protoconf/protoconf/commit/3aaa121f85ead44415d666a39d2516cbd436e96b))
+* **deps:** update module github.com/hashicorp/go-plugin to v1.4.2 ([#125](https://github.com/protoconf/protoconf/issues/125)) ([e312280](https://github.com/protoconf/protoconf/commit/e312280be6680e93838012513dc1e6a0991550a5))
+* **deps:** update module github.com/jhump/protoreflect to v1.8.2 ([#106](https://github.com/protoconf/protoconf/issues/106)) ([b2ee5fb](https://github.com/protoconf/protoconf/commit/b2ee5fba2eb330678d3f34d74972e80d953503c1))
+* **deps:** update module github.com/mitchellh/cli to v1.1.2 ([#95](https://github.com/protoconf/protoconf/issues/95)) ([4539e70](https://github.com/protoconf/protoconf/commit/4539e704e17e5bf2103d79490b51ddc5bf15102e))
+* **deps:** update module github.com/prometheus/client_golang to v1.10.0 ([#107](https://github.com/protoconf/protoconf/issues/107)) ([84ce887](https://github.com/protoconf/protoconf/commit/84ce8876776d20a2669f26f78de7dc1d05eed92d))
+* **deps:** update module github.com/prometheus/client_golang to v1.11.0 ([#127](https://github.com/protoconf/protoconf/issues/127)) ([8c61170](https://github.com/protoconf/protoconf/commit/8c6117011fa6bbd288a4e774a0d0a5431638d4ce))
+* **deps:** update module github.com/stretchr/testify to v1.7.0 ([#108](https://github.com/protoconf/protoconf/issues/108)) ([9b4ba00](https://github.com/protoconf/protoconf/commit/9b4ba00fb937c4670c1ab411234bc8d0972c106b))
+* **deps:** update module github.com/zclconf/go-cty to v1.8.3 ([#109](https://github.com/protoconf/protoconf/issues/109)) ([8f6b6d6](https://github.com/protoconf/protoconf/commit/8f6b6d64f2a067737378ded4b0f2a4c1aa480b6f))
+* **deps:** update module github.com/zclconf/go-cty to v1.8.4 ([#142](https://github.com/protoconf/protoconf/issues/142)) ([69b5ce8](https://github.com/protoconf/protoconf/commit/69b5ce8ef99bd470b064a22c23e53ceb0a81c90c))
+* **deps:** update module go.uber.org/zap to v1.17.0 ([#110](https://github.com/protoconf/protoconf/issues/110)) ([1c41d56](https://github.com/protoconf/protoconf/commit/1c41d56bce507017e55cd5f856bdeed6646df672))
+* **deps:** update module go.uber.org/zap to v1.18.1 ([#148](https://github.com/protoconf/protoconf/issues/148)) ([3136fe0](https://github.com/protoconf/protoconf/commit/3136fe0126e98488c9712d1bc97057e71e7ab16d))
+* **deps:** update module golang.org/x/tools to v0.1.2 ([#111](https://github.com/protoconf/protoconf/issues/111)) ([2a1dd27](https://github.com/protoconf/protoconf/commit/2a1dd275cbfce9be2cbbdfea08285f9760f2e5c2))
+* **deps:** update module golang.org/x/tools to v0.1.3 ([#139](https://github.com/protoconf/protoconf/issues/139)) ([d929833](https://github.com/protoconf/protoconf/commit/d929833e4594188732297160d4a2d48a688f31ae))
+* **deps:** update module golang.org/x/tools to v0.1.4 ([#143](https://github.com/protoconf/protoconf/issues/143)) ([970bda2](https://github.com/protoconf/protoconf/commit/970bda264ad0b2c79fd9080b0c165853d87b6e97))
+* **deps:** update module google.golang.org/grpc to v1.38.0 ([#112](https://github.com/protoconf/protoconf/issues/112)) ([ec9e12b](https://github.com/protoconf/protoconf/commit/ec9e12b6537588307617e4ec0cbe89a222046b78))
+* **deps:** update module google.golang.org/grpc to v1.39.0 ([#149](https://github.com/protoconf/protoconf/issues/149)) ([ead23d9](https://github.com/protoconf/protoconf/commit/ead23d9168753afbf6cbb0f5bb6560f17868e690))
+* **deps:** update module google.golang.org/protobuf to v1.27.1 ([#145](https://github.com/protoconf/protoconf/issues/145)) ([5e2e8cb](https://github.com/protoconf/protoconf/commit/5e2e8cbf1566a3f5734245883878f9fcd4624455))
+* **importers:** json_name on tf map fields ([#150](https://github.com/protoconf/protoconf/issues/150)) ([324e411](https://github.com/protoconf/protoconf/commit/324e4110b645b090063e03855e6865f15545c8bb))
+* **terraform:** some blocks might be repeated ([#147](https://github.com/protoconf/protoconf/issues/147)) ([7f41613](https://github.com/protoconf/protoconf/commit/7f4161323450da1270b1a47f589d1f61c34a582c)), closes [#146](https://github.com/protoconf/protoconf/issues/146)
+* docs.yml ([#133](https://github.com/protoconf/protoconf/issues/133)) ([55d105a](https://github.com/protoconf/protoconf/commit/55d105a5799dfef02b0f3aca2f1cc972774dd85d))
+* **mkdocs:** fetch all history prevent push errors ([#132](https://github.com/protoconf/protoconf/issues/132)) ([d4026eb](https://github.com/protoconf/protoconf/commit/d4026ebe31e9ff2afc31c522924c147635c30f48))
+* mkdocs site_url ([#131](https://github.com/protoconf/protoconf/issues/131)) ([4dc05dd](https://github.com/protoconf/protoconf/commit/4dc05dd430cb62d019a90afb43697b563fd67569))
+* yaml syntax in codeql ([94e6363](https://github.com/protoconf/protoconf/commit/94e63631429d590a0a387ee2ac9febb16a84aa40))
+
 ### [0.1.4-beta.0](https://github.com/protoconf/protoconf/compare/v0.1.3...v0.1.4-beta.0) (2021-05-10)
 
 
