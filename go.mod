@@ -7,6 +7,7 @@ require (
 	github.com/abronan/valkeyrie v0.1.0
 	github.com/coreos/etcd v3.3.18+incompatible // indirect
 	github.com/coreos/go-semver v0.3.0 // indirect
+	github.com/envoyproxy/go-control-plane v0.9.9-0.20210512163311-63b5d3c536b0 // indirect
 	github.com/fatih/structtag v1.2.0
 	github.com/fsnotify/fsnotify v1.4.9
 	github.com/ghodss/yaml v1.0.0
@@ -41,7 +42,7 @@ require (
 	golang.org/x/time v0.0.0-20191024005414-555d28b269f0 // indirect
 	golang.org/x/tools v0.1.4
 	google.golang.org/api v0.21.0 // indirect
-	google.golang.org/grpc v1.39.0
+	google.golang.org/grpc v1.37.0
 	google.golang.org/protobuf v1.27.1
 )
 
