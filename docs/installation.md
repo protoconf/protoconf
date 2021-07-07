@@ -3,10 +3,12 @@
 ### On Linux/MacOS
 
 ```
-export PROTOCONF_VERSION="0.1.3"
+export PROTOCONF_VERSION="0.1.4"
 export PROTOCONF_OS=$(uname | tr '[A-Z]' '[a-z]')
-curl -LO https://github.com/protoconf/protoconf/releases/download/${PROTOCONF_VERSION}/protoconf-${PROTOCONF_OS}-${PROTOCONF_VERSION}.tar.gz
-sudo tar xvf protoconf-${PROTOCONF_OS}-${PROTOCONF_VERSION}.tar.gz -C /usr/local/bin
+# change to "arm64" if needed
+export PROTOCONF_ARCH="amd64"
+curl -LO https://github.com/protoconf/protoconf/releases/download/${PROTOCONF_VERSION}/protoconf-${PROTOCONF_OS}-${PROTOCONF_ARCH}-${PROTOCONF_VERSION}.tar.gz
+sudo tar xvf protoconf-${PROTOCONF_OS}-${PROTOCONF_ARCH}-${PROTOCONF_VERSION}.tar.gz -C /usr/local/bin
 ```
 
 ### On Windows
