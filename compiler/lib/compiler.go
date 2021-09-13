@@ -8,12 +8,12 @@ import (
 
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/ptypes"
+	"github.com/jhump/protoreflect/desc/protoparse"
 	"github.com/jhump/protoreflect/dynamic"
 	"github.com/pkg/errors"
 	"github.com/protoconf/protoconf/compiler/proto"
 	"github.com/protoconf/protoconf/consts"
 	pc "github.com/protoconf/protoconf/datatypes/proto/v1"
-	"github.com/protoconf/protoconf/utils"
 	"go.starlark.net/resolve"
 	"go.starlark.net/starlark"
 )
@@ -32,6 +32,7 @@ func NewCompiler(protoconfRoot string, verboseLogging bool) *Compiler {
 		disableWriting:   false,
 		protoFilesLoaded: make(map[string]interface{}),
 		MaterializedDir:  filepath.Join(protoconfRoot, consts.CompiledConfigPath),
+		parser:           &protoparse.Parser{ImportPaths: []string{filepath.Join(protoconfRoot, consts.SrcPath)}},
 	}
 }
 
@@ -41,6 +42,7 @@ type Compiler struct {
 	disableWriting   bool
 	protoFilesLoaded map[string]interface{}
 	MaterializedDir  string
+	parser           *protoparse.Parser
 }
 
 func (c *Compiler) DisableWriting() error {
@@ -107,6 +109,7 @@ func (c *Compiler) writeConfig(message *dynamic.Message, filename string) error 
 	if c.disableWriting {
 		return nil
 	}
+
 	any, err := ptypes.MarshalAny(message)
 	if err != nil {
 		return fmt.Errorf("error marshaling proto to Any, message=%s", message)
@@ -123,11 +126,13 @@ func (c *Compiler) writeConfig(message *dynamic.Message, filename string) error 
 			protoFilesToLoad = append(protoFilesToLoad, strings.TrimPrefix(k, "/"))
 		}
 	}
-	anyResolver, err := utils.LoadAnyResolver(filepath.Join(c.protoconfRoot, "src"), protoFilesToLoad...)
+	descriptors, err := c.parser.ParseFiles(protoFilesToLoad...)
 	if err != nil {
-		return err
+		return fmt.Errorf("error parsing proto file, file=%s err=%v", protoFilesToLoad, err)
 	}
+	anyResolver := dynamic.AnyResolver(nil, descriptors...)
 	m := &jsonpb.Marshaler{AnyResolver: anyResolver, Indent: "  "}
+
 	jsonData, err := m.MarshalToString(protoconfValue)
 	if err != nil {
 		return errors.Wrapf(err, "error marshaling ProtoconfValue to JSON, value=%v", protoconfValue)

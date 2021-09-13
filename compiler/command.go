@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/mitchellh/cli"
 	compilerlib "github.com/protoconf/protoconf/compiler/lib"
@@ -74,7 +75,9 @@ func (c *cliCommand) Run(args []string) int {
 	for _, config := range configs {
 		filename := strings.TrimSpace(config)
 		g.Go(func() error {
+			t := time.Now()
 			err := compiler.CompileFile(filename)
+			log.Println(filename, ":", time.Since(t))
 			if err != nil {
 				log.Printf("Error compiling config %s, err=%s", filename, err)
 			}

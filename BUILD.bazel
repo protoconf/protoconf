@@ -8,13 +8,13 @@ load("//:platforms.bzl", "versions")
 load("@graknlabs_bazel_distribution//github:rules.bzl", "deploy_github")
 
 # gazelle:prefix github.com/protoconf/protoconf
-gazelle(name="gazelle")
+gazelle(name = "gazelle")
 
 nogo(
-    name="protoconf_nogo",
-    config="//tools:nogo_config",
-    visibility=["//visibility:public"],
-    deps=[
+    name = "protoconf_nogo",
+    config = "//tools:nogo_config",
+    visibility = ["//visibility:public"],
+    deps = [
         "@org_golang_x_tools//go/analysis/passes/asmdecl:go_tool_library",
         "@org_golang_x_tools//go/analysis/passes/assign:go_tool_library",
         "@org_golang_x_tools//go/analysis/passes/atomic:go_tool_library",
@@ -49,19 +49,19 @@ nogo(
 )
 
 alias(
-    name="protoconf",
-    actual="//cmd/protoconf",
+    name = "protoconf",
+    actual = "//cmd/protoconf",
 )
 
 alias(
-    name="buildifier",
-    actual="@com_github_bazelbuild_buildtools//buildifier",
+    name = "buildifier",
+    actual = "@com_github_bazelbuild_buildtools//buildifier",
 )
 
 genrule(
-    name="release",
-    outs=["out.txt"],
-    cmd="&&".join(
+    name = "release",
+    outs = ["out.txt"],
+    cmd = "&&".join(
         [
             "$(location //docker:protoconf_release)",
             "$(location //docker:agent_release)",
@@ -70,42 +70,42 @@ genrule(
             "echo 'echo done' > $@",
         ],
     ),
-    exec_tools=[
+    exec_tools = [
         "//docker:protoconf_release",
         "//docker:agent_release",
         "//docker:server_release",
         "//docker:exec_release",
     ],
-    executable=True,
-    tags=["manual"],
+    executable = True,
+    tags = ["manual"],
 )
 
 # Releasing protoconf
 assemble_versioned(
-    name="protoconf-versioned-all",
-    targets=versions(),
-    version_file="//:VERSION",
+    name = "protoconf-versioned-all",
+    targets = versions(),
+    version_file = "//:VERSION",
 )
 
 deploy_github(
-    name="deploy-github",
+    name = "deploy-github",
     # release_description = "//:RELEASE_TEMPLATE.md",
-    archive=":protoconf-versioned-all",
-    deployment_properties="//:deployment.properties",
-    title="protoconf",
-    title_append_version=True,
-    version_file="//:VERSION",
+    archive = ":protoconf-versioned-all",
+    deployment_properties = "//:deployment.properties",
+    title = "protoconf",
+    title_append_version = True,
+    version_file = "//:VERSION",
 )
 
 filegroup(
-    name="coverage_files",
-    srcs=glob(["bazel-out/**/coverage.dat"]),
+    name = "coverage_files",
+    srcs = glob(["bazel-out/**/coverage.dat"]),
 )
 
 genrule(
-    name="aggregate_cov_files",
-    srcs=[":coverage_files"],
-    outs=["coverage.dat"],
-    cmd="echo 'mode: set' > $@; grep -h -v '^mode: set$$' $(locations :coverage_files) >> $@",
-    tags=["manual"],
+    name = "aggregate_cov_files",
+    srcs = [":coverage_files"],
+    outs = ["coverage.dat"],
+    cmd = "echo 'mode: set' > $@; grep -h -v '^mode: set$$' $(locations :coverage_files) >> $@",
+    tags = ["manual"],
 )
