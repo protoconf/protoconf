@@ -3,22 +3,20 @@ site_url: https://protoconf.github.io/protoconf
 theme:
   favicon: assets/images/favicon.ico
   logo: assets/protoconf_new.svg
-  # logo: assets/images/favicon-32x32.png
   icon:
-    # logo: fontawesome/solid/egg
     repo: fontawesome/brands/github
   name: material
   palette:
   - media: "(prefers-color-scheme: dark)"
-    scheme: slate
-    primary: cyan
+    scheme: slate 
+    primary: white 
     accent: yellow
     toggle:
       icon: material/weather-sunny
       name: Switch to light mode
   - media: "(prefers-color-scheme: light)"
     scheme: default
-    primary: cyan
+    primary: white
     accent: yellow
     toggle:
       icon: material/weather-night
@@ -37,6 +35,8 @@ markdown_extensions:
 extra:
   version:
     provider: mike
+extra_css:
+  - stylesheets/extra.css
 google_analytics:
   - G-H3NLBNNQD7
   - auto
