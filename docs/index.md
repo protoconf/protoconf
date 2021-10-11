@@ -1,26 +1,30 @@
 ---
 title: protoconf
 ---
-![Protoconf](assets/protoconf_new.svg)
+
+<div align="center">
+	<img src="assets/protoconf_new.svg" width="128">
+</div>
 
 ![Test](https://github.com/protoconf/protoconf/workflows/Bazel/badge.svg)
 ![Release](https://github.com/protoconf/protoconf/workflows/Release/badge.svg)
 [![codecov](https://codecov.io/gh/protoconf/protoconf/branch/master/graph/badge.svg)](https://codecov.io/gh/protoconf/protoconf)
 
 ## Introduction
+
 Modern services are comprised of many dynamic variables, that need to be changed regularly. Today, the process is unstructured and error prone. From ML model variables, kill switches, gradual rollout configuration, A/B experiment configuration and more - developers want their code to allow to be configured to the finer details.
 
 **Protoconf is a modern approach to software configuration**, inspired by [Facebook's Configerator](https://research.fb.com/publications/holistic-configuration-management-at-facebook/).
 
 Using Protoconf enables:
 
-* **Code review for configuration changes**
+- **Code review for configuration changes**
   Enables the battle tested flow of pull-request & code-review. Configuration auditing out of the box (who did what, when?). The repository is the source of truth for the configuration deployed to production.
-* **No service restart required to pick up changes**
+- **No service restart required to pick up changes**
   Instant delivery of configuration updates. Encourages writing software that doesn't know downtime.
-* **Clear representation of complex configuration**
+- **Clear representation of complex configuration**
   Write configuration in Starlark (a Python dialect), no more copying & pasting from huge JSON files.
-* **Automated validation**
+- **Automated validation**
   Config follows a fully-typed (Protobuf) schema. This allows writing validation code in Starlark, to verify your configuration before it is committed.
 
 ### What is protoconf
@@ -57,20 +61,23 @@ This is roughly how configuration is consumed by a service. This paradigm encour
 
 === "Python"
 
-	```python
-	#!/usr/bin/env python
-	import grpc
-	from v1.protoconf_service_pb2_grpc import ProtoconfServiceStub
-	from v1.protoconf_service_pb2 import ConfigSubscriptionRequest
-	from myproject.myconfig_pb2 import MyConfig
+    ```python
+    #!/usr/bin/env python
+    import grpc
+    from v1.protoconf_service_pb2_grpc import ProtoconfServiceStub
+    from v1.protoconf_service_pb2 import ConfigSubscriptionRequest
+    from myproject.myconfig_pb2 import MyConfig
 
-	channel = grpc.insecure_channel("localhost:4300")
-	stub = ProtoconfServiceStub(channel)
+    channel = grpc.insecure_channel("localhost:4300")
+    stub = ProtoconfServiceStub(channel)
 
-	config = MyConfig()
-	for update in stub.SubscribeForConfig(ConfigSubscriptionRequest(path="myproject/myconfig")):
-		update.value.Unpack(config)
-		print(config)
-	```
+    config = MyConfig()
+    for update in stub.SubscribeForConfig(
+    		ConfigSubscriptionRequest(path="myproject/myconfig")):
+
+    	# Override `config`
+    	update.value.Unpack(config)
+    	print(config)
+    ```
 
 As Protoconf uses Protobuf and gRPC, it supports delivering configuration to [all major languages](https://github.com/protocolbuffers/protobuf/blob/master/docs/third_party.md). See also: [Protobuf overview](https://developers.google.com/protocol-buffers/docs/overview).
