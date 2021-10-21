@@ -35,6 +35,14 @@ markdown_extensions:
 extra:
   version:
     provider: mike
+  social:
+    - icon: fontawesome/brands/discord
+      link: https://discord.gg/jBEsj2Tw
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/company/eggpack/
+    - icon: fontawesome/brands/github
+      link: https://github.com/protoconf
+
 extra_css:
   - stylesheets/extra.css
 google_analytics:
