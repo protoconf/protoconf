@@ -3,9 +3,12 @@ package exec
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strings"
 	"sync"
 
@@ -125,7 +128,7 @@ func (w *watcher) runAction(ctx context.Context, action *exec_config.Action, msg
 	}
 	log.Debug("action finished")
 	if actionErr != nil {
-		log.Error("error running http", zap.Error(actionErr))
+		log.Error("error running", zap.Error(actionErr))
 		for _, a := range action.OnError {
 			w.runAction(ctx, a, msg)
 		}
@@ -192,9 +195,13 @@ func (w *watcher) runWriteAction(ctx context.Context, action *exec_config.Action
 	}
 	bytesToWrite := append([]byte(action.GetHeader()), marshaledBytes...)
 	bytesToWrite = append(bytesToWrite, []byte(action.GetFooter())...)
-	err := ioutil.WriteFile(action.Path, bytesToWrite, 0644)
+	err := os.MkdirAll(filepath.Dir(action.Path), 0755)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to create directory: %v", err)
+	}
+	err = ioutil.WriteFile(action.Path, bytesToWrite, 0644)
+	if err != nil {
+		return fmt.Errorf("failed to write file: %v", err)
 	}
 	logger.Debug("content", zap.String(marshalerName, string(bytesToWrite)))
 
