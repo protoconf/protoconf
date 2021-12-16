@@ -15,6 +15,7 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/protoconf/protoconf/importers/terraform_importer/meta"
+	"github.com/protoconf/protoconf/importers/wktbuilders"
 )
 
 var metaFile *builder.FileBuilder = meta.MetaFile()
@@ -195,6 +196,8 @@ func ctyTypeToProtoFieldType(t cty.Type) *builder.FieldType {
 		return builder.FieldTypeInt64()
 	case "bool":
 		return builder.FieldTypeBool()
+	case "dynamic":
+		return builder.FieldTypeMessage(wktbuilders.StructBuilder.GetMessage("Value"))
 	default:
 		log.Fatalf("unknown type: %v", x)
 	}

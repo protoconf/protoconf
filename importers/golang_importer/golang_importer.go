@@ -4,15 +4,14 @@ import (
 	"fmt"
 	"go/token"
 	"go/types"
-	"log"
 	"path/filepath"
 	"strings"
 
 	"github.com/fatih/structtag"
 	dpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
-	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/desc/builder"
 	"github.com/protoconf/protoconf/importers"
+	"github.com/protoconf/protoconf/importers/wktbuilders"
 	zap "go.uber.org/zap"
 	"golang.org/x/tools/go/packages"
 )
@@ -311,40 +310,6 @@ func (p *GolangImporter) GetImporter() *importers.Importer {
 	return p.Importer
 }
 
-var wkt = make(map[string]*builder.FileBuilder)
-
-func init() {
-	durationFile, err := desc.LoadFileDescriptor("google/protobuf/duration.proto")
-	if err != nil {
-		log.Fatal(err)
-	}
-	durationBuilder, err := builder.FromFile(durationFile)
-	if err != nil {
-		log.Fatal(err)
-	}
-	wkt["duration"] = durationBuilder
-
-	structFile, err := desc.LoadFileDescriptor("google/protobuf/struct.proto")
-	if err != nil {
-		log.Fatal(err)
-	}
-	structBuilder, err := builder.FromFile(structFile)
-	if err != nil {
-		log.Fatal(err)
-	}
-	wkt["struct"] = structBuilder
-
-	anyFile, err := desc.LoadFileDescriptor("google/protobuf/any.proto")
-	if err != nil {
-		log.Fatal(err)
-	}
-	anyBuilder, err := builder.FromFile(anyFile)
-	if err != nil {
-		log.Fatal(err)
-	}
-	wkt["any"] = anyBuilder
-}
-
 func (p *GolangImporter) goFieldTypeToProtoFieldType(x string) *builder.FieldType {
 	x = strings.Replace(x, "*", "", -1)
 	switch x {
@@ -377,12 +342,12 @@ func (p *GolangImporter) goFieldTypeToProtoFieldType(x string) *builder.FieldTyp
 	case "string":
 		return builder.FieldTypeString()
 	case "time.Duration":
-		return builder.FieldTypeMessage(wkt["duration"].GetMessage("Duration"))
+		return builder.FieldTypeMessage(wktbuilders.DurationBuilder.GetMessage("Duration"))
 	case "interface{}":
 		if p.InterfacesAsAny {
-			return builder.FieldTypeMessage(wkt["any"].GetMessage("Any"))
+			return builder.FieldTypeMessage(wktbuilders.AnyBuilder.GetMessage("Any"))
 		}
-		return builder.FieldTypeMessage(wkt["struct"].GetMessage("Value"))
+		return builder.FieldTypeMessage(wktbuilders.StructBuilder.GetMessage("Value"))
 	case "error":
 		return nil
 	}
