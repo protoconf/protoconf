@@ -19,6 +19,9 @@ import (
 	pc "github.com/protoconf/protoconf/datatypes/proto/v1"
 	"github.com/qri-io/starlib"
 	"go.starlark.net/starlark"
+	"google.golang.org/protobuf/reflect/protodesc"
+	"google.golang.org/protobuf/reflect/protoregistry"
+	"google.golang.org/protobuf/types/dynamicpb"
 )
 
 type cacheEntry struct {
@@ -206,7 +209,16 @@ func (l *starlarkLoader) loadProto(modulePath string) (starlark.StringDict, erro
 	for _, message := range fileDescriptor.GetMessageTypes() {
 		globals[message.GetName()] = proto.NewMessageType(message)
 	}
-	return globals, nil
+	fileOpts := protodesc.FileOptions{AllowUnresolvable: true}
+	fd, err := fileOpts.New(fileDescriptor.AsFileDescriptorProto(), protoregistry.GlobalFiles)
+	for i := 0; i < fd.Messages().Len(); i++ {
+		md := fd.Messages().Get(i)
+		if _, e := protoregistry.GlobalTypes.FindMessageByName(md.FullName()); e != nil {
+			d := dynamicpb.NewMessage(md)
+			protoregistry.GlobalTypes.RegisterMessage(d.Type())
+		}
+	}
+	return globals, err
 }
 
 func (l *starlarkLoader) loadStarlark(thread *starlark.Thread, modulePath string) (starlark.StringDict, error) {
