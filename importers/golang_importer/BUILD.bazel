@@ -11,8 +11,8 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "//importers:go_default_library",
+        "//importers/wktbuilders:go_default_library",
         "@com_github_fatih_structtag//:go_default_library",
-        "@com_github_jhump_protoreflect//desc:go_default_library",
         "@com_github_jhump_protoreflect//desc/builder:go_default_library",
         "@com_github_mitchellh_cli//:go_default_library",
         "@com_github_mitchellh_go_homedir//:go_default_library",

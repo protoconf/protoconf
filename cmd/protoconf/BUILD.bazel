@@ -1,17 +1,17 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
 
 go_binary(
-    name="protoconf",
-    embed=[":go_default_library"],
-    visibility=["//visibility:public"],
+    name = "protoconf",
+    embed = [":go_default_library"],
+    visibility = ["//visibility:public"],
 )
 
 go_library(
-    name="go_default_library",
-    srcs=["main.go"],
-    importpath="github.com/protoconf/protoconf/cmd/protoconf",
-    visibility=["//visibility:public"],
-    deps=[
+    name = "go_default_library",
+    srcs = ["main.go"],
+    importpath = "github.com/protoconf/protoconf/cmd/protoconf",
+    visibility = ["//visibility:public"],
+    deps = [
         "//agent:go_default_library",
         "//command:go_default_library",
         "//compiler",
