@@ -11,9 +11,6 @@ go_library(
     srcs = ["main.go"],
     importpath = "github.com/protoconf/protoconf/cmd/protoconf",
     visibility = ["//visibility:public"],
-    x_defs = {
-        "google.golang.org/protobuf/reflect/protoregistry.conflictPolicy": "ignore",
-    },
     deps = [
         "//agent:go_default_library",
         "//command:go_default_library",
