@@ -11,7 +11,7 @@
         <link rel="canonical" href="https://protoconf.github.io/protoconf/integrations/terraform/">
       
       <link rel="icon" href="../../assets/images/favicon.ico">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.2">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.3">
     
     
       
@@ -19,7 +19,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.f7951f6f.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.edf004c2.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -620,179 +620,179 @@ drwxr-xr-x  <span class="m">3</span> smintz   <span class="m">96</span> May <spa
 -rw-r--r--  <span class="m">1</span> smintz <span class="m">6</span>.1K May <span class="m">23</span> <span class="m">10</span>:46 tls-resources.proto
 </code></pre></div>
 <p>The <code>src/terraform/terraform.proto</code> should looks like this:</p>
-<div class="highlight"><pre><span></span><code><span class="k">syntax</span> <span class="o">=</span> <span class="s">&quot;proto3&quot;</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">syntax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;proto3&quot;</span><span class="p">;</span>
 
-<span class="kn">package</span> <span class="nn">terraform</span><span class="p">;</span>
+<span class="kn">package</span><span class="w"> </span><span class="nn">terraform</span><span class="p">;</span>
 
-<span class="k">import</span> <span class="s">&quot;terraform/random-provider.proto&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s">&quot;terraform/random-provider.proto&quot;</span><span class="p">;</span>
 
-<span class="k">import</span> <span class="s">&quot;terraform/random-resources.proto&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s">&quot;terraform/random-resources.proto&quot;</span><span class="p">;</span>
 
-<span class="k">import</span> <span class="s">&quot;terraform/tls-data.proto&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s">&quot;terraform/tls-data.proto&quot;</span><span class="p">;</span>
 
-<span class="k">import</span> <span class="s">&quot;terraform/tls-provider.proto&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s">&quot;terraform/tls-provider.proto&quot;</span><span class="p">;</span>
 
-<span class="k">import</span> <span class="s">&quot;terraform/tls-resources.proto&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s">&quot;terraform/tls-resources.proto&quot;</span><span class="p">;</span>
 
-<span class="kd">message</span> <span class="nc">Terraform</span> <span class="p">{</span>
-  <span class="n">Resources</span> <span class="na">resource</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="kd">message</span><span class="w"> </span><span class="nc">Terraform</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">Resources</span><span class="w"> </span><span class="na">resource</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
 
-  <span class="n">Datasources</span> <span class="na">data</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+<span class="w">  </span><span class="n">Datasources</span><span class="w"> </span><span class="na">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
 
-  <span class="n">Providers</span> <span class="na">provider</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+<span class="w">  </span><span class="n">Providers</span><span class="w"> </span><span class="na">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
 
-  <span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">Variable</span><span class="p">&gt;</span> <span class="na">variable</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
+<span class="w">  </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">Variable</span><span class="p">&gt;</span><span class="w"> </span><span class="na">variable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
 
-  <span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">Output</span><span class="p">&gt;</span> <span class="na">output</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+<span class="w">  </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">Output</span><span class="p">&gt;</span><span class="w"> </span><span class="na">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
 
-  <span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="kt">string</span><span class="p">&gt;</span> <span class="na">locals</span> <span class="o">=</span> <span class="mi">6</span><span class="p">;</span>
+<span class="w">  </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="p">&gt;</span><span class="w"> </span><span class="na">locals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="p">;</span>
 
-  <span class="n">Module</span> <span class="na">module</span> <span class="o">=</span> <span class="mi">7</span><span class="p">;</span>
+<span class="w">  </span><span class="n">Module</span><span class="w"> </span><span class="na">module</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">7</span><span class="p">;</span>
 
-  <span class="n">TerraformSettings</span> <span class="na">terraform</span> <span class="o">=</span> <span class="mi">8</span><span class="p">;</span>
+<span class="w">  </span><span class="n">TerraformSettings</span><span class="w"> </span><span class="na">terraform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">8</span><span class="p">;</span>
 
-  <span class="kd">message</span> <span class="nc">Resources</span> <span class="p">{</span>
-    <span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">random.resources.RandomId</span><span class="p">&gt;</span> <span class="na">random_id</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;random_id&quot;</span><span class="p">];</span>
+<span class="w">  </span><span class="kd">message</span><span class="w"> </span><span class="nc">Resources</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">random.resources.RandomId</span><span class="p">&gt;</span><span class="w"> </span><span class="na">random_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;random_id&quot;</span><span class="p">];</span>
 
-    <span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">random.resources.RandomInteger</span><span class="p">&gt;</span> <span class="na">random_integer</span> <span class="o">=</span> <span class="mi">2</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;random_integer&quot;</span><span class="p">];</span>
+<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">random.resources.RandomInteger</span><span class="p">&gt;</span><span class="w"> </span><span class="na">random_integer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;random_integer&quot;</span><span class="p">];</span>
 
-    <span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">random.resources.RandomPassword</span><span class="p">&gt;</span> <span class="na">random_password</span> <span class="o">=</span> <span class="mi">3</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;random_password&quot;</span><span class="p">];</span>
+<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">random.resources.RandomPassword</span><span class="p">&gt;</span><span class="w"> </span><span class="na">random_password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;random_password&quot;</span><span class="p">];</span>
 
-    <span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">random.resources.RandomPet</span><span class="p">&gt;</span> <span class="na">random_pet</span> <span class="o">=</span> <span class="mi">4</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;random_pet&quot;</span><span class="p">];</span>
+<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">random.resources.RandomPet</span><span class="p">&gt;</span><span class="w"> </span><span class="na">random_pet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;random_pet&quot;</span><span class="p">];</span>
 
-    <span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">random.resources.RandomShuffle</span><span class="p">&gt;</span> <span class="na">random_shuffle</span> <span class="o">=</span> <span class="mi">5</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;random_shuffle&quot;</span><span class="p">];</span>
+<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">random.resources.RandomShuffle</span><span class="p">&gt;</span><span class="w"> </span><span class="na">random_shuffle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;random_shuffle&quot;</span><span class="p">];</span>
 
-    <span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">random.resources.RandomString</span><span class="p">&gt;</span> <span class="na">random_string</span> <span class="o">=</span> <span class="mi">6</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;random_string&quot;</span><span class="p">];</span>
+<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">random.resources.RandomString</span><span class="p">&gt;</span><span class="w"> </span><span class="na">random_string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;random_string&quot;</span><span class="p">];</span>
 
-    <span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">random.resources.RandomUuid</span><span class="p">&gt;</span> <span class="na">random_uuid</span> <span class="o">=</span> <span class="mi">7</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;random_uuid&quot;</span><span class="p">];</span>
+<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">random.resources.RandomUuid</span><span class="p">&gt;</span><span class="w"> </span><span class="na">random_uuid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">7</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;random_uuid&quot;</span><span class="p">];</span>
 
-    <span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">tls.resources.TlsCertRequest</span><span class="p">&gt;</span> <span class="na">tls_cert_request</span> <span class="o">=</span> <span class="mi">8</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;tls_cert_request&quot;</span><span class="p">];</span>
+<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">tls.resources.TlsCertRequest</span><span class="p">&gt;</span><span class="w"> </span><span class="na">tls_cert_request</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">8</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;tls_cert_request&quot;</span><span class="p">];</span>
 
-    <span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">tls.resources.TlsLocallySignedCert</span><span class="p">&gt;</span> <span class="na">tls_locally_signed_cert</span> <span class="o">=</span> <span class="mi">9</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;tls_locally_signed_cert&quot;</span><span class="p">];</span>
+<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">tls.resources.TlsLocallySignedCert</span><span class="p">&gt;</span><span class="w"> </span><span class="na">tls_locally_signed_cert</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">9</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;tls_locally_signed_cert&quot;</span><span class="p">];</span>
 
-    <span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">tls.resources.TlsPrivateKey</span><span class="p">&gt;</span> <span class="na">tls_private_key</span> <span class="o">=</span> <span class="mi">10</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;tls_private_key&quot;</span><span class="p">];</span>
+<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">tls.resources.TlsPrivateKey</span><span class="p">&gt;</span><span class="w"> </span><span class="na">tls_private_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;tls_private_key&quot;</span><span class="p">];</span>
 
-    <span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">tls.resources.TlsSelfSignedCert</span><span class="p">&gt;</span> <span class="na">tls_self_signed_cert</span> <span class="o">=</span> <span class="mi">11</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;tls_self_signed_cert&quot;</span><span class="p">];</span>
-  <span class="p">}</span>
+<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">tls.resources.TlsSelfSignedCert</span><span class="p">&gt;</span><span class="w"> </span><span class="na">tls_self_signed_cert</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">11</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;tls_self_signed_cert&quot;</span><span class="p">];</span>
+<span class="w">  </span><span class="p">}</span>
 
-  <span class="kd">message</span> <span class="nc">Datasources</span> <span class="p">{</span>
-    <span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">tls.data.TlsCertificate</span><span class="p">&gt;</span> <span class="na">tls_certificate</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;tls_certificate&quot;</span><span class="p">];</span>
+<span class="w">  </span><span class="kd">message</span><span class="w"> </span><span class="nc">Datasources</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">tls.data.TlsCertificate</span><span class="p">&gt;</span><span class="w"> </span><span class="na">tls_certificate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;tls_certificate&quot;</span><span class="p">];</span>
 
-    <span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">tls.data.TlsPublicKey</span><span class="p">&gt;</span> <span class="na">tls_public_key</span> <span class="o">=</span> <span class="mi">2</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;tls_public_key&quot;</span><span class="p">];</span>
-  <span class="p">}</span>
+<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">tls.data.TlsPublicKey</span><span class="p">&gt;</span><span class="w"> </span><span class="na">tls_public_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;tls_public_key&quot;</span><span class="p">];</span>
+<span class="w">  </span><span class="p">}</span>
 
-  <span class="kd">message</span> <span class="nc">Providers</span> <span class="p">{</span>
-    <span class="k">repeated</span> <span class="n">random.provider.Random</span> <span class="na">random</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">message</span><span class="w"> </span><span class="nc">Providers</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">repeated</span><span class="w"> </span><span class="n">random.provider.Random</span><span class="w"> </span><span class="na">random</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
 
-    <span class="k">repeated</span> <span class="n">tls.provider.Tls</span> <span class="na">tls</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
-  <span class="p">}</span>
+<span class="w">    </span><span class="k">repeated</span><span class="w"> </span><span class="n">tls.provider.Tls</span><span class="w"> </span><span class="na">tls</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
 
-  <span class="kd">message</span> <span class="nc">Variable</span> <span class="p">{</span>
-    <span class="kt">string</span> <span class="na">type</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">message</span><span class="w"> </span><span class="nc">Variable</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">string</span><span class="w"> </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
 
-    <span class="kt">string</span> <span class="na">description</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">string</span><span class="w"> </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
 
-    <span class="kt">string</span> <span class="k">default</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
-  <span class="p">}</span>
+<span class="w">    </span><span class="kt">string</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
 
-  <span class="kd">message</span> <span class="nc">Output</span> <span class="p">{</span>
-    <span class="kt">string</span> <span class="na">value</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-  <span class="p">}</span>
+<span class="w">  </span><span class="kd">message</span><span class="w"> </span><span class="nc">Output</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">string</span><span class="w"> </span><span class="na">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
 
-  <span class="kd">message</span> <span class="nc">Module</span> <span class="p">{</span>
-  <span class="p">}</span>
+<span class="w">  </span><span class="kd">message</span><span class="w"> </span><span class="nc">Module</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="p">}</span>
 
-  <span class="kd">message</span> <span class="nc">TerraformSettings</span> <span class="p">{</span>
-    <span class="kt">string</span> <span class="na">required_version</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;required_version&quot;</span><span class="p">];</span>
+<span class="w">  </span><span class="kd">message</span><span class="w"> </span><span class="nc">TerraformSettings</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">string</span><span class="w"> </span><span class="na">required_version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;required_version&quot;</span><span class="p">];</span>
 
-    <span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">Provider</span><span class="p">&gt;</span> <span class="na">required_providers</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">Provider</span><span class="p">&gt;</span><span class="w"> </span><span class="na">required_providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
 
-    <span class="n">Backend</span> <span class="na">backend</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+<span class="w">    </span><span class="n">Backend</span><span class="w"> </span><span class="na">backend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
 
-    <span class="kd">message</span> <span class="nc">Provider</span> <span class="p">{</span>
-      <span class="kt">string</span> <span class="na">source</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">message</span><span class="w"> </span><span class="nc">Provider</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="kt">string</span><span class="w"> </span><span class="na">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
 
-      <span class="kt">string</span> <span class="na">version</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
-    <span class="p">}</span>
+<span class="w">      </span><span class="kt">string</span><span class="w"> </span><span class="na">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
 
-    <span class="kd">message</span> <span class="nc">Backend</span> <span class="p">{</span>
-      <span class="k">oneof</span> <span class="n">config</span> <span class="p">{</span>
-        <span class="n">BackendLocal</span> <span class="na">local</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">message</span><span class="w"> </span><span class="nc">Backend</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">oneof</span><span class="w"> </span><span class="n">config</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">BackendLocal</span><span class="w"> </span><span class="na">local</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
 
-        <span class="n">BackendS3</span> <span class="na">s3</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
-      <span class="p">}</span>
+<span class="w">        </span><span class="n">BackendS3</span><span class="w"> </span><span class="na">s3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+<span class="w">      </span><span class="p">}</span>
 
-      <span class="kd">message</span> <span class="nc">BackendLocal</span> <span class="p">{</span>
-        <span class="kt">string</span> <span class="na">path</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="w">      </span><span class="kd">message</span><span class="w"> </span><span class="nc">BackendLocal</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
 
-        <span class="kt">string</span> <span class="na">workspace_dir</span> <span class="o">=</span> <span class="mi">2</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;workspace_dir&quot;</span><span class="p">];</span>
-      <span class="p">}</span>
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">workspace_dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;workspace_dir&quot;</span><span class="p">];</span>
+<span class="w">      </span><span class="p">}</span>
 
-      <span class="kd">message</span> <span class="nc">BackendS3</span> <span class="p">{</span>
-        <span class="kt">string</span> <span class="na">region</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="w">      </span><span class="kd">message</span><span class="w"> </span><span class="nc">BackendS3</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">region</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
 
-        <span class="kt">string</span> <span class="na">access_key</span> <span class="o">=</span> <span class="mi">2</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;access_key&quot;</span><span class="p">];</span>
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">access_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;access_key&quot;</span><span class="p">];</span>
 
-        <span class="kt">string</span> <span class="na">secret_key</span> <span class="o">=</span> <span class="mi">3</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;secret_key&quot;</span><span class="p">];</span>
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">secret_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;secret_key&quot;</span><span class="p">];</span>
 
-        <span class="kt">string</span> <span class="na">iam_endpoint</span> <span class="o">=</span> <span class="mi">4</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;iam_endpoint&quot;</span><span class="p">];</span>
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">iam_endpoint</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;iam_endpoint&quot;</span><span class="p">];</span>
 
-        <span class="kt">string</span> <span class="na">max_retries</span> <span class="o">=</span> <span class="mi">5</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;max_retries&quot;</span><span class="p">];</span>
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">max_retries</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;max_retries&quot;</span><span class="p">];</span>
 
-        <span class="kt">string</span> <span class="na">profile</span> <span class="o">=</span> <span class="mi">6</span><span class="p">;</span>
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">profile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="p">;</span>
 
-        <span class="kt">string</span> <span class="na">shared_credentials_file</span> <span class="o">=</span> <span class="mi">7</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;shared_credentials_file&quot;</span><span class="p">];</span>
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">shared_credentials_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">7</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;shared_credentials_file&quot;</span><span class="p">];</span>
 
-        <span class="kt">string</span> <span class="na">skip_credentials_validation</span> <span class="o">=</span> <span class="mi">8</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;skip_credentials_validation&quot;</span><span class="p">];</span>
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">skip_credentials_validation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">8</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;skip_credentials_validation&quot;</span><span class="p">];</span>
 
-        <span class="kt">string</span> <span class="na">skip_region_validation</span> <span class="o">=</span> <span class="mi">9</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;skip_region_validation&quot;</span><span class="p">];</span>
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">skip_region_validation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">9</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;skip_region_validation&quot;</span><span class="p">];</span>
 
-        <span class="kt">string</span> <span class="na">skip_metadata_api_check</span> <span class="o">=</span> <span class="mi">10</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;skip_metadata_api_check&quot;</span><span class="p">];</span>
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">skip_metadata_api_check</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;skip_metadata_api_check&quot;</span><span class="p">];</span>
 
-        <span class="kt">string</span> <span class="na">sts_endpoint</span> <span class="o">=</span> <span class="mi">11</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;sts_endpoint&quot;</span><span class="p">];</span>
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">sts_endpoint</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">11</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;sts_endpoint&quot;</span><span class="p">];</span>
 
-        <span class="kt">string</span> <span class="na">token</span> <span class="o">=</span> <span class="mi">12</span><span class="p">;</span>
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">12</span><span class="p">;</span>
 
-        <span class="kt">string</span> <span class="na">assume_role_duration_seconds</span> <span class="o">=</span> <span class="mi">13</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;assume_role_duration_seconds&quot;</span><span class="p">];</span>
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">assume_role_duration_seconds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">13</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;assume_role_duration_seconds&quot;</span><span class="p">];</span>
 
-        <span class="kt">string</span> <span class="na">assume_role_policy</span> <span class="o">=</span> <span class="mi">14</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;assume_role_policy&quot;</span><span class="p">];</span>
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">assume_role_policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">14</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;assume_role_policy&quot;</span><span class="p">];</span>
 
-        <span class="kt">string</span> <span class="na">assume_role_policy_arns</span> <span class="o">=</span> <span class="mi">15</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;assume_role_policy_arns&quot;</span><span class="p">];</span>
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">assume_role_policy_arns</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">15</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;assume_role_policy_arns&quot;</span><span class="p">];</span>
 
-        <span class="kt">string</span> <span class="na">assume_role_tags</span> <span class="o">=</span> <span class="mi">16</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;assume_role_tags&quot;</span><span class="p">];</span>
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">assume_role_tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">16</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;assume_role_tags&quot;</span><span class="p">];</span>
 
-        <span class="kt">string</span> <span class="na">assume_role_transitive_tag_keys</span> <span class="o">=</span> <span class="mi">17</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;assume_role_transitive_tag_keys&quot;</span><span class="p">];</span>
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">assume_role_transitive_tag_keys</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">17</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;assume_role_transitive_tag_keys&quot;</span><span class="p">];</span>
 
-        <span class="kt">string</span> <span class="na">external_id</span> <span class="o">=</span> <span class="mi">18</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;external_id&quot;</span><span class="p">];</span>
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">external_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">18</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;external_id&quot;</span><span class="p">];</span>
 
-        <span class="kt">string</span> <span class="na">role_arn</span> <span class="o">=</span> <span class="mi">19</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;role_arn&quot;</span><span class="p">];</span>
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">role_arn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">19</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;role_arn&quot;</span><span class="p">];</span>
 
-        <span class="kt">string</span> <span class="na">session_name</span> <span class="o">=</span> <span class="mi">20</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;session_name&quot;</span><span class="p">];</span>
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">session_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">20</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;session_name&quot;</span><span class="p">];</span>
 
-        <span class="kt">string</span> <span class="na">bucket</span> <span class="o">=</span> <span class="mi">21</span><span class="p">;</span>
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">bucket</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">21</span><span class="p">;</span>
 
-        <span class="kt">string</span> <span class="na">key</span> <span class="o">=</span> <span class="mi">22</span><span class="p">;</span>
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">22</span><span class="p">;</span>
 
-        <span class="kt">string</span> <span class="na">acl</span> <span class="o">=</span> <span class="mi">23</span><span class="p">;</span>
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">acl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">23</span><span class="p">;</span>
 
-        <span class="kt">string</span> <span class="na">encrypt</span> <span class="o">=</span> <span class="mi">24</span><span class="p">;</span>
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">encrypt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">24</span><span class="p">;</span>
 
-        <span class="kt">string</span> <span class="na">endpoint</span> <span class="o">=</span> <span class="mi">25</span><span class="p">;</span>
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">endpoint</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">25</span><span class="p">;</span>
 
-        <span class="kt">string</span> <span class="na">force_path_style</span> <span class="o">=</span> <span class="mi">26</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;force_path_style&quot;</span><span class="p">];</span>
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">force_path_style</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">26</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;force_path_style&quot;</span><span class="p">];</span>
 
-        <span class="kt">string</span> <span class="na">kms_key_id</span> <span class="o">=</span> <span class="mi">27</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;kms_key_id&quot;</span><span class="p">];</span>
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">kms_key_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">27</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;kms_key_id&quot;</span><span class="p">];</span>
 
-        <span class="kt">string</span> <span class="na">sse_customer_key</span> <span class="o">=</span> <span class="mi">28</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;sse_customer_key&quot;</span><span class="p">];</span>
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">sse_customer_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">28</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;sse_customer_key&quot;</span><span class="p">];</span>
 
-        <span class="kt">string</span> <span class="na">workspace_key_prefix</span> <span class="o">=</span> <span class="mi">29</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;workspace_key_prefix&quot;</span><span class="p">];</span>
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">workspace_key_prefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">29</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;workspace_key_prefix&quot;</span><span class="p">];</span>
 
-        <span class="kt">string</span> <span class="na">dynamodb_endpoint</span> <span class="o">=</span> <span class="mi">30</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;dynamodb_endpoint&quot;</span><span class="p">];</span>
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">dynamodb_endpoint</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;dynamodb_endpoint&quot;</span><span class="p">];</span>
 
-        <span class="kt">string</span> <span class="na">dynamodb_table</span> <span class="o">=</span> <span class="mi">31</span> <span class="p">[</span><span class="na">json_name</span> <span class="o">=</span> <span class="s">&quot;dynamodb_table&quot;</span><span class="p">];</span>
-      <span class="p">}</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">dynamodb_table</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">31</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;dynamodb_table&quot;</span><span class="p">];</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="create-a-tfpconf-file">Create a <code>.tf.pconf</code> file</h3>
@@ -821,27 +821,27 @@ drwxr-xr-x  <span class="m">3</span> smintz   <span class="m">96</span> May <spa
 <p>Check the output</p>
 <div class="highlight"><pre><span></span><code>cat materialized_config/tfdemo/tfdemo.tf.materialized_JSON<span class="p">|</span> jq
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="p">{</span>
-  <span class="nt">&quot;protoFile&quot;</span><span class="p">:</span> <span class="s2">&quot;terraform/terraform.proto&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;@type&quot;</span><span class="p">:</span> <span class="s2">&quot;type.googleapis.com/terraform.Terraform&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;output&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;my_dog_name&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;${random_pet.my_dog_name.id}&quot;</span>
-      <span class="p">}</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;provider&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;random&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">{}</span>
-      <span class="p">]</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;resource&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;random_pet&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;my_dog_name&quot;</span><span class="p">:</span> <span class="p">{}</span>
-      <span class="p">}</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-<span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;protoFile&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;terraform/terraform.proto&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;@type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;type.googleapis.com/terraform.Terraform&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;output&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;my_dog_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;${random_pet.my_dog_name.id}&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;provider&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;random&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="p">{}</span><span class="w"></span>
+<span class="w">      </span><span class="p">]</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;resource&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;random_pet&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;my_dog_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </code></pre></div>
 <h3 id="prepare-to-run-terraform">prepare to run terraform</h3>
 <p><div class="highlight"><pre><span></span><code>$ mkdir tf
@@ -993,7 +993,7 @@ Outputs:
     <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.0bbba5b5.min.js", "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.649a939e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.e1a181d9.min.js"></script>
       
     
   </body>

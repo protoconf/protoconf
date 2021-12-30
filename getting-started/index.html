@@ -11,7 +11,7 @@
         <link rel="canonical" href="https://protoconf.github.io/protoconf/getting-started/">
       
       <link rel="icon" href="../assets/images/favicon.ico">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.2">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.3">
     
     
       
@@ -19,7 +19,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.f7951f6f.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.edf004c2.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.e6a45f82.min.css">
@@ -578,16 +578,16 @@
 <h3 id="define-your-first-config">Define your first config</h3>
 <p>The first step will be to define the config struct in <code>protobuf</code>. The <code>protobuf</code> file will be used to generate a marshaler of in the language of choice which can be used alongside the gRPC client to pull configs from the <code>protoconf agent</code> gRPC endpoint.</p>
 <div class="highlight"><pre><span></span><code><span class="c1">// file: ./src/myproject/myconfig.proto</span>
-<span class="k">syntax</span> <span class="o">=</span> <span class="s">&quot;proto3&quot;</span><span class="p">;</span>
+<span class="k">syntax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;proto3&quot;</span><span class="p">;</span>
 
-<span class="kd">message</span> <span class="nc">MyConfig</span> <span class="p">{</span>
-    <span class="kt">uint32</span> <span class="na">connection_timeout</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-    <span class="kt">uint32</span> <span class="na">max_retries</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
-    <span class="n">NestedStruct</span> <span class="na">another_struct</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+<span class="kd">message</span><span class="w"> </span><span class="nc">MyConfig</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">uint32</span><span class="w"> </span><span class="na">connection_timeout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32</span><span class="w"> </span><span class="na">max_retries</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+<span class="w">    </span><span class="n">NestedStruct</span><span class="w"> </span><span class="na">another_struct</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="kd">message</span> <span class="nc">NestedStruct</span> <span class="p">{</span>
-    <span class="kt">string</span> <span class="na">hello_world</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="kd">message</span><span class="w"> </span><span class="nc">NestedStruct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">string</span><span class="w"> </span><span class="na">hello_world</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="code-your-config">Code your config</h3>
@@ -608,18 +608,18 @@
 </code></pre></div>
 <h3 id="compile-and-check-results">Compile and check results</h3>
 <p>Our working directory is now ready to be compiled. Run <code>protoconf compile .</code>. The compiler will create a new file under <code>materialized_configs/myproject/myconfig.materialized_JSON</code> which can be used to validate the result of the config.</p>
-<div class="highlight"><pre><span></span><code><span class="err">//</span> <span class="kc">f</span><span class="err">ile</span><span class="p">:</span> <span class="err">ma</span><span class="kc">ter</span><span class="err">ialized_co</span><span class="kc">nf</span><span class="err">igs/myprojec</span><span class="kc">t</span><span class="err">/myco</span><span class="kc">nf</span><span class="err">ig.ma</span><span class="kc">ter</span><span class="err">ialized_JSON</span>
-<span class="p">{</span>
-  <span class="nt">&quot;protoFile&quot;</span><span class="p">:</span> <span class="s2">&quot;myproject/myconfig.proto&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;@type&quot;</span><span class="p">:</span> <span class="s2">&quot;type.googleapis.com/MyConfig&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;connectionTimeout&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
-    <span class="nt">&quot;maxRetries&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
-    <span class="nt">&quot;anotherStruct&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;helloWorld&quot;</span><span class="p">:</span> <span class="s2">&quot;Hello World!&quot;</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-<span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="err">//</span><span class="w"> </span><span class="kc">f</span><span class="err">ile</span><span class="p">:</span><span class="w"> </span><span class="err">ma</span><span class="kc">ter</span><span class="err">ialized_co</span><span class="kc">nf</span><span class="err">igs/myprojec</span><span class="kc">t</span><span class="err">/myco</span><span class="kc">nf</span><span class="err">ig.ma</span><span class="kc">ter</span><span class="err">ialized_JSON</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;protoFile&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;myproject/myconfig.proto&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;@type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;type.googleapis.com/MyConfig&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;connectionTimeout&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;maxRetries&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;anotherStruct&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;helloWorld&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Hello World!&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </code></pre></div>
 <h3 id="add-validators">Add validators</h3>
 <p>You might want to make sure no one can accidentally reduce the <code>connection_timeout</code> config below <code>3</code>. If he wish to do so, he can add a validator to the <code>MyConfig</code> struct:</p>
@@ -776,7 +776,7 @@ $ protoconf insert -store consul -store-address localhost:8500 . myproject/mycon
     <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.0bbba5b5.min.js", "version": {"provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.649a939e.min.js"></script>
+      <script src="../assets/javascripts/bundle.e1a181d9.min.js"></script>
       
     
   </body>
