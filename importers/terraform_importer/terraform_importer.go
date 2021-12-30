@@ -2,7 +2,9 @@ package terraformimporter
 
 import (
 	"log"
+	"path/filepath"
 	"sort"
+	"strings"
 
 	tfplugin "github.com/hashicorp/terraform/plugin"
 	"github.com/hashicorp/terraform/plugin/discovery"
@@ -34,7 +36,15 @@ func NewGenerator(importPath, outputPath string) *Generator {
 // PopulateProviders finds all providers available for the runtime context
 // and populate the Generator with proto schemas from `providerimporter`
 func (g *Generator) PopulateProviders() error {
-	dirs := []string{g.ImportPath}
+	abs, err := filepath.Abs(g.ImportPath)
+	if err != nil {
+		return err
+	}
+	log.Println(abs)
+	dirs, err := filepath.Glob(abs)
+	if err != nil {
+		return err
+	}
 	log.Println(dirs)
 	meta := discovery.FindPlugins("provider", dirs)
 	log.Println(meta)
@@ -101,8 +111,28 @@ func addTerraformLocalBackend(b *builder.MessageBuilder, oof *builder.OneOfBuild
 }
 
 func defaultStringField(m *builder.MessageBuilder, name string, comments ...string) {
-	c := builder.Comments{LeadingDetachedComments: comments}
+	c := builder.Comments{LeadingComment: strings.Join(comments, "\n")}
 	m.AddField(builder.NewField(name, builder.FieldTypeString()).SetJsonName(name).SetComments(c))
+}
+
+func addTerraformRemoteBackend(b *builder.MessageBuilder, oof *builder.OneOfBuilder) error {
+	l := builder.NewMessage("BackendRemote")
+	defaultStringField(l, "hostname",
+		"(Optional) The remote backend hostname to connect to. Defaults to app.terraform.io.",
+	)
+	defaultStringField(l, "organization", "(Required) The name of the organization containing the targeted workspace(s).")
+	defaultStringField(l, "token", "(Optional) The token used to authenticate with the remote backend. We recommend omitting the token from the configuration, and instead using `terraform login` or manually configuring `credentials` in the CLI config file.")
+
+	c := builder.Comments{LeadingComment: "(Required) A block specifying which remote workspace(s) to use. The workspaces block supports the following keys"}
+	ws := builder.NewMessage("Workspace")
+	defaultStringField(ws, "name", "(Optional) The full name of one remote workspace. When configured, only the default workspace can be used. This option conflicts with prefix.")
+	defaultStringField(ws, "prefix", "(Optional) A prefix used in the names of one or more remote workspaces, all of which can be used with this configuration. The full workspace names are used in Terraform Cloud, and the short names (minus the prefix) are used on the command line for Terraform CLI workspaces. If omitted, only the default workspace can be used. This option conflicts with name.")
+	l.AddNestedMessage(ws)
+	l.AddField(builder.NewField("workspaces", builder.FieldTypeMessage(ws)).SetComments(c))
+
+	b.AddNestedMessage(l)
+	oof.AddChoice(builder.NewField("remote", builder.FieldTypeMessage(l)))
+	return nil
 }
 
 func addTerraformS3Backend(b *builder.MessageBuilder, oof *builder.OneOfBuilder) error {
@@ -151,6 +181,7 @@ func addTerraformBackend(tf *builder.MessageBuilder) error {
 	backend := builder.NewMessage("Backend")
 	oneof := builder.NewOneOf("config")
 	addTerraformLocalBackend(backend, oneof)
+	addTerraformRemoteBackend(backend, oneof)
 	addTerraformS3Backend(backend, oneof)
 
 	backend.AddOneOf(oneof)
@@ -158,6 +189,7 @@ func addTerraformBackend(tf *builder.MessageBuilder) error {
 	tf.AddField(builder.NewField("backend", builder.FieldTypeMessage(backend)))
 	return nil
 }
+
 func addTerraformConfigMessage(main *builder.MessageBuilder) error {
 	local := builder.NewMessage("TerraformSettings")
 	fieldTerraformVersion := builder.NewField("required_version", builder.FieldTypeString()).SetJsonName("required_version")
