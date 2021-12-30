@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -9,7 +10,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/jhump/protoreflect/desc"
+	"github.com/golang/protobuf/jsonpb"
+	"github.com/golang/protobuf/ptypes"
 	"github.com/jhump/protoreflect/desc/protoparse"
 	"github.com/jhump/protoreflect/dynamic"
 	"github.com/protoconf/protoconf/compiler/proto"
@@ -17,13 +19,6 @@ import (
 	pc "github.com/protoconf/protoconf/datatypes/proto/v1"
 	"github.com/qri-io/starlib"
 	"go.starlark.net/starlark"
-	"google.golang.org/protobuf/encoding/protojson"
-	"google.golang.org/protobuf/reflect/protodesc"
-	"google.golang.org/protobuf/reflect/protoregistry"
-	"google.golang.org/protobuf/types/dynamicpb"
-	"google.golang.org/protobuf/types/known/anypb"
-
-	gproto "google.golang.org/protobuf/proto"
 )
 
 type cacheEntry struct {
@@ -162,67 +157,56 @@ func (l *starlarkLoader) loadMutable(modulePath string) (starlark.StringDict, er
 		return nil, err
 	}
 
-	fileDescriptor, err := l.loadProtoDescriptors(configJSON.ProtoFile)
+	parser := &protoparse.Parser{ImportPaths: []string{l.srcDir}, Accessor: l.protoAccessor}
+	descriptors, err := parser.ParseFiles(configJSON.ProtoFile)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error parsing proto file, file=%s err=%s", configJSON.ProtoFile, err)
 	}
+	fileDescriptor := descriptors[0]
+	anyResolver := dynamic.AnyResolver(nil, fileDescriptor)
 
 	protoconfValue := &pc.ProtoconfValue{}
-	um := &protojson.UnmarshalOptions{Resolver: protoregistry.GlobalTypes}
-	if err = um.Unmarshal(jsonData, protoconfValue); err != nil {
+	um := jsonpb.Unmarshaler{AnyResolver: anyResolver}
+	if err = um.Unmarshal(ioutil.NopCloser(bytes.NewReader(jsonData)), protoconfValue); err != nil {
 		return nil, fmt.Errorf("error unmarshaling, err=%s", err)
 	}
 
-	desc, err := protoregistry.GlobalTypes.FindMessageByName(protoconfValue.Value.MessageName())
+	name, err := ptypes.AnyMessageName(protoconfValue.Value)
 	if err != nil {
 		return nil, err
 	}
-	value := dynamicpb.NewMessage(desc.Descriptor())
 
-	if err = anypb.UnmarshalTo(protoconfValue.Value, value, gproto.UnmarshalOptions{}); err != nil {
+	value, err := anyResolver.Resolve(name)
+	if err != nil {
 		return nil, err
 	}
 
-	message := dynamic.NewMessage(fileDescriptor.FindMessage(string(protoconfValue.Value.MessageName())))
-	message.UnmarshalMergeText([]byte(value.String()))
+	if err = ptypes.UnmarshalAny(protoconfValue.Value, value); err != nil {
+		return nil, err
+	}
+
+	message, err := dynamic.AsDynamicMessage(value)
+	if err != nil {
+		return nil, err
+	}
 
 	globals := starlark.StringDict{}
 	globals["value"] = proto.NewStarProtoMessage(message)
 	return globals, nil
 }
 
-func (l *starlarkLoader) loadProtoDescriptors(modulePath string) (*desc.FileDescriptor, error) {
+func (l *starlarkLoader) loadProto(modulePath string) (starlark.StringDict, error) {
 	parser := &protoparse.Parser{ImportPaths: []string{l.srcDir}, Accessor: l.protoAccessor}
 	descriptors, err := parser.ParseFiles(modulePath)
 	if err != nil {
 		return nil, fmt.Errorf("error parsing proto file, file=%s err=%v", modulePath, err)
 	}
 	fileDescriptor := descriptors[0]
-	fileOpts := protodesc.FileOptions{AllowUnresolvable: true}
-	fd, err := fileOpts.New(fileDescriptor.AsFileDescriptorProto(), protoregistry.GlobalFiles)
-	if err != nil {
-		return nil, err
-	}
-	for i := 0; i < fd.Messages().Len(); i++ {
-		md := fd.Messages().Get(i)
-		if _, e := protoregistry.GlobalTypes.FindMessageByName(md.FullName()); e != nil {
-			d := dynamicpb.NewMessage(md)
-			protoregistry.GlobalTypes.RegisterMessage(d.Type())
-		}
-	}
-	return fileDescriptor, nil
-}
-
-func (l *starlarkLoader) loadProto(modulePath string) (starlark.StringDict, error) {
 	globals := starlark.StringDict{}
-	fileDescriptor, err := l.loadProtoDescriptors(modulePath)
-	if err != nil {
-		return nil, err
-	}
 	for _, message := range fileDescriptor.GetMessageTypes() {
 		globals[message.GetName()] = proto.NewMessageType(message)
 	}
-	return globals, err
+	return globals, nil
 }
 
 func (l *starlarkLoader) loadStarlark(thread *starlark.Thread, modulePath string) (starlark.StringDict, error) {

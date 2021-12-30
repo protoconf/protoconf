@@ -6,15 +6,16 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/jhump/protoreflect/dynamic"
+	"github.com/pkg/errors"
 	"github.com/protoconf/protoconf/compiler/proto"
 	"github.com/protoconf/protoconf/consts"
 	pc "github.com/protoconf/protoconf/datatypes/proto/v1"
+	"github.com/protoconf/protoconf/utils"
 	"go.starlark.net/resolve"
 	"go.starlark.net/starlark"
-	"google.golang.org/protobuf/encoding/protojson"
-	"google.golang.org/protobuf/reflect/protoregistry"
 )
 
 func NewCompiler(protoconfRoot string, verboseLogging bool) *Compiler {
@@ -116,12 +117,21 @@ func (c *Compiler) writeConfig(message *dynamic.Message, filename string) error 
 		Value:     any,
 	}
 
-	m := &protojson.MarshalOptions{Resolver: protoregistry.GlobalTypes, Indent: "  "}
-	jsonBytes, err := m.Marshal(protoconfValue)
-	if err != nil {
-		return fmt.Errorf("error marshaling ProtoconfValue to JSON, value=%v, error: %v", protoconfValue, err)
+	var protoFilesToLoad []string
+	for k := range c.protoFilesLoaded {
+		if len(k) > 0 {
+			protoFilesToLoad = append(protoFilesToLoad, strings.TrimPrefix(k, "/"))
+		}
 	}
-	jsonData := string(jsonBytes)
+	anyResolver, err := utils.LoadAnyResolver(filepath.Join(c.protoconfRoot, "src"), protoFilesToLoad...)
+	if err != nil {
+		return err
+	}
+	m := &jsonpb.Marshaler{AnyResolver: anyResolver, Indent: "  "}
+	jsonData, err := m.MarshalToString(protoconfValue)
+	if err != nil {
+		return errors.Wrapf(err, "error marshaling ProtoconfValue to JSON, value=%v", protoconfValue)
+	}
 	jsonData += "\n"
 
 	if err := mkdirAll(filepath.Dir(filename), 0755); err != nil {
