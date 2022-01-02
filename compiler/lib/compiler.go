@@ -1,6 +1,8 @@
 package lib
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"log"
 	"path/filepath"
@@ -132,13 +134,16 @@ func (c *Compiler) writeConfig(message *dynamic.Message, filename string) error 
 	if err != nil {
 		return errors.Wrapf(err, "error marshaling ProtoconfValue to JSON, value=%v", protoconfValue)
 	}
-	jsonData += "\n"
 
 	if err := mkdirAll(filepath.Dir(filename), 0755); err != nil {
 		return fmt.Errorf("error creating output directory %s, err: %s", filepath.Dir(filename), err)
 	}
 
-	if err := writeFile(filename, []byte(jsonData)); err != nil {
+	var prettyJSON bytes.Buffer
+	if err := json.Indent(&prettyJSON, []byte(jsonData), "", "  "); err != nil {
+		return fmt.Errorf("failed to prettify json: %v", err)
+	}
+	if err := writeFile(filename, prettyJSON.Bytes()); err != nil {
 		return fmt.Errorf("error writing to file %s, err: %s", filename, err)
 	}
 
