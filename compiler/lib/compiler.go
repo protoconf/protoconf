@@ -11,8 +11,7 @@ import (
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/jhump/protoreflect/dynamic"
-	"github.com/pkg/errors"
-	"github.com/protoconf/protoconf/compiler/proto"
+	"github.com/protoconf/protoconf/compiler/starproto"
 	"github.com/protoconf/protoconf/consts"
 	pc "github.com/protoconf/protoconf/datatypes/proto/v1"
 	"github.com/protoconf/protoconf/utils"
@@ -78,14 +77,14 @@ func (c *Compiler) CompileFile(filename string) error {
 			if !ok {
 				return fmt.Errorf("`main' returned a dict with non-string key, got: %s", item[0].Type())
 			}
-			value, ok := proto.ToProtoMessage(item[1])
+			value, ok := starproto.ToProtoMessage(item[1])
 			if !ok {
 				return fmt.Errorf("`main' returned a dict with non-protobuf value, got: %s", item[1].Type())
 			}
 			configs[filepath.Join(outputDir, string(key))+consts.CompiledConfigExtension] = value
 		}
 	} else {
-		message, ok := proto.ToProtoMessage(mainOutput)
+		message, ok := starproto.ToProtoMessage(mainOutput)
 		if !ok {
 			return fmt.Errorf("`main' returned something that's not a protobuf, got: %s", mainOutput.Type())
 		}
@@ -132,7 +131,7 @@ func (c *Compiler) writeConfig(message *dynamic.Message, filename string) error 
 	m := &jsonpb.Marshaler{AnyResolver: anyResolver, Indent: "  "}
 	jsonData, err := m.MarshalToString(protoconfValue)
 	if err != nil {
-		return errors.Wrapf(err, "error marshaling ProtoconfValue to JSON, value=%v", protoconfValue)
+		return fmt.Errorf("error marshaling ProtoconfValue to JSON, value=%v, err: %v", protoconfValue, err)
 	}
 
 	if err := mkdirAll(filepath.Dir(filename), 0755); err != nil {

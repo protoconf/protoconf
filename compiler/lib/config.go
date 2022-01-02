@@ -6,7 +6,7 @@ import (
 	pbproto "github.com/golang/protobuf/proto"
 	dpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/jhump/protoreflect/dynamic"
-	"github.com/protoconf/protoconf/compiler/proto"
+	"github.com/protoconf/protoconf/compiler/starproto"
 	"go.starlark.net/starlark"
 )
 
@@ -55,7 +55,7 @@ func (c *config) validate(value interface{}) error {
 			Print: starPrint,
 		}
 		args := starlark.Tuple([]starlark.Value{
-			proto.NewStarProtoMessage(message),
+			starproto.NewStarProtoMessage(message),
 		})
 		if _, err := starlark.Call(thread, validator, args, nil); err != nil {
 			return err

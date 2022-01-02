@@ -11,7 +11,7 @@ go_library(
         "message_type.go",
         "repeated.go",
     ],
-    importpath = "github.com/protoconf/protoconf/compiler/proto",
+    importpath = "github.com/protoconf/protoconf/compiler/starproto",
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_golang_protobuf//proto:go_default_library",

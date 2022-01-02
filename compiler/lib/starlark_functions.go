@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/protoconf/protoconf/compiler/proto"
+	"github.com/protoconf/protoconf/compiler/starproto"
 	"go.starlark.net/starlark"
 	"go.starlark.net/starlarkstruct"
 )
@@ -38,7 +38,7 @@ func starAddValidator(mp *map[string]*starlark.Function) func(*starlark.Thread, 
 			return nil, err
 		}
 
-		messageName, ok := proto.MessageTypeName(arg1)
+		messageName, ok := starproto.MessageTypeName(arg1)
 		if !ok {
 			return nil, fmt.Errorf("expected a proto message type, got=%v", arg1)
 		}
