@@ -1,0 +1,12 @@
+{
+    "postUpgradeTasks": {
+        "commands": [
+            "bazel run gazelle -- update-repos -from_file=go.mod -to_macro=deps.bzl%deps"
+        ],
+        "fileFilters": [
+            "go.mod",
+            "go.sum"
+        ],
+        "executionMode": "update"
+    }
+}
