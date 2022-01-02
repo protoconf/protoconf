@@ -14,7 +14,7 @@ import (
 	"github.com/golang/protobuf/ptypes"
 	"github.com/jhump/protoreflect/desc/protoparse"
 	"github.com/jhump/protoreflect/dynamic"
-	"github.com/protoconf/protoconf/compiler/proto"
+	"github.com/protoconf/protoconf/compiler/starproto"
 	"github.com/protoconf/protoconf/consts"
 	pc "github.com/protoconf/protoconf/datatypes/proto/v1"
 	"github.com/qri-io/starlib"
@@ -191,7 +191,7 @@ func (l *starlarkLoader) loadMutable(modulePath string) (starlark.StringDict, er
 	}
 
 	globals := starlark.StringDict{}
-	globals["value"] = proto.NewStarProtoMessage(message)
+	globals["value"] = starproto.NewStarProtoMessage(message)
 	return globals, nil
 }
 
@@ -204,7 +204,7 @@ func (l *starlarkLoader) loadProto(modulePath string) (starlark.StringDict, erro
 	fileDescriptor := descriptors[0]
 	globals := starlark.StringDict{}
 	for _, message := range fileDescriptor.GetMessageTypes() {
-		globals[message.GetName()] = proto.NewMessageType(message)
+		globals[message.GetName()] = starproto.NewMessageType(message)
 	}
 	return globals, nil
 }

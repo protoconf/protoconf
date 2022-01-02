@@ -13,7 +13,7 @@ go_library(
     importpath = "github.com/protoconf/protoconf/compiler/lib",
     visibility = ["//visibility:public"],
     deps = [
-        "//compiler/proto:go_default_library",
+        "//compiler/starproto:go_default_library",
         "//consts:go_default_library",
         "//datatypes/proto/v1:go_default_library",
         "//utils:go_default_library",
@@ -22,7 +22,6 @@ go_library(
         "@com_github_golang_protobuf//ptypes:go_default_library_gen",
         "@com_github_jhump_protoreflect//desc/protoparse:go_default_library",
         "@com_github_jhump_protoreflect//dynamic:go_default_library",
-        "@com_github_pkg_errors//:go_default_library",
         "@com_github_qri_io_starlib//:go_default_library",
         "@io_bazel_rules_go//proto/wkt:descriptor_go_proto",
         "@net_starlark_go//resolve:go_default_library",
