@@ -6,5 +6,7 @@ import (
 )
 
 func main() {
+	// compile does not need a GC
+	// debug.SetGCPercent(-1)
 	command.RunCommand("compiler", compiler.Command)
 }

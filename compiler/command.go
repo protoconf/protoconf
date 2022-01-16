@@ -8,6 +8,8 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"runtime"
+	"runtime/pprof"
 	"strings"
 
 	"github.com/mitchellh/cli"
@@ -23,6 +25,8 @@ type cliCommand struct{}
 type cliConfig struct {
 	repl           bool
 	verboseLogging bool
+	cpuprofile     string
+	memprofile     string
 }
 
 func newFlagSet() (*flag.FlagSet, *cliConfig) {
@@ -35,6 +39,8 @@ func newFlagSet() (*flag.FlagSet, *cliConfig) {
 	config := &cliConfig{}
 	flags.BoolVar(&config.repl, "repl", false, "Interactive REPL mode")
 	flags.BoolVar(&config.verboseLogging, "V", false, "Verbose logging")
+	flags.StringVar(&config.cpuprofile, "cpuprofile", "", "Write cpu profiling info to this file")
+	flags.StringVar(&config.memprofile, "memprofile", "", "Write memory profiling info to this file")
 
 	return flags, config
 }
@@ -46,6 +52,17 @@ func (c *cliCommand) Run(args []string) int {
 	if flags.NArg() < 1 {
 		flags.Usage()
 		return 1
+	}
+	if config.cpuprofile != "" {
+		f, err := os.Create(config.cpuprofile)
+		if err != nil {
+			log.Fatal("Could not create CPU profile:", err)
+		}
+		defer f.Close()
+		if err := pprof.StartCPUProfile(f); err != nil {
+			log.Fatal("Could not start CPU profile:", err)
+		}
+		defer pprof.StopCPUProfile()
 	}
 
 	protoconfRoot := strings.TrimSpace(flags.Args()[0])
@@ -87,6 +104,17 @@ func (c *cliCommand) Run(args []string) int {
 		return 1
 	}
 
+	if config.memprofile != "" {
+		f, err := os.Create(config.memprofile)
+		if err != nil {
+			log.Fatal("Could not create memory profile:", err)
+		}
+		defer f.Close()
+		runtime.GC()
+		if err := pprof.WriteHeapProfile(f); err != nil {
+			log.Fatal("Could not start memory profile:", err)
+		}
+	}
 	return 0
 }
 

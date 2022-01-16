@@ -10,11 +10,12 @@ import (
 
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/ptypes"
+	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/dynamic"
+	"github.com/protoconf/protoconf/compiler/lib/parser"
 	"github.com/protoconf/protoconf/compiler/starproto"
 	"github.com/protoconf/protoconf/consts"
 	pc "github.com/protoconf/protoconf/datatypes/proto/v1"
-	"github.com/protoconf/protoconf/utils"
 	"go.starlark.net/resolve"
 	"go.starlark.net/starlark"
 )
@@ -28,20 +29,20 @@ func NewCompiler(protoconfRoot string, verboseLogging bool) *Compiler {
 	resolve.AllowRecursion = true      // allow while statements and recursive functions
 
 	return &Compiler{
-		protoconfRoot:    protoconfRoot,
-		verboseLogging:   verboseLogging,
-		disableWriting:   false,
-		protoFilesLoaded: make(map[string]interface{}),
-		MaterializedDir:  filepath.Join(protoconfRoot, consts.CompiledConfigPath),
+		protoconfRoot:   protoconfRoot,
+		verboseLogging:  verboseLogging,
+		disableWriting:  false,
+		MaterializedDir: filepath.Join(protoconfRoot, consts.CompiledConfigPath),
+		parser:          parser.NewParser(protoconfRoot),
 	}
 }
 
 type Compiler struct {
-	protoconfRoot    string
-	verboseLogging   bool
-	disableWriting   bool
-	protoFilesLoaded map[string]interface{}
-	MaterializedDir  string
+	protoconfRoot   string
+	verboseLogging  bool
+	disableWriting  bool
+	MaterializedDir string
+	parser          *parser.Parser
 }
 
 func (c *Compiler) DisableWriting() error {
@@ -118,16 +119,12 @@ func (c *Compiler) writeConfig(message *dynamic.Message, filename string) error 
 		Value:     any,
 	}
 
-	var protoFilesToLoad []string
-	for k := range c.protoFilesLoaded {
-		if len(k) > 0 {
-			protoFilesToLoad = append(protoFilesToLoad, strings.TrimPrefix(k, "/"))
-		}
+	descriptors := []*desc.FileDescriptor{}
+	for _, d := range c.parser.Cache {
+		descriptors = append(descriptors, d)
 	}
-	anyResolver, err := utils.LoadAnyResolver(filepath.Join(c.protoconfRoot, "src"), protoFilesToLoad...)
-	if err != nil {
-		return err
-	}
+
+	anyResolver := dynamic.AnyResolver(nil, descriptors...)
 	m := &jsonpb.Marshaler{AnyResolver: anyResolver, Indent: "  "}
 	jsonData, err := m.MarshalToString(protoconfValue)
 	if err != nil {
@@ -172,9 +169,6 @@ func (c *Compiler) load(filename string) (*config, error) {
 
 	loader := c.GetLoader()
 	locals, validators, err := loader.loadConfig(filepath.ToSlash(filename))
-	for _, f := range *loader.protoFilesLoaded {
-		c.protoFilesLoaded[f] = true
-	}
 	if err != nil {
 		return nil, err
 	}
@@ -188,10 +182,10 @@ func (c *Compiler) load(filename string) (*config, error) {
 
 func (c *Compiler) GetLoader() *starlarkLoader {
 	return &starlarkLoader{
-		cache:            make(map[string]*cacheEntry),
-		Modules:          getModules(),
-		mutableDir:       filepath.Join(c.protoconfRoot, consts.MutableConfigPath),
-		protoFilesLoaded: &[]string{},
-		srcDir:           filepath.Join(c.protoconfRoot, consts.SrcPath),
+		cache:      make(map[string]*cacheEntry),
+		Modules:    getModules(),
+		mutableDir: filepath.Join(c.protoconfRoot, consts.MutableConfigPath),
+		srcDir:     filepath.Join(c.protoconfRoot, consts.SrcPath),
+		parser:     c.parser,
 	}
 }
