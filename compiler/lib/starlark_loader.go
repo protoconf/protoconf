@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"path"
 	"path/filepath"
@@ -12,8 +11,8 @@ import (
 
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/ptypes"
-	"github.com/jhump/protoreflect/desc/protoparse"
 	"github.com/jhump/protoreflect/dynamic"
+	"github.com/protoconf/protoconf/compiler/lib/parser"
 	"github.com/protoconf/protoconf/compiler/starproto"
 	"github.com/protoconf/protoconf/consts"
 	pc "github.com/protoconf/protoconf/datatypes/proto/v1"
@@ -27,19 +26,11 @@ type cacheEntry struct {
 }
 
 type starlarkLoader struct {
-	cache            map[string]*cacheEntry
-	Modules          starlark.StringDict
-	mutableDir       string
-	protoFilesLoaded *[]string
-	srcDir           string
-}
-
-func (l *starlarkLoader) protoAccessor(name string) (io.ReadCloser, error) {
-	if !strings.HasPrefix(name, l.srcDir) {
-		return nil, fmt.Errorf("proto path must be under %s, got=%s", l.srcDir, name)
-	}
-	*l.protoFilesLoaded = append(*l.protoFilesLoaded, strings.TrimPrefix(name, l.srcDir))
-	return openFile(name)
+	cache      map[string]*cacheEntry
+	Modules    starlark.StringDict
+	mutableDir string
+	srcDir     string
+	parser     *parser.Parser
 }
 
 func (l *starlarkLoader) loadConfig(moduleName string) (starlark.StringDict, map[string]*starlark.Function, error) {
@@ -97,7 +88,8 @@ func (l *starlarkLoader) loadValidators() (map[string]*starlark.Function, error)
 	validators := make(map[string]*starlark.Function)
 
 	l.Modules["add_validator"] = starlark.NewBuiltin("add_validator", starAddValidator(&validators))
-	for _, protoFile := range *l.protoFilesLoaded {
+	for _, protoFileDesc := range l.parser.Cache {
+		protoFile := protoFileDesc.GetName()
 		validatorFile := protoFile + consts.ValidatorExtensionSuffix
 		validatorAbsPath := filepath.Join(l.srcDir, validatorFile)
 		if exists, isDir, err := stat(validatorAbsPath); err != nil {
@@ -157,11 +149,13 @@ func (l *starlarkLoader) loadMutable(modulePath string) (starlark.StringDict, er
 		return nil, err
 	}
 
-	parser := &protoparse.Parser{ImportPaths: []string{l.srcDir}, Accessor: l.protoAccessor}
-	descriptors, err := parser.ParseFiles(configJSON.ProtoFile)
+	// parser := &protoparse.Parser{ImportPaths: []string{l.srcDir}, Accessor: l.protoAccessor}
+	// l.parser.Accessor = l.protoAccessor
+	descriptors, err := l.parser.ParseFilesX(configJSON.ProtoFile)
 	if err != nil {
 		return nil, fmt.Errorf("error parsing proto file, file=%s err=%s", configJSON.ProtoFile, err)
 	}
+	// l.parser.Accessor = nil
 	fileDescriptor := descriptors[0]
 	anyResolver := dynamic.AnyResolver(nil, fileDescriptor)
 
@@ -196,8 +190,8 @@ func (l *starlarkLoader) loadMutable(modulePath string) (starlark.StringDict, er
 }
 
 func (l *starlarkLoader) loadProto(modulePath string) (starlark.StringDict, error) {
-	parser := &protoparse.Parser{ImportPaths: []string{l.srcDir}, Accessor: l.protoAccessor}
-	descriptors, err := parser.ParseFiles(modulePath)
+	//parser := &protoparse.Parser{ImportPaths: []string{l.srcDir}, Accessor: l.protoAccessor}
+	descriptors, err := l.parser.ParseFilesX(modulePath)
 	if err != nil {
 		return nil, fmt.Errorf("error parsing proto file, file=%s err=%v", modulePath, err)
 	}

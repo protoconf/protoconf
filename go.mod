@@ -14,6 +14,7 @@ require (
 	github.com/gogo/protobuf v1.3.1 // indirect
 	github.com/golang/mock v1.4.3 // indirect
 	github.com/golang/protobuf v1.5.2
+	github.com/google/pprof v0.0.0-20210609004039-a478d1d731e9 // indirect
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
 	github.com/hashicorp/consul/api v1.8.1 // indirect
@@ -29,7 +30,6 @@ require (
 	github.com/qri-io/starlib v0.5.0
 	github.com/samuel/go-zookeeper v0.0.0-20190923202752-2cc03de413da // indirect
 	github.com/stretchr/testify v1.7.0
-	github.com/ulikunitz/xz v0.5.8 // indirect
 	github.com/zclconf/go-cty v1.8.4
 	go.etcd.io/etcd v3.3.18+incompatible // indirect
 	go.starlark.net v0.0.0-20210602144842-1cdb82c9e17a
