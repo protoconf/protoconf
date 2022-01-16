@@ -14,6 +14,7 @@ import (
 	"github.com/zclconf/go-cty/cty"
 	"go.uber.org/zap"
 
+	"github.com/protoconf/protoconf/importers"
 	"github.com/protoconf/protoconf/importers/terraform_importer/meta"
 	"github.com/protoconf/protoconf/importers/wktbuilders"
 )
@@ -21,11 +22,23 @@ import (
 var metaFile *builder.FileBuilder = meta.MetaFile()
 
 // NewFile returns a FileBuilder prepared with the required filename format
-func NewFile(name, postfix string) *builder.FileBuilder {
-	file := builder.NewFile(fmt.Sprintf("terraform/%s-%s.proto", name, postfix))
+func NewFile(providerName, kind, version, family string) *builder.FileBuilder {
+	v := strings.Split(version, ".")[0]
+	file := builder.NewFile(fmt.Sprintf("terraform/%s/%s/v%s/%s.proto", providerName, kind, v, family))
 	file.SetProto3(true)
-	file.SetPackageName(fmt.Sprintf("terraform.%s.%s", name, postfix))
+	file.SetPackageName(fmt.Sprintf("terraform.%s.%s.v%s", providerName, kind, v))
+
+	file.PackageComments = builder.Comments{LeadingComment: fmt.Sprintf("Provider: %s %s", providerName, version)}
 	return file
+}
+
+func resourceFile(i *importers.Importer, providerName, kind, version, family string) *builder.FileBuilder {
+	tmp := NewFile(providerName, kind, version, family)
+	if file, ok := i.Files[tmp.GetName()]; ok {
+		return file
+	}
+	i.RegisterFile(tmp)
+	return tmp
 }
 
 // Print prints a FileBuilder to stderr

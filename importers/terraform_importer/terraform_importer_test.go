@@ -26,4 +26,6 @@ func TestGenerate(t *testing.T) {
 	assert.Equal(t, "", "")
 	err = g.Save()
 	assert.NoError(t, err)
+	Print(g.Importer.MasterFile)
+	// t.Fail()
 }
