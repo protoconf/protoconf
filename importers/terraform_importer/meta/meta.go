@@ -8,9 +8,9 @@ import (
 // terraform resources.
 // https://www.terraform.io/docs/configuration/resources.html#meta-arguments
 func MetaFile() *builder.FileBuilder {
-	file := builder.NewFile("terraform/meta.proto")
+	file := builder.NewFile("terraform/v1/meta.proto")
 	file.SetProto3(true)
-	file.SetPackageName("terraform.meta")
+	file.SetPackageName("terraform.v1")
 
 	metaMsg := builder.NewMessage("MetaFields")
 

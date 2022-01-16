@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 
@@ -27,11 +28,15 @@ func NewImporter(masterFileName, protoconfPath string) *Importer {
 		masterFileName = fmt.Sprintf("%s.proto", masterFileName)
 	}
 	return &Importer{
-		MasterFile:     builder.NewFile(masterFileName).SetProto3(true),
+		MasterFile:     builder.NewFile(masterFileName).SetProto3(true).SetPackageName(getPackageNameForProtoFile(masterFileName)),
 		MasterFileName: masterFileName,
 		ProtoconfPath:  protoconfPath,
 		Files:          map[string]*builder.FileBuilder{},
 	}
+}
+
+func getPackageNameForProtoFile(s string) string {
+	return strings.ReplaceAll(path.Dir(s), "/", ".")
 }
 
 // RegisterFile will add a file to fileRegistry

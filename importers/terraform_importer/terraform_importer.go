@@ -3,7 +3,6 @@ package terraformimporter
 import (
 	"log"
 	"path/filepath"
-	"sort"
 	"strings"
 
 	tfplugin "github.com/hashicorp/terraform/plugin"
@@ -11,7 +10,6 @@ import (
 	"github.com/jhump/protoreflect/desc/builder"
 
 	"github.com/protoconf/protoconf/importers"
-	"github.com/protoconf/protoconf/importers/terraform_importer/meta"
 )
 
 // Generator is used to create `terrafrom.proto` file with all of its
@@ -25,11 +23,30 @@ type Generator struct {
 
 // NewGenerator creates a new Generator
 func NewGenerator(importPath, outputPath string) *Generator {
-	providers := make(map[string]*ProviderImporter)
+	providersMap := make(map[string]*ProviderImporter)
+	importer := importers.NewImporter("terraform/v1/terraform.proto", outputPath)
+	file := importer.MasterFile
+	file.SetProto3(true)
+	file.SetPackageName("terraform.v1")
+
+	main := builder.NewMessage("Terraform")
+	resources := builder.NewMessage("Resources")
+	data := builder.NewMessage("Datasources")
+	providers := builder.NewMessage("Providers")
+	main.AddNestedMessage(resources)
+	main.AddField(builder.NewField("resource", builder.FieldTypeMessage(resources)).SetJsonName("resource"))
+	main.AddNestedMessage(data)
+	main.AddField(builder.NewField("data", builder.FieldTypeMessage(data)).SetJsonName("data"))
+	main.AddNestedMessage(providers)
+	main.AddField(builder.NewField("provider", builder.FieldTypeMessage(providers)).SetJsonName("provider"))
+	err := file.TryAddMessage(main)
+	if err != nil {
+		panic(err)
+	}
 	return &Generator{
 		ImportPath: importPath,
-		Importer:   importers.NewImporter("terraform/terraform.proto", outputPath),
-		Providers:  providers,
+		Importer:   importer,
+		Providers:  providersMap,
 	}
 }
 
@@ -55,7 +72,7 @@ func (g *Generator) PopulateProviders() error {
 		if err != nil {
 			return err
 		}
-		p, err := NewProviderImporter(c.Name, client)
+		p, err := NewProviderImporter(c, client, g.Importer)
 		if err != nil {
 			return err
 		}
@@ -211,59 +228,15 @@ func addTerraformConfigMessage(main *builder.MessageBuilder) error {
 
 // Save will write all protofiles to disk
 func (g *Generator) Save() error {
-	file := g.Importer.MasterFile
-	file.SetProto3(true)
-	file.SetPackageName("terraform")
+	main := g.Importer.MasterFile.GetMessage("Terraform")
 
-	main := builder.NewMessage("Terraform")
-	resources := builder.NewMessage("Resources")
-	data := builder.NewMessage("Datasources")
-	providers := builder.NewMessage("Providers")
-
-	main.AddNestedMessage(resources)
-	main.AddField(builder.NewField("resource", builder.FieldTypeMessage(resources)).SetJsonName("resource"))
-	main.AddNestedMessage(data)
-	main.AddField(builder.NewField("data", builder.FieldTypeMessage(data)).SetJsonName("data"))
-	main.AddNestedMessage(providers)
-	main.AddField(builder.NewField("provider", builder.FieldTypeMessage(providers)).SetJsonName("provider"))
 	addVariableMessage(main)
 	addOutputMessage(main)
 	addLocalMessage(main)
 	addModuleMessage(main)
 	addTerraformConfigMessage(main)
-
-	metaFile := meta.MetaFile()
-	protoFiles := []*builder.FileBuilder{file, metaFile}
-
-	keys := []string{}
-	for name := range g.Providers {
-		keys = append(keys, name)
-	}
-	sort.Strings(keys)
-
-	for _, name := range keys {
-		p := g.Providers[name]
-		log.Println("saving", name)
-		protoFiles = append(protoFiles, p.Resources)
-		protoFiles = append(protoFiles, p.Datasources)
-		protoFiles = append(protoFiles, p.Provider)
-		for _, b := range p.Provider.GetMessage("resources").GetChildren() {
-			f := p.Provider.GetMessage("resources").GetField(b.GetName())
-			resources.AddField(f)
-		}
-		for _, b := range p.Provider.GetMessage("data").GetChildren() {
-			f := p.Provider.GetMessage("data").GetField(b.GetName())
-			data.AddField(f)
-		}
-		for _, b := range p.Provider.GetMessage("provider").GetChildren() {
-			f := p.Provider.GetMessage("provider").GetField(b.GetName())
-			providers.AddField(f)
-		}
-	}
-	file.AddMessage(main)
-	for _, f := range protoFiles {
-		g.Importer.RegisterFile(f)
-	}
+	g.Importer.MasterFile.AddMessage(main)
+	g.Importer.RegisterFile(metaFile)
 
 	return g.Importer.SaveAll()
 
