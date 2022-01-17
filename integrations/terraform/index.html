@@ -423,13 +423,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#copy-all-providers-binaries-to-same-directory" class="md-nav__link">
-    Copy all providers binaries to same directory
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#generate-the-terraform-protos" class="md-nav__link">
     Generate the terraform protos
   </a>
@@ -534,13 +527,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#copy-all-providers-binaries-to-same-directory" class="md-nav__link">
-    Copy all providers binaries to same directory
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#generate-the-terraform-protos" class="md-nav__link">
     Generate the terraform protos
   </a>
@@ -599,40 +585,77 @@ provider &quot;tls&quot; {}
 <h3 id="initialize-terraform">Initialize Terraform</h3>
 <div class="highlight"><pre><span></span><code>$ terraform init
 </code></pre></div>
-<h3 id="copy-all-providers-binaries-to-same-directory">Copy all providers binaries to same directory</h3>
-<div class="highlight"><pre><span></span><code>$ find .terraform -type f -exec cp <span class="o">{}</span> .terraform <span class="se">\;</span>
-</code></pre></div>
 <h3 id="generate-the-terraform-protos">Generate the terraform protos</h3>
-<div class="highlight"><pre><span></span><code>$ protoconf import terraform -import_path .terraform
+<div class="highlight"><pre><span></span><code>$ protoconf import terraform
 </code></pre></div>
-<p>Validate the outpus</p>
-<div class="highlight"><pre><span></span><code>$  ll src/terraform
-total 48K
-drwxr-xr-x <span class="m">10</span> smintz  <span class="m">320</span> May <span class="m">23</span> <span class="m">10</span>:46 .
-drwxr-xr-x  <span class="m">3</span> smintz   <span class="m">96</span> May <span class="m">23</span> <span class="m">10</span>:39 ..
--rw-r--r--  <span class="m">1</span> smintz  <span class="m">461</span> May <span class="m">23</span> <span class="m">10</span>:46 meta.proto
--rw-r--r--  <span class="m">1</span> smintz   <span class="m">51</span> May <span class="m">23</span> <span class="m">10</span>:46 random-data.proto
--rw-r--r--  <span class="m">1</span> smintz  <span class="m">371</span> May <span class="m">23</span> <span class="m">10</span>:46 random-provider.proto
--rw-r--r--  <span class="m">1</span> smintz <span class="m">8</span>.1K May <span class="m">23</span> <span class="m">10</span>:46 random-resources.proto
--rw-r--r--  <span class="m">1</span> smintz <span class="m">4</span>.5K May <span class="m">23</span> <span class="m">10</span>:46 terraform.proto
--rw-r--r--  <span class="m">1</span> smintz <span class="m">1</span>.9K May <span class="m">23</span> <span class="m">10</span>:46 tls-data.proto
--rw-r--r--  <span class="m">1</span> smintz  <span class="m">362</span> May <span class="m">23</span> <span class="m">10</span>:46 tls-provider.proto
--rw-r--r--  <span class="m">1</span> smintz <span class="m">6</span>.1K May <span class="m">23</span> <span class="m">10</span>:46 tls-resources.proto
+<p>Validate the outputs</p>
+<div class="highlight"><pre><span></span><code>$ find src/terraform
+src/terraform
+src/terraform/v1
+src/terraform/v1/terraform.proto
+src/terraform/v1/meta.proto
+src/terraform/tls
+src/terraform/tls/datasources
+src/terraform/tls/datasources/v3
+src/terraform/tls/datasources/v3/public.proto
+src/terraform/tls/datasources/v3/certificate.proto
+src/terraform/tls/resources
+src/terraform/tls/resources/v3
+src/terraform/tls/resources/v3/private.proto
+src/terraform/tls/resources/v3/self.proto
+src/terraform/tls/resources/v3/cert.proto
+src/terraform/tls/resources/v3/locally.proto
+src/terraform/tls/provider
+src/terraform/tls/provider/v3
+src/terraform/tls/provider/v3/tls.proto
+src/terraform/random
+src/terraform/random/resources
+src/terraform/random/resources/v3
+src/terraform/random/resources/v3/password.proto
+src/terraform/random/resources/v3/integer.proto
+src/terraform/random/resources/v3/string.proto
+src/terraform/random/resources/v3/pet.proto
+src/terraform/random/resources/v3/shuffle.proto
+src/terraform/random/resources/v3/id.proto
+src/terraform/random/resources/v3/uuid.proto
+src/terraform/random/provider
+src/terraform/random/provider/v3
+src/terraform/random/provider/v3/random.proto
 </code></pre></div>
 <p>The <code>src/terraform/terraform.proto</code> should looks like this:</p>
 <div class="highlight"><pre><span></span><code><span class="k">syntax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;proto3&quot;</span><span class="p">;</span>
 
-<span class="kn">package</span><span class="w"> </span><span class="nn">terraform</span><span class="p">;</span>
+<span class="kn">package</span><span class="w"> </span><span class="nn">terraform</span><span class="o">.</span><span class="n">v1</span><span class="p">;</span>
 
-<span class="k">import</span><span class="w"> </span><span class="s">&quot;terraform/random-provider.proto&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s">&quot;terraform/random/provider/v3/random.proto&quot;</span><span class="p">;</span>
 
-<span class="k">import</span><span class="w"> </span><span class="s">&quot;terraform/random-resources.proto&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s">&quot;terraform/random/resources/v3/id.proto&quot;</span><span class="p">;</span>
 
-<span class="k">import</span><span class="w"> </span><span class="s">&quot;terraform/tls-data.proto&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s">&quot;terraform/random/resources/v3/integer.proto&quot;</span><span class="p">;</span>
 
-<span class="k">import</span><span class="w"> </span><span class="s">&quot;terraform/tls-provider.proto&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s">&quot;terraform/random/resources/v3/password.proto&quot;</span><span class="p">;</span>
 
-<span class="k">import</span><span class="w"> </span><span class="s">&quot;terraform/tls-resources.proto&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s">&quot;terraform/random/resources/v3/pet.proto&quot;</span><span class="p">;</span>
+
+<span class="k">import</span><span class="w"> </span><span class="s">&quot;terraform/random/resources/v3/shuffle.proto&quot;</span><span class="p">;</span>
+
+<span class="k">import</span><span class="w"> </span><span class="s">&quot;terraform/random/resources/v3/string.proto&quot;</span><span class="p">;</span>
+
+<span class="k">import</span><span class="w"> </span><span class="s">&quot;terraform/random/resources/v3/uuid.proto&quot;</span><span class="p">;</span>
+
+<span class="k">import</span><span class="w"> </span><span class="s">&quot;terraform/tls/datasources/v3/certificate.proto&quot;</span><span class="p">;</span>
+
+<span class="k">import</span><span class="w"> </span><span class="s">&quot;terraform/tls/datasources/v3/public.proto&quot;</span><span class="p">;</span>
+
+<span class="k">import</span><span class="w"> </span><span class="s">&quot;terraform/tls/provider/v3/tls.proto&quot;</span><span class="p">;</span>
+
+<span class="k">import</span><span class="w"> </span><span class="s">&quot;terraform/tls/resources/v3/cert.proto&quot;</span><span class="p">;</span>
+
+<span class="k">import</span><span class="w"> </span><span class="s">&quot;terraform/tls/resources/v3/locally.proto&quot;</span><span class="p">;</span>
+
+<span class="k">import</span><span class="w"> </span><span class="s">&quot;terraform/tls/resources/v3/private.proto&quot;</span><span class="p">;</span>
+
+<span class="k">import</span><span class="w"> </span><span class="s">&quot;terraform/tls/resources/v3/self.proto&quot;</span><span class="p">;</span>
 
 <span class="kd">message</span><span class="w"> </span><span class="nc">Terraform</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="n">Resources</span><span class="w"> </span><span class="na">resource</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
@@ -652,39 +675,39 @@ drwxr-xr-x  <span class="m">3</span> smintz   <span class="m">96</span> May <spa
 <span class="w">  </span><span class="n">TerraformSettings</span><span class="w"> </span><span class="na">terraform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">8</span><span class="p">;</span>
 
 <span class="w">  </span><span class="kd">message</span><span class="w"> </span><span class="nc">Resources</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">random.resources.RandomId</span><span class="p">&gt;</span><span class="w"> </span><span class="na">random_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;random_id&quot;</span><span class="p">];</span>
+<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">terraform.random.resources.v3.RandomId</span><span class="p">&gt;</span><span class="w"> </span><span class="na">random_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;random_id&quot;</span><span class="p">];</span>
 
-<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">random.resources.RandomInteger</span><span class="p">&gt;</span><span class="w"> </span><span class="na">random_integer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;random_integer&quot;</span><span class="p">];</span>
+<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">terraform.random.resources.v3.RandomInteger</span><span class="p">&gt;</span><span class="w"> </span><span class="na">random_integer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;random_integer&quot;</span><span class="p">];</span>
 
-<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">random.resources.RandomPassword</span><span class="p">&gt;</span><span class="w"> </span><span class="na">random_password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;random_password&quot;</span><span class="p">];</span>
+<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">terraform.random.resources.v3.RandomPassword</span><span class="p">&gt;</span><span class="w"> </span><span class="na">random_password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;random_password&quot;</span><span class="p">];</span>
 
-<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">random.resources.RandomPet</span><span class="p">&gt;</span><span class="w"> </span><span class="na">random_pet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;random_pet&quot;</span><span class="p">];</span>
+<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">terraform.random.resources.v3.RandomPet</span><span class="p">&gt;</span><span class="w"> </span><span class="na">random_pet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;random_pet&quot;</span><span class="p">];</span>
 
-<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">random.resources.RandomShuffle</span><span class="p">&gt;</span><span class="w"> </span><span class="na">random_shuffle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;random_shuffle&quot;</span><span class="p">];</span>
+<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">terraform.random.resources.v3.RandomShuffle</span><span class="p">&gt;</span><span class="w"> </span><span class="na">random_shuffle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;random_shuffle&quot;</span><span class="p">];</span>
 
-<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">random.resources.RandomString</span><span class="p">&gt;</span><span class="w"> </span><span class="na">random_string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;random_string&quot;</span><span class="p">];</span>
+<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">terraform.random.resources.v3.RandomString</span><span class="p">&gt;</span><span class="w"> </span><span class="na">random_string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;random_string&quot;</span><span class="p">];</span>
 
-<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">random.resources.RandomUuid</span><span class="p">&gt;</span><span class="w"> </span><span class="na">random_uuid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">7</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;random_uuid&quot;</span><span class="p">];</span>
+<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">terraform.random.resources.v3.RandomUuid</span><span class="p">&gt;</span><span class="w"> </span><span class="na">random_uuid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">7</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;random_uuid&quot;</span><span class="p">];</span>
 
-<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">tls.resources.TlsCertRequest</span><span class="p">&gt;</span><span class="w"> </span><span class="na">tls_cert_request</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">8</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;tls_cert_request&quot;</span><span class="p">];</span>
+<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">terraform.tls.resources.v3.TlsCertRequest</span><span class="p">&gt;</span><span class="w"> </span><span class="na">tls_cert_request</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">8</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;tls_cert_request&quot;</span><span class="p">];</span>
 
-<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">tls.resources.TlsLocallySignedCert</span><span class="p">&gt;</span><span class="w"> </span><span class="na">tls_locally_signed_cert</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">9</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;tls_locally_signed_cert&quot;</span><span class="p">];</span>
+<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">terraform.tls.resources.v3.TlsLocallySignedCert</span><span class="p">&gt;</span><span class="w"> </span><span class="na">tls_locally_signed_cert</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">9</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;tls_locally_signed_cert&quot;</span><span class="p">];</span>
 
-<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">tls.resources.TlsPrivateKey</span><span class="p">&gt;</span><span class="w"> </span><span class="na">tls_private_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;tls_private_key&quot;</span><span class="p">];</span>
+<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">terraform.tls.resources.v3.TlsPrivateKey</span><span class="p">&gt;</span><span class="w"> </span><span class="na">tls_private_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;tls_private_key&quot;</span><span class="p">];</span>
 
-<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">tls.resources.TlsSelfSignedCert</span><span class="p">&gt;</span><span class="w"> </span><span class="na">tls_self_signed_cert</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">11</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;tls_self_signed_cert&quot;</span><span class="p">];</span>
+<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">terraform.tls.resources.v3.TlsSelfSignedCert</span><span class="p">&gt;</span><span class="w"> </span><span class="na">tls_self_signed_cert</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">11</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;tls_self_signed_cert&quot;</span><span class="p">];</span>
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="kd">message</span><span class="w"> </span><span class="nc">Datasources</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">tls.data.TlsCertificate</span><span class="p">&gt;</span><span class="w"> </span><span class="na">tls_certificate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;tls_certificate&quot;</span><span class="p">];</span>
+<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">terraform.tls.datasources.v3.TlsCertificate</span><span class="p">&gt;</span><span class="w"> </span><span class="na">tls_certificate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;tls_certificate&quot;</span><span class="p">];</span>
 
-<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">tls.data.TlsPublicKey</span><span class="p">&gt;</span><span class="w"> </span><span class="na">tls_public_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;tls_public_key&quot;</span><span class="p">];</span>
+<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">terraform.tls.datasources.v3.TlsPublicKey</span><span class="p">&gt;</span><span class="w"> </span><span class="na">tls_public_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;tls_public_key&quot;</span><span class="p">];</span>
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="kd">message</span><span class="w"> </span><span class="nc">Providers</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="k">repeated</span><span class="w"> </span><span class="n">random.provider.Random</span><span class="w"> </span><span class="na">random</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">    </span><span class="k">repeated</span><span class="w"> </span><span class="n">terraform.random.provider.v3.Random</span><span class="w"> </span><span class="na">random</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
 
-<span class="w">    </span><span class="k">repeated</span><span class="w"> </span><span class="n">tls.provider.Tls</span><span class="w"> </span><span class="na">tls</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+<span class="w">    </span><span class="k">repeated</span><span class="w"> </span><span class="n">terraform.tls.provider.v3.Tls</span><span class="w"> </span><span class="na">tls</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="kd">message</span><span class="w"> </span><span class="nc">Variable</span><span class="w"> </span><span class="p">{</span>
@@ -705,7 +728,7 @@ drwxr-xr-x  <span class="m">3</span> smintz   <span class="m">96</span> May <spa
 <span class="w">  </span><span class="kd">message</span><span class="w"> </span><span class="nc">TerraformSettings</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="kt">string</span><span class="w"> </span><span class="na">required_version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;required_version&quot;</span><span class="p">];</span>
 
-<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">Provider</span><span class="p">&gt;</span><span class="w"> </span><span class="na">required_providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+<span class="w">    </span><span class="n">map</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="n">Provider</span><span class="p">&gt;</span><span class="w"> </span><span class="na">required_providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;required_providers&quot;</span><span class="p">];</span>
 
 <span class="w">    </span><span class="n">Backend</span><span class="w"> </span><span class="na">backend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
 
@@ -719,13 +742,37 @@ drwxr-xr-x  <span class="m">3</span> smintz   <span class="m">96</span> May <spa
 <span class="w">      </span><span class="k">oneof</span><span class="w"> </span><span class="n">config</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="n">BackendLocal</span><span class="w"> </span><span class="na">local</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
 
-<span class="w">        </span><span class="n">BackendS3</span><span class="w"> </span><span class="na">s3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+<span class="w">        </span><span class="n">BackendRemote</span><span class="w"> </span><span class="na">remote</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+
+<span class="w">        </span><span class="n">BackendS3</span><span class="w"> </span><span class="na">s3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
 <span class="w">      </span><span class="p">}</span>
 
 <span class="w">      </span><span class="kd">message</span><span class="w"> </span><span class="nc">BackendLocal</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
 
 <span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">workspace_dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">[</span><span class="na">json_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;workspace_dir&quot;</span><span class="p">];</span>
+<span class="w">      </span><span class="p">}</span>
+
+<span class="w">      </span><span class="kd">message</span><span class="w"> </span><span class="nc">BackendRemote</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//(Optional) The remote backend hostname to connect to. Defaults to app.terraform.io.</span>
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">hostname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+
+<span class="w">        </span><span class="c1">//(Required) The name of the organization containing the targeted workspace(s).</span>
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">organization</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+
+<span class="w">        </span><span class="c1">//(Optional) The token used to authenticate with the remote backend. We recommend omitting the token from the configuration, and instead using `terraform login` or manually configuring `credentials` in the CLI config file.</span>
+<span class="w">        </span><span class="kt">string</span><span class="w"> </span><span class="na">token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
+
+<span class="w">        </span><span class="c1">//(Required) A block specifying which remote workspace(s) to use. The workspaces block supports the following keys</span>
+<span class="w">        </span><span class="n">Workspace</span><span class="w"> </span><span class="na">workspaces</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
+
+<span class="w">        </span><span class="kd">message</span><span class="w"> </span><span class="nc">Workspace</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="c1">//(Optional) The full name of one remote workspace. When configured, only the default workspace can be used. This option conflicts with prefix.</span>
+<span class="w">          </span><span class="kt">string</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+
+<span class="w">          </span><span class="c1">//(Optional) A prefix used in the names of one or more remote workspaces, all of which can be used with this configuration. The full workspace names are used in Terraform Cloud, and the short names (minus the prefix) are used on the command line for Terraform CLI workspaces. If omitted, only the default workspace can be used. This option conflicts with name.</span>
+<span class="w">          </span><span class="kt">string</span><span class="w"> </span><span class="na">prefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
 <span class="w">      </span><span class="p">}</span>
 
 <span class="w">      </span><span class="kd">message</span><span class="w"> </span><span class="nc">BackendS3</span><span class="w"> </span><span class="p">{</span>
@@ -798,9 +845,9 @@ drwxr-xr-x  <span class="m">3</span> smintz   <span class="m">96</span> May <spa
 <h3 id="create-a-tfpconf-file">Create a <code>.tf.pconf</code> file</h3>
 <div class="highlight"><pre><span></span><code><span class="c1"># vim: filetype=python</span>
 <span class="c1"># ./src/tfdemo/tfdemo.tf.pconf</span>
-<span class="n">load</span><span class="p">(</span><span class="s2">&quot;//terraform/terraform.proto&quot;</span><span class="p">,</span> <span class="s2">&quot;Terraform&quot;</span><span class="p">)</span>
-<span class="n">load</span><span class="p">(</span><span class="s2">&quot;//terraform/random-provider.proto&quot;</span><span class="p">,</span> <span class="s2">&quot;Random&quot;</span><span class="p">)</span>
-<span class="n">load</span><span class="p">(</span><span class="s2">&quot;//terraform/random-resources.proto&quot;</span><span class="p">,</span> <span class="s2">&quot;RandomPet&quot;</span><span class="p">)</span>
+<span class="n">load</span><span class="p">(</span><span class="s2">&quot;//terraform/v1/terraform.proto&quot;</span><span class="p">,</span> <span class="s2">&quot;Terraform&quot;</span><span class="p">)</span>
+<span class="n">load</span><span class="p">(</span><span class="s2">&quot;//terraform/random/provider/v3/random.proto&quot;</span><span class="p">,</span> <span class="s2">&quot;Random&quot;</span><span class="p">)</span>
+<span class="n">load</span><span class="p">(</span><span class="s2">&quot;//terraform/random/resources/v3/pet.proto&quot;</span><span class="p">,</span> <span class="s2">&quot;RandomPet&quot;</span><span class="p">)</span>
 
 <span class="n">tf</span> <span class="o">=</span> <span class="n">Terraform</span><span class="p">(</span>
     <span class="n">provider</span><span class="o">=</span><span class="n">Terraform</span><span class="o">.</span><span class="n">Providers</span><span class="p">(</span><span class="n">random</span><span class="o">=</span><span class="p">[</span><span class="n">Random</span><span class="p">()]),</span>
@@ -819,7 +866,7 @@ drwxr-xr-x  <span class="m">3</span> smintz   <span class="m">96</span> May <spa
 <div class="highlight"><pre><span></span><code>$ protoconf compile .
 </code></pre></div>
 <p>Check the output</p>
-<div class="highlight"><pre><span></span><code>cat materialized_config/tfdemo/tfdemo.tf.materialized_JSON<span class="p">|</span> jq
+<div class="highlight"><pre><span></span><code>cat materialized_config/tfdemo/tfdemo.tf.materialized_JSON
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"></span>
 <span class="w">  </span><span class="nt">&quot;protoFile&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;terraform/terraform.proto&quot;</span><span class="p">,</span><span class="w"></span>
@@ -831,9 +878,7 @@ drwxr-xr-x  <span class="m">3</span> smintz   <span class="m">96</span> May <spa
 <span class="w">      </span><span class="p">}</span><span class="w"></span>
 <span class="w">    </span><span class="p">},</span><span class="w"></span>
 <span class="w">    </span><span class="nt">&quot;provider&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="nt">&quot;random&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
-<span class="w">        </span><span class="p">{}</span><span class="w"></span>
-<span class="w">      </span><span class="p">]</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;random&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[{}]</span><span class="w"></span>
 <span class="w">    </span><span class="p">},</span><span class="w"></span>
 <span class="w">    </span><span class="nt">&quot;resource&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">      </span><span class="nt">&quot;random_pet&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
@@ -844,12 +889,11 @@ drwxr-xr-x  <span class="m">3</span> smintz   <span class="m">96</span> May <spa
 <span class="p">}</span><span class="w"></span>
 </code></pre></div>
 <h3 id="prepare-to-run-terraform">prepare to run terraform</h3>
-<p><div class="highlight"><pre><span></span><code>$ mkdir tf
+<div class="highlight"><pre><span></span><code>$ mkdir tf
 $ cat materialized_config/tfdemo/tfdemo.tf.materialized_JSON <span class="p">|</span> jq <span class="s1">&#39;.value | del(.[&quot;@type&quot;])&#39;</span> &gt; tf/test.tf.json
-$ <span class="nb">cd</span> tf
-$ terraform init
+$ terraform -chdir<span class="o">=</span>tf init
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>$ terraform plan
+<div class="highlight"><pre><span></span><code>$ terraform -chdir<span class="o">=</span>tf plan
 
 An execution plan has been generated and is shown below.
 Resource actions are indicated with the following symbols:
@@ -875,7 +919,7 @@ Note: You didn<span class="s1">&#39;t specify an &quot;-out&quot; parameter to s
 <span class="s1">can&#39;</span>t guarantee that exactly these actions will be performed <span class="k">if</span>
 <span class="s2">&quot;terraform apply&quot;</span> is subsequently run.
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>$ terraform apply -auto-approve
+<div class="highlight"><pre><span></span><code>$ terraform -chdir<span class="o">=</span>tf apply -auto-approve
 random_pet.my_dog_name: Creating...
 random_pet.my_dog_name: Creation <span class="nb">complete</span> after 0s <span class="o">[</span><span class="nv">id</span><span class="o">=</span>key-zebra<span class="o">]</span>
 
@@ -884,7 +928,7 @@ Apply complete! Resources: <span class="m">1</span> added, <span class="m">0</sp
 Outputs:
 
 <span class="nv">my_dog_name</span> <span class="o">=</span> <span class="s2">&quot;key-zebra&quot;</span>
-</code></pre></div></p>
+</code></pre></div>
 
               
             </article>

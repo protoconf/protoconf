@@ -437,13 +437,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#copy-all-providers-binaries-to-same-directory" class="md-nav__link">
-    Copy all providers binaries to same directory
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#generate-the-terraform-protos" class="md-nav__link">
     Generate the terraform protos
   </a>
@@ -596,13 +589,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#copy-all-providers-binaries-to-same-directory" class="md-nav__link">
-    Copy all providers binaries to same directory
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#generate-the-terraform-protos" class="md-nav__link">
     Generate the terraform protos
   </a>
@@ -722,20 +708,62 @@
 <h3 id="initialize-terraform">Initialize Terraform</h3>
 <div class="highlight"><pre><span></span><code>$ terraform init
 </code></pre></div>
-<h3 id="copy-all-providers-binaries-to-same-directory">Copy all providers binaries to same directory</h3>
-<div class="highlight"><pre><span></span><code>$ find .terraform -type f -exec cp <span class="o">{}</span> .terraform <span class="se">\;</span>
-</code></pre></div>
 <h3 id="generate-the-terraform-protos">Generate the terraform protos</h3>
-<div class="highlight"><pre><span></span><code>$ protoconf import terraform -import_path .terraform
+<div class="highlight"><pre><span></span><code>$ protoconf import terraform
 </code></pre></div>
 <p>Validate the outpus</p>
-<div class="highlight"><pre><span></span><code>$  ls -l src/terraform/
-total <span class="m">992</span>
--rw-r--r--. <span class="m">1</span> marius marius  <span class="m">81687</span> Jun <span class="m">25</span> <span class="m">12</span>:39 kubernetes-data.proto
--rw-r--r--. <span class="m">1</span> marius marius   <span class="m">1963</span> Jun <span class="m">25</span> <span class="m">12</span>:39 kubernetes-provider.proto
--rw-r--r--. <span class="m">1</span> marius marius <span class="m">911814</span> Jun <span class="m">25</span> <span class="m">12</span>:39 kubernetes-resources.proto
--rw-r--r--. <span class="m">1</span> marius marius    <span class="m">461</span> Jun <span class="m">25</span> <span class="m">12</span>:39 meta.proto
--rw-r--r--. <span class="m">1</span> marius marius   <span class="m">9100</span> Jun <span class="m">25</span> <span class="m">12</span>:39 terraform.proto
+<div class="highlight"><pre><span></span><code>$ find src/terraform
+src/terraform
+src/terraform/v1
+src/terraform/v1/terraform.proto
+src/terraform/v1/meta.proto
+src/terraform/kubernetes
+src/terraform/kubernetes/datasources
+src/terraform/kubernetes/datasources/v2
+src/terraform/kubernetes/datasources/v2/namespace.proto
+src/terraform/kubernetes/datasources/v2/all.proto
+src/terraform/kubernetes/datasources/v2/persistent.proto
+src/terraform/kubernetes/datasources/v2/storage.proto
+src/terraform/kubernetes/datasources/v2/service.proto
+src/terraform/kubernetes/datasources/v2/ingress.proto
+src/terraform/kubernetes/datasources/v2/config.proto
+src/terraform/kubernetes/datasources/v2/pod.proto
+src/terraform/kubernetes/datasources/v2/secret.proto
+src/terraform/kubernetes/resources
+src/terraform/kubernetes/resources/v2
+src/terraform/kubernetes/resources/v2/mutating.proto
+src/terraform/kubernetes/resources/v2/priority.proto
+src/terraform/kubernetes/resources/v2/namespace.proto
+src/terraform/kubernetes/resources/v2/validating.proto
+src/terraform/kubernetes/resources/v2/stateful.proto
+src/terraform/kubernetes/resources/v2/manifest.proto
+src/terraform/kubernetes/resources/v2/cluster.proto
+src/terraform/kubernetes/resources/v2/api.proto
+src/terraform/kubernetes/resources/v2/job.proto
+src/terraform/kubernetes/resources/v2/persistent.proto
+src/terraform/kubernetes/resources/v2/daemonset.proto
+src/terraform/kubernetes/resources/v2/cron.proto
+src/terraform/kubernetes/resources/v2/role.proto
+src/terraform/kubernetes/resources/v2/deployment.proto
+src/terraform/kubernetes/resources/v2/storage.proto
+src/terraform/kubernetes/resources/v2/csi.proto
+src/terraform/kubernetes/resources/v2/endpoints.proto
+src/terraform/kubernetes/resources/v2/service.proto
+src/terraform/kubernetes/resources/v2/ingress.proto
+src/terraform/kubernetes/resources/v2/default.proto
+src/terraform/kubernetes/resources/v2/certificate.proto
+src/terraform/kubernetes/resources/v2/replication.proto
+src/terraform/kubernetes/resources/v2/limit.proto
+src/terraform/kubernetes/resources/v2/horizontal.proto
+src/terraform/kubernetes/resources/v2/resource.proto
+src/terraform/kubernetes/resources/v2/network.proto
+src/terraform/kubernetes/resources/v2/config.proto
+src/terraform/kubernetes/resources/v2/daemon.proto
+src/terraform/kubernetes/resources/v2/pod.proto
+src/terraform/kubernetes/resources/v2/secret.proto
+src/terraform/kubernetes/provider
+src/terraform/kubernetes/provider/v2
+src/terraform/kubernetes/provider/v2/kubernetes.proto
 </code></pre></div>
 <h3 id="create-directory-for-the-starlark-configuration-file-pconf">Create directory for the Starlark configuration file (.pconf)</h3>
 <div class="highlight"><pre><span></span><code>$ mkdir src/proto-kube/
@@ -744,9 +772,9 @@ total <span class="m">992</span>
 <div class="highlight"><pre><span></span><code><span class="c1"># vim: filetype=python</span>
 <span class="c1"># ./src/proto-kube/kube-pod.pconf</span>
 
-<span class="n">load</span><span class="p">(</span><span class="s2">&quot;//terraform/terraform.proto&quot;</span><span class="p">,</span> <span class="s2">&quot;Terraform&quot;</span><span class="p">)</span>
-<span class="n">load</span><span class="p">(</span><span class="s2">&quot;//terraform/kubernetes-provider.proto&quot;</span><span class="p">,</span> <span class="s2">&quot;Kubernetes&quot;</span><span class="p">)</span>
-<span class="n">load</span><span class="p">(</span><span class="s2">&quot;//terraform/kubernetes-resources.proto&quot;</span><span class="p">,</span> <span class="s2">&quot;KubernetesPod&quot;</span><span class="p">)</span>
+<span class="n">load</span><span class="p">(</span><span class="s2">&quot;//terraform/v1/terraform.proto&quot;</span><span class="p">,</span> <span class="s2">&quot;Terraform&quot;</span><span class="p">)</span>
+<span class="n">load</span><span class="p">(</span><span class="s2">&quot;//terraform/kubernetes/provider/v2/kubernetes.proto&quot;</span><span class="p">,</span> <span class="s2">&quot;Kubernetes&quot;</span><span class="p">)</span>
+<span class="n">load</span><span class="p">(</span><span class="s2">&quot;//terraform/kubernetes/resources/v2/pod.proto&quot;</span><span class="p">,</span> <span class="s2">&quot;KubernetesPod&quot;</span><span class="p">)</span>
 
 <span class="n">tf</span> <span class="o">=</span> <span class="n">Terraform</span><span class="p">(</span>
     <span class="n">provider</span><span class="o">=</span><span class="n">Terraform</span><span class="o">.</span><span class="n">Providers</span><span class="p">(</span>
@@ -776,7 +804,7 @@ total <span class="m">992</span>
 <div class="highlight"><pre><span></span><code>$ protoconf compile .
 </code></pre></div>
 <h3 id="check-the-json-output">Check the json output</h3>
-<div class="highlight"><pre><span></span><code>cat materialized_config/proto-kube/kube-pod.materialized_JSON <span class="p">|</span> jq .
+<div class="highlight"><pre><span></span><code>cat materialized_config/proto-kube/kube-pod.materialized_JSON
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"></span>
 <span class="w">  </span><span class="nt">&quot;protoFile&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;terraform/terraform.proto&quot;</span><span class="p">,</span><span class="w"></span>
@@ -797,11 +825,7 @@ total <span class="m">992</span>
 <span class="w">          </span><span class="p">},</span><span class="w"></span>
 <span class="w">          </span><span class="nt">&quot;spec&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">            </span><span class="nt">&quot;container&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">              </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
-<span class="w">                </span><span class="s2">&quot;/bin/bash&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">                </span><span class="s2">&quot;-c&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">                </span><span class="s2">&quot;sleep 2000000000000&quot;</span><span class="w"></span>
-<span class="w">              </span><span class="p">],</span><span class="w"></span>
+<span class="w">              </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;/bin/bash&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;-c&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;sleep 2000000000000&quot;</span><span class="p">],</span><span class="w"></span>
 <span class="w">              </span><span class="nt">&quot;image&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;centos/tools&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">              </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;test-container&quot;</span><span class="w"></span>
 <span class="w">            </span><span class="p">}</span><span class="w"></span>
