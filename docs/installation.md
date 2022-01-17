@@ -3,7 +3,7 @@
 ### On Linux/MacOS
 
 ```
-export PROTOCONF_VERSION="0.1.4"
+export PROTOCONF_VERSION="0.1.5"
 export PROTOCONF_OS=$(uname | tr '[A-Z]' '[a-z]')
 # change to "arm64" if needed
 export PROTOCONF_ARCH="amd64"

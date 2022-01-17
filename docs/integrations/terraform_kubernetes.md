@@ -19,28 +19,67 @@ provider "kubernetes" {}
 $ terraform init
 ```
 
-### Copy all providers binaries to same directory
-
-```shell
-$ find .terraform -type f -exec cp {} .terraform \;
-```
-
 ### Generate the terraform protos
 
 ```shell
-$ protoconf import terraform -import_path .terraform
+$ protoconf import terraform
 ```
 
 Validate the outpus
 
 ```shell
-$  ls -l src/terraform/
-total 992
--rw-r--r--. 1 marius marius  81687 Jun 25 12:39 kubernetes-data.proto
--rw-r--r--. 1 marius marius   1963 Jun 25 12:39 kubernetes-provider.proto
--rw-r--r--. 1 marius marius 911814 Jun 25 12:39 kubernetes-resources.proto
--rw-r--r--. 1 marius marius    461 Jun 25 12:39 meta.proto
--rw-r--r--. 1 marius marius   9100 Jun 25 12:39 terraform.proto
+$ find src/terraform
+src/terraform
+src/terraform/v1
+src/terraform/v1/terraform.proto
+src/terraform/v1/meta.proto
+src/terraform/kubernetes
+src/terraform/kubernetes/datasources
+src/terraform/kubernetes/datasources/v2
+src/terraform/kubernetes/datasources/v2/namespace.proto
+src/terraform/kubernetes/datasources/v2/all.proto
+src/terraform/kubernetes/datasources/v2/persistent.proto
+src/terraform/kubernetes/datasources/v2/storage.proto
+src/terraform/kubernetes/datasources/v2/service.proto
+src/terraform/kubernetes/datasources/v2/ingress.proto
+src/terraform/kubernetes/datasources/v2/config.proto
+src/terraform/kubernetes/datasources/v2/pod.proto
+src/terraform/kubernetes/datasources/v2/secret.proto
+src/terraform/kubernetes/resources
+src/terraform/kubernetes/resources/v2
+src/terraform/kubernetes/resources/v2/mutating.proto
+src/terraform/kubernetes/resources/v2/priority.proto
+src/terraform/kubernetes/resources/v2/namespace.proto
+src/terraform/kubernetes/resources/v2/validating.proto
+src/terraform/kubernetes/resources/v2/stateful.proto
+src/terraform/kubernetes/resources/v2/manifest.proto
+src/terraform/kubernetes/resources/v2/cluster.proto
+src/terraform/kubernetes/resources/v2/api.proto
+src/terraform/kubernetes/resources/v2/job.proto
+src/terraform/kubernetes/resources/v2/persistent.proto
+src/terraform/kubernetes/resources/v2/daemonset.proto
+src/terraform/kubernetes/resources/v2/cron.proto
+src/terraform/kubernetes/resources/v2/role.proto
+src/terraform/kubernetes/resources/v2/deployment.proto
+src/terraform/kubernetes/resources/v2/storage.proto
+src/terraform/kubernetes/resources/v2/csi.proto
+src/terraform/kubernetes/resources/v2/endpoints.proto
+src/terraform/kubernetes/resources/v2/service.proto
+src/terraform/kubernetes/resources/v2/ingress.proto
+src/terraform/kubernetes/resources/v2/default.proto
+src/terraform/kubernetes/resources/v2/certificate.proto
+src/terraform/kubernetes/resources/v2/replication.proto
+src/terraform/kubernetes/resources/v2/limit.proto
+src/terraform/kubernetes/resources/v2/horizontal.proto
+src/terraform/kubernetes/resources/v2/resource.proto
+src/terraform/kubernetes/resources/v2/network.proto
+src/terraform/kubernetes/resources/v2/config.proto
+src/terraform/kubernetes/resources/v2/daemon.proto
+src/terraform/kubernetes/resources/v2/pod.proto
+src/terraform/kubernetes/resources/v2/secret.proto
+src/terraform/kubernetes/provider
+src/terraform/kubernetes/provider/v2
+src/terraform/kubernetes/provider/v2/kubernetes.proto
 ```
 
 ### Create directory for the Starlark configuration file (.pconf)
@@ -55,9 +94,9 @@ $ mkdir src/proto-kube/
 # vim: filetype=python
 # ./src/proto-kube/kube-pod.pconf
 
-load("//terraform/terraform.proto", "Terraform")
-load("//terraform/kubernetes-provider.proto", "Kubernetes")
-load("//terraform/kubernetes-resources.proto", "KubernetesPod")
+load("//terraform/v1/terraform.proto", "Terraform")
+load("//terraform/kubernetes/provider/v2/kubernetes.proto", "Kubernetes")
+load("//terraform/kubernetes/resources/v2/pod.proto", "KubernetesPod")
 
 tf = Terraform(
     provider=Terraform.Providers(
@@ -93,7 +132,7 @@ $ protoconf compile .
 ### Check the json output
 
 ```shell
-cat materialized_config/proto-kube/kube-pod.materialized_JSON | jq .
+cat materialized_config/proto-kube/kube-pod.materialized_JSON
 ```
 
 ```json
@@ -116,11 +155,7 @@ cat materialized_config/proto-kube/kube-pod.materialized_JSON | jq .
           },
           "spec": {
             "container": {
-              "command": [
-                "/bin/bash",
-                "-c",
-                "sleep 2000000000000"
-              ],
+              "command": ["/bin/bash", "-c", "sleep 2000000000000"],
               "image": "centos/tools",
               "name": "test-container"
             }
@@ -141,12 +176,14 @@ $ mkdir tf
 ```
 
 ### Process json required by Terraform
+
 ```shell
 $ cat materialized_config/proto-kube/kube-pod.materialized_JSON | \
       jq '.value | del(.["@type"])' > tf/proto-kube.tf.json
 ```
 
 ### Check the json required by Terraform
+
 ```shell
 $ cat tf/proto-kube.tf.json
 {
@@ -182,6 +219,7 @@ $ cat tf/proto-kube.tf.json
 ```
 
 ### Run Terraform init
+
 ```shell
 $ cd tf
 ~/tf $ terraform init
@@ -211,6 +249,7 @@ commands will detect it and remind you to do so if necessary.
 ```
 
 ### Run Terraform plan
+
 ```shell
 ~/tf $ terraform plan
 Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
@@ -223,6 +262,7 @@ Plan: 1 to add, 0 to change, 0 to destroy.
 ```
 
 ### Run Terraform apply
+
 ```shell
 ~/tf $ terraform apply -auto-approve
 
