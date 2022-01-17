@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.5-rc1.0](https://github.com/protoconf/protoconf/compare/v0.1.4...v0.1.5-rc1.0) (2022-01-17)
+
+
+### Features
+
+* **terraform-importer:** reduce file size ([#191](https://github.com/protoconf/protoconf/issues/191)) ([a2f6c9a](https://github.com/protoconf/protoconf/commit/a2f6c9aaa340048b7a71fe26083c9c4655d83070))
+* **terraform-importer:** remote backend ([#186](https://github.com/protoconf/protoconf/issues/186)) ([2371558](https://github.com/protoconf/protoconf/commit/237155845b1b107c0bbdb02d93a256510d5d85c3))
+
+
+### Bug Fixes
+
+* **compiler:** any message indentations ([#183](https://github.com/protoconf/protoconf/issues/183)) ([adf4689](https://github.com/protoconf/protoconf/commit/adf46898cd72d6693c48a4e910b457856d528e47))
+* **compiler:** cache parsed FileDescriptors ([#192](https://github.com/protoconf/protoconf/issues/192)) ([2ebffd0](https://github.com/protoconf/protoconf/commit/2ebffd00916f81ddcb44bb7b115b0946ee4dac75))
+* **deps:** update go.starlark.net commit hash to 70c0e40 ([#178](https://github.com/protoconf/protoconf/issues/178)) ([2434929](https://github.com/protoconf/protoconf/commit/2434929078f80d9ed78565e1caf5756471075227))
+* **deps:** update golang.org/x/net commit hash to 0dd24b2 ([#179](https://github.com/protoconf/protoconf/issues/179)) ([35d57cb](https://github.com/protoconf/protoconf/commit/35d57cbd8261656a292ce674c7ebb5e10874296f))
+* **deps:** update module github.com/abronan/valkeyrie to v0.4.0 ([#154](https://github.com/protoconf/protoconf/issues/154)) ([d501d20](https://github.com/protoconf/protoconf/commit/d501d2012fa26cdfa0e75e89d78bf8034a430dc8))
+* **deps:** update module github.com/fsnotify/fsnotify to v1.5.1 ([#166](https://github.com/protoconf/protoconf/issues/166)) ([9bd3957](https://github.com/protoconf/protoconf/commit/9bd395775e11eadeb53f6e4db4d7522c6b88d19d))
+* **deps:** update module github.com/hashicorp/go-getter to v1.5.11 ([#161](https://github.com/protoconf/protoconf/issues/161)) ([2b6c108](https://github.com/protoconf/protoconf/commit/2b6c1085ab0162969a043cc1929230edb94480ab))
+* **deps:** update module github.com/hashicorp/go-plugin to v1.4.3 ([#171](https://github.com/protoconf/protoconf/issues/171)) ([03f3fe0](https://github.com/protoconf/protoconf/commit/03f3fe06be8417509dc45af402bd308c05da3801))
+* **deps:** update module github.com/jhump/protoreflect to v1.10.1 ([#155](https://github.com/protoconf/protoconf/issues/155)) ([77464ed](https://github.com/protoconf/protoconf/commit/77464ed81b4f75336ff1d6405d6a70186c5aea7c))
+* **deps:** update module github.com/zclconf/go-cty to v1.10.0 ([#153](https://github.com/protoconf/protoconf/issues/153)) ([4a9b203](https://github.com/protoconf/protoconf/commit/4a9b203a3c981448921537f8955a3d8cd80e77fb))
+* **deps:** update module go.uber.org/zap to v1.20.0 ([#163](https://github.com/protoconf/protoconf/issues/163)) ([91f53ce](https://github.com/protoconf/protoconf/commit/91f53ce674deac85ac3f852597d244792f7e94cb))
+* **deps:** update module golang.org/x/tools to v0.1.8 ([#156](https://github.com/protoconf/protoconf/issues/156)) ([4e3f5ea](https://github.com/protoconf/protoconf/commit/4e3f5ea7550691a282e285414fa177defaa585cf))
+* **deps:** update module google.golang.org/grpc to v1.43.0 ([#162](https://github.com/protoconf/protoconf/issues/162)) ([cabe89e](https://github.com/protoconf/protoconf/commit/cabe89ea7932797fabd42576b85907ba240eb0a3))
+* prettify json ([#187](https://github.com/protoconf/protoconf/issues/187)) ([46056e0](https://github.com/protoconf/protoconf/commit/46056e03f3616717033c5d251f21310fea0af9df))
+* **exec:** run os.MkdirAll before writing file ([#181](https://github.com/protoconf/protoconf/issues/181)) ([3d90435](https://github.com/protoconf/protoconf/commit/3d904358510e438c75a238201e14d21f848f4b53))
+* **terraform-importer:** handle `dynamic` cty type ([#180](https://github.com/protoconf/protoconf/issues/180)) ([5c0e82c](https://github.com/protoconf/protoconf/commit/5c0e82c6950cff11baa7e33a76050ef9dcd1dd96))
+
 ### [0.1.4](https://github.com/protoconf/protoconf/compare/v0.1.4-rc.0...v0.1.4) (2021-07-06)
 
 ### [0.1.4-rc.0](https://github.com/protoconf/protoconf/compare/v0.1.4-beta.0...v0.1.4-rc.0) (2021-07-06)
