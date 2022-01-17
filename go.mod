@@ -10,7 +10,7 @@ require (
 	github.com/golang/mock v1.4.3 // indirect
 	github.com/golang/protobuf v1.5.2
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
-	github.com/hashicorp/go-getter v1.5.5
+	github.com/hashicorp/go-getter v1.5.11
 	github.com/hashicorp/go-plugin v1.4.3
 	github.com/hashicorp/terraform v0.12.18
 	github.com/jhump/protoreflect v1.10.1
