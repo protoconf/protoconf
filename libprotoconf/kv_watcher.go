@@ -4,12 +4,12 @@ import (
 	"encoding/base64"
 	"fmt"
 
-	"github.com/abronan/valkeyrie"
-	"github.com/abronan/valkeyrie/store"
-	"github.com/abronan/valkeyrie/store/consul"
-	etcd "github.com/abronan/valkeyrie/store/etcd/v2"
-	"github.com/abronan/valkeyrie/store/zookeeper"
 	"github.com/golang/protobuf/proto"
+	"github.com/kvtools/valkeyrie"
+	"github.com/kvtools/valkeyrie/store"
+	"github.com/kvtools/valkeyrie/store/consul"
+	etcd "github.com/kvtools/valkeyrie/store/etcd/v2"
+	"github.com/kvtools/valkeyrie/store/zookeeper"
 	protoconfvalue "github.com/protoconf/protoconf/datatypes/proto/v1"
 )
 
