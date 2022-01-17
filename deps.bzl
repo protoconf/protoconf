@@ -4242,8 +4242,8 @@ def deps():
     go_repository(
         name = "net_starlark_go",
         importpath = "go.starlark.net",
-        sum = "h1:wDtSCWGrX9tusypq2Qq9xzaA3Tf/+4D2KaWO+HQvGZE=",
-        version = "v0.0.0-20210602144842-1cdb82c9e17a",
+        sum = "h1:bxH+EXOo87zEOwKDdZ8Tevgi6irRbqheRm/fr293c58=",
+        version = "v0.0.0-20211203141949-70c0e40ae128",
     )
 
     go_repository(
