@@ -2124,8 +2124,8 @@ def deps():
         importpath = "github.com/jhump/protoreflect",
         patch_args = ["-p1"],
         patches = ["@protoconf//third_party:protoreflect_int64_json.patch"],
-        sum = "h1:k2xE7wcUomeqwY0LDCYA16y4WWfyTcMx5mKhk0d4ua0=",
-        version = "v1.8.2",
+        sum = "h1:iH+UZfsbRE6vpyZH7asAjTPWJf7RJbpZ9j/N3lDlKs0=",
+        version = "v1.10.1",
     )
 
     go_repository(

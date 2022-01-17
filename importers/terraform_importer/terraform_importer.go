@@ -235,7 +235,7 @@ func (g *Generator) Save() error {
 	addLocalMessage(main)
 	addModuleMessage(main)
 	addTerraformConfigMessage(main)
-	g.Importer.MasterFile.AddMessage(main)
+	g.Importer.MasterFile.TryAddMessage(main)
 	g.Importer.RegisterFile(metaFile)
 
 	return g.Importer.SaveAll()
