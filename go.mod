@@ -3,11 +3,9 @@ module github.com/protoconf/protoconf
 go 1.16
 
 require (
-	cloud.google.com/go v0.53.0 // indirect
 	github.com/fatih/structtag v1.2.0
 	github.com/fsnotify/fsnotify v1.5.1
 	github.com/ghodss/yaml v1.0.0
-	github.com/golang/mock v1.4.3 // indirect
 	github.com/golang/protobuf v1.5.2
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
 	github.com/hashicorp/go-getter v1.5.11
@@ -18,7 +16,7 @@ require (
 	github.com/mitchellh/cli v1.1.2
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/pkg/errors v0.9.1
-	github.com/prometheus/client_golang v1.11.0
+	github.com/prometheus/client_golang v1.12.1
 	github.com/qri-io/starlib v0.5.0
 	github.com/stretchr/testify v1.7.0
 	github.com/zclconf/go-cty v1.10.0
@@ -28,7 +26,6 @@ require (
 	golang.org/x/net v0.0.0-20220114011407-0dd24b26b47d
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 	golang.org/x/tools v0.1.8
-	google.golang.org/api v0.21.0 // indirect
 	google.golang.org/grpc v1.43.0
 	google.golang.org/protobuf v1.27.1
 )
