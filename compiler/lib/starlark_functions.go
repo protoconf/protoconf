@@ -13,6 +13,7 @@ func getModules() starlark.StringDict {
 	return starlark.StringDict{
 		"fail":   starlark.NewBuiltin("fail", starFail),
 		"struct": starlark.NewBuiltin("struct", starlarkstruct.Make),
+		"module": starlark.NewBuiltin("module", starlarkstruct.MakeModule),
 	}
 }
 
