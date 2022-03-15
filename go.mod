@@ -25,7 +25,7 @@ require (
 	golang.org/x/exp v0.0.0-20200224162631-6cc2880d07d6 // indirect
 	golang.org/x/net v0.0.0-20220114011407-0dd24b26b47d
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
-	golang.org/x/tools v0.1.8
+	golang.org/x/tools v0.1.10
 	google.golang.org/grpc v1.43.0
 	google.golang.org/protobuf v1.27.1
 )
