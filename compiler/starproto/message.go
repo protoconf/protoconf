@@ -10,6 +10,7 @@ import (
 	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/dynamic"
 	"github.com/pkg/errors"
+	"github.com/sajari/fuzzy"
 	"go.starlark.net/starlark"
 	"go.starlark.net/syntax"
 )
@@ -102,7 +103,13 @@ func (msg *starProtoMessage) Attr(name string) (starlark.Value, error) {
 	}
 	field := msg.desc.FindFieldByName(name)
 	if field == nil {
-		return nil, fmt.Errorf("InternalError: field %s not found in message %s", name, msg.desc)
+		model := fuzzy.NewModel()
+		model.Train(msg.AttrNames())
+		suggestions := model.Suggestions(name, false)
+		if len(suggestions) == 0 {
+			suggestions = msg.AttrNames()
+		}
+		return nil, fmt.Errorf("InternalError: field %s not found in message %s, did you mean %v?", name, msg.desc.GetName(), suggestions)
 	}
 
 	val := &fieldValue{
@@ -129,7 +136,9 @@ func (msg *starProtoMessage) AttrNames() []string {
 func (msg *starProtoMessage) SetField(name string, star starlark.Value) error {
 	field := msg.desc.FindFieldByName(name)
 	if field == nil {
-		return fmt.Errorf("InternalError: field %s not found in message %s", name, msg.desc)
+		model := fuzzy.NewModel()
+		model.Train(msg.AttrNames())
+		return fmt.Errorf("InternalError: field %s not found in message %s, did you mean %v?", name, msg.desc.GetName(), model.Suggestions(name, false))
 	}
 
 	val, err := valueFromStarlark(field, star)

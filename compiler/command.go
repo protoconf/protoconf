@@ -47,6 +47,11 @@ func newFlagSet() (*flag.FlagSet, *cliConfig) {
 
 func (c *cliCommand) Run(args []string) int {
 	flags, config := newFlagSet()
+	ui := &cli.BasicUi{
+		Reader:      os.Stdin,
+		Writer:      os.Stdout,
+		ErrorWriter: os.Stderr,
+	}
 	flags.Parse(args)
 
 	if flags.NArg() < 1 {
@@ -93,14 +98,14 @@ func (c *cliCommand) Run(args []string) int {
 		g.Go(func() error {
 			err := compiler.CompileFile(filename)
 			if err != nil {
-				log.Printf("Error compiling config %s, err=%s", filename, err)
+				ui.Error(fmt.Sprintf("Error compiling config %s:\n    %s", filename, err))
 			}
 			return err
 		})
 	}
 	err := g.Wait()
 	if err != nil {
-		log.Println(err)
+		// log.Println(err)
 		return 1
 	}
 
