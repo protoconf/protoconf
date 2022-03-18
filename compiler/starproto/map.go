@@ -146,8 +146,7 @@ func (m *protoMap) SetKey(k, v starlark.Value) error {
 	if err := m.dict.SetKey(k, v); err != nil {
 		return err
 	}
-	m.field.msg.PutMapField(m.field.desc, goKey, goVal)
-	return nil
+	return m.field.msg.TryPutMapField(m.field.desc, goKey, goVal)
 }
 
 var (

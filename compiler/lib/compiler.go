@@ -154,12 +154,12 @@ func (c *Compiler) runConfig(filename string) (starlark.Value, *config, error) {
 	configFile, err := c.load(filename)
 
 	if err != nil {
-		return nil, nil, fmt.Errorf("error loading %s: %v", filename, err)
+		return nil, nil, fmt.Errorf("error loading %s:\n    %v", filename, err)
 	}
 
 	mainOutput, err := configFile.main()
 	if err != nil {
-		return nil, nil, fmt.Errorf("error evaluating %s: %v", configFile.filename, err)
+		return nil, nil, fmt.Errorf("error evaluating %s:\n    %v", configFile.filename, err)
 	}
 
 	return mainOutput, configFile, nil
