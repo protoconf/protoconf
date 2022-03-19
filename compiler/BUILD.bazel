@@ -8,7 +8,10 @@ go_library(
 
 go_library(
     name = "go_default_library",
-    srcs = ["command.go"],
+    srcs = [
+        "command.go",
+        "template.go",
+    ],
     importpath = "github.com/protoconf/protoconf/compiler",
     visibility = ["//visibility:public"],
     deps = [
