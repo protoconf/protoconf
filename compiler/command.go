@@ -23,10 +23,11 @@ import (
 type cliCommand struct{}
 
 type cliConfig struct {
-	repl           bool
-	verboseLogging bool
-	cpuprofile     string
-	memprofile     string
+	repl             bool
+	verboseLogging   bool
+	processTemplates bool
+	cpuprofile       string
+	memprofile       string
 }
 
 func newFlagSet() (*flag.FlagSet, *cliConfig) {
@@ -39,6 +40,7 @@ func newFlagSet() (*flag.FlagSet, *cliConfig) {
 	config := &cliConfig{}
 	flags.BoolVar(&config.repl, "repl", false, "Interactive REPL mode")
 	flags.BoolVar(&config.verboseLogging, "V", false, "Verbose logging")
+	flags.BoolVar(&config.processTemplates, "process-templates", false, "Process template files")
 	flags.StringVar(&config.cpuprofile, "cpuprofile", "", "Write cpu profiling info to this file")
 	flags.StringVar(&config.memprofile, "memprofile", "", "Write memory profiling info to this file")
 
@@ -78,6 +80,11 @@ func (c *cliCommand) Run(args []string) int {
 		return 0
 	}
 
+	if config.processTemplates {
+		if err := findTemplateFilesAndProccess(); err != nil {
+			log.Fatal(err)
+		}
+	}
 	var configs []string
 
 	if flags.NArg() == 1 {
