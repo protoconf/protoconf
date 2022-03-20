@@ -2,47 +2,47 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://protoconf.github.io/protoconf/</loc>
-         <lastmod>2022-03-18</lastmod>
+         <lastmod>2022-03-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://protoconf.github.io/protoconf/getting-started/</loc>
-         <lastmod>2022-03-18</lastmod>
+         <lastmod>2022-03-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://protoconf.github.io/protoconf/installation/</loc>
-         <lastmod>2022-03-18</lastmod>
+         <lastmod>2022-03-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://protoconf.github.io/protoconf/multiple-outputs/</loc>
-         <lastmod>2022-03-18</lastmod>
+         <lastmod>2022-03-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://protoconf.github.io/protoconf/mutation-rpc/</loc>
-         <lastmod>2022-03-18</lastmod>
+         <lastmod>2022-03-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://protoconf.github.io/protoconf/protoconf-exec/</loc>
-         <lastmod>2022-03-18</lastmod>
+         <lastmod>2022-03-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://protoconf.github.io/protoconf/structuring-your-code/</loc>
-         <lastmod>2022-03-18</lastmod>
+         <lastmod>2022-03-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://protoconf.github.io/protoconf/integrations/terraform/</loc>
-         <lastmod>2022-03-18</lastmod>
+         <lastmod>2022-03-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://protoconf.github.io/protoconf/integrations/terraform_kubernetes/</loc>
-         <lastmod>2022-03-18</lastmod>
+         <lastmod>2022-03-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
