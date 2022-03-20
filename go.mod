@@ -21,7 +21,7 @@ require (
 	github.com/sajari/fuzzy v1.0.0
 	github.com/stretchr/testify v1.7.0
 	github.com/zclconf/go-cty v1.10.0
-	go.starlark.net v0.0.0-20210602144842-1cdb82c9e17a
+	go.starlark.net v0.0.0-20220302181546-5411bad688d1
 	go.uber.org/zap v1.20.0
 	golang.org/x/net v0.0.0-20220225172249-27dd8689420f
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
