@@ -19,7 +19,7 @@ require (
 	github.com/prometheus/client_golang v1.12.1
 	github.com/qri-io/starlib v0.5.0
 	github.com/sajari/fuzzy v1.0.0
-	github.com/stretchr/testify v1.7.0
+	github.com/stretchr/testify v1.7.1
 	github.com/zclconf/go-cty v1.10.0
 	go.starlark.net v0.0.0-20210602144842-1cdb82c9e17a
 	go.uber.org/zap v1.20.0
