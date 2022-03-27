@@ -8,10 +8,12 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/ghodss/yaml"
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/dynamic"
+	"github.com/pelletier/go-toml"
 	"github.com/protoconf/protoconf/compiler/lib/parser"
 	"github.com/protoconf/protoconf/compiler/starproto"
 	"github.com/protoconf/protoconf/consts"
@@ -65,6 +67,7 @@ func (c *Compiler) CompileFile(filename string) error {
 	}
 
 	configs := make(map[string]*dynamic.Message)
+	outputs := make(map[string]*dynamic.Message)
 
 	if multiConfig {
 		starDict, ok := mainOutput.(*starlark.Dict)
@@ -83,6 +86,9 @@ func (c *Compiler) CompileFile(filename string) error {
 				return fmt.Errorf("`main' returned a dict with non-protobuf value, got: %s", item[1].Type())
 			}
 			configs[filepath.Join(outputDir, string(key))+consts.CompiledConfigExtension] = value
+			if hasAnySuffix(string(key), ".json", ".yaml", ".yml", ".toml") {
+				outputs[filepath.Join(strings.TrimSuffix(filename, consts.MultiConfigExtension), string(key))] = value
+			}
 		}
 	} else {
 		message, ok := starproto.ToProtoMessage(mainOutput)
@@ -91,6 +97,9 @@ func (c *Compiler) CompileFile(filename string) error {
 		}
 		outputFile := filepath.Join(c.MaterializedDir, strings.TrimSuffix(filename, consts.ConfigExtension)+consts.CompiledConfigExtension)
 		configs[outputFile] = message
+		if hasAnySuffix(strings.TrimSuffix(filename, consts.ConfigExtension), ".json", ".yaml", ".yml", ".toml") {
+			outputs[filepath.Join(strings.TrimSuffix(filename, consts.ConfigExtension))] = message
+		}
 	}
 
 	for outputFile, message := range configs {
@@ -100,6 +109,58 @@ func (c *Compiler) CompileFile(filename string) error {
 		if err := c.writeConfig(message, outputFile); err != nil {
 			return err
 		}
+	}
+
+	for outputFile, message := range outputs {
+		if err := c.writeOutput(message, outputFile); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func hasAnySuffix(s string, suffixes ...string) bool {
+	for _, suffix := range suffixes {
+		if strings.HasSuffix(s, suffix) {
+			return true
+		}
+	}
+	return false
+}
+
+func (c *Compiler) writeOutput(message *dynamic.Message, filename string) error {
+	dirname := filepath.Dir(filename)
+	data, err := message.MarshalJSONIndent()
+	if err != nil {
+		return err
+	}
+	if hasAnySuffix(filename, ".yaml", ".yml") {
+		data, err = yaml.JSONToYAML(data)
+		if err != nil {
+			return err
+		}
+	}
+	if hasAnySuffix(filename, ".toml") {
+		var m map[string]interface{}
+		if err = json.Unmarshal(data, &m); err != nil {
+			return err
+		}
+		tree, tomlErr := toml.TreeFromMap(m)
+		if tomlErr != nil {
+			return tomlErr
+		}
+		tomlString, strErr := tree.ToTomlString()
+		if strErr != nil {
+			return strErr
+		}
+		data = []byte(tomlString)
+	}
+	if err = mkdirAll(filepath.Join(consts.OutputsDir, dirname), 0755); err != nil {
+		return err
+	}
+	if err = writeFile(filepath.Join(consts.OutputsDir, filename), data); err != nil {
+		return err
 	}
 
 	return nil
