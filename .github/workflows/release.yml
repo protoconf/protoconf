@@ -1,58 +1,38 @@
-on:
-  push:
-    tags:
-      - "*"
+name: goreleaser
 
-name: Release
+on:
+  pull_request:
+  push:
+
+permissions:
+  contents: write
+
 jobs:
-  checks:
-    name: run
+  goreleaser:
     runs-on: ubuntu-latest
-    container: mattinsler/bazelisk:latest
-    services:
-      consul:
-        image: consul:latest
-        ports:
-          - 8500
-      zookeeper:
-        image: zookeeper:latest
-        ports:
-          - 2181
-      etcd:
-        image: quay.io/coreos/etcd:latest
-        env:
-          ETCD_LISTEN_CLIENT_URLS: http://0.0.0.0:2379
-          ETCD_ADVERTISE_CLIENT_URLS: http://0.0.0.0:2379
-        ports:
-          - 2379
     steps:
-      - uses: actions/checkout@v2
+      -
+        name: Checkout
+        uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Log in to registry
-        uses: azure/docker-login@v1
+      -
+        name: Fetch all tags
+        run: git fetch --force --tags
+      -
+        name: Set up Go
+        uses: actions/setup-go@v2
         with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_TOKEN }}
-      - name: test all
-        run: |
-          bazel test --config=release //...
-      - name: build all
-        run: |
-          bazel build --config=release //...
-      - run: apt-get install -y unzip
-      - name: Release to GitHub
+          go-version: 1.18
+      -
+        name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v2
+        with:
+          # either 'goreleaser' (default) or 'goreleaser-pro'
+          distribution: goreleaser
+          version: latest
+          args: release --rm-dist
         env:
-          DEPLOY_GITHUB_TOKEN: ${{secrets.DEPLOY_GITHUB_TOKEN}}
-        run: |
-          bazel run --config=release //:deploy-github -- ${{ github.sha }}
-
-      - name: Release `protoconf` to Docker Hub
-        run: |
-          bazel run //docker:protoconf_release
-      - name: Release `agent` to Docker Hub
-        run: |
-          bazel run //docker:agent_release
-      - name: Release `server` to Docker Hub
-        run: |
-          bazel run //docker:server_release
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Your GoReleaser Pro key, if you are using the 'goreleaser-pro' distribution
+          # GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
