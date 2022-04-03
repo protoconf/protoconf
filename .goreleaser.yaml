@@ -32,3 +32,39 @@ changelog:
     exclude:
       - '^docs:'
       - '^test:'
+brews:
+  -
+    # Name template of the recipe
+    # Default to project name
+    name: protoconf
+
+    tap:
+      owner: protoconf
+      name: tap
+
+      token: "{{ .Env.DEPLOY_GITHUB_TOKEN }}"
+
+    # Git author used to commit to the repository.
+    # Defaults are shown.
+    commit_author:
+      name: goreleaserbot
+      email: goreleaser@carlosbecker.com
+
+    # The project name and current git tag are used in the format string.
+    commit_msg_template: "Brew formula update for {{ .ProjectName }} version {{ .Tag }}"
+
+    # Folder inside the repository to put the formula.
+    # Default is the root folder.
+    folder: Formula
+
+    # Your app's homepage.
+    # Default is empty.
+    homepage: "https://docs.protoconf.sh/"
+
+    # Template of your app's description.
+    # Default is empty.
+    description: "Configuration as Code framework based on protobuf and Starlark."
+
+    # SPDX identifier of your app's license.
+    # Default is empty.
+    license: "MIT"
