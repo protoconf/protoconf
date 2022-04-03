@@ -15,6 +15,7 @@ require (
 	github.com/kvtools/valkeyrie v0.4.0
 	github.com/mitchellh/cli v1.1.2
 	github.com/mitchellh/go-homedir v1.1.0
+	github.com/pelletier/go-toml v1.2.0
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.12.1
 	github.com/qri-io/starlib v0.5.0

@@ -1,6 +1,8 @@
 package consts
 
-var Version = "0.0.1"
+var (
+	Version = "0.0.1"
+)
 
 const (
 	AgentDefaultAddress      = ":4300"
@@ -11,6 +13,7 @@ const (
 	MultiConfigExtension     = ".mpconf"
 	MutableConfigPath        = "mutable_config/"
 	MutableConfigPrefix      = "mutable:"
+	OutputsDir               = "outputs/"
 	ProtoExtension           = ".proto"
 	ServerDefaultAddress     = ":4301"
 	SrcPath                  = "src/"

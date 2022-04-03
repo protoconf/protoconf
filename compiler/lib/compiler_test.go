@@ -28,4 +28,6 @@ func Test(t *testing.T) {
 	assert.NoError(t, c.CompileFile("field_type_any_test.pconf"))
 	assert.NoError(t, c.CompileFile("uninitialized_msg_test.pconf"))
 	assert.NoError(t, c.CompileFile("test_hashable.pconf"))
+	assert.NoError(t, c.CompileFile("output.json.pconf"))
+	assert.NoError(t, c.CompileFile("multioutputs.mpconf"))
 }
