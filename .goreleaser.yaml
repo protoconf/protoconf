@@ -40,7 +40,7 @@ brews:
 
     tap:
       owner: protoconf
-      name: tap
+      name: homebrew-tap
 
       token: "{{ .Env.DEPLOY_GITHUB_TOKEN }}"
 
