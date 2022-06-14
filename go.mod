@@ -3,6 +3,7 @@ module github.com/protoconf/protoconf
 go 1.16
 
 require (
+	github.com/Masterminds/sprig/v3 v3.2.2 // indirect
 	github.com/fatih/structtag v1.2.0
 	github.com/fsnotify/fsnotify v1.5.1
 	github.com/ghodss/yaml v1.0.0

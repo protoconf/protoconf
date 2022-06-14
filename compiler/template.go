@@ -2,13 +2,14 @@ package compiler
 
 import (
 	"fmt"
+	"html/template"
 	"log"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
-	"text/template"
 
+	sprig "github.com/Masterminds/sprig/v3"
 	"github.com/protoconf/protoconf/consts"
 )
 
@@ -80,7 +81,7 @@ func evaluateTemplateFile(filename string) error {
 		return fmt.Errorf("failed while walking through %s, err: %v", dir, err)
 	}
 
-	t, err := template.New("template").Parse(string(data))
+	t, err := template.New("template").Funcs(sprig.FuncMap()).Parse(string(data))
 	if err != nil {
 		return fmt.Errorf("failed to evaluate template, file: %s, err: %v", abs, err)
 	}
