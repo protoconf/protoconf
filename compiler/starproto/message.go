@@ -171,7 +171,7 @@ func (msg *starProtoMessage) SetField(name string, star starlark.Value) error {
 					}
 					err = msg.msg.TryAddRepeatedField(field, m)
 					if err != nil {
-						return errors.Wrapf(err, "failed to add repetated google.protobuf.Any %v (%T)", m, m)
+						return errors.Wrapf(err, "failed to add repeated google.protobuf.Any %v (%T)", m, m)
 					}
 				}
 			}

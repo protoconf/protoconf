@@ -53,6 +53,9 @@ func (l *starlarkLoader) loadConfig(moduleName string) (starlark.StringDict, map
 }
 
 func (l *starlarkLoader) Load(thread *starlark.Thread, moduleName string) (starlark.StringDict, error) {
+	if moduleName == "any.star" {
+		return starlark.StringDict{"any": starproto.AnyModule}, nil
+	}
 	starlibResult, err := starlib.Loader(thread, moduleName)
 	if err == nil {
 		return starlibResult, nil
