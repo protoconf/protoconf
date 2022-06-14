@@ -181,10 +181,10 @@ node_repositories(package_json = ["//:package.json"])
 
 http_archive(
     name = "io_buildbuddy_buildbuddy_toolchain",
-    sha256 = "a97a87d72417dc4ddd5b434ed4eef6a09fcf7b1a3e87087e3814f50a7c5762d8",
-    strip_prefix = "buildbuddy-toolchain-b2f5e7e3b126c6d7cf243227147478c0959bfc95",
+    sha256 = "603fb15023d57353f5975aa42084630895916a46060f86edabd58623b1693e27",
+    strip_prefix = "buildbuddy-toolchain-9d7a9b7f893b3cb396ea262c64a148b1e46769a7",
     urls = [
-        "https://github.com/buildbuddy-io/buildbuddy-toolchain/archive/b2f5e7e3b126c6d7cf243227147478c0959bfc95.tar.gz",
+        "https://github.com/buildbuddy-io/buildbuddy-toolchain/archive/9d7a9b7f893b3cb396ea262c64a148b1e46769a7.tar.gz",
     ],
 )
 
