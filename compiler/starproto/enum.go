@@ -32,6 +32,14 @@ func (v *starProtoEnumValue) CompareSameType(op syntax.Token, y starlark.Value, 
 		return (v.desc.GetNumber() == n.desc.GetNumber()), nil
 	case syntax.NEQ:
 		return (v.desc.GetNumber() != n.desc.GetNumber()), nil
+	case syntax.GT:
+		return (v.desc.GetNumber() > n.desc.GetNumber()), nil
+	case syntax.GE:
+		return (v.desc.GetNumber() >= n.desc.GetNumber()), nil
+	case syntax.LT:
+		return (v.desc.GetNumber() < n.desc.GetNumber()), nil
+	case syntax.LE:
+		return (v.desc.GetNumber() <= n.desc.GetNumber()), nil
 	}
 	return false, nil
 }
