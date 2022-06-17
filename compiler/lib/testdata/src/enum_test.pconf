@@ -1,10 +1,16 @@
-load("test.proto", "MessageWithEnum")
+load("test.proto", "MessageWithEnum", "MessageWithExternalEnum", "TopLevelEnum")
 
 def main():
-    m=MessageWithEnum(e=MessageWithEnum.TestEnum.ONE)
+    m = MessageWithEnum(e=MessageWithEnum.TestEnum.ONE)
     if m.e == MessageWithEnum.TestEnum.TWO:
         fail("%s and %s should not match" % (m.e, MessageWithEnum.TestEnum.TWO))
     if m.e != MessageWithEnum.TestEnum.ONE:
         fail("%s and %s should match" % (m.e, MessageWithEnum.TestEnum.ONE))
+
+    m2 = MessageWithExternalEnum(e=TopLevelEnum.ONE)    
+    if m2.e == TopLevelEnum.TWO:
+        fail("%s and %s should not match" % (m2.e, TopLevelEnum.TWO))
+    if m2.e != TopLevelEnum.ONE:
+        fail("%s and %s should match" % (m2.e, TopLevelEnum.ONE))
 
     return m

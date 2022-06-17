@@ -12,6 +12,13 @@ type starProtoEnumType struct {
 	desc *desc.EnumDescriptor
 }
 
+func NewEnumType(desc *desc.EnumDescriptor) starlark.Value {
+	mt := &starProtoEnumType{
+		desc: desc,
+	}
+	return mt
+}
+
 func (t *starProtoEnumType) String() string {
 	return fmt.Sprintf("<proto.EnumType %s>", t.desc.GetName())
 }

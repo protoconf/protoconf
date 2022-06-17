@@ -46,7 +46,7 @@ func (mt *starProtoMessageType) Name() string {
 func (mt *starProtoMessageType) Attr(attrName string) (starlark.Value, error) {
 	for _, enum := range mt.desc.GetNestedEnumTypes() {
 		if attrName == enum.GetName() {
-			return &starProtoEnumType{desc: enum}, nil
+			return NewEnumType(enum), nil
 		}
 	}
 

@@ -27,6 +27,16 @@ message MessageWithEnum {
     TestEnum e = 1;
 }
 
+enum TopLevelEnum {
+    ZERO = 0;
+    ONE = 1;
+    TWO = 2;
+}
+
+message MessageWithExternalEnum {
+    TopLevelEnum e = 1;
+}
+
 message ValidateMe {
     string notempty = 1;
     map<string, string> validate_map = 2;
