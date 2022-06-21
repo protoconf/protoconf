@@ -21,6 +21,7 @@ func Test(t *testing.T) {
 	assert.Error(t, c.CompileFile("validator_map_test.pconf"))
 	assert.NoError(t, c.CompileFile("validator_passing_test.pconf"))
 	assert.NoError(t, c.CompileFile("enum_test.pconf"))
+	assert.NoError(t, c.CompileFile("enum_top_test.pconf"))
 	assert.Error(t, c.CompileFile("enum_wrong_types_test.pconf"))
 	assert.NoError(t, c.CompileFile("multioutputs_test.mpconf"))
 	assert.NoError(t, c.CompileFile("include_pinc_test.pconf"))
