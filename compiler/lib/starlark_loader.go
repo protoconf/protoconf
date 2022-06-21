@@ -203,6 +203,9 @@ func (l *starlarkLoader) loadProto(modulePath string) (starlark.StringDict, erro
 	for _, message := range fileDescriptor.GetMessageTypes() {
 		globals[message.GetName()] = starproto.NewMessageType(message)
 	}
+	for _, enum := range fileDescriptor.GetEnumTypes() {
+		globals[enum.GetName()] = starproto.NewEnumType(enum)
+	}
 	return globals, nil
 }
 
