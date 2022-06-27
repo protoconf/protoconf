@@ -25,7 +25,7 @@ require (
 	github.com/zclconf/go-cty v1.10.0
 	go.starlark.net v0.0.0-20220328144851-d1966c6b9fcd
 	go.uber.org/zap v1.20.0
-	golang.org/x/net v0.0.0-20220225172249-27dd8689420f
+	golang.org/x/net v0.0.0-20220624214902-1bab6f366d9e
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 	golang.org/x/tools v0.1.11
 	google.golang.org/grpc v1.45.0
