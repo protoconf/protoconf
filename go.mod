@@ -10,7 +10,7 @@ require (
 	github.com/golang/protobuf v1.5.2
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
 	github.com/hashicorp/go-getter v1.6.2
-	github.com/hashicorp/go-plugin v1.4.3
+	github.com/hashicorp/go-plugin v1.4.6
 	github.com/hashicorp/terraform v0.12.18
 	github.com/jhump/protoreflect v1.12.0
 	github.com/kvtools/valkeyrie v0.4.1
