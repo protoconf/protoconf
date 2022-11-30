@@ -18,7 +18,7 @@ require (
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/pelletier/go-toml v1.2.0
 	github.com/pkg/errors v0.9.1
-	github.com/prometheus/client_golang v1.12.1
+	github.com/prometheus/client_golang v1.14.0
 	github.com/qri-io/starlib v0.5.0
 	github.com/sajari/fuzzy v1.0.0
 	github.com/stretchr/testify v1.8.1
@@ -26,10 +26,10 @@ require (
 	go.starlark.net v0.0.0-20220328144851-d1966c6b9fcd
 	go.uber.org/zap v1.21.0
 	golang.org/x/net v0.0.0-20220624214902-1bab6f366d9e
-	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
+	golang.org/x/sync v0.0.0-20220601150217-0de741cfad7f
 	golang.org/x/tools v0.1.11
 	google.golang.org/grpc v1.45.0
-	google.golang.org/protobuf v1.28.0
+	google.golang.org/protobuf v1.28.1
 )
 
 replace github.com/hashicorp/consul v0.0.0-20171026175957-610f3c86a089 => github.com/hashicorp/consul v1.8.1
