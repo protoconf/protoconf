@@ -3,7 +3,7 @@ module github.com/protoconf/protoconf
 go 1.19
 
 require (
-	github.com/Masterminds/sprig/v3 v3.2.2
+	github.com/Masterminds/sprig/v3 v3.2.3
 	github.com/fatih/structtag v1.2.0
 	github.com/fsnotify/fsnotify v1.6.0
 	github.com/ghodss/yaml v1.0.0
@@ -26,9 +26,9 @@ require (
 	github.com/zclconf/go-cty v1.10.0
 	go.starlark.net v0.0.0-20221028183056-acb66ad56dd2
 	go.uber.org/zap v1.21.0
-	golang.org/x/net v0.0.0-20220624214902-1bab6f366d9e
-	golang.org/x/sync v0.0.0-20220601150217-0de741cfad7f
-	golang.org/x/tools v0.1.11
+	golang.org/x/net v0.2.0
+	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4
+	golang.org/x/tools v0.1.12
 	google.golang.org/grpc v1.45.0
 	google.golang.org/protobuf v1.28.1
 )
@@ -39,7 +39,7 @@ require (
 	github.com/360EntSecGroup-Skylar/excelize v1.4.1 // indirect
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver v1.5.0 // indirect
-	github.com/Masterminds/semver/v3 v3.1.1 // indirect
+	github.com/Masterminds/semver/v3 v3.2.0 // indirect
 	github.com/Masterminds/sprig v2.22.0+incompatible // indirect
 	github.com/PuerkitoBio/goquery v1.5.1 // indirect
 	github.com/agext/levenshtein v1.2.2 // indirect
@@ -83,7 +83,7 @@ require (
 	github.com/hashicorp/serf v0.9.6 // indirect
 	github.com/hashicorp/terraform-svchost v0.0.0-20191011084731-65d371908596 // indirect
 	github.com/hashicorp/yamux v0.0.0-20181012175058-2f1d1f20f75d // indirect
-	github.com/huandu/xstrings v1.3.2 // indirect
+	github.com/huandu/xstrings v1.3.3 // indirect
 	github.com/imdario/mergo v0.3.11 // indirect
 	github.com/jmespath/go-jmespath v0.0.0-20180206201540-c2b33e8439af // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
@@ -121,12 +121,12 @@ require (
 	go.opencensus.io v0.22.4 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
-	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
+	golang.org/x/crypto v0.3.0 // indirect
 	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616 // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 // indirect
 	golang.org/x/oauth2 v0.0.0-20220223155221-ee480838109b // indirect
 	golang.org/x/sys v0.2.0 // indirect
-	golang.org/x/text v0.3.7 // indirect
+	golang.org/x/text v0.4.0 // indirect
 	google.golang.org/api v0.30.0 // indirect
 	google.golang.org/appengine v1.6.6 // indirect
 	google.golang.org/genproto v0.0.0-20210602131652-f16073e35f0c // indirect
