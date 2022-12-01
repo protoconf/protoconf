@@ -98,6 +98,9 @@ func (msg *starProtoMessage) checkMutable(verb string) error {
 }
 
 func (msg *starProtoMessage) Attr(name string) (starlark.Value, error) {
+	if name == "__proto__" {
+		return msg, nil
+	}
 	if attr, ok := msg.attrCache[name]; ok {
 		return attr, nil
 	}
