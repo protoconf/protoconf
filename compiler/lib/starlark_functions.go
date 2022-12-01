@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/protoconf/protoconf/compiler/starproto"
+	"github.com/smintz/starlarkobject"
 	"go.starlark.net/starlark"
 	"go.starlark.net/starlarkstruct"
 )
@@ -14,6 +15,7 @@ func getModules() starlark.StringDict {
 		"fail":   starlark.NewBuiltin("fail", starFail),
 		"struct": starlark.NewBuiltin("struct", starlarkstruct.Make),
 		"module": starlark.NewBuiltin("module", starlarkstruct.MakeModule),
+		"object": starlark.NewBuiltin("object", starlarkobject.MakeObject),
 	}
 }
 
