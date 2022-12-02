@@ -14,7 +14,7 @@ require (
 	github.com/hashicorp/terraform v0.12.18
 	github.com/jhump/protoreflect v1.14.0
 	github.com/kvtools/valkeyrie v0.4.1
-	github.com/mitchellh/cli v1.1.2
+	github.com/mitchellh/cli v1.1.5
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/pelletier/go-toml v1.2.0
 	github.com/pkg/errors v0.9.1
