@@ -24,7 +24,7 @@ require (
 	github.com/smintz/starlarkobject v0.0.0-20221130044148-40067250eba0
 	github.com/stretchr/testify v1.8.1
 	github.com/zclconf/go-cty v1.10.0
-	go.starlark.net v0.0.0-20221028183056-acb66ad56dd2
+	go.starlark.net v0.0.0-20221201204445-3d7c6cd99570
 	go.uber.org/zap v1.21.0
 	golang.org/x/net v0.0.0-20220624214902-1bab6f366d9e
 	golang.org/x/sync v0.0.0-20220601150217-0de741cfad7f
