@@ -25,7 +25,7 @@ require (
 	github.com/stretchr/testify v1.8.1
 	github.com/zclconf/go-cty v1.10.0
 	go.starlark.net v0.0.0-20221201204445-3d7c6cd99570
-	go.uber.org/zap v1.21.0
+	go.uber.org/zap v1.24.0
 	golang.org/x/net v0.2.0
 	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4
 	golang.org/x/tools v0.1.12
