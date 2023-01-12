@@ -12,7 +12,7 @@ require (
 	github.com/hashicorp/go-getter v1.6.2
 	github.com/hashicorp/go-plugin v1.4.6
 	github.com/hashicorp/terraform v0.12.18
-	github.com/jhump/protoreflect v1.14.0
+	github.com/jhump/protoreflect v1.14.1
 	github.com/kvtools/valkeyrie v0.4.1
 	github.com/mitchellh/cli v1.1.5
 	github.com/mitchellh/go-homedir v1.1.0
