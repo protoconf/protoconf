@@ -12,7 +12,7 @@ require (
 	github.com/hashicorp/go-getter v1.7.0
 	github.com/hashicorp/go-plugin v1.4.6
 	github.com/hashicorp/terraform v0.12.18
-	github.com/jhump/protoreflect v1.14.1
+	github.com/jhump/protoreflect v1.15.1
 	github.com/kvtools/valkeyrie v0.4.1
 	github.com/mitchellh/cli v1.1.5
 	github.com/mitchellh/go-homedir v1.1.0
@@ -30,7 +30,7 @@ require (
 	golang.org/x/sync v0.1.0
 	golang.org/x/tools v0.1.12
 	google.golang.org/grpc v1.53.0
-	google.golang.org/protobuf v1.28.1
+	google.golang.org/protobuf v1.28.2-0.20230222093303-bc1253ad3743
 )
 
 require (
@@ -58,6 +58,7 @@ require (
 	github.com/bgentry/speakeasy v0.1.0 // indirect
 	github.com/blang/semver v3.5.1+incompatible // indirect
 	github.com/bmatcuk/doublestar v1.1.5 // indirect
+	github.com/bufbuild/protocompile v0.4.0 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e // indirect
 	github.com/coreos/go-semver v0.3.0 // indirect
