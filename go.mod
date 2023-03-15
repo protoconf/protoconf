@@ -7,7 +7,7 @@ require (
 	github.com/fatih/structtag v1.2.0
 	github.com/fsnotify/fsnotify v1.6.0
 	github.com/ghodss/yaml v1.0.0
-	github.com/golang/protobuf v1.5.2
+	github.com/golang/protobuf v1.5.3
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
 	github.com/hashicorp/go-getter v1.7.0
 	github.com/hashicorp/go-plugin v1.4.6
