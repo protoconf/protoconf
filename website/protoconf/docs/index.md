@@ -2,10 +2,6 @@
 title: protoconf
 ---
 
-<div align="center">
-	<img src="assets/protoconf_new.svg" width="128">
-</div>
-
 ![Test](https://github.com/protoconf/protoconf/workflows/Bazel/badge.svg)
 ![Release](https://github.com/protoconf/protoconf/workflows/Release/badge.svg)
 [![codecov](https://codecov.io/gh/protoconf/protoconf/branch/master/graph/badge.svg)](https://codecov.io/gh/protoconf/protoconf)
@@ -50,10 +46,6 @@ The goals of distribution are to reach all of your machines quickly, reliably, a
 ### How Protoconf works
 
 #### Configuration update flow
-
-<div align="center">
-  <img src="https://lior2b.github.io/temp/protoconf_flow.png">
-</div>
 
 #### How this looks from the service's eyes
 

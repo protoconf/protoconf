@@ -9,8 +9,7 @@ Prerequisite for this guide:
 
 The first step will be to define the config struct in `protobuf`. The `protobuf` file will be used to generate a marshaler of in the language of choice which can be used alongside the gRPC client to pull configs from the `protoconf agent` gRPC endpoint.
 
-```protobuf
-// file: ./src/myproject/myconfig.proto
+```protobuf title=src/myproject/myconfig.proto
 syntax = "proto3";
 
 message MyConfig {
@@ -28,10 +27,7 @@ message NestedStruct {
 
 Create a `.pconf` file to populate the config struct with the required values.
 
-```python
-"""
-file: ./src/myproject/myconfig.pconf
-"""
+```python title=src/myproject/myconfig.pconf
 load("myconfig.proto", "MyConfig", "NestedStruct")
 
 def main():
@@ -48,8 +44,7 @@ def main():
 
 Our working directory is now ready to be compiled. Run `protoconf compile .`. The compiler will create a new file under `materialized_configs/myproject/myconfig.materialized_JSON` which can be used to validate the result of the config.
 
-```json
-// file: materialized_configs/myproject/myconfig.materialized_JSON
+```json title=materialized_configs/myproject/myconfig.materialized_JSON
 {
   "protoFile": "myproject/myconfig.proto",
   "value": {
@@ -67,9 +62,7 @@ Our working directory is now ready to be compiled. Run `protoconf compile .`. Th
 
 You might want to make sure no one can accidentally reduce the `connection_timeout` config below `3`. If he wish to do so, he can add a validator to the `MyConfig` struct:
 
-```python
-"""
-file: ./src/myproject/myconfig.proto-validator
+```python title=src/myproject/myconfig.proto-validator
 """
 load("myconfig.proto", "MyConfig")
 
@@ -95,6 +88,7 @@ $ python -m grpc_tools.protoc -Iprotoconf/agent/api/proto/ --python_out=. --grpc
 ```
 
 Write a simple python code that will use the generated code to communicate with the agent.
+
 ```python
 #!/usr/bin/env python
 import grpc
