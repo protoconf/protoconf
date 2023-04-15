@@ -35,6 +35,7 @@ func ToProtoMessage(val starlark.Value) (*dynamic.Message, bool) {
 // A Starlark built-in type representing a Protobuf message. Provides attributes
 // for accessing message fields using their original protobuf names.
 type starProtoMessage struct {
+	starlark.Mapping
 	msg    *dynamic.Message
 	desc   *desc.MessageDescriptor
 	frozen bool
@@ -136,6 +137,13 @@ func (msg *starProtoMessage) AttrNames() []string {
 	return names
 }
 
+func (msg *starProtoMessage) SetKey(name starlark.Value, star starlark.Value) error {
+	if key, ok := name.(starlark.String); ok {
+		return msg.SetField(string(key), star)
+	}
+	return fmt.Errorf("key type must by `string`, got %T", name)
+}
+
 func (msg *starProtoMessage) SetField(name string, star starlark.Value) error {
 	field := msg.desc.FindFieldByName(name)
 	if field == nil {
@@ -192,6 +200,7 @@ func (msg *starProtoMessage) SetField(name string, star starlark.Value) error {
 
 var (
 	_ starlark.HasAttrs    = (*starProtoMessage)(nil)
+	_ starlark.HasSetKey   = (*starProtoMessage)(nil)
 	_ starlark.HasSetField = (*starProtoMessage)(nil)
 	_ starlark.Comparable  = (*starProtoMessage)(nil)
 )
