@@ -212,15 +212,19 @@ func (l *starlarkLoader) loadProto(modulePath string) (starlark.StringDict, erro
 func (l *starlarkLoader) loadStarlark(thread *starlark.Thread, modulePath string) (starlark.StringDict, error) {
 	reader, err := openFile(filepath.Join(l.srcDir, modulePath))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("\n      %v", err)
 	}
 	defer reader.Close()
 	moduleSource, err := ioutil.ReadAll(reader)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("\n      %v", err)
 	}
 
-	return starlark.ExecFile(thread, modulePath, moduleSource, l.Modules)
+	result, err := starlark.ExecFile(thread, modulePath, moduleSource, l.Modules)
+	if err != nil {
+		return nil, fmt.Errorf("\n    %v", err)
+	}
+	return result, nil
 }
 
 func toCanonicalPath(name string, fromPath string) (string, error) {
