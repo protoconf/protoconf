@@ -11,6 +11,8 @@ import (
 	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/desc/protoparse"
 	"github.com/protoconf/protoconf/consts"
+	"github.com/protoconf/protoconf/utils"
+	"google.golang.org/protobuf/reflect/protoregistry"
 )
 
 // Parser provides a wrapper around jhump/protoreflect/protoparse that will keep a cache of dpd.FileDescriptor
@@ -18,12 +20,14 @@ type Parser struct {
 	mutex sync.Mutex
 	Cache map[string]*desc.FileDescriptor
 	protoparse.Parser
+	LocalResolver *protoregistry.Types
 }
 
 func NewParser(protoconfRoot string) *Parser {
 	p := &Parser{
-		mutex: sync.Mutex{},
-		Cache: make(map[string]*desc.FileDescriptor),
+		mutex:         sync.Mutex{},
+		Cache:         make(map[string]*desc.FileDescriptor),
+		LocalResolver: utils.LocalResolver(protoconfRoot),
 	}
 	p.ImportPaths = []string{filepath.Join(protoconfRoot, consts.SrcPath)}
 	p.Accessor = p.accessor
@@ -51,17 +55,18 @@ func (p *Parser) lookupImport(filename string) (*desc.FileDescriptor, error) {
 	return nil, fmt.Errorf("could not find %s in cache", filename)
 }
 
-func (p *Parser) ParseFilesX(filenames ...string) ([]*desc.FileDescriptor, error) {
-	p.mutex.Lock()
-	defer p.mutex.Unlock()
-	// results, err := p.ParseFiles(filenames...)
-	results, err := p.ParseFiles(filenames...)
-	if err != nil {
-		return results, err
+func (p *Parser) ParseFilesX(filenames ...string) (results []*desc.FileDescriptor, err error) {
+	for _, filename := range filenames {
+		fd, err := protoregistry.GlobalFiles.FindFileByPath(filename)
+		if err != nil {
+			return nil, err
+		}
+		d, err := desc.WrapFile(fd)
+		if err != nil {
+			return nil, err
+		}
+		results = append(results, d)
+
 	}
-	for _, dpd := range results {
-		// log.Println("adding file to cache:", dpd.GetName())
-		p.Cache[dpd.GetName()] = dpd
-	}
-	return results, err
+	return results, nil
 }

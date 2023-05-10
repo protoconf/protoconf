@@ -2,9 +2,11 @@ package utils
 
 import (
 	"context"
+	"reflect"
 	"testing"
 
 	"github.com/kylelemons/godebug/diff"
+	protoconfvalue "github.com/protoconf/protoconf/datatypes/proto/v1"
 	"google.golang.org/protobuf/encoding/prototext"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"
@@ -62,6 +64,41 @@ func TestLoadRemoteDescriptorsFromBuf(t *testing.T) {
 			}
 			if !proto.Equal(got, tt.want) {
 				t.Errorf("LoadRemoteDescriptorsFromBuf() got:\n%v\nwant:\n%v\ndiff:\n%v", prototext.Format(got), prototext.Format(tt.want), diff.Diff(prototext.Format(got), prototext.Format(tt.want)))
+			}
+		})
+	}
+}
+
+func TestReadConfig(t *testing.T) {
+	type args struct {
+		protoconfRoot string
+		configName    string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *protoconfvalue.ProtoconfValue
+		wantErr bool
+	}{
+		{
+			name: "envoy",
+			args: args{
+				protoconfRoot: "/Users/smintz/go/src/github.com/protoconf/protoconf-envoy",
+				configName:    "example/envoy/test-id",
+			},
+			want:    nil,
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := ReadConfig(tt.args.protoconfRoot, tt.args.configName)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ReadConfig() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("ReadConfig() = %v, want %v", got, tt.want)
 			}
 		})
 	}

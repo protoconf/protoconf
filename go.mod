@@ -16,7 +16,7 @@ require (
 	github.com/hashicorp/go-getter v1.7.0
 	github.com/hashicorp/go-plugin v1.4.6
 	github.com/hashicorp/terraform v0.12.18
-	github.com/jhump/protoreflect v1.14.1
+	github.com/jhump/protoreflect v1.15.1
 	github.com/kvtools/valkeyrie v0.4.1
 	github.com/kylelemons/godebug v1.1.0
 	github.com/mitchellh/cli v1.1.5
@@ -60,6 +60,7 @@ require (
 	github.com/bgentry/speakeasy v0.1.0 // indirect
 	github.com/blang/semver v3.5.1+incompatible // indirect
 	github.com/bmatcuk/doublestar v1.1.5 // indirect
+	github.com/bufbuild/protocompile v0.4.0 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e // indirect
 	github.com/coreos/go-semver v0.3.0 // indirect
