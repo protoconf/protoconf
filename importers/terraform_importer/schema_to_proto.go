@@ -73,6 +73,9 @@ func (p *ProviderImporter) schemaToProtoMessage(name string, schema providers.Sc
 		}
 		m.AddField(fBuilder)
 	}
+	// for_each
+	fieldForEach := builder.NewMapField("for_each", builder.FieldTypeString(), builder.FieldTypeString()).SetJsonName("for_each")
+	m.AddField(fieldForEach)
 	fieldLifecycle := builder.NewField("lifecycle", builder.FieldTypeMessage(metaFile.GetMessage("Lifecycle")))
 	m.AddField(fieldLifecycle)
 	return m

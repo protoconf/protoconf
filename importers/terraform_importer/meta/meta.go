@@ -22,10 +22,6 @@ func MetaFile() *builder.FileBuilder {
 	fieldCount := builder.NewField("count", builder.FieldTypeInt32())
 	metaMsg.AddField(fieldCount)
 
-	// for_each
-	fieldForEach := builder.NewMapField("for_each", builder.FieldTypeString(), builder.FieldTypeString()).SetJsonName("for_each")
-	metaMsg.AddField(fieldForEach)
-
 	// provider
 	fieldProvider := builder.NewField("provider", builder.FieldTypeString())
 	metaMsg.AddField(fieldProvider)

@@ -11,7 +11,7 @@ import (
 func TestImporters(t *testing.T) {
 	dir, err := ioutil.TempDir("", "generate_test")
 	assert.NoError(t, err, "failed to create tmp folder")
-	i := NewImporter("master.proto", dir)
+	i := NewImporter("master/package/v1/master.proto", dir)
 
 	subFile := builder.NewFile("subfile.proto")
 	subFile.SetPackageName("subfile")
