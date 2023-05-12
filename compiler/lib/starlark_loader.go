@@ -5,12 +5,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"path"
 	"path/filepath"
 	"strings"
 
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/ptypes"
+	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/dynamic"
 	"github.com/protoconf/protoconf/compiler/lib/parser"
 	"github.com/protoconf/protoconf/compiler/starproto"
@@ -18,6 +20,8 @@ import (
 	pc "github.com/protoconf/protoconf/datatypes/proto/v1"
 	"github.com/qri-io/starlib"
 	"go.starlark.net/starlark"
+	"google.golang.org/protobuf/reflect/protoreflect"
+	"google.golang.org/protobuf/reflect/protoregistry"
 )
 
 type cacheEntry struct {
@@ -91,16 +95,18 @@ func (l *starlarkLoader) loadValidators() (map[string]*starlark.Function, error)
 	validators := make(map[string]*starlark.Function)
 
 	l.Modules["add_validator"] = starlark.NewBuiltin("add_validator", starAddValidator(&validators))
-	for _, protoFileDesc := range l.parser.Cache {
+	protoregistry.GlobalFiles.RangeFiles(func(fd protoreflect.FileDescriptor) bool {
+		protoFileDesc, _ := desc.WrapFile(fd)
 		protoFile := protoFileDesc.GetName()
 		validatorFile := protoFile + consts.ValidatorExtensionSuffix
 		validatorAbsPath := filepath.Join(l.srcDir, validatorFile)
 		if exists, isDir, err := stat(validatorAbsPath); err != nil {
-			return nil, err
+			log.Fatalf("error getting file stat for validator: %v", err)
+			return true
 		} else if isDir {
-			return nil, fmt.Errorf("expected validator file and not a directory, file=%s", validatorAbsPath)
+			log.Fatalf("expected validator file and not a directory, file=%s", validatorAbsPath)
 		} else if !exists {
-			continue
+			return true
 		}
 		thread := &starlark.Thread{
 			Print: starPrint,
@@ -108,9 +114,11 @@ func (l *starlarkLoader) loadValidators() (map[string]*starlark.Function, error)
 		}
 
 		if _, err := l.Load(thread, filepath.ToSlash(validatorFile)); err != nil {
-			return nil, err
+			log.Fatalf("error loading validator: %v", err)
+			return true
 		}
-	}
+		return true
+	})
 
 	return validators, nil
 }

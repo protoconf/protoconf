@@ -9,9 +9,7 @@ import (
 	"strings"
 
 	"github.com/ghodss/yaml"
-	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/ptypes"
-	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/dynamic"
 	"github.com/pelletier/go-toml"
 	"github.com/protoconf/protoconf/compiler/lib/parser"
@@ -20,6 +18,7 @@ import (
 	pc "github.com/protoconf/protoconf/datatypes/proto/v1"
 	"go.starlark.net/resolve"
 	"go.starlark.net/starlark"
+	"google.golang.org/protobuf/encoding/protojson"
 )
 
 func NewCompiler(protoconfRoot string, verboseLogging bool) *Compiler {
@@ -180,14 +179,7 @@ func (c *Compiler) writeConfig(message *dynamic.Message, filename string) error 
 		Value:     any,
 	}
 
-	descriptors := []*desc.FileDescriptor{}
-	for _, d := range c.parser.Cache {
-		descriptors = append(descriptors, d)
-	}
-
-	anyResolver := dynamic.AnyResolver(nil, descriptors...)
-	m := &jsonpb.Marshaler{AnyResolver: anyResolver, Indent: "  "}
-	jsonData, err := m.MarshalToString(protoconfValue)
+	jsonData, err := protojson.MarshalOptions{Resolver: c.parser.LocalResolver}.Marshal(protoconfValue)
 	if err != nil {
 		return fmt.Errorf("error marshaling ProtoconfValue to JSON, value=%v, err: %v", protoconfValue, err)
 	}
@@ -197,7 +189,7 @@ func (c *Compiler) writeConfig(message *dynamic.Message, filename string) error 
 	}
 
 	var prettyJSON bytes.Buffer
-	if err := json.Indent(&prettyJSON, []byte(jsonData), "", "  "); err != nil {
+	if err := json.Indent(&prettyJSON, jsonData, "", "  "); err != nil {
 		return fmt.Errorf("failed to prettify json: %v", err)
 	}
 	if err := writeFile(filename, prettyJSON.Bytes()); err != nil {

@@ -10,7 +10,7 @@ import (
 func TestBuilder(t *testing.T) {
 	log.Println("starting")
 	provider := "google"
-	version := "3.13.0"
+	version := "4.64.0"
 	// meta, err := findPlugin("provider", "random", "2.2.1")
 	meta, err := findPlugin("provider", provider, version)
 	assert.NoError(t, err)

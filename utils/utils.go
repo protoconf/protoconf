@@ -1,53 +1,79 @@
 package utils
 
 import (
-	"encoding/json"
+	"context"
 	"fmt"
+	"io/fs"
+	"log"
+	"net/http"
 	"os"
+	"os/user"
 	"path/filepath"
+	"strings"
 
+	"buf.build/gen/go/bufbuild/reflect/bufbuild/connect-go/buf/reflect/v1beta1/reflectv1beta1connect"
+	reflectv1beta1 "buf.build/gen/go/bufbuild/reflect/protocolbuffers/go/buf/reflect/v1beta1"
+	"github.com/bgentry/go-netrc/netrc"
+	"github.com/bufbuild/connect-go"
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
 	"github.com/jhump/protoreflect/desc/protoparse"
 	"github.com/jhump/protoreflect/dynamic"
 	"github.com/protoconf/protoconf/consts"
 	protoconfvalue "github.com/protoconf/protoconf/datatypes/proto/v1"
+	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/reflect/protoreflect"
+	"google.golang.org/protobuf/reflect/protoregistry"
+	"google.golang.org/protobuf/types/descriptorpb"
+	"google.golang.org/protobuf/types/dynamicpb"
 )
 
 // ReadConfig reads a materialized config
 func ReadConfig(protoconfRoot string, configName string) (*protoconfvalue.ProtoconfValue, error) {
 	filename := filepath.Join(protoconfRoot, consts.CompiledConfigPath, configName+consts.CompiledConfigExtension)
 
-	configReader, err := os.Open(filename)
+	configReader, err := os.ReadFile(filename)
 	if err != nil {
 		return nil, fmt.Errorf("error opening config file, file=%s", filename)
 	}
-	defer configReader.Close()
 
-	type configJSONType struct {
-		ProtoFile string
-	}
-	var configJSON configJSONType
-	if err = json.NewDecoder(configReader).Decode(&configJSON); err != nil {
-		return nil, err
-	}
-
-	anyResolver, err := LoadAnyResolver(filepath.Join(protoconfRoot, consts.SrcPath), configJSON.ProtoFile)
+	val := &protoconfvalue.ProtoconfValue{}
+	err = protojson.UnmarshalOptions{Resolver: LocalResolver(protoconfRoot)}.Unmarshal(configReader, val)
 	if err != nil {
 		return nil, err
 	}
+	return val, nil
 
-	if _, err = configReader.Seek(0, 0); err != nil {
-		return nil, err
+}
+
+func LocalResolver(protoconfRoot string) *protoregistry.Types {
+	localTypes := new(protoregistry.Types)
+	localFiles, err := LoadLocalProtoFiles(protoconfRoot)
+	if err != nil {
+		log.Fatal(err)
 	}
-
-	protoconfValue := &protoconfvalue.ProtoconfValue{}
-	um := jsonpb.Unmarshaler{AnyResolver: anyResolver}
-	if err = um.Unmarshal(configReader, protoconfValue); err != nil {
-		return nil, fmt.Errorf("error marshaling, err=%s", err)
+	for _, file := range localFiles {
+		_, err := protoregistry.GlobalFiles.FindFileByPath(file.Path())
+		if err != nil {
+			protoregistry.GlobalFiles.RegisterFile(file)
+		}
 	}
-
-	return protoconfValue, nil
+	protoregistry.GlobalFiles.RangeFiles(func(fd protoreflect.FileDescriptor) bool {
+		if fd.Messages().Len() > 0 {
+			for i := 0; i < fd.Messages().Len(); i++ {
+				msg := dynamicpb.NewMessageType(fd.Messages().Get(i))
+				localTypes.RegisterMessage(msg)
+			}
+		}
+		if fd.Enums().Len() > 0 {
+			for i := 0; i < fd.Enums().Len(); i++ {
+				enum := fd.Enums().Get(i)
+				localTypes.RegisterEnum(dynamicpb.NewEnumType(enum))
+			}
+		}
+		return true
+	})
+	return localTypes
 }
 
 // LoadAnyResolver is a util that helps resolve `Any` messages
@@ -114,4 +140,57 @@ func ReplaceProtoBytes(protoBytes []byte, pos int, length int, replacement []byt
 		ret.index = len(ret.buf)
 		return ret.buf, nil
 	}
+}
+
+func LoadRemoteDescriptorsFromBuf(ctx context.Context, repo string) (*descriptorpb.FileDescriptorSet, error) {
+	usr, err := user.Current()
+	if err != nil {
+		return nil, err
+	}
+	n, err := netrc.ParseFile(filepath.Join(usr.HomeDir, ".netrc"))
+	if err != nil {
+		return nil, err
+	}
+	token := n.FindMachine("go.buf.build").Password
+	client := reflectv1beta1connect.NewFileDescriptorSetServiceClient(
+		http.DefaultClient,
+		"https://api.buf.build",
+	)
+	request := connect.NewRequest(&reflectv1beta1.GetFileDescriptorSetRequest{
+		Module: repo,
+	})
+	request.Header().Set("Authorization", fmt.Sprintf("Bearer %s", token))
+	fds, err := client.GetFileDescriptorSet(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	return fds.Msg.FileDescriptorSet, err
+}
+
+func find(root, ext string) []string {
+	var a []string
+	filepath.WalkDir(root, func(s string, d fs.DirEntry, e error) error {
+		if e != nil {
+			return e
+		}
+		if filepath.Ext(d.Name()) == ext {
+			a = append(a, strings.TrimPrefix(s, root+"/"))
+		}
+		return nil
+	})
+	return a
+}
+
+func LoadLocalProtoFiles(root string) (fds []protoreflect.FileDescriptor, err error) {
+	rootPath := filepath.Join(root, consts.SrcPath)
+	files := find(rootPath, ".proto")
+	parser := &protoparse.Parser{ImportPaths: []string{rootPath}}
+	descriptors, err := parser.ParseFiles(files...)
+	if err != nil {
+		return nil, err
+	}
+	for _, d := range descriptors {
+		fds = append(fds, d.UnwrapFile())
+	}
+	return fds, nil
 }
