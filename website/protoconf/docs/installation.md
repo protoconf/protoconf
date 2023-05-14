@@ -1,9 +1,19 @@
+---
+sidebar_position: 2
+---
+
 # Installation
+
+### With Homebrew
+
+```
+brew install protoconf/tap/protoconf
+```
 
 ### On Linux/MacOS
 
 ```
-export PROTOCONF_VERSION="0.1.5"
+export PROTOCONF_VERSION="0.1.6"
 export PROTOCONF_OS=$(uname | tr '[A-Z]' '[a-z]')
 # change to "arm64" if needed
 export PROTOCONF_ARCH="amd64"
@@ -19,8 +29,6 @@ Download from the github [releases page](https://github.com/protoconf/protoconf/
 
 ```
 $ protoconf
-2020/04/26 10:16:59 proto: duplicate proto type registered: v1.ConfigSubscriptionRequest
-2020/04/26 10:16:59 proto: duplicate proto type registered: v1.ConfigUpdate
 Usage: protoconf [--version] [--help] <command> [<args>]
 
 Available commands are:

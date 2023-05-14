@@ -77,12 +77,6 @@ const config = {
             label: 'Getting Started',
           },
           {
-            type: 'doc',
-            docId: 'intro',
-            position: 'left',
-            label: 'Tutorial',
-          },
-          {
             href: 'https://github.com/protoconf/protoconf',
             label: 'GitHub',
             position: 'right',

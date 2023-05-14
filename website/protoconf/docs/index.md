@@ -1,5 +1,7 @@
 ---
 title: protoconf
+sidebar_position: 1
+sidebar_label: Introduction
 ---
 
 ![Test](https://github.com/protoconf/protoconf/workflows/Bazel/badge.svg)

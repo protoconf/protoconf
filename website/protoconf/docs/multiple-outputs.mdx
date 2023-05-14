@@ -6,8 +6,7 @@ Sometimes, we want to generate multiple configs from a single file. for this, we
 
 Example:
 
-```proto
-// file: src/myservice/myconfig.proto
+```proto title=src/myservice/myconfig.proto
 syntax = "proto3";
 message MyConfig {
   string name = 1;
@@ -15,10 +14,7 @@ message MyConfig {
 }
 ```
 
-```python
-"""
-file: ./src/myservice/outputs.mpconf
-"""
+```python title=src/myservice/outputs.mpconf
 load("myconfig.proto", "MyConfig")
 
 out = {}
