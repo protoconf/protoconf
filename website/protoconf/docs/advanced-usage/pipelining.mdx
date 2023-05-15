@@ -1,0 +1,60 @@
+---
+title: Pipelining
+sidebar_position: 3
+---
+
+## Implementing Config Manipulation Pipelining
+
+In more advanced scenarios, you may want to implement a pipeline for config manipulation, where a series of transformations are applied to a config message in a specific order. This can be useful when you have complex configuration needs that require a series of operations to be performed on a configuration.
+
+The following is an example of how you can implement config manipulation pipelining in protoconf:
+
+```python title=./src/myproject/helpers.pinc
+load("//myproject/v1/server_config.proto", "ServerConfiguration")
+
+def Chain(msg, *hooks):
+    queue = list(hooks)
+    queue.append(lambda m, _: m)
+
+    def run_next(c):
+        next = queue.pop(0)
+        return next(c, run_next)
+
+    first = queue.pop(0)
+    return first(msg, run_next)
+
+def ServerConfigApi(*hooks):
+    return Chain(ServerConfiguration(), *hooks)
+
+def SetMaxConnections(num):
+    def do(msg, next):
+        msg.max_connections=num
+        return next(msg)
+    return do
+
+api = struct(
+    ServerConfigApi=ServerConfigApi,
+    SetMaxConnections=SetMaxConnections,
+)
+```
+
+```python title=./src/myproject/server_config.pconf
+load("//myproject/helpers.pinc", "api")
+
+def main():
+    return api.ServerConfigApi(
+        api.SetMaxConnections(1000)
+    )
+```
+
+In this example, the `helpers.pinc` file defines a `Chain` function that accepts a configuration message and a series of hooks. Each hook is a function that accepts a configuration message and a "next" function, performs some operation on the message, and then calls the next function with the modified message.
+
+The `ServerConfigApi` function creates a chain of hooks starting with a new `ServerConfiguration` message, and the `SetMaxConnections` function is a hook that sets the `max_connections` field of a `ServerConfiguration` message.
+
+The `api` struct packages these functions together so they can be loaded into other files.
+
+Then, in `server_config.pconf`, the `api` struct is loaded and used to create a `ServerConfiguration` with `max_connections` set to 1000.
+
+This approach allows you to compose complex configurations in a clean, structured way, enhancing readability and maintainability.
+
+This technique of chaining operations is sometimes referred to as "function chaining" or "pipeline processing", and is a common pattern in functional programming. It can be especially helpful when dealing with complex or multi-step transformations.

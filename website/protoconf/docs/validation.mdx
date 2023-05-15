@@ -1,0 +1,37 @@
+---
+id: validation
+title: Configuration Validation
+sidebar_position: 3
+---
+
+# Configuration Validation
+
+protoconf provides a way to add validation rules to your configuration. These rules allow you to ensure that the configuration values meet certain criteria before they are used by your application. Validation rules are written in separate Starlark files with the `-validator` suffix, and they are associated with your configuration using the `add_validator` function.
+
+## Writing a Validation Rule
+
+Create a new Starlark file with the `-validator` suffix. For example, for a configuration defined in `./src/myproject/v1/server_config.proto`, the validation file would be `./src/myproject/v1/server_config.proto-validator`.
+
+In this file, load the configuration message, define a validation function, and then add the validator:
+
+```python title=./src/myproject/v1/server_config.proto-valdator
+load("//myproject/v1/server_config.proto", "ServerConfiguration")
+
+def validate_server_config(config):
+    if config.max_connections < 1:
+        fail("max_connections must be at least 1")
+
+    if config.max_payload_size_mb < 0.1 or config.max_payload_size_mb > 100.0:
+        fail("max_payload_size_mb must be between 0.1 and 100.0")
+
+    if config.request_timeout.seconds < 1:
+        fail("request_timeout must be at least 1 second")
+
+add_validator(ServerConfiguration, validate_server_config)
+```
+
+In this example, `validate_server_config` is a function that checks whether `max_connections` is at least 1, `max_payload_size_mb` is between 0.1 and 100.0, and `request_timeout` is at least 1 second. If any of these conditions is not met, the function calls `fail()` with an error message.
+
+After defining the validation function, `add_validator()` is called to associate the validation function with the `ServerConfiguration` message. Now, whenever a `ServerConfiguration` object is created, its values will be validated according to these rules.
+
+With validation in place, you can ensure that your configuration values are always within acceptable ranges, preventing errors due to incorrect configurations.

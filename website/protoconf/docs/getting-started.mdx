@@ -1,129 +1,71 @@
 ---
-sidebar_position: 3
+id: getting-started
+title: Getting Started
+sidebar_position: 2
 ---
 
 # Getting Started
 
-Prerequisite for this guide:
+This guide will walk you through the installation of protoconf, creating a basic configuration, and running the protoconf compiler to generate the final configuration.
 
-- Knowledge in Python
-- Familiarity with [Protobuf](https://developers.google.com/protocol-buffers/) and [gRPC](https://grpc.io/)
+## Installation
 
-### Define your first config
+protoconf can be installed via Homebrew on macOS:
 
-The first step will be to define the config struct in `protobuf`. The `protobuf` file will be used to generate a marshaler of in the language of choice which can be used alongside the gRPC client to pull configs from the `protoconf agent` gRPC endpoint.
+```bash
+brew install protoconf/tap/protoconf
+```
 
-```protobuf title=src/myproject/myconfig.proto
+For other platforms, download the latest release from the [protoconf GitHub repository](https://github.com/protoconf/protoconf) and add the binary to your `PATH`.
+
+## Defining the Configuration Structure
+
+First, you'll need to define your configuration structure using Protobuf. The Protobuf files should be stored under `./src/<projectname>/<version>/<filename>.proto`. For example:
+
+```protobuf title=./src/myproject/v1/server_config.proto
 syntax = "proto3";
 
-message MyConfig {
-    uint32 connection_timeout = 1;
-    uint32 max_retries = 2;
-    NestedStruct another_struct = 3;
-}
+package myproject.v1;
 
-message NestedStruct {
-    string hello_world = 1;
+message ServerConfiguration {
+  bool is_debug = 1;
+  uint32 max_connections = 2;
+  float max_payload_size_mb = 3;
+  google.protobuf.Duration request_timeout = 4;
 }
 ```
 
-### Code your config
+In this example, `ServerConfiguration` is the configuration structure for a server. It includes fields for debug mode (`is_debug`), maximum number of connections (`max_connections`), maximum payload size (`max_payload_size_mb`), and request timeout (`request_timeout`).
 
-Create a `.pconf` file to populate the config struct with the required values.
+## Writing the Configuration Logic
 
-```python title=src/myproject/myconfig.pconf
-load("myconfig.proto", "MyConfig", "NestedStruct")
+Next, you'll write the configuration logic in a Starlark file, which should use the `.pconf` extension and be stored under `./src/`. For example:
 
-def main():
-    return MyConfig(
-        connection_timeout=5,
-        max_retries=5,
-        another_struct=NestedStruct(
-            hello_world="Hello World!"
-        )
+```python title=./src/myproject/server_config.pconf
+load("//myproject/v1/server_config.proto", "ServerConfiguration")
+load("//google/protobuf/duration.proto", "Duration")
+
+def main(ctx):
+    return ServerConfiguration(
+        is_debug=True,
+        max_connections=1000,
+        max_payload_size_mb=64.0,
+        request_timeout=Duration(seconds=5),
     )
 ```
 
-### Compile and check results
+In this example, the `ServerConfiguration` message from the Protobuf file is loaded, and then a new `ServerConfiguration` object is created in the `main()` function.
 
-Our working directory is now ready to be compiled. Run `protoconf compile .`. The compiler will create a new file under `materialized_configs/myproject/myconfig.materialized_JSON` which can be used to validate the result of the config.
+## Running the protoconf Compiler
 
-```json title=materialized_configs/myproject/myconfig.materialized_JSON
-{
-  "protoFile": "myproject/myconfig.proto",
-  "value": {
-    "@type": "type.googleapis.com/MyConfig",
-    "connectionTimeout": 5,
-    "maxRetries": 5,
-    "anotherStruct": {
-      "helloWorld": "Hello World!"
-    }
-  }
-}
+Finally, run the protoconf compiler to generate the final configuration:
+
+```bash
+protoconf compile .
 ```
 
-### Add validators
+The compiled configuration will be stored in a JSON file under `./materialized_configs/<projectname>/<filename>.materialized_JSON`. For example, `./materialized_configs/myproject/server_config.materialized_JSON`.
 
-You might want to make sure no one can accidentally reduce the `connection_timeout` config below `3`. If he wish to do so, he can add a validator to the `MyConfig` struct:
+This JSON file contains the final, compiled configuration that your application can consume.
 
-```python title=src/myproject/myconfig.proto-validator
-"""
-load("myconfig.proto", "MyConfig")
-
-def validate_connection_timeout(config):
-    if config.connection_timeout <= 3:
-        fail("connection_timeout must be 3 or higher, got: %d" % config.connection_timeout)
-
-add_validator(MyConfig, validate_connection_timeout)
-```
-
-### Consume your config locally
-
-To test his configs locally, you can run `protoconf agent -dev .`
-The agent is now running and listening on `0.0.0.0:4300` and ready to accept gRPC calls.
-
-Install the `grpc` and `protobuf` tools to generate the `stub` code to communicate with the protoconf gRPC agent.
-
-```shell
-$ pip install grpcio-tools
-$ python -m grpc_tools.protoc -Isrc --python_out=. --grpc_python_out=. ./src/myproject/myconfig.proto
-$ git clone https://github.com/protoconf/protoconf.git
-$ python -m grpc_tools.protoc -Iprotoconf/agent/api/proto/ --python_out=. --grpc_python_out=. protoconf/agent/api/proto/v1/protoconf_service.proto
-```
-
-Write a simple python code that will use the generated code to communicate with the agent.
-
-```python
-#!/usr/bin/env python
-import grpc
-from v1.protoconf_service_pb2_grpc import ProtoconfServiceStub
-from v1.protoconf_service_pb2 import ConfigSubscriptionRequest
-from myproject.myconfig_pb2 import MyConfig
-
-channel = grpc.insecure_channel("localhost:4300")
-stub = ProtoconfServiceStub(channel)
-
-config = MyConfig()
-for update in stub.SubscribeForConfig(ConfigSubscriptionRequest(path="myproject/myconfig")):
-    update.value.Unpack(config)
-    print(config)
-```
-
-Run the python code and make a change to the `./src/myproject/myconfig.pconf`. After running `protoconf compile .` again, you will see the config changes in your running software.
-
-### Prepare for Production
-
-Use a supported KV store to release the config to production. The supported storages are: [Consul](https://www.consul.io), [Etcd](https://www.etcd.io) or [Zookeeper](https://zookeeper.apache.org/).
-
-```shell
-$ consul agent -dev &
-$ protoconf insert -store consul -store-address localhost:8500 . myproject/myconfig
-```
-
-### Run the agent in production mode
-
-```shell
-$ protoconf agent -store consul -store-address localhost:8500
-```
-
-Run your code the same way as step 5. Then make a change, compile and run the `protoconf insert` command from step 6 again.
+With this, you've created your first protoconf configuration! The next section will cover more advanced topics, such as configuration validation and how to consume configuration updates in different programming languages.
