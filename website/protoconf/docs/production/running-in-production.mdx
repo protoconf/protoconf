@@ -1,0 +1,83 @@
+---
+sidebar_position: 3
+---
+
+# Running the protoconf agent
+
+Running protoconf in a production environment requires careful consideration to ensure reliability, security, and ease of maintenance. This guide provides some best practices and recommendations for running protoconf in production.
+
+## Installing protoconf
+
+You can install protoconf directly onto your server or use Docker. Docker images are available on Docker Hub and GitHub Container Registry:
+
+```bash
+# Docker Hub
+docker pull protoconf/protoconf:<version>
+
+# GitHub Container Registry
+docker pull ghcr.io/protoconf/protoconf:<version>
+```
+
+For macOS, you can also use `brew` to install protoconf:
+
+```bash
+brew install protoconf/tap/protoconf
+```
+
+For other platforms, download the latest version of protoconf from the official GitHub repository and install the executable into your PATH.
+
+## Configuration Management
+
+Keep all configuration files in a version control system (like Git) to track changes and easily revert to previous versions if needed.
+
+## Security
+
+Secure sensitive configuration data using environment variables or secure storage solutions. Do not hard-code sensitive data in configuration files.
+
+## Config Backend
+
+In a production environment, you should use a key-value store as a config backend. Protoconf supports Consul, Etcd, and Zookeeper as config backends. To specify the config backend, use the `-store` flag and provide the address of the store with the `-store-address` flag. For example:
+
+```bash
+protoconf agent -store consul -store-address 10.0.0.1:8500
+```
+
+You can also specify a key prefix to be used in the key-value store with the `-prefix` flag:
+
+```bash
+protoconf agent -store consul -store-address 10.0.0.1:8500 -prefix myproject
+```
+
+## Protoconf Agent
+
+In a production environment, the protoconf agent should be run as a service, either natively or within a container, depending on your infrastructure.
+
+The agent has several configuration options:
+
+- `-grpc-address`: The address for the gRPC interface (default is ":4300").
+- `-http-address`: The address for the Prometheus HTTP interface (default is ":9143").
+- `-dev`: Development mode. Watch a local Protoconf directory for file changes. This should not be used in production.
+
+For example, to start the agent with specific gRPC and HTTP addresses:
+
+```bash
+protoconf agent -grpc-address :5000 -http-address :9000
+```
+
+## Monitoring
+
+Monitor the protoconf agent's logs for any potential issues. Consider integrating with a logging system to centralize logs and enable alerting on errors.
+
+## Updates and Migrations
+
+When updating protoconf or migrating to new versions of your configuration, test changes in a staging environment first. Ensure that new configurations are compatible with your applications and that there are no disruptions in service.
+
+## Integrations
+
+Ensure protoconf integrates smoothly with your deployment pipeline. It can be used in conjunction with various CI/CD tools and platforms like Jenkins, CircleCI, Kubernetes, and others.
+
+## Troubleshooting
+
+Keep a record of common issues and their solutions for easy reference. Encourage open communication within your team to ensure everyone is aware of any ongoing issues and their resolutions.
+
+Remember, each production environment is unique. Always consider your specific requirements and constraints when deciding how to run and manage protoconf in production.
