@@ -10,8 +10,12 @@ const config = {
   tagline: 'Dinosaurs are cool',
   favicon: 'img/favicon.ico',
 
+  markdown: {
+    mermaid: true,
+  },
+  themes: ["@docusaurus/theme-mermaid"],
   // Set the production url of your site here
-  url: 'https://docs.protoconf.sh',
+  url: 'https://www.protoconf.dev',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
@@ -19,8 +23,8 @@ const config = {
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'protoconf', // Usually your GitHub org/user name.
-  projectName: 'protoconf', // Usually your repo name.
-
+  projectName: 'www.protoconf.dev', // Usually your repo name.
+  trailingSlash: false,
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
 

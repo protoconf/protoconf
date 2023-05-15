@@ -1,0 +1,51 @@
+---
+sidebar_position: 4
+---
+
+# Generating YAML, JSON and TOML
+
+Protoconf has built-in support for generating YAML, JSON, and TOML configurations. This allows you to use Protoconf in environments that expect configurations in these formats, and to take advantage of the different strengths of each format.
+
+## Basic Usage
+
+If a configuration file's path ends with `.yaml`, `.yml`, `.json`, or `.toml`, Protoconf will automatically generate the configuration in the corresponding format. The generated file will be written to the appropriate path under `./outputs` as well as to the `./materialized_configs` directory.
+
+For example, if you have a configuration file at `myproject/server_config.json.pconf`, Protoconf will generate a JSON configuration file at `./outputs/myproject/server_config.json`.
+
+## Multiple Configurations
+
+If you are using a `.mpconf` file to generate multiple configurations, you can specify the output format for each configuration by including the format extension in the key of the returned dictionary.
+
+For example, if you have a `.mpconf` file that returns `{"server_config.yaml": ServerConfiguration}`, Protoconf will generate a YAML configuration file at `./outputs/server_config.yaml`.
+
+### Full Example
+
+Let's assume you have a ProtoBuf message `ServerConfiguration` defined as below:
+
+```protobuf
+message ServerConfiguration {
+  bool enable_debug = 1;
+  uint32 max_connections = 2;
+}
+```
+
+You can create a `.mpconf` file as below:
+
+```python
+load("//myproject/v1/server_config.proto", "ServerConfiguration")
+
+def main():
+  config = ServerConfiguration()
+  config.enable_debug = True
+  config.max_connections = 1000
+
+  return {
+    "server_config.json": config,
+    "server_config.yaml": config,
+    "server_config.toml": config
+  }
+```
+
+By running `protoconf compile .` on this `.mpconf` file, Protoconf will generate a JSON file at `./outputs/server_config.json`, a YAML file at `./outputs/server_config.yaml`, and a TOML file at `./outputs/server_config.toml`.
+
+This feature makes it easy to generate multiple configurations in different formats from a single `.mpconf` file, simplifying your configuration management process.
