@@ -1,0 +1,32 @@
+# Using google.protobuf.Any
+
+The `google.protobuf.Any` type is a powerful feature in Protocol Buffers that allows you to store arbitrary messages in your protobufs. It works by wrapping the message and embedding the name of the message's type. This allows the actual type of the embedded message to be discovered and the message to be correctly deserialized at runtime.
+
+In Protocol Buffers, you can use the `Any` type in your message definitions like this:
+
+```protobuf
+import "google/protobuf/any.proto";
+
+message MyMessage {
+  google.protobuf.Any data = 1;
+}
+```
+
+You can then store any kind of message in the `data` field. When you serialize `MyMessage`, Protocol Buffers will also serialize the embedded message and store its type name alongside it. When you later deserialize `MyMessage`, you can discover the type of the embedded message by inspecting the type name, and then deserialize the embedded message as that type.
+
+In Protoconf Starlark code, you can use the `Any` type with the help of the `any.star` module. First, you have to load the module:
+
+```python
+load("any.star", "any")
+```
+
+Then, you can pack any message into an `Any` type:
+
+```python
+myconfig = ServerConfiguration()
+myany = any.pack(myconfig)
+```
+
+In this example, `myconfig` is an instance of the `ServerConfiguration` message. The `any.pack()` function takes this message and wraps it in an `Any` type. You can then use `myany` in your Protoconf code as a standard message.
+
+It's important to note that the `Any` type is a powerful tool for creating flexible APIs and configuration schemas, but it also comes with its complexities. The main complexity is that you must know the type of the embedded message to correctly unpack it. Therefore, you should be cautious when using `Any` and ensure that the type information is always available when needed.
