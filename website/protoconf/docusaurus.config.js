@@ -7,7 +7,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'protoconf',
-  tagline: 'Dinosaurs are cool',
+  tagline: 'Streamlining Configurations, Accelerating Deployments.',
   favicon: 'img/favicon.ico',
 
   markdown: {
@@ -76,9 +76,14 @@ const config = {
         items: [
           {
             type: 'doc',
-            docId: 'getting-started',
+            docId: 'intro',
             position: 'left',
-            label: 'Getting Started',
+            label: 'Docs',
+          },
+          {
+            to: '/blog',
+            position: 'left',
+            label: 'Blog',
           },
           {
             href: 'https://github.com/protoconf/protoconf',
@@ -126,7 +131,13 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} protoconf. Built with Docusaurus.`,
+        logo: {
+          alt: 'Protoconf',
+          src: 'img/protoconf_inverse.png',
+          href: 'https://www.protoconf.dev',
+          width: 200,
+          // height: 51,
+        },
       },
       prism: {
         theme: lightCodeTheme,
