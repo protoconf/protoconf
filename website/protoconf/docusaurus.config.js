@@ -68,10 +68,11 @@ const config = {
       // Replace with your project's social card
       image: 'img/docusaurus-social-card.jpg',
       navbar: {
-        title: 'protoconf',
+        // title: 'protoconf',
         logo: {
           alt: 'Protoconf Logo',
-          src: 'img/protoconf_new.svg',
+          src: 'img/protoconf.png',
+          srcDark: 'img/protoconf_inverse.png',
         },
         items: [
           {
@@ -142,7 +143,7 @@ const config = {
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
-        additionalLanguages: ['protobuf', 'rust', 'java' ],
+        additionalLanguages: ['protobuf', 'rust', 'java', 'docker' ],
       },
     }),
 };

@@ -1,392 +1,171 @@
-# Protoconf integration with Terraform
+# Terraform
 
-### Prerequists
+## Installation and Initialization
 
-- The `terraform` binray in your `$PATH`
-- The `protoconf` binary in your `$PATH`
+First, install `protoconf-terraform` using Homebrew:
 
-### Prepare
+```shell
+brew install protoconf/tap/protoconf-terraform
+```
 
-Create a `providers.tf` file containing the providers declarations you need.
+Alternatively, download it from the [Github repository](https://github.com/protoconf/protoconf-terraform).
 
-```hcl
-provider "random" {}
+Next, initialize the workspace:
+
+```shell
+protoconf-terraform init
+```
+
+Create a `provider.tf` file and include the providers you want to use:
+
+```shell
 provider "tls" {}
+provider "null" {}
+provider "random" {}
 ```
 
-### Initialize Terraform
+Then, initialize Terraform:
 
 ```shell
-$ terraform init
+terraform init
 ```
 
-### Generate the terraform protos
+This command downloads all the necessary providers to the local cache.
+
+## Generation
+
+Next, generate the provider schemas:
 
 ```shell
-$ protoconf import terraform
+protoconf-terraform generate
 ```
 
-Validate the outputs
+This command connects to the providers, fetches their schemas, writes the schemas into protobuf files, and updates `./src/terraform/v1/terraform.proto` to link these files.
 
-```shell
-$ find src/terraform
-src/terraform
-src/terraform/v1
-src/terraform/v1/terraform.proto
-src/terraform/v1/meta.proto
-src/terraform/tls
-src/terraform/tls/datasources
-src/terraform/tls/datasources/v3
-src/terraform/tls/datasources/v3/public.proto
-src/terraform/tls/datasources/v3/certificate.proto
-src/terraform/tls/resources
-src/terraform/tls/resources/v3
-src/terraform/tls/resources/v3/private.proto
-src/terraform/tls/resources/v3/self.proto
-src/terraform/tls/resources/v3/cert.proto
-src/terraform/tls/resources/v3/locally.proto
-src/terraform/tls/provider
-src/terraform/tls/provider/v3
-src/terraform/tls/provider/v3/tls.proto
-src/terraform/random
-src/terraform/random/resources
-src/terraform/random/resources/v3
-src/terraform/random/resources/v3/password.proto
-src/terraform/random/resources/v3/integer.proto
-src/terraform/random/resources/v3/string.proto
-src/terraform/random/resources/v3/pet.proto
-src/terraform/random/resources/v3/shuffle.proto
-src/terraform/random/resources/v3/id.proto
-src/terraform/random/resources/v3/uuid.proto
-src/terraform/random/provider
-src/terraform/random/provider/v3
-src/terraform/random/provider/v3/random.proto
-```
+## Usage
 
-The `src/terraform/terraform.proto` should looks like this:
-
-```proto
-syntax = "proto3";
-
-package terraform.v1;
-
-import "terraform/random/provider/v3/random.proto";
-
-import "terraform/random/resources/v3/id.proto";
-
-import "terraform/random/resources/v3/integer.proto";
-
-import "terraform/random/resources/v3/password.proto";
-
-import "terraform/random/resources/v3/pet.proto";
-
-import "terraform/random/resources/v3/shuffle.proto";
-
-import "terraform/random/resources/v3/string.proto";
-
-import "terraform/random/resources/v3/uuid.proto";
-
-import "terraform/tls/datasources/v3/certificate.proto";
-
-import "terraform/tls/datasources/v3/public.proto";
-
-import "terraform/tls/provider/v3/tls.proto";
-
-import "terraform/tls/resources/v3/cert.proto";
-
-import "terraform/tls/resources/v3/locally.proto";
-
-import "terraform/tls/resources/v3/private.proto";
-
-import "terraform/tls/resources/v3/self.proto";
-
-message Terraform {
-  Resources resource = 1;
-
-  Datasources data = 2;
-
-  Providers provider = 3;
-
-  map<string, Variable> variable = 4;
-
-  map<string, Output> output = 5;
-
-  map<string, string> locals = 6;
-
-  Module module = 7;
-
-  TerraformSettings terraform = 8;
-
-  message Resources {
-    map<string, terraform.random.resources.v3.RandomId> random_id = 1 [json_name = "random_id"];
-
-    map<string, terraform.random.resources.v3.RandomInteger> random_integer = 2 [json_name = "random_integer"];
-
-    map<string, terraform.random.resources.v3.RandomPassword> random_password = 3 [json_name = "random_password"];
-
-    map<string, terraform.random.resources.v3.RandomPet> random_pet = 4 [json_name = "random_pet"];
-
-    map<string, terraform.random.resources.v3.RandomShuffle> random_shuffle = 5 [json_name = "random_shuffle"];
-
-    map<string, terraform.random.resources.v3.RandomString> random_string = 6 [json_name = "random_string"];
-
-    map<string, terraform.random.resources.v3.RandomUuid> random_uuid = 7 [json_name = "random_uuid"];
-
-    map<string, terraform.tls.resources.v3.TlsCertRequest> tls_cert_request = 8 [json_name = "tls_cert_request"];
-
-    map<string, terraform.tls.resources.v3.TlsLocallySignedCert> tls_locally_signed_cert = 9 [json_name = "tls_locally_signed_cert"];
-
-    map<string, terraform.tls.resources.v3.TlsPrivateKey> tls_private_key = 10 [json_name = "tls_private_key"];
-
-    map<string, terraform.tls.resources.v3.TlsSelfSignedCert> tls_self_signed_cert = 11 [json_name = "tls_self_signed_cert"];
-  }
-
-  message Datasources {
-    map<string, terraform.tls.datasources.v3.TlsCertificate> tls_certificate = 1 [json_name = "tls_certificate"];
-
-    map<string, terraform.tls.datasources.v3.TlsPublicKey> tls_public_key = 2 [json_name = "tls_public_key"];
-  }
-
-  message Providers {
-    repeated terraform.random.provider.v3.Random random = 1;
-
-    repeated terraform.tls.provider.v3.Tls tls = 2;
-  }
-
-  message Variable {
-    string type = 1;
-
-    string description = 2;
-
-    string default = 3;
-  }
-
-  message Output {
-    string value = 1;
-  }
-
-  message Module {
-  }
-
-  message TerraformSettings {
-    string required_version = 1 [json_name = "required_version"];
-
-    map<string, Provider> required_providers = 2 [json_name = "required_providers"];
-
-    Backend backend = 3;
-
-    message Provider {
-      string source = 1;
-
-      string version = 2;
-    }
-
-    message Backend {
-      oneof config {
-        BackendLocal local = 1;
-
-        BackendRemote remote = 2;
-
-        BackendS3 s3 = 3;
-      }
-
-      message BackendLocal {
-        string path = 1;
-
-        string workspace_dir = 2 [json_name = "workspace_dir"];
-      }
-
-      message BackendRemote {
-        //(Optional) The remote backend hostname to connect to. Defaults to app.terraform.io.
-        string hostname = 1;
-
-        //(Required) The name of the organization containing the targeted workspace(s).
-        string organization = 2;
-
-        //(Optional) The token used to authenticate with the remote backend. We recommend omitting the token from the configuration, and instead using `terraform login` or manually configuring `credentials` in the CLI config file.
-        string token = 3;
-
-        //(Required) A block specifying which remote workspace(s) to use. The workspaces block supports the following keys
-        Workspace workspaces = 4;
-
-        message Workspace {
-          //(Optional) The full name of one remote workspace. When configured, only the default workspace can be used. This option conflicts with prefix.
-          string name = 1;
-
-          //(Optional) A prefix used in the names of one or more remote workspaces, all of which can be used with this configuration. The full workspace names are used in Terraform Cloud, and the short names (minus the prefix) are used on the command line for Terraform CLI workspaces. If omitted, only the default workspace can be used. This option conflicts with name.
-          string prefix = 2;
-        }
-      }
-
-      message BackendS3 {
-        string region = 1;
-
-        string access_key = 2 [json_name = "access_key"];
-
-        string secret_key = 3 [json_name = "secret_key"];
-
-        string iam_endpoint = 4 [json_name = "iam_endpoint"];
-
-        string max_retries = 5 [json_name = "max_retries"];
-
-        string profile = 6;
-
-        string shared_credentials_file = 7 [json_name = "shared_credentials_file"];
-
-        string skip_credentials_validation = 8 [json_name = "skip_credentials_validation"];
-
-        string skip_region_validation = 9 [json_name = "skip_region_validation"];
-
-        string skip_metadata_api_check = 10 [json_name = "skip_metadata_api_check"];
-
-        string sts_endpoint = 11 [json_name = "sts_endpoint"];
-
-        string token = 12;
-
-        string assume_role_duration_seconds = 13 [json_name = "assume_role_duration_seconds"];
-
-        string assume_role_policy = 14 [json_name = "assume_role_policy"];
-
-        string assume_role_policy_arns = 15 [json_name = "assume_role_policy_arns"];
-
-        string assume_role_tags = 16 [json_name = "assume_role_tags"];
-
-        string assume_role_transitive_tag_keys = 17 [json_name = "assume_role_transitive_tag_keys"];
-
-        string external_id = 18 [json_name = "external_id"];
-
-        string role_arn = 19 [json_name = "role_arn"];
-
-        string session_name = 20 [json_name = "session_name"];
-
-        string bucket = 21;
-
-        string key = 22;
-
-        string acl = 23;
-
-        string encrypt = 24;
-
-        string endpoint = 25;
-
-        string force_path_style = 26 [json_name = "force_path_style"];
-
-        string kms_key_id = 27 [json_name = "kms_key_id"];
-
-        string sse_customer_key = 28 [json_name = "sse_customer_key"];
-
-        string workspace_key_prefix = 29 [json_name = "workspace_key_prefix"];
-
-        string dynamodb_endpoint = 30 [json_name = "dynamodb_endpoint"];
-
-        string dynamodb_table = 31 [json_name = "dynamodb_table"];
-      }
-    }
-  }
-}
-```
-
-### Create a `.tf.pconf` file
+Here's an example of how to use the API:
 
 ```python
-# vim: filetype=python
-# ./src/tfdemo/tfdemo.tf.pconf
-load("//terraform/v1/terraform.proto", "Terraform")
+load("//terraform/v1/util.pinc", "util")
 load("//terraform/random/provider/v3/random.proto", "Random")
 load("//terraform/random/resources/v3/pet.proto", "RandomPet")
+load("//terraform/null/provider/v3/null.proto", "Null")
+load("//terraform/null/datasources/v3/data.proto", "NullDataSource")
 
-tf = Terraform(
-    provider=Terraform.Providers(random=[Random()]),
-    resource=Terraform.Resources(),
-    output={},
+tf = util.Terraform(
+    util.Provider(Random()),
+    util.Resource(
+        "dog",
+        RandomPet(),
+        lambda dog: util.Output(
+            "dog_name", dog.id
+        ),
+    ),
+    util.Data(
+        "null_name",
+        NullDataSource(),
+        lambda data: util.Group(
+            util.Output("null_random", data.random),
+            util.Output("has_computed_default", data.has_computed_default),
+        ),
+    ),
+    util.Module(
+        "ssh_key",
+        source="JamesWoolfenden/key/tls",
+        version="0.0.6",
+        out_dir="/tmp/sshkey",
+        then=lambda output: util.Group(
+            util.Output("public_key", output("public_key")),
+        ),
+    ),
 )
+```
 
-tf.resource.random_pet["my_dog_name"] = RandomPet()
-tf.output["my_dog_name"] = Terraform.Output(value="${random_pet.my_dog_name.id}")
+Here's how to interpret the different parts of the example:
 
+- `util.Terraform`: Initializes a new Terraform configuration.
+- `util.Provider(Random())`: Adds a provider configuration for the "random" provider.
+- `util.Resource`: Creates a new resource of type "random_pet" with the identifier "dog".
+- `util.Data`: Creates a new data source of type "null_data_source" with the identifier "null_name".
+- `util.Module`: Adds a module with the identifier "ssh_key".
+
+## Exporting Configurations
+
+After creating the `tf` Terraform object, there are two ways to export the configurations:
+
+1. Use external tools like Terraform Cloud, Atlantis, env0 or Spacelift
+1. Use `protoconf-terraform run` to watch for config changes in protoconf and apply them immediatly.
+
+### External tools
+
+Use the `.tf.json` config suffix to create Terraform compatible files under `./outputs`. These files can be used to either run locally on the developer's machine or to be picked up later by the developer's favourite Terraform management tool (recommended for infrastructure provisioning with long provisioning times like VPC, compute, clusters).
+
+### Watch for Configs
+
+Use `protoconf-terraform run`: This command needs a `SubscriptionConfig` for protoconf-terraform to know which configs to watch.
+
+```python
+load("//protoconf_terraform/config/v1/config.proto", "SubscriptionConfig")
 
 def main():
-    return tf
+    return SubscriptionConfig(keys=[
+        "example/dog",
+        "example/cat",
+    ])
 ```
 
-### compile the config
+This approach is recommended for short running provisioning such as Kubernetes resources, DNS updates etc. You can use this approach with the mutation API to create:
+
+- Continuous Deployment pipelines
+- Ephemeral deployments (for development purposes)
+- Canaries
+- Automatic failovers
+
+#### Docker Deployment
+
+Running `protoconf-terraform` in a Docker container involves packaging the necessary files and running the container.
+
+First, you'll need to create a `Dockerfile`. Here's an example `Dockerfile` for `protoconf-terraform`:
+
+```docker
+FROM homebrew/brew AS installer
+
+RUN brew install protoconf/tap/protoconf-terraform hashicorp/tap/terraform
+
+FROM alpine
+# Add Maintainer Info
+LABEL maintainer="Your Name <your.email@example.com>"
+
+# Set the Current Working Directory inside the container
+WORKDIR /app
+
+COPY --from=installer /home/linuxbrew/.linuxbrew/bin/terraform /usr/local/bin/terraform
+COPY --from=installer /home/linuxbrew/.linuxbrew/bin/protoconf-terraform /usr/local/bin/protoconf-terraform
+
+# Install git.
+# Git is required for fetching the dependencies.
+RUN apk update && apk add --no-cache git
+
+# Copy proto files
+COPY ./src/terraform /app/src/terraform
+
+# This container will be executable
+ENTRYPOINT ["protoconf-terraform"]
+```
+
+To build the Docker image, navigate to the directory containing your `Dockerfile` and run:
 
 ```shell
-$ protoconf compile .
+docker build -t protoconf-terraform .
 ```
 
-Check the output
+After building the Docker image, you can run the `protoconf-terraform` command within a Docker container using the following command:
 
 ```shell
-cat materialized_config/tfdemo/tfdemo.tf.materialized_JSON
+docker run -it --rm protoconf-terraform COMMAND
 ```
 
-```json
-{
-  "protoFile": "terraform/terraform.proto",
-  "value": {
-    "@type": "type.googleapis.com/terraform.Terraform",
-    "output": {
-      "my_dog_name": {
-        "value": "${random_pet.my_dog_name.id}"
-      }
-    },
-    "provider": {
-      "random": [{}]
-    },
-    "resource": {
-      "random_pet": {
-        "my_dog_name": {}
-      }
-    }
-  }
-}
-```
+Replace `COMMAND` with the command you want to run, such as `init`, `generate`, or `run`.
 
-### prepare to run terraform
-
-```shell
-$ mkdir tf
-$ cat materialized_config/tfdemo/tfdemo.tf.materialized_JSON | jq '.value | del(.["@type"])' > tf/test.tf.json
-$ terraform -chdir=tf init
-```
-
-```shell
-$ terraform -chdir=tf plan
-
-An execution plan has been generated and is shown below.
-Resource actions are indicated with the following symbols:
-  + create
-
-Terraform will perform the following actions:
-
-  # random_pet.my_dog_name will be created
-  + resource "random_pet" "my_dog_name" {
-      + id        = (known after apply)
-      + length    = 2
-      + separator = "-"
-    }
-
-Plan: 1 to add, 0 to change, 0 to destroy.
-
-Changes to Outputs:
-  + my_dog_name = (known after apply)
-
-------------------------------------------------------------------------
-
-Note: You didn't specify an "-out" parameter to save this plan, so Terraform
-can't guarantee that exactly these actions will be performed if
-"terraform apply" is subsequently run.
-```
-
-```shell
-$ terraform -chdir=tf apply -auto-approve
-random_pet.my_dog_name: Creating...
-random_pet.my_dog_name: Creation complete after 0s [id=key-zebra]
-
-Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
-
-Outputs:
-
-my_dog_name = "key-zebra"
-```
+Remember that any changes made within the Docker container won't persist after the container is stopped. If you want to persist data across Docker runs, consider using Docker volumes.
