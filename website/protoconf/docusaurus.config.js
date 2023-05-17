@@ -134,10 +134,10 @@ const config = {
         ],
         logo: {
           alt: 'Protoconf',
-          src: 'img/protoconf_inverse.png',
+          src: 'img/protoconf_bottom.svg',
           href: 'https://www.protoconf.dev',
-          width: 200,
-          // height: 51,
+          width: 51,
+          height: 51,
         },
       },
       prism: {

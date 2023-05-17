@@ -4,14 +4,14 @@ import styles from './styles.module.css';
 
 type FeatureItem = {
   title: string;
-  Svg: React.ComponentType<React.ComponentProps<'svg'>>;
+  img: string;
   description: JSX.Element;
 };
 
 const FeatureList: FeatureItem[] = [
   {
     title: 'Flexible',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
+    img: '/img/flexible.png',
     description: (
       <>
         Protoconf uses the Starlark language and supports multiple output formats, allowing dynamic and adaptable configuration generation for any application need.
@@ -20,7 +20,7 @@ const FeatureList: FeatureItem[] = [
   },
   {
     title: 'Safe',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
+    img: '/img/safe.png',
     description: (
       <>
         Protoconf enforces type safety with Protobufs and utilizes version-controlled configurations, ensuring valid and easily reversible changes.
@@ -29,7 +29,7 @@ const FeatureList: FeatureItem[] = [
   },
   {
     title: 'Fast',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
+    img: '/img/fast.png',
     description: (
       <>
         Protoconf automates many aspects of configuration management, enabling faster deployment processes and an accelerated development lifecycle.
@@ -38,11 +38,11 @@ const FeatureList: FeatureItem[] = [
   },
 ];
 
-function Feature({ title, Svg, description }: FeatureItem) {
+function Feature({ title, img, description }: FeatureItem) {
   return (
     <div className={clsx('col col--4')}>
       <div className="text--center">
-        <Svg className={styles.featureSvg} role="img" />
+        <img src={img} className={styles.featureSvg} />
       </div>
       <div className="text--center padding-horiz--md">
         <h3>{title}</h3>
