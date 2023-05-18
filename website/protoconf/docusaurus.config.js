@@ -102,6 +102,10 @@ const config = {
                 label: 'Employee directory as Code',
                 type: 'doc',
                 docId: 'use-cases/employee-directory'
+              },{
+                label: 'Platform Engineering',
+                type: 'doc',
+                docId: 'use-cases/platform-engineering'
               }
             ]
           },

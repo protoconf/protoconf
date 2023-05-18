@@ -1,0 +1,105 @@
+# Protoconf for Platform Engineering
+
+One of the challenges of platform engineering is coordinating between different stakeholders, each with their own concerns and requirements. Protoconf can help streamline this process by serving as a single source of truth that all stakeholders can agree upon.
+
+## Contract Definition
+
+The first step is to define a contract in Protobuf. This contract can include information about the components and services in your production system, such as:
+
+- Component metadata, like its owner and its sources/packages needed to run
+- Metrics for evaluating the component's health
+- Dependencies on other components
+
+```protobuf
+syntax = "proto3";
+
+package platform_engineering.v1;
+
+message Component {
+    string owner = 1;
+    repeated string sources = 2;
+    repeated string metrics = 3;
+    repeated string dependencies = 4;
+}
+```
+
+## Application of the Contract
+
+With the contract defined, each stakeholder can use Protoconf to provide and consume information in ways that are relevant to their roles:
+
+### Software Engineers and SREs
+
+Software engineers and SREs can use Protoconf to populate the contract with data about the components they own.
+
+```python
+load("platform_engineering.v1/component.star", "Component")
+
+Component(
+    owner="team1",
+    sources=["github.com/repo1", "github.com/repo2"],
+    metrics=["latency", "error_rate"],
+    dependencies=["component2", "component3"]
+)
+```
+
+### Compute Infrastructure Engineers
+
+Compute infrastructure engineers can use the contract to automate the application of these definitions into the compute platform. This allows a clear migration path between different infrastructure platforms like Kubernetes, ECS, and Serverless.
+
+```python
+load("kubernetes.star", "k8s")
+
+for component in components:
+    k8s.Deployment(
+        name=component.owner,
+        image=component.sources[0], # assumes sources[0] is the primary source
+        # fill in other fields as necessary
+    )
+```
+
+### Monitoring Infrastructure Engineers
+
+Monitoring infrastructure engineers can use the contract to apply the correct monitoring tools, scrape and keep relevant metrics, and generate dashboards.
+
+```python
+load("monitoring.star", "monitoring")
+
+for component in components:
+    monitoring.Dashboard(
+        name=component.owner + "_dashboard",
+        metrics=component.metrics,
+        # fill in other fields as necessary
+    )
+```
+
+### Security Engineers
+
+Security engineers can enforce security practices via validators, implement zero-trust networking, provide secrets services, and manage access.
+
+```python
+load("security.star", "security")
+
+for component in components:
+    security.Policy(
+        name=component.owner + "_policy",
+        owner=component.owner,
+        # fill in other fields as necessary
+    )
+```
+
+### FinOps Engineers
+
+FinOps engineers can enforce and automate correct resource tagging, adding relevant alerts, etc.
+
+```python
+load("finops.star", "finops")
+
+for component in components:
+    finops.TaggingPolicy(
+        name=component.owner + "_tagging_policy",
+        owner=component.owner,
+        # fill in other fields as necessary
+    )
+```
+
+By using Protoconf in this way, each stakeholder can focus on their own concerns, while also having access to a holistic view of the system. This increases both the efficiency and the effectiveness of your platform engineering efforts.
