@@ -46,14 +46,14 @@ const config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+            'https://github.com/protoconf/protoconf/tree/main/website/protoconf',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+            'https://github.com/protoconf/protoconf/tree/main/website/protoconf',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -80,6 +80,30 @@ const config = {
             docId: 'intro',
             position: 'left',
             label: 'Docs',
+          },
+          {
+            type: 'dropdown',
+            label: 'Integrations',
+            position: 'left',
+            items: [
+              {
+                label: 'Terraform',
+                type: 'doc',
+                docId: 'integrations/terraform'
+              }
+            ]
+          },
+          {
+            type: 'dropdown',
+            label: 'Use Cases',
+            position: 'left',
+            items: [
+              {
+                label: 'Employee directory as Code',
+                type: 'doc',
+                docId: 'use-cases/employee-directory'
+              }
+            ]
           },
           {
             to: '/blog',
