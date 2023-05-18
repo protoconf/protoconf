@@ -4,7 +4,7 @@
  */
 
 .heroBanner {
-  background-color: #fafbfb;
+  /* background-color: #fafbfb; */
   padding: 4rem 0;
   text-align: center;
   position: relative;
@@ -25,4 +25,18 @@
 
 .showCase {
   border-radius: 10%;
+}
+
+.logo {
+    width: 500px;
+    height: 100px;
+    display: block;
+    margin: 10px auto;
+    position: relative;
+    background: url("/img/protoconf.png") center / cover;
+}
+
+[data-theme="dark"] .logo {
+    background: url("/img/protoconf_inverse.png") center / cover;
+
 }
