@@ -90,6 +90,11 @@ const config = {
                 label: 'Terraform',
                 type: 'doc',
                 docId: 'integrations/terraform'
+              },
+              {
+                label: 'Envoy',
+                type: 'doc',
+                docId: 'integrations/envoy'
               }
             ]
           },

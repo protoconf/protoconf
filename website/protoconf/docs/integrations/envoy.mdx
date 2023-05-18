@@ -1,0 +1,106 @@
+---
+sidebar_label: Envoy
+sidebar_position: 2
+---
+
+# Integrating Envoy with Protoconf
+
+## Introduction
+
+This guide aims to illustrate how you can use Protoconf to manage your Envoy configuration. Envoy Proxy is a modern, high performance, small footprint edge and service proxy which is particularly applicable in Cloud-Native applications. Envoy's configuration API, called xDS, is defined in Protobuf, making it a perfect candidate for Protoconf.
+
+Our setup will involve running a `protoconf-xds` server that will serve the Envoy configurations. In a nutshell, Protoconf will generate the xDS snapshot that `protoconf-xds` will serve to Envoy, updating its configuration.
+
+Below is a step-by-step guide on how to integrate Envoy with Protoconf:
+
+## Step 1: Install `protoconf-xds`
+
+You can install `protoconf-xds` via brew using the command:
+
+```bash
+brew install protoconf/tap/protoconf-xds
+```
+
+Alternatively, you can download it from the [github releases page](https://github.com/protoconf/protoconf-xds/releases).
+
+## Step 2: Initialize the Workspace
+
+Run the command below to initialize the workspace with all required proto files:
+
+```bash
+protoconf-xds init
+```
+
+This command will create a directory structure for your project and will download all the necessary protobuf definitions.
+
+## Step 3: Edit the Example File
+
+Find the example configuration file at `./src/example/envoy.mpconf`. This file is written in the Starlark configuration language and defines your Envoy configuration. Make the necessary modifications to fit your use-case.
+
+## Step 4: Compile the Configuration
+
+Compile the configuration by running the command below:
+
+```bash
+protoconf compile .
+```
+
+It will create a new configuration with the path `example/envoy/test-id`.
+
+## Step 5: Run the Protoconf Agent
+
+To generate an xDS snapshot and serve it to Envoy, you'll need to run the Protoconf agent in development mode:
+
+```bash
+protoconf agent --dev
+```
+
+## Step 6: Run `protoconf-xds` Server
+
+Run `protoconf-xds serve` with `-prefix=example/envoy` and `-nodeId=test-id`. Note that `-nodeId` is repeatable and you can add as many node ids as you wish. The combination of `prefix` and `node` id will result in `example/envoy/test-id`, which is the same as our protoconf config.
+
+```bash
+protoconf-xds serve -prefix=example/envoy -nodeId=test-id
+```
+
+## Step 7: Create Envoy Bootstrap Config
+
+Create a new Envoy bootstrap configuration file. This config assumes Envoy will run in a Docker container, and that the `protoconf-xds` server runs on the host machine listening to port 18000. You can change the host address in the config file. Also, you can change the `node.id` which, in this case, is set to `test-id` so our xDS server will know which configuration to serve.
+
+[Here is the bootstrap config](https://github.com/protoconf/protoconf-xds/blob/main/envoy.yaml)
+
+## Step 8: Create Dockerfile
+
+Create a Dockerfile to generate a Docker container with Envoy and our new bootstrap config. Here's an example Dockerfile:
+
+```Dockerfile
+FROM envoyproxy/envoy:latest
+COPY envoy.yaml /etc/envoy/envoy.yaml
+RUN chmod go+r /etc/envoy/envoy.yaml
+```
+
+## Step 9: Build Docker Image
+
+Build the Docker image using the following command:
+
+```bash
+docker build -t envoy:v1 .
+```
+
+## Step 10: Run Docker Container
+
+Run the Docker container using the following command:
+
+```bash
+docker run -p
+
+19000:19000 -p 10000:10000 envoy:v1
+```
+
+You can then navigate to Envoy's admin page at `http://localhost:19000` and see the configuration of the clusters. If you change the cluster name in the example file, run `protoconf compile .`, and reload the page, you'll see the new cluster name.
+
+## Running in Production
+
+For production environments, Docker images are provided via `protoconf/protoconf-xds` or `ghcr.io/protoconf/protoconf-xds`.
+
+Remember to switch the Protoconf agent to production mode when you're ready to move your configuration out of the development environment.
