@@ -1,0 +1,49 @@
+---
+sidebar_position: 1
+---
+
+# Protoconf Mutation CLI
+
+The `protoconf mutate` command is a CLI utility that simplifies communication with the mutation server.
+
+Here are the available flags for the `protoconf mutate` command:
+
+```shell
+Usage: [OPTION]...
+
+Write to mutation server
+Usage: [OPTION]...
+
+A CLI util to communicate with the mutation server easily.
+
+  -addr string
+        Server address (default "localhost:4301")
+  -field value
+        fields to set inside -msg
+  -metadata string
+        Metadata string to pass to the pre/post install script
+  -msg string
+        Name of the message inside the -proto file
+  -path string
+        Path to put the config in
+  -proto string
+        Path to the proto file
+  -root string
+        The root of protoconf src. (default "./src")
+```
+
+This command is designed for simple mutations, and it will only work with simple message types, i.e., no nested messages or enums. Note that the command requires access to the proto file definition, or it can use precompiled files like `google/protobuf/struct.proto`.
+
+By using this command, you can easily update configurations directly from the command line, without needing to manually interact with the mutation server's API.
+
+Here is an example usage of the `protoconf mutate` command:
+
+```shell
+protoconf mutate -proto myproject/v1/server_config.proto \
+    -msg ServerConfiguration \
+    -field max_connections=1000 \
+    -field enable_logging=false \
+    -path demo/inputs/demo_server
+```
+
+This command will work if you're running it from the root directory of your protoconf project. If you're running it from a different location, you can provide the path to your `./src` directory using the `-root` flag.

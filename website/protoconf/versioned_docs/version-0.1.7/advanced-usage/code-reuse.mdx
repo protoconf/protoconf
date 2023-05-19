@@ -1,0 +1,44 @@
+---
+id: code-reuse
+title: Code Reuse
+sidebar_position: 1
+---
+
+## Reusing Functions and Variables Across Files
+
+In addition to defining helper functions within a single starlark file, protoconf also allows you to define functions and global variables in separate starlark files with the `.pinc` extension. You can then load these functions and variables into your other starlark files.
+
+Here is an example:
+
+`./src/myproject/helpers.pinc`:
+
+```python
+load("//myproject/v1/server_config.proto", "ServerConfiguration")
+
+# A global variable
+default_request_timeout = Duration(seconds=10)
+
+# A helper function
+def create_default_config():
+    return ServerConfiguration(
+        max_connections=500,
+        request_timeout=default_request_timeout,
+        is_debug_enabled=True,
+        server_rating=4.8,
+    )
+```
+
+`./src/myproject/server_config.pconf`:
+
+```python
+load("//myproject/helpers.pinc", "create_default_config", "default_request_timeout")
+
+def main():
+    config = create_default_config()
+    config.request_timeout = Duration(seconds=5)  # Override default_request_timeout for this config
+    return config
+```
+
+In this example, the `helpers.pinc` file defines a global variable `default_request_timeout` and a helper function `create_default_config`. These are then loaded into `server_config.pconf` using the `load` function, allowing you to reuse the same variable and function across multiple configuration files.
+
+This technique can help keep your configuration code DRY (Don't Repeat Yourself), making it easier to understand and maintain.

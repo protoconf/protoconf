@@ -1,0 +1,33 @@
+---
+title: Multiple Outputs
+sidebar_position: 2
+---
+
+## Generating Multiple Config Outputs
+
+protoconf allows for the generation of multiple config outputs from a single Starlark file. This is particularly useful when you have variations of configuration for different environments or use cases.
+
+To use this feature, you should use the `.mpconf` extension for your Starlark file. Then, you can return a dictionary from your `main` function, where each key-value pair represents a different configuration output. Here's an example:
+
+```python title=./src/myproject/server_config.mpconf
+load("//myproject/v1/server_config.proto", "ServerConfiguration")
+load("//myproject/helpers.pinc", "create_default_config")
+
+def main():
+    return {
+        "default": create_default_config(),
+        "debug": create_default_config(max_connections=1000, request_timeout=Duration(seconds=5)),
+    }
+```
+
+In this example, the `main` function returns a dictionary with two configurations: `default` and `debug`. The `default` configuration uses the `create_default_config` function defined in `helpers.pinc` to create a `ServerConfiguration` with default values.
+
+For the `debug` configuration, the `create_default_config` function is called with arguments to override the `max_connections` and `request_timeout` values.
+
+When you compile this file with protoconf, it will generate two separate output files: `./materialized_configs/myproject/server_config/default.materialized_JSON` and `./materialized_configs/myproject/server_config/debug.materialized_JSON`.
+
+These configurations can then be consumed from the protoconf agent at `myproject/server_config/default` and `myproject/server_config/debug` respectively.
+
+By using this method, you can easily manage different configurations from a single source file, enhancing the maintainability and readability of your configurations.
+
+This approach allows you to cleanly separate configurations for different environments or use cases, while keeping the related configuration code in a single place.

@@ -1,0 +1,43 @@
+---
+sidebar_position: 2
+---
+
+# Inserting Configurations
+
+Once you have your configurations defined and validated, you can insert them into your key-value store using the `protoconf insert` command. This command enables protoconf to manage your configurations in a distributed manner, making them available to your applications wherever they are running.
+
+## Basic Usage
+
+The basic usage of the `protoconf insert` command is as follows:
+
+```bash
+protoconf insert -store <store> -store-address <store-address> <config>...
+```
+
+The `<store>` parameter specifies the type of key-value store you are using (either `consul`, `zookeeper`, or `etcd`). The `<store-address>` parameter is the address of your key-value store.
+
+The `<config>...` parameters are one or more configuration paths that you want to insert. These paths correspond to the paths that your applications will use when requesting configurations from the protoconf agent.
+
+For example, to insert the `default` and `debug` configurations for the `myproject/server_config` into an Etcd store:
+
+```bash
+protoconf insert -store etcd -store-address etcd:2379 myproject/server_config/default myproject/server_config/debug
+```
+
+Note that the user running this command needs to have access to the key-value store.
+
+## Deleting Configurations
+
+You can also delete configurations from your key-value store using the `-d` option:
+
+```bash
+protoconf insert -d -store <store> -store-address <store-address> <config>...
+```
+
+This command will remove the specified configurations from your store.
+
+## Webhook Usage
+
+In many cases, you may want to insert or update configurations in response to events like commits or merges in your version control system. Protoconf supports this use case by providing a container that can accept webhooks from GitHub or GitLab.
+
+By configuring your repository to send webhooks to this container, you can ensure that your configurations are always up-to-date with your latest code changes. This can be particularly useful in a continuous integration/continuous delivery (CI/CD) workflow.

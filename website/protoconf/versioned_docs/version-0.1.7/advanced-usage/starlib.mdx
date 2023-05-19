@@ -1,0 +1,105 @@
+# Standard Libraries
+
+Starlib is a collection of modules for Starlark, the Python-like language used in Protoconf, Bazel, and other tools. These modules provide a standard library of useful functions that can be used in your Protoconf scripts.
+
+## Math Module
+
+This module provides mathematical constants and functions.
+
+First, import the math module:
+
+```python
+load("math.star", "math")
+```
+
+Then you can use various math functions:
+
+```python
+print(math.pi)  # Prints the value of pi
+print(math.sqrt(16))  # Prints the square root of 16, which is 4
+```
+
+## Time Module
+
+This module provides time operations.
+
+First, import the time module:
+
+```python
+load("time.star", "time")
+```
+
+Then you can use various time functions:
+
+```python
+print(time.now())  # Prints the current date and time
+print(time.parse("2006-01-02", "2023-05-16"))  # Parses a time string and returns a time object
+```
+
+## JSON Module
+
+This module provides functions to work with JSON data.
+
+First, import the json module:
+
+```python
+load("encoding/json.star", "json")
+```
+
+Then you can use various json functions:
+
+```python
+print(json.dumps({"name": "John", "age": 30}))  # Converts a dict to a JSON string
+print(json.loads('{"name": "John", "age": 30}'))  # Converts a JSON string to a dict
+```
+
+## RE Module
+
+This module provides regular expression functions.
+
+First, import the re module:
+
+```python
+load("re.star", "re")
+```
+
+Then you can use various regular expression functions:
+
+```python
+pattern = re.compile(r"\d+")
+matches = pattern.findall("Hello 1234 World 5678")
+print(matches)  # Prints ["1234", "5678"]
+```
+
+## YAML Module
+
+This module provides functions to work with YAML data.
+
+First, import the yaml module:
+
+```python
+load("encoding/yaml.star", "yaml")
+```
+
+Then you can use various yaml functions:
+
+```python
+print(yaml.encode({"name": "John", "age": 30}))  # Converts a dict to a YAML string
+print(yaml.decode('name: John\nage: 30\n'))  # Converts a YAML string to a dict
+```
+
+## Hashlib Module
+
+This module provides functions to work with hashing.
+
+First, import the hashlib module:
+
+```python
+load("hashlib.star", "hashlib")
+```
+
+Then you can use various hashlib functions:
+
+```python
+print(hashlib.sha256("Hello World"))  # Prints the SHA256 hash of "Hello World"
+```

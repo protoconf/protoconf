@@ -1,0 +1,289 @@
+---
+title: Employee Directory as Code
+---
+
+## Use Case: Centralized Employee Management
+
+### Overview
+
+In this use case, we'll show how to use Protoconf to automate employee onboarding and offboarding processes, manage access control, and maintain a clear and accurate record of employee data.
+
+### Step 1: Define the Employee and Group Messages
+
+First, we need to define our `Employee` and `Group` protobuf messages:
+
+For `Employee`:
+
+```protobuf title=./src/directory/employee/v1/employee.proto
+syntax = "proto3";
+package directory.employee.v1;
+
+message Employee {
+  uint64 id = 1;
+  string unix_name = 2;
+  string first_name = 3;
+  string last_name = 4;
+  PhoneNumber personal_phone_number = 5;
+  repeated PhoneNumber additional_phone_numbers = 6;
+  string private_email = 7;
+  bool active_employee = 8;
+
+  repeated string ssh_keys = 10;
+  string github_user = 11;
+
+  string title = 50;
+  string biography = 51;
+
+  message PhoneNumber {
+    uint32 country_code = 1;
+    uint64 number = 2;
+    uint32 prefix = 3;
+  }
+}
+```
+
+We can also add validators to our Employee:
+
+```python title=./src/directory/employee/v1/employee.proto-validator
+"""
+Validates employee
+"""
+load("employee.proto", "Employee")
+
+
+def validate_employee(e):
+    if e.id < 1:
+        fail("Employee.id must be greater than 0")
+
+    if len(e.unix_name) <= 2:
+        fail("unix_name length must be at least 2 chars, got: %s" % e.unix_name)
+
+add_validator(Employee, validate_employee)
+```
+
+For `Group`:
+
+```protobuf
+syntax = "proto3";
+package directory.groups.v1;
+
+import "directory/employee/v1/employee.proto";
+
+message Group {
+    string name = 1;
+    string oncall = 2;
+    string slack_channel = 3;
+    repeated directory.employee.v1.Employee members = 4;
+    repeated Group subgroups = 5;
+}
+```
+
+### Step 2: Creating Employees and Groups Configuration
+
+Create a Protoconf configuration file that will contain the list of Employee and Group messages.
+
+```python title=./src/directory/directory.pinc
+load("//directory/employee/v1/employee.proto", "Employee")
+load("//directory/groups/v1/groups.proto", "Group")
+
+employees = [
+    # Add Employee objects here
+]
+
+groups = [
+    # Add Group objects here
+]
+
+ALL_GROUPS = Group(subgroups=groups)
+
+# Helpers:
+def get_employees_for_group(group, inactive=False):
+    members = set([m for m in group.members if m.active_employee or inactive])
+    for g in group.subgroups:
+        members = members.union(get_employees_for_group(g, inactive))
+    return members
+
+
+def get_all_employees(inactive=False):
+    return get_employees_for_group(ALL_GROUPS, inactive)
+
+
+def get_groups_for_employee(e, group=ALL_GROUPS):
+    groups = set([g for g in [group] if e in set(g.members)])
+    for gg in group.subgroups:
+        groups = groups.union(get_groups_for_employee(e, gg))
+    return groups
+
+def walk_groups(func, group=ALL_GROUPS, visited=set()):
+    func(group, visited)
+    visited=visited.union([group])
+    for g in group.subgroups:
+        walk_groups(func, g, visited)
+```
+
+In this file, you can specify details about each employee and the groups they belong to. Ensure that each employee has a unique id and unix_name to avoid duplications.
+
+### Step 3: Deploy and Use the Employee and Groups Directory
+
+Deploy the employee and groups configuration using `protoconf deploy`.
+
+The deployed configuration can be integrated with various platforms and tools, such as:
+
+1. **GitHub:** Each employee's GitHub username can be automatically added to the company's GitHub organization using Terraform's GitHub provider. The `ssh_keys` field can be used to add the employee's SSH keys to their GitHub profile.
+
+```python
+load("//terraform/v1/util.pinc", "util")
+load("//terraform/github/provider/v4/github.proto", "Github")
+load("//terraform/github/resources/v4/membership.proto", "GithubMembership")
+load("//terraform/github/resources/v4/team.proto", "GithubTeam", "GithubTeamMembership")
+load("//directory/directory.pinc", "get_all_employees", "walk_groups)
+
+def github_teams():
+    resources=[]
+    def run(group, visited):
+        return if group in visited
+        team=util.Resource(
+            group.name, GithubTeam(name=group.name),
+            lambda team: (util.Group(
+                *[util.Resource("%s-%s" % (group.name, member.name),
+                    GithubTeamMembership(team_id=team.id, username=employee.github_user)
+                ) for member in get_employees_for_group(group)]
+            ))
+        )
+        resources.append(team)
+    walk_groups(run)
+    return resources
+
+tf = util.Terraform(
+    util.Provider(Github(
+        organization="your-organization",
+        token="your-token", # Better to get from terraform variable or GITHUB_TOKEN environment variable
+    ),
+    *[util.Resource(
+        employee.unix_name, GithubMembership(username=employee.github_user))
+        for employee in get_all_employees()
+    ],
+    *github_teams()
+)
+```
+
+2. **AD/GSuite/Okta:** An account can be created for each employee, using their Unix name as the username. If the `active_employee` field is set to `false`, the account can be automatically disabled. For GSuite, you can use the [GSuite Terraform provider](https://registry.terraform.io/providers/DeviaVir/gsuite/latest/docs).
+
+```python
+"""
+Manages users and groups in the gsuite
+"""
+load("//terraform/v1/terraform.proto", "Terraform")
+load(
+    "//terraform/gsuite/resources/v0/domain.proto",
+    "GsuiteDomain",
+)
+load(
+    "//terraform/gsuite/resources/v0/group.proto",
+    "GsuiteGroup",
+    "GsuiteGroupMember",
+)
+load(
+    "//terraform/gsuite/resources/v0/user.proto",
+    "GsuiteUser",
+)
+load("//terraform/gsuite/provider/v0/gsuite.proto", "Gsuite")
+load("//terraform/v1/util.pinc", "util")
+
+MASTER_DOMAIN = "example.com"
+ADDITIONAL_DOMAINS = ["example.org", "example.net"]
+
+tf = util.Terraform(
+    util.Provider(Gsuite(
+        oauth_scopes=[
+            "https://www.googleapis.com/auth/admin.directory.group",
+            "https://www.googleapis.com/auth/apps.groups.settings",
+            "https://www.googleapis.com/auth/admin.directory.user",
+            "https://www.googleapis.com/auth/admin.directory.userschema",
+            "https://www.googleapis.com/auth/admin.directory.domain",
+        ],
+        impersonated_user_email="admin@%s" % MASTER_DOMAIN,
+    )),
+    util.Resource("domain", GSuiteDomain(domain_name=MASTER_DOMAIN)),s
+    *[util.Resource(employee.unix_name, GsuiteUser(
+            primary_email="%s@%s" % (employee.unix_name, MASTER_DOMAIN),
+            aliases=["%s@%s" % (employee.unix_name, domain) for domain in ADDITIONAL_DOMAINS],
+            name={"family_name": employee.last_name, "given_name": employee.first_name},
+            recovery_email=employee.private_email,
+            recovery_phone="+%d%d" % (
+                employee.personal_phone_number.country_code,
+                employee.personal_phone_number.number
+            ),
+            posix_accounts=[
+                GsuiteUser.PosixAccounts(
+                    home_directory="/home/%s" % (employee.unix_name),
+                    primary=True,
+                    gid=employee.id,
+                    uid=employee.id,
+                    shell="/bin/bash",
+                    system_id="uid",
+                    username=employee.unix_name,
+                )
+            ],
+            external_ids=[GsuiteUser.ExternalIds(type="organization", value=str(employee.id))],
+            update_existing=True,
+        )) for employee in get_all_employees()
+    ]
+)
+```
+
+### Step 4: Manage Access Control
+
+Once the employees have been added to these platforms, you can use Protoconf to manage their access to various resources.
+
+```python
+def github_teams():
+    resources=[]
+    def run(group, visited):
+        return if group in visited
+        team=util.Resource(
+            group.name, GithubTeam(name=group.name),
+            lambda team: (util.Group(
+                *[util.Resource("%s-%s" % (group.name, member.name),
+                    GithubTeamMembership(team_id=team.id, username=employee.github_user)
+                ) for member in get_employees_for_group(group)]
+            ))
+        )
+        resources.append(team)
+    walk_groups(run)
+    return resources
+
+def gsuite_groups():
+    resources=[]
+    def run(group, visited):
+        return if group in visited
+        team=util.Resource(group.name, GsuiteGroup(
+                email="%s@%s" % (group.name.lower(), MASTER_DOMAIN),
+                name=group.name,
+            ),
+            lambda team: (util.Group(
+                *[util.Resource("%s-%s" % (group.name, member.name),
+                    GsuiteGroupMember(
+                        group=team.email,
+                        email="%s@%s", (member.unix_name, MASTER_DOMAIN),
+                        role="MEMBER",
+                ) for member in get_employees_for_group(group)]
+            ))
+        )
+        resources.append(team)
+    walk_groups(run)
+    return resources
+```
+
+In this example, we are adding each member of the group to the corresponding team on GitHub. The on-call member is given the role of "maintainer".
+
+By using Protoconf to manage your employee directory, you will gain the following advantages:
+
+- **Easier onboarding and offboarding:** Once an employee is added to or removed from the Protoconf configuration, their access to all associated platforms is automatically updated.
+- **Access clarity:** It's easy to see who has access to what, since all access data is contained in the Protoconf configuration.
+- **Easy access management:** Granting and revoking access is as simple as updating the Protoconf configuration.
+- **Version control:** All changes to the configuration are tracked in version control, providing an audit trail for compliance and accountability purposes.
+
+Please ensure to handle sensitive information such as passwords, tokens, and keys securely when using Protoconf and Terraform.
+
+In this guide, we've only scratched the surface of what's possible with Protoconf. With its ability to integrate with a wide range of tools and platforms, Protoconf can be a powerful addition to your organization's infrastructure.

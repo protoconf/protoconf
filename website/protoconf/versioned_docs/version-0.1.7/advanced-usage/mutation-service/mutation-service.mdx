@@ -1,0 +1,103 @@
+---
+sidebar_position: 5
+---
+
+# Protoconf Mutation Service
+
+Protoconf offers an RPC service for programmatically mutating configurations, which is particularly useful for applications that need to adjust configurations dynamically.
+
+This guide will explain how to use Protoconf's mutation service and provide an example of a dynamic dictionary that can be loaded from other files and iterated over.
+
+## Protoconf Mutation Service Definition
+
+The Protoconf mutation service is defined as follows:
+
+```protobuf
+syntax = "proto3";
+package v1;
+
+option java_package = "com.protoconf.server.api.v1";
+
+import "datatypes/proto/v1/protoconf_value.proto";
+
+message ConfigMutationRequest {
+  string path = 1;
+  ProtoconfValue value = 2;
+  string script_metadata = 3;
+}
+
+message ConfigMutationResponse {}
+
+service ProtoconfMutationService {
+  rpc MutateConfig(ConfigMutationRequest) returns (ConfigMutationResponse);
+}
+```
+
+## Protoconf Value Definition
+
+The `ProtoconfValue` message is defined as follows:
+
+```protobuf
+message ProtoconfValue {
+    string proto_file = 1;
+    google.protobuf.Any value = 2;
+    repeated SecretMetadata secrets = 3;
+}
+```
+
+## Mutation Server
+
+The mutation server writes the content of the `ProtoconfValue` to `./mutable_configs/<path from ConfigMutationRequest>`.
+
+These files can be loaded into the Starlark files as follows:
+
+```starlark
+load("mutable:<path>", "value")
+```
+
+## Dynamic Dictionary Example
+
+Assume the following template is stored at `./src/demo/inputs.pinc.template`. It will iterate through all the files under `./mutable_configs/demo/inputs`, and the outcome will be written to `./src/demo/inputs.pinc` before compilation:
+
+```starlark
+"""
+Generated from {{ .TemplateFilename }}
+"""
+{{ range .Files -}}
+load(
+    "mutable:{{.MutableName}}",
+    {{.VariableName}}="value",
+)
+{{ end }}
+
+inputs = {
+{{- range .Files }}
+    "{{.MutableName}}": {{.VariableName}},
+{{- end }}
+```
+
+In this example, we made a dynamic dictionary that can be loaded from other files and be iterated over:
+
+```starlark
+load("//demo/inputs.pinc", "inputs")
+```
+
+## Mutation Server Flags
+
+The Protoconf mutation server runs via the `protoconf serve` command, with the following flags:
+
+```shell
+Usage: [OPTION]... protoconfRoot
+  -grpc-address string
+        Server gRPC address (default ":4301")
+  -post string
+        Post mutation script
+  -pre string
+        Pre mutation script
+```
+
+The `-pre` flag receives a path to a script to run before writing any file to the local filesystem. This allows for validating that the local directory is clean and ready to receive the change (for example, ensuring synchronization with the head of your git repository, acquiring a lock, or any other preparatory steps).
+
+The `-post` flag receives a path to a script to run after the file is written to the local directory. This script should initiate the protoconf compile -process-templates . command, and then either sync the outcome back to git or run the protoconf insert command to write the outcomes to the key-value store.
+
+With these tools, Protoconf offers a powerful and flexible way to manage dynamic configuration changes in your application, with the ability to customize the process to match your specific needs.
