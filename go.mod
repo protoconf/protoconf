@@ -13,7 +13,7 @@ require (
 	github.com/golang/protobuf v1.5.3
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
 	github.com/jhump/protoreflect v1.15.1
-	github.com/kvtools/valkeyrie v0.4.1
+	github.com/kvtools/valkeyrie v1.0.0
 	github.com/mitchellh/cli v1.1.5
 	github.com/pelletier/go-toml v1.2.0
 	github.com/pkg/errors v0.9.1
