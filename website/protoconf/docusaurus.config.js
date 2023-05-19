@@ -47,6 +47,13 @@ const config = {
           // Remove this to remove the "edit this page" links.
           editUrl:
             'https://github.com/protoconf/protoconf/tree/main/website/protoconf',
+          lastVersion: 'current',
+          versions: {
+            current: {
+              label: 'v0.1.7',
+              path: '0.1.7',
+            }
+          }
         },
         blog: {
           showReadingTime: true,
@@ -118,6 +125,10 @@ const config = {
             to: '/blog',
             position: 'left',
             label: 'Blog',
+          },
+          {
+            type: 'docsVersionDropdown',
+            position: 'right'
           },
           {
             href: 'https://github.com/protoconf/protoconf',

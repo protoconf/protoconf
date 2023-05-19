@@ -1,0 +1,71 @@
+---
+id: getting-started
+title: Getting Started
+sidebar_position: 2
+---
+
+# Getting Started
+
+This guide will walk you through the installation of protoconf, creating a basic configuration, and running the protoconf compiler to generate the final configuration.
+
+## Installation
+
+protoconf can be installed via Homebrew on macOS:
+
+```bash
+brew install protoconf/tap/protoconf
+```
+
+For other platforms, download the latest release from the [protoconf GitHub repository](https://github.com/protoconf/protoconf) and add the binary to your `PATH`.
+
+## Defining the Configuration Structure
+
+First, you'll need to define your configuration structure using Protobuf. The Protobuf files should be stored under `./src/<projectname>/<version>/<filename>.proto`. For example:
+
+```protobuf title=./src/myproject/v1/server_config.proto
+syntax = "proto3";
+
+package myproject.v1;
+
+message ServerConfiguration {
+  bool is_debug = 1;
+  uint32 max_connections = 2;
+  float max_payload_size_mb = 3;
+  google.protobuf.Duration request_timeout = 4;
+}
+```
+
+In this example, `ServerConfiguration` is the configuration structure for a server. It includes fields for debug mode (`is_debug`), maximum number of connections (`max_connections`), maximum payload size (`max_payload_size_mb`), and request timeout (`request_timeout`).
+
+## Writing the Configuration Logic
+
+Next, you'll write the configuration logic in a Starlark file, which should use the `.pconf` extension and be stored under `./src/`. For example:
+
+```python title=./src/myproject/server_config.pconf
+load("//myproject/v1/server_config.proto", "ServerConfiguration")
+load("//google/protobuf/duration.proto", "Duration")
+
+def main(ctx):
+    return ServerConfiguration(
+        is_debug=True,
+        max_connections=1000,
+        max_payload_size_mb=64.0,
+        request_timeout=Duration(seconds=5),
+    )
+```
+
+In this example, the `ServerConfiguration` message from the Protobuf file is loaded, and then a new `ServerConfiguration` object is created in the `main()` function.
+
+## Running the protoconf Compiler
+
+Finally, run the protoconf compiler to generate the final configuration:
+
+```bash
+protoconf compile .
+```
+
+The compiled configuration will be stored in a JSON file under `./materialized_configs/<projectname>/<filename>.materialized_JSON`. For example, `./materialized_configs/myproject/server_config.materialized_JSON`.
+
+This JSON file contains the final, compiled configuration that your application can consume.
+
+With this, you've created your first protoconf configuration! The next section will cover more advanced topics, such as configuration validation and how to consume configuration updates in different programming languages.
