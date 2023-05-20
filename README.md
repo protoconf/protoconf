@@ -31,7 +31,7 @@
 </div>
 
 ![Test](https://github.com/protoconf/protoconf/workflows/Check/badge.svg)
-![Release](https://github.com/protoconf/protoconf/workflows/Release/badge.svg)
+![Release](https://github.com/protoconf/protoconf/workflows/gorelease/badge.svg)
 [![codecov](https://codecov.io/gh/protoconf/protoconf/branch/master/graph/badge.svg)](https://codecov.io/gh/protoconf/protoconf)
 
 ## Introduction
