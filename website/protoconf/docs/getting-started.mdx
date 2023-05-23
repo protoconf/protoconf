@@ -45,7 +45,7 @@ Next, you'll write the configuration logic in a Starlark file, which should use 
 load("//myproject/v1/server_config.proto", "ServerConfiguration")
 load("//google/protobuf/duration.proto", "Duration")
 
-def main(ctx):
+def main():
     return ServerConfiguration(
         is_debug=True,
         max_connections=1000,
