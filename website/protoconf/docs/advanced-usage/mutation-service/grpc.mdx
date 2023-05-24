@@ -16,11 +16,12 @@ import (
 	protoconf_value "github.com/protoconf/protoconf/datatypes/proto/v1"
 	server_config "myproject/v1" // replace with your actual import path
 	"google.golang.org/grpc"
+  "google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/protobuf/types/known/anypb"
 )
 
 func main() {
-	cc, err := grpc.Dial(":4301", grpc.WithInsecure())
+	cc, err := grpc.Dial(":4301", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("failed to connect: %v", err)
 	}

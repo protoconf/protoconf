@@ -89,13 +89,14 @@ import (
     "log"
 
     "google.golang.org/grpc"
+    "google.golang.org/grpc/credentials/insecure"
     "github.com/golang/protobuf/ptypes"
     pb "gen/go/protoconf/v1"
     mypb "gen/go/myproject/v1"
 )
 
 func main() {
-    conn, err := grpc.Dial("localhost:4300", grpc.WithInsecure())
+    conn, err := grpc.Dial("localhost:4300", grpc.WithTransportCredentials(insecure.NewCredentials()))
     if err != nil {
         log.Fatalf("Failed to connect: %v", err)
     }
