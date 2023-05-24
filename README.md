@@ -238,8 +238,3 @@ Step by step instructions to start developing with Protoconf, with an example fr
 6. Change the config file at `examples/protoconf/src/crawler/text_crawler.pconf`
 7. Repeat steps 4 & 5 to recompile and re-insert the config, observe the client got the updated config
 
-## Run CI
-
-1. Download `drone-cli` from https://github.com/drone/drone-cli/releases.
-2. Copy the drone binary to your `$PATH` and make it executable
-3. Run: `drone exec --pipeline default`
