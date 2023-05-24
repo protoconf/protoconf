@@ -11,6 +11,7 @@ import (
 	pb "github.com/protoconf/protoconf/examples/protoconf/src/crawler"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 const (
@@ -30,7 +31,7 @@ func main() {
 
 func listenToChanges(path string) {
 	address := consts.AgentDefaultAddress
-	conn, err := grpc.Dial(address, grpc.WithInsecure())
+	conn, err := grpc.Dial(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("Error connecting to server address=%s err=%v", address, err)
 	}

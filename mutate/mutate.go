@@ -21,6 +21,7 @@ import (
 	"github.com/protoconf/protoconf/utils"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 var conn *grpc.ClientConn
@@ -158,7 +159,7 @@ func (c *cliCommand) Run(args []string) int {
 
 	log.Println(msg.String())
 	address := config.serverAddress
-	conn, err = grpc.Dial(address, grpc.WithInsecure())
+	conn, err = grpc.Dial(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatal(fmt.Errorf("error connecting to server address=%s err=%s", address, err))
 	}

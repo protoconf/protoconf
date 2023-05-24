@@ -25,6 +25,7 @@ import (
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/status"
 )
 
@@ -150,7 +151,7 @@ func (e *Executor) Close() {
 }
 
 func getProtoconfClient(address string) (pc.ProtoconfServiceClient, *grpc.ClientConn) {
-	conn, err := grpc.Dial(address, grpc.WithInsecure())
+	conn, err := grpc.Dial(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("Error connecting to server address=%s err=%v", address, err)
 	}

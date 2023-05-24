@@ -15,6 +15,7 @@ import (
 	pc "github.com/protoconf/protoconf/server/api/proto/v1"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 const (
@@ -60,7 +61,7 @@ func mutate(path string, value descriptor.Message, scriptMetadata string) error 
 	request := &pc.ConfigMutationRequest{Path: path, Value: config, ScriptMetadata: scriptMetadata}
 
 	address := consts.ServerDefaultAddress
-	conn, err := grpc.Dial(address, grpc.WithInsecure())
+	conn, err := grpc.Dial(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return fmt.Errorf("error connecting to server address=%s err=%s", address, err)
 	}
