@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -199,7 +198,7 @@ func (w *watcher) runWriteAction(ctx context.Context, action *exec_config.Action
 	if err != nil {
 		return fmt.Errorf("failed to create directory: %v", err)
 	}
-	err = ioutil.WriteFile(action.Path, bytesToWrite, 0644)
+	err = os.WriteFile(action.Path, bytesToWrite, 0644)
 	if err != nil {
 		return fmt.Errorf("failed to write file: %v", err)
 	}

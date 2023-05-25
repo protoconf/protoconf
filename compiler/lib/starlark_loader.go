@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"path"
 	"path/filepath"
@@ -147,7 +147,7 @@ func (l *starlarkLoader) loadMutable(modulePath string) (starlark.StringDict, er
 	}
 	defer configReader.Close()
 
-	jsonData, err := ioutil.ReadAll(configReader)
+	jsonData, err := io.ReadAll(configReader)
 	if err != nil {
 		return nil, fmt.Errorf("error reading from mutable config file, file=%s, err=%s", filename, err)
 	}
@@ -172,7 +172,7 @@ func (l *starlarkLoader) loadMutable(modulePath string) (starlark.StringDict, er
 
 	protoconfValue := &pc.ProtoconfValue{}
 	um := jsonpb.Unmarshaler{AnyResolver: anyResolver}
-	if err = um.Unmarshal(ioutil.NopCloser(bytes.NewReader(jsonData)), protoconfValue); err != nil {
+	if err = um.Unmarshal(io.NopCloser(bytes.NewReader(jsonData)), protoconfValue); err != nil {
 		return nil, fmt.Errorf("error unmarshaling, err=%s", err)
 	}
 
@@ -223,7 +223,7 @@ func (l *starlarkLoader) loadStarlark(thread *starlark.Thread, modulePath string
 		return nil, err
 	}
 	defer reader.Close()
-	moduleSource, err := ioutil.ReadAll(reader)
+	moduleSource, err := io.ReadAll(reader)
 	if err != nil {
 		return nil, err
 	}

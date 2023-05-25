@@ -1,7 +1,7 @@
 package importers
 
 import (
-	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/jhump/protoreflect/desc/builder"
@@ -9,7 +9,7 @@ import (
 )
 
 func TestImporters(t *testing.T) {
-	dir, err := ioutil.TempDir("", "generate_test")
+	dir, err := os.MkdirTemp("", "generate_test")
 	assert.NoError(t, err, "failed to create tmp folder")
 	i := NewImporter("master/package/v1/master.proto", dir)
 
