@@ -1,7 +1,7 @@
 package lib
 
 import (
-	"io/ioutil"
+	"os"
 	"testing"
 
 	assert "github.com/stretchr/testify/require"
@@ -9,7 +9,7 @@ import (
 
 func Test(t *testing.T) {
 	c := NewCompiler("testdata", true)
-	dir, err := ioutil.TempDir("", "compiler_output")
+	dir, err := os.MkdirTemp("", "compiler_output")
 	if err != nil {
 		t.Fatal("cannot create tmpdir", err)
 	}

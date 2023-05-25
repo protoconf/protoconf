@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"syscall/js"
 )
@@ -24,7 +23,7 @@ func openFile(path string) (io.ReadCloser, error) {
 	if contents.IsNull() {
 		return nil, fmt.Errorf("error reading %s", path)
 	}
-	readCloser := ioutil.NopCloser(bytes.NewReader([]byte(contents.String())))
+	readCloser := io.NopCloser(bytes.NewReader([]byte(contents.String())))
 	return readCloser, nil
 }
 

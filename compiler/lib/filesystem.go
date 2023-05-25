@@ -1,10 +1,10 @@
+//go:build !js
 // +build !js
 
 package lib
 
 import (
 	"io"
-	"io/ioutil"
 	"os"
 )
 
@@ -28,5 +28,5 @@ func openFile(path string) (io.ReadCloser, error) {
 }
 
 func writeFile(filename string, bytes []byte) error {
-	return ioutil.WriteFile(filename, bytes, 0644)
+	return os.WriteFile(filename, bytes, 0644)
 }

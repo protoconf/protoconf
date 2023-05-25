@@ -5,7 +5,6 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net"
 	"os"
@@ -131,7 +130,7 @@ func (s server) MutateConfig(ctx context.Context, in *protoconfmutation.ConfigMu
 		return nil, logError(fmt.Errorf("error creating output directory %s, err: %s", filepath.Dir(filename), err))
 	}
 
-	if err := ioutil.WriteFile(filename, []byte(jsonData), 0644); err != nil {
+	if err := os.WriteFile(filename, []byte(jsonData), 0644); err != nil {
 		return nil, logError(fmt.Errorf("error writing to file %s, err: %s", filename, err))
 	}
 
