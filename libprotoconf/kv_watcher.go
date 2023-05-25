@@ -8,7 +8,7 @@ import (
 	"github.com/kvtools/valkeyrie"
 	"github.com/kvtools/valkeyrie/store"
 	"github.com/kvtools/valkeyrie/store/consul"
-	etcd "github.com/kvtools/valkeyrie/store/etcd/v2"
+	etcd "github.com/kvtools/valkeyrie/store/etcd/v3"
 	"github.com/kvtools/valkeyrie/store/zookeeper"
 	protoconfvalue "github.com/protoconf/protoconf/datatypes/proto/v1"
 )
@@ -33,7 +33,7 @@ func NewKVWatcher(kvType KVStore, address string, prefix string) (Watcher, error
 		backend = store.ZK
 	case Etcd:
 		etcd.Register()
-		backend = store.ETCD
+		backend = store.ETCDV3
 	default:
 		return nil, fmt.Errorf("unknown kvType=%d", kvType)
 	}

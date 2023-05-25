@@ -9,16 +9,16 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/golang/protobuf/proto"
 	"github.com/kvtools/valkeyrie"
 	"github.com/kvtools/valkeyrie/store"
 	"github.com/kvtools/valkeyrie/store/consul"
-	"github.com/kvtools/valkeyrie/store/etcd/v2"
+	etcd "github.com/kvtools/valkeyrie/store/etcd/v3"
 	"github.com/kvtools/valkeyrie/store/zookeeper"
 	"github.com/mitchellh/cli"
 	"github.com/protoconf/protoconf/command"
 	"github.com/protoconf/protoconf/consts"
 	"github.com/protoconf/protoconf/utils"
+	"google.golang.org/protobuf/proto"
 )
 
 type cliCommand struct{}
@@ -65,7 +65,7 @@ func (c *cliCommand) Run(args []string) int {
 		} else {
 			address = consts.EtcdDefaultAddress
 		}
-		kvStore, err = valkeyrie.NewStore(store.ETCD, []string{address}, nil)
+		kvStore, err = valkeyrie.NewStore(store.ETCDV3, []string{address}, nil)
 	} else if kVConfig.Store == command.KVStoreZookeeper {
 		zookeeper.Register()
 		var address string
