@@ -21,7 +21,7 @@ require (
 	github.com/qri-io/starlib v0.5.0
 	github.com/sajari/fuzzy v1.0.0
 	github.com/smintz/starlarkobject v0.0.0-20221130044148-40067250eba0
-	github.com/stretchr/testify v1.8.3
+	github.com/stretchr/testify v1.8.4
 	go.starlark.net v0.0.0-20230525235612-a134d8f9ddca
 	go.uber.org/zap v1.24.0
 	golang.org/x/net v0.10.0
