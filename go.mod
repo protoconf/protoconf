@@ -7,7 +7,7 @@ require (
 	buf.build/gen/go/bufbuild/reflect/protocolbuffers/go v1.30.0-20230420145030-e29739ab7137.1
 	github.com/Masterminds/sprig/v3 v3.2.3
 	github.com/bgentry/go-netrc v0.0.0-20140422174119-9fd32a8b3d3d
-	github.com/bufbuild/connect-go v1.7.0
+	github.com/bufbuild/connect-go v1.8.0
 	github.com/fsnotify/fsnotify v1.6.0
 	github.com/ghodss/yaml v1.0.0
 	github.com/golang/protobuf v1.5.3
