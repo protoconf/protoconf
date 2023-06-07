@@ -2,6 +2,7 @@ package inserter
 
 import (
 	"bytes"
+	"context"
 	"encoding/base64"
 	"flag"
 	"fmt"
@@ -9,11 +10,11 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/kvtools/consul"
+	"github.com/kvtools/etcdv3"
 	"github.com/kvtools/valkeyrie"
 	"github.com/kvtools/valkeyrie/store"
-	"github.com/kvtools/valkeyrie/store/consul"
-	etcd "github.com/kvtools/valkeyrie/store/etcd/v3"
-	"github.com/kvtools/valkeyrie/store/zookeeper"
+	"github.com/kvtools/zookeeper"
 	"github.com/mitchellh/cli"
 	"github.com/protoconf/protoconf/command"
 	"github.com/protoconf/protoconf/consts"
@@ -54,27 +55,25 @@ func (c *cliCommand) Run(args []string) int {
 
 	var kvStore store.Store
 	var err error
+	ctx := context.Background()
 	if kVConfig.Store == command.KVStoreConsul {
-		consul.Register()
-		kvStore, err = valkeyrie.NewStore(store.CONSUL, []string{kVConfig.Address}, nil)
+		kvStore, err = valkeyrie.NewStore(ctx, consul.StoreName, []string{kVConfig.Address}, nil)
 	} else if kVConfig.Store == command.KVStoreEtcd {
-		etcd.Register()
 		var address string
 		if kVConfig.Address != "" {
 			address = kVConfig.Address
 		} else {
 			address = consts.EtcdDefaultAddress
 		}
-		kvStore, err = valkeyrie.NewStore(store.ETCDV3, []string{address}, nil)
+		kvStore, err = valkeyrie.NewStore(ctx, etcdv3.StoreName, []string{address}, nil)
 	} else if kVConfig.Store == command.KVStoreZookeeper {
-		zookeeper.Register()
 		var address string
 		if kVConfig.Address != "" {
 			address = kVConfig.Address
 		} else {
 			address = consts.ZookeeperDefaultAddress
 		}
-		kvStore, err = valkeyrie.NewStore(store.ZK, []string{address}, nil)
+		kvStore, err = valkeyrie.NewStore(ctx, zookeeper.StoreName, []string{address}, nil)
 	} else {
 		log.Fatalf("Unknown key-value store %s", kVConfig.Store)
 	}
@@ -87,7 +86,7 @@ func (c *cliCommand) Run(args []string) int {
 	if config.delete {
 		for i := 0; i < flags.NArg(); i++ {
 			configName := filepath.ToSlash(strings.TrimSpace(flags.Args()[i]))
-			if err := kvStore.Delete(kVConfig.Prefix + configName); err != nil {
+			if err := kvStore.Delete(ctx, kVConfig.Prefix+configName); err != nil {
 				log.Printf("Error deleting config %s, err=%s", configName, err)
 				return 1
 			}
@@ -143,7 +142,8 @@ func insertConfig(configFile string, protoconfRoot string, kvStore store.Store, 
 
 	kvPath := prefix + configName
 	write := base64.StdEncoding.EncodeToString(data)
-	if err := kvStore.Put(kvPath, []byte(write), nil); err != nil {
+	ctx := context.Background()
+	if err := kvStore.Put(ctx, kvPath, []byte(write), nil); err != nil {
 		return fmt.Errorf("error writing to key-value store, path=%s", kvPath)
 	}
 
