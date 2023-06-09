@@ -1,15 +1,16 @@
 package libprotoconf
 
 import (
+	"context"
 	"encoding/base64"
 	"fmt"
 
 	"github.com/golang/protobuf/proto"
+	"github.com/kvtools/consul"
+	"github.com/kvtools/etcdv3"
 	"github.com/kvtools/valkeyrie"
 	"github.com/kvtools/valkeyrie/store"
-	"github.com/kvtools/valkeyrie/store/consul"
-	etcd "github.com/kvtools/valkeyrie/store/etcd/v3"
-	"github.com/kvtools/valkeyrie/store/zookeeper"
+	"github.com/kvtools/zookeeper"
 	protoconfvalue "github.com/protoconf/protoconf/datatypes/proto/v1"
 )
 
@@ -23,22 +24,20 @@ const (
 
 // NewWatcher creates a new kv-backed Protoconf watcher
 func NewKVWatcher(kvType KVStore, address string, prefix string) (Watcher, error) {
-	var backend store.Backend
+	var backend string
+	ctx := context.Background()
 	switch kvType {
 	case Consul:
-		consul.Register()
-		backend = store.CONSUL
+		backend = consul.StoreName
 	case Zookeeper:
-		zookeeper.Register()
-		backend = store.ZK
+		backend = zookeeper.StoreName
 	case Etcd:
-		etcd.Register()
-		backend = store.ETCDV3
+		backend = etcdv3.StoreName
 	default:
 		return nil, fmt.Errorf("unknown kvType=%d", kvType)
 	}
 
-	store, err := valkeyrie.NewStore(backend, []string{address}, nil)
+	store, err := valkeyrie.NewStore(ctx, backend, []string{address}, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +58,7 @@ func (w *libkvWatcher) Watch(pathNoPrefix string, stopCh <-chan struct{}) (<-cha
 
 	watchCh := make(chan Result)
 	kVStopCh := make(chan struct{})
-
+	ctx := context.Background()
 	go func() {
 		defer func() {
 			select {
@@ -70,7 +69,7 @@ func (w *libkvWatcher) Watch(pathNoPrefix string, stopCh <-chan struct{}) (<-cha
 			close(watchCh)
 		}()
 
-		kVWatchCh, err := w.store.Watch(path, kVStopCh, &store.ReadOptions{})
+		kVWatchCh, err := w.store.Watch(ctx, path, &store.ReadOptions{})
 		if err != nil {
 			watchCh <- Result{nil, err}
 			return
