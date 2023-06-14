@@ -1,0 +1,425 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleBigtableAppProfile version is 0
+message GoogleBigtableAppProfile {
+  // The unique name of the app profile in the form '[_a-zA-Z0-9][-_.a-zA-Z0-9]*'.
+  string app_profile_id = 1 [json_name = "app_profile_id"];
+
+  // Long form description of the use case for this app profile.
+  string description = 2;
+
+  string id = 3;
+
+  // If true, ignore safety checks when deleting/updating the app profile.
+  bool ignore_warnings = 4 [json_name = "ignore_warnings"];
+
+  // The name of the instance to create the app profile within.
+  string instance = 5;
+
+  // The set of clusters to route to. The order is ignored; clusters will be tried in order of distance. If left empty, all clusters are eligible.
+  repeated string multi_cluster_routing_cluster_ids = 6 [json_name = "multi_cluster_routing_cluster_ids"];
+
+  // If true, read/write requests are routed to the nearest cluster in the instance, and will fail over to the nearest cluster that is available
+  // in the event of transient errors or delays. Clusters in a region are considered equidistant. Choosing this option sacrifices read-your-writes
+  // consistency to improve availability.
+  bool multi_cluster_routing_use_any = 7 [json_name = "multi_cluster_routing_use_any"];
+
+  // The unique name of the requested app profile. Values are of the form 'projects/<project>/instances/<instance>/appProfiles/<appProfileId>'.
+  string name = 8;
+
+  string project = 9;
+
+  SingleClusterRouting single_cluster_routing = 10 [json_name = "single_cluster_routing"];
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message SingleClusterRouting {
+    // If true, CheckAndMutateRow and ReadModifyWriteRow requests are allowed by this app profile.
+    // It is unsafe to send these requests to the same table/row/column in multiple clusters.
+    bool allow_transactional_writes = 1 [json_name = "allow_transactional_writes"];
+
+    // The cluster to which read/write requests should be routed.
+    string cluster_id = 2 [json_name = "cluster_id"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleBigtableGcPolicy version is 0
+message GoogleBigtableGcPolicy {
+  // The name of the column family.
+  string column_family = 1 [json_name = "column_family"];
+
+  // The deletion policy for the GC policy. Setting ABANDON allows the resource
+  // 				to be abandoned rather than deleted. This is useful for GC policy as it cannot be deleted
+  // 				in a replicated instance. Possible values are: "ABANDON".
+  string deletion_policy = 2 [json_name = "deletion_policy"];
+
+  // Serialized JSON string for garbage collection policy. Conflicts with "mode", "max_age" and "max_version".
+  string gc_rules = 3 [json_name = "gc_rules"];
+
+  string id = 4;
+
+  // The name of the Bigtable instance.
+  string instance_name = 5 [json_name = "instance_name"];
+
+  // NOTE: 'gc_rules' is more flexible, and should be preferred over this field for new resources. This field may be deprecated in the future. If multiple policies are set, you should choose between UNION OR INTERSECTION.
+  string mode = 6;
+
+  // The ID of the project in which the resource belongs. If it is not provided, the provider project is used.
+  string project = 7;
+
+  // The name of the table.
+  string table = 8;
+
+  MaxAge max_age = 9 [json_name = "max_age"];
+
+  repeated MaxVersion max_version = 10 [json_name = "max_version"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message MaxAge {
+    // Number of days before applying GC policy.
+    int64 days = 1;
+
+    // Duration before applying GC policy
+    string duration = 2;
+  }
+
+  message MaxVersion {
+    // Number of version before applying the GC policy.
+    int64 number = 1;
+  }
+}
+
+// GoogleBigtableInstance version is 1
+message GoogleBigtableInstance {
+  // Whether or not to allow Terraform to destroy the instance. Unless this field is set to false in Terraform state, a terraform destroy or terraform apply that would delete the instance will fail.
+  bool deletion_protection = 1 [json_name = "deletion_protection"];
+
+  // The human-readable display name of the Bigtable instance. Defaults to the instance name.
+  string display_name = 2 [json_name = "display_name"];
+
+  string id = 3;
+
+  // The instance type to create. One of "DEVELOPMENT" or "PRODUCTION". Defaults to "PRODUCTION".
+  string instance_type = 4 [json_name = "instance_type"];
+
+  // A mapping of labels to assign to the resource.
+  map<string, string> labels = 5;
+
+  // The name (also called Instance Id in the Cloud Console) of the Cloud Bigtable instance. Must be 6-33 characters and must only contain hyphens, lowercase letters and numbers.
+  string name = 6;
+
+  // The ID of the project in which the resource belongs. If it is not provided, the provider project is used.
+  string project = 7;
+
+  repeated Cluster cluster = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Cluster {
+    // The ID of the Cloud Bigtable cluster. Must be 6-30 characters and must only contain hyphens, lowercase letters and numbers.
+    string cluster_id = 1 [json_name = "cluster_id"];
+
+    // Describes the Cloud KMS encryption key that will be used to protect the destination Bigtable cluster. The requirements for this key are: 1) The Cloud Bigtable service account associated with the project that contains this cluster must be granted the cloudkms.cryptoKeyEncrypterDecrypter role on the CMEK key. 2) Only regional keys can be used and the region of the CMEK key must match the region of the cluster. 3) All clusters within an instance must use the same CMEK key. Values are of the form projects/{project}/locations/{location}/keyRings/{keyring}/cryptoKeys/{key}
+    string kms_key_name = 2 [json_name = "kms_key_name"];
+
+    // The number of nodes in your Cloud Bigtable cluster. Required, with a minimum of 1 for each cluster in an instance.
+    int64 num_nodes = 3 [json_name = "num_nodes"];
+
+    // The storage type to use. One of "SSD" or "HDD". Defaults to "SSD".
+    string storage_type = 4 [json_name = "storage_type"];
+
+    // The zone to create the Cloud Bigtable cluster in. Each cluster must have a different zone in the same region. Zones that support Bigtable instances are noted on the Cloud Bigtable locations page.
+    string zone = 5;
+
+    AutoscalingConfig autoscaling_config = 6 [json_name = "autoscaling_config"];
+
+    message AutoscalingConfig {
+      // The target CPU utilization for autoscaling. Value must be between 10 and 80.
+      int64 cpu_target = 1 [json_name = "cpu_target"];
+
+      // The maximum number of nodes for autoscaling.
+      int64 max_nodes = 2 [json_name = "max_nodes"];
+
+      // The minimum number of nodes for autoscaling.
+      int64 min_nodes = 3 [json_name = "min_nodes"];
+
+      // The target storage utilization for autoscaling, in GB, for each node in a cluster. This number is limited between 2560 (2.5TiB) and 5120 (5TiB) for a SSD cluster and between 8192 (8TiB) and 16384 (16 TiB) for an HDD cluster. If not set, whatever is already set for the cluster will not change, or if the cluster is just being created, it will use the default value of 2560 for SSD clusters and 8192 for HDD clusters.
+      int64 storage_target = 4 [json_name = "storage_target"];
+    }
+  }
+}
+
+// GoogleBigtableInstanceIamBinding version is 0
+message GoogleBigtableInstanceIamBinding {
+  string etag = 1;
+
+  string id = 2;
+
+  string instance = 3;
+
+  repeated string members = 4;
+
+  string project = 5;
+
+  string role = 6;
+
+  Condition condition = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleBigtableInstanceIamMember version is 0
+message GoogleBigtableInstanceIamMember {
+  string etag = 1;
+
+  string id = 2;
+
+  string instance = 3;
+
+  string member = 4;
+
+  string project = 5;
+
+  string role = 6;
+
+  Condition condition = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleBigtableInstanceIamPolicy version is 0
+message GoogleBigtableInstanceIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string instance = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// GoogleBigtableTable version is 0
+message GoogleBigtableTable {
+  // A field to make the table protected against data loss i.e. when set to PROTECTED, deleting the table, the column families in the table, and the instance containing the table would be prohibited. If not provided, currently deletion protection will be set to UNPROTECTED as it is the API default value.
+  string deletion_protection = 1 [json_name = "deletion_protection"];
+
+  string id = 2;
+
+  // The name of the Bigtable instance.
+  string instance_name = 3 [json_name = "instance_name"];
+
+  // The name of the table. Must be 1-50 characters and must only contain hyphens, underscores, periods, letters and numbers.
+  string name = 4;
+
+  // The ID of the project in which the resource belongs. If it is not provided, the provider project is used.
+  string project = 5;
+
+  // A list of predefined keys to split the table on. !> Warning: Modifying the split_keys of an existing table will cause Terraform to delete/recreate the entire google_bigtable_table resource.
+  repeated string split_keys = 6 [json_name = "split_keys"];
+
+  repeated ColumnFamily column_family = 7 [json_name = "column_family"];
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message ColumnFamily {
+    // The name of the column family.
+    string family = 1;
+  }
+
+  message Timeouts {
+    string create = 1;
+  }
+}
+
+// GoogleBigtableTableIamBinding version is 0
+message GoogleBigtableTableIamBinding {
+  string etag = 1;
+
+  string id = 2;
+
+  string instance = 3;
+
+  repeated string members = 4;
+
+  string project = 5;
+
+  string role = 6;
+
+  string table = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleBigtableTableIamMember version is 0
+message GoogleBigtableTableIamMember {
+  string etag = 1;
+
+  string id = 2;
+
+  string instance = 3;
+
+  string member = 4;
+
+  string project = 5;
+
+  string role = 6;
+
+  string table = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleBigtableTableIamPolicy version is 0
+message GoogleBigtableTableIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string instance = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  string table = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}

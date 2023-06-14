@@ -1,0 +1,220 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsLocationGeofenceCollection version is 0
+message AwsLocationGeofenceCollection {
+  string collection_arn = 1 [json_name = "collection_arn"];
+
+  string collection_name = 2 [json_name = "collection_name"];
+
+  string create_time = 3 [json_name = "create_time"];
+
+  string description = 4;
+
+  string id = 5;
+
+  string kms_key_id = 6 [json_name = "kms_key_id"];
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  string update_time = 9 [json_name = "update_time"];
+
+  repeated Timeouts timeouts = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsLocationMap version is 0
+message AwsLocationMap {
+  string create_time = 1 [json_name = "create_time"];
+
+  string description = 2;
+
+  string id = 3;
+
+  string map_arn = 4 [json_name = "map_arn"];
+
+  string map_name = 5 [json_name = "map_name"];
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  string update_time = 8 [json_name = "update_time"];
+
+  Configuration configuration = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Configuration {
+    string style = 1;
+  }
+}
+
+// AwsLocationPlaceIndex version is 0
+message AwsLocationPlaceIndex {
+  string create_time = 1 [json_name = "create_time"];
+
+  string data_source = 2 [json_name = "data_source"];
+
+  string description = 3;
+
+  string id = 4;
+
+  string index_arn = 5 [json_name = "index_arn"];
+
+  string index_name = 6 [json_name = "index_name"];
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  string update_time = 9 [json_name = "update_time"];
+
+  DataSourceConfiguration data_source_configuration = 10 [json_name = "data_source_configuration"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message DataSourceConfiguration {
+    string intended_use = 1 [json_name = "intended_use"];
+  }
+}
+
+// AwsLocationRouteCalculator version is 0
+message AwsLocationRouteCalculator {
+  string calculator_arn = 1 [json_name = "calculator_arn"];
+
+  string calculator_name = 2 [json_name = "calculator_name"];
+
+  string create_time = 3 [json_name = "create_time"];
+
+  string data_source = 4 [json_name = "data_source"];
+
+  string description = 5;
+
+  string id = 6;
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  string update_time = 9 [json_name = "update_time"];
+
+  repeated Timeouts timeouts = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsLocationTracker version is 0
+message AwsLocationTracker {
+  string create_time = 1 [json_name = "create_time"];
+
+  string description = 2;
+
+  string id = 3;
+
+  string kms_key_id = 4 [json_name = "kms_key_id"];
+
+  string position_filtering = 5 [json_name = "position_filtering"];
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  string tracker_arn = 8 [json_name = "tracker_arn"];
+
+  string tracker_name = 9 [json_name = "tracker_name"];
+
+  string update_time = 10 [json_name = "update_time"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+}
+
+// AwsLocationTrackerAssociation version is 0
+message AwsLocationTrackerAssociation {
+  string consumer_arn = 1 [json_name = "consumer_arn"];
+
+  string id = 2;
+
+  string tracker_name = 3 [json_name = "tracker_name"];
+
+  repeated Timeouts timeouts = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}

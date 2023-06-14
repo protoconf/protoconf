@@ -1,0 +1,212 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.datasources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleKmsCryptoKey version is 0
+message GoogleKmsCryptoKey {
+  // The period of time that versions of this key spend in the DESTROY_SCHEDULED state before transitioning to DESTROYED.
+  // If not specified at creation time, the default duration is 24 hours.
+  string destroy_scheduled_duration = 1 [json_name = "destroy_scheduled_duration"];
+
+  string id = 2;
+
+  // Whether this key may contain imported versions only.
+  bool import_only = 3 [json_name = "import_only"];
+
+  // The KeyRing that this key belongs to.
+  // Format: ''projects/{{project}}/locations/{{location}}/keyRings/{{keyRing}}''.
+  string key_ring = 4 [json_name = "key_ring"];
+
+  // Labels with user-defined metadata to apply to this resource.
+  map<string, string> labels = 5;
+
+  // The resource name for the CryptoKey.
+  string name = 6;
+
+  // The immutable purpose of this CryptoKey. See the
+  // [purpose reference](https://cloud.google.com/kms/docs/reference/rest/v1/projects.locations.keyRings.cryptoKeys#CryptoKeyPurpose)
+  // for possible inputs.
+  // Default value is "ENCRYPT_DECRYPT".
+  string purpose = 7;
+
+  // Every time this period passes, generate a new CryptoKeyVersion and set it as the primary.
+  // The first rotation will take place after the specified period. The rotation period has
+  // the format of a decimal number with up to 9 fractional digits, followed by the
+  // letter 's' (seconds). It must be greater than a day (ie, 86400).
+  string rotation_period = 8 [json_name = "rotation_period"];
+
+  // If set to true, the request will create a CryptoKey without any CryptoKeyVersions.
+  // You must use the 'google_kms_key_ring_import_job' resource to import the CryptoKeyVersion.
+  bool skip_initial_version_creation = 9 [json_name = "skip_initial_version_creation"];
+
+  // A template describing settings for new crypto key versions.
+  repeated VersionTemplate version_template = 10 [json_name = "version_template"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message VersionTemplate {
+    // algorithm: string
+    string algorithm = 1;
+
+    // protection_level: string
+    string protection_level = 2 [json_name = "protection_level"];
+  }
+}
+
+// GoogleKmsCryptoKeyIamPolicy version is 0
+message GoogleKmsCryptoKeyIamPolicy {
+  string crypto_key_id = 1 [json_name = "crypto_key_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// GoogleKmsCryptoKeyVersion version is 0
+message GoogleKmsCryptoKeyVersion {
+  string algorithm = 1;
+
+  string crypto_key = 2 [json_name = "crypto_key"];
+
+  string id = 3;
+
+  string name = 4;
+
+  string protection_level = 5 [json_name = "protection_level"];
+
+  repeated PublicKey public_key = 6 [json_name = "public_key"];
+
+  string state = 7;
+
+  int64 version = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message PublicKey {
+    // algorithm: string
+    string algorithm = 1;
+
+    // pem: string
+    string pem = 2;
+  }
+}
+
+// GoogleKmsKeyRing version is 0
+message GoogleKmsKeyRing {
+  string id = 1;
+
+  // The location for the KeyRing.
+  // A full list of valid locations can be found by running 'gcloud kms locations list'.
+  string location = 2;
+
+  // The resource name for the KeyRing.
+  string name = 3;
+
+  string project = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// GoogleKmsKeyRingIamPolicy version is 0
+message GoogleKmsKeyRingIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string key_ring_id = 3 [json_name = "key_ring_id"];
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// GoogleKmsSecret version is 0
+message GoogleKmsSecret {
+  string additional_authenticated_data = 1 [json_name = "additional_authenticated_data"];
+
+  string ciphertext = 2;
+
+  string crypto_key = 3 [json_name = "crypto_key"];
+
+  string id = 4;
+
+  string plaintext = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// GoogleKmsSecretCiphertext version is 0
+message GoogleKmsSecretCiphertext {
+  string ciphertext = 1;
+
+  string crypto_key = 2 [json_name = "crypto_key"];
+
+  string id = 3;
+
+  string plaintext = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}

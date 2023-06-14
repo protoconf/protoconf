@@ -1,0 +1,172 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsAmi version is 0
+message AwsAmi {
+  string architecture = 1;
+
+  string arn = 2;
+
+  repeated BlockDeviceMappings block_device_mappings = 3 [json_name = "block_device_mappings"];
+
+  string boot_mode = 4 [json_name = "boot_mode"];
+
+  string creation_date = 5 [json_name = "creation_date"];
+
+  string deprecation_time = 6 [json_name = "deprecation_time"];
+
+  string description = 7;
+
+  bool ena_support = 8 [json_name = "ena_support"];
+
+  repeated string executable_users = 9 [json_name = "executable_users"];
+
+  string hypervisor = 10;
+
+  string id = 11;
+
+  string image_id = 12 [json_name = "image_id"];
+
+  string image_location = 13 [json_name = "image_location"];
+
+  string image_owner_alias = 14 [json_name = "image_owner_alias"];
+
+  string image_type = 15 [json_name = "image_type"];
+
+  string imds_support = 16 [json_name = "imds_support"];
+
+  bool include_deprecated = 17 [json_name = "include_deprecated"];
+
+  string kernel_id = 18 [json_name = "kernel_id"];
+
+  bool most_recent = 19 [json_name = "most_recent"];
+
+  string name = 20;
+
+  string name_regex = 21 [json_name = "name_regex"];
+
+  string owner_id = 22 [json_name = "owner_id"];
+
+  repeated string owners = 23;
+
+  string platform = 24;
+
+  string platform_details = 25 [json_name = "platform_details"];
+
+  repeated ProductCodes product_codes = 26 [json_name = "product_codes"];
+
+  bool public = 27;
+
+  string ramdisk_id = 28 [json_name = "ramdisk_id"];
+
+  string root_device_name = 29 [json_name = "root_device_name"];
+
+  string root_device_type = 30 [json_name = "root_device_type"];
+
+  string root_snapshot_id = 31 [json_name = "root_snapshot_id"];
+
+  string sriov_net_support = 32 [json_name = "sriov_net_support"];
+
+  string state = 33;
+
+  map<string, string> state_reason = 34 [json_name = "state_reason"];
+
+  map<string, string> tags = 35;
+
+  string tpm_support = 36 [json_name = "tpm_support"];
+
+  string usage_operation = 37 [json_name = "usage_operation"];
+
+  string virtualization_type = 38 [json_name = "virtualization_type"];
+
+  repeated Filter filter = 39;
+
+  repeated Timeouts timeouts = 40;
+
+  map<string, string> for_each = 41 [json_name = "for_each"];
+
+  repeated string depends_on = 42 [json_name = "depends_on"];
+
+  int32 count = 43;
+
+  string provider = 44;
+
+  terraform.v1.Lifecycle lifecycle = 45;
+
+  message BlockDeviceMappings {
+    // device_name: string
+    string device_name = 1 [json_name = "device_name"];
+
+    // ebs: map of string
+    map<string, string> ebs = 2;
+
+    // no_device: string
+    string no_device = 3 [json_name = "no_device"];
+
+    // virtual_name: string
+    string virtual_name = 4 [json_name = "virtual_name"];
+  }
+
+  message ProductCodes {
+    // product_code_id: string
+    string product_code_id = 1 [json_name = "product_code_id"];
+
+    // product_code_type: string
+    string product_code_type = 2 [json_name = "product_code_type"];
+  }
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+
+  message Timeouts {
+    string read = 1;
+  }
+}
+
+// AwsAmiIds version is 0
+message AwsAmiIds {
+  repeated string executable_users = 1 [json_name = "executable_users"];
+
+  string id = 2;
+
+  repeated string ids = 3;
+
+  bool include_deprecated = 4 [json_name = "include_deprecated"];
+
+  string name_regex = 5 [json_name = "name_regex"];
+
+  repeated string owners = 6;
+
+  bool sort_ascending = 7 [json_name = "sort_ascending"];
+
+  repeated Filter filter = 8;
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+
+  message Timeouts {
+    string read = 1;
+  }
+}

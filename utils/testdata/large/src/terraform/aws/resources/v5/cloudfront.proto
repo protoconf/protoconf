@@ -1,0 +1,941 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsCloudfrontCachePolicy version is 0
+message AwsCloudfrontCachePolicy {
+  string comment = 1;
+
+  int64 default_ttl = 2 [json_name = "default_ttl"];
+
+  string etag = 3;
+
+  string id = 4;
+
+  int64 max_ttl = 5 [json_name = "max_ttl"];
+
+  int64 min_ttl = 6 [json_name = "min_ttl"];
+
+  string name = 7;
+
+  ParametersInCacheKeyAndForwardedToOrigin parameters_in_cache_key_and_forwarded_to_origin = 8 [
+    json_name = "parameters_in_cache_key_and_forwarded_to_origin"
+  ];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message ParametersInCacheKeyAndForwardedToOrigin {
+    bool enable_accept_encoding_brotli = 1 [json_name = "enable_accept_encoding_brotli"];
+
+    bool enable_accept_encoding_gzip = 2 [json_name = "enable_accept_encoding_gzip"];
+
+    CookiesConfig cookies_config = 3 [json_name = "cookies_config"];
+
+    HeadersConfig headers_config = 4 [json_name = "headers_config"];
+
+    QueryStringsConfig query_strings_config = 5 [json_name = "query_strings_config"];
+
+    message CookiesConfig {
+      string cookie_behavior = 1 [json_name = "cookie_behavior"];
+
+      Cookies cookies = 2;
+
+      message Cookies {
+        repeated string items = 1;
+      }
+    }
+
+    message HeadersConfig {
+      string header_behavior = 1 [json_name = "header_behavior"];
+
+      Headers headers = 2;
+
+      message Headers {
+        repeated string items = 1;
+      }
+    }
+
+    message QueryStringsConfig {
+      string query_string_behavior = 1 [json_name = "query_string_behavior"];
+
+      QueryStrings query_strings = 2 [json_name = "query_strings"];
+
+      message QueryStrings {
+        repeated string items = 1;
+      }
+    }
+  }
+}
+
+// AwsCloudfrontDistribution version is 1
+message AwsCloudfrontDistribution {
+  repeated string aliases = 1;
+
+  string arn = 2;
+
+  string caller_reference = 3 [json_name = "caller_reference"];
+
+  string comment = 4;
+
+  string default_root_object = 5 [json_name = "default_root_object"];
+
+  string domain_name = 6 [json_name = "domain_name"];
+
+  bool enabled = 7;
+
+  string etag = 8;
+
+  string hosted_zone_id = 9 [json_name = "hosted_zone_id"];
+
+  string http_version = 10 [json_name = "http_version"];
+
+  string id = 11;
+
+  int64 in_progress_validation_batches = 12 [json_name = "in_progress_validation_batches"];
+
+  bool is_ipv6_enabled = 13 [json_name = "is_ipv6_enabled"];
+
+  string last_modified_time = 14 [json_name = "last_modified_time"];
+
+  string price_class = 15 [json_name = "price_class"];
+
+  bool retain_on_delete = 16 [json_name = "retain_on_delete"];
+
+  string status = 17;
+
+  map<string, string> tags = 18;
+
+  map<string, string> tags_all = 19 [json_name = "tags_all"];
+
+  repeated TrustedKeyGroups trusted_key_groups = 20 [json_name = "trusted_key_groups"];
+
+  repeated TrustedSigners trusted_signers = 21 [json_name = "trusted_signers"];
+
+  bool wait_for_deployment = 22 [json_name = "wait_for_deployment"];
+
+  string web_acl_id = 23 [json_name = "web_acl_id"];
+
+  repeated CustomErrorResponse custom_error_response = 24 [json_name = "custom_error_response"];
+
+  DefaultCacheBehavior default_cache_behavior = 25 [json_name = "default_cache_behavior"];
+
+  LoggingConfig logging_config = 26 [json_name = "logging_config"];
+
+  repeated OrderedCacheBehavior ordered_cache_behavior = 27 [json_name = "ordered_cache_behavior"];
+
+  repeated Origin origin = 28;
+
+  repeated OriginGroup origin_group = 29 [json_name = "origin_group"];
+
+  Restrictions restrictions = 30;
+
+  ViewerCertificate viewer_certificate = 31 [json_name = "viewer_certificate"];
+
+  map<string, string> for_each = 32 [json_name = "for_each"];
+
+  repeated string depends_on = 33 [json_name = "depends_on"];
+
+  int32 count = 34;
+
+  string provider = 35;
+
+  terraform.v1.Lifecycle lifecycle = 36;
+
+  message TrustedKeyGroups {
+    // enabled: bool
+    bool enabled = 1;
+
+    // items: list of object
+    repeated Items items = 2;
+
+    message Items {
+      // key_group_id: string
+      string key_group_id = 1 [json_name = "key_group_id"];
+
+      // key_pair_ids: set of string
+      repeated string key_pair_ids = 2 [json_name = "key_pair_ids"];
+    }
+  }
+
+  message TrustedSigners {
+    // enabled: bool
+    bool enabled = 1;
+
+    // items: list of object
+    repeated Items items = 2;
+
+    message Items {
+      // aws_account_number: string
+      string aws_account_number = 1 [json_name = "aws_account_number"];
+
+      // key_pair_ids: set of string
+      repeated string key_pair_ids = 2 [json_name = "key_pair_ids"];
+    }
+  }
+
+  message CustomErrorResponse {
+    int64 error_caching_min_ttl = 1 [json_name = "error_caching_min_ttl"];
+
+    int64 error_code = 2 [json_name = "error_code"];
+
+    int64 response_code = 3 [json_name = "response_code"];
+
+    string response_page_path = 4 [json_name = "response_page_path"];
+  }
+
+  message DefaultCacheBehavior {
+    repeated string allowed_methods = 1 [json_name = "allowed_methods"];
+
+    string cache_policy_id = 2 [json_name = "cache_policy_id"];
+
+    repeated string cached_methods = 3 [json_name = "cached_methods"];
+
+    bool compress = 4;
+
+    int64 default_ttl = 5 [json_name = "default_ttl"];
+
+    string field_level_encryption_id = 6 [json_name = "field_level_encryption_id"];
+
+    int64 max_ttl = 7 [json_name = "max_ttl"];
+
+    int64 min_ttl = 8 [json_name = "min_ttl"];
+
+    string origin_request_policy_id = 9 [json_name = "origin_request_policy_id"];
+
+    string realtime_log_config_arn = 10 [json_name = "realtime_log_config_arn"];
+
+    string response_headers_policy_id = 11 [json_name = "response_headers_policy_id"];
+
+    bool smooth_streaming = 12 [json_name = "smooth_streaming"];
+
+    string target_origin_id = 13 [json_name = "target_origin_id"];
+
+    repeated string trusted_key_groups = 14 [json_name = "trusted_key_groups"];
+
+    repeated string trusted_signers = 15 [json_name = "trusted_signers"];
+
+    string viewer_protocol_policy = 16 [json_name = "viewer_protocol_policy"];
+
+    ForwardedValues forwarded_values = 17 [json_name = "forwarded_values"];
+
+    repeated FunctionAssociation function_association = 18 [json_name = "function_association"];
+
+    repeated LambdaFunctionAssociation lambda_function_association = 19 [json_name = "lambda_function_association"];
+
+    message ForwardedValues {
+      repeated string headers = 1;
+
+      bool query_string = 2 [json_name = "query_string"];
+
+      repeated string query_string_cache_keys = 3 [json_name = "query_string_cache_keys"];
+
+      Cookies cookies = 4;
+
+      message Cookies {
+        string forward = 1;
+
+        repeated string whitelisted_names = 2 [json_name = "whitelisted_names"];
+      }
+    }
+
+    message FunctionAssociation {
+      string event_type = 1 [json_name = "event_type"];
+
+      string function_arn = 2 [json_name = "function_arn"];
+    }
+
+    message LambdaFunctionAssociation {
+      string event_type = 1 [json_name = "event_type"];
+
+      bool include_body = 2 [json_name = "include_body"];
+
+      string lambda_arn = 3 [json_name = "lambda_arn"];
+    }
+  }
+
+  message LoggingConfig {
+    string bucket = 1;
+
+    bool include_cookies = 2 [json_name = "include_cookies"];
+
+    string prefix = 3;
+  }
+
+  message OrderedCacheBehavior {
+    repeated string allowed_methods = 1 [json_name = "allowed_methods"];
+
+    string cache_policy_id = 2 [json_name = "cache_policy_id"];
+
+    repeated string cached_methods = 3 [json_name = "cached_methods"];
+
+    bool compress = 4;
+
+    int64 default_ttl = 5 [json_name = "default_ttl"];
+
+    string field_level_encryption_id = 6 [json_name = "field_level_encryption_id"];
+
+    int64 max_ttl = 7 [json_name = "max_ttl"];
+
+    int64 min_ttl = 8 [json_name = "min_ttl"];
+
+    string origin_request_policy_id = 9 [json_name = "origin_request_policy_id"];
+
+    string path_pattern = 10 [json_name = "path_pattern"];
+
+    string realtime_log_config_arn = 11 [json_name = "realtime_log_config_arn"];
+
+    string response_headers_policy_id = 12 [json_name = "response_headers_policy_id"];
+
+    bool smooth_streaming = 13 [json_name = "smooth_streaming"];
+
+    string target_origin_id = 14 [json_name = "target_origin_id"];
+
+    repeated string trusted_key_groups = 15 [json_name = "trusted_key_groups"];
+
+    repeated string trusted_signers = 16 [json_name = "trusted_signers"];
+
+    string viewer_protocol_policy = 17 [json_name = "viewer_protocol_policy"];
+
+    ForwardedValues forwarded_values = 18 [json_name = "forwarded_values"];
+
+    repeated FunctionAssociation function_association = 19 [json_name = "function_association"];
+
+    repeated LambdaFunctionAssociation lambda_function_association = 20 [json_name = "lambda_function_association"];
+
+    message ForwardedValues {
+      repeated string headers = 1;
+
+      bool query_string = 2 [json_name = "query_string"];
+
+      repeated string query_string_cache_keys = 3 [json_name = "query_string_cache_keys"];
+
+      Cookies cookies = 4;
+
+      message Cookies {
+        string forward = 1;
+
+        repeated string whitelisted_names = 2 [json_name = "whitelisted_names"];
+      }
+    }
+
+    message FunctionAssociation {
+      string event_type = 1 [json_name = "event_type"];
+
+      string function_arn = 2 [json_name = "function_arn"];
+    }
+
+    message LambdaFunctionAssociation {
+      string event_type = 1 [json_name = "event_type"];
+
+      bool include_body = 2 [json_name = "include_body"];
+
+      string lambda_arn = 3 [json_name = "lambda_arn"];
+    }
+  }
+
+  message Origin {
+    int64 connection_attempts = 1 [json_name = "connection_attempts"];
+
+    int64 connection_timeout = 2 [json_name = "connection_timeout"];
+
+    string domain_name = 3 [json_name = "domain_name"];
+
+    string origin_access_control_id = 4 [json_name = "origin_access_control_id"];
+
+    string origin_id = 5 [json_name = "origin_id"];
+
+    string origin_path = 6 [json_name = "origin_path"];
+
+    repeated CustomHeader custom_header = 7 [json_name = "custom_header"];
+
+    CustomOriginConfig custom_origin_config = 8 [json_name = "custom_origin_config"];
+
+    OriginShield origin_shield = 9 [json_name = "origin_shield"];
+
+    S3OriginConfig s3_origin_config = 10 [json_name = "s3_origin_config"];
+
+    message CustomHeader {
+      string name = 1;
+
+      string value = 2;
+    }
+
+    message CustomOriginConfig {
+      int64 http_port = 1 [json_name = "http_port"];
+
+      int64 https_port = 2 [json_name = "https_port"];
+
+      int64 origin_keepalive_timeout = 3 [json_name = "origin_keepalive_timeout"];
+
+      string origin_protocol_policy = 4 [json_name = "origin_protocol_policy"];
+
+      int64 origin_read_timeout = 5 [json_name = "origin_read_timeout"];
+
+      repeated string origin_ssl_protocols = 6 [json_name = "origin_ssl_protocols"];
+    }
+
+    message OriginShield {
+      bool enabled = 1;
+
+      string origin_shield_region = 2 [json_name = "origin_shield_region"];
+    }
+
+    message S3OriginConfig {
+      string origin_access_identity = 1 [json_name = "origin_access_identity"];
+    }
+  }
+
+  message OriginGroup {
+    string origin_id = 1 [json_name = "origin_id"];
+
+    FailoverCriteria failover_criteria = 2 [json_name = "failover_criteria"];
+
+    repeated Member member = 3;
+
+    message FailoverCriteria {
+      repeated int64 status_codes = 1 [json_name = "status_codes"];
+    }
+
+    message Member {
+      string origin_id = 1 [json_name = "origin_id"];
+    }
+  }
+
+  message Restrictions {
+    GeoRestriction geo_restriction = 1 [json_name = "geo_restriction"];
+
+    message GeoRestriction {
+      repeated string locations = 1;
+
+      string restriction_type = 2 [json_name = "restriction_type"];
+    }
+  }
+
+  message ViewerCertificate {
+    string acm_certificate_arn = 1 [json_name = "acm_certificate_arn"];
+
+    bool cloudfront_default_certificate = 2 [json_name = "cloudfront_default_certificate"];
+
+    string iam_certificate_id = 3 [json_name = "iam_certificate_id"];
+
+    string minimum_protocol_version = 4 [json_name = "minimum_protocol_version"];
+
+    string ssl_support_method = 5 [json_name = "ssl_support_method"];
+  }
+}
+
+// AwsCloudfrontFieldLevelEncryptionConfig version is 0
+message AwsCloudfrontFieldLevelEncryptionConfig {
+  string caller_reference = 1 [json_name = "caller_reference"];
+
+  string comment = 2;
+
+  string etag = 3;
+
+  string id = 4;
+
+  ContentTypeProfileConfig content_type_profile_config = 5 [json_name = "content_type_profile_config"];
+
+  QueryArgProfileConfig query_arg_profile_config = 6 [json_name = "query_arg_profile_config"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message ContentTypeProfileConfig {
+    bool forward_when_content_type_is_unknown = 1 [json_name = "forward_when_content_type_is_unknown"];
+
+    ContentTypeProfiles content_type_profiles = 2 [json_name = "content_type_profiles"];
+
+    message ContentTypeProfiles {
+      repeated Items items = 1;
+
+      message Items {
+        string content_type = 1 [json_name = "content_type"];
+
+        string format = 2;
+
+        string profile_id = 3 [json_name = "profile_id"];
+      }
+    }
+  }
+
+  message QueryArgProfileConfig {
+    bool forward_when_query_arg_profile_is_unknown = 1 [
+      json_name = "forward_when_query_arg_profile_is_unknown"
+    ];
+
+    QueryArgProfiles query_arg_profiles = 2 [json_name = "query_arg_profiles"];
+
+    message QueryArgProfiles {
+      repeated Items items = 1;
+
+      message Items {
+        string profile_id = 1 [json_name = "profile_id"];
+
+        string query_arg = 2 [json_name = "query_arg"];
+      }
+    }
+  }
+}
+
+// AwsCloudfrontFieldLevelEncryptionProfile version is 0
+message AwsCloudfrontFieldLevelEncryptionProfile {
+  string caller_reference = 1 [json_name = "caller_reference"];
+
+  string comment = 2;
+
+  string etag = 3;
+
+  string id = 4;
+
+  string name = 5;
+
+  EncryptionEntities encryption_entities = 6 [json_name = "encryption_entities"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message EncryptionEntities {
+    repeated Items items = 1;
+
+    message Items {
+      string provider_id = 1 [json_name = "provider_id"];
+
+      string public_key_id = 2 [json_name = "public_key_id"];
+
+      FieldPatterns field_patterns = 3 [json_name = "field_patterns"];
+
+      message FieldPatterns {
+        repeated string items = 1;
+      }
+    }
+  }
+}
+
+// AwsCloudfrontFunction version is 0
+message AwsCloudfrontFunction {
+  string arn = 1;
+
+  string code = 2;
+
+  string comment = 3;
+
+  string etag = 4;
+
+  string id = 5;
+
+  string live_stage_etag = 6 [json_name = "live_stage_etag"];
+
+  string name = 7;
+
+  bool publish = 8;
+
+  string runtime = 9;
+
+  string status = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+}
+
+// AwsCloudfrontKeyGroup version is 0
+message AwsCloudfrontKeyGroup {
+  string comment = 1;
+
+  string etag = 2;
+
+  string id = 3;
+
+  repeated string items = 4;
+
+  string name = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsCloudfrontMonitoringSubscription version is 0
+message AwsCloudfrontMonitoringSubscription {
+  string distribution_id = 1 [json_name = "distribution_id"];
+
+  string id = 2;
+
+  MonitoringSubscription monitoring_subscription = 3 [json_name = "monitoring_subscription"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+
+  message MonitoringSubscription {
+    RealtimeMetricsSubscriptionConfig realtime_metrics_subscription_config = 1 [json_name = "realtime_metrics_subscription_config"];
+
+    message RealtimeMetricsSubscriptionConfig {
+      string realtime_metrics_subscription_status = 1 [json_name = "realtime_metrics_subscription_status"];
+    }
+  }
+}
+
+// AwsCloudfrontOriginAccessControl version is 0
+message AwsCloudfrontOriginAccessControl {
+  string description = 1;
+
+  string etag = 2;
+
+  string id = 3;
+
+  string name = 4;
+
+  string origin_access_control_origin_type = 5 [json_name = "origin_access_control_origin_type"];
+
+  string signing_behavior = 6 [json_name = "signing_behavior"];
+
+  string signing_protocol = 7 [json_name = "signing_protocol"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsCloudfrontOriginAccessIdentity version is 0
+message AwsCloudfrontOriginAccessIdentity {
+  string caller_reference = 1 [json_name = "caller_reference"];
+
+  string cloudfront_access_identity_path = 2 [json_name = "cloudfront_access_identity_path"];
+
+  string comment = 3;
+
+  string etag = 4;
+
+  string iam_arn = 5 [json_name = "iam_arn"];
+
+  string id = 6;
+
+  string s3_canonical_user_id = 7 [json_name = "s3_canonical_user_id"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsCloudfrontOriginRequestPolicy version is 0
+message AwsCloudfrontOriginRequestPolicy {
+  string comment = 1;
+
+  string etag = 2;
+
+  string id = 3;
+
+  string name = 4;
+
+  CookiesConfig cookies_config = 5 [json_name = "cookies_config"];
+
+  HeadersConfig headers_config = 6 [json_name = "headers_config"];
+
+  QueryStringsConfig query_strings_config = 7 [json_name = "query_strings_config"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message CookiesConfig {
+    string cookie_behavior = 1 [json_name = "cookie_behavior"];
+
+    Cookies cookies = 2;
+
+    message Cookies {
+      repeated string items = 1;
+    }
+  }
+
+  message HeadersConfig {
+    string header_behavior = 1 [json_name = "header_behavior"];
+
+    Headers headers = 2;
+
+    message Headers {
+      repeated string items = 1;
+    }
+  }
+
+  message QueryStringsConfig {
+    string query_string_behavior = 1 [json_name = "query_string_behavior"];
+
+    QueryStrings query_strings = 2 [json_name = "query_strings"];
+
+    message QueryStrings {
+      repeated string items = 1;
+    }
+  }
+}
+
+// AwsCloudfrontPublicKey version is 0
+message AwsCloudfrontPublicKey {
+  string caller_reference = 1 [json_name = "caller_reference"];
+
+  string comment = 2;
+
+  string encoded_key = 3 [json_name = "encoded_key"];
+
+  string etag = 4;
+
+  string id = 5;
+
+  string name = 6;
+
+  string name_prefix = 7 [json_name = "name_prefix"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsCloudfrontRealtimeLogConfig version is 0
+message AwsCloudfrontRealtimeLogConfig {
+  string arn = 1;
+
+  repeated string fields = 2;
+
+  string id = 3;
+
+  string name = 4;
+
+  int64 sampling_rate = 5 [json_name = "sampling_rate"];
+
+  Endpoint endpoint = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Endpoint {
+    string stream_type = 1 [json_name = "stream_type"];
+
+    KinesisStreamConfig kinesis_stream_config = 2 [json_name = "kinesis_stream_config"];
+
+    message KinesisStreamConfig {
+      string role_arn = 1 [json_name = "role_arn"];
+
+      string stream_arn = 2 [json_name = "stream_arn"];
+    }
+  }
+}
+
+// AwsCloudfrontResponseHeadersPolicy version is 0
+message AwsCloudfrontResponseHeadersPolicy {
+  string comment = 1;
+
+  string etag = 2;
+
+  string id = 3;
+
+  string name = 4;
+
+  CorsConfig cors_config = 5 [json_name = "cors_config"];
+
+  CustomHeadersConfig custom_headers_config = 6 [json_name = "custom_headers_config"];
+
+  RemoveHeadersConfig remove_headers_config = 7 [json_name = "remove_headers_config"];
+
+  SecurityHeadersConfig security_headers_config = 8 [json_name = "security_headers_config"];
+
+  ServerTimingHeadersConfig server_timing_headers_config = 9 [json_name = "server_timing_headers_config"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message CorsConfig {
+    bool access_control_allow_credentials = 1 [json_name = "access_control_allow_credentials"];
+
+    int64 access_control_max_age_sec = 2 [json_name = "access_control_max_age_sec"];
+
+    bool origin_override = 3 [json_name = "origin_override"];
+
+    AccessControlAllowHeaders access_control_allow_headers = 4 [json_name = "access_control_allow_headers"];
+
+    AccessControlAllowMethods access_control_allow_methods = 5 [json_name = "access_control_allow_methods"];
+
+    AccessControlAllowOrigins access_control_allow_origins = 6 [json_name = "access_control_allow_origins"];
+
+    AccessControlExposeHeaders access_control_expose_headers = 7 [json_name = "access_control_expose_headers"];
+
+    message AccessControlAllowHeaders {
+      repeated string items = 1;
+    }
+
+    message AccessControlAllowMethods {
+      repeated string items = 1;
+    }
+
+    message AccessControlAllowOrigins {
+      repeated string items = 1;
+    }
+
+    message AccessControlExposeHeaders {
+      repeated string items = 1;
+    }
+  }
+
+  message CustomHeadersConfig {
+    repeated Items items = 1;
+
+    message Items {
+      string header = 1;
+
+      bool override = 2;
+
+      string value = 3;
+    }
+  }
+
+  message RemoveHeadersConfig {
+    repeated Items items = 1;
+
+    message Items {
+      string header = 1;
+    }
+  }
+
+  message SecurityHeadersConfig {
+    ContentSecurityPolicy content_security_policy = 1 [json_name = "content_security_policy"];
+
+    ContentTypeOptions content_type_options = 2 [json_name = "content_type_options"];
+
+    FrameOptions frame_options = 3 [json_name = "frame_options"];
+
+    ReferrerPolicy referrer_policy = 4 [json_name = "referrer_policy"];
+
+    StrictTransportSecurity strict_transport_security = 5 [json_name = "strict_transport_security"];
+
+    XssProtection xss_protection = 6 [json_name = "xss_protection"];
+
+    message ContentSecurityPolicy {
+      string content_security_policy = 1 [json_name = "content_security_policy"];
+
+      bool override = 2;
+    }
+
+    message ContentTypeOptions {
+      bool override = 1;
+    }
+
+    message FrameOptions {
+      string frame_option = 1 [json_name = "frame_option"];
+
+      bool override = 2;
+    }
+
+    message ReferrerPolicy {
+      bool override = 1;
+
+      string referrer_policy = 2 [json_name = "referrer_policy"];
+    }
+
+    message StrictTransportSecurity {
+      int64 access_control_max_age_sec = 1 [json_name = "access_control_max_age_sec"];
+
+      bool include_subdomains = 2 [json_name = "include_subdomains"];
+
+      bool override = 3;
+
+      bool preload = 4;
+    }
+
+    message XssProtection {
+      bool mode_block = 1 [json_name = "mode_block"];
+
+      bool override = 2;
+
+      bool protection = 3;
+
+      string report_uri = 4 [json_name = "report_uri"];
+    }
+  }
+
+  message ServerTimingHeadersConfig {
+    bool enabled = 1;
+
+    int64 sampling_rate = 2 [json_name = "sampling_rate"];
+  }
+}

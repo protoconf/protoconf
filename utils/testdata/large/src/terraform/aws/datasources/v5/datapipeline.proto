@@ -1,0 +1,96 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsDatapipelinePipeline version is 0
+message AwsDatapipelinePipeline {
+  string description = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  string pipeline_id = 4 [json_name = "pipeline_id"];
+
+  map<string, string> tags = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsDatapipelinePipelineDefinition version is 0
+message AwsDatapipelinePipelineDefinition {
+  string id = 1;
+
+  repeated ParameterObject parameter_object = 2 [json_name = "parameter_object"];
+
+  string pipeline_id = 3 [json_name = "pipeline_id"];
+
+  repeated PipelineObject pipeline_object = 4 [json_name = "pipeline_object"];
+
+  repeated ParameterValue parameter_value = 5 [json_name = "parameter_value"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message ParameterObject {
+    // attribute: set of object
+    repeated Attribute attribute = 1;
+
+    // id: string
+    string id = 2;
+
+    message Attribute {
+      // key: string
+      string key = 1;
+
+      // string_value: string
+      string string_value = 2 [json_name = "string_value"];
+    }
+  }
+
+  message PipelineObject {
+    // field: set of object
+    repeated Field field = 1;
+
+    // id: string
+    string id = 2;
+
+    // name: string
+    string name = 3;
+
+    message Field {
+      // key: string
+      string key = 1;
+
+      // ref_value: string
+      string ref_value = 2 [json_name = "ref_value"];
+
+      // string_value: string
+      string string_value = 3 [json_name = "string_value"];
+    }
+  }
+
+  message ParameterValue {
+    string id = 1;
+
+    string string_value = 2 [json_name = "string_value"];
+  }
+}

@@ -1,0 +1,117 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsOamLink version is 0
+message AwsOamLink {
+  string arn = 1;
+
+  string id = 2;
+
+  string label = 3;
+
+  string label_template = 4 [json_name = "label_template"];
+
+  string link_id = 5 [json_name = "link_id"];
+
+  repeated string resource_types = 6 [json_name = "resource_types"];
+
+  string sink_arn = 7 [json_name = "sink_arn"];
+
+  string sink_identifier = 8 [json_name = "sink_identifier"];
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsOamSink version is 0
+message AwsOamSink {
+  string arn = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  string sink_id = 4 [json_name = "sink_id"];
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  repeated Timeouts timeouts = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsOamSinkPolicy version is 0
+message AwsOamSinkPolicy {
+  string arn = 1;
+
+  string id = 2;
+
+  string policy = 3;
+
+  string sink_id = 4 [json_name = "sink_id"];
+
+  string sink_identifier = 5 [json_name = "sink_identifier"];
+
+  repeated Timeouts timeouts = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

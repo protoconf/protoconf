@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsSagemakerPrebuiltEcrImage version is 0
+message AwsSagemakerPrebuiltEcrImage {
+  string dns_suffix = 1 [json_name = "dns_suffix"];
+
+  string id = 2;
+
+  string image_tag = 3 [json_name = "image_tag"];
+
+  string region = 4;
+
+  string registry_id = 5 [json_name = "registry_id"];
+
+  string registry_path = 6 [json_name = "registry_path"];
+
+  string repository_name = 7 [json_name = "repository_name"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}

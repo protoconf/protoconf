@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsServerlessapplicationrepositoryCloudformationStack version is 0
+message AwsServerlessapplicationrepositoryCloudformationStack {
+  string application_id = 1 [json_name = "application_id"];
+
+  repeated string capabilities = 2;
+
+  string id = 3;
+
+  string name = 4;
+
+  map<string, string> outputs = 5;
+
+  map<string, string> parameters = 6;
+
+  string semantic_version = 7 [json_name = "semantic_version"];
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  repeated Timeouts timeouts = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

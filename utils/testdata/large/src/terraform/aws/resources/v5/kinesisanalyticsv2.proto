@@ -1,0 +1,386 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsKinesisanalyticsv2Application version is 0
+message AwsKinesisanalyticsv2Application {
+  string arn = 1;
+
+  string create_timestamp = 2 [json_name = "create_timestamp"];
+
+  string description = 3;
+
+  bool force_stop = 4 [json_name = "force_stop"];
+
+  string id = 5;
+
+  string last_update_timestamp = 6 [json_name = "last_update_timestamp"];
+
+  string name = 7;
+
+  string runtime_environment = 8 [json_name = "runtime_environment"];
+
+  string service_execution_role = 9 [json_name = "service_execution_role"];
+
+  bool start_application = 10 [json_name = "start_application"];
+
+  string status = 11;
+
+  map<string, string> tags = 12;
+
+  map<string, string> tags_all = 13 [json_name = "tags_all"];
+
+  int64 version_id = 14 [json_name = "version_id"];
+
+  ApplicationConfiguration application_configuration = 15 [json_name = "application_configuration"];
+
+  CloudwatchLoggingOptions cloudwatch_logging_options = 16 [json_name = "cloudwatch_logging_options"];
+
+  repeated Timeouts timeouts = 17;
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+
+  message ApplicationConfiguration {
+    ApplicationCodeConfiguration application_code_configuration = 1 [json_name = "application_code_configuration"];
+
+    ApplicationSnapshotConfiguration application_snapshot_configuration = 2 [json_name = "application_snapshot_configuration"];
+
+    EnvironmentProperties environment_properties = 3 [json_name = "environment_properties"];
+
+    FlinkApplicationConfiguration flink_application_configuration = 4 [json_name = "flink_application_configuration"];
+
+    RunConfiguration run_configuration = 5 [json_name = "run_configuration"];
+
+    SqlApplicationConfiguration sql_application_configuration = 6 [json_name = "sql_application_configuration"];
+
+    VpcConfiguration vpc_configuration = 7 [json_name = "vpc_configuration"];
+
+    message ApplicationCodeConfiguration {
+      string code_content_type = 1 [json_name = "code_content_type"];
+
+      CodeContent code_content = 2 [json_name = "code_content"];
+
+      message CodeContent {
+        string text_content = 1 [json_name = "text_content"];
+
+        S3ContentLocation s3_content_location = 2 [json_name = "s3_content_location"];
+
+        message S3ContentLocation {
+          string bucket_arn = 1 [json_name = "bucket_arn"];
+
+          string file_key = 2 [json_name = "file_key"];
+
+          string object_version = 3 [json_name = "object_version"];
+        }
+      }
+    }
+
+    message ApplicationSnapshotConfiguration {
+      bool snapshots_enabled = 1 [json_name = "snapshots_enabled"];
+    }
+
+    message EnvironmentProperties {
+      repeated PropertyGroup property_group = 1 [json_name = "property_group"];
+
+      message PropertyGroup {
+        string property_group_id = 1 [json_name = "property_group_id"];
+
+        map<string, string> property_map = 2 [json_name = "property_map"];
+      }
+    }
+
+    message FlinkApplicationConfiguration {
+      CheckpointConfiguration checkpoint_configuration = 1 [json_name = "checkpoint_configuration"];
+
+      MonitoringConfiguration monitoring_configuration = 2 [json_name = "monitoring_configuration"];
+
+      ParallelismConfiguration parallelism_configuration = 3 [json_name = "parallelism_configuration"];
+
+      message CheckpointConfiguration {
+        int64 checkpoint_interval = 1 [json_name = "checkpoint_interval"];
+
+        bool checkpointing_enabled = 2 [json_name = "checkpointing_enabled"];
+
+        string configuration_type = 3 [json_name = "configuration_type"];
+
+        int64 min_pause_between_checkpoints = 4 [json_name = "min_pause_between_checkpoints"];
+      }
+
+      message MonitoringConfiguration {
+        string configuration_type = 1 [json_name = "configuration_type"];
+
+        string log_level = 2 [json_name = "log_level"];
+
+        string metrics_level = 3 [json_name = "metrics_level"];
+      }
+
+      message ParallelismConfiguration {
+        bool auto_scaling_enabled = 1 [json_name = "auto_scaling_enabled"];
+
+        string configuration_type = 2 [json_name = "configuration_type"];
+
+        int64 parallelism = 3;
+
+        int64 parallelism_per_kpu = 4 [json_name = "parallelism_per_kpu"];
+      }
+    }
+
+    message RunConfiguration {
+      ApplicationRestoreConfiguration application_restore_configuration = 1 [json_name = "application_restore_configuration"];
+
+      FlinkRunConfiguration flink_run_configuration = 2 [json_name = "flink_run_configuration"];
+
+      message ApplicationRestoreConfiguration {
+        string application_restore_type = 1 [json_name = "application_restore_type"];
+
+        string snapshot_name = 2 [json_name = "snapshot_name"];
+      }
+
+      message FlinkRunConfiguration {
+        bool allow_non_restored_state = 1 [json_name = "allow_non_restored_state"];
+      }
+    }
+
+    message SqlApplicationConfiguration {
+      Input input = 1;
+
+      repeated Output output = 2;
+
+      ReferenceDataSource reference_data_source = 3 [json_name = "reference_data_source"];
+
+      message Input {
+        repeated string in_app_stream_names = 1 [json_name = "in_app_stream_names"];
+
+        string input_id = 2 [json_name = "input_id"];
+
+        string name_prefix = 3 [json_name = "name_prefix"];
+
+        InputParallelism input_parallelism = 4 [json_name = "input_parallelism"];
+
+        InputProcessingConfiguration input_processing_configuration = 5 [json_name = "input_processing_configuration"];
+
+        InputSchema input_schema = 6 [json_name = "input_schema"];
+
+        repeated InputStartingPositionConfiguration input_starting_position_configuration = 7 [
+          json_name = "input_starting_position_configuration"
+        ];
+
+        KinesisFirehoseInput kinesis_firehose_input = 8 [json_name = "kinesis_firehose_input"];
+
+        KinesisStreamsInput kinesis_streams_input = 9 [json_name = "kinesis_streams_input"];
+
+        message InputParallelism {
+          int64 count = 1;
+        }
+
+        message InputProcessingConfiguration {
+          InputLambdaProcessor input_lambda_processor = 1 [json_name = "input_lambda_processor"];
+
+          message InputLambdaProcessor {
+            string resource_arn = 1 [json_name = "resource_arn"];
+          }
+        }
+
+        message InputSchema {
+          string record_encoding = 1 [json_name = "record_encoding"];
+
+          repeated RecordColumn record_column = 2 [json_name = "record_column"];
+
+          RecordFormat record_format = 3 [json_name = "record_format"];
+
+          message RecordColumn {
+            string mapping = 1;
+
+            string name = 2;
+
+            string sql_type = 3 [json_name = "sql_type"];
+          }
+
+          message RecordFormat {
+            string record_format_type = 1 [json_name = "record_format_type"];
+
+            MappingParameters mapping_parameters = 2 [json_name = "mapping_parameters"];
+
+            message MappingParameters {
+              CsvMappingParameters csv_mapping_parameters = 1 [json_name = "csv_mapping_parameters"];
+
+              JsonMappingParameters json_mapping_parameters = 2 [json_name = "json_mapping_parameters"];
+
+              message CsvMappingParameters {
+                string record_column_delimiter = 1 [json_name = "record_column_delimiter"];
+
+                string record_row_delimiter = 2 [json_name = "record_row_delimiter"];
+              }
+
+              message JsonMappingParameters {
+                string record_row_path = 1 [json_name = "record_row_path"];
+              }
+            }
+          }
+        }
+
+        message InputStartingPositionConfiguration {
+          string input_starting_position = 1 [json_name = "input_starting_position"];
+        }
+
+        message KinesisFirehoseInput {
+          string resource_arn = 1 [json_name = "resource_arn"];
+        }
+
+        message KinesisStreamsInput {
+          string resource_arn = 1 [json_name = "resource_arn"];
+        }
+      }
+
+      message Output {
+        string name = 1;
+
+        string output_id = 2 [json_name = "output_id"];
+
+        DestinationSchema destination_schema = 3 [json_name = "destination_schema"];
+
+        KinesisFirehoseOutput kinesis_firehose_output = 4 [json_name = "kinesis_firehose_output"];
+
+        KinesisStreamsOutput kinesis_streams_output = 5 [json_name = "kinesis_streams_output"];
+
+        LambdaOutput lambda_output = 6 [json_name = "lambda_output"];
+
+        message DestinationSchema {
+          string record_format_type = 1 [json_name = "record_format_type"];
+        }
+
+        message KinesisFirehoseOutput {
+          string resource_arn = 1 [json_name = "resource_arn"];
+        }
+
+        message KinesisStreamsOutput {
+          string resource_arn = 1 [json_name = "resource_arn"];
+        }
+
+        message LambdaOutput {
+          string resource_arn = 1 [json_name = "resource_arn"];
+        }
+      }
+
+      message ReferenceDataSource {
+        string reference_id = 1 [json_name = "reference_id"];
+
+        string table_name = 2 [json_name = "table_name"];
+
+        ReferenceSchema reference_schema = 3 [json_name = "reference_schema"];
+
+        S3ReferenceDataSource s3_reference_data_source = 4 [json_name = "s3_reference_data_source"];
+
+        message ReferenceSchema {
+          string record_encoding = 1 [json_name = "record_encoding"];
+
+          repeated RecordColumn record_column = 2 [json_name = "record_column"];
+
+          RecordFormat record_format = 3 [json_name = "record_format"];
+
+          message RecordColumn {
+            string mapping = 1;
+
+            string name = 2;
+
+            string sql_type = 3 [json_name = "sql_type"];
+          }
+
+          message RecordFormat {
+            string record_format_type = 1 [json_name = "record_format_type"];
+
+            MappingParameters mapping_parameters = 2 [json_name = "mapping_parameters"];
+
+            message MappingParameters {
+              CsvMappingParameters csv_mapping_parameters = 1 [json_name = "csv_mapping_parameters"];
+
+              JsonMappingParameters json_mapping_parameters = 2 [json_name = "json_mapping_parameters"];
+
+              message CsvMappingParameters {
+                string record_column_delimiter = 1 [json_name = "record_column_delimiter"];
+
+                string record_row_delimiter = 2 [json_name = "record_row_delimiter"];
+              }
+
+              message JsonMappingParameters {
+                string record_row_path = 1 [json_name = "record_row_path"];
+              }
+            }
+          }
+        }
+
+        message S3ReferenceDataSource {
+          string bucket_arn = 1 [json_name = "bucket_arn"];
+
+          string file_key = 2 [json_name = "file_key"];
+        }
+      }
+    }
+
+    message VpcConfiguration {
+      repeated string security_group_ids = 1 [json_name = "security_group_ids"];
+
+      repeated string subnet_ids = 2 [json_name = "subnet_ids"];
+
+      string vpc_configuration_id = 3 [json_name = "vpc_configuration_id"];
+
+      string vpc_id = 4 [json_name = "vpc_id"];
+    }
+  }
+
+  message CloudwatchLoggingOptions {
+    string cloudwatch_logging_option_id = 1 [json_name = "cloudwatch_logging_option_id"];
+
+    string log_stream_arn = 2 [json_name = "log_stream_arn"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsKinesisanalyticsv2ApplicationSnapshot version is 0
+message AwsKinesisanalyticsv2ApplicationSnapshot {
+  string application_name = 1 [json_name = "application_name"];
+
+  int64 application_version_id = 2 [json_name = "application_version_id"];
+
+  string id = 3;
+
+  string snapshot_creation_timestamp = 4 [json_name = "snapshot_creation_timestamp"];
+
+  string snapshot_name = 5 [json_name = "snapshot_name"];
+
+  repeated Timeouts timeouts = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}

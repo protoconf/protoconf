@@ -1,0 +1,649 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsKendraDataSource version is 0
+message AwsKendraDataSource {
+  string arn = 1;
+
+  string created_at = 2 [json_name = "created_at"];
+
+  string data_source_id = 3 [json_name = "data_source_id"];
+
+  string description = 4;
+
+  string error_message = 5 [json_name = "error_message"];
+
+  string id = 6;
+
+  string index_id = 7 [json_name = "index_id"];
+
+  string language_code = 8 [json_name = "language_code"];
+
+  string name = 9;
+
+  string role_arn = 10 [json_name = "role_arn"];
+
+  string schedule = 11;
+
+  string status = 12;
+
+  map<string, string> tags = 13;
+
+  map<string, string> tags_all = 14 [json_name = "tags_all"];
+
+  string type = 15;
+
+  string updated_at = 16 [json_name = "updated_at"];
+
+  Configuration configuration = 17;
+
+  CustomDocumentEnrichmentConfiguration custom_document_enrichment_configuration = 18 [
+    json_name = "custom_document_enrichment_configuration"
+  ];
+
+  repeated Timeouts timeouts = 19;
+
+  map<string, string> for_each = 20 [json_name = "for_each"];
+
+  repeated string depends_on = 21 [json_name = "depends_on"];
+
+  int32 count = 22;
+
+  string provider = 23;
+
+  terraform.v1.Lifecycle lifecycle = 24;
+
+  message Configuration {
+    S3Configuration s3_configuration = 1 [json_name = "s3_configuration"];
+
+    WebCrawlerConfiguration web_crawler_configuration = 2 [json_name = "web_crawler_configuration"];
+
+    message S3Configuration {
+      string bucket_name = 1 [json_name = "bucket_name"];
+
+      repeated string exclusion_patterns = 2 [json_name = "exclusion_patterns"];
+
+      repeated string inclusion_patterns = 3 [json_name = "inclusion_patterns"];
+
+      repeated string inclusion_prefixes = 4 [json_name = "inclusion_prefixes"];
+
+      AccessControlListConfiguration access_control_list_configuration = 5 [json_name = "access_control_list_configuration"];
+
+      DocumentsMetadataConfiguration documents_metadata_configuration = 6 [json_name = "documents_metadata_configuration"];
+
+      message AccessControlListConfiguration {
+        string key_path = 1 [json_name = "key_path"];
+      }
+
+      message DocumentsMetadataConfiguration {
+        string s3_prefix = 1 [json_name = "s3_prefix"];
+      }
+    }
+
+    message WebCrawlerConfiguration {
+      int64 crawl_depth = 1 [json_name = "crawl_depth"];
+
+      int64 max_content_size_per_page_in_mega_bytes = 2 [
+        json_name = "max_content_size_per_page_in_mega_bytes"
+      ];
+
+      int64 max_links_per_page = 3 [json_name = "max_links_per_page"];
+
+      int64 max_urls_per_minute_crawl_rate = 4 [json_name = "max_urls_per_minute_crawl_rate"];
+
+      repeated string url_exclusion_patterns = 5 [json_name = "url_exclusion_patterns"];
+
+      repeated string url_inclusion_patterns = 6 [json_name = "url_inclusion_patterns"];
+
+      AuthenticationConfiguration authentication_configuration = 7 [json_name = "authentication_configuration"];
+
+      ProxyConfiguration proxy_configuration = 8 [json_name = "proxy_configuration"];
+
+      Urls urls = 9;
+
+      message AuthenticationConfiguration {
+        repeated BasicAuthentication basic_authentication = 1 [json_name = "basic_authentication"];
+
+        message BasicAuthentication {
+          string credentials = 1;
+
+          string host = 2;
+
+          int64 port = 3;
+        }
+      }
+
+      message ProxyConfiguration {
+        string credentials = 1;
+
+        string host = 2;
+
+        int64 port = 3;
+      }
+
+      message Urls {
+        SeedUrlConfiguration seed_url_configuration = 1 [json_name = "seed_url_configuration"];
+
+        SiteMapsConfiguration site_maps_configuration = 2 [json_name = "site_maps_configuration"];
+
+        message SeedUrlConfiguration {
+          repeated string seed_urls = 1 [json_name = "seed_urls"];
+
+          string web_crawler_mode = 2 [json_name = "web_crawler_mode"];
+        }
+
+        message SiteMapsConfiguration {
+          repeated string site_maps = 1 [json_name = "site_maps"];
+        }
+      }
+    }
+  }
+
+  message CustomDocumentEnrichmentConfiguration {
+    string role_arn = 1 [json_name = "role_arn"];
+
+    repeated InlineConfigurations inline_configurations = 2 [json_name = "inline_configurations"];
+
+    PostExtractionHookConfiguration post_extraction_hook_configuration = 3 [json_name = "post_extraction_hook_configuration"];
+
+    PreExtractionHookConfiguration pre_extraction_hook_configuration = 4 [json_name = "pre_extraction_hook_configuration"];
+
+    message InlineConfigurations {
+      bool document_content_deletion = 1 [json_name = "document_content_deletion"];
+
+      Condition condition = 2;
+
+      Target target = 3;
+
+      message Condition {
+        string condition_document_attribute_key = 1 [json_name = "condition_document_attribute_key"];
+
+        string operator = 2;
+
+        ConditionOnValue condition_on_value = 3 [json_name = "condition_on_value"];
+
+        message ConditionOnValue {
+          string date_value = 1 [json_name = "date_value"];
+
+          int64 long_value = 2 [json_name = "long_value"];
+
+          repeated string string_list_value = 3 [json_name = "string_list_value"];
+
+          string string_value = 4 [json_name = "string_value"];
+        }
+      }
+
+      message Target {
+        string target_document_attribute_key = 1 [json_name = "target_document_attribute_key"];
+
+        bool target_document_attribute_value_deletion = 2 [
+          json_name = "target_document_attribute_value_deletion"
+        ];
+
+        TargetDocumentAttributeValue target_document_attribute_value = 3 [json_name = "target_document_attribute_value"];
+
+        message TargetDocumentAttributeValue {
+          string date_value = 1 [json_name = "date_value"];
+
+          int64 long_value = 2 [json_name = "long_value"];
+
+          repeated string string_list_value = 3 [json_name = "string_list_value"];
+
+          string string_value = 4 [json_name = "string_value"];
+        }
+      }
+    }
+
+    message PostExtractionHookConfiguration {
+      string lambda_arn = 1 [json_name = "lambda_arn"];
+
+      string s3_bucket = 2 [json_name = "s3_bucket"];
+
+      InvocationCondition invocation_condition = 3 [json_name = "invocation_condition"];
+
+      message InvocationCondition {
+        string condition_document_attribute_key = 1 [json_name = "condition_document_attribute_key"];
+
+        string operator = 2;
+
+        ConditionOnValue condition_on_value = 3 [json_name = "condition_on_value"];
+
+        message ConditionOnValue {
+          string date_value = 1 [json_name = "date_value"];
+
+          int64 long_value = 2 [json_name = "long_value"];
+
+          repeated string string_list_value = 3 [json_name = "string_list_value"];
+
+          string string_value = 4 [json_name = "string_value"];
+        }
+      }
+    }
+
+    message PreExtractionHookConfiguration {
+      string lambda_arn = 1 [json_name = "lambda_arn"];
+
+      string s3_bucket = 2 [json_name = "s3_bucket"];
+
+      InvocationCondition invocation_condition = 3 [json_name = "invocation_condition"];
+
+      message InvocationCondition {
+        string condition_document_attribute_key = 1 [json_name = "condition_document_attribute_key"];
+
+        string operator = 2;
+
+        ConditionOnValue condition_on_value = 3 [json_name = "condition_on_value"];
+
+        message ConditionOnValue {
+          string date_value = 1 [json_name = "date_value"];
+
+          int64 long_value = 2 [json_name = "long_value"];
+
+          repeated string string_list_value = 3 [json_name = "string_list_value"];
+
+          string string_value = 4 [json_name = "string_value"];
+        }
+      }
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsKendraExperience version is 0
+message AwsKendraExperience {
+  string arn = 1;
+
+  string description = 2;
+
+  repeated Endpoints endpoints = 3;
+
+  string experience_id = 4 [json_name = "experience_id"];
+
+  string id = 5;
+
+  string index_id = 6 [json_name = "index_id"];
+
+  string name = 7;
+
+  string role_arn = 8 [json_name = "role_arn"];
+
+  string status = 9;
+
+  Configuration configuration = 10;
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message Endpoints {
+    // endpoint: string
+    string endpoint = 1;
+
+    // endpoint_type: string
+    string endpoint_type = 2 [json_name = "endpoint_type"];
+  }
+
+  message Configuration {
+    ContentSourceConfiguration content_source_configuration = 1 [json_name = "content_source_configuration"];
+
+    UserIdentityConfiguration user_identity_configuration = 2 [json_name = "user_identity_configuration"];
+
+    message ContentSourceConfiguration {
+      repeated string data_source_ids = 1 [json_name = "data_source_ids"];
+
+      bool direct_put_content = 2 [json_name = "direct_put_content"];
+
+      repeated string faq_ids = 3 [json_name = "faq_ids"];
+    }
+
+    message UserIdentityConfiguration {
+      string identity_attribute_name = 1 [json_name = "identity_attribute_name"];
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsKendraFaq version is 0
+message AwsKendraFaq {
+  string arn = 1;
+
+  string created_at = 2 [json_name = "created_at"];
+
+  string description = 3;
+
+  string error_message = 4 [json_name = "error_message"];
+
+  string faq_id = 5 [json_name = "faq_id"];
+
+  string file_format = 6 [json_name = "file_format"];
+
+  string id = 7;
+
+  string index_id = 8 [json_name = "index_id"];
+
+  string language_code = 9 [json_name = "language_code"];
+
+  string name = 10;
+
+  string role_arn = 11 [json_name = "role_arn"];
+
+  string status = 12;
+
+  map<string, string> tags = 13;
+
+  map<string, string> tags_all = 14 [json_name = "tags_all"];
+
+  string updated_at = 15 [json_name = "updated_at"];
+
+  S3Path s3_path = 16 [json_name = "s3_path"];
+
+  repeated Timeouts timeouts = 17;
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+
+  message S3Path {
+    string bucket = 1;
+
+    string key = 2;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsKendraIndex version is 0
+message AwsKendraIndex {
+  string arn = 1;
+
+  string created_at = 2 [json_name = "created_at"];
+
+  string description = 3;
+
+  string edition = 4;
+
+  string error_message = 5 [json_name = "error_message"];
+
+  string id = 6;
+
+  repeated IndexStatistics index_statistics = 7 [json_name = "index_statistics"];
+
+  string name = 8;
+
+  string role_arn = 9 [json_name = "role_arn"];
+
+  string status = 10;
+
+  map<string, string> tags = 11;
+
+  map<string, string> tags_all = 12 [json_name = "tags_all"];
+
+  string updated_at = 13 [json_name = "updated_at"];
+
+  string user_context_policy = 14 [json_name = "user_context_policy"];
+
+  CapacityUnits capacity_units = 15 [json_name = "capacity_units"];
+
+  repeated DocumentMetadataConfigurationUpdates document_metadata_configuration_updates = 16 [
+    json_name = "document_metadata_configuration_updates"
+  ];
+
+  ServerSideEncryptionConfiguration server_side_encryption_configuration = 17 [json_name = "server_side_encryption_configuration"];
+
+  repeated Timeouts timeouts = 18;
+
+  UserGroupResolutionConfiguration user_group_resolution_configuration = 19 [json_name = "user_group_resolution_configuration"];
+
+  UserTokenConfigurations user_token_configurations = 20 [json_name = "user_token_configurations"];
+
+  map<string, string> for_each = 21 [json_name = "for_each"];
+
+  repeated string depends_on = 22 [json_name = "depends_on"];
+
+  int32 count = 23;
+
+  string provider = 24;
+
+  terraform.v1.Lifecycle lifecycle = 25;
+
+  message IndexStatistics {
+    // faq_statistics: list of object
+    repeated FaqStatistics faq_statistics = 1 [json_name = "faq_statistics"];
+
+    // text_document_statistics: list of object
+    repeated TextDocumentStatistics text_document_statistics = 2 [json_name = "text_document_statistics"];
+
+    message FaqStatistics {
+      // indexed_question_answers_count: number
+      int64 indexed_question_answers_count = 1 [json_name = "indexed_question_answers_count"];
+    }
+
+    message TextDocumentStatistics {
+      // indexed_text_bytes: number
+      int64 indexed_text_bytes = 1 [json_name = "indexed_text_bytes"];
+
+      // indexed_text_documents_count: number
+      int64 indexed_text_documents_count = 2 [json_name = "indexed_text_documents_count"];
+    }
+  }
+
+  message CapacityUnits {
+    int64 query_capacity_units = 1 [json_name = "query_capacity_units"];
+
+    int64 storage_capacity_units = 2 [json_name = "storage_capacity_units"];
+  }
+
+  message DocumentMetadataConfigurationUpdates {
+    string name = 1;
+
+    string type = 2;
+
+    Relevance relevance = 3;
+
+    Search search = 4;
+
+    message Relevance {
+      string duration = 1;
+
+      bool freshness = 2;
+
+      int64 importance = 3;
+
+      string rank_order = 4 [json_name = "rank_order"];
+
+      map<string, string> values_importance_map = 5 [json_name = "values_importance_map"];
+    }
+
+    message Search {
+      bool displayable = 1;
+
+      bool facetable = 2;
+
+      bool searchable = 3;
+
+      bool sortable = 4;
+    }
+  }
+
+  message ServerSideEncryptionConfiguration {
+    string kms_key_id = 1 [json_name = "kms_key_id"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+
+  message UserGroupResolutionConfiguration {
+    string user_group_resolution_mode = 1 [json_name = "user_group_resolution_mode"];
+  }
+
+  message UserTokenConfigurations {
+    JsonTokenTypeConfiguration json_token_type_configuration = 1 [json_name = "json_token_type_configuration"];
+
+    JwtTokenTypeConfiguration jwt_token_type_configuration = 2 [json_name = "jwt_token_type_configuration"];
+
+    message JsonTokenTypeConfiguration {
+      string group_attribute_field = 1 [json_name = "group_attribute_field"];
+
+      string user_name_attribute_field = 2 [json_name = "user_name_attribute_field"];
+    }
+
+    message JwtTokenTypeConfiguration {
+      string claim_regex = 1 [json_name = "claim_regex"];
+
+      string group_attribute_field = 2 [json_name = "group_attribute_field"];
+
+      string issuer = 3;
+
+      string key_location = 4 [json_name = "key_location"];
+
+      string secrets_manager_arn = 5 [json_name = "secrets_manager_arn"];
+
+      string url = 6;
+
+      string user_name_attribute_field = 7 [json_name = "user_name_attribute_field"];
+    }
+  }
+}
+
+// AwsKendraQuerySuggestionsBlockList version is 0
+message AwsKendraQuerySuggestionsBlockList {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  string index_id = 4 [json_name = "index_id"];
+
+  string name = 5;
+
+  string query_suggestions_block_list_id = 6 [json_name = "query_suggestions_block_list_id"];
+
+  string role_arn = 7 [json_name = "role_arn"];
+
+  string status = 8;
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  SourceS3Path source_s3_path = 11 [json_name = "source_s3_path"];
+
+  repeated Timeouts timeouts = 12;
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message SourceS3Path {
+    string bucket = 1;
+
+    string key = 2;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsKendraThesaurus version is 0
+message AwsKendraThesaurus {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  string index_id = 4 [json_name = "index_id"];
+
+  string name = 5;
+
+  string role_arn = 6 [json_name = "role_arn"];
+
+  string status = 7;
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  string thesaurus_id = 10 [json_name = "thesaurus_id"];
+
+  SourceS3Path source_s3_path = 11 [json_name = "source_s3_path"];
+
+  repeated Timeouts timeouts = 12;
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message SourceS3Path {
+    string bucket = 1;
+
+    string key = 2;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

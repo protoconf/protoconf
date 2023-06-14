@@ -1,0 +1,613 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsDmsCertificate version is 0
+message AwsDmsCertificate {
+  string certificate_arn = 1 [json_name = "certificate_arn"];
+
+  string certificate_id = 2 [json_name = "certificate_id"];
+
+  string certificate_pem = 3 [json_name = "certificate_pem"];
+
+  string certificate_wallet = 4 [json_name = "certificate_wallet"];
+
+  string id = 5;
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsDmsEndpoint version is 0
+message AwsDmsEndpoint {
+  string certificate_arn = 1 [json_name = "certificate_arn"];
+
+  string database_name = 2 [json_name = "database_name"];
+
+  string endpoint_arn = 3 [json_name = "endpoint_arn"];
+
+  string endpoint_id = 4 [json_name = "endpoint_id"];
+
+  string endpoint_type = 5 [json_name = "endpoint_type"];
+
+  string engine_name = 6 [json_name = "engine_name"];
+
+  string extra_connection_attributes = 7 [json_name = "extra_connection_attributes"];
+
+  string id = 8;
+
+  string kms_key_arn = 9 [json_name = "kms_key_arn"];
+
+  string password = 10;
+
+  int64 port = 11;
+
+  string secrets_manager_access_role_arn = 12 [json_name = "secrets_manager_access_role_arn"];
+
+  string secrets_manager_arn = 13 [json_name = "secrets_manager_arn"];
+
+  string server_name = 14 [json_name = "server_name"];
+
+  string service_access_role = 15 [json_name = "service_access_role"];
+
+  string ssl_mode = 16 [json_name = "ssl_mode"];
+
+  map<string, string> tags = 17;
+
+  map<string, string> tags_all = 18 [json_name = "tags_all"];
+
+  string username = 19;
+
+  ElasticsearchSettings elasticsearch_settings = 20 [json_name = "elasticsearch_settings"];
+
+  KafkaSettings kafka_settings = 21 [json_name = "kafka_settings"];
+
+  KinesisSettings kinesis_settings = 22 [json_name = "kinesis_settings"];
+
+  MongodbSettings mongodb_settings = 23 [json_name = "mongodb_settings"];
+
+  RedisSettings redis_settings = 24 [json_name = "redis_settings"];
+
+  RedshiftSettings redshift_settings = 25 [json_name = "redshift_settings"];
+
+  S3Settings s3_settings = 26 [json_name = "s3_settings"];
+
+  repeated Timeouts timeouts = 27;
+
+  map<string, string> for_each = 28 [json_name = "for_each"];
+
+  repeated string depends_on = 29 [json_name = "depends_on"];
+
+  int32 count = 30;
+
+  string provider = 31;
+
+  terraform.v1.Lifecycle lifecycle = 32;
+
+  message ElasticsearchSettings {
+    string endpoint_uri = 1 [json_name = "endpoint_uri"];
+
+    int64 error_retry_duration = 2 [json_name = "error_retry_duration"];
+
+    int64 full_load_error_percentage = 3 [json_name = "full_load_error_percentage"];
+
+    string service_access_role_arn = 4 [json_name = "service_access_role_arn"];
+  }
+
+  message KafkaSettings {
+    string broker = 1;
+
+    bool include_control_details = 2 [json_name = "include_control_details"];
+
+    bool include_null_and_empty = 3 [json_name = "include_null_and_empty"];
+
+    bool include_partition_value = 4 [json_name = "include_partition_value"];
+
+    bool include_table_alter_operations = 5 [json_name = "include_table_alter_operations"];
+
+    bool include_transaction_details = 6 [json_name = "include_transaction_details"];
+
+    string message_format = 7 [json_name = "message_format"];
+
+    int64 message_max_bytes = 8 [json_name = "message_max_bytes"];
+
+    bool no_hex_prefix = 9 [json_name = "no_hex_prefix"];
+
+    bool partition_include_schema_table = 10 [json_name = "partition_include_schema_table"];
+
+    string sasl_password = 11 [json_name = "sasl_password"];
+
+    string sasl_username = 12 [json_name = "sasl_username"];
+
+    string security_protocol = 13 [json_name = "security_protocol"];
+
+    string ssl_ca_certificate_arn = 14 [json_name = "ssl_ca_certificate_arn"];
+
+    string ssl_client_certificate_arn = 15 [json_name = "ssl_client_certificate_arn"];
+
+    string ssl_client_key_arn = 16 [json_name = "ssl_client_key_arn"];
+
+    string ssl_client_key_password = 17 [json_name = "ssl_client_key_password"];
+
+    string topic = 18;
+  }
+
+  message KinesisSettings {
+    bool include_control_details = 1 [json_name = "include_control_details"];
+
+    bool include_null_and_empty = 2 [json_name = "include_null_and_empty"];
+
+    bool include_partition_value = 3 [json_name = "include_partition_value"];
+
+    bool include_table_alter_operations = 4 [json_name = "include_table_alter_operations"];
+
+    bool include_transaction_details = 5 [json_name = "include_transaction_details"];
+
+    string message_format = 6 [json_name = "message_format"];
+
+    bool partition_include_schema_table = 7 [json_name = "partition_include_schema_table"];
+
+    string service_access_role_arn = 8 [json_name = "service_access_role_arn"];
+
+    string stream_arn = 9 [json_name = "stream_arn"];
+  }
+
+  message MongodbSettings {
+    string auth_mechanism = 1 [json_name = "auth_mechanism"];
+
+    string auth_source = 2 [json_name = "auth_source"];
+
+    string auth_type = 3 [json_name = "auth_type"];
+
+    string docs_to_investigate = 4 [json_name = "docs_to_investigate"];
+
+    string extract_doc_id = 5 [json_name = "extract_doc_id"];
+
+    string nesting_level = 6 [json_name = "nesting_level"];
+  }
+
+  message RedisSettings {
+    string auth_password = 1 [json_name = "auth_password"];
+
+    string auth_type = 2 [json_name = "auth_type"];
+
+    string auth_user_name = 3 [json_name = "auth_user_name"];
+
+    int64 port = 4;
+
+    string server_name = 5 [json_name = "server_name"];
+
+    string ssl_ca_certificate_arn = 6 [json_name = "ssl_ca_certificate_arn"];
+
+    string ssl_security_protocol = 7 [json_name = "ssl_security_protocol"];
+  }
+
+  message RedshiftSettings {
+    string bucket_folder = 1 [json_name = "bucket_folder"];
+
+    string bucket_name = 2 [json_name = "bucket_name"];
+
+    string encryption_mode = 3 [json_name = "encryption_mode"];
+
+    string server_side_encryption_kms_key_id = 4 [json_name = "server_side_encryption_kms_key_id"];
+
+    string service_access_role_arn = 5 [json_name = "service_access_role_arn"];
+  }
+
+  message S3Settings {
+    bool add_column_name = 1 [json_name = "add_column_name"];
+
+    string bucket_folder = 2 [json_name = "bucket_folder"];
+
+    string bucket_name = 3 [json_name = "bucket_name"];
+
+    string canned_acl_for_objects = 4 [json_name = "canned_acl_for_objects"];
+
+    bool cdc_inserts_and_updates = 5 [json_name = "cdc_inserts_and_updates"];
+
+    bool cdc_inserts_only = 6 [json_name = "cdc_inserts_only"];
+
+    int64 cdc_max_batch_interval = 7 [json_name = "cdc_max_batch_interval"];
+
+    int64 cdc_min_file_size = 8 [json_name = "cdc_min_file_size"];
+
+    string cdc_path = 9 [json_name = "cdc_path"];
+
+    string compression_type = 10 [json_name = "compression_type"];
+
+    string csv_delimiter = 11 [json_name = "csv_delimiter"];
+
+    string csv_no_sup_value = 12 [json_name = "csv_no_sup_value"];
+
+    string csv_null_value = 13 [json_name = "csv_null_value"];
+
+    string csv_row_delimiter = 14 [json_name = "csv_row_delimiter"];
+
+    string data_format = 15 [json_name = "data_format"];
+
+    int64 data_page_size = 16 [json_name = "data_page_size"];
+
+    string date_partition_delimiter = 17 [json_name = "date_partition_delimiter"];
+
+    bool date_partition_enabled = 18 [json_name = "date_partition_enabled"];
+
+    string date_partition_sequence = 19 [json_name = "date_partition_sequence"];
+
+    int64 dict_page_size_limit = 20 [json_name = "dict_page_size_limit"];
+
+    bool enable_statistics = 21 [json_name = "enable_statistics"];
+
+    string encoding_type = 22 [json_name = "encoding_type"];
+
+    string encryption_mode = 23 [json_name = "encryption_mode"];
+
+    string external_table_definition = 24 [json_name = "external_table_definition"];
+
+    int64 ignore_header_rows = 25 [json_name = "ignore_header_rows"];
+
+    bool include_op_for_full_load = 26 [json_name = "include_op_for_full_load"];
+
+    int64 max_file_size = 27 [json_name = "max_file_size"];
+
+    bool parquet_timestamp_in_millisecond = 28 [json_name = "parquet_timestamp_in_millisecond"];
+
+    string parquet_version = 29 [json_name = "parquet_version"];
+
+    bool preserve_transactions = 30 [json_name = "preserve_transactions"];
+
+    bool rfc_4180 = 31 [json_name = "rfc_4180"];
+
+    int64 row_group_length = 32 [json_name = "row_group_length"];
+
+    string server_side_encryption_kms_key_id = 33 [json_name = "server_side_encryption_kms_key_id"];
+
+    string service_access_role_arn = 34 [json_name = "service_access_role_arn"];
+
+    string timestamp_column_name = 35 [json_name = "timestamp_column_name"];
+
+    bool use_csv_no_sup_value = 36 [json_name = "use_csv_no_sup_value"];
+
+    bool use_task_start_time_for_full_load_timestamp = 37 [
+      json_name = "use_task_start_time_for_full_load_timestamp"
+    ];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsDmsEventSubscription version is 0
+message AwsDmsEventSubscription {
+  string arn = 1;
+
+  bool enabled = 2;
+
+  repeated string event_categories = 3 [json_name = "event_categories"];
+
+  string id = 4;
+
+  string name = 5;
+
+  string sns_topic_arn = 6 [json_name = "sns_topic_arn"];
+
+  repeated string source_ids = 7 [json_name = "source_ids"];
+
+  string source_type = 8 [json_name = "source_type"];
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsDmsReplicationInstance version is 0
+message AwsDmsReplicationInstance {
+  int64 allocated_storage = 1 [json_name = "allocated_storage"];
+
+  bool allow_major_version_upgrade = 2 [json_name = "allow_major_version_upgrade"];
+
+  bool apply_immediately = 3 [json_name = "apply_immediately"];
+
+  bool auto_minor_version_upgrade = 4 [json_name = "auto_minor_version_upgrade"];
+
+  string availability_zone = 5 [json_name = "availability_zone"];
+
+  string engine_version = 6 [json_name = "engine_version"];
+
+  string id = 7;
+
+  string kms_key_arn = 8 [json_name = "kms_key_arn"];
+
+  bool multi_az = 9 [json_name = "multi_az"];
+
+  string preferred_maintenance_window = 10 [json_name = "preferred_maintenance_window"];
+
+  bool publicly_accessible = 11 [json_name = "publicly_accessible"];
+
+  string replication_instance_arn = 12 [json_name = "replication_instance_arn"];
+
+  string replication_instance_class = 13 [json_name = "replication_instance_class"];
+
+  string replication_instance_id = 14 [json_name = "replication_instance_id"];
+
+  repeated string replication_instance_private_ips = 15 [json_name = "replication_instance_private_ips"];
+
+  repeated string replication_instance_public_ips = 16 [json_name = "replication_instance_public_ips"];
+
+  string replication_subnet_group_id = 17 [json_name = "replication_subnet_group_id"];
+
+  map<string, string> tags = 18;
+
+  map<string, string> tags_all = 19 [json_name = "tags_all"];
+
+  repeated string vpc_security_group_ids = 20 [json_name = "vpc_security_group_ids"];
+
+  repeated Timeouts timeouts = 21;
+
+  map<string, string> for_each = 22 [json_name = "for_each"];
+
+  repeated string depends_on = 23 [json_name = "depends_on"];
+
+  int32 count = 24;
+
+  string provider = 25;
+
+  terraform.v1.Lifecycle lifecycle = 26;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsDmsReplicationSubnetGroup version is 0
+message AwsDmsReplicationSubnetGroup {
+  string id = 1;
+
+  string replication_subnet_group_arn = 2 [json_name = "replication_subnet_group_arn"];
+
+  string replication_subnet_group_description = 3 [json_name = "replication_subnet_group_description"];
+
+  string replication_subnet_group_id = 4 [json_name = "replication_subnet_group_id"];
+
+  repeated string subnet_ids = 5 [json_name = "subnet_ids"];
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  string vpc_id = 8 [json_name = "vpc_id"];
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsDmsReplicationTask version is 0
+message AwsDmsReplicationTask {
+  string cdc_start_position = 1 [json_name = "cdc_start_position"];
+
+  string cdc_start_time = 2 [json_name = "cdc_start_time"];
+
+  string id = 3;
+
+  string migration_type = 4 [json_name = "migration_type"];
+
+  string replication_instance_arn = 5 [json_name = "replication_instance_arn"];
+
+  string replication_task_arn = 6 [json_name = "replication_task_arn"];
+
+  string replication_task_id = 7 [json_name = "replication_task_id"];
+
+  string replication_task_settings = 8 [json_name = "replication_task_settings"];
+
+  string source_endpoint_arn = 9 [json_name = "source_endpoint_arn"];
+
+  bool start_replication_task = 10 [json_name = "start_replication_task"];
+
+  string status = 11;
+
+  string table_mappings = 12 [json_name = "table_mappings"];
+
+  map<string, string> tags = 13;
+
+  map<string, string> tags_all = 14 [json_name = "tags_all"];
+
+  string target_endpoint_arn = 15 [json_name = "target_endpoint_arn"];
+
+  map<string, string> for_each = 16 [json_name = "for_each"];
+
+  repeated string depends_on = 17 [json_name = "depends_on"];
+
+  int32 count = 18;
+
+  string provider = 19;
+
+  terraform.v1.Lifecycle lifecycle = 20;
+}
+
+// AwsDmsS3Endpoint version is 0
+message AwsDmsS3Endpoint {
+  bool add_column_name = 1 [json_name = "add_column_name"];
+
+  bool add_trailing_padding_character = 2 [json_name = "add_trailing_padding_character"];
+
+  string bucket_folder = 3 [json_name = "bucket_folder"];
+
+  string bucket_name = 4 [json_name = "bucket_name"];
+
+  string canned_acl_for_objects = 5 [json_name = "canned_acl_for_objects"];
+
+  bool cdc_inserts_and_updates = 6 [json_name = "cdc_inserts_and_updates"];
+
+  bool cdc_inserts_only = 7 [json_name = "cdc_inserts_only"];
+
+  int64 cdc_max_batch_interval = 8 [json_name = "cdc_max_batch_interval"];
+
+  int64 cdc_min_file_size = 9 [json_name = "cdc_min_file_size"];
+
+  string cdc_path = 10 [json_name = "cdc_path"];
+
+  string certificate_arn = 11 [json_name = "certificate_arn"];
+
+  string compression_type = 12 [json_name = "compression_type"];
+
+  string csv_delimiter = 13 [json_name = "csv_delimiter"];
+
+  string csv_no_sup_value = 14 [json_name = "csv_no_sup_value"];
+
+  string csv_null_value = 15 [json_name = "csv_null_value"];
+
+  string csv_row_delimiter = 16 [json_name = "csv_row_delimiter"];
+
+  string data_format = 17 [json_name = "data_format"];
+
+  int64 data_page_size = 18 [json_name = "data_page_size"];
+
+  string date_partition_delimiter = 19 [json_name = "date_partition_delimiter"];
+
+  bool date_partition_enabled = 20 [json_name = "date_partition_enabled"];
+
+  string date_partition_sequence = 21 [json_name = "date_partition_sequence"];
+
+  string date_partition_timezone = 22 [json_name = "date_partition_timezone"];
+
+  bool detach_target_on_lob_lookup_failure_parquet = 23 [
+    json_name = "detach_target_on_lob_lookup_failure_parquet"
+  ];
+
+  int64 dict_page_size_limit = 24 [json_name = "dict_page_size_limit"];
+
+  bool enable_statistics = 25 [json_name = "enable_statistics"];
+
+  string encoding_type = 26 [json_name = "encoding_type"];
+
+  string encryption_mode = 27 [json_name = "encryption_mode"];
+
+  string endpoint_arn = 28 [json_name = "endpoint_arn"];
+
+  string endpoint_id = 29 [json_name = "endpoint_id"];
+
+  string endpoint_type = 30 [json_name = "endpoint_type"];
+
+  string engine_display_name = 31 [json_name = "engine_display_name"];
+
+  string expected_bucket_owner = 32 [json_name = "expected_bucket_owner"];
+
+  string external_id = 33 [json_name = "external_id"];
+
+  string external_table_definition = 34 [json_name = "external_table_definition"];
+
+  string id = 35;
+
+  int64 ignore_header_rows = 36 [json_name = "ignore_header_rows"];
+
+  bool include_op_for_full_load = 37 [json_name = "include_op_for_full_load"];
+
+  string kms_key_arn = 38 [json_name = "kms_key_arn"];
+
+  int64 max_file_size = 39 [json_name = "max_file_size"];
+
+  bool parquet_timestamp_in_millisecond = 40 [json_name = "parquet_timestamp_in_millisecond"];
+
+  string parquet_version = 41 [json_name = "parquet_version"];
+
+  bool preserve_transactions = 42 [json_name = "preserve_transactions"];
+
+  bool rfc_4180 = 43 [json_name = "rfc_4180"];
+
+  int64 row_group_length = 44 [json_name = "row_group_length"];
+
+  string server_side_encryption_kms_key_id = 45 [json_name = "server_side_encryption_kms_key_id"];
+
+  string service_access_role_arn = 46 [json_name = "service_access_role_arn"];
+
+  string ssl_mode = 47 [json_name = "ssl_mode"];
+
+  string status = 48;
+
+  map<string, string> tags = 49;
+
+  map<string, string> tags_all = 50 [json_name = "tags_all"];
+
+  string timestamp_column_name = 51 [json_name = "timestamp_column_name"];
+
+  bool use_csv_no_sup_value = 52 [json_name = "use_csv_no_sup_value"];
+
+  bool use_task_start_time_for_full_load_timestamp = 53 [
+    json_name = "use_task_start_time_for_full_load_timestamp"
+  ];
+
+  repeated Timeouts timeouts = 54;
+
+  map<string, string> for_each = 55 [json_name = "for_each"];
+
+  repeated string depends_on = 56 [json_name = "depends_on"];
+
+  int32 count = 57;
+
+  string provider = 58;
+
+  terraform.v1.Lifecycle lifecycle = 59;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}

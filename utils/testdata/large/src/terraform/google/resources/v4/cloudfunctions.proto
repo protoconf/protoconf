@@ -1,0 +1,279 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleCloudfunctionsFunction version is 0
+message GoogleCloudfunctionsFunction {
+  // Memory (in MB), available to the function. Default value is 256. Possible values include 128, 256, 512, 1024, etc.
+  int64 available_memory_mb = 1 [json_name = "available_memory_mb"];
+
+  // A set of key/value environment variable pairs available during build time.
+  map<string, string> build_environment_variables = 2 [json_name = "build_environment_variables"];
+
+  // Name of the Cloud Build Custom Worker Pool that should be used to build the function.
+  string build_worker_pool = 3 [json_name = "build_worker_pool"];
+
+  // Description of the function.
+  string description = 4;
+
+  // Docker Registry to use for storing the function's Docker images. Allowed values are CONTAINER_REGISTRY (default) and ARTIFACT_REGISTRY.
+  string docker_registry = 5 [json_name = "docker_registry"];
+
+  // User managed repository created in Artifact Registry optionally with a customer managed encryption key. If specified, deployments will use Artifact Registry for storing images built with Cloud Build.
+  string docker_repository = 6 [json_name = "docker_repository"];
+
+  // Name of the function that will be executed when the Google Cloud Function is triggered.
+  string entry_point = 7 [json_name = "entry_point"];
+
+  // A set of key/value environment variable pairs to assign to the function.
+  map<string, string> environment_variables = 8 [json_name = "environment_variables"];
+
+  // The security level for the function. Defaults to SECURE_OPTIONAL. Valid only if trigger_http is used.
+  string https_trigger_security_level = 9 [json_name = "https_trigger_security_level"];
+
+  // URL which triggers function execution. Returned only if trigger_http is used.
+  string https_trigger_url = 10 [json_name = "https_trigger_url"];
+
+  string id = 11;
+
+  // String value that controls what traffic can reach the function. Allowed values are ALLOW_ALL and ALLOW_INTERNAL_ONLY. Changes to this field will recreate the cloud function.
+  string ingress_settings = 12 [json_name = "ingress_settings"];
+
+  // Resource name of a KMS crypto key (managed by the user) used to encrypt/decrypt function resources.
+  string kms_key_name = 13 [json_name = "kms_key_name"];
+
+  // A set of key/value label pairs to assign to the function. Label keys must follow the requirements at https://cloud.google.com/resource-manager/docs/creating-managing-labels#requirements.
+  map<string, string> labels = 14;
+
+  // The limit on the maximum number of function instances that may coexist at a given time.
+  int64 max_instances = 15 [json_name = "max_instances"];
+
+  // The limit on the minimum number of function instances that may coexist at a given time.
+  int64 min_instances = 16 [json_name = "min_instances"];
+
+  // A user-defined name of the function. Function names must be unique globally.
+  string name = 17;
+
+  // Project of the function. If it is not provided, the provider project is used.
+  string project = 18;
+
+  // Region of function. If it is not provided, the provider region is used.
+  string region = 19;
+
+  // The runtime in which the function is going to run. Eg. "nodejs8", "nodejs10", "python37", "go111".
+  string runtime = 20;
+
+  // If provided, the self-provided service account to run the function with.
+  string service_account_email = 21 [json_name = "service_account_email"];
+
+  // The GCS bucket containing the zip archive which contains the function.
+  string source_archive_bucket = 22 [json_name = "source_archive_bucket"];
+
+  // The source archive object (file) in archive bucket.
+  string source_archive_object = 23 [json_name = "source_archive_object"];
+
+  // Describes the current stage of a deployment.
+  string status = 24;
+
+  // Timeout (in seconds) for the function. Default value is 60 seconds. Cannot be more than 540 seconds.
+  int64 timeout = 25;
+
+  // Boolean variable. Any HTTP request (of a supported type) to the endpoint will trigger function execution. Supported HTTP request types are: POST, PUT, GET, DELETE, and OPTIONS. Endpoint is returned as https_trigger_url. Cannot be used with trigger_bucket and trigger_topic.
+  bool trigger_http = 26 [json_name = "trigger_http"];
+
+  // The VPC Network Connector that this cloud function can connect to. It can be either the fully-qualified URI, or the short name of the network connector resource. The format of this field is projects/*/locations/*/connectors/*.
+  string vpc_connector = 27 [json_name = "vpc_connector"];
+
+  // The egress settings for the connector, controlling what traffic is diverted through it. Allowed values are ALL_TRAFFIC and PRIVATE_RANGES_ONLY. Defaults to PRIVATE_RANGES_ONLY. If unset, this field preserves the previously set value.
+  string vpc_connector_egress_settings = 28 [json_name = "vpc_connector_egress_settings"];
+
+  EventTrigger event_trigger = 29 [json_name = "event_trigger"];
+
+  repeated SecretEnvironmentVariables secret_environment_variables = 30 [json_name = "secret_environment_variables"];
+
+  repeated SecretVolumes secret_volumes = 31 [json_name = "secret_volumes"];
+
+  SourceRepository source_repository = 32 [json_name = "source_repository"];
+
+  repeated Timeouts timeouts = 33;
+
+  map<string, string> for_each = 34 [json_name = "for_each"];
+
+  repeated string depends_on = 35 [json_name = "depends_on"];
+
+  int32 count = 36;
+
+  string provider = 37;
+
+  terraform.v1.Lifecycle lifecycle = 38;
+
+  message EventTrigger {
+    // The type of event to observe. For example: "google.storage.object.finalize". See the documentation on calling Cloud Functions for a full reference of accepted triggers.
+    string event_type = 1 [json_name = "event_type"];
+
+    // The name or partial URI of the resource from which to observe events. For example, "myBucket" or "projects/my-project/topics/my-topic"
+    string resource = 2;
+
+    FailurePolicy failure_policy = 3 [json_name = "failure_policy"];
+
+    message FailurePolicy {
+      // Whether the function should be retried on failure. Defaults to false.
+      bool retry = 1;
+    }
+  }
+
+  message SecretEnvironmentVariables {
+    // Name of the environment variable.
+    string key = 1;
+
+    // Project identifier (due to a known limitation, only project number is supported by this field) of the project that contains the secret. If not set, it will be populated with the function's project, assuming that the secret exists in the same project as of the function.
+    string project_id = 2 [json_name = "project_id"];
+
+    // ID of the secret in secret manager (not the full resource name).
+    string secret = 3;
+
+    // Version of the secret (version number or the string "latest"). It is recommended to use a numeric version for secret environment variables as any updates to the secret value is not reflected until new clones start.
+    string version = 4;
+  }
+
+  message SecretVolumes {
+    // The path within the container to mount the secret volume. For example, setting the mount_path as "/etc/secrets" would mount the secret value files under the "/etc/secrets" directory. This directory will also be completely shadowed and unavailable to mount any other secrets. Recommended mount paths: "/etc/secrets" Restricted mount paths: "/cloudsql", "/dev/log", "/pod", "/proc", "/var/log".
+    string mount_path = 1 [json_name = "mount_path"];
+
+    // Project identifier (due to a known limitation, only project number is supported by this field) of the project that contains the secret. If not set, it will be populated with the function's project, assuming that the secret exists in the same project as of the function.
+    string project_id = 2 [json_name = "project_id"];
+
+    // ID of the secret in secret manager (not the full resource name).
+    string secret = 3;
+
+    repeated Versions versions = 4;
+
+    message Versions {
+      // Relative path of the file under the mount path where the secret value for this version will be fetched and made available. For example, setting the mount_path as "/etc/secrets" and path as "/secret_foo" would mount the secret value file at "/etc/secrets/secret_foo".
+      string path = 1;
+
+      // Version of the secret (version number or the string "latest"). It is preferable to use "latest" version with secret volumes as secret value changes are reflected immediately.
+      string version = 2;
+    }
+  }
+
+  message SourceRepository {
+    // The URL pointing to the hosted repository where the function was defined at the time of deployment.
+    string deployed_url = 1 [json_name = "deployed_url"];
+
+    // The URL pointing to the hosted repository where the function is defined.
+    string url = 2;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string read = 3;
+
+    string update = 4;
+  }
+}
+
+// GoogleCloudfunctionsFunctionIamBinding version is 0
+message GoogleCloudfunctionsFunctionIamBinding {
+  string cloud_function = 1 [json_name = "cloud_function"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  repeated string members = 4;
+
+  string project = 5;
+
+  string region = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleCloudfunctionsFunctionIamMember version is 0
+message GoogleCloudfunctionsFunctionIamMember {
+  string cloud_function = 1 [json_name = "cloud_function"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string member = 4;
+
+  string project = 5;
+
+  string region = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleCloudfunctionsFunctionIamPolicy version is 0
+message GoogleCloudfunctionsFunctionIamPolicy {
+  string cloud_function = 1 [json_name = "cloud_function"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  string region = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}

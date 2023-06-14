@@ -1,0 +1,83 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsInspectorAssessmentTarget version is 0
+message AwsInspectorAssessmentTarget {
+  string arn = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  string resource_group_arn = 4 [json_name = "resource_group_arn"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsInspectorAssessmentTemplate version is 0
+message AwsInspectorAssessmentTemplate {
+  string arn = 1;
+
+  int64 duration = 2;
+
+  string id = 3;
+
+  string name = 4;
+
+  repeated string rules_package_arns = 5 [json_name = "rules_package_arns"];
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  string target_arn = 8 [json_name = "target_arn"];
+
+  repeated EventSubscription event_subscription = 9 [json_name = "event_subscription"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message EventSubscription {
+    string event = 1;
+
+    string topic_arn = 2 [json_name = "topic_arn"];
+  }
+}
+
+// AwsInspectorResourceGroup version is 0
+message AwsInspectorResourceGroup {
+  string arn = 1;
+
+  string id = 2;
+
+  map<string, string> tags = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}

@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsKeyPair version is 0
+message AwsKeyPair {
+  string arn = 1;
+
+  string create_time = 2 [json_name = "create_time"];
+
+  string fingerprint = 3;
+
+  string id = 4;
+
+  bool include_public_key = 5 [json_name = "include_public_key"];
+
+  string key_name = 6 [json_name = "key_name"];
+
+  string key_pair_id = 7 [json_name = "key_pair_id"];
+
+  string key_type = 8 [json_name = "key_type"];
+
+  string public_key = 9 [json_name = "public_key"];
+
+  map<string, string> tags = 10;
+
+  repeated Filter filter = 11;
+
+  repeated Timeouts timeouts = 12;
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+
+  message Timeouts {
+    string read = 1;
+  }
+}

@@ -1,0 +1,83 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsDetectiveGraph version is 0
+message AwsDetectiveGraph {
+  string created_time = 1 [json_name = "created_time"];
+
+  string graph_arn = 2 [json_name = "graph_arn"];
+
+  string id = 3;
+
+  map<string, string> tags = 4;
+
+  map<string, string> tags_all = 5 [json_name = "tags_all"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsDetectiveInvitationAccepter version is 0
+message AwsDetectiveInvitationAccepter {
+  string graph_arn = 1 [json_name = "graph_arn"];
+
+  string id = 2;
+
+  map<string, string> for_each = 3 [json_name = "for_each"];
+
+  repeated string depends_on = 4 [json_name = "depends_on"];
+
+  int32 count = 5;
+
+  string provider = 6;
+
+  terraform.v1.Lifecycle lifecycle = 7;
+}
+
+// AwsDetectiveMember version is 0
+message AwsDetectiveMember {
+  string account_id = 1 [json_name = "account_id"];
+
+  string administrator_id = 2 [json_name = "administrator_id"];
+
+  bool disable_email_notification = 3 [json_name = "disable_email_notification"];
+
+  string disabled_reason = 4 [json_name = "disabled_reason"];
+
+  string email_address = 5 [json_name = "email_address"];
+
+  string graph_arn = 6 [json_name = "graph_arn"];
+
+  string id = 7;
+
+  string invited_time = 8 [json_name = "invited_time"];
+
+  string message = 9;
+
+  string status = 10;
+
+  string updated_time = 11 [json_name = "updated_time"];
+
+  string volume_usage_in_bytes = 12 [json_name = "volume_usage_in_bytes"];
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+}

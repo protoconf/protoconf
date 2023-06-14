@@ -1,0 +1,263 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsKmsAlias version is 0
+message AwsKmsAlias {
+  string arn = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  string target_key_arn = 4 [json_name = "target_key_arn"];
+
+  string target_key_id = 5 [json_name = "target_key_id"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsKmsCiphertext version is 0
+message AwsKmsCiphertext {
+  string ciphertext_blob = 1 [json_name = "ciphertext_blob"];
+
+  map<string, string> context = 2;
+
+  string id = 3;
+
+  string key_id = 4 [json_name = "key_id"];
+
+  string plaintext = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsKmsCustomKeyStore version is 0
+message AwsKmsCustomKeyStore {
+  string cloud_hsm_cluster_id = 1 [json_name = "cloud_hsm_cluster_id"];
+
+  string connection_state = 2 [json_name = "connection_state"];
+
+  string creation_date = 3 [json_name = "creation_date"];
+
+  string custom_key_store_id = 4 [json_name = "custom_key_store_id"];
+
+  string custom_key_store_name = 5 [json_name = "custom_key_store_name"];
+
+  string id = 6;
+
+  string trust_anchor_certificate = 7 [json_name = "trust_anchor_certificate"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsKmsKey version is 0
+message AwsKmsKey {
+  string arn = 1;
+
+  string aws_account_id = 2 [json_name = "aws_account_id"];
+
+  string cloud_hsm_cluster_id = 3 [json_name = "cloud_hsm_cluster_id"];
+
+  string creation_date = 4 [json_name = "creation_date"];
+
+  string custom_key_store_id = 5 [json_name = "custom_key_store_id"];
+
+  string customer_master_key_spec = 6 [json_name = "customer_master_key_spec"];
+
+  string deletion_date = 7 [json_name = "deletion_date"];
+
+  string description = 8;
+
+  bool enabled = 9;
+
+  string expiration_model = 10 [json_name = "expiration_model"];
+
+  repeated string grant_tokens = 11 [json_name = "grant_tokens"];
+
+  string id = 12;
+
+  string key_id = 13 [json_name = "key_id"];
+
+  string key_manager = 14 [json_name = "key_manager"];
+
+  string key_spec = 15 [json_name = "key_spec"];
+
+  string key_state = 16 [json_name = "key_state"];
+
+  string key_usage = 17 [json_name = "key_usage"];
+
+  bool multi_region = 18 [json_name = "multi_region"];
+
+  repeated MultiRegionConfiguration multi_region_configuration = 19 [json_name = "multi_region_configuration"];
+
+  string origin = 20;
+
+  int64 pending_deletion_window_in_days = 21 [json_name = "pending_deletion_window_in_days"];
+
+  string valid_to = 22 [json_name = "valid_to"];
+
+  repeated XksKeyConfiguration xks_key_configuration = 23 [json_name = "xks_key_configuration"];
+
+  map<string, string> for_each = 24 [json_name = "for_each"];
+
+  repeated string depends_on = 25 [json_name = "depends_on"];
+
+  int32 count = 26;
+
+  string provider = 27;
+
+  terraform.v1.Lifecycle lifecycle = 28;
+
+  message MultiRegionConfiguration {
+    // multi_region_key_type: string
+    string multi_region_key_type = 1 [json_name = "multi_region_key_type"];
+
+    // primary_key: list of object
+    repeated PrimaryKey primary_key = 2 [json_name = "primary_key"];
+
+    // replica_keys: list of object
+    repeated ReplicaKeys replica_keys = 3 [json_name = "replica_keys"];
+
+    message PrimaryKey {
+      // arn: string
+      string arn = 1;
+
+      // region: string
+      string region = 2;
+    }
+
+    message ReplicaKeys {
+      // arn: string
+      string arn = 1;
+
+      // region: string
+      string region = 2;
+    }
+  }
+
+  message XksKeyConfiguration {
+    // id: string
+    string id = 1;
+  }
+}
+
+// AwsKmsPublicKey version is 0
+message AwsKmsPublicKey {
+  string arn = 1;
+
+  string customer_master_key_spec = 2 [json_name = "customer_master_key_spec"];
+
+  repeated string encryption_algorithms = 3 [json_name = "encryption_algorithms"];
+
+  repeated string grant_tokens = 4 [json_name = "grant_tokens"];
+
+  string id = 5;
+
+  string key_id = 6 [json_name = "key_id"];
+
+  string key_usage = 7 [json_name = "key_usage"];
+
+  string public_key = 8 [json_name = "public_key"];
+
+  string public_key_pem = 9 [json_name = "public_key_pem"];
+
+  repeated string signing_algorithms = 10 [json_name = "signing_algorithms"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+}
+
+// AwsKmsSecret version is 0
+message AwsKmsSecret {
+  string id = 1;
+
+  repeated Secret secret = 2;
+
+  map<string, string> for_each = 3 [json_name = "for_each"];
+
+  repeated string depends_on = 4 [json_name = "depends_on"];
+
+  int32 count = 5;
+
+  string provider = 6;
+
+  terraform.v1.Lifecycle lifecycle = 7;
+
+  message Secret {
+    map<string, string> context = 1;
+
+    repeated string grant_tokens = 2 [json_name = "grant_tokens"];
+
+    string name = 3;
+
+    string payload = 4;
+  }
+}
+
+// AwsKmsSecrets version is 0
+message AwsKmsSecrets {
+  string id = 1;
+
+  map<string, string> plaintext = 2;
+
+  repeated Secret secret = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+
+  message Secret {
+    map<string, string> context = 1;
+
+    string encryption_algorithm = 2 [json_name = "encryption_algorithm"];
+
+    repeated string grant_tokens = 3 [json_name = "grant_tokens"];
+
+    string key_id = 4 [json_name = "key_id"];
+
+    string name = 5;
+
+    string payload = 6;
+  }
+}

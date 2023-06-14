@@ -1,0 +1,119 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsApigatewayv2Api version is 0
+message AwsApigatewayv2Api {
+  string api_endpoint = 1 [json_name = "api_endpoint"];
+
+  string api_id = 2 [json_name = "api_id"];
+
+  string api_key_selection_expression = 3 [json_name = "api_key_selection_expression"];
+
+  string arn = 4;
+
+  repeated CorsConfiguration cors_configuration = 5 [json_name = "cors_configuration"];
+
+  string description = 6;
+
+  bool disable_execute_api_endpoint = 7 [json_name = "disable_execute_api_endpoint"];
+
+  string execution_arn = 8 [json_name = "execution_arn"];
+
+  string id = 9;
+
+  string name = 10;
+
+  string protocol_type = 11 [json_name = "protocol_type"];
+
+  string route_selection_expression = 12 [json_name = "route_selection_expression"];
+
+  map<string, string> tags = 13;
+
+  string version = 14;
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+
+  message CorsConfiguration {
+    // allow_credentials: bool
+    bool allow_credentials = 1 [json_name = "allow_credentials"];
+
+    // allow_headers: set of string
+    repeated string allow_headers = 2 [json_name = "allow_headers"];
+
+    // allow_methods: set of string
+    repeated string allow_methods = 3 [json_name = "allow_methods"];
+
+    // allow_origins: set of string
+    repeated string allow_origins = 4 [json_name = "allow_origins"];
+
+    // expose_headers: set of string
+    repeated string expose_headers = 5 [json_name = "expose_headers"];
+
+    // max_age: number
+    int64 max_age = 6 [json_name = "max_age"];
+  }
+}
+
+// AwsApigatewayv2Apis version is 0
+message AwsApigatewayv2Apis {
+  string id = 1;
+
+  repeated string ids = 2;
+
+  string name = 3;
+
+  string protocol_type = 4 [json_name = "protocol_type"];
+
+  map<string, string> tags = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsApigatewayv2Export version is 0
+message AwsApigatewayv2Export {
+  string api_id = 1 [json_name = "api_id"];
+
+  string body = 2;
+
+  string export_version = 3 [json_name = "export_version"];
+
+  string id = 4;
+
+  bool include_extensions = 5 [json_name = "include_extensions"];
+
+  string output_type = 6 [json_name = "output_type"];
+
+  string specification = 7;
+
+  string stage_name = 8 [json_name = "stage_name"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+}

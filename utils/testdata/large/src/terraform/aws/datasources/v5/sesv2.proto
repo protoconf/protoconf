@@ -1,0 +1,124 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsSesv2ConfigurationSet version is 0
+message AwsSesv2ConfigurationSet {
+  string arn = 1;
+
+  string configuration_set_name = 2 [json_name = "configuration_set_name"];
+
+  repeated DeliveryOptions delivery_options = 3 [json_name = "delivery_options"];
+
+  string id = 4;
+
+  repeated ReputationOptions reputation_options = 5 [json_name = "reputation_options"];
+
+  repeated SendingOptions sending_options = 6 [json_name = "sending_options"];
+
+  repeated SuppressionOptions suppression_options = 7 [json_name = "suppression_options"];
+
+  map<string, string> tags = 8;
+
+  repeated TrackingOptions tracking_options = 9 [json_name = "tracking_options"];
+
+  repeated VdmOptions vdm_options = 10 [json_name = "vdm_options"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message DeliveryOptions {
+    // sending_pool_name: string
+    string sending_pool_name = 1 [json_name = "sending_pool_name"];
+
+    // tls_policy: string
+    string tls_policy = 2 [json_name = "tls_policy"];
+  }
+
+  message ReputationOptions {
+    // last_fresh_start: string
+    string last_fresh_start = 1 [json_name = "last_fresh_start"];
+
+    // reputation_metrics_enabled: bool
+    bool reputation_metrics_enabled = 2 [json_name = "reputation_metrics_enabled"];
+  }
+
+  message SendingOptions {
+    // sending_enabled: bool
+    bool sending_enabled = 1 [json_name = "sending_enabled"];
+  }
+
+  message SuppressionOptions {
+    // suppressed_reasons: list of string
+    repeated string suppressed_reasons = 1 [json_name = "suppressed_reasons"];
+  }
+
+  message TrackingOptions {
+    // custom_redirect_domain: string
+    string custom_redirect_domain = 1 [json_name = "custom_redirect_domain"];
+  }
+
+  message VdmOptions {
+    // dashboard_options: list of object
+    repeated DashboardOptions dashboard_options = 1 [json_name = "dashboard_options"];
+
+    // guardian_options: list of object
+    repeated GuardianOptions guardian_options = 2 [json_name = "guardian_options"];
+
+    message DashboardOptions {
+      // engagement_metrics: string
+      string engagement_metrics = 1 [json_name = "engagement_metrics"];
+    }
+
+    message GuardianOptions {
+      // optimized_shared_delivery: string
+      string optimized_shared_delivery = 1 [json_name = "optimized_shared_delivery"];
+    }
+  }
+}
+
+// AwsSesv2DedicatedIpPool version is 0
+message AwsSesv2DedicatedIpPool {
+  string arn = 1;
+
+  repeated DedicatedIps dedicated_ips = 2 [json_name = "dedicated_ips"];
+
+  string id = 3;
+
+  string pool_name = 4 [json_name = "pool_name"];
+
+  string scaling_mode = 5 [json_name = "scaling_mode"];
+
+  map<string, string> tags = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message DedicatedIps {
+    // ip: string
+    string ip = 1;
+
+    // warmup_percentage: number
+    int64 warmup_percentage = 2 [json_name = "warmup_percentage"];
+
+    // warmup_status: string
+    string warmup_status = 3 [json_name = "warmup_status"];
+  }
+}

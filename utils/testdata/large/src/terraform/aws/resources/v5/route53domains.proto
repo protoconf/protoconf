@@ -1,0 +1,169 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsRoute53domainsRegisteredDomain version is 0
+message AwsRoute53domainsRegisteredDomain {
+  string abuse_contact_email = 1 [json_name = "abuse_contact_email"];
+
+  string abuse_contact_phone = 2 [json_name = "abuse_contact_phone"];
+
+  bool admin_privacy = 3 [json_name = "admin_privacy"];
+
+  bool auto_renew = 4 [json_name = "auto_renew"];
+
+  string creation_date = 5 [json_name = "creation_date"];
+
+  string domain_name = 6 [json_name = "domain_name"];
+
+  string expiration_date = 7 [json_name = "expiration_date"];
+
+  string id = 8;
+
+  bool registrant_privacy = 9 [json_name = "registrant_privacy"];
+
+  string registrar_name = 10 [json_name = "registrar_name"];
+
+  string registrar_url = 11 [json_name = "registrar_url"];
+
+  string reseller = 12;
+
+  repeated string status_list = 13 [json_name = "status_list"];
+
+  map<string, string> tags = 14;
+
+  map<string, string> tags_all = 15 [json_name = "tags_all"];
+
+  bool tech_privacy = 16 [json_name = "tech_privacy"];
+
+  bool transfer_lock = 17 [json_name = "transfer_lock"];
+
+  string updated_date = 18 [json_name = "updated_date"];
+
+  string whois_server = 19 [json_name = "whois_server"];
+
+  AdminContact admin_contact = 20 [json_name = "admin_contact"];
+
+  repeated NameServer name_server = 21 [json_name = "name_server"];
+
+  RegistrantContact registrant_contact = 22 [json_name = "registrant_contact"];
+
+  TechContact tech_contact = 23 [json_name = "tech_contact"];
+
+  repeated Timeouts timeouts = 24;
+
+  map<string, string> for_each = 25 [json_name = "for_each"];
+
+  repeated string depends_on = 26 [json_name = "depends_on"];
+
+  int32 count = 27;
+
+  string provider = 28;
+
+  terraform.v1.Lifecycle lifecycle = 29;
+
+  message AdminContact {
+    string address_line_1 = 1 [json_name = "address_line_1"];
+
+    string address_line_2 = 2 [json_name = "address_line_2"];
+
+    string city = 3;
+
+    string contact_type = 4 [json_name = "contact_type"];
+
+    string country_code = 5 [json_name = "country_code"];
+
+    string email = 6;
+
+    map<string, string> extra_params = 7 [json_name = "extra_params"];
+
+    string fax = 8;
+
+    string first_name = 9 [json_name = "first_name"];
+
+    string last_name = 10 [json_name = "last_name"];
+
+    string organization_name = 11 [json_name = "organization_name"];
+
+    string phone_number = 12 [json_name = "phone_number"];
+
+    string state = 13;
+
+    string zip_code = 14 [json_name = "zip_code"];
+  }
+
+  message NameServer {
+    repeated string glue_ips = 1 [json_name = "glue_ips"];
+
+    string name = 2;
+  }
+
+  message RegistrantContact {
+    string address_line_1 = 1 [json_name = "address_line_1"];
+
+    string address_line_2 = 2 [json_name = "address_line_2"];
+
+    string city = 3;
+
+    string contact_type = 4 [json_name = "contact_type"];
+
+    string country_code = 5 [json_name = "country_code"];
+
+    string email = 6;
+
+    map<string, string> extra_params = 7 [json_name = "extra_params"];
+
+    string fax = 8;
+
+    string first_name = 9 [json_name = "first_name"];
+
+    string last_name = 10 [json_name = "last_name"];
+
+    string organization_name = 11 [json_name = "organization_name"];
+
+    string phone_number = 12 [json_name = "phone_number"];
+
+    string state = 13;
+
+    string zip_code = 14 [json_name = "zip_code"];
+  }
+
+  message TechContact {
+    string address_line_1 = 1 [json_name = "address_line_1"];
+
+    string address_line_2 = 2 [json_name = "address_line_2"];
+
+    string city = 3;
+
+    string contact_type = 4 [json_name = "contact_type"];
+
+    string country_code = 5 [json_name = "country_code"];
+
+    string email = 6;
+
+    map<string, string> extra_params = 7 [json_name = "extra_params"];
+
+    string fax = 8;
+
+    string first_name = 9 [json_name = "first_name"];
+
+    string last_name = 10 [json_name = "last_name"];
+
+    string organization_name = 11 [json_name = "organization_name"];
+
+    string phone_number = 12 [json_name = "phone_number"];
+
+    string state = 13;
+
+    string zip_code = 14 [json_name = "zip_code"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string update = 2;
+  }
+}

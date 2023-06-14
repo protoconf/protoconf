@@ -1,0 +1,189 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsWorkspacesDirectory version is 0
+message AwsWorkspacesDirectory {
+  string alias = 1;
+
+  string customer_user_name = 2 [json_name = "customer_user_name"];
+
+  string directory_id = 3 [json_name = "directory_id"];
+
+  string directory_name = 4 [json_name = "directory_name"];
+
+  string directory_type = 5 [json_name = "directory_type"];
+
+  repeated string dns_ip_addresses = 6 [json_name = "dns_ip_addresses"];
+
+  string iam_role_id = 7 [json_name = "iam_role_id"];
+
+  string id = 8;
+
+  repeated string ip_group_ids = 9 [json_name = "ip_group_ids"];
+
+  string registration_code = 10 [json_name = "registration_code"];
+
+  repeated string subnet_ids = 11 [json_name = "subnet_ids"];
+
+  map<string, string> tags = 12;
+
+  map<string, string> tags_all = 13 [json_name = "tags_all"];
+
+  string workspace_security_group_id = 14 [json_name = "workspace_security_group_id"];
+
+  SelfServicePermissions self_service_permissions = 15 [json_name = "self_service_permissions"];
+
+  WorkspaceAccessProperties workspace_access_properties = 16 [json_name = "workspace_access_properties"];
+
+  WorkspaceCreationProperties workspace_creation_properties = 17 [json_name = "workspace_creation_properties"];
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+
+  message SelfServicePermissions {
+    bool change_compute_type = 1 [json_name = "change_compute_type"];
+
+    bool increase_volume_size = 2 [json_name = "increase_volume_size"];
+
+    bool rebuild_workspace = 3 [json_name = "rebuild_workspace"];
+
+    bool restart_workspace = 4 [json_name = "restart_workspace"];
+
+    bool switch_running_mode = 5 [json_name = "switch_running_mode"];
+  }
+
+  message WorkspaceAccessProperties {
+    string device_type_android = 1 [json_name = "device_type_android"];
+
+    string device_type_chromeos = 2 [json_name = "device_type_chromeos"];
+
+    string device_type_ios = 3 [json_name = "device_type_ios"];
+
+    string device_type_linux = 4 [json_name = "device_type_linux"];
+
+    string device_type_osx = 5 [json_name = "device_type_osx"];
+
+    string device_type_web = 6 [json_name = "device_type_web"];
+
+    string device_type_windows = 7 [json_name = "device_type_windows"];
+
+    string device_type_zeroclient = 8 [json_name = "device_type_zeroclient"];
+  }
+
+  message WorkspaceCreationProperties {
+    string custom_security_group_id = 1 [json_name = "custom_security_group_id"];
+
+    string default_ou = 2 [json_name = "default_ou"];
+
+    bool enable_internet_access = 3 [json_name = "enable_internet_access"];
+
+    bool enable_maintenance_mode = 4 [json_name = "enable_maintenance_mode"];
+
+    bool user_enabled_as_local_administrator = 5 [json_name = "user_enabled_as_local_administrator"];
+  }
+}
+
+// AwsWorkspacesIpGroup version is 0
+message AwsWorkspacesIpGroup {
+  string description = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  map<string, string> tags = 4;
+
+  map<string, string> tags_all = 5 [json_name = "tags_all"];
+
+  repeated Rules rules = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Rules {
+    string description = 1;
+
+    string source = 2;
+  }
+}
+
+// AwsWorkspacesWorkspace version is 0
+message AwsWorkspacesWorkspace {
+  string bundle_id = 1 [json_name = "bundle_id"];
+
+  string computer_name = 2 [json_name = "computer_name"];
+
+  string directory_id = 3 [json_name = "directory_id"];
+
+  string id = 4;
+
+  string ip_address = 5 [json_name = "ip_address"];
+
+  bool root_volume_encryption_enabled = 6 [json_name = "root_volume_encryption_enabled"];
+
+  string state = 7;
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  string user_name = 10 [json_name = "user_name"];
+
+  bool user_volume_encryption_enabled = 11 [json_name = "user_volume_encryption_enabled"];
+
+  string volume_encryption_key = 12 [json_name = "volume_encryption_key"];
+
+  repeated Timeouts timeouts = 13;
+
+  WorkspaceProperties workspace_properties = 14 [json_name = "workspace_properties"];
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+
+  message WorkspaceProperties {
+    string compute_type_name = 1 [json_name = "compute_type_name"];
+
+    int64 root_volume_size_gib = 2 [json_name = "root_volume_size_gib"];
+
+    string running_mode = 3 [json_name = "running_mode"];
+
+    int64 running_mode_auto_stop_timeout_in_minutes = 4 [
+      json_name = "running_mode_auto_stop_timeout_in_minutes"
+    ];
+
+    int64 user_volume_size_gib = 5 [json_name = "user_volume_size_gib"];
+  }
+}

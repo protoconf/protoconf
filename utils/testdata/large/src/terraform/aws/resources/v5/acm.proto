@@ -1,0 +1,129 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsAcmCertificate version is 0
+message AwsAcmCertificate {
+  string arn = 1;
+
+  string certificate_authority_arn = 2 [json_name = "certificate_authority_arn"];
+
+  string certificate_body = 3 [json_name = "certificate_body"];
+
+  string certificate_chain = 4 [json_name = "certificate_chain"];
+
+  string domain_name = 5 [json_name = "domain_name"];
+
+  repeated DomainValidationOptions domain_validation_options = 6 [json_name = "domain_validation_options"];
+
+  string early_renewal_duration = 7 [json_name = "early_renewal_duration"];
+
+  string id = 8;
+
+  string key_algorithm = 9 [json_name = "key_algorithm"];
+
+  string not_after = 10 [json_name = "not_after"];
+
+  string not_before = 11 [json_name = "not_before"];
+
+  bool pending_renewal = 12 [json_name = "pending_renewal"];
+
+  string private_key = 13 [json_name = "private_key"];
+
+  string renewal_eligibility = 14 [json_name = "renewal_eligibility"];
+
+  repeated RenewalSummary renewal_summary = 15 [json_name = "renewal_summary"];
+
+  string status = 16;
+
+  repeated string subject_alternative_names = 17 [json_name = "subject_alternative_names"];
+
+  map<string, string> tags = 18;
+
+  map<string, string> tags_all = 19 [json_name = "tags_all"];
+
+  string type = 20;
+
+  repeated string validation_emails = 21 [json_name = "validation_emails"];
+
+  string validation_method = 22 [json_name = "validation_method"];
+
+  Options options = 23;
+
+  repeated ValidationOption validation_option = 24 [json_name = "validation_option"];
+
+  map<string, string> for_each = 25 [json_name = "for_each"];
+
+  repeated string depends_on = 26 [json_name = "depends_on"];
+
+  int32 count = 27;
+
+  string provider = 28;
+
+  terraform.v1.Lifecycle lifecycle = 29;
+
+  message DomainValidationOptions {
+    // domain_name: string
+    string domain_name = 1 [json_name = "domain_name"];
+
+    // resource_record_name: string
+    string resource_record_name = 2 [json_name = "resource_record_name"];
+
+    // resource_record_type: string
+    string resource_record_type = 3 [json_name = "resource_record_type"];
+
+    // resource_record_value: string
+    string resource_record_value = 4 [json_name = "resource_record_value"];
+  }
+
+  message RenewalSummary {
+    // renewal_status: string
+    string renewal_status = 1 [json_name = "renewal_status"];
+
+    // renewal_status_reason: string
+    string renewal_status_reason = 2 [json_name = "renewal_status_reason"];
+
+    // updated_at: string
+    string updated_at = 3 [json_name = "updated_at"];
+  }
+
+  message Options {
+    string certificate_transparency_logging_preference = 1 [
+      json_name = "certificate_transparency_logging_preference"
+    ];
+  }
+
+  message ValidationOption {
+    string domain_name = 1 [json_name = "domain_name"];
+
+    string validation_domain = 2 [json_name = "validation_domain"];
+  }
+}
+
+// AwsAcmCertificateValidation version is 0
+message AwsAcmCertificateValidation {
+  string certificate_arn = 1 [json_name = "certificate_arn"];
+
+  string id = 2;
+
+  repeated string validation_record_fqdns = 3 [json_name = "validation_record_fqdns"];
+
+  repeated Timeouts timeouts = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message Timeouts {
+    string create = 1;
+  }
+}

@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsEip version is 0
+message AwsEip {
+  string association_id = 1 [json_name = "association_id"];
+
+  string carrier_ip = 2 [json_name = "carrier_ip"];
+
+  string customer_owned_ip = 3 [json_name = "customer_owned_ip"];
+
+  string customer_owned_ipv4_pool = 4 [json_name = "customer_owned_ipv4_pool"];
+
+  string domain = 5;
+
+  string id = 6;
+
+  string instance_id = 7 [json_name = "instance_id"];
+
+  string network_interface_id = 8 [json_name = "network_interface_id"];
+
+  string network_interface_owner_id = 9 [json_name = "network_interface_owner_id"];
+
+  string private_dns = 10 [json_name = "private_dns"];
+
+  string private_ip = 11 [json_name = "private_ip"];
+
+  string public_dns = 12 [json_name = "public_dns"];
+
+  string public_ip = 13 [json_name = "public_ip"];
+
+  string public_ipv4_pool = 14 [json_name = "public_ipv4_pool"];
+
+  map<string, string> tags = 15;
+
+  repeated Filter filter = 16;
+
+  repeated Timeouts timeouts = 17;
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+
+  message Timeouts {
+    string read = 1;
+  }
+}

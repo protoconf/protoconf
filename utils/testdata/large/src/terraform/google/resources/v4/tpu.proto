@@ -1,0 +1,100 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleTpuNode version is 0
+message GoogleTpuNode {
+  // The type of hardware accelerators associated with this node.
+  string accelerator_type = 1 [json_name = "accelerator_type"];
+
+  // The CIDR block that the TPU node will use when selecting an IP
+  // address. This CIDR block must be a /29 block; the Compute Engine
+  // networks API forbids a smaller block, and using a larger block would
+  // be wasteful (a node can only consume one IP address).
+  //
+  // Errors will occur if the CIDR block has already been used for a
+  // currently existing TPU node, the CIDR block conflicts with any
+  // subnetworks in the user's provided network, or the provided network
+  // is peered with another network that is using that CIDR block.
+  string cidr_block = 2 [json_name = "cidr_block"];
+
+  // The user-supplied description of the TPU. Maximum of 512 characters.
+  string description = 3;
+
+  string id = 4;
+
+  // Resource labels to represent user provided metadata.
+  map<string, string> labels = 5;
+
+  // The immutable name of the TPU.
+  string name = 6;
+
+  // The name of a network to peer the TPU node to. It must be a
+  // preexisting Compute Engine network inside of the project on which
+  // this API has been activated. If none is provided, "default" will be
+  // used.
+  string network = 7;
+
+  // The network endpoints where TPU workers can be accessed and sent work.
+  // It is recommended that Tensorflow clients of the node first reach out
+  // to the first (index 0) entry.
+  repeated NetworkEndpoints network_endpoints = 8 [json_name = "network_endpoints"];
+
+  string project = 9;
+
+  // The service account used to run the tensor flow services within the
+  // node. To share resources, including Google Cloud Storage data, with
+  // the Tensorflow job running in the Node, this account must have
+  // permissions to that data.
+  string service_account = 10 [json_name = "service_account"];
+
+  // The version of Tensorflow running in the Node.
+  string tensorflow_version = 11 [json_name = "tensorflow_version"];
+
+  // Whether the VPC peering for the node is set up through Service Networking API.
+  // The VPC Peering should be set up before provisioning the node. If this field is set,
+  // cidr_block field should not be specified. If the network that you want to peer the
+  // TPU Node to is a Shared VPC network, the node must be created with this this field enabled.
+  bool use_service_networking = 12 [json_name = "use_service_networking"];
+
+  // The GCP location for the TPU. If it is not provided, the provider zone is used.
+  string zone = 13;
+
+  SchedulingConfig scheduling_config = 14 [json_name = "scheduling_config"];
+
+  repeated Timeouts timeouts = 15;
+
+  map<string, string> for_each = 16 [json_name = "for_each"];
+
+  repeated string depends_on = 17 [json_name = "depends_on"];
+
+  int32 count = 18;
+
+  string provider = 19;
+
+  terraform.v1.Lifecycle lifecycle = 20;
+
+  message NetworkEndpoints {
+    // ip_address: string
+    string ip_address = 1 [json_name = "ip_address"];
+
+    // port: number
+    int64 port = 2;
+  }
+
+  message SchedulingConfig {
+    // Defines whether the TPU instance is preemptible.
+    bool preemptible = 1;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

@@ -1,0 +1,197 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsChimeVoiceConnector version is 0
+message AwsChimeVoiceConnector {
+  string arn = 1;
+
+  string aws_region = 2 [json_name = "aws_region"];
+
+  string id = 3;
+
+  string name = 4;
+
+  string outbound_host_name = 5 [json_name = "outbound_host_name"];
+
+  bool require_encryption = 6 [json_name = "require_encryption"];
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+}
+
+// AwsChimeVoiceConnectorGroup version is 0
+message AwsChimeVoiceConnectorGroup {
+  string id = 1;
+
+  string name = 2;
+
+  repeated Connector connector = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+
+  message Connector {
+    int64 priority = 1;
+
+    string voice_connector_id = 2 [json_name = "voice_connector_id"];
+  }
+}
+
+// AwsChimeVoiceConnectorLogging version is 0
+message AwsChimeVoiceConnectorLogging {
+  bool enable_media_metric_logs = 1 [json_name = "enable_media_metric_logs"];
+
+  bool enable_sip_logs = 2 [json_name = "enable_sip_logs"];
+
+  string id = 3;
+
+  string voice_connector_id = 4 [json_name = "voice_connector_id"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsChimeVoiceConnectorOrigination version is 0
+message AwsChimeVoiceConnectorOrigination {
+  bool disabled = 1;
+
+  string id = 2;
+
+  string voice_connector_id = 3 [json_name = "voice_connector_id"];
+
+  repeated Route route = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message Route {
+    string host = 1;
+
+    int64 port = 2;
+
+    int64 priority = 3;
+
+    string protocol = 4;
+
+    int64 weight = 5;
+  }
+}
+
+// AwsChimeVoiceConnectorStreaming version is 0
+message AwsChimeVoiceConnectorStreaming {
+  int64 data_retention = 1 [json_name = "data_retention"];
+
+  bool disabled = 2;
+
+  string id = 3;
+
+  repeated string streaming_notification_targets = 4 [json_name = "streaming_notification_targets"];
+
+  string voice_connector_id = 5 [json_name = "voice_connector_id"];
+
+  MediaInsightsConfiguration media_insights_configuration = 6 [json_name = "media_insights_configuration"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message MediaInsightsConfiguration {
+    string configuration_arn = 1 [json_name = "configuration_arn"];
+
+    bool disabled = 2;
+  }
+}
+
+// AwsChimeVoiceConnectorTermination version is 0
+message AwsChimeVoiceConnectorTermination {
+  repeated string calling_regions = 1 [json_name = "calling_regions"];
+
+  repeated string cidr_allow_list = 2 [json_name = "cidr_allow_list"];
+
+  int64 cps_limit = 3 [json_name = "cps_limit"];
+
+  string default_phone_number = 4 [json_name = "default_phone_number"];
+
+  bool disabled = 5;
+
+  string id = 6;
+
+  string voice_connector_id = 7 [json_name = "voice_connector_id"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsChimeVoiceConnectorTerminationCredentials version is 0
+message AwsChimeVoiceConnectorTerminationCredentials {
+  string id = 1;
+
+  string voice_connector_id = 2 [json_name = "voice_connector_id"];
+
+  repeated Credentials credentials = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+
+  message Credentials {
+    string password = 1;
+
+    string username = 2;
+  }
+}

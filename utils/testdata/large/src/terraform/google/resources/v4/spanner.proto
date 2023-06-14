@@ -1,0 +1,330 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleSpannerDatabase version is 0
+message GoogleSpannerDatabase {
+  // The dialect of the Cloud Spanner Database.
+  // If it is not provided, "GOOGLE_STANDARD_SQL" will be used. Possible values: ["GOOGLE_STANDARD_SQL", "POSTGRESQL"]
+  string database_dialect = 1 [json_name = "database_dialect"];
+
+  // An optional list of DDL statements to run inside the newly created
+  // database. Statements can create tables, indexes, etc. These statements
+  // execute atomically with the creation of the database: if there is an
+  // error in any statement, the database is not created.
+  repeated string ddl = 2;
+
+  // Whether or not to allow Terraform to destroy the instance. Unless this field is set to false
+  // in Terraform state, a 'terraform destroy' or 'terraform apply' that would delete the instance will fail.
+  bool deletion_protection = 3 [json_name = "deletion_protection"];
+
+  string id = 4;
+
+  // The instance to create the database on.
+  string instance = 5;
+
+  // A unique identifier for the database, which cannot be changed after
+  // the instance is created. Values are of the form [a-z][-a-z0-9]*[a-z0-9].
+  string name = 6;
+
+  string project = 7;
+
+  // An explanation of the status of the database.
+  string state = 8;
+
+  // The retention period for the database. The retention period must be between 1 hour
+  // and 7 days, and can be specified in days, hours, minutes, or seconds. For example,
+  // the values 1d, 24h, 1440m, and 86400s are equivalent. Default value is 1h.
+  // If this property is used, you must avoid adding new DDL statements to 'ddl' that
+  // update the database's version_retention_period.
+  string version_retention_period = 9 [json_name = "version_retention_period"];
+
+  EncryptionConfig encryption_config = 10 [json_name = "encryption_config"];
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message EncryptionConfig {
+    // Fully qualified name of the KMS key to use to encrypt this database. This key must exist
+    // in the same location as the Spanner Database.
+    string kms_key_name = 1 [json_name = "kms_key_name"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleSpannerDatabaseIamBinding version is 0
+message GoogleSpannerDatabaseIamBinding {
+  string database = 1;
+
+  string etag = 2;
+
+  string id = 3;
+
+  string instance = 4;
+
+  repeated string members = 5;
+
+  string project = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleSpannerDatabaseIamMember version is 0
+message GoogleSpannerDatabaseIamMember {
+  string database = 1;
+
+  string etag = 2;
+
+  string id = 3;
+
+  string instance = 4;
+
+  string member = 5;
+
+  string project = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleSpannerDatabaseIamPolicy version is 0
+message GoogleSpannerDatabaseIamPolicy {
+  string database = 1;
+
+  string etag = 2;
+
+  string id = 3;
+
+  string instance = 4;
+
+  string policy_data = 5 [json_name = "policy_data"];
+
+  string project = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleSpannerInstance version is 0
+message GoogleSpannerInstance {
+  // The name of the instance's configuration (similar but not
+  // quite the same as a region) which defines the geographic placement and
+  // replication of your databases in this instance. It determines where your data
+  // is stored. Values are typically of the form 'regional-europe-west1' , 'us-central' etc.
+  // In order to obtain a valid list please consult the
+  // [Configuration section of the docs](https://cloud.google.com/spanner/docs/instances).
+  string config = 1;
+
+  // The descriptive name for this instance as it appears in UIs. Must be
+  // unique per project and between 4 and 30 characters in length.
+  string display_name = 2 [json_name = "display_name"];
+
+  // When deleting a spanner instance, this boolean option will delete all backups of this instance.
+  // This must be set to true if you created a backup manually in the console.
+  bool force_destroy = 3 [json_name = "force_destroy"];
+
+  string id = 4;
+
+  // An object containing a list of "key": value pairs.
+  // Example: { "name": "wrench", "mass": "1.3kg", "count": "3" }.
+  map<string, string> labels = 5;
+
+  // A unique identifier for the instance, which cannot be changed after
+  // the instance is created. The name must be between 6 and 30 characters
+  // in length.
+  //
+  //
+  // If not provided, a random string starting with 'tf-' will be selected.
+  string name = 6;
+
+  // The number of nodes allocated to this instance. Exactly one of either node_count or processing_units
+  // must be present in terraform.
+  int64 num_nodes = 7 [json_name = "num_nodes"];
+
+  // The number of processing units allocated to this instance. Exactly one of processing_units
+  // or node_count must be present in terraform.
+  int64 processing_units = 8 [json_name = "processing_units"];
+
+  string project = 9;
+
+  // Instance status: 'CREATING' or 'READY'.
+  string state = 10;
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleSpannerInstanceIamBinding version is 0
+message GoogleSpannerInstanceIamBinding {
+  string etag = 1;
+
+  string id = 2;
+
+  string instance = 3;
+
+  repeated string members = 4;
+
+  string project = 5;
+
+  string role = 6;
+
+  Condition condition = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleSpannerInstanceIamMember version is 0
+message GoogleSpannerInstanceIamMember {
+  string etag = 1;
+
+  string id = 2;
+
+  string instance = 3;
+
+  string member = 4;
+
+  string project = 5;
+
+  string role = 6;
+
+  Condition condition = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleSpannerInstanceIamPolicy version is 0
+message GoogleSpannerInstanceIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string instance = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}

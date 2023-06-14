@@ -1,0 +1,238 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsNetworkfirewallFirewall version is 0
+message AwsNetworkfirewallFirewall {
+  string arn = 1;
+
+  bool delete_protection = 2 [json_name = "delete_protection"];
+
+  string description = 3;
+
+  repeated EncryptionConfiguration encryption_configuration = 4 [json_name = "encryption_configuration"];
+
+  string firewall_policy_arn = 5 [json_name = "firewall_policy_arn"];
+
+  bool firewall_policy_change_protection = 6 [json_name = "firewall_policy_change_protection"];
+
+  repeated FirewallStatus firewall_status = 7 [json_name = "firewall_status"];
+
+  string id = 8;
+
+  string name = 9;
+
+  bool subnet_change_protection = 10 [json_name = "subnet_change_protection"];
+
+  repeated SubnetMapping subnet_mapping = 11 [json_name = "subnet_mapping"];
+
+  map<string, string> tags = 12;
+
+  string update_token = 13 [json_name = "update_token"];
+
+  string vpc_id = 14 [json_name = "vpc_id"];
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+
+  message EncryptionConfiguration {
+    // key_id: string
+    string key_id = 1 [json_name = "key_id"];
+
+    // type: string
+    string type = 2;
+  }
+
+  message FirewallStatus {
+    // capacity_usage_summary: set of object
+    repeated CapacityUsageSummary capacity_usage_summary = 1 [json_name = "capacity_usage_summary"];
+
+    // configuration_sync_state_summary: string
+    string configuration_sync_state_summary = 2 [json_name = "configuration_sync_state_summary"];
+
+    // status: string
+    string status = 3;
+
+    // sync_states: set of object
+    repeated SyncStates sync_states = 4 [json_name = "sync_states"];
+
+    message CapacityUsageSummary {
+      // cidrs: set of object
+      repeated Cidrs cidrs = 1;
+
+      message Cidrs {
+        // available_cidr_count: number
+        int64 available_cidr_count = 1 [json_name = "available_cidr_count"];
+
+        // ip_set_references: set of object
+        repeated IpSetReferences ip_set_references = 2 [json_name = "ip_set_references"];
+
+        // utilized_cidr_count: number
+        int64 utilized_cidr_count = 3 [json_name = "utilized_cidr_count"];
+
+        message IpSetReferences {
+          // resolved_cidr_count: number
+          int64 resolved_cidr_count = 1 [json_name = "resolved_cidr_count"];
+        }
+      }
+    }
+
+    message SyncStates {
+      // attachment: list of object
+      repeated Attachment attachment = 1;
+
+      // availability_zone: string
+      string availability_zone = 2 [json_name = "availability_zone"];
+
+      message Attachment {
+        // endpoint_id: string
+        string endpoint_id = 1 [json_name = "endpoint_id"];
+
+        // status: string
+        string status = 2;
+
+        // subnet_id: string
+        string subnet_id = 3 [json_name = "subnet_id"];
+      }
+    }
+  }
+
+  message SubnetMapping {
+    // subnet_id: string
+    string subnet_id = 1 [json_name = "subnet_id"];
+  }
+}
+
+// AwsNetworkfirewallFirewallPolicy version is 0
+message AwsNetworkfirewallFirewallPolicy {
+  string arn = 1;
+
+  string description = 2;
+
+  repeated FirewallPolicy firewall_policy = 3 [json_name = "firewall_policy"];
+
+  string id = 4;
+
+  string name = 5;
+
+  map<string, string> tags = 6;
+
+  string update_token = 7 [json_name = "update_token"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message FirewallPolicy {
+    // stateful_default_actions: set of string
+    repeated string stateful_default_actions = 1 [json_name = "stateful_default_actions"];
+
+    // stateful_engine_options: list of object
+    repeated StatefulEngineOptions stateful_engine_options = 2 [json_name = "stateful_engine_options"];
+
+    // stateful_rule_group_reference: set of object
+    repeated StatefulRuleGroupReference stateful_rule_group_reference = 3 [json_name = "stateful_rule_group_reference"];
+
+    // stateless_custom_action: set of object
+    repeated StatelessCustomAction stateless_custom_action = 4 [json_name = "stateless_custom_action"];
+
+    // stateless_default_actions: set of string
+    repeated string stateless_default_actions = 5 [json_name = "stateless_default_actions"];
+
+    // stateless_fragment_default_actions: set of string
+    repeated string stateless_fragment_default_actions = 6 [json_name = "stateless_fragment_default_actions"];
+
+    // stateless_rule_group_reference: set of object
+    repeated StatelessRuleGroupReference stateless_rule_group_reference = 7 [json_name = "stateless_rule_group_reference"];
+
+    message StatefulEngineOptions {
+      // rule_order: string
+      string rule_order = 1 [json_name = "rule_order"];
+
+      // stream_exception_policy: string
+      string stream_exception_policy = 2 [json_name = "stream_exception_policy"];
+    }
+
+    message StatefulRuleGroupReference {
+      // override: list of object
+      repeated Override override = 1;
+
+      // priority: number
+      int64 priority = 2;
+
+      // resource_arn: string
+      string resource_arn = 3 [json_name = "resource_arn"];
+
+      message Override {
+        // action: string
+        string action = 1;
+      }
+    }
+
+    message StatelessCustomAction {
+      // action_definition: list of object
+      repeated ActionDefinition action_definition = 1 [json_name = "action_definition"];
+
+      // action_name: string
+      string action_name = 2 [json_name = "action_name"];
+
+      message ActionDefinition {
+        // publish_metric_action: list of object
+        repeated PublishMetricAction publish_metric_action = 1 [json_name = "publish_metric_action"];
+
+        message PublishMetricAction {
+          // dimension: set of object
+          repeated Dimension dimension = 1;
+
+          message Dimension {
+            // value: string
+            string value = 1;
+          }
+        }
+      }
+    }
+
+    message StatelessRuleGroupReference {
+      // priority: number
+      int64 priority = 1;
+
+      // resource_arn: string
+      string resource_arn = 2 [json_name = "resource_arn"];
+    }
+  }
+}
+
+// AwsNetworkfirewallResourcePolicy version is 0
+message AwsNetworkfirewallResourcePolicy {
+  string id = 1;
+
+  string policy = 2;
+
+  string resource_arn = 3 [json_name = "resource_arn"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}

@@ -1,0 +1,112 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsCloudsearchDomain version is 0
+message AwsCloudsearchDomain {
+  string arn = 1;
+
+  string document_service_endpoint = 2 [json_name = "document_service_endpoint"];
+
+  string domain_id = 3 [json_name = "domain_id"];
+
+  string id = 4;
+
+  bool multi_az = 5 [json_name = "multi_az"];
+
+  string name = 6;
+
+  string search_service_endpoint = 7 [json_name = "search_service_endpoint"];
+
+  EndpointOptions endpoint_options = 8 [json_name = "endpoint_options"];
+
+  repeated IndexField index_field = 9 [json_name = "index_field"];
+
+  ScalingParameters scaling_parameters = 10 [json_name = "scaling_parameters"];
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message EndpointOptions {
+    bool enforce_https = 1 [json_name = "enforce_https"];
+
+    string tls_security_policy = 2 [json_name = "tls_security_policy"];
+  }
+
+  message IndexField {
+    string analysis_scheme = 1 [json_name = "analysis_scheme"];
+
+    string default_value = 2 [json_name = "default_value"];
+
+    bool facet = 3;
+
+    bool highlight = 4;
+
+    string name = 5;
+
+    bool return = 6;
+
+    bool search = 7;
+
+    bool sort = 8;
+
+    string source_fields = 9 [json_name = "source_fields"];
+
+    string type = 10;
+  }
+
+  message ScalingParameters {
+    string desired_instance_type = 1 [json_name = "desired_instance_type"];
+
+    int64 desired_partition_count = 2 [json_name = "desired_partition_count"];
+
+    int64 desired_replication_count = 3 [json_name = "desired_replication_count"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsCloudsearchDomainServiceAccessPolicy version is 0
+message AwsCloudsearchDomainServiceAccessPolicy {
+  string access_policy = 1 [json_name = "access_policy"];
+
+  string domain_name = 2 [json_name = "domain_name"];
+
+  string id = 3;
+
+  repeated Timeouts timeouts = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message Timeouts {
+    string delete = 1;
+
+    string update = 2;
+  }
+}

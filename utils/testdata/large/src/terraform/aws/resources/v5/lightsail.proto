@@ -1,0 +1,937 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsLightsailBucket version is 0
+message AwsLightsailBucket {
+  string arn = 1;
+
+  string availability_zone = 2 [json_name = "availability_zone"];
+
+  string bundle_id = 3 [json_name = "bundle_id"];
+
+  string created_at = 4 [json_name = "created_at"];
+
+  string id = 5;
+
+  string name = 6;
+
+  string region = 7;
+
+  string support_code = 8 [json_name = "support_code"];
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  string url = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+}
+
+// AwsLightsailBucketAccessKey version is 0
+message AwsLightsailBucketAccessKey {
+  string access_key_id = 1 [json_name = "access_key_id"];
+
+  string bucket_name = 2 [json_name = "bucket_name"];
+
+  string created_at = 3 [json_name = "created_at"];
+
+  string id = 4;
+
+  string secret_access_key = 5 [json_name = "secret_access_key"];
+
+  string status = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsLightsailBucketResourceAccess version is 0
+message AwsLightsailBucketResourceAccess {
+  string bucket_name = 1 [json_name = "bucket_name"];
+
+  string id = 2;
+
+  string resource_name = 3 [json_name = "resource_name"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsLightsailCertificate version is 0
+message AwsLightsailCertificate {
+  string arn = 1;
+
+  string created_at = 2 [json_name = "created_at"];
+
+  string domain_name = 3 [json_name = "domain_name"];
+
+  repeated DomainValidationOptions domain_validation_options = 4 [json_name = "domain_validation_options"];
+
+  string id = 5;
+
+  string name = 6;
+
+  repeated string subject_alternative_names = 7 [json_name = "subject_alternative_names"];
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message DomainValidationOptions {
+    // domain_name: string
+    string domain_name = 1 [json_name = "domain_name"];
+
+    // resource_record_name: string
+    string resource_record_name = 2 [json_name = "resource_record_name"];
+
+    // resource_record_type: string
+    string resource_record_type = 3 [json_name = "resource_record_type"];
+
+    // resource_record_value: string
+    string resource_record_value = 4 [json_name = "resource_record_value"];
+  }
+}
+
+// AwsLightsailContainerService version is 0
+message AwsLightsailContainerService {
+  string arn = 1;
+
+  string availability_zone = 2 [json_name = "availability_zone"];
+
+  string created_at = 3 [json_name = "created_at"];
+
+  string id = 4;
+
+  bool is_disabled = 5 [json_name = "is_disabled"];
+
+  string name = 6;
+
+  string power = 7;
+
+  string power_id = 8 [json_name = "power_id"];
+
+  string principal_arn = 9 [json_name = "principal_arn"];
+
+  string private_domain_name = 10 [json_name = "private_domain_name"];
+
+  string resource_type = 11 [json_name = "resource_type"];
+
+  int64 scale = 12;
+
+  string state = 13;
+
+  map<string, string> tags = 14;
+
+  map<string, string> tags_all = 15 [json_name = "tags_all"];
+
+  string url = 16;
+
+  PrivateRegistryAccess private_registry_access = 17 [json_name = "private_registry_access"];
+
+  PublicDomainNames public_domain_names = 18 [json_name = "public_domain_names"];
+
+  repeated Timeouts timeouts = 19;
+
+  map<string, string> for_each = 20 [json_name = "for_each"];
+
+  repeated string depends_on = 21 [json_name = "depends_on"];
+
+  int32 count = 22;
+
+  string provider = 23;
+
+  terraform.v1.Lifecycle lifecycle = 24;
+
+  message PrivateRegistryAccess {
+    EcrImagePullerRole ecr_image_puller_role = 1 [json_name = "ecr_image_puller_role"];
+
+    message EcrImagePullerRole {
+      bool is_active = 1 [json_name = "is_active"];
+
+      string principal_arn = 2 [json_name = "principal_arn"];
+    }
+  }
+
+  message PublicDomainNames {
+    repeated Certificate certificate = 1;
+
+    message Certificate {
+      string certificate_name = 1 [json_name = "certificate_name"];
+
+      repeated string domain_names = 2 [json_name = "domain_names"];
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsLightsailContainerServiceDeploymentVersion version is 0
+message AwsLightsailContainerServiceDeploymentVersion {
+  string created_at = 1 [json_name = "created_at"];
+
+  string id = 2;
+
+  string service_name = 3 [json_name = "service_name"];
+
+  string state = 4;
+
+  int64 version = 5;
+
+  repeated Container container = 6;
+
+  PublicEndpoint public_endpoint = 7 [json_name = "public_endpoint"];
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Container {
+    repeated string command = 1;
+
+    string container_name = 2 [json_name = "container_name"];
+
+    map<string, string> environment = 3;
+
+    string image = 4;
+
+    map<string, string> ports = 5;
+  }
+
+  message PublicEndpoint {
+    string container_name = 1 [json_name = "container_name"];
+
+    int64 container_port = 2 [json_name = "container_port"];
+
+    HealthCheck health_check = 3 [json_name = "health_check"];
+
+    message HealthCheck {
+      int64 healthy_threshold = 1 [json_name = "healthy_threshold"];
+
+      int64 interval_seconds = 2 [json_name = "interval_seconds"];
+
+      string path = 3;
+
+      string success_codes = 4 [json_name = "success_codes"];
+
+      int64 timeout_seconds = 5 [json_name = "timeout_seconds"];
+
+      int64 unhealthy_threshold = 6 [json_name = "unhealthy_threshold"];
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+  }
+}
+
+// AwsLightsailDatabase version is 0
+message AwsLightsailDatabase {
+  bool apply_immediately = 1 [json_name = "apply_immediately"];
+
+  string arn = 2;
+
+  string availability_zone = 3 [json_name = "availability_zone"];
+
+  bool backup_retention_enabled = 4 [json_name = "backup_retention_enabled"];
+
+  string blueprint_id = 5 [json_name = "blueprint_id"];
+
+  string bundle_id = 6 [json_name = "bundle_id"];
+
+  string ca_certificate_identifier = 7 [json_name = "ca_certificate_identifier"];
+
+  int64 cpu_count = 8 [json_name = "cpu_count"];
+
+  string created_at = 9 [json_name = "created_at"];
+
+  int64 disk_size = 10 [json_name = "disk_size"];
+
+  string engine = 11;
+
+  string engine_version = 12 [json_name = "engine_version"];
+
+  string final_snapshot_name = 13 [json_name = "final_snapshot_name"];
+
+  string id = 14;
+
+  string master_database_name = 15 [json_name = "master_database_name"];
+
+  string master_endpoint_address = 16 [json_name = "master_endpoint_address"];
+
+  int64 master_endpoint_port = 17 [json_name = "master_endpoint_port"];
+
+  string master_password = 18 [json_name = "master_password"];
+
+  string master_username = 19 [json_name = "master_username"];
+
+  string preferred_backup_window = 20 [json_name = "preferred_backup_window"];
+
+  string preferred_maintenance_window = 21 [json_name = "preferred_maintenance_window"];
+
+  bool publicly_accessible = 22 [json_name = "publicly_accessible"];
+
+  int64 ram_size = 23 [json_name = "ram_size"];
+
+  string relational_database_name = 24 [json_name = "relational_database_name"];
+
+  string secondary_availability_zone = 25 [json_name = "secondary_availability_zone"];
+
+  bool skip_final_snapshot = 26 [json_name = "skip_final_snapshot"];
+
+  string support_code = 27 [json_name = "support_code"];
+
+  map<string, string> tags = 28;
+
+  map<string, string> tags_all = 29 [json_name = "tags_all"];
+
+  map<string, string> for_each = 30 [json_name = "for_each"];
+
+  repeated string depends_on = 31 [json_name = "depends_on"];
+
+  int32 count = 32;
+
+  string provider = 33;
+
+  terraform.v1.Lifecycle lifecycle = 34;
+}
+
+// AwsLightsailDisk version is 0
+message AwsLightsailDisk {
+  string arn = 1;
+
+  string availability_zone = 2 [json_name = "availability_zone"];
+
+  string created_at = 3 [json_name = "created_at"];
+
+  string id = 4;
+
+  string name = 5;
+
+  int64 size_in_gb = 6 [json_name = "size_in_gb"];
+
+  string support_code = 7 [json_name = "support_code"];
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+}
+
+// AwsLightsailDiskAttachment version is 0
+message AwsLightsailDiskAttachment {
+  string disk_name = 1 [json_name = "disk_name"];
+
+  string disk_path = 2 [json_name = "disk_path"];
+
+  string id = 3;
+
+  string instance_name = 4 [json_name = "instance_name"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsLightsailDistribution version is 0
+message AwsLightsailDistribution {
+  // The alternate domain names of the distribution.
+  repeated string alternative_domain_names = 1 [json_name = "alternative_domain_names"];
+
+  // The Amazon Resource Name (ARN) of the distribution.
+  string arn = 2;
+
+  // The bundle ID to use for the distribution.
+  string bundle_id = 3 [json_name = "bundle_id"];
+
+  // The name of the SSL/TLS certificate attached to the distribution, if any.
+  string certificate_name = 4 [json_name = "certificate_name"];
+
+  // The timestamp when the distribution was created.
+  string created_at = 5 [json_name = "created_at"];
+
+  // The domain name of the distribution.
+  string domain_name = 6 [json_name = "domain_name"];
+
+  string id = 7;
+
+  // The IP address type of the distribution.
+  string ip_address_type = 8 [json_name = "ip_address_type"];
+
+  // Indicates whether the distribution is enabled.
+  bool is_enabled = 9 [json_name = "is_enabled"];
+
+  // An object that describes the location of the distribution, such as the AWS Region and Availability Zone.
+  repeated Location location = 10;
+
+  // The name of the distribution.
+  string name = 11;
+
+  // The public DNS of the origin.
+  string origin_public_dns = 12 [json_name = "origin_public_dns"];
+
+  // The Lightsail resource type (e.g., Distribution).
+  string resource_type = 13 [json_name = "resource_type"];
+
+  // The status of the distribution.
+  string status = 14;
+
+  // The support code. Include this code in your email to support when you have questions about your Lightsail distribution. This code enables our support team to look up your Lightsail information more easily.
+  string support_code = 15 [json_name = "support_code"];
+
+  map<string, string> tags = 16;
+
+  map<string, string> tags_all = 17 [json_name = "tags_all"];
+
+  repeated CacheBehavior cache_behavior = 18 [json_name = "cache_behavior"];
+
+  CacheBehaviorSettings cache_behavior_settings = 19 [json_name = "cache_behavior_settings"];
+
+  DefaultCacheBehavior default_cache_behavior = 20 [json_name = "default_cache_behavior"];
+
+  Origin origin = 21;
+
+  repeated Timeouts timeouts = 22;
+
+  map<string, string> for_each = 23 [json_name = "for_each"];
+
+  repeated string depends_on = 24 [json_name = "depends_on"];
+
+  int32 count = 25;
+
+  string provider = 26;
+
+  terraform.v1.Lifecycle lifecycle = 27;
+
+  message Location {
+    // availability_zone: string
+    string availability_zone = 1 [json_name = "availability_zone"];
+
+    // region_name: string
+    string region_name = 2 [json_name = "region_name"];
+  }
+
+  message CacheBehavior {
+    // The cache behavior for the specified path.
+    string behavior = 1;
+
+    // The path to a directory or file to cached, or not cache. Use an asterisk symbol to specify wildcard directories (path/to/assets/*), and file types (*.html, *jpg, *js). Directories and file paths are case-sensitive.
+    string path = 2;
+  }
+
+  message CacheBehaviorSettings {
+    // The HTTP methods that are processed and forwarded to the distribution's origin.
+    string allowed_http_methods = 1 [json_name = "allowed_http_methods"];
+
+    // The HTTP method responses that are cached by your distribution.
+    string cached_http_methods = 2 [json_name = "cached_http_methods"];
+
+    // The default amount of time that objects stay in the distribution's cache before the distribution forwards another request to the origin to determine whether the content has been updated.
+    int64 default_ttl = 3 [json_name = "default_ttl"];
+
+    // The maximum amount of time that objects stay in the distribution's cache before the distribution forwards another request to the origin to determine whether the object has been updated.
+    int64 maximum_ttl = 4 [json_name = "maximum_ttl"];
+
+    // The minimum amount of time that objects stay in the distribution's cache before the distribution forwards another request to the origin to determine whether the object has been updated.
+    int64 minimum_ttl = 5 [json_name = "minimum_ttl"];
+
+    ForwardedCookies forwarded_cookies = 6 [json_name = "forwarded_cookies"];
+
+    ForwardedHeaders forwarded_headers = 7 [json_name = "forwarded_headers"];
+
+    ForwardedQueryStrings forwarded_query_strings = 8 [json_name = "forwarded_query_strings"];
+
+    message ForwardedCookies {
+      // The specific cookies to forward to your distribution's origin.
+      repeated string cookies_allow_list = 1 [json_name = "cookies_allow_list"];
+
+      // Specifies which cookies to forward to the distribution's origin for a cache behavior: all, none, or allow-list to forward only the cookies specified in the cookiesAllowList parameter.
+      string option = 2;
+    }
+
+    message ForwardedHeaders {
+      // The specific headers to forward to your distribution's origin.
+      repeated string headers_allow_list = 1 [json_name = "headers_allow_list"];
+
+      // The headers that you want your distribution to forward to your origin and base caching on.
+      string option = 2;
+    }
+
+    message ForwardedQueryStrings {
+      // Indicates whether the distribution forwards and caches based on query strings.
+      bool option = 1;
+
+      // The specific query strings that the distribution forwards to the origin.
+      repeated string query_strings_allowed_list = 2 [json_name = "query_strings_allowed_list"];
+    }
+  }
+
+  message DefaultCacheBehavior {
+    // The cache behavior of the distribution.
+    string behavior = 1;
+  }
+
+  message Origin {
+    // The name of the origin resource.
+    string name = 1;
+
+    // The protocol that your Amazon Lightsail distribution uses when establishing a connection with your origin to pull content.
+    string protocol_policy = 2 [json_name = "protocol_policy"];
+
+    // The AWS Region name of the origin resource.
+    string region_name = 3 [json_name = "region_name"];
+
+    // The resource type of the origin resource (e.g., Instance).
+    string resource_type = 4 [json_name = "resource_type"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsLightsailDomain version is 0
+message AwsLightsailDomain {
+  string arn = 1;
+
+  string domain_name = 2 [json_name = "domain_name"];
+
+  string id = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsLightsailDomainEntry version is 0
+message AwsLightsailDomainEntry {
+  string domain_name = 1 [json_name = "domain_name"];
+
+  string id = 2;
+
+  bool is_alias = 3 [json_name = "is_alias"];
+
+  string name = 4;
+
+  string target = 5;
+
+  string type = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsLightsailInstance version is 0
+message AwsLightsailInstance {
+  string arn = 1;
+
+  string availability_zone = 2 [json_name = "availability_zone"];
+
+  string blueprint_id = 3 [json_name = "blueprint_id"];
+
+  string bundle_id = 4 [json_name = "bundle_id"];
+
+  int64 cpu_count = 5 [json_name = "cpu_count"];
+
+  string created_at = 6 [json_name = "created_at"];
+
+  string id = 7;
+
+  string ip_address_type = 8 [json_name = "ip_address_type"];
+
+  repeated string ipv6_addresses = 9 [json_name = "ipv6_addresses"];
+
+  bool is_static_ip = 10 [json_name = "is_static_ip"];
+
+  string key_pair_name = 11 [json_name = "key_pair_name"];
+
+  string name = 12;
+
+  string private_ip_address = 13 [json_name = "private_ip_address"];
+
+  string public_ip_address = 14 [json_name = "public_ip_address"];
+
+  int64 ram_size = 15 [json_name = "ram_size"];
+
+  map<string, string> tags = 16;
+
+  map<string, string> tags_all = 17 [json_name = "tags_all"];
+
+  string user_data = 18 [json_name = "user_data"];
+
+  string username = 19;
+
+  AddOn add_on = 20 [json_name = "add_on"];
+
+  map<string, string> for_each = 21 [json_name = "for_each"];
+
+  repeated string depends_on = 22 [json_name = "depends_on"];
+
+  int32 count = 23;
+
+  string provider = 24;
+
+  terraform.v1.Lifecycle lifecycle = 25;
+
+  message AddOn {
+    string snapshot_time = 1 [json_name = "snapshot_time"];
+
+    string status = 2;
+
+    string type = 3;
+  }
+}
+
+// AwsLightsailInstancePublicPorts version is 0
+message AwsLightsailInstancePublicPorts {
+  string id = 1;
+
+  string instance_name = 2 [json_name = "instance_name"];
+
+  repeated PortInfo port_info = 3 [json_name = "port_info"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+
+  message PortInfo {
+    repeated string cidr_list_aliases = 1 [json_name = "cidr_list_aliases"];
+
+    repeated string cidrs = 2;
+
+    int64 from_port = 3 [json_name = "from_port"];
+
+    repeated string ipv6_cidrs = 4 [json_name = "ipv6_cidrs"];
+
+    string protocol = 5;
+
+    int64 to_port = 6 [json_name = "to_port"];
+  }
+}
+
+// AwsLightsailKeyPair version is 0
+message AwsLightsailKeyPair {
+  string arn = 1;
+
+  string encrypted_fingerprint = 2 [json_name = "encrypted_fingerprint"];
+
+  string encrypted_private_key = 3 [json_name = "encrypted_private_key"];
+
+  string fingerprint = 4;
+
+  string id = 5;
+
+  string name = 6;
+
+  string name_prefix = 7 [json_name = "name_prefix"];
+
+  string pgp_key = 8 [json_name = "pgp_key"];
+
+  string private_key = 9 [json_name = "private_key"];
+
+  string public_key = 10 [json_name = "public_key"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+}
+
+// AwsLightsailLb version is 0
+message AwsLightsailLb {
+  string arn = 1;
+
+  string created_at = 2 [json_name = "created_at"];
+
+  string dns_name = 3 [json_name = "dns_name"];
+
+  string health_check_path = 4 [json_name = "health_check_path"];
+
+  string id = 5;
+
+  int64 instance_port = 6 [json_name = "instance_port"];
+
+  string ip_address_type = 7 [json_name = "ip_address_type"];
+
+  string name = 8;
+
+  string protocol = 9;
+
+  repeated int64 public_ports = 10 [json_name = "public_ports"];
+
+  string support_code = 11 [json_name = "support_code"];
+
+  map<string, string> tags = 12;
+
+  map<string, string> tags_all = 13 [json_name = "tags_all"];
+
+  map<string, string> for_each = 14 [json_name = "for_each"];
+
+  repeated string depends_on = 15 [json_name = "depends_on"];
+
+  int32 count = 16;
+
+  string provider = 17;
+
+  terraform.v1.Lifecycle lifecycle = 18;
+}
+
+// AwsLightsailLbAttachment version is 0
+message AwsLightsailLbAttachment {
+  string id = 1;
+
+  string instance_name = 2 [json_name = "instance_name"];
+
+  string lb_name = 3 [json_name = "lb_name"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsLightsailLbCertificate version is 0
+message AwsLightsailLbCertificate {
+  string arn = 1;
+
+  string created_at = 2 [json_name = "created_at"];
+
+  string domain_name = 3 [json_name = "domain_name"];
+
+  repeated DomainValidationRecords domain_validation_records = 4 [json_name = "domain_validation_records"];
+
+  string id = 5;
+
+  string lb_name = 6 [json_name = "lb_name"];
+
+  string name = 7;
+
+  repeated string subject_alternative_names = 8 [json_name = "subject_alternative_names"];
+
+  string support_code = 9 [json_name = "support_code"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message DomainValidationRecords {
+    // domain_name: string
+    string domain_name = 1 [json_name = "domain_name"];
+
+    // resource_record_name: string
+    string resource_record_name = 2 [json_name = "resource_record_name"];
+
+    // resource_record_type: string
+    string resource_record_type = 3 [json_name = "resource_record_type"];
+
+    // resource_record_value: string
+    string resource_record_value = 4 [json_name = "resource_record_value"];
+  }
+}
+
+// AwsLightsailLbCertificateAttachment version is 0
+message AwsLightsailLbCertificateAttachment {
+  string certificate_name = 1 [json_name = "certificate_name"];
+
+  string id = 2;
+
+  string lb_name = 3 [json_name = "lb_name"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsLightsailLbHttpsRedirectionPolicy version is 0
+message AwsLightsailLbHttpsRedirectionPolicy {
+  bool enabled = 1;
+
+  string id = 2;
+
+  string lb_name = 3 [json_name = "lb_name"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsLightsailLbStickinessPolicy version is 0
+message AwsLightsailLbStickinessPolicy {
+  int64 cookie_duration = 1 [json_name = "cookie_duration"];
+
+  bool enabled = 2;
+
+  string id = 3;
+
+  string lb_name = 4 [json_name = "lb_name"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsLightsailStaticIp version is 0
+message AwsLightsailStaticIp {
+  string arn = 1;
+
+  string id = 2;
+
+  string ip_address = 3 [json_name = "ip_address"];
+
+  string name = 4;
+
+  string support_code = 5 [json_name = "support_code"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsLightsailStaticIpAttachment version is 0
+message AwsLightsailStaticIpAttachment {
+  string id = 1;
+
+  string instance_name = 2 [json_name = "instance_name"];
+
+  string ip_address = 3 [json_name = "ip_address"];
+
+  string static_ip_name = 4 [json_name = "static_ip_name"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}

@@ -1,0 +1,198 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsOutpostsAsset version is 0
+message AwsOutpostsAsset {
+  string arn = 1;
+
+  string asset_id = 2 [json_name = "asset_id"];
+
+  string asset_type = 3 [json_name = "asset_type"];
+
+  string host_id = 4 [json_name = "host_id"];
+
+  string id = 5;
+
+  int64 rack_elevation = 6 [json_name = "rack_elevation"];
+
+  string rack_id = 7 [json_name = "rack_id"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsOutpostsAssets version is 0
+message AwsOutpostsAssets {
+  string arn = 1;
+
+  repeated string asset_ids = 2 [json_name = "asset_ids"];
+
+  repeated string host_id_filter = 3 [json_name = "host_id_filter"];
+
+  string id = 4;
+
+  repeated string status_id_filter = 5 [json_name = "status_id_filter"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsOutpostsOutpost version is 0
+message AwsOutpostsOutpost {
+  string arn = 1;
+
+  string availability_zone = 2 [json_name = "availability_zone"];
+
+  string availability_zone_id = 3 [json_name = "availability_zone_id"];
+
+  string description = 4;
+
+  string id = 5;
+
+  string lifecycle_status = 6 [json_name = "lifecycle_status"];
+
+  string name = 7;
+
+  string owner_id = 8 [json_name = "owner_id"];
+
+  string site_arn = 9 [json_name = "site_arn"];
+
+  string site_id = 10 [json_name = "site_id"];
+
+  string supported_hardware_type = 11 [json_name = "supported_hardware_type"];
+
+  map<string, string> tags = 12;
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+}
+
+// AwsOutpostsOutpostInstanceType version is 0
+message AwsOutpostsOutpostInstanceType {
+  string arn = 1;
+
+  string id = 2;
+
+  string instance_type = 3 [json_name = "instance_type"];
+
+  repeated string preferred_instance_types = 4 [json_name = "preferred_instance_types"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsOutpostsOutpostInstanceTypes version is 0
+message AwsOutpostsOutpostInstanceTypes {
+  string arn = 1;
+
+  string id = 2;
+
+  repeated string instance_types = 3 [json_name = "instance_types"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsOutpostsOutposts version is 0
+message AwsOutpostsOutposts {
+  repeated string arns = 1;
+
+  string availability_zone = 2 [json_name = "availability_zone"];
+
+  string availability_zone_id = 3 [json_name = "availability_zone_id"];
+
+  string id = 4;
+
+  repeated string ids = 5;
+
+  string owner_id = 6 [json_name = "owner_id"];
+
+  string site_id = 7 [json_name = "site_id"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsOutpostsSite version is 0
+message AwsOutpostsSite {
+  string account_id = 1 [json_name = "account_id"];
+
+  string description = 2;
+
+  string id = 3;
+
+  string name = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsOutpostsSites version is 0
+message AwsOutpostsSites {
+  string id = 1;
+
+  repeated string ids = 2;
+
+  map<string, string> for_each = 3 [json_name = "for_each"];
+
+  repeated string depends_on = 4 [json_name = "depends_on"];
+
+  int32 count = 5;
+
+  string provider = 6;
+
+  terraform.v1.Lifecycle lifecycle = 7;
+}

@@ -1,0 +1,104 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsAuditmanagerControl version is 0
+message AwsAuditmanagerControl {
+  string action_plan_instructions = 1 [json_name = "action_plan_instructions"];
+
+  string action_plan_title = 2 [json_name = "action_plan_title"];
+
+  string arn = 3;
+
+  string description = 4;
+
+  string id = 5;
+
+  string name = 6;
+
+  map<string, string> tags = 7;
+
+  string testing_information = 8 [json_name = "testing_information"];
+
+  string type = 9;
+
+  repeated ControlMappingSources control_mapping_sources = 10 [json_name = "control_mapping_sources"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message ControlMappingSources {
+    string source_description = 1 [json_name = "source_description"];
+
+    string source_frequency = 2 [json_name = "source_frequency"];
+
+    string source_id = 3 [json_name = "source_id"];
+
+    string source_name = 4 [json_name = "source_name"];
+
+    string source_set_up_option = 5 [json_name = "source_set_up_option"];
+
+    string source_type = 6 [json_name = "source_type"];
+
+    string troubleshooting_text = 7 [json_name = "troubleshooting_text"];
+
+    repeated SourceKeyword source_keyword = 8 [json_name = "source_keyword"];
+
+    message SourceKeyword {
+      string keyword_input_type = 1 [json_name = "keyword_input_type"];
+
+      string keyword_value = 2 [json_name = "keyword_value"];
+    }
+  }
+}
+
+// AwsAuditmanagerFramework version is 0
+message AwsAuditmanagerFramework {
+  string arn = 1;
+
+  string compliance_type = 2 [json_name = "compliance_type"];
+
+  string description = 3;
+
+  string framework_type = 4 [json_name = "framework_type"];
+
+  string id = 5;
+
+  string name = 6;
+
+  map<string, string> tags = 7;
+
+  repeated ControlSets control_sets = 8 [json_name = "control_sets"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message ControlSets {
+    string id = 1;
+
+    string name = 2;
+
+    repeated Controls controls = 3;
+
+    message Controls {
+      string id = 1;
+    }
+  }
+}

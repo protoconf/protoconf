@@ -1,0 +1,372 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsAmi version is 0
+message AwsAmi {
+  string architecture = 1;
+
+  string arn = 2;
+
+  string boot_mode = 3 [json_name = "boot_mode"];
+
+  string deprecation_time = 4 [json_name = "deprecation_time"];
+
+  string description = 5;
+
+  bool ena_support = 6 [json_name = "ena_support"];
+
+  string hypervisor = 7;
+
+  string id = 8;
+
+  string image_location = 9 [json_name = "image_location"];
+
+  string image_owner_alias = 10 [json_name = "image_owner_alias"];
+
+  string image_type = 11 [json_name = "image_type"];
+
+  string imds_support = 12 [json_name = "imds_support"];
+
+  string kernel_id = 13 [json_name = "kernel_id"];
+
+  bool manage_ebs_snapshots = 14 [json_name = "manage_ebs_snapshots"];
+
+  string name = 15;
+
+  string owner_id = 16 [json_name = "owner_id"];
+
+  string platform = 17;
+
+  string platform_details = 18 [json_name = "platform_details"];
+
+  bool public = 19;
+
+  string ramdisk_id = 20 [json_name = "ramdisk_id"];
+
+  string root_device_name = 21 [json_name = "root_device_name"];
+
+  string root_snapshot_id = 22 [json_name = "root_snapshot_id"];
+
+  string sriov_net_support = 23 [json_name = "sriov_net_support"];
+
+  map<string, string> tags = 24;
+
+  map<string, string> tags_all = 25 [json_name = "tags_all"];
+
+  string tpm_support = 26 [json_name = "tpm_support"];
+
+  string usage_operation = 27 [json_name = "usage_operation"];
+
+  string virtualization_type = 28 [json_name = "virtualization_type"];
+
+  repeated EbsBlockDevice ebs_block_device = 29 [json_name = "ebs_block_device"];
+
+  repeated EphemeralBlockDevice ephemeral_block_device = 30 [json_name = "ephemeral_block_device"];
+
+  repeated Timeouts timeouts = 31;
+
+  map<string, string> for_each = 32 [json_name = "for_each"];
+
+  repeated string depends_on = 33 [json_name = "depends_on"];
+
+  int32 count = 34;
+
+  string provider = 35;
+
+  terraform.v1.Lifecycle lifecycle = 36;
+
+  message EbsBlockDevice {
+    bool delete_on_termination = 1 [json_name = "delete_on_termination"];
+
+    string device_name = 2 [json_name = "device_name"];
+
+    bool encrypted = 3;
+
+    int64 iops = 4;
+
+    string outpost_arn = 5 [json_name = "outpost_arn"];
+
+    string snapshot_id = 6 [json_name = "snapshot_id"];
+
+    int64 throughput = 7;
+
+    int64 volume_size = 8 [json_name = "volume_size"];
+
+    string volume_type = 9 [json_name = "volume_type"];
+  }
+
+  message EphemeralBlockDevice {
+    string device_name = 1 [json_name = "device_name"];
+
+    string virtual_name = 2 [json_name = "virtual_name"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsAmiCopy version is 0
+message AwsAmiCopy {
+  string architecture = 1;
+
+  string arn = 2;
+
+  string boot_mode = 3 [json_name = "boot_mode"];
+
+  string deprecation_time = 4 [json_name = "deprecation_time"];
+
+  string description = 5;
+
+  string destination_outpost_arn = 6 [json_name = "destination_outpost_arn"];
+
+  bool ena_support = 7 [json_name = "ena_support"];
+
+  bool encrypted = 8;
+
+  string hypervisor = 9;
+
+  string id = 10;
+
+  string image_location = 11 [json_name = "image_location"];
+
+  string image_owner_alias = 12 [json_name = "image_owner_alias"];
+
+  string image_type = 13 [json_name = "image_type"];
+
+  string imds_support = 14 [json_name = "imds_support"];
+
+  string kernel_id = 15 [json_name = "kernel_id"];
+
+  string kms_key_id = 16 [json_name = "kms_key_id"];
+
+  bool manage_ebs_snapshots = 17 [json_name = "manage_ebs_snapshots"];
+
+  string name = 18;
+
+  string owner_id = 19 [json_name = "owner_id"];
+
+  string platform = 20;
+
+  string platform_details = 21 [json_name = "platform_details"];
+
+  bool public = 22;
+
+  string ramdisk_id = 23 [json_name = "ramdisk_id"];
+
+  string root_device_name = 24 [json_name = "root_device_name"];
+
+  string root_snapshot_id = 25 [json_name = "root_snapshot_id"];
+
+  string source_ami_id = 26 [json_name = "source_ami_id"];
+
+  string source_ami_region = 27 [json_name = "source_ami_region"];
+
+  string sriov_net_support = 28 [json_name = "sriov_net_support"];
+
+  map<string, string> tags = 29;
+
+  map<string, string> tags_all = 30 [json_name = "tags_all"];
+
+  string tpm_support = 31 [json_name = "tpm_support"];
+
+  string usage_operation = 32 [json_name = "usage_operation"];
+
+  string virtualization_type = 33 [json_name = "virtualization_type"];
+
+  repeated EbsBlockDevice ebs_block_device = 34 [json_name = "ebs_block_device"];
+
+  repeated EphemeralBlockDevice ephemeral_block_device = 35 [json_name = "ephemeral_block_device"];
+
+  repeated Timeouts timeouts = 36;
+
+  map<string, string> for_each = 37 [json_name = "for_each"];
+
+  repeated string depends_on = 38 [json_name = "depends_on"];
+
+  int32 count = 39;
+
+  string provider = 40;
+
+  terraform.v1.Lifecycle lifecycle = 41;
+
+  message EbsBlockDevice {
+    bool delete_on_termination = 1 [json_name = "delete_on_termination"];
+
+    string device_name = 2 [json_name = "device_name"];
+
+    bool encrypted = 3;
+
+    int64 iops = 4;
+
+    string outpost_arn = 5 [json_name = "outpost_arn"];
+
+    string snapshot_id = 6 [json_name = "snapshot_id"];
+
+    int64 throughput = 7;
+
+    int64 volume_size = 8 [json_name = "volume_size"];
+
+    string volume_type = 9 [json_name = "volume_type"];
+  }
+
+  message EphemeralBlockDevice {
+    string device_name = 1 [json_name = "device_name"];
+
+    string virtual_name = 2 [json_name = "virtual_name"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsAmiFromInstance version is 0
+message AwsAmiFromInstance {
+  string architecture = 1;
+
+  string arn = 2;
+
+  string boot_mode = 3 [json_name = "boot_mode"];
+
+  string deprecation_time = 4 [json_name = "deprecation_time"];
+
+  string description = 5;
+
+  bool ena_support = 6 [json_name = "ena_support"];
+
+  string hypervisor = 7;
+
+  string id = 8;
+
+  string image_location = 9 [json_name = "image_location"];
+
+  string image_owner_alias = 10 [json_name = "image_owner_alias"];
+
+  string image_type = 11 [json_name = "image_type"];
+
+  string imds_support = 12 [json_name = "imds_support"];
+
+  string kernel_id = 13 [json_name = "kernel_id"];
+
+  bool manage_ebs_snapshots = 14 [json_name = "manage_ebs_snapshots"];
+
+  string name = 15;
+
+  string owner_id = 16 [json_name = "owner_id"];
+
+  string platform = 17;
+
+  string platform_details = 18 [json_name = "platform_details"];
+
+  bool public = 19;
+
+  string ramdisk_id = 20 [json_name = "ramdisk_id"];
+
+  string root_device_name = 21 [json_name = "root_device_name"];
+
+  string root_snapshot_id = 22 [json_name = "root_snapshot_id"];
+
+  bool snapshot_without_reboot = 23 [json_name = "snapshot_without_reboot"];
+
+  string source_instance_id = 24 [json_name = "source_instance_id"];
+
+  string sriov_net_support = 25 [json_name = "sriov_net_support"];
+
+  map<string, string> tags = 26;
+
+  map<string, string> tags_all = 27 [json_name = "tags_all"];
+
+  string tpm_support = 28 [json_name = "tpm_support"];
+
+  string usage_operation = 29 [json_name = "usage_operation"];
+
+  string virtualization_type = 30 [json_name = "virtualization_type"];
+
+  repeated EbsBlockDevice ebs_block_device = 31 [json_name = "ebs_block_device"];
+
+  repeated EphemeralBlockDevice ephemeral_block_device = 32 [json_name = "ephemeral_block_device"];
+
+  repeated Timeouts timeouts = 33;
+
+  map<string, string> for_each = 34 [json_name = "for_each"];
+
+  repeated string depends_on = 35 [json_name = "depends_on"];
+
+  int32 count = 36;
+
+  string provider = 37;
+
+  terraform.v1.Lifecycle lifecycle = 38;
+
+  message EbsBlockDevice {
+    bool delete_on_termination = 1 [json_name = "delete_on_termination"];
+
+    string device_name = 2 [json_name = "device_name"];
+
+    bool encrypted = 3;
+
+    int64 iops = 4;
+
+    string outpost_arn = 5 [json_name = "outpost_arn"];
+
+    string snapshot_id = 6 [json_name = "snapshot_id"];
+
+    int64 throughput = 7;
+
+    int64 volume_size = 8 [json_name = "volume_size"];
+
+    string volume_type = 9 [json_name = "volume_type"];
+  }
+
+  message EphemeralBlockDevice {
+    string device_name = 1 [json_name = "device_name"];
+
+    string virtual_name = 2 [json_name = "virtual_name"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsAmiLaunchPermission version is 0
+message AwsAmiLaunchPermission {
+  string account_id = 1 [json_name = "account_id"];
+
+  string group = 2;
+
+  string id = 3;
+
+  string image_id = 4 [json_name = "image_id"];
+
+  string organization_arn = 5 [json_name = "organization_arn"];
+
+  string organizational_unit_arn = 6 [json_name = "organizational_unit_arn"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}

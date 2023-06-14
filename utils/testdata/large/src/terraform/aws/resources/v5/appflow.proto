@@ -1,0 +1,978 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsAppflowConnectorProfile version is 0
+message AwsAppflowConnectorProfile {
+  string arn = 1;
+
+  string connection_mode = 2 [json_name = "connection_mode"];
+
+  string connector_label = 3 [json_name = "connector_label"];
+
+  string connector_type = 4 [json_name = "connector_type"];
+
+  string credentials_arn = 5 [json_name = "credentials_arn"];
+
+  string id = 6;
+
+  string kms_arn = 7 [json_name = "kms_arn"];
+
+  string name = 8;
+
+  ConnectorProfileConfig connector_profile_config = 9 [json_name = "connector_profile_config"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message ConnectorProfileConfig {
+    ConnectorProfileCredentials connector_profile_credentials = 1 [json_name = "connector_profile_credentials"];
+
+    ConnectorProfileProperties connector_profile_properties = 2 [json_name = "connector_profile_properties"];
+
+    message ConnectorProfileCredentials {
+      Amplitude amplitude = 1;
+
+      CustomConnector custom_connector = 2 [json_name = "custom_connector"];
+
+      Datadog datadog = 3;
+
+      Dynatrace dynatrace = 4;
+
+      GoogleAnalytics google_analytics = 5 [json_name = "google_analytics"];
+
+      Honeycode honeycode = 6;
+
+      InforNexus infor_nexus = 7 [json_name = "infor_nexus"];
+
+      Marketo marketo = 8;
+
+      Redshift redshift = 9;
+
+      Salesforce salesforce = 10;
+
+      SapoData sapo_data = 11 [json_name = "sapo_data"];
+
+      ServiceNow service_now = 12 [json_name = "service_now"];
+
+      Singular singular = 13;
+
+      Slack slack = 14;
+
+      Snowflake snowflake = 15;
+
+      Trendmicro trendmicro = 16;
+
+      Veeva veeva = 17;
+
+      Zendesk zendesk = 18;
+
+      message Amplitude {
+        string api_key = 1 [json_name = "api_key"];
+
+        string secret_key = 2 [json_name = "secret_key"];
+      }
+
+      message CustomConnector {
+        string authentication_type = 1 [json_name = "authentication_type"];
+
+        ApiKey api_key = 2 [json_name = "api_key"];
+
+        Basic basic = 3;
+
+        Custom custom = 4;
+
+        Oauth2 oauth2 = 5;
+
+        message ApiKey {
+          string api_key = 1 [json_name = "api_key"];
+
+          string api_secret_key = 2 [json_name = "api_secret_key"];
+        }
+
+        message Basic {
+          string password = 1;
+
+          string username = 2;
+        }
+
+        message Custom {
+          map<string, string> credentials_map = 1 [json_name = "credentials_map"];
+
+          string custom_authentication_type = 2 [json_name = "custom_authentication_type"];
+        }
+
+        message Oauth2 {
+          string access_token = 1 [json_name = "access_token"];
+
+          string client_id = 2 [json_name = "client_id"];
+
+          string client_secret = 3 [json_name = "client_secret"];
+
+          string refresh_token = 4 [json_name = "refresh_token"];
+
+          OauthRequest oauth_request = 5 [json_name = "oauth_request"];
+
+          message OauthRequest {
+            string auth_code = 1 [json_name = "auth_code"];
+
+            string redirect_uri = 2 [json_name = "redirect_uri"];
+          }
+        }
+      }
+
+      message Datadog {
+        string api_key = 1 [json_name = "api_key"];
+
+        string application_key = 2 [json_name = "application_key"];
+      }
+
+      message Dynatrace {
+        string api_token = 1 [json_name = "api_token"];
+      }
+
+      message GoogleAnalytics {
+        string access_token = 1 [json_name = "access_token"];
+
+        string client_id = 2 [json_name = "client_id"];
+
+        string client_secret = 3 [json_name = "client_secret"];
+
+        string refresh_token = 4 [json_name = "refresh_token"];
+
+        OauthRequest oauth_request = 5 [json_name = "oauth_request"];
+
+        message OauthRequest {
+          string auth_code = 1 [json_name = "auth_code"];
+
+          string redirect_uri = 2 [json_name = "redirect_uri"];
+        }
+      }
+
+      message Honeycode {
+        string access_token = 1 [json_name = "access_token"];
+
+        string refresh_token = 2 [json_name = "refresh_token"];
+
+        OauthRequest oauth_request = 3 [json_name = "oauth_request"];
+
+        message OauthRequest {
+          string auth_code = 1 [json_name = "auth_code"];
+
+          string redirect_uri = 2 [json_name = "redirect_uri"];
+        }
+      }
+
+      message InforNexus {
+        string access_key_id = 1 [json_name = "access_key_id"];
+
+        string datakey = 2;
+
+        string secret_access_key = 3 [json_name = "secret_access_key"];
+
+        string user_id = 4 [json_name = "user_id"];
+      }
+
+      message Marketo {
+        string access_token = 1 [json_name = "access_token"];
+
+        string client_id = 2 [json_name = "client_id"];
+
+        string client_secret = 3 [json_name = "client_secret"];
+
+        OauthRequest oauth_request = 4 [json_name = "oauth_request"];
+
+        message OauthRequest {
+          string auth_code = 1 [json_name = "auth_code"];
+
+          string redirect_uri = 2 [json_name = "redirect_uri"];
+        }
+      }
+
+      message Redshift {
+        string password = 1;
+
+        string username = 2;
+      }
+
+      message Salesforce {
+        string access_token = 1 [json_name = "access_token"];
+
+        string client_credentials_arn = 2 [json_name = "client_credentials_arn"];
+
+        string refresh_token = 3 [json_name = "refresh_token"];
+
+        OauthRequest oauth_request = 4 [json_name = "oauth_request"];
+
+        message OauthRequest {
+          string auth_code = 1 [json_name = "auth_code"];
+
+          string redirect_uri = 2 [json_name = "redirect_uri"];
+        }
+      }
+
+      message SapoData {
+        BasicAuthCredentials basic_auth_credentials = 1 [json_name = "basic_auth_credentials"];
+
+        OauthCredentials oauth_credentials = 2 [json_name = "oauth_credentials"];
+
+        message BasicAuthCredentials {
+          string password = 1;
+
+          string username = 2;
+        }
+
+        message OauthCredentials {
+          string access_token = 1 [json_name = "access_token"];
+
+          string client_id = 2 [json_name = "client_id"];
+
+          string client_secret = 3 [json_name = "client_secret"];
+
+          string refresh_token = 4 [json_name = "refresh_token"];
+
+          OauthRequest oauth_request = 5 [json_name = "oauth_request"];
+
+          message OauthRequest {
+            string auth_code = 1 [json_name = "auth_code"];
+
+            string redirect_uri = 2 [json_name = "redirect_uri"];
+          }
+        }
+      }
+
+      message ServiceNow {
+        string password = 1;
+
+        string username = 2;
+      }
+
+      message Singular {
+        string api_key = 1 [json_name = "api_key"];
+      }
+
+      message Slack {
+        string access_token = 1 [json_name = "access_token"];
+
+        string client_id = 2 [json_name = "client_id"];
+
+        string client_secret = 3 [json_name = "client_secret"];
+
+        OauthRequest oauth_request = 4 [json_name = "oauth_request"];
+
+        message OauthRequest {
+          string auth_code = 1 [json_name = "auth_code"];
+
+          string redirect_uri = 2 [json_name = "redirect_uri"];
+        }
+      }
+
+      message Snowflake {
+        string password = 1;
+
+        string username = 2;
+      }
+
+      message Trendmicro {
+        string api_secret_key = 1 [json_name = "api_secret_key"];
+      }
+
+      message Veeva {
+        string password = 1;
+
+        string username = 2;
+      }
+
+      message Zendesk {
+        string access_token = 1 [json_name = "access_token"];
+
+        string client_id = 2 [json_name = "client_id"];
+
+        string client_secret = 3 [json_name = "client_secret"];
+
+        OauthRequest oauth_request = 4 [json_name = "oauth_request"];
+
+        message OauthRequest {
+          string auth_code = 1 [json_name = "auth_code"];
+
+          string redirect_uri = 2 [json_name = "redirect_uri"];
+        }
+      }
+    }
+
+    message ConnectorProfileProperties {
+      Amplitude amplitude = 1;
+
+      CustomConnector custom_connector = 2 [json_name = "custom_connector"];
+
+      Datadog datadog = 3;
+
+      Dynatrace dynatrace = 4;
+
+      GoogleAnalytics google_analytics = 5 [json_name = "google_analytics"];
+
+      Honeycode honeycode = 6;
+
+      InforNexus infor_nexus = 7 [json_name = "infor_nexus"];
+
+      Marketo marketo = 8;
+
+      Redshift redshift = 9;
+
+      Salesforce salesforce = 10;
+
+      SapoData sapo_data = 11 [json_name = "sapo_data"];
+
+      ServiceNow service_now = 12 [json_name = "service_now"];
+
+      Singular singular = 13;
+
+      Slack slack = 14;
+
+      Snowflake snowflake = 15;
+
+      Trendmicro trendmicro = 16;
+
+      Veeva veeva = 17;
+
+      Zendesk zendesk = 18;
+
+      message Amplitude {
+      }
+
+      message CustomConnector {
+        map<string, string> profile_properties = 1 [json_name = "profile_properties"];
+
+        Oauth2Properties oauth2_properties = 2 [json_name = "oauth2_properties"];
+
+        message Oauth2Properties {
+          string oauth2_grant_type = 1 [json_name = "oauth2_grant_type"];
+
+          string token_url = 2 [json_name = "token_url"];
+
+          map<string, string> token_url_custom_properties = 3 [json_name = "token_url_custom_properties"];
+        }
+      }
+
+      message Datadog {
+        string instance_url = 1 [json_name = "instance_url"];
+      }
+
+      message Dynatrace {
+        string instance_url = 1 [json_name = "instance_url"];
+      }
+
+      message GoogleAnalytics {
+      }
+
+      message Honeycode {
+      }
+
+      message InforNexus {
+        string instance_url = 1 [json_name = "instance_url"];
+      }
+
+      message Marketo {
+        string instance_url = 1 [json_name = "instance_url"];
+      }
+
+      message Redshift {
+        string bucket_name = 1 [json_name = "bucket_name"];
+
+        string bucket_prefix = 2 [json_name = "bucket_prefix"];
+
+        string cluster_identifier = 3 [json_name = "cluster_identifier"];
+
+        string data_api_role_arn = 4 [json_name = "data_api_role_arn"];
+
+        string database_name = 5 [json_name = "database_name"];
+
+        string database_url = 6 [json_name = "database_url"];
+
+        string role_arn = 7 [json_name = "role_arn"];
+      }
+
+      message Salesforce {
+        string instance_url = 1 [json_name = "instance_url"];
+
+        bool is_sandbox_environment = 2 [json_name = "is_sandbox_environment"];
+      }
+
+      message SapoData {
+        string application_host_url = 1 [json_name = "application_host_url"];
+
+        string application_service_path = 2 [json_name = "application_service_path"];
+
+        string client_number = 3 [json_name = "client_number"];
+
+        string logon_language = 4 [json_name = "logon_language"];
+
+        int64 port_number = 5 [json_name = "port_number"];
+
+        string private_link_service_name = 6 [json_name = "private_link_service_name"];
+
+        OauthProperties oauth_properties = 7 [json_name = "oauth_properties"];
+
+        message OauthProperties {
+          string auth_code_url = 1 [json_name = "auth_code_url"];
+
+          repeated string oauth_scopes = 2 [json_name = "oauth_scopes"];
+
+          string token_url = 3 [json_name = "token_url"];
+        }
+      }
+
+      message ServiceNow {
+        string instance_url = 1 [json_name = "instance_url"];
+      }
+
+      message Singular {
+      }
+
+      message Slack {
+        string instance_url = 1 [json_name = "instance_url"];
+      }
+
+      message Snowflake {
+        string account_name = 1 [json_name = "account_name"];
+
+        string bucket_name = 2 [json_name = "bucket_name"];
+
+        string bucket_prefix = 3 [json_name = "bucket_prefix"];
+
+        string private_link_service_name = 4 [json_name = "private_link_service_name"];
+
+        string region = 5;
+
+        string stage = 6;
+
+        string warehouse = 7;
+      }
+
+      message Trendmicro {
+      }
+
+      message Veeva {
+        string instance_url = 1 [json_name = "instance_url"];
+      }
+
+      message Zendesk {
+        string instance_url = 1 [json_name = "instance_url"];
+      }
+    }
+  }
+}
+
+// AwsAppflowFlow version is 0
+message AwsAppflowFlow {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  string kms_arn = 4 [json_name = "kms_arn"];
+
+  string name = 5;
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  repeated DestinationFlowConfig destination_flow_config = 8 [json_name = "destination_flow_config"];
+
+  SourceFlowConfig source_flow_config = 9 [json_name = "source_flow_config"];
+
+  repeated Task task = 10;
+
+  TriggerConfig trigger_config = 11 [json_name = "trigger_config"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message DestinationFlowConfig {
+    string api_version = 1 [json_name = "api_version"];
+
+    string connector_profile_name = 2 [json_name = "connector_profile_name"];
+
+    string connector_type = 3 [json_name = "connector_type"];
+
+    DestinationConnectorProperties destination_connector_properties = 4 [json_name = "destination_connector_properties"];
+
+    message DestinationConnectorProperties {
+      CustomConnector custom_connector = 1 [json_name = "custom_connector"];
+
+      CustomerProfiles customer_profiles = 2 [json_name = "customer_profiles"];
+
+      EventBridge event_bridge = 3 [json_name = "event_bridge"];
+
+      Honeycode honeycode = 4;
+
+      LookoutMetrics lookout_metrics = 5 [json_name = "lookout_metrics"];
+
+      Marketo marketo = 6;
+
+      Redshift redshift = 7;
+
+      S3 s3 = 8;
+
+      Salesforce salesforce = 9;
+
+      SapoData sapo_data = 10 [json_name = "sapo_data"];
+
+      Snowflake snowflake = 11;
+
+      Upsolver upsolver = 12;
+
+      Zendesk zendesk = 13;
+
+      message CustomConnector {
+        map<string, string> custom_properties = 1 [json_name = "custom_properties"];
+
+        string entity_name = 2 [json_name = "entity_name"];
+
+        repeated string id_field_names = 3 [json_name = "id_field_names"];
+
+        string write_operation_type = 4 [json_name = "write_operation_type"];
+
+        ErrorHandlingConfig error_handling_config = 5 [json_name = "error_handling_config"];
+
+        message ErrorHandlingConfig {
+          string bucket_name = 1 [json_name = "bucket_name"];
+
+          string bucket_prefix = 2 [json_name = "bucket_prefix"];
+
+          bool fail_on_first_destination_error = 3 [json_name = "fail_on_first_destination_error"];
+        }
+      }
+
+      message CustomerProfiles {
+        string domain_name = 1 [json_name = "domain_name"];
+
+        string object_type_name = 2 [json_name = "object_type_name"];
+      }
+
+      message EventBridge {
+        string object = 1;
+
+        ErrorHandlingConfig error_handling_config = 2 [json_name = "error_handling_config"];
+
+        message ErrorHandlingConfig {
+          string bucket_name = 1 [json_name = "bucket_name"];
+
+          string bucket_prefix = 2 [json_name = "bucket_prefix"];
+
+          bool fail_on_first_destination_error = 3 [json_name = "fail_on_first_destination_error"];
+        }
+      }
+
+      message Honeycode {
+        string object = 1;
+
+        ErrorHandlingConfig error_handling_config = 2 [json_name = "error_handling_config"];
+
+        message ErrorHandlingConfig {
+          string bucket_name = 1 [json_name = "bucket_name"];
+
+          string bucket_prefix = 2 [json_name = "bucket_prefix"];
+
+          bool fail_on_first_destination_error = 3 [json_name = "fail_on_first_destination_error"];
+        }
+      }
+
+      message LookoutMetrics {
+      }
+
+      message Marketo {
+        string object = 1;
+
+        ErrorHandlingConfig error_handling_config = 2 [json_name = "error_handling_config"];
+
+        message ErrorHandlingConfig {
+          string bucket_name = 1 [json_name = "bucket_name"];
+
+          string bucket_prefix = 2 [json_name = "bucket_prefix"];
+
+          bool fail_on_first_destination_error = 3 [json_name = "fail_on_first_destination_error"];
+        }
+      }
+
+      message Redshift {
+        string bucket_prefix = 1 [json_name = "bucket_prefix"];
+
+        string intermediate_bucket_name = 2 [json_name = "intermediate_bucket_name"];
+
+        string object = 3;
+
+        ErrorHandlingConfig error_handling_config = 4 [json_name = "error_handling_config"];
+
+        message ErrorHandlingConfig {
+          string bucket_name = 1 [json_name = "bucket_name"];
+
+          string bucket_prefix = 2 [json_name = "bucket_prefix"];
+
+          bool fail_on_first_destination_error = 3 [json_name = "fail_on_first_destination_error"];
+        }
+      }
+
+      message S3 {
+        string bucket_name = 1 [json_name = "bucket_name"];
+
+        string bucket_prefix = 2 [json_name = "bucket_prefix"];
+
+        S3OutputFormatConfig s3_output_format_config = 3 [json_name = "s3_output_format_config"];
+
+        message S3OutputFormatConfig {
+          string file_type = 1 [json_name = "file_type"];
+
+          bool preserve_source_data_typing = 2 [json_name = "preserve_source_data_typing"];
+
+          AggregationConfig aggregation_config = 3 [json_name = "aggregation_config"];
+
+          PrefixConfig prefix_config = 4 [json_name = "prefix_config"];
+
+          message AggregationConfig {
+            string aggregation_type = 1 [json_name = "aggregation_type"];
+          }
+
+          message PrefixConfig {
+            string prefix_format = 1 [json_name = "prefix_format"];
+
+            string prefix_type = 2 [json_name = "prefix_type"];
+          }
+        }
+      }
+
+      message Salesforce {
+        repeated string id_field_names = 1 [json_name = "id_field_names"];
+
+        string object = 2;
+
+        string write_operation_type = 3 [json_name = "write_operation_type"];
+
+        ErrorHandlingConfig error_handling_config = 4 [json_name = "error_handling_config"];
+
+        message ErrorHandlingConfig {
+          string bucket_name = 1 [json_name = "bucket_name"];
+
+          string bucket_prefix = 2 [json_name = "bucket_prefix"];
+
+          bool fail_on_first_destination_error = 3 [json_name = "fail_on_first_destination_error"];
+        }
+      }
+
+      message SapoData {
+        repeated string id_field_names = 1 [json_name = "id_field_names"];
+
+        string object_path = 2 [json_name = "object_path"];
+
+        string write_operation_type = 3 [json_name = "write_operation_type"];
+
+        ErrorHandlingConfig error_handling_config = 4 [json_name = "error_handling_config"];
+
+        SuccessResponseHandlingConfig success_response_handling_config = 5 [json_name = "success_response_handling_config"];
+
+        message ErrorHandlingConfig {
+          string bucket_name = 1 [json_name = "bucket_name"];
+
+          string bucket_prefix = 2 [json_name = "bucket_prefix"];
+
+          bool fail_on_first_destination_error = 3 [json_name = "fail_on_first_destination_error"];
+        }
+
+        message SuccessResponseHandlingConfig {
+          string bucket_name = 1 [json_name = "bucket_name"];
+
+          string bucket_prefix = 2 [json_name = "bucket_prefix"];
+        }
+      }
+
+      message Snowflake {
+        string bucket_prefix = 1 [json_name = "bucket_prefix"];
+
+        string intermediate_bucket_name = 2 [json_name = "intermediate_bucket_name"];
+
+        string object = 3;
+
+        ErrorHandlingConfig error_handling_config = 4 [json_name = "error_handling_config"];
+
+        message ErrorHandlingConfig {
+          string bucket_name = 1 [json_name = "bucket_name"];
+
+          string bucket_prefix = 2 [json_name = "bucket_prefix"];
+
+          bool fail_on_first_destination_error = 3 [json_name = "fail_on_first_destination_error"];
+        }
+      }
+
+      message Upsolver {
+        string bucket_name = 1 [json_name = "bucket_name"];
+
+        string bucket_prefix = 2 [json_name = "bucket_prefix"];
+
+        S3OutputFormatConfig s3_output_format_config = 3 [json_name = "s3_output_format_config"];
+
+        message S3OutputFormatConfig {
+          string file_type = 1 [json_name = "file_type"];
+
+          AggregationConfig aggregation_config = 2 [json_name = "aggregation_config"];
+
+          PrefixConfig prefix_config = 3 [json_name = "prefix_config"];
+
+          message AggregationConfig {
+            string aggregation_type = 1 [json_name = "aggregation_type"];
+          }
+
+          message PrefixConfig {
+            string prefix_format = 1 [json_name = "prefix_format"];
+
+            string prefix_type = 2 [json_name = "prefix_type"];
+          }
+        }
+      }
+
+      message Zendesk {
+        repeated string id_field_names = 1 [json_name = "id_field_names"];
+
+        string object = 2;
+
+        string write_operation_type = 3 [json_name = "write_operation_type"];
+
+        ErrorHandlingConfig error_handling_config = 4 [json_name = "error_handling_config"];
+
+        message ErrorHandlingConfig {
+          string bucket_name = 1 [json_name = "bucket_name"];
+
+          string bucket_prefix = 2 [json_name = "bucket_prefix"];
+
+          bool fail_on_first_destination_error = 3 [json_name = "fail_on_first_destination_error"];
+        }
+      }
+    }
+  }
+
+  message SourceFlowConfig {
+    string api_version = 1 [json_name = "api_version"];
+
+    string connector_profile_name = 2 [json_name = "connector_profile_name"];
+
+    string connector_type = 3 [json_name = "connector_type"];
+
+    IncrementalPullConfig incremental_pull_config = 4 [json_name = "incremental_pull_config"];
+
+    SourceConnectorProperties source_connector_properties = 5 [json_name = "source_connector_properties"];
+
+    message IncrementalPullConfig {
+      string datetime_type_field_name = 1 [json_name = "datetime_type_field_name"];
+    }
+
+    message SourceConnectorProperties {
+      Amplitude amplitude = 1;
+
+      CustomConnector custom_connector = 2 [json_name = "custom_connector"];
+
+      Datadog datadog = 3;
+
+      Dynatrace dynatrace = 4;
+
+      GoogleAnalytics google_analytics = 5 [json_name = "google_analytics"];
+
+      InforNexus infor_nexus = 6 [json_name = "infor_nexus"];
+
+      Marketo marketo = 7;
+
+      S3 s3 = 8;
+
+      Salesforce salesforce = 9;
+
+      SapoData sapo_data = 10 [json_name = "sapo_data"];
+
+      ServiceNow service_now = 11 [json_name = "service_now"];
+
+      Singular singular = 12;
+
+      Slack slack = 13;
+
+      Trendmicro trendmicro = 14;
+
+      Veeva veeva = 15;
+
+      Zendesk zendesk = 16;
+
+      message Amplitude {
+        string object = 1;
+      }
+
+      message CustomConnector {
+        map<string, string> custom_properties = 1 [json_name = "custom_properties"];
+
+        string entity_name = 2 [json_name = "entity_name"];
+      }
+
+      message Datadog {
+        string object = 1;
+      }
+
+      message Dynatrace {
+        string object = 1;
+      }
+
+      message GoogleAnalytics {
+        string object = 1;
+      }
+
+      message InforNexus {
+        string object = 1;
+      }
+
+      message Marketo {
+        string object = 1;
+      }
+
+      message S3 {
+        string bucket_name = 1 [json_name = "bucket_name"];
+
+        string bucket_prefix = 2 [json_name = "bucket_prefix"];
+
+        S3InputFormatConfig s3_input_format_config = 3 [json_name = "s3_input_format_config"];
+
+        message S3InputFormatConfig {
+          string s3_input_file_type = 1 [json_name = "s3_input_file_type"];
+        }
+      }
+
+      message Salesforce {
+        bool enable_dynamic_field_update = 1 [json_name = "enable_dynamic_field_update"];
+
+        bool include_deleted_records = 2 [json_name = "include_deleted_records"];
+
+        string object = 3;
+      }
+
+      message SapoData {
+        string object_path = 1 [json_name = "object_path"];
+      }
+
+      message ServiceNow {
+        string object = 1;
+      }
+
+      message Singular {
+        string object = 1;
+      }
+
+      message Slack {
+        string object = 1;
+      }
+
+      message Trendmicro {
+        string object = 1;
+      }
+
+      message Veeva {
+        string document_type = 1 [json_name = "document_type"];
+
+        bool include_all_versions = 2 [json_name = "include_all_versions"];
+
+        bool include_renditions = 3 [json_name = "include_renditions"];
+
+        bool include_source_files = 4 [json_name = "include_source_files"];
+
+        string object = 5;
+      }
+
+      message Zendesk {
+        string object = 1;
+      }
+    }
+  }
+
+  message Task {
+    string destination_field = 1 [json_name = "destination_field"];
+
+    repeated string source_fields = 2 [json_name = "source_fields"];
+
+    map<string, string> task_properties = 3 [json_name = "task_properties"];
+
+    string task_type = 4 [json_name = "task_type"];
+
+    repeated ConnectorOperator connector_operator = 5 [json_name = "connector_operator"];
+
+    message ConnectorOperator {
+      string amplitude = 1;
+
+      string custom_connector = 2 [json_name = "custom_connector"];
+
+      string datadog = 3;
+
+      string dynatrace = 4;
+
+      string google_analytics = 5 [json_name = "google_analytics"];
+
+      string infor_nexus = 6 [json_name = "infor_nexus"];
+
+      string marketo = 7;
+
+      string s3 = 8;
+
+      string salesforce = 9;
+
+      string sapo_data = 10 [json_name = "sapo_data"];
+
+      string service_now = 11 [json_name = "service_now"];
+
+      string singular = 12;
+
+      string slack = 13;
+
+      string trendmicro = 14;
+
+      string veeva = 15;
+
+      string zendesk = 16;
+    }
+  }
+
+  message TriggerConfig {
+    string trigger_type = 1 [json_name = "trigger_type"];
+
+    TriggerProperties trigger_properties = 2 [json_name = "trigger_properties"];
+
+    message TriggerProperties {
+      Scheduled scheduled = 1;
+
+      message Scheduled {
+        string data_pull_mode = 1 [json_name = "data_pull_mode"];
+
+        string first_execution_from = 2 [json_name = "first_execution_from"];
+
+        string schedule_end_time = 3 [json_name = "schedule_end_time"];
+
+        string schedule_expression = 4 [json_name = "schedule_expression"];
+
+        int64 schedule_offset = 5 [json_name = "schedule_offset"];
+
+        string schedule_start_time = 6 [json_name = "schedule_start_time"];
+
+        string timezone = 7;
+      }
+    }
+  }
+}

@@ -1,0 +1,221 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.datasources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleIapAppEngineServiceIamPolicy version is 0
+message GoogleIapAppEngineServiceIamPolicy {
+  string app_id = 1 [json_name = "app_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  string service = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleIapAppEngineVersionIamPolicy version is 0
+message GoogleIapAppEngineVersionIamPolicy {
+  string app_id = 1 [json_name = "app_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  string service = 6;
+
+  string version_id = 7 [json_name = "version_id"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// GoogleIapClient version is 0
+message GoogleIapClient {
+  // Identifier of the brand to which this client
+  // is attached to. The format is
+  // 'projects/{project_number}/brands/{brand_id}/identityAwareProxyClients/{client_id}'.
+  string brand = 1;
+
+  // Output only. Unique identifier of the OAuth client.
+  string client_id = 2 [json_name = "client_id"];
+
+  // Human-friendly name given to the OAuth client.
+  string display_name = 3 [json_name = "display_name"];
+
+  string id = 4;
+
+  // Output only. Client secret of the OAuth client.
+  string secret = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// GoogleIapTunnelIamPolicy version is 0
+message GoogleIapTunnelIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string policy_data = 3 [json_name = "policy_data"];
+
+  string project = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// GoogleIapTunnelInstanceIamPolicy version is 0
+message GoogleIapTunnelInstanceIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string instance = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  string zone = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleIapWebBackendServiceIamPolicy version is 0
+message GoogleIapWebBackendServiceIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string policy_data = 3 [json_name = "policy_data"];
+
+  string project = 4;
+
+  string web_backend_service = 5 [json_name = "web_backend_service"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// GoogleIapWebIamPolicy version is 0
+message GoogleIapWebIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string policy_data = 3 [json_name = "policy_data"];
+
+  string project = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// GoogleIapWebTypeAppEngineIamPolicy version is 0
+message GoogleIapWebTypeAppEngineIamPolicy {
+  string app_id = 1 [json_name = "app_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// GoogleIapWebTypeComputeIamPolicy version is 0
+message GoogleIapWebTypeComputeIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string policy_data = 3 [json_name = "policy_data"];
+
+  string project = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}

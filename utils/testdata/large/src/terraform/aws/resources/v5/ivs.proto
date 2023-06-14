@@ -1,0 +1,139 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsIvsChannel version is 0
+message AwsIvsChannel {
+  string arn = 1;
+
+  bool authorized = 2;
+
+  string id = 3;
+
+  string ingest_endpoint = 4 [json_name = "ingest_endpoint"];
+
+  string latency_mode = 5 [json_name = "latency_mode"];
+
+  string name = 6;
+
+  string playback_url = 7 [json_name = "playback_url"];
+
+  string recording_configuration_arn = 8 [json_name = "recording_configuration_arn"];
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  string type = 11;
+
+  repeated Timeouts timeouts = 12;
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsIvsPlaybackKeyPair version is 0
+message AwsIvsPlaybackKeyPair {
+  string arn = 1;
+
+  string fingerprint = 2;
+
+  string id = 3;
+
+  string name = 4;
+
+  string public_key = 5 [json_name = "public_key"];
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsIvsRecordingConfiguration version is 0
+message AwsIvsRecordingConfiguration {
+  string arn = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  int64 recording_reconnect_window_seconds = 4 [json_name = "recording_reconnect_window_seconds"];
+
+  string state = 5;
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  DestinationConfiguration destination_configuration = 8 [json_name = "destination_configuration"];
+
+  ThumbnailConfiguration thumbnail_configuration = 9 [json_name = "thumbnail_configuration"];
+
+  repeated Timeouts timeouts = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message DestinationConfiguration {
+    S3 s3 = 1;
+
+    message S3 {
+      string bucket_name = 1 [json_name = "bucket_name"];
+    }
+  }
+
+  message ThumbnailConfiguration {
+    string recording_mode = 1 [json_name = "recording_mode"];
+
+    int64 target_interval_seconds = 2 [json_name = "target_interval_seconds"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}

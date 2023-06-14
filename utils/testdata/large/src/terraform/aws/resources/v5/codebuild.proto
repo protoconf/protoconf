@@ -1,0 +1,417 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsCodebuildProject version is 0
+message AwsCodebuildProject {
+  string arn = 1;
+
+  bool badge_enabled = 2 [json_name = "badge_enabled"];
+
+  string badge_url = 3 [json_name = "badge_url"];
+
+  int64 build_timeout = 4 [json_name = "build_timeout"];
+
+  int64 concurrent_build_limit = 5 [json_name = "concurrent_build_limit"];
+
+  string description = 6;
+
+  string encryption_key = 7 [json_name = "encryption_key"];
+
+  string id = 8;
+
+  string name = 9;
+
+  string project_visibility = 10 [json_name = "project_visibility"];
+
+  string public_project_alias = 11 [json_name = "public_project_alias"];
+
+  int64 queued_timeout = 12 [json_name = "queued_timeout"];
+
+  string resource_access_role = 13 [json_name = "resource_access_role"];
+
+  string service_role = 14 [json_name = "service_role"];
+
+  string source_version = 15 [json_name = "source_version"];
+
+  map<string, string> tags = 16;
+
+  map<string, string> tags_all = 17 [json_name = "tags_all"];
+
+  Artifacts artifacts = 18;
+
+  BuildBatchConfig build_batch_config = 19 [json_name = "build_batch_config"];
+
+  Cache cache = 20;
+
+  Environment environment = 21;
+
+  repeated FileSystemLocations file_system_locations = 22 [json_name = "file_system_locations"];
+
+  LogsConfig logs_config = 23 [json_name = "logs_config"];
+
+  repeated SecondaryArtifacts secondary_artifacts = 24 [json_name = "secondary_artifacts"];
+
+  repeated SecondarySourceVersion secondary_source_version = 25 [json_name = "secondary_source_version"];
+
+  repeated SecondarySources secondary_sources = 26 [json_name = "secondary_sources"];
+
+  Source source = 27;
+
+  VpcConfig vpc_config = 28 [json_name = "vpc_config"];
+
+  map<string, string> for_each = 29 [json_name = "for_each"];
+
+  repeated string depends_on = 30 [json_name = "depends_on"];
+
+  int32 count = 31;
+
+  string provider = 32;
+
+  terraform.v1.Lifecycle lifecycle = 33;
+
+  message Artifacts {
+    string artifact_identifier = 1 [json_name = "artifact_identifier"];
+
+    string bucket_owner_access = 2 [json_name = "bucket_owner_access"];
+
+    bool encryption_disabled = 3 [json_name = "encryption_disabled"];
+
+    string location = 4;
+
+    string name = 5;
+
+    string namespace_type = 6 [json_name = "namespace_type"];
+
+    bool override_artifact_name = 7 [json_name = "override_artifact_name"];
+
+    string packaging = 8;
+
+    string path = 9;
+
+    string type = 10;
+  }
+
+  message BuildBatchConfig {
+    bool combine_artifacts = 1 [json_name = "combine_artifacts"];
+
+    string service_role = 2 [json_name = "service_role"];
+
+    int64 timeout_in_mins = 3 [json_name = "timeout_in_mins"];
+
+    Restrictions restrictions = 4;
+
+    message Restrictions {
+      repeated string compute_types_allowed = 1 [json_name = "compute_types_allowed"];
+
+      int64 maximum_builds_allowed = 2 [json_name = "maximum_builds_allowed"];
+    }
+  }
+
+  message Cache {
+    string location = 1;
+
+    repeated string modes = 2;
+
+    string type = 3;
+  }
+
+  message Environment {
+    string certificate = 1;
+
+    string compute_type = 2 [json_name = "compute_type"];
+
+    string image = 3;
+
+    string image_pull_credentials_type = 4 [json_name = "image_pull_credentials_type"];
+
+    bool privileged_mode = 5 [json_name = "privileged_mode"];
+
+    string type = 6;
+
+    repeated EnvironmentVariable environment_variable = 7 [json_name = "environment_variable"];
+
+    RegistryCredential registry_credential = 8 [json_name = "registry_credential"];
+
+    message EnvironmentVariable {
+      string name = 1;
+
+      string type = 2;
+
+      string value = 3;
+    }
+
+    message RegistryCredential {
+      string credential = 1;
+
+      string credential_provider = 2 [json_name = "credential_provider"];
+    }
+  }
+
+  message FileSystemLocations {
+    string identifier = 1;
+
+    string location = 2;
+
+    string mount_options = 3 [json_name = "mount_options"];
+
+    string mount_point = 4 [json_name = "mount_point"];
+
+    string type = 5;
+  }
+
+  message LogsConfig {
+    CloudwatchLogs cloudwatch_logs = 1 [json_name = "cloudwatch_logs"];
+
+    S3Logs s3_logs = 2 [json_name = "s3_logs"];
+
+    message CloudwatchLogs {
+      string group_name = 1 [json_name = "group_name"];
+
+      string status = 2;
+
+      string stream_name = 3 [json_name = "stream_name"];
+    }
+
+    message S3Logs {
+      string bucket_owner_access = 1 [json_name = "bucket_owner_access"];
+
+      bool encryption_disabled = 2 [json_name = "encryption_disabled"];
+
+      string location = 3;
+
+      string status = 4;
+    }
+  }
+
+  message SecondaryArtifacts {
+    string artifact_identifier = 1 [json_name = "artifact_identifier"];
+
+    string bucket_owner_access = 2 [json_name = "bucket_owner_access"];
+
+    bool encryption_disabled = 3 [json_name = "encryption_disabled"];
+
+    string location = 4;
+
+    string name = 5;
+
+    string namespace_type = 6 [json_name = "namespace_type"];
+
+    bool override_artifact_name = 7 [json_name = "override_artifact_name"];
+
+    string packaging = 8;
+
+    string path = 9;
+
+    string type = 10;
+  }
+
+  message SecondarySourceVersion {
+    string source_identifier = 1 [json_name = "source_identifier"];
+
+    string source_version = 2 [json_name = "source_version"];
+  }
+
+  message SecondarySources {
+    string buildspec = 1;
+
+    int64 git_clone_depth = 2 [json_name = "git_clone_depth"];
+
+    bool insecure_ssl = 3 [json_name = "insecure_ssl"];
+
+    string location = 4;
+
+    bool report_build_status = 5 [json_name = "report_build_status"];
+
+    string source_identifier = 6 [json_name = "source_identifier"];
+
+    string type = 7;
+
+    BuildStatusConfig build_status_config = 8 [json_name = "build_status_config"];
+
+    GitSubmodulesConfig git_submodules_config = 9 [json_name = "git_submodules_config"];
+
+    message BuildStatusConfig {
+      string context = 1;
+
+      string target_url = 2 [json_name = "target_url"];
+    }
+
+    message GitSubmodulesConfig {
+      bool fetch_submodules = 1 [json_name = "fetch_submodules"];
+    }
+  }
+
+  message Source {
+    string buildspec = 1;
+
+    int64 git_clone_depth = 2 [json_name = "git_clone_depth"];
+
+    bool insecure_ssl = 3 [json_name = "insecure_ssl"];
+
+    string location = 4;
+
+    bool report_build_status = 5 [json_name = "report_build_status"];
+
+    string type = 6;
+
+    BuildStatusConfig build_status_config = 7 [json_name = "build_status_config"];
+
+    GitSubmodulesConfig git_submodules_config = 8 [json_name = "git_submodules_config"];
+
+    message BuildStatusConfig {
+      string context = 1;
+
+      string target_url = 2 [json_name = "target_url"];
+    }
+
+    message GitSubmodulesConfig {
+      bool fetch_submodules = 1 [json_name = "fetch_submodules"];
+    }
+  }
+
+  message VpcConfig {
+    repeated string security_group_ids = 1 [json_name = "security_group_ids"];
+
+    repeated string subnets = 2;
+
+    string vpc_id = 3 [json_name = "vpc_id"];
+  }
+}
+
+// AwsCodebuildReportGroup version is 0
+message AwsCodebuildReportGroup {
+  string arn = 1;
+
+  string created = 2;
+
+  bool delete_reports = 3 [json_name = "delete_reports"];
+
+  string id = 4;
+
+  string name = 5;
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  string type = 8;
+
+  ExportConfig export_config = 9 [json_name = "export_config"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message ExportConfig {
+    string type = 1;
+
+    S3Destination s3_destination = 2 [json_name = "s3_destination"];
+
+    message S3Destination {
+      string bucket = 1;
+
+      bool encryption_disabled = 2 [json_name = "encryption_disabled"];
+
+      string encryption_key = 3 [json_name = "encryption_key"];
+
+      string packaging = 4;
+
+      string path = 5;
+    }
+  }
+}
+
+// AwsCodebuildResourcePolicy version is 0
+message AwsCodebuildResourcePolicy {
+  string id = 1;
+
+  string policy = 2;
+
+  string resource_arn = 3 [json_name = "resource_arn"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsCodebuildSourceCredential version is 0
+message AwsCodebuildSourceCredential {
+  string arn = 1;
+
+  string auth_type = 2 [json_name = "auth_type"];
+
+  string id = 3;
+
+  string server_type = 4 [json_name = "server_type"];
+
+  string token = 5;
+
+  string user_name = 6 [json_name = "user_name"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsCodebuildWebhook version is 0
+message AwsCodebuildWebhook {
+  string branch_filter = 1 [json_name = "branch_filter"];
+
+  string build_type = 2 [json_name = "build_type"];
+
+  string id = 3;
+
+  string payload_url = 4 [json_name = "payload_url"];
+
+  string project_name = 5 [json_name = "project_name"];
+
+  string secret = 6;
+
+  string url = 7;
+
+  repeated FilterGroup filter_group = 8 [json_name = "filter_group"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message FilterGroup {
+    repeated Filter filter = 1;
+
+    message Filter {
+      bool exclude_matched_pattern = 1 [json_name = "exclude_matched_pattern"];
+
+      string pattern = 2;
+
+      string type = 3;
+    }
+  }
+}

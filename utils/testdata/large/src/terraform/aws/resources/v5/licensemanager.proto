@@ -1,0 +1,144 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsLicensemanagerAssociation version is 0
+message AwsLicensemanagerAssociation {
+  string id = 1;
+
+  string license_configuration_arn = 2 [json_name = "license_configuration_arn"];
+
+  string resource_arn = 3 [json_name = "resource_arn"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsLicensemanagerGrant version is 0
+message AwsLicensemanagerGrant {
+  // Allowed operations for the grant. This is a subset of the allowed operations on the license.
+  repeated string allowed_operations = 1 [json_name = "allowed_operations"];
+
+  // Amazon Resource Name (ARN) of the grant.
+  string arn = 2;
+
+  // Home Region of the grant.
+  string home_region = 3 [json_name = "home_region"];
+
+  string id = 4;
+
+  // License ARN.
+  string license_arn = 5 [json_name = "license_arn"];
+
+  // Name of the grant.
+  string name = 6;
+
+  // Parent ARN.
+  string parent_arn = 7 [json_name = "parent_arn"];
+
+  // The grantee principal ARN. The target account for the grant in the form of the ARN for an account principal of the root user.
+  string principal = 8;
+
+  // Grant status.
+  string status = 9;
+
+  // Grant version.
+  string version = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+}
+
+// AwsLicensemanagerGrantAccepter version is 0
+message AwsLicensemanagerGrantAccepter {
+  // Allowed operations for the grant.
+  repeated string allowed_operations = 1 [json_name = "allowed_operations"];
+
+  // Amazon Resource Name (ARN) of the grant.
+  string grant_arn = 2 [json_name = "grant_arn"];
+
+  // Home Region of the grant.
+  string home_region = 3 [json_name = "home_region"];
+
+  string id = 4;
+
+  // License ARN.
+  string license_arn = 5 [json_name = "license_arn"];
+
+  // Name of the grant.
+  string name = 6;
+
+  // Parent ARN.
+  string parent_arn = 7 [json_name = "parent_arn"];
+
+  // The grantee principal ARN.
+  string principal = 8;
+
+  // GrantAccepter status.
+  string status = 9;
+
+  // GrantAccepter version.
+  string version = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+}
+
+// AwsLicensemanagerLicenseConfiguration version is 0
+message AwsLicensemanagerLicenseConfiguration {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  int64 license_count = 4 [json_name = "license_count"];
+
+  bool license_count_hard_limit = 5 [json_name = "license_count_hard_limit"];
+
+  string license_counting_type = 6 [json_name = "license_counting_type"];
+
+  repeated string license_rules = 7 [json_name = "license_rules"];
+
+  string name = 8;
+
+  string owner_account_id = 9 [json_name = "owner_account_id"];
+
+  map<string, string> tags = 10;
+
+  map<string, string> tags_all = 11 [json_name = "tags_all"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+}

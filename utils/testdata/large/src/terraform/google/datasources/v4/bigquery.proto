@@ -1,0 +1,177 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.datasources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleBigqueryAnalyticsHubDataExchangeIamPolicy version is 0
+message GoogleBigqueryAnalyticsHubDataExchangeIamPolicy {
+  string data_exchange_id = 1 [json_name = "data_exchange_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string location = 4;
+
+  string policy_data = 5 [json_name = "policy_data"];
+
+  string project = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleBigqueryAnalyticsHubListingIamPolicy version is 0
+message GoogleBigqueryAnalyticsHubListingIamPolicy {
+  string data_exchange_id = 1 [json_name = "data_exchange_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string listing_id = 4 [json_name = "listing_id"];
+
+  string location = 5;
+
+  string policy_data = 6 [json_name = "policy_data"];
+
+  string project = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// GoogleBigqueryConnectionIamPolicy version is 0
+message GoogleBigqueryConnectionIamPolicy {
+  string connection_id = 1 [json_name = "connection_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string location = 4;
+
+  string policy_data = 5 [json_name = "policy_data"];
+
+  string project = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleBigqueryDatapolicyDataPolicyIamPolicy version is 0
+message GoogleBigqueryDatapolicyDataPolicyIamPolicy {
+  string data_policy_id = 1 [json_name = "data_policy_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string location = 4;
+
+  string policy_data = 5 [json_name = "policy_data"];
+
+  string project = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleBigqueryDatasetIamPolicy version is 0
+message GoogleBigqueryDatasetIamPolicy {
+  string dataset_id = 1 [json_name = "dataset_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// GoogleBigqueryDefaultServiceAccount version is 0
+message GoogleBigqueryDefaultServiceAccount {
+  string email = 1;
+
+  string id = 2;
+
+  string member = 3;
+
+  string project = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// GoogleBigqueryTableIamPolicy version is 0
+message GoogleBigqueryTableIamPolicy {
+  string dataset_id = 1 [json_name = "dataset_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  string table_id = 6 [json_name = "table_id"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}

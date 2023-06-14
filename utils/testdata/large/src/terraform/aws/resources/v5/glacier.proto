@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsGlacierVault version is 0
+message AwsGlacierVault {
+  string access_policy = 1 [json_name = "access_policy"];
+
+  string arn = 2;
+
+  string id = 3;
+
+  string location = 4;
+
+  string name = 5;
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  Notification notification = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Notification {
+    repeated string events = 1;
+
+    string sns_topic = 2 [json_name = "sns_topic"];
+  }
+}
+
+// AwsGlacierVaultLock version is 0
+message AwsGlacierVaultLock {
+  bool complete_lock = 1 [json_name = "complete_lock"];
+
+  string id = 2;
+
+  bool ignore_deletion_error = 3 [json_name = "ignore_deletion_error"];
+
+  string policy = 4;
+
+  string vault_name = 5 [json_name = "vault_name"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}

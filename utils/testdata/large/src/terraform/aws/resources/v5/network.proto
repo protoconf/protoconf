@@ -1,0 +1,270 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsNetworkAcl version is 0
+message AwsNetworkAcl {
+  string arn = 1;
+
+  repeated Egress egress = 2;
+
+  string id = 3;
+
+  repeated Ingress ingress = 4;
+
+  string owner_id = 5 [json_name = "owner_id"];
+
+  repeated string subnet_ids = 6 [json_name = "subnet_ids"];
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  string vpc_id = 9 [json_name = "vpc_id"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Egress {
+    // action: string
+    string action = 1;
+
+    // cidr_block: string
+    string cidr_block = 2 [json_name = "cidr_block"];
+
+    // from_port: number
+    int64 from_port = 3 [json_name = "from_port"];
+
+    // icmp_code: number
+    int64 icmp_code = 4 [json_name = "icmp_code"];
+
+    // icmp_type: number
+    int64 icmp_type = 5 [json_name = "icmp_type"];
+
+    // ipv6_cidr_block: string
+    string ipv6_cidr_block = 6 [json_name = "ipv6_cidr_block"];
+
+    // protocol: string
+    string protocol = 7;
+
+    // rule_no: number
+    int64 rule_no = 8 [json_name = "rule_no"];
+
+    // to_port: number
+    int64 to_port = 9 [json_name = "to_port"];
+  }
+
+  message Ingress {
+    // action: string
+    string action = 1;
+
+    // cidr_block: string
+    string cidr_block = 2 [json_name = "cidr_block"];
+
+    // from_port: number
+    int64 from_port = 3 [json_name = "from_port"];
+
+    // icmp_code: number
+    int64 icmp_code = 4 [json_name = "icmp_code"];
+
+    // icmp_type: number
+    int64 icmp_type = 5 [json_name = "icmp_type"];
+
+    // ipv6_cidr_block: string
+    string ipv6_cidr_block = 6 [json_name = "ipv6_cidr_block"];
+
+    // protocol: string
+    string protocol = 7;
+
+    // rule_no: number
+    int64 rule_no = 8 [json_name = "rule_no"];
+
+    // to_port: number
+    int64 to_port = 9 [json_name = "to_port"];
+  }
+}
+
+// AwsNetworkAclAssociation version is 0
+message AwsNetworkAclAssociation {
+  string id = 1;
+
+  string network_acl_id = 2 [json_name = "network_acl_id"];
+
+  string subnet_id = 3 [json_name = "subnet_id"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsNetworkAclRule version is 0
+message AwsNetworkAclRule {
+  string cidr_block = 1 [json_name = "cidr_block"];
+
+  bool egress = 2;
+
+  int64 from_port = 3 [json_name = "from_port"];
+
+  int64 icmp_code = 4 [json_name = "icmp_code"];
+
+  int64 icmp_type = 5 [json_name = "icmp_type"];
+
+  string id = 6;
+
+  string ipv6_cidr_block = 7 [json_name = "ipv6_cidr_block"];
+
+  string network_acl_id = 8 [json_name = "network_acl_id"];
+
+  string protocol = 9;
+
+  string rule_action = 10 [json_name = "rule_action"];
+
+  int64 rule_number = 11 [json_name = "rule_number"];
+
+  int64 to_port = 12 [json_name = "to_port"];
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+}
+
+// AwsNetworkInterface version is 0
+message AwsNetworkInterface {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  string interface_type = 4 [json_name = "interface_type"];
+
+  int64 ipv4_prefix_count = 5 [json_name = "ipv4_prefix_count"];
+
+  repeated string ipv4_prefixes = 6 [json_name = "ipv4_prefixes"];
+
+  int64 ipv6_address_count = 7 [json_name = "ipv6_address_count"];
+
+  repeated string ipv6_address_list = 8 [json_name = "ipv6_address_list"];
+
+  bool ipv6_address_list_enabled = 9 [json_name = "ipv6_address_list_enabled"];
+
+  repeated string ipv6_addresses = 10 [json_name = "ipv6_addresses"];
+
+  int64 ipv6_prefix_count = 11 [json_name = "ipv6_prefix_count"];
+
+  repeated string ipv6_prefixes = 12 [json_name = "ipv6_prefixes"];
+
+  string mac_address = 13 [json_name = "mac_address"];
+
+  string outpost_arn = 14 [json_name = "outpost_arn"];
+
+  string owner_id = 15 [json_name = "owner_id"];
+
+  string private_dns_name = 16 [json_name = "private_dns_name"];
+
+  string private_ip = 17 [json_name = "private_ip"];
+
+  repeated string private_ip_list = 18 [json_name = "private_ip_list"];
+
+  bool private_ip_list_enabled = 19 [json_name = "private_ip_list_enabled"];
+
+  repeated string private_ips = 20 [json_name = "private_ips"];
+
+  int64 private_ips_count = 21 [json_name = "private_ips_count"];
+
+  repeated string security_groups = 22 [json_name = "security_groups"];
+
+  bool source_dest_check = 23 [json_name = "source_dest_check"];
+
+  string subnet_id = 24 [json_name = "subnet_id"];
+
+  map<string, string> tags = 25;
+
+  map<string, string> tags_all = 26 [json_name = "tags_all"];
+
+  repeated Attachment attachment = 27;
+
+  map<string, string> for_each = 28 [json_name = "for_each"];
+
+  repeated string depends_on = 29 [json_name = "depends_on"];
+
+  int32 count = 30;
+
+  string provider = 31;
+
+  terraform.v1.Lifecycle lifecycle = 32;
+
+  message Attachment {
+    string attachment_id = 1 [json_name = "attachment_id"];
+
+    int64 device_index = 2 [json_name = "device_index"];
+
+    string instance = 3;
+  }
+}
+
+// AwsNetworkInterfaceAttachment version is 0
+message AwsNetworkInterfaceAttachment {
+  string attachment_id = 1 [json_name = "attachment_id"];
+
+  int64 device_index = 2 [json_name = "device_index"];
+
+  string id = 3;
+
+  string instance_id = 4 [json_name = "instance_id"];
+
+  string network_interface_id = 5 [json_name = "network_interface_id"];
+
+  string status = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsNetworkInterfaceSgAttachment version is 0
+message AwsNetworkInterfaceSgAttachment {
+  string id = 1;
+
+  string network_interface_id = 2 [json_name = "network_interface_id"];
+
+  string security_group_id = 3 [json_name = "security_group_id"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}

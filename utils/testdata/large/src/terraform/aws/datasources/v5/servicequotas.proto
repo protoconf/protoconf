@@ -1,0 +1,88 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsServicequotasService version is 0
+message AwsServicequotasService {
+  string id = 1;
+
+  string service_code = 2 [json_name = "service_code"];
+
+  string service_name = 3 [json_name = "service_name"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsServicequotasServiceQuota version is 0
+message AwsServicequotasServiceQuota {
+  bool adjustable = 1;
+
+  string arn = 2;
+
+  int64 default_value = 3 [json_name = "default_value"];
+
+  bool global_quota = 4 [json_name = "global_quota"];
+
+  string id = 5;
+
+  string quota_code = 6 [json_name = "quota_code"];
+
+  string quota_name = 7 [json_name = "quota_name"];
+
+  string service_code = 8 [json_name = "service_code"];
+
+  string service_name = 9 [json_name = "service_name"];
+
+  repeated UsageMetric usage_metric = 10 [json_name = "usage_metric"];
+
+  int64 value = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message UsageMetric {
+    // metric_dimensions: list of object
+    repeated MetricDimensions metric_dimensions = 1 [json_name = "metric_dimensions"];
+
+    // metric_name: string
+    string metric_name = 2 [json_name = "metric_name"];
+
+    // metric_namespace: string
+    string metric_namespace = 3 [json_name = "metric_namespace"];
+
+    // metric_statistic_recommendation: string
+    string metric_statistic_recommendation = 4 [json_name = "metric_statistic_recommendation"];
+
+    message MetricDimensions {
+      // class: string
+      string class = 1;
+
+      // resource: string
+      string resource = 2;
+
+      // service: string
+      string service = 3;
+
+      // type: string
+      string type = 4;
+    }
+  }
+}

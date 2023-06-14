@@ -1,0 +1,204 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsComprehendDocumentClassifier version is 0
+message AwsComprehendDocumentClassifier {
+  string arn = 1;
+
+  string data_access_role_arn = 2 [json_name = "data_access_role_arn"];
+
+  string id = 3;
+
+  string language_code = 4 [json_name = "language_code"];
+
+  string mode = 5;
+
+  string model_kms_key_id = 6 [json_name = "model_kms_key_id"];
+
+  string name = 7;
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  string version_name = 10 [json_name = "version_name"];
+
+  string version_name_prefix = 11 [json_name = "version_name_prefix"];
+
+  string volume_kms_key_id = 12 [json_name = "volume_kms_key_id"];
+
+  InputDataConfig input_data_config = 13 [json_name = "input_data_config"];
+
+  OutputDataConfig output_data_config = 14 [json_name = "output_data_config"];
+
+  repeated Timeouts timeouts = 15;
+
+  VpcConfig vpc_config = 16 [json_name = "vpc_config"];
+
+  map<string, string> for_each = 17 [json_name = "for_each"];
+
+  repeated string depends_on = 18 [json_name = "depends_on"];
+
+  int32 count = 19;
+
+  string provider = 20;
+
+  terraform.v1.Lifecycle lifecycle = 21;
+
+  message InputDataConfig {
+    string data_format = 1 [json_name = "data_format"];
+
+    string label_delimiter = 2 [json_name = "label_delimiter"];
+
+    string s3_uri = 3 [json_name = "s3_uri"];
+
+    string test_s3_uri = 4 [json_name = "test_s3_uri"];
+
+    repeated AugmentedManifests augmented_manifests = 5 [json_name = "augmented_manifests"];
+
+    message AugmentedManifests {
+      string annotation_data_s3_uri = 1 [json_name = "annotation_data_s3_uri"];
+
+      repeated string attribute_names = 2 [json_name = "attribute_names"];
+
+      string document_type = 3 [json_name = "document_type"];
+
+      string s3_uri = 4 [json_name = "s3_uri"];
+
+      string source_documents_s3_uri = 5 [json_name = "source_documents_s3_uri"];
+
+      string split = 6;
+    }
+  }
+
+  message OutputDataConfig {
+    string kms_key_id = 1 [json_name = "kms_key_id"];
+
+    string output_s3_uri = 2 [json_name = "output_s3_uri"];
+
+    string s3_uri = 3 [json_name = "s3_uri"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+
+  message VpcConfig {
+    repeated string security_group_ids = 1 [json_name = "security_group_ids"];
+
+    repeated string subnets = 2;
+  }
+}
+
+// AwsComprehendEntityRecognizer version is 0
+message AwsComprehendEntityRecognizer {
+  string arn = 1;
+
+  string data_access_role_arn = 2 [json_name = "data_access_role_arn"];
+
+  string id = 3;
+
+  string language_code = 4 [json_name = "language_code"];
+
+  string model_kms_key_id = 5 [json_name = "model_kms_key_id"];
+
+  string name = 6;
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  string version_name = 9 [json_name = "version_name"];
+
+  string version_name_prefix = 10 [json_name = "version_name_prefix"];
+
+  string volume_kms_key_id = 11 [json_name = "volume_kms_key_id"];
+
+  InputDataConfig input_data_config = 12 [json_name = "input_data_config"];
+
+  repeated Timeouts timeouts = 13;
+
+  VpcConfig vpc_config = 14 [json_name = "vpc_config"];
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+
+  message InputDataConfig {
+    string data_format = 1 [json_name = "data_format"];
+
+    Annotations annotations = 2;
+
+    repeated AugmentedManifests augmented_manifests = 3 [json_name = "augmented_manifests"];
+
+    Documents documents = 4;
+
+    EntityList entity_list = 5 [json_name = "entity_list"];
+
+    repeated EntityTypes entity_types = 6 [json_name = "entity_types"];
+
+    message Annotations {
+      string s3_uri = 1 [json_name = "s3_uri"];
+
+      string test_s3_uri = 2 [json_name = "test_s3_uri"];
+    }
+
+    message AugmentedManifests {
+      string annotation_data_s3_uri = 1 [json_name = "annotation_data_s3_uri"];
+
+      repeated string attribute_names = 2 [json_name = "attribute_names"];
+
+      string document_type = 3 [json_name = "document_type"];
+
+      string s3_uri = 4 [json_name = "s3_uri"];
+
+      string source_documents_s3_uri = 5 [json_name = "source_documents_s3_uri"];
+
+      string split = 6;
+    }
+
+    message Documents {
+      string input_format = 1 [json_name = "input_format"];
+
+      string s3_uri = 2 [json_name = "s3_uri"];
+
+      string test_s3_uri = 3 [json_name = "test_s3_uri"];
+    }
+
+    message EntityList {
+      string s3_uri = 1 [json_name = "s3_uri"];
+    }
+
+    message EntityTypes {
+      string type = 1;
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+
+  message VpcConfig {
+    repeated string security_group_ids = 1 [json_name = "security_group_ids"];
+
+    repeated string subnets = 2;
+  }
+}

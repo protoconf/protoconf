@@ -1,0 +1,96 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsEip version is 0
+message AwsEip {
+  string address = 1;
+
+  string allocation_id = 2 [json_name = "allocation_id"];
+
+  string associate_with_private_ip = 3 [json_name = "associate_with_private_ip"];
+
+  string association_id = 4 [json_name = "association_id"];
+
+  string carrier_ip = 5 [json_name = "carrier_ip"];
+
+  string customer_owned_ip = 6 [json_name = "customer_owned_ip"];
+
+  string customer_owned_ipv4_pool = 7 [json_name = "customer_owned_ipv4_pool"];
+
+  string domain = 8;
+
+  string id = 9;
+
+  string instance = 10;
+
+  string network_border_group = 11 [json_name = "network_border_group"];
+
+  string network_interface = 12 [json_name = "network_interface"];
+
+  string private_dns = 13 [json_name = "private_dns"];
+
+  string private_ip = 14 [json_name = "private_ip"];
+
+  string public_dns = 15 [json_name = "public_dns"];
+
+  string public_ip = 16 [json_name = "public_ip"];
+
+  string public_ipv4_pool = 17 [json_name = "public_ipv4_pool"];
+
+  map<string, string> tags = 18;
+
+  map<string, string> tags_all = 19 [json_name = "tags_all"];
+
+  bool vpc = 20;
+
+  repeated Timeouts timeouts = 21;
+
+  map<string, string> for_each = 22 [json_name = "for_each"];
+
+  repeated string depends_on = 23 [json_name = "depends_on"];
+
+  int32 count = 24;
+
+  string provider = 25;
+
+  terraform.v1.Lifecycle lifecycle = 26;
+
+  message Timeouts {
+    string delete = 1;
+
+    string read = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsEipAssociation version is 0
+message AwsEipAssociation {
+  string allocation_id = 1 [json_name = "allocation_id"];
+
+  bool allow_reassociation = 2 [json_name = "allow_reassociation"];
+
+  string id = 3;
+
+  string instance_id = 4 [json_name = "instance_id"];
+
+  string network_interface_id = 5 [json_name = "network_interface_id"];
+
+  string private_ip_address = 6 [json_name = "private_ip_address"];
+
+  string public_ip = 7 [json_name = "public_ip"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}

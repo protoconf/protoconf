@@ -1,0 +1,112 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleActiveDirectoryDomain version is 0
+message GoogleActiveDirectoryDomain {
+  // The name of delegated administrator account used to perform Active Directory operations.
+  // If not specified, setupadmin will be used.
+  string admin = 1;
+
+  // The full names of the Google Compute Engine networks the domain instance is connected to. The domain is only available on networks listed in authorizedNetworks.
+  // If CIDR subnets overlap between networks, domain creation will fail.
+  repeated string authorized_networks = 2 [json_name = "authorized_networks"];
+
+  // The fully qualified domain name. e.g. mydomain.myorganization.com, with the restrictions,
+  // https://cloud.google.com/managed-microsoft-ad/reference/rest/v1/projects.locations.global.domains.
+  string domain_name = 3 [json_name = "domain_name"];
+
+  // The fully-qualified domain name of the exposed domain used by clients to connect to the service.
+  // Similar to what would be chosen for an Active Directory set up on an internal network.
+  string fqdn = 4;
+
+  string id = 5;
+
+  // Resource labels that can contain user-provided metadata
+  map<string, string> labels = 6;
+
+  // Locations where domain needs to be provisioned. [regions][compute/docs/regions-zones/]
+  // e.g. us-west1 or us-east4 Service supports up to 4 locations at once. Each location will use a /26 block.
+  repeated string locations = 7;
+
+  // The unique name of the domain using the format: 'projects/{project}/locations/global/domains/{domainName}'.
+  string name = 8;
+
+  string project = 9;
+
+  // The CIDR range of internal addresses that are reserved for this domain. Reserved networks must be /24 or larger.
+  // Ranges must be unique and non-overlapping with existing subnets in authorizedNetworks
+  string reserved_ip_range = 10 [json_name = "reserved_ip_range"];
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleActiveDirectoryDomainTrust version is 0
+message GoogleActiveDirectoryDomainTrust {
+  // The fully qualified domain name. e.g. mydomain.myorganization.com, with the restrictions,
+  // https://cloud.google.com/managed-microsoft-ad/reference/rest/v1/projects.locations.global.domains.
+  string domain = 1;
+
+  string id = 2;
+
+  string project = 3;
+
+  // Whether the trusted side has forest/domain wide access or selective access to an approved set of resources.
+  bool selective_authentication = 4 [json_name = "selective_authentication"];
+
+  // The target DNS server IP addresses which can resolve the remote domain involved in the trust.
+  repeated string target_dns_ip_addresses = 5 [json_name = "target_dns_ip_addresses"];
+
+  // The fully qualified target domain name which will be in trust with the current domain.
+  string target_domain_name = 6 [json_name = "target_domain_name"];
+
+  // The trust direction, which decides if the current domain is trusted, trusting, or both. Possible values: ["INBOUND", "OUTBOUND", "BIDIRECTIONAL"]
+  string trust_direction = 7 [json_name = "trust_direction"];
+
+  // The trust secret used for the handshake with the target domain. This will not be stored.
+  string trust_handshake_secret = 8 [json_name = "trust_handshake_secret"];
+
+  // The type of trust represented by the trust resource. Possible values: ["FOREST", "EXTERNAL"]
+  string trust_type = 9 [json_name = "trust_type"];
+
+  repeated Timeouts timeouts = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

@@ -1,0 +1,223 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsAcmpcaCertificate version is 0
+message AwsAcmpcaCertificate {
+  string api_passthrough = 1 [json_name = "api_passthrough"];
+
+  string arn = 2;
+
+  string certificate = 3;
+
+  string certificate_authority_arn = 4 [json_name = "certificate_authority_arn"];
+
+  string certificate_chain = 5 [json_name = "certificate_chain"];
+
+  string certificate_signing_request = 6 [json_name = "certificate_signing_request"];
+
+  string id = 7;
+
+  string signing_algorithm = 8 [json_name = "signing_algorithm"];
+
+  string template_arn = 9 [json_name = "template_arn"];
+
+  Validity validity = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Validity {
+    string type = 1;
+
+    string value = 2;
+  }
+}
+
+// AwsAcmpcaCertificateAuthority version is 1
+message AwsAcmpcaCertificateAuthority {
+  string arn = 1;
+
+  string certificate = 2;
+
+  string certificate_chain = 3 [json_name = "certificate_chain"];
+
+  string certificate_signing_request = 4 [json_name = "certificate_signing_request"];
+
+  bool enabled = 5;
+
+  string id = 6;
+
+  string key_storage_security_standard = 7 [json_name = "key_storage_security_standard"];
+
+  string not_after = 8 [json_name = "not_after"];
+
+  string not_before = 9 [json_name = "not_before"];
+
+  int64 permanent_deletion_time_in_days = 10 [json_name = "permanent_deletion_time_in_days"];
+
+  string serial = 11;
+
+  map<string, string> tags = 12;
+
+  map<string, string> tags_all = 13 [json_name = "tags_all"];
+
+  string type = 14;
+
+  string usage_mode = 15 [json_name = "usage_mode"];
+
+  CertificateAuthorityConfiguration certificate_authority_configuration = 16 [json_name = "certificate_authority_configuration"];
+
+  RevocationConfiguration revocation_configuration = 17 [json_name = "revocation_configuration"];
+
+  repeated Timeouts timeouts = 18;
+
+  map<string, string> for_each = 19 [json_name = "for_each"];
+
+  repeated string depends_on = 20 [json_name = "depends_on"];
+
+  int32 count = 21;
+
+  string provider = 22;
+
+  terraform.v1.Lifecycle lifecycle = 23;
+
+  message CertificateAuthorityConfiguration {
+    string key_algorithm = 1 [json_name = "key_algorithm"];
+
+    string signing_algorithm = 2 [json_name = "signing_algorithm"];
+
+    Subject subject = 3;
+
+    message Subject {
+      string common_name = 1 [json_name = "common_name"];
+
+      string country = 2;
+
+      string distinguished_name_qualifier = 3 [json_name = "distinguished_name_qualifier"];
+
+      string generation_qualifier = 4 [json_name = "generation_qualifier"];
+
+      string given_name = 5 [json_name = "given_name"];
+
+      string initials = 6;
+
+      string locality = 7;
+
+      string organization = 8;
+
+      string organizational_unit = 9 [json_name = "organizational_unit"];
+
+      string pseudonym = 10;
+
+      string state = 11;
+
+      string surname = 12;
+
+      string title = 13;
+    }
+  }
+
+  message RevocationConfiguration {
+    CrlConfiguration crl_configuration = 1 [json_name = "crl_configuration"];
+
+    OcspConfiguration ocsp_configuration = 2 [json_name = "ocsp_configuration"];
+
+    message CrlConfiguration {
+      string custom_cname = 1 [json_name = "custom_cname"];
+
+      bool enabled = 2;
+
+      int64 expiration_in_days = 3 [json_name = "expiration_in_days"];
+
+      string s3_bucket_name = 4 [json_name = "s3_bucket_name"];
+
+      string s3_object_acl = 5 [json_name = "s3_object_acl"];
+    }
+
+    message OcspConfiguration {
+      bool enabled = 1;
+
+      string ocsp_custom_cname = 2 [json_name = "ocsp_custom_cname"];
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+  }
+}
+
+// AwsAcmpcaCertificateAuthorityCertificate version is 0
+message AwsAcmpcaCertificateAuthorityCertificate {
+  string certificate = 1;
+
+  string certificate_authority_arn = 2 [json_name = "certificate_authority_arn"];
+
+  string certificate_chain = 3 [json_name = "certificate_chain"];
+
+  string id = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsAcmpcaPermission version is 0
+message AwsAcmpcaPermission {
+  repeated string actions = 1;
+
+  string certificate_authority_arn = 2 [json_name = "certificate_authority_arn"];
+
+  string id = 3;
+
+  string policy = 4;
+
+  string principal = 5;
+
+  string source_account = 6 [json_name = "source_account"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsAcmpcaPolicy version is 0
+message AwsAcmpcaPolicy {
+  string id = 1;
+
+  string policy = 2;
+
+  string resource_arn = 3 [json_name = "resource_arn"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}

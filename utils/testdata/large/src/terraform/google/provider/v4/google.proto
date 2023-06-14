@@ -1,0 +1,283 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.provider.v4;
+
+import "terraform/v1/meta.proto";
+
+// Google version is 0
+message Google {
+  string access_approval_custom_endpoint = 1 [json_name = "access_approval_custom_endpoint"];
+
+  string access_context_manager_custom_endpoint = 2 [
+    json_name = "access_context_manager_custom_endpoint"
+  ];
+
+  string access_token = 3 [json_name = "access_token"];
+
+  string active_directory_custom_endpoint = 4 [json_name = "active_directory_custom_endpoint"];
+
+  string alloydb_custom_endpoint = 5 [json_name = "alloydb_custom_endpoint"];
+
+  string apigee_custom_endpoint = 6 [json_name = "apigee_custom_endpoint"];
+
+  string apikeys_custom_endpoint = 7 [json_name = "apikeys_custom_endpoint"];
+
+  string app_engine_custom_endpoint = 8 [json_name = "app_engine_custom_endpoint"];
+
+  string artifact_registry_custom_endpoint = 9 [json_name = "artifact_registry_custom_endpoint"];
+
+  string assured_workloads_custom_endpoint = 10 [json_name = "assured_workloads_custom_endpoint"];
+
+  string beyondcorp_custom_endpoint = 11 [json_name = "beyondcorp_custom_endpoint"];
+
+  string big_query_custom_endpoint = 12 [json_name = "big_query_custom_endpoint"];
+
+  string bigquery_analytics_hub_custom_endpoint = 13 [
+    json_name = "bigquery_analytics_hub_custom_endpoint"
+  ];
+
+  string bigquery_connection_custom_endpoint = 14 [json_name = "bigquery_connection_custom_endpoint"];
+
+  string bigquery_data_transfer_custom_endpoint = 15 [
+    json_name = "bigquery_data_transfer_custom_endpoint"
+  ];
+
+  string bigquery_datapolicy_custom_endpoint = 16 [json_name = "bigquery_datapolicy_custom_endpoint"];
+
+  string bigquery_reservation_custom_endpoint = 17 [json_name = "bigquery_reservation_custom_endpoint"];
+
+  string bigtable_custom_endpoint = 18 [json_name = "bigtable_custom_endpoint"];
+
+  string billing_custom_endpoint = 19 [json_name = "billing_custom_endpoint"];
+
+  string billing_project = 20 [json_name = "billing_project"];
+
+  string binary_authorization_custom_endpoint = 21 [json_name = "binary_authorization_custom_endpoint"];
+
+  string certificate_manager_custom_endpoint = 22 [json_name = "certificate_manager_custom_endpoint"];
+
+  string cloud_asset_custom_endpoint = 23 [json_name = "cloud_asset_custom_endpoint"];
+
+  string cloud_billing_custom_endpoint = 24 [json_name = "cloud_billing_custom_endpoint"];
+
+  string cloud_build_custom_endpoint = 25 [json_name = "cloud_build_custom_endpoint"];
+
+  string cloud_build_worker_pool_custom_endpoint = 26 [
+    json_name = "cloud_build_worker_pool_custom_endpoint"
+  ];
+
+  string cloud_functions_custom_endpoint = 27 [json_name = "cloud_functions_custom_endpoint"];
+
+  string cloud_identity_custom_endpoint = 28 [json_name = "cloud_identity_custom_endpoint"];
+
+  string cloud_ids_custom_endpoint = 29 [json_name = "cloud_ids_custom_endpoint"];
+
+  string cloud_iot_custom_endpoint = 30 [json_name = "cloud_iot_custom_endpoint"];
+
+  string cloud_resource_manager_custom_endpoint = 31 [
+    json_name = "cloud_resource_manager_custom_endpoint"
+  ];
+
+  string cloud_run_custom_endpoint = 32 [json_name = "cloud_run_custom_endpoint"];
+
+  string cloud_run_v2_custom_endpoint = 33 [json_name = "cloud_run_v2_custom_endpoint"];
+
+  string cloud_scheduler_custom_endpoint = 34 [json_name = "cloud_scheduler_custom_endpoint"];
+
+  string cloud_tasks_custom_endpoint = 35 [json_name = "cloud_tasks_custom_endpoint"];
+
+  string clouddeploy_custom_endpoint = 36 [json_name = "clouddeploy_custom_endpoint"];
+
+  string cloudfunctions2_custom_endpoint = 37 [json_name = "cloudfunctions2_custom_endpoint"];
+
+  string composer_custom_endpoint = 38 [json_name = "composer_custom_endpoint"];
+
+  string compute_custom_endpoint = 39 [json_name = "compute_custom_endpoint"];
+
+  string container_analysis_custom_endpoint = 40 [json_name = "container_analysis_custom_endpoint"];
+
+  string container_attached_custom_endpoint = 41 [json_name = "container_attached_custom_endpoint"];
+
+  string container_aws_custom_endpoint = 42 [json_name = "container_aws_custom_endpoint"];
+
+  string container_azure_custom_endpoint = 43 [json_name = "container_azure_custom_endpoint"];
+
+  string container_custom_endpoint = 44 [json_name = "container_custom_endpoint"];
+
+  string credentials = 45;
+
+  string data_catalog_custom_endpoint = 46 [json_name = "data_catalog_custom_endpoint"];
+
+  string data_fusion_custom_endpoint = 47 [json_name = "data_fusion_custom_endpoint"];
+
+  string data_loss_prevention_custom_endpoint = 48 [json_name = "data_loss_prevention_custom_endpoint"];
+
+  string database_migration_service_custom_endpoint = 49 [
+    json_name = "database_migration_service_custom_endpoint"
+  ];
+
+  string dataflow_custom_endpoint = 50 [json_name = "dataflow_custom_endpoint"];
+
+  string dataplex_custom_endpoint = 51 [json_name = "dataplex_custom_endpoint"];
+
+  string dataproc_custom_endpoint = 52 [json_name = "dataproc_custom_endpoint"];
+
+  string dataproc_metastore_custom_endpoint = 53 [json_name = "dataproc_metastore_custom_endpoint"];
+
+  string datastore_custom_endpoint = 54 [json_name = "datastore_custom_endpoint"];
+
+  string datastream_custom_endpoint = 55 [json_name = "datastream_custom_endpoint"];
+
+  string deployment_manager_custom_endpoint = 56 [json_name = "deployment_manager_custom_endpoint"];
+
+  string dialogflow_custom_endpoint = 57 [json_name = "dialogflow_custom_endpoint"];
+
+  string dialogflow_cx_custom_endpoint = 58 [json_name = "dialogflow_cx_custom_endpoint"];
+
+  string dns_custom_endpoint = 59 [json_name = "dns_custom_endpoint"];
+
+  string document_ai_custom_endpoint = 60 [json_name = "document_ai_custom_endpoint"];
+
+  string essential_contacts_custom_endpoint = 61 [json_name = "essential_contacts_custom_endpoint"];
+
+  string eventarc_custom_endpoint = 62 [json_name = "eventarc_custom_endpoint"];
+
+  string filestore_custom_endpoint = 63 [json_name = "filestore_custom_endpoint"];
+
+  string firebaserules_custom_endpoint = 64 [json_name = "firebaserules_custom_endpoint"];
+
+  string firestore_custom_endpoint = 65 [json_name = "firestore_custom_endpoint"];
+
+  string game_services_custom_endpoint = 66 [json_name = "game_services_custom_endpoint"];
+
+  string gke_backup_custom_endpoint = 67 [json_name = "gke_backup_custom_endpoint"];
+
+  string gke_hub_custom_endpoint = 68 [json_name = "gke_hub_custom_endpoint"];
+
+  string healthcare_custom_endpoint = 69 [json_name = "healthcare_custom_endpoint"];
+
+  string iam2_custom_endpoint = 70 [json_name = "iam2_custom_endpoint"];
+
+  string iam_beta_custom_endpoint = 71 [json_name = "iam_beta_custom_endpoint"];
+
+  string iam_credentials_custom_endpoint = 72 [json_name = "iam_credentials_custom_endpoint"];
+
+  string iam_custom_endpoint = 73 [json_name = "iam_custom_endpoint"];
+
+  string iam_workforce_pool_custom_endpoint = 74 [json_name = "iam_workforce_pool_custom_endpoint"];
+
+  string iap_custom_endpoint = 75 [json_name = "iap_custom_endpoint"];
+
+  string identity_platform_custom_endpoint = 76 [json_name = "identity_platform_custom_endpoint"];
+
+  string impersonate_service_account = 77 [json_name = "impersonate_service_account"];
+
+  repeated string impersonate_service_account_delegates = 78 [
+    json_name = "impersonate_service_account_delegates"
+  ];
+
+  string kms_custom_endpoint = 79 [json_name = "kms_custom_endpoint"];
+
+  string logging_custom_endpoint = 80 [json_name = "logging_custom_endpoint"];
+
+  string memcache_custom_endpoint = 81 [json_name = "memcache_custom_endpoint"];
+
+  string ml_engine_custom_endpoint = 82 [json_name = "ml_engine_custom_endpoint"];
+
+  string monitoring_custom_endpoint = 83 [json_name = "monitoring_custom_endpoint"];
+
+  string network_connectivity_custom_endpoint = 84 [json_name = "network_connectivity_custom_endpoint"];
+
+  string network_management_custom_endpoint = 85 [json_name = "network_management_custom_endpoint"];
+
+  string network_services_custom_endpoint = 86 [json_name = "network_services_custom_endpoint"];
+
+  string notebooks_custom_endpoint = 87 [json_name = "notebooks_custom_endpoint"];
+
+  string org_policy_custom_endpoint = 88 [json_name = "org_policy_custom_endpoint"];
+
+  string os_config_custom_endpoint = 89 [json_name = "os_config_custom_endpoint"];
+
+  string os_login_custom_endpoint = 90 [json_name = "os_login_custom_endpoint"];
+
+  string privateca_custom_endpoint = 91 [json_name = "privateca_custom_endpoint"];
+
+  string project = 92;
+
+  string pubsub_custom_endpoint = 93 [json_name = "pubsub_custom_endpoint"];
+
+  string pubsub_lite_custom_endpoint = 94 [json_name = "pubsub_lite_custom_endpoint"];
+
+  string recaptcha_enterprise_custom_endpoint = 95 [json_name = "recaptcha_enterprise_custom_endpoint"];
+
+  string redis_custom_endpoint = 96 [json_name = "redis_custom_endpoint"];
+
+  string region = 97;
+
+  string request_reason = 98 [json_name = "request_reason"];
+
+  string request_timeout = 99 [json_name = "request_timeout"];
+
+  string resource_manager_custom_endpoint = 100 [json_name = "resource_manager_custom_endpoint"];
+
+  string resource_manager_v3_custom_endpoint = 101 [json_name = "resource_manager_v3_custom_endpoint"];
+
+  repeated string scopes = 102;
+
+  string secret_manager_custom_endpoint = 103 [json_name = "secret_manager_custom_endpoint"];
+
+  string security_center_custom_endpoint = 104 [json_name = "security_center_custom_endpoint"];
+
+  string service_management_custom_endpoint = 105 [json_name = "service_management_custom_endpoint"];
+
+  string service_networking_custom_endpoint = 106 [json_name = "service_networking_custom_endpoint"];
+
+  string service_usage_custom_endpoint = 107 [json_name = "service_usage_custom_endpoint"];
+
+  string source_repo_custom_endpoint = 108 [json_name = "source_repo_custom_endpoint"];
+
+  string spanner_custom_endpoint = 109 [json_name = "spanner_custom_endpoint"];
+
+  string sql_custom_endpoint = 110 [json_name = "sql_custom_endpoint"];
+
+  string storage_custom_endpoint = 111 [json_name = "storage_custom_endpoint"];
+
+  string storage_transfer_custom_endpoint = 112 [json_name = "storage_transfer_custom_endpoint"];
+
+  string tags_custom_endpoint = 113 [json_name = "tags_custom_endpoint"];
+
+  string tags_location_custom_endpoint = 114 [json_name = "tags_location_custom_endpoint"];
+
+  string tpu_custom_endpoint = 115 [json_name = "tpu_custom_endpoint"];
+
+  bool user_project_override = 116 [json_name = "user_project_override"];
+
+  string vertex_ai_custom_endpoint = 117 [json_name = "vertex_ai_custom_endpoint"];
+
+  string vpc_access_custom_endpoint = 118 [json_name = "vpc_access_custom_endpoint"];
+
+  string workflows_custom_endpoint = 119 [json_name = "workflows_custom_endpoint"];
+
+  string zone = 120;
+
+  Batching batching = 121;
+
+  map<string, string> for_each = 122 [json_name = "for_each"];
+
+  repeated string depends_on = 123 [json_name = "depends_on"];
+
+  int32 count = 124;
+
+  string provider = 125;
+
+  terraform.v1.Lifecycle lifecycle = 126;
+
+  string alias = 127;
+
+  message Batching {
+    bool enable_batching = 1 [json_name = "enable_batching"];
+
+    string send_after = 2 [json_name = "send_after"];
+  }
+}

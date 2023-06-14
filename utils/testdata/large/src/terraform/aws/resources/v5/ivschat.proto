@@ -1,0 +1,110 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsIvschatLoggingConfiguration version is 0
+message AwsIvschatLoggingConfiguration {
+  string arn = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  string state = 4;
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  DestinationConfiguration destination_configuration = 7 [json_name = "destination_configuration"];
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message DestinationConfiguration {
+    CloudwatchLogs cloudwatch_logs = 1 [json_name = "cloudwatch_logs"];
+
+    Firehose firehose = 2;
+
+    S3 s3 = 3;
+
+    message CloudwatchLogs {
+      string log_group_name = 1 [json_name = "log_group_name"];
+    }
+
+    message Firehose {
+      string delivery_stream_name = 1 [json_name = "delivery_stream_name"];
+    }
+
+    message S3 {
+      string bucket_name = 1 [json_name = "bucket_name"];
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsIvschatRoom version is 0
+message AwsIvschatRoom {
+  string arn = 1;
+
+  string id = 2;
+
+  repeated string logging_configuration_identifiers = 3 [json_name = "logging_configuration_identifiers"];
+
+  int64 maximum_message_length = 4 [json_name = "maximum_message_length"];
+
+  int64 maximum_message_rate_per_second = 5 [json_name = "maximum_message_rate_per_second"];
+
+  string name = 6;
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  MessageReviewHandler message_review_handler = 9 [json_name = "message_review_handler"];
+
+  repeated Timeouts timeouts = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message MessageReviewHandler {
+    string fallback_result = 1 [json_name = "fallback_result"];
+
+    string uri = 2;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

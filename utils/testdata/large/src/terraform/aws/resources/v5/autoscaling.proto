@@ -1,0 +1,798 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsAutoscalingAttachment version is 0
+message AwsAutoscalingAttachment {
+  string autoscaling_group_name = 1 [json_name = "autoscaling_group_name"];
+
+  string elb = 2;
+
+  string id = 3;
+
+  string lb_target_group_arn = 4 [json_name = "lb_target_group_arn"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsAutoscalingGroup version is 0
+message AwsAutoscalingGroup {
+  string arn = 1;
+
+  repeated string availability_zones = 2 [json_name = "availability_zones"];
+
+  bool capacity_rebalance = 3 [json_name = "capacity_rebalance"];
+
+  string context = 4;
+
+  int64 default_cooldown = 5 [json_name = "default_cooldown"];
+
+  int64 default_instance_warmup = 6 [json_name = "default_instance_warmup"];
+
+  int64 desired_capacity = 7 [json_name = "desired_capacity"];
+
+  string desired_capacity_type = 8 [json_name = "desired_capacity_type"];
+
+  repeated string enabled_metrics = 9 [json_name = "enabled_metrics"];
+
+  bool force_delete = 10 [json_name = "force_delete"];
+
+  bool force_delete_warm_pool = 11 [json_name = "force_delete_warm_pool"];
+
+  int64 health_check_grace_period = 12 [json_name = "health_check_grace_period"];
+
+  string health_check_type = 13 [json_name = "health_check_type"];
+
+  string id = 14;
+
+  string launch_configuration = 15 [json_name = "launch_configuration"];
+
+  repeated string load_balancers = 16 [json_name = "load_balancers"];
+
+  int64 max_instance_lifetime = 17 [json_name = "max_instance_lifetime"];
+
+  int64 max_size = 18 [json_name = "max_size"];
+
+  string metrics_granularity = 19 [json_name = "metrics_granularity"];
+
+  int64 min_elb_capacity = 20 [json_name = "min_elb_capacity"];
+
+  int64 min_size = 21 [json_name = "min_size"];
+
+  string name = 22;
+
+  string name_prefix = 23 [json_name = "name_prefix"];
+
+  string placement_group = 24 [json_name = "placement_group"];
+
+  int64 predicted_capacity = 25 [json_name = "predicted_capacity"];
+
+  bool protect_from_scale_in = 26 [json_name = "protect_from_scale_in"];
+
+  string service_linked_role_arn = 27 [json_name = "service_linked_role_arn"];
+
+  repeated string suspended_processes = 28 [json_name = "suspended_processes"];
+
+  repeated string target_group_arns = 29 [json_name = "target_group_arns"];
+
+  repeated string termination_policies = 30 [json_name = "termination_policies"];
+
+  repeated string vpc_zone_identifier = 31 [json_name = "vpc_zone_identifier"];
+
+  string wait_for_capacity_timeout = 32 [json_name = "wait_for_capacity_timeout"];
+
+  int64 wait_for_elb_capacity = 33 [json_name = "wait_for_elb_capacity"];
+
+  int64 warm_pool_size = 34 [json_name = "warm_pool_size"];
+
+  repeated InitialLifecycleHook initial_lifecycle_hook = 35 [json_name = "initial_lifecycle_hook"];
+
+  InstanceRefresh instance_refresh = 36 [json_name = "instance_refresh"];
+
+  LaunchTemplate launch_template = 37 [json_name = "launch_template"];
+
+  MixedInstancesPolicy mixed_instances_policy = 38 [json_name = "mixed_instances_policy"];
+
+  repeated Tag tag = 39;
+
+  repeated Timeouts timeouts = 40;
+
+  repeated TrafficSource traffic_source = 41 [json_name = "traffic_source"];
+
+  WarmPool warm_pool = 42 [json_name = "warm_pool"];
+
+  map<string, string> for_each = 43 [json_name = "for_each"];
+
+  repeated string depends_on = 44 [json_name = "depends_on"];
+
+  int32 count = 45;
+
+  string provider = 46;
+
+  terraform.v1.Lifecycle lifecycle = 47;
+
+  message InitialLifecycleHook {
+    string default_result = 1 [json_name = "default_result"];
+
+    int64 heartbeat_timeout = 2 [json_name = "heartbeat_timeout"];
+
+    string lifecycle_transition = 3 [json_name = "lifecycle_transition"];
+
+    string name = 4;
+
+    string notification_metadata = 5 [json_name = "notification_metadata"];
+
+    string notification_target_arn = 6 [json_name = "notification_target_arn"];
+
+    string role_arn = 7 [json_name = "role_arn"];
+  }
+
+  message InstanceRefresh {
+    string strategy = 1;
+
+    repeated string triggers = 2;
+
+    Preferences preferences = 3;
+
+    message Preferences {
+      bool auto_rollback = 1 [json_name = "auto_rollback"];
+
+      string checkpoint_delay = 2 [json_name = "checkpoint_delay"];
+
+      repeated int64 checkpoint_percentages = 3 [json_name = "checkpoint_percentages"];
+
+      string instance_warmup = 4 [json_name = "instance_warmup"];
+
+      int64 min_healthy_percentage = 5 [json_name = "min_healthy_percentage"];
+
+      bool skip_matching = 6 [json_name = "skip_matching"];
+    }
+  }
+
+  message LaunchTemplate {
+    string id = 1;
+
+    string name = 2;
+
+    string version = 3;
+  }
+
+  message MixedInstancesPolicy {
+    InstancesDistribution instances_distribution = 1 [json_name = "instances_distribution"];
+
+    LaunchTemplate launch_template = 2 [json_name = "launch_template"];
+
+    message InstancesDistribution {
+      string on_demand_allocation_strategy = 1 [json_name = "on_demand_allocation_strategy"];
+
+      int64 on_demand_base_capacity = 2 [json_name = "on_demand_base_capacity"];
+
+      int64 on_demand_percentage_above_base_capacity = 3 [
+        json_name = "on_demand_percentage_above_base_capacity"
+      ];
+
+      string spot_allocation_strategy = 4 [json_name = "spot_allocation_strategy"];
+
+      int64 spot_instance_pools = 5 [json_name = "spot_instance_pools"];
+
+      string spot_max_price = 6 [json_name = "spot_max_price"];
+    }
+
+    message LaunchTemplate {
+      LaunchTemplateSpecification launch_template_specification = 1 [json_name = "launch_template_specification"];
+
+      repeated Override override = 2;
+
+      message LaunchTemplateSpecification {
+        string launch_template_id = 1 [json_name = "launch_template_id"];
+
+        string launch_template_name = 2 [json_name = "launch_template_name"];
+
+        string version = 3;
+      }
+
+      message Override {
+        string instance_type = 1 [json_name = "instance_type"];
+
+        string weighted_capacity = 2 [json_name = "weighted_capacity"];
+
+        InstanceRequirements instance_requirements = 3 [json_name = "instance_requirements"];
+
+        LaunchTemplateSpecification launch_template_specification = 4 [json_name = "launch_template_specification"];
+
+        message InstanceRequirements {
+          repeated string accelerator_manufacturers = 1 [json_name = "accelerator_manufacturers"];
+
+          repeated string accelerator_names = 2 [json_name = "accelerator_names"];
+
+          repeated string accelerator_types = 3 [json_name = "accelerator_types"];
+
+          repeated string allowed_instance_types = 4 [json_name = "allowed_instance_types"];
+
+          string bare_metal = 5 [json_name = "bare_metal"];
+
+          string burstable_performance = 6 [json_name = "burstable_performance"];
+
+          repeated string cpu_manufacturers = 7 [json_name = "cpu_manufacturers"];
+
+          repeated string excluded_instance_types = 8 [json_name = "excluded_instance_types"];
+
+          repeated string instance_generations = 9 [json_name = "instance_generations"];
+
+          string local_storage = 10 [json_name = "local_storage"];
+
+          repeated string local_storage_types = 11 [json_name = "local_storage_types"];
+
+          int64 on_demand_max_price_percentage_over_lowest_price = 12 [
+            json_name = "on_demand_max_price_percentage_over_lowest_price"
+          ];
+
+          bool require_hibernate_support = 13 [json_name = "require_hibernate_support"];
+
+          int64 spot_max_price_percentage_over_lowest_price = 14 [
+            json_name = "spot_max_price_percentage_over_lowest_price"
+          ];
+
+          AcceleratorCount accelerator_count = 15 [json_name = "accelerator_count"];
+
+          AcceleratorTotalMemoryMib accelerator_total_memory_mib = 16 [json_name = "accelerator_total_memory_mib"];
+
+          BaselineEbsBandwidthMbps baseline_ebs_bandwidth_mbps = 17 [json_name = "baseline_ebs_bandwidth_mbps"];
+
+          MemoryGibPerVcpu memory_gib_per_vcpu = 18 [json_name = "memory_gib_per_vcpu"];
+
+          MemoryMib memory_mib = 19 [json_name = "memory_mib"];
+
+          NetworkBandwidthGbps network_bandwidth_gbps = 20 [json_name = "network_bandwidth_gbps"];
+
+          NetworkInterfaceCount network_interface_count = 21 [json_name = "network_interface_count"];
+
+          TotalLocalStorageGb total_local_storage_gb = 22 [json_name = "total_local_storage_gb"];
+
+          VcpuCount vcpu_count = 23 [json_name = "vcpu_count"];
+
+          message AcceleratorCount {
+            int64 max = 1;
+
+            int64 min = 2;
+          }
+
+          message AcceleratorTotalMemoryMib {
+            int64 max = 1;
+
+            int64 min = 2;
+          }
+
+          message BaselineEbsBandwidthMbps {
+            int64 max = 1;
+
+            int64 min = 2;
+          }
+
+          message MemoryGibPerVcpu {
+            int64 max = 1;
+
+            int64 min = 2;
+          }
+
+          message MemoryMib {
+            int64 max = 1;
+
+            int64 min = 2;
+          }
+
+          message NetworkBandwidthGbps {
+            int64 max = 1;
+
+            int64 min = 2;
+          }
+
+          message NetworkInterfaceCount {
+            int64 max = 1;
+
+            int64 min = 2;
+          }
+
+          message TotalLocalStorageGb {
+            int64 max = 1;
+
+            int64 min = 2;
+          }
+
+          message VcpuCount {
+            int64 max = 1;
+
+            int64 min = 2;
+          }
+        }
+
+        message LaunchTemplateSpecification {
+          string launch_template_id = 1 [json_name = "launch_template_id"];
+
+          string launch_template_name = 2 [json_name = "launch_template_name"];
+
+          string version = 3;
+        }
+      }
+    }
+  }
+
+  message Tag {
+    string key = 1;
+
+    bool propagate_at_launch = 2 [json_name = "propagate_at_launch"];
+
+    string value = 3;
+  }
+
+  message Timeouts {
+    string delete = 1;
+
+    string update = 2;
+  }
+
+  message TrafficSource {
+    string identifier = 1;
+
+    string type = 2;
+  }
+
+  message WarmPool {
+    int64 max_group_prepared_capacity = 1 [json_name = "max_group_prepared_capacity"];
+
+    int64 min_size = 2 [json_name = "min_size"];
+
+    string pool_state = 3 [json_name = "pool_state"];
+
+    InstanceReusePolicy instance_reuse_policy = 4 [json_name = "instance_reuse_policy"];
+
+    message InstanceReusePolicy {
+      bool reuse_on_scale_in = 1 [json_name = "reuse_on_scale_in"];
+    }
+  }
+}
+
+// AwsAutoscalingGroupTag version is 0
+message AwsAutoscalingGroupTag {
+  string autoscaling_group_name = 1 [json_name = "autoscaling_group_name"];
+
+  string id = 2;
+
+  Tag tag = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+
+  message Tag {
+    string key = 1;
+
+    bool propagate_at_launch = 2 [json_name = "propagate_at_launch"];
+
+    string value = 3;
+  }
+}
+
+// AwsAutoscalingLifecycleHook version is 0
+message AwsAutoscalingLifecycleHook {
+  string autoscaling_group_name = 1 [json_name = "autoscaling_group_name"];
+
+  string default_result = 2 [json_name = "default_result"];
+
+  int64 heartbeat_timeout = 3 [json_name = "heartbeat_timeout"];
+
+  string id = 4;
+
+  string lifecycle_transition = 5 [json_name = "lifecycle_transition"];
+
+  string name = 6;
+
+  string notification_metadata = 7 [json_name = "notification_metadata"];
+
+  string notification_target_arn = 8 [json_name = "notification_target_arn"];
+
+  string role_arn = 9 [json_name = "role_arn"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+}
+
+// AwsAutoscalingNotification version is 0
+message AwsAutoscalingNotification {
+  repeated string group_names = 1 [json_name = "group_names"];
+
+  string id = 2;
+
+  repeated string notifications = 3;
+
+  string topic_arn = 4 [json_name = "topic_arn"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsAutoscalingPolicy version is 0
+message AwsAutoscalingPolicy {
+  string adjustment_type = 1 [json_name = "adjustment_type"];
+
+  string arn = 2;
+
+  string autoscaling_group_name = 3 [json_name = "autoscaling_group_name"];
+
+  int64 cooldown = 4;
+
+  bool enabled = 5;
+
+  int64 estimated_instance_warmup = 6 [json_name = "estimated_instance_warmup"];
+
+  string id = 7;
+
+  string metric_aggregation_type = 8 [json_name = "metric_aggregation_type"];
+
+  int64 min_adjustment_magnitude = 9 [json_name = "min_adjustment_magnitude"];
+
+  string name = 10;
+
+  string policy_type = 11 [json_name = "policy_type"];
+
+  int64 scaling_adjustment = 12 [json_name = "scaling_adjustment"];
+
+  PredictiveScalingConfiguration predictive_scaling_configuration = 13 [json_name = "predictive_scaling_configuration"];
+
+  repeated StepAdjustment step_adjustment = 14 [json_name = "step_adjustment"];
+
+  TargetTrackingConfiguration target_tracking_configuration = 15 [json_name = "target_tracking_configuration"];
+
+  map<string, string> for_each = 16 [json_name = "for_each"];
+
+  repeated string depends_on = 17 [json_name = "depends_on"];
+
+  int32 count = 18;
+
+  string provider = 19;
+
+  terraform.v1.Lifecycle lifecycle = 20;
+
+  message PredictiveScalingConfiguration {
+    string max_capacity_breach_behavior = 1 [json_name = "max_capacity_breach_behavior"];
+
+    string max_capacity_buffer = 2 [json_name = "max_capacity_buffer"];
+
+    string mode = 3;
+
+    string scheduling_buffer_time = 4 [json_name = "scheduling_buffer_time"];
+
+    MetricSpecification metric_specification = 5 [json_name = "metric_specification"];
+
+    message MetricSpecification {
+      int64 target_value = 1 [json_name = "target_value"];
+
+      CustomizedCapacityMetricSpecification customized_capacity_metric_specification = 2 [
+        json_name = "customized_capacity_metric_specification"
+      ];
+
+      CustomizedLoadMetricSpecification customized_load_metric_specification = 3 [json_name = "customized_load_metric_specification"];
+
+      CustomizedScalingMetricSpecification customized_scaling_metric_specification = 4 [
+        json_name = "customized_scaling_metric_specification"
+      ];
+
+      PredefinedLoadMetricSpecification predefined_load_metric_specification = 5 [json_name = "predefined_load_metric_specification"];
+
+      PredefinedMetricPairSpecification predefined_metric_pair_specification = 6 [json_name = "predefined_metric_pair_specification"];
+
+      PredefinedScalingMetricSpecification predefined_scaling_metric_specification = 7 [
+        json_name = "predefined_scaling_metric_specification"
+      ];
+
+      message CustomizedCapacityMetricSpecification {
+        repeated MetricDataQueries metric_data_queries = 1 [json_name = "metric_data_queries"];
+
+        message MetricDataQueries {
+          string expression = 1;
+
+          string id = 2;
+
+          string label = 3;
+
+          bool return_data = 4 [json_name = "return_data"];
+
+          MetricStat metric_stat = 5 [json_name = "metric_stat"];
+
+          message MetricStat {
+            string stat = 1;
+
+            string unit = 2;
+
+            Metric metric = 3;
+
+            message Metric {
+              string metric_name = 1 [json_name = "metric_name"];
+
+              string namespace = 2;
+
+              repeated Dimensions dimensions = 3;
+
+              message Dimensions {
+                string name = 1;
+
+                string value = 2;
+              }
+            }
+          }
+        }
+      }
+
+      message CustomizedLoadMetricSpecification {
+        repeated MetricDataQueries metric_data_queries = 1 [json_name = "metric_data_queries"];
+
+        message MetricDataQueries {
+          string expression = 1;
+
+          string id = 2;
+
+          string label = 3;
+
+          bool return_data = 4 [json_name = "return_data"];
+
+          MetricStat metric_stat = 5 [json_name = "metric_stat"];
+
+          message MetricStat {
+            string stat = 1;
+
+            string unit = 2;
+
+            Metric metric = 3;
+
+            message Metric {
+              string metric_name = 1 [json_name = "metric_name"];
+
+              string namespace = 2;
+
+              repeated Dimensions dimensions = 3;
+
+              message Dimensions {
+                string name = 1;
+
+                string value = 2;
+              }
+            }
+          }
+        }
+      }
+
+      message CustomizedScalingMetricSpecification {
+        repeated MetricDataQueries metric_data_queries = 1 [json_name = "metric_data_queries"];
+
+        message MetricDataQueries {
+          string expression = 1;
+
+          string id = 2;
+
+          string label = 3;
+
+          bool return_data = 4 [json_name = "return_data"];
+
+          MetricStat metric_stat = 5 [json_name = "metric_stat"];
+
+          message MetricStat {
+            string stat = 1;
+
+            string unit = 2;
+
+            Metric metric = 3;
+
+            message Metric {
+              string metric_name = 1 [json_name = "metric_name"];
+
+              string namespace = 2;
+
+              repeated Dimensions dimensions = 3;
+
+              message Dimensions {
+                string name = 1;
+
+                string value = 2;
+              }
+            }
+          }
+        }
+      }
+
+      message PredefinedLoadMetricSpecification {
+        string predefined_metric_type = 1 [json_name = "predefined_metric_type"];
+
+        string resource_label = 2 [json_name = "resource_label"];
+      }
+
+      message PredefinedMetricPairSpecification {
+        string predefined_metric_type = 1 [json_name = "predefined_metric_type"];
+
+        string resource_label = 2 [json_name = "resource_label"];
+      }
+
+      message PredefinedScalingMetricSpecification {
+        string predefined_metric_type = 1 [json_name = "predefined_metric_type"];
+
+        string resource_label = 2 [json_name = "resource_label"];
+      }
+    }
+  }
+
+  message StepAdjustment {
+    string metric_interval_lower_bound = 1 [json_name = "metric_interval_lower_bound"];
+
+    string metric_interval_upper_bound = 2 [json_name = "metric_interval_upper_bound"];
+
+    int64 scaling_adjustment = 3 [json_name = "scaling_adjustment"];
+  }
+
+  message TargetTrackingConfiguration {
+    bool disable_scale_in = 1 [json_name = "disable_scale_in"];
+
+    int64 target_value = 2 [json_name = "target_value"];
+
+    CustomizedMetricSpecification customized_metric_specification = 3 [json_name = "customized_metric_specification"];
+
+    PredefinedMetricSpecification predefined_metric_specification = 4 [json_name = "predefined_metric_specification"];
+
+    message CustomizedMetricSpecification {
+      string metric_name = 1 [json_name = "metric_name"];
+
+      string namespace = 2;
+
+      string statistic = 3;
+
+      string unit = 4;
+
+      repeated MetricDimension metric_dimension = 5 [json_name = "metric_dimension"];
+
+      repeated Metrics metrics = 6;
+
+      message MetricDimension {
+        string name = 1;
+
+        string value = 2;
+      }
+
+      message Metrics {
+        string expression = 1;
+
+        string id = 2;
+
+        string label = 3;
+
+        bool return_data = 4 [json_name = "return_data"];
+
+        MetricStat metric_stat = 5 [json_name = "metric_stat"];
+
+        message MetricStat {
+          string stat = 1;
+
+          string unit = 2;
+
+          Metric metric = 3;
+
+          message Metric {
+            string metric_name = 1 [json_name = "metric_name"];
+
+            string namespace = 2;
+
+            repeated Dimensions dimensions = 3;
+
+            message Dimensions {
+              string name = 1;
+
+              string value = 2;
+            }
+          }
+        }
+      }
+    }
+
+    message PredefinedMetricSpecification {
+      string predefined_metric_type = 1 [json_name = "predefined_metric_type"];
+
+      string resource_label = 2 [json_name = "resource_label"];
+    }
+  }
+}
+
+// AwsAutoscalingSchedule version is 0
+message AwsAutoscalingSchedule {
+  string arn = 1;
+
+  string autoscaling_group_name = 2 [json_name = "autoscaling_group_name"];
+
+  int64 desired_capacity = 3 [json_name = "desired_capacity"];
+
+  string end_time = 4 [json_name = "end_time"];
+
+  string id = 5;
+
+  int64 max_size = 6 [json_name = "max_size"];
+
+  int64 min_size = 7 [json_name = "min_size"];
+
+  string recurrence = 8;
+
+  string scheduled_action_name = 9 [json_name = "scheduled_action_name"];
+
+  string start_time = 10 [json_name = "start_time"];
+
+  string time_zone = 11 [json_name = "time_zone"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+}
+
+// AwsAutoscalingTrafficSourceAttachment version is 0
+message AwsAutoscalingTrafficSourceAttachment {
+  string autoscaling_group_name = 1 [json_name = "autoscaling_group_name"];
+
+  string id = 2;
+
+  repeated Timeouts timeouts = 3;
+
+  TrafficSource traffic_source = 4 [json_name = "traffic_source"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+
+  message TrafficSource {
+    string identifier = 1;
+
+    string type = 2;
+  }
+}

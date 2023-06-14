@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.datasources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleGameServicesGameServerDeploymentRollout version is 0
+message GoogleGameServicesGameServerDeploymentRollout {
+  // This field points to the game server config that is
+  // applied by default to all realms and clusters. For example,
+  //
+  // 'projects/my-project/locations/global/gameServerDeployments/my-game/configs/my-config'.
+  string default_game_server_config = 1 [json_name = "default_game_server_config"];
+
+  // The deployment to rollout the new config to. Only 1 rollout must be associated with each deployment.
+  string deployment_id = 2 [json_name = "deployment_id"];
+
+  // The game_server_config_overrides contains the per game server config
+  // overrides. The overrides are processed in the order they are listed. As
+  // soon as a match is found for a cluster, the rest of the list is not
+  // processed.
+  repeated GameServerConfigOverrides game_server_config_overrides = 3 [json_name = "game_server_config_overrides"];
+
+  string id = 4;
+
+  // The resource id of the game server deployment
+  //
+  // eg: 'projects/my-project/locations/global/gameServerDeployments/my-deployment/rollout'.
+  string name = 5;
+
+  string project = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message GameServerConfigOverrides {
+    // config_version: string
+    string config_version = 1 [json_name = "config_version"];
+
+    // realms_selector: list of object
+    repeated RealmsSelector realms_selector = 2 [json_name = "realms_selector"];
+
+    message RealmsSelector {
+      // realms: list of string
+      repeated string realms = 1;
+    }
+  }
+}

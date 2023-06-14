@@ -1,0 +1,1533 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsAppmeshGatewayRoute version is 0
+message AwsAppmeshGatewayRoute {
+  string arn = 1;
+
+  string created_date = 2 [json_name = "created_date"];
+
+  string id = 3;
+
+  string last_updated_date = 4 [json_name = "last_updated_date"];
+
+  string mesh_name = 5 [json_name = "mesh_name"];
+
+  string mesh_owner = 6 [json_name = "mesh_owner"];
+
+  string name = 7;
+
+  string resource_owner = 8 [json_name = "resource_owner"];
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  string virtual_gateway_name = 11 [json_name = "virtual_gateway_name"];
+
+  Spec spec = 12;
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message Spec {
+    int64 priority = 1;
+
+    GrpcRoute grpc_route = 2 [json_name = "grpc_route"];
+
+    Http2Route http2_route = 3 [json_name = "http2_route"];
+
+    HttpRoute http_route = 4 [json_name = "http_route"];
+
+    message GrpcRoute {
+      Action action = 1;
+
+      Match match = 2;
+
+      message Action {
+        Target target = 1;
+
+        message Target {
+          int64 port = 1;
+
+          VirtualService virtual_service = 2 [json_name = "virtual_service"];
+
+          message VirtualService {
+            string virtual_service_name = 1 [json_name = "virtual_service_name"];
+          }
+        }
+      }
+
+      message Match {
+        int64 port = 1;
+
+        string service_name = 2 [json_name = "service_name"];
+      }
+    }
+
+    message Http2Route {
+      Action action = 1;
+
+      Match match = 2;
+
+      message Action {
+        Rewrite rewrite = 1;
+
+        Target target = 2;
+
+        message Rewrite {
+          Hostname hostname = 1;
+
+          Prefix prefix = 2;
+
+          message Hostname {
+            string default_target_hostname = 1 [json_name = "default_target_hostname"];
+          }
+
+          message Prefix {
+            string default_prefix = 1 [json_name = "default_prefix"];
+
+            string value = 2;
+          }
+        }
+
+        message Target {
+          int64 port = 1;
+
+          VirtualService virtual_service = 2 [json_name = "virtual_service"];
+
+          message VirtualService {
+            string virtual_service_name = 1 [json_name = "virtual_service_name"];
+          }
+        }
+      }
+
+      message Match {
+        int64 port = 1;
+
+        string prefix = 2;
+
+        repeated Header header = 3;
+
+        Hostname hostname = 4;
+
+        Path path = 5;
+
+        repeated QueryParameter query_parameter = 6 [json_name = "query_parameter"];
+
+        message Header {
+          bool invert = 1;
+
+          string name = 2;
+
+          Match match = 3;
+
+          message Match {
+            string exact = 1;
+
+            string prefix = 2;
+
+            string regex = 3;
+
+            string suffix = 4;
+
+            Range range = 5;
+
+            message Range {
+              int64 end = 1;
+
+              int64 start = 2;
+            }
+          }
+        }
+
+        message Hostname {
+          string exact = 1;
+
+          string suffix = 2;
+        }
+
+        message Path {
+          string exact = 1;
+
+          string regex = 2;
+        }
+
+        message QueryParameter {
+          string name = 1;
+
+          Match match = 2;
+
+          message Match {
+            string exact = 1;
+          }
+        }
+      }
+    }
+
+    message HttpRoute {
+      Action action = 1;
+
+      Match match = 2;
+
+      message Action {
+        Rewrite rewrite = 1;
+
+        Target target = 2;
+
+        message Rewrite {
+          Hostname hostname = 1;
+
+          Prefix prefix = 2;
+
+          message Hostname {
+            string default_target_hostname = 1 [json_name = "default_target_hostname"];
+          }
+
+          message Prefix {
+            string default_prefix = 1 [json_name = "default_prefix"];
+
+            string value = 2;
+          }
+        }
+
+        message Target {
+          int64 port = 1;
+
+          VirtualService virtual_service = 2 [json_name = "virtual_service"];
+
+          message VirtualService {
+            string virtual_service_name = 1 [json_name = "virtual_service_name"];
+          }
+        }
+      }
+
+      message Match {
+        int64 port = 1;
+
+        string prefix = 2;
+
+        repeated Header header = 3;
+
+        Hostname hostname = 4;
+
+        Path path = 5;
+
+        repeated QueryParameter query_parameter = 6 [json_name = "query_parameter"];
+
+        message Header {
+          bool invert = 1;
+
+          string name = 2;
+
+          Match match = 3;
+
+          message Match {
+            string exact = 1;
+
+            string prefix = 2;
+
+            string regex = 3;
+
+            string suffix = 4;
+
+            Range range = 5;
+
+            message Range {
+              int64 end = 1;
+
+              int64 start = 2;
+            }
+          }
+        }
+
+        message Hostname {
+          string exact = 1;
+
+          string suffix = 2;
+        }
+
+        message Path {
+          string exact = 1;
+
+          string regex = 2;
+        }
+
+        message QueryParameter {
+          string name = 1;
+
+          Match match = 2;
+
+          message Match {
+            string exact = 1;
+          }
+        }
+      }
+    }
+  }
+}
+
+// AwsAppmeshMesh version is 0
+message AwsAppmeshMesh {
+  string arn = 1;
+
+  string created_date = 2 [json_name = "created_date"];
+
+  string id = 3;
+
+  string last_updated_date = 4 [json_name = "last_updated_date"];
+
+  string mesh_owner = 5 [json_name = "mesh_owner"];
+
+  string name = 6;
+
+  string resource_owner = 7 [json_name = "resource_owner"];
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  Spec spec = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Spec {
+    EgressFilter egress_filter = 1 [json_name = "egress_filter"];
+
+    message EgressFilter {
+      string type = 1;
+    }
+  }
+}
+
+// AwsAppmeshRoute version is 0
+message AwsAppmeshRoute {
+  string arn = 1;
+
+  string created_date = 2 [json_name = "created_date"];
+
+  string id = 3;
+
+  string last_updated_date = 4 [json_name = "last_updated_date"];
+
+  string mesh_name = 5 [json_name = "mesh_name"];
+
+  string mesh_owner = 6 [json_name = "mesh_owner"];
+
+  string name = 7;
+
+  string resource_owner = 8 [json_name = "resource_owner"];
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  string virtual_router_name = 11 [json_name = "virtual_router_name"];
+
+  Spec spec = 12;
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message Spec {
+    int64 priority = 1;
+
+    GrpcRoute grpc_route = 2 [json_name = "grpc_route"];
+
+    Http2Route http2_route = 3 [json_name = "http2_route"];
+
+    HttpRoute http_route = 4 [json_name = "http_route"];
+
+    TcpRoute tcp_route = 5 [json_name = "tcp_route"];
+
+    message GrpcRoute {
+      Action action = 1;
+
+      Match match = 2;
+
+      RetryPolicy retry_policy = 3 [json_name = "retry_policy"];
+
+      Timeout timeout = 4;
+
+      message Action {
+        repeated WeightedTarget weighted_target = 1 [json_name = "weighted_target"];
+
+        message WeightedTarget {
+          int64 port = 1;
+
+          string virtual_node = 2 [json_name = "virtual_node"];
+
+          int64 weight = 3;
+        }
+      }
+
+      message Match {
+        string method_name = 1 [json_name = "method_name"];
+
+        int64 port = 2;
+
+        string prefix = 3;
+
+        string service_name = 4 [json_name = "service_name"];
+
+        repeated Metadata metadata = 5;
+
+        message Metadata {
+          bool invert = 1;
+
+          string name = 2;
+
+          Match match = 3;
+
+          message Match {
+            string exact = 1;
+
+            string prefix = 2;
+
+            string regex = 3;
+
+            string suffix = 4;
+
+            Range range = 5;
+
+            message Range {
+              int64 end = 1;
+
+              int64 start = 2;
+            }
+          }
+        }
+      }
+
+      message RetryPolicy {
+        repeated string grpc_retry_events = 1 [json_name = "grpc_retry_events"];
+
+        repeated string http_retry_events = 2 [json_name = "http_retry_events"];
+
+        int64 max_retries = 3 [json_name = "max_retries"];
+
+        repeated string tcp_retry_events = 4 [json_name = "tcp_retry_events"];
+
+        PerRetryTimeout per_retry_timeout = 5 [json_name = "per_retry_timeout"];
+
+        message PerRetryTimeout {
+          string unit = 1;
+
+          int64 value = 2;
+        }
+      }
+
+      message Timeout {
+        Idle idle = 1;
+
+        PerRequest per_request = 2 [json_name = "per_request"];
+
+        message Idle {
+          string unit = 1;
+
+          int64 value = 2;
+        }
+
+        message PerRequest {
+          string unit = 1;
+
+          int64 value = 2;
+        }
+      }
+    }
+
+    message Http2Route {
+      Action action = 1;
+
+      Match match = 2;
+
+      RetryPolicy retry_policy = 3 [json_name = "retry_policy"];
+
+      Timeout timeout = 4;
+
+      message Action {
+        repeated WeightedTarget weighted_target = 1 [json_name = "weighted_target"];
+
+        message WeightedTarget {
+          int64 port = 1;
+
+          string virtual_node = 2 [json_name = "virtual_node"];
+
+          int64 weight = 3;
+        }
+      }
+
+      message Match {
+        string method = 1;
+
+        int64 port = 2;
+
+        string prefix = 3;
+
+        string scheme = 4;
+
+        repeated Header header = 5;
+
+        Path path = 6;
+
+        repeated QueryParameter query_parameter = 7 [json_name = "query_parameter"];
+
+        message Header {
+          bool invert = 1;
+
+          string name = 2;
+
+          Match match = 3;
+
+          message Match {
+            string exact = 1;
+
+            string prefix = 2;
+
+            string regex = 3;
+
+            string suffix = 4;
+
+            Range range = 5;
+
+            message Range {
+              int64 end = 1;
+
+              int64 start = 2;
+            }
+          }
+        }
+
+        message Path {
+          string exact = 1;
+
+          string regex = 2;
+        }
+
+        message QueryParameter {
+          string name = 1;
+
+          Match match = 2;
+
+          message Match {
+            string exact = 1;
+          }
+        }
+      }
+
+      message RetryPolicy {
+        repeated string http_retry_events = 1 [json_name = "http_retry_events"];
+
+        int64 max_retries = 2 [json_name = "max_retries"];
+
+        repeated string tcp_retry_events = 3 [json_name = "tcp_retry_events"];
+
+        PerRetryTimeout per_retry_timeout = 4 [json_name = "per_retry_timeout"];
+
+        message PerRetryTimeout {
+          string unit = 1;
+
+          int64 value = 2;
+        }
+      }
+
+      message Timeout {
+        Idle idle = 1;
+
+        PerRequest per_request = 2 [json_name = "per_request"];
+
+        message Idle {
+          string unit = 1;
+
+          int64 value = 2;
+        }
+
+        message PerRequest {
+          string unit = 1;
+
+          int64 value = 2;
+        }
+      }
+    }
+
+    message HttpRoute {
+      Action action = 1;
+
+      Match match = 2;
+
+      RetryPolicy retry_policy = 3 [json_name = "retry_policy"];
+
+      Timeout timeout = 4;
+
+      message Action {
+        repeated WeightedTarget weighted_target = 1 [json_name = "weighted_target"];
+
+        message WeightedTarget {
+          int64 port = 1;
+
+          string virtual_node = 2 [json_name = "virtual_node"];
+
+          int64 weight = 3;
+        }
+      }
+
+      message Match {
+        string method = 1;
+
+        int64 port = 2;
+
+        string prefix = 3;
+
+        string scheme = 4;
+
+        repeated Header header = 5;
+
+        Path path = 6;
+
+        repeated QueryParameter query_parameter = 7 [json_name = "query_parameter"];
+
+        message Header {
+          bool invert = 1;
+
+          string name = 2;
+
+          Match match = 3;
+
+          message Match {
+            string exact = 1;
+
+            string prefix = 2;
+
+            string regex = 3;
+
+            string suffix = 4;
+
+            Range range = 5;
+
+            message Range {
+              int64 end = 1;
+
+              int64 start = 2;
+            }
+          }
+        }
+
+        message Path {
+          string exact = 1;
+
+          string regex = 2;
+        }
+
+        message QueryParameter {
+          string name = 1;
+
+          Match match = 2;
+
+          message Match {
+            string exact = 1;
+          }
+        }
+      }
+
+      message RetryPolicy {
+        repeated string http_retry_events = 1 [json_name = "http_retry_events"];
+
+        int64 max_retries = 2 [json_name = "max_retries"];
+
+        repeated string tcp_retry_events = 3 [json_name = "tcp_retry_events"];
+
+        PerRetryTimeout per_retry_timeout = 4 [json_name = "per_retry_timeout"];
+
+        message PerRetryTimeout {
+          string unit = 1;
+
+          int64 value = 2;
+        }
+      }
+
+      message Timeout {
+        Idle idle = 1;
+
+        PerRequest per_request = 2 [json_name = "per_request"];
+
+        message Idle {
+          string unit = 1;
+
+          int64 value = 2;
+        }
+
+        message PerRequest {
+          string unit = 1;
+
+          int64 value = 2;
+        }
+      }
+    }
+
+    message TcpRoute {
+      Action action = 1;
+
+      Match match = 2;
+
+      Timeout timeout = 3;
+
+      message Action {
+        repeated WeightedTarget weighted_target = 1 [json_name = "weighted_target"];
+
+        message WeightedTarget {
+          int64 port = 1;
+
+          string virtual_node = 2 [json_name = "virtual_node"];
+
+          int64 weight = 3;
+        }
+      }
+
+      message Match {
+        int64 port = 1;
+      }
+
+      message Timeout {
+        Idle idle = 1;
+
+        message Idle {
+          string unit = 1;
+
+          int64 value = 2;
+        }
+      }
+    }
+  }
+}
+
+// AwsAppmeshVirtualGateway version is 0
+message AwsAppmeshVirtualGateway {
+  string arn = 1;
+
+  string created_date = 2 [json_name = "created_date"];
+
+  string id = 3;
+
+  string last_updated_date = 4 [json_name = "last_updated_date"];
+
+  string mesh_name = 5 [json_name = "mesh_name"];
+
+  string mesh_owner = 6 [json_name = "mesh_owner"];
+
+  string name = 7;
+
+  string resource_owner = 8 [json_name = "resource_owner"];
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  Spec spec = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message Spec {
+    BackendDefaults backend_defaults = 1 [json_name = "backend_defaults"];
+
+    repeated Listener listener = 2;
+
+    Logging logging = 3;
+
+    message BackendDefaults {
+      ClientPolicy client_policy = 1 [json_name = "client_policy"];
+
+      message ClientPolicy {
+        Tls tls = 1;
+
+        message Tls {
+          bool enforce = 1;
+
+          repeated int64 ports = 2;
+
+          Certificate certificate = 3;
+
+          Validation validation = 4;
+
+          message Certificate {
+            File file = 1;
+
+            Sds sds = 2;
+
+            message File {
+              string certificate_chain = 1 [json_name = "certificate_chain"];
+
+              string private_key = 2 [json_name = "private_key"];
+            }
+
+            message Sds {
+              string secret_name = 1 [json_name = "secret_name"];
+            }
+          }
+
+          message Validation {
+            SubjectAlternativeNames subject_alternative_names = 1 [json_name = "subject_alternative_names"];
+
+            Trust trust = 2;
+
+            message SubjectAlternativeNames {
+              Match match = 1;
+
+              message Match {
+                repeated string exact = 1;
+              }
+            }
+
+            message Trust {
+              Acm acm = 1;
+
+              File file = 2;
+
+              Sds sds = 3;
+
+              message Acm {
+                repeated string certificate_authority_arns = 1 [json_name = "certificate_authority_arns"];
+              }
+
+              message File {
+                string certificate_chain = 1 [json_name = "certificate_chain"];
+              }
+
+              message Sds {
+                string secret_name = 1 [json_name = "secret_name"];
+              }
+            }
+          }
+        }
+      }
+    }
+
+    message Listener {
+      ConnectionPool connection_pool = 1 [json_name = "connection_pool"];
+
+      HealthCheck health_check = 2 [json_name = "health_check"];
+
+      PortMapping port_mapping = 3 [json_name = "port_mapping"];
+
+      Tls tls = 4;
+
+      message ConnectionPool {
+        Grpc grpc = 1;
+
+        Http http = 2;
+
+        Http2 http2 = 3;
+
+        message Grpc {
+          int64 max_requests = 1 [json_name = "max_requests"];
+        }
+
+        message Http {
+          int64 max_connections = 1 [json_name = "max_connections"];
+
+          int64 max_pending_requests = 2 [json_name = "max_pending_requests"];
+        }
+
+        message Http2 {
+          int64 max_requests = 1 [json_name = "max_requests"];
+        }
+      }
+
+      message HealthCheck {
+        int64 healthy_threshold = 1 [json_name = "healthy_threshold"];
+
+        int64 interval_millis = 2 [json_name = "interval_millis"];
+
+        string path = 3;
+
+        int64 port = 4;
+
+        string protocol = 5;
+
+        int64 timeout_millis = 6 [json_name = "timeout_millis"];
+
+        int64 unhealthy_threshold = 7 [json_name = "unhealthy_threshold"];
+      }
+
+      message PortMapping {
+        int64 port = 1;
+
+        string protocol = 2;
+      }
+
+      message Tls {
+        string mode = 1;
+
+        Certificate certificate = 2;
+
+        Validation validation = 3;
+
+        message Certificate {
+          Acm acm = 1;
+
+          File file = 2;
+
+          Sds sds = 3;
+
+          message Acm {
+            string certificate_arn = 1 [json_name = "certificate_arn"];
+          }
+
+          message File {
+            string certificate_chain = 1 [json_name = "certificate_chain"];
+
+            string private_key = 2 [json_name = "private_key"];
+          }
+
+          message Sds {
+            string secret_name = 1 [json_name = "secret_name"];
+          }
+        }
+
+        message Validation {
+          SubjectAlternativeNames subject_alternative_names = 1 [json_name = "subject_alternative_names"];
+
+          Trust trust = 2;
+
+          message SubjectAlternativeNames {
+            Match match = 1;
+
+            message Match {
+              repeated string exact = 1;
+            }
+          }
+
+          message Trust {
+            File file = 1;
+
+            Sds sds = 2;
+
+            message File {
+              string certificate_chain = 1 [json_name = "certificate_chain"];
+            }
+
+            message Sds {
+              string secret_name = 1 [json_name = "secret_name"];
+            }
+          }
+        }
+      }
+    }
+
+    message Logging {
+      AccessLog access_log = 1 [json_name = "access_log"];
+
+      message AccessLog {
+        File file = 1;
+
+        message File {
+          string path = 1;
+
+          Format format = 2;
+
+          message Format {
+            string text = 1;
+
+            repeated Json json = 2;
+
+            message Json {
+              string key = 1;
+
+              string value = 2;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// AwsAppmeshVirtualNode version is 1
+message AwsAppmeshVirtualNode {
+  string arn = 1;
+
+  string created_date = 2 [json_name = "created_date"];
+
+  string id = 3;
+
+  string last_updated_date = 4 [json_name = "last_updated_date"];
+
+  string mesh_name = 5 [json_name = "mesh_name"];
+
+  string mesh_owner = 6 [json_name = "mesh_owner"];
+
+  string name = 7;
+
+  string resource_owner = 8 [json_name = "resource_owner"];
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  Spec spec = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message Spec {
+    repeated Backend backend = 1;
+
+    BackendDefaults backend_defaults = 2 [json_name = "backend_defaults"];
+
+    repeated Listener listener = 3;
+
+    Logging logging = 4;
+
+    ServiceDiscovery service_discovery = 5 [json_name = "service_discovery"];
+
+    message Backend {
+      VirtualService virtual_service = 1 [json_name = "virtual_service"];
+
+      message VirtualService {
+        string virtual_service_name = 1 [json_name = "virtual_service_name"];
+
+        ClientPolicy client_policy = 2 [json_name = "client_policy"];
+
+        message ClientPolicy {
+          Tls tls = 1;
+
+          message Tls {
+            bool enforce = 1;
+
+            repeated int64 ports = 2;
+
+            Certificate certificate = 3;
+
+            Validation validation = 4;
+
+            message Certificate {
+              File file = 1;
+
+              Sds sds = 2;
+
+              message File {
+                string certificate_chain = 1 [json_name = "certificate_chain"];
+
+                string private_key = 2 [json_name = "private_key"];
+              }
+
+              message Sds {
+                string secret_name = 1 [json_name = "secret_name"];
+              }
+            }
+
+            message Validation {
+              SubjectAlternativeNames subject_alternative_names = 1 [json_name = "subject_alternative_names"];
+
+              Trust trust = 2;
+
+              message SubjectAlternativeNames {
+                Match match = 1;
+
+                message Match {
+                  repeated string exact = 1;
+                }
+              }
+
+              message Trust {
+                Acm acm = 1;
+
+                File file = 2;
+
+                Sds sds = 3;
+
+                message Acm {
+                  repeated string certificate_authority_arns = 1 [json_name = "certificate_authority_arns"];
+                }
+
+                message File {
+                  string certificate_chain = 1 [json_name = "certificate_chain"];
+                }
+
+                message Sds {
+                  string secret_name = 1 [json_name = "secret_name"];
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    message BackendDefaults {
+      ClientPolicy client_policy = 1 [json_name = "client_policy"];
+
+      message ClientPolicy {
+        Tls tls = 1;
+
+        message Tls {
+          bool enforce = 1;
+
+          repeated int64 ports = 2;
+
+          Certificate certificate = 3;
+
+          Validation validation = 4;
+
+          message Certificate {
+            File file = 1;
+
+            Sds sds = 2;
+
+            message File {
+              string certificate_chain = 1 [json_name = "certificate_chain"];
+
+              string private_key = 2 [json_name = "private_key"];
+            }
+
+            message Sds {
+              string secret_name = 1 [json_name = "secret_name"];
+            }
+          }
+
+          message Validation {
+            SubjectAlternativeNames subject_alternative_names = 1 [json_name = "subject_alternative_names"];
+
+            Trust trust = 2;
+
+            message SubjectAlternativeNames {
+              Match match = 1;
+
+              message Match {
+                repeated string exact = 1;
+              }
+            }
+
+            message Trust {
+              Acm acm = 1;
+
+              File file = 2;
+
+              Sds sds = 3;
+
+              message Acm {
+                repeated string certificate_authority_arns = 1 [json_name = "certificate_authority_arns"];
+              }
+
+              message File {
+                string certificate_chain = 1 [json_name = "certificate_chain"];
+              }
+
+              message Sds {
+                string secret_name = 1 [json_name = "secret_name"];
+              }
+            }
+          }
+        }
+      }
+    }
+
+    message Listener {
+      ConnectionPool connection_pool = 1 [json_name = "connection_pool"];
+
+      HealthCheck health_check = 2 [json_name = "health_check"];
+
+      OutlierDetection outlier_detection = 3 [json_name = "outlier_detection"];
+
+      PortMapping port_mapping = 4 [json_name = "port_mapping"];
+
+      Timeout timeout = 5;
+
+      Tls tls = 6;
+
+      message ConnectionPool {
+        Grpc grpc = 1;
+
+        repeated Http http = 2;
+
+        repeated Http2 http2 = 3;
+
+        repeated Tcp tcp = 4;
+
+        message Grpc {
+          int64 max_requests = 1 [json_name = "max_requests"];
+        }
+
+        message Http {
+          int64 max_connections = 1 [json_name = "max_connections"];
+
+          int64 max_pending_requests = 2 [json_name = "max_pending_requests"];
+        }
+
+        message Http2 {
+          int64 max_requests = 1 [json_name = "max_requests"];
+        }
+
+        message Tcp {
+          int64 max_connections = 1 [json_name = "max_connections"];
+        }
+      }
+
+      message HealthCheck {
+        int64 healthy_threshold = 1 [json_name = "healthy_threshold"];
+
+        int64 interval_millis = 2 [json_name = "interval_millis"];
+
+        string path = 3;
+
+        int64 port = 4;
+
+        string protocol = 5;
+
+        int64 timeout_millis = 6 [json_name = "timeout_millis"];
+
+        int64 unhealthy_threshold = 7 [json_name = "unhealthy_threshold"];
+      }
+
+      message OutlierDetection {
+        int64 max_ejection_percent = 1 [json_name = "max_ejection_percent"];
+
+        int64 max_server_errors = 2 [json_name = "max_server_errors"];
+
+        BaseEjectionDuration base_ejection_duration = 3 [json_name = "base_ejection_duration"];
+
+        Interval interval = 4;
+
+        message BaseEjectionDuration {
+          string unit = 1;
+
+          int64 value = 2;
+        }
+
+        message Interval {
+          string unit = 1;
+
+          int64 value = 2;
+        }
+      }
+
+      message PortMapping {
+        int64 port = 1;
+
+        string protocol = 2;
+      }
+
+      message Timeout {
+        Grpc grpc = 1;
+
+        Http http = 2;
+
+        Http2 http2 = 3;
+
+        Tcp tcp = 4;
+
+        message Grpc {
+          Idle idle = 1;
+
+          PerRequest per_request = 2 [json_name = "per_request"];
+
+          message Idle {
+            string unit = 1;
+
+            int64 value = 2;
+          }
+
+          message PerRequest {
+            string unit = 1;
+
+            int64 value = 2;
+          }
+        }
+
+        message Http {
+          Idle idle = 1;
+
+          PerRequest per_request = 2 [json_name = "per_request"];
+
+          message Idle {
+            string unit = 1;
+
+            int64 value = 2;
+          }
+
+          message PerRequest {
+            string unit = 1;
+
+            int64 value = 2;
+          }
+        }
+
+        message Http2 {
+          Idle idle = 1;
+
+          PerRequest per_request = 2 [json_name = "per_request"];
+
+          message Idle {
+            string unit = 1;
+
+            int64 value = 2;
+          }
+
+          message PerRequest {
+            string unit = 1;
+
+            int64 value = 2;
+          }
+        }
+
+        message Tcp {
+          Idle idle = 1;
+
+          message Idle {
+            string unit = 1;
+
+            int64 value = 2;
+          }
+        }
+      }
+
+      message Tls {
+        string mode = 1;
+
+        Certificate certificate = 2;
+
+        Validation validation = 3;
+
+        message Certificate {
+          Acm acm = 1;
+
+          File file = 2;
+
+          Sds sds = 3;
+
+          message Acm {
+            string certificate_arn = 1 [json_name = "certificate_arn"];
+          }
+
+          message File {
+            string certificate_chain = 1 [json_name = "certificate_chain"];
+
+            string private_key = 2 [json_name = "private_key"];
+          }
+
+          message Sds {
+            string secret_name = 1 [json_name = "secret_name"];
+          }
+        }
+
+        message Validation {
+          SubjectAlternativeNames subject_alternative_names = 1 [json_name = "subject_alternative_names"];
+
+          Trust trust = 2;
+
+          message SubjectAlternativeNames {
+            Match match = 1;
+
+            message Match {
+              repeated string exact = 1;
+            }
+          }
+
+          message Trust {
+            File file = 1;
+
+            Sds sds = 2;
+
+            message File {
+              string certificate_chain = 1 [json_name = "certificate_chain"];
+            }
+
+            message Sds {
+              string secret_name = 1 [json_name = "secret_name"];
+            }
+          }
+        }
+      }
+    }
+
+    message Logging {
+      AccessLog access_log = 1 [json_name = "access_log"];
+
+      message AccessLog {
+        File file = 1;
+
+        message File {
+          string path = 1;
+
+          Format format = 2;
+
+          message Format {
+            string text = 1;
+
+            repeated Json json = 2;
+
+            message Json {
+              string key = 1;
+
+              string value = 2;
+            }
+          }
+        }
+      }
+    }
+
+    message ServiceDiscovery {
+      AwsCloudMap aws_cloud_map = 1 [json_name = "aws_cloud_map"];
+
+      Dns dns = 2;
+
+      message AwsCloudMap {
+        map<string, string> attributes = 1;
+
+        string namespace_name = 2 [json_name = "namespace_name"];
+
+        string service_name = 3 [json_name = "service_name"];
+      }
+
+      message Dns {
+        string hostname = 1;
+
+        string ip_preference = 2 [json_name = "ip_preference"];
+
+        string response_type = 3 [json_name = "response_type"];
+      }
+    }
+  }
+}
+
+// AwsAppmeshVirtualRouter version is 1
+message AwsAppmeshVirtualRouter {
+  string arn = 1;
+
+  string created_date = 2 [json_name = "created_date"];
+
+  string id = 3;
+
+  string last_updated_date = 4 [json_name = "last_updated_date"];
+
+  string mesh_name = 5 [json_name = "mesh_name"];
+
+  string mesh_owner = 6 [json_name = "mesh_owner"];
+
+  string name = 7;
+
+  string resource_owner = 8 [json_name = "resource_owner"];
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  Spec spec = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message Spec {
+    repeated Listener listener = 1;
+
+    message Listener {
+      PortMapping port_mapping = 1 [json_name = "port_mapping"];
+
+      message PortMapping {
+        int64 port = 1;
+
+        string protocol = 2;
+      }
+    }
+  }
+}
+
+// AwsAppmeshVirtualService version is 0
+message AwsAppmeshVirtualService {
+  string arn = 1;
+
+  string created_date = 2 [json_name = "created_date"];
+
+  string id = 3;
+
+  string last_updated_date = 4 [json_name = "last_updated_date"];
+
+  string mesh_name = 5 [json_name = "mesh_name"];
+
+  string mesh_owner = 6 [json_name = "mesh_owner"];
+
+  string name = 7;
+
+  string resource_owner = 8 [json_name = "resource_owner"];
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  Spec spec = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message Spec {
+    Provider provider = 1;
+
+    message Provider {
+      VirtualNode virtual_node = 1 [json_name = "virtual_node"];
+
+      VirtualRouter virtual_router = 2 [json_name = "virtual_router"];
+
+      message VirtualNode {
+        string virtual_node_name = 1 [json_name = "virtual_node_name"];
+      }
+
+      message VirtualRouter {
+        string virtual_router_name = 1 [json_name = "virtual_router_name"];
+      }
+    }
+  }
+}

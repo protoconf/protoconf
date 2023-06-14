@@ -1,0 +1,226 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsSsmDocument version is 0
+message AwsSsmDocument {
+  string arn = 1;
+
+  string content = 2;
+
+  string document_format = 3 [json_name = "document_format"];
+
+  string document_type = 4 [json_name = "document_type"];
+
+  string document_version = 5 [json_name = "document_version"];
+
+  string id = 6;
+
+  string name = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsSsmInstances version is 0
+message AwsSsmInstances {
+  string id = 1;
+
+  repeated string ids = 2;
+
+  repeated Filter filter = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+}
+
+// AwsSsmMaintenanceWindows version is 0
+message AwsSsmMaintenanceWindows {
+  string id = 1;
+
+  repeated string ids = 2;
+
+  repeated Filter filter = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+}
+
+// AwsSsmParameter version is 0
+message AwsSsmParameter {
+  string arn = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  string type = 4;
+
+  string value = 5;
+
+  int64 version = 6;
+
+  bool with_decryption = 7 [json_name = "with_decryption"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsSsmParametersByPath version is 0
+message AwsSsmParametersByPath {
+  repeated string arns = 1;
+
+  string id = 2;
+
+  repeated string names = 3;
+
+  string path = 4;
+
+  bool recursive = 5;
+
+  repeated string types = 6;
+
+  repeated string values = 7;
+
+  bool with_decryption = 8 [json_name = "with_decryption"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+}
+
+// AwsSsmPatchBaseline version is 0
+message AwsSsmPatchBaseline {
+  repeated ApprovalRule approval_rule = 1 [json_name = "approval_rule"];
+
+  repeated string approved_patches = 2 [json_name = "approved_patches"];
+
+  string approved_patches_compliance_level = 3 [json_name = "approved_patches_compliance_level"];
+
+  bool approved_patches_enable_non_security = 4 [json_name = "approved_patches_enable_non_security"];
+
+  bool default_baseline = 5 [json_name = "default_baseline"];
+
+  string description = 6;
+
+  repeated GlobalFilter global_filter = 7 [json_name = "global_filter"];
+
+  string id = 8;
+
+  string name = 9;
+
+  string name_prefix = 10 [json_name = "name_prefix"];
+
+  string operating_system = 11 [json_name = "operating_system"];
+
+  string owner = 12;
+
+  repeated string rejected_patches = 13 [json_name = "rejected_patches"];
+
+  string rejected_patches_action = 14 [json_name = "rejected_patches_action"];
+
+  repeated Source source = 15;
+
+  map<string, string> for_each = 16 [json_name = "for_each"];
+
+  repeated string depends_on = 17 [json_name = "depends_on"];
+
+  int32 count = 18;
+
+  string provider = 19;
+
+  terraform.v1.Lifecycle lifecycle = 20;
+
+  message ApprovalRule {
+    // approve_after_days: number
+    int64 approve_after_days = 1 [json_name = "approve_after_days"];
+
+    // approve_until_date: string
+    string approve_until_date = 2 [json_name = "approve_until_date"];
+
+    // compliance_level: string
+    string compliance_level = 3 [json_name = "compliance_level"];
+
+    // enable_non_security: bool
+    bool enable_non_security = 4 [json_name = "enable_non_security"];
+
+    // patch_filter: list of object
+    repeated PatchFilter patch_filter = 5 [json_name = "patch_filter"];
+
+    message PatchFilter {
+      // key: string
+      string key = 1;
+
+      // values: list of string
+      repeated string values = 2;
+    }
+  }
+
+  message GlobalFilter {
+    // key: string
+    string key = 1;
+
+    // values: list of string
+    repeated string values = 2;
+  }
+
+  message Source {
+    // configuration: string
+    string configuration = 1;
+
+    // name: string
+    string name = 2;
+
+    // products: list of string
+    repeated string products = 3;
+  }
+}

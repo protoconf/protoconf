@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsChimesdkvoiceGlobalSettings version is 0
+message AwsChimesdkvoiceGlobalSettings {
+  string id = 1;
+
+  VoiceConnector voice_connector = 2 [json_name = "voice_connector"];
+
+  map<string, string> for_each = 3 [json_name = "for_each"];
+
+  repeated string depends_on = 4 [json_name = "depends_on"];
+
+  int32 count = 5;
+
+  string provider = 6;
+
+  terraform.v1.Lifecycle lifecycle = 7;
+
+  message VoiceConnector {
+    string cdr_bucket = 1 [json_name = "cdr_bucket"];
+  }
+}
+
+// AwsChimesdkvoiceVoiceProfileDomain version is 0
+message AwsChimesdkvoiceVoiceProfileDomain {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  string name = 4;
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  ServerSideEncryptionConfiguration server_side_encryption_configuration = 7 [json_name = "server_side_encryption_configuration"];
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message ServerSideEncryptionConfiguration {
+    string kms_key_arn = 1 [json_name = "kms_key_arn"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

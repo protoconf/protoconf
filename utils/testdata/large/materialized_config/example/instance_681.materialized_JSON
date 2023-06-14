@@ -1,0 +1,17 @@
+{
+  "protoFile": "terraform/v1/terraform.proto",
+  "value": {
+    "@type": "type.googleapis.com/terraform.v1.Terraform",
+    "resource": {
+      "aws_instance": {
+        "instance_681": {
+          "ami": "ami-830c94e3",
+          "instance_type": "t2.micro",
+          "tags": {
+            "Name": "ExampleAppServerInstance"
+          }
+        }
+      }
+    }
+  }
+}

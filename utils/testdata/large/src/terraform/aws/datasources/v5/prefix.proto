@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsPrefixList version is 0
+message AwsPrefixList {
+  repeated string cidr_blocks = 1 [json_name = "cidr_blocks"];
+
+  string id = 2;
+
+  string name = 3;
+
+  string prefix_list_id = 4 [json_name = "prefix_list_id"];
+
+  repeated Filter filter = 5;
+
+  repeated Timeouts timeouts = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+
+  message Timeouts {
+    string read = 1;
+  }
+}

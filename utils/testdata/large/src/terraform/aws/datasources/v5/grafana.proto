@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsGrafanaWorkspace version is 0
+message AwsGrafanaWorkspace {
+  string account_access_type = 1 [json_name = "account_access_type"];
+
+  string arn = 2;
+
+  repeated string authentication_providers = 3 [json_name = "authentication_providers"];
+
+  string created_date = 4 [json_name = "created_date"];
+
+  repeated string data_sources = 5 [json_name = "data_sources"];
+
+  string description = 6;
+
+  string endpoint = 7;
+
+  string grafana_version = 8 [json_name = "grafana_version"];
+
+  string id = 9;
+
+  string last_updated_date = 10 [json_name = "last_updated_date"];
+
+  string name = 11;
+
+  repeated string notification_destinations = 12 [json_name = "notification_destinations"];
+
+  string organization_role_name = 13 [json_name = "organization_role_name"];
+
+  repeated string organizational_units = 14 [json_name = "organizational_units"];
+
+  string permission_type = 15 [json_name = "permission_type"];
+
+  string role_arn = 16 [json_name = "role_arn"];
+
+  string saml_configuration_status = 17 [json_name = "saml_configuration_status"];
+
+  string stack_set_name = 18 [json_name = "stack_set_name"];
+
+  string status = 19;
+
+  map<string, string> tags = 20;
+
+  string workspace_id = 21 [json_name = "workspace_id"];
+
+  map<string, string> for_each = 22 [json_name = "for_each"];
+
+  repeated string depends_on = 23 [json_name = "depends_on"];
+
+  int32 count = 24;
+
+  string provider = 25;
+
+  terraform.v1.Lifecycle lifecycle = 26;
+}

@@ -1,0 +1,205 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.datasources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleDnsKeys version is 0
+message GoogleDnsKeys {
+  // DNS keys identifier
+  string id = 1;
+
+  // A list of Key-signing key (KSK) records.
+  repeated KeySigningKeys key_signing_keys = 2 [json_name = "key_signing_keys"];
+
+  // The Name of the zone.
+  string managed_zone = 3 [json_name = "managed_zone"];
+
+  // The ID of the project for the Google Cloud.
+  string project = 4;
+
+  // A list of Zone-signing key (ZSK) records.
+  repeated ZoneSigningKeys zone_signing_keys = 5 [json_name = "zone_signing_keys"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message KeySigningKeys {
+    // algorithm: string
+    string algorithm = 1;
+
+    // creation_time: string
+    string creation_time = 2 [json_name = "creation_time"];
+
+    // description: string
+    string description = 3;
+
+    // digests: list of object
+    repeated Digests digests = 4;
+
+    // ds_record: string
+    string ds_record = 5 [json_name = "ds_record"];
+
+    // id: string
+    string id = 6;
+
+    // is_active: bool
+    bool is_active = 7 [json_name = "is_active"];
+
+    // key_length: number
+    int64 key_length = 8 [json_name = "key_length"];
+
+    // key_tag: number
+    int64 key_tag = 9 [json_name = "key_tag"];
+
+    // public_key: string
+    string public_key = 10 [json_name = "public_key"];
+
+    message Digests {
+      // digest: string
+      string digest = 1;
+
+      // type: string
+      string type = 2;
+    }
+  }
+
+  message ZoneSigningKeys {
+    // algorithm: string
+    string algorithm = 1;
+
+    // creation_time: string
+    string creation_time = 2 [json_name = "creation_time"];
+
+    // description: string
+    string description = 3;
+
+    // digests: list of object
+    repeated Digests digests = 4;
+
+    // id: string
+    string id = 5;
+
+    // is_active: bool
+    bool is_active = 6 [json_name = "is_active"];
+
+    // key_length: number
+    int64 key_length = 7 [json_name = "key_length"];
+
+    // key_tag: number
+    int64 key_tag = 8 [json_name = "key_tag"];
+
+    // public_key: string
+    string public_key = 9 [json_name = "public_key"];
+
+    message Digests {
+      // digest: string
+      string digest = 1;
+
+      // type: string
+      string type = 2;
+    }
+  }
+}
+
+// GoogleDnsManagedZone version is 0
+message GoogleDnsManagedZone {
+  // A textual description field.
+  string description = 1;
+
+  // The fully qualified DNS name of this zone.
+  string dns_name = 2 [json_name = "dns_name"];
+
+  // DNS managed zone identifier
+  string id = 3;
+
+  // Unique identifier for the resource; defined by the server.
+  int64 managed_zone_id = 4 [json_name = "managed_zone_id"];
+
+  // A unique name for the resource.
+  string name = 5;
+
+  // The list of nameservers that will be authoritative for this domain. Use NS records to redirect from your DNS provider to these names, thus making Google Cloud DNS authoritative for this zone.
+  repeated string name_servers = 6 [json_name = "name_servers"];
+
+  // The ID of the project for the Google Cloud.
+  string project = 7;
+
+  // The zone's visibility: public zones are exposed to the Internet, while private zones are visible only to Virtual Private Cloud resources.
+  string visibility = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+}
+
+// GoogleDnsManagedZoneIamPolicy version is 0
+message GoogleDnsManagedZoneIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string managed_zone = 3 [json_name = "managed_zone"];
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// GoogleDnsRecordSet version is 0
+message GoogleDnsRecordSet {
+  // DNS record set identifier
+  string id = 1;
+
+  // The Name of the zone.
+  string managed_zone = 2 [json_name = "managed_zone"];
+
+  // The DNS name for the resource.
+  string name = 3;
+
+  // The ID of the project for the Google Cloud.
+  string project = 4;
+
+  // The string data for the records in this record set.
+  repeated string rrdatas = 5;
+
+  // The time-to-live of this record set (seconds).
+  int64 ttl = 6;
+
+  // The identifier of a supported record type. See the list of Supported DNS record types.
+  string type = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}

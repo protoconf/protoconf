@@ -1,0 +1,277 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsRedshiftserverlessEndpointAccess version is 0
+message AwsRedshiftserverlessEndpointAccess {
+  string address = 1;
+
+  string arn = 2;
+
+  string endpoint_name = 3 [json_name = "endpoint_name"];
+
+  string id = 4;
+
+  int64 port = 5;
+
+  repeated string subnet_ids = 6 [json_name = "subnet_ids"];
+
+  repeated VpcEndpoint vpc_endpoint = 7 [json_name = "vpc_endpoint"];
+
+  repeated string vpc_security_group_ids = 8 [json_name = "vpc_security_group_ids"];
+
+  string workgroup_name = 9 [json_name = "workgroup_name"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message VpcEndpoint {
+    // network_interface: list of object
+    repeated NetworkInterface network_interface = 1 [json_name = "network_interface"];
+
+    // vpc_endpoint_id: string
+    string vpc_endpoint_id = 2 [json_name = "vpc_endpoint_id"];
+
+    // vpc_id: string
+    string vpc_id = 3 [json_name = "vpc_id"];
+
+    message NetworkInterface {
+      // availability_zone: string
+      string availability_zone = 1 [json_name = "availability_zone"];
+
+      // network_interface_id: string
+      string network_interface_id = 2 [json_name = "network_interface_id"];
+
+      // private_ip_address: string
+      string private_ip_address = 3 [json_name = "private_ip_address"];
+
+      // subnet_id: string
+      string subnet_id = 4 [json_name = "subnet_id"];
+    }
+  }
+}
+
+// AwsRedshiftserverlessNamespace version is 0
+message AwsRedshiftserverlessNamespace {
+  string admin_user_password = 1 [json_name = "admin_user_password"];
+
+  string admin_username = 2 [json_name = "admin_username"];
+
+  string arn = 3;
+
+  string db_name = 4 [json_name = "db_name"];
+
+  string default_iam_role_arn = 5 [json_name = "default_iam_role_arn"];
+
+  repeated string iam_roles = 6 [json_name = "iam_roles"];
+
+  string id = 7;
+
+  string kms_key_id = 8 [json_name = "kms_key_id"];
+
+  repeated string log_exports = 9 [json_name = "log_exports"];
+
+  string namespace_id = 10 [json_name = "namespace_id"];
+
+  string namespace_name = 11 [json_name = "namespace_name"];
+
+  map<string, string> tags = 12;
+
+  map<string, string> tags_all = 13 [json_name = "tags_all"];
+
+  map<string, string> for_each = 14 [json_name = "for_each"];
+
+  repeated string depends_on = 15 [json_name = "depends_on"];
+
+  int32 count = 16;
+
+  string provider = 17;
+
+  terraform.v1.Lifecycle lifecycle = 18;
+}
+
+// AwsRedshiftserverlessResourcePolicy version is 0
+message AwsRedshiftserverlessResourcePolicy {
+  string id = 1;
+
+  string policy = 2;
+
+  string resource_arn = 3 [json_name = "resource_arn"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsRedshiftserverlessSnapshot version is 0
+message AwsRedshiftserverlessSnapshot {
+  repeated string accounts_with_provisioned_restore_access = 1 [
+    json_name = "accounts_with_provisioned_restore_access"
+  ];
+
+  repeated string accounts_with_restore_access = 2 [json_name = "accounts_with_restore_access"];
+
+  string admin_username = 3 [json_name = "admin_username"];
+
+  string arn = 4;
+
+  string id = 5;
+
+  string kms_key_id = 6 [json_name = "kms_key_id"];
+
+  string namespace_arn = 7 [json_name = "namespace_arn"];
+
+  string namespace_name = 8 [json_name = "namespace_name"];
+
+  string owner_account = 9 [json_name = "owner_account"];
+
+  int64 retention_period = 10 [json_name = "retention_period"];
+
+  string snapshot_name = 11 [json_name = "snapshot_name"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+}
+
+// AwsRedshiftserverlessUsageLimit version is 0
+message AwsRedshiftserverlessUsageLimit {
+  int64 amount = 1;
+
+  string arn = 2;
+
+  string breach_action = 3 [json_name = "breach_action"];
+
+  string id = 4;
+
+  string period = 5;
+
+  string resource_arn = 6 [json_name = "resource_arn"];
+
+  string usage_type = 7 [json_name = "usage_type"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsRedshiftserverlessWorkgroup version is 0
+message AwsRedshiftserverlessWorkgroup {
+  string arn = 1;
+
+  int64 base_capacity = 2 [json_name = "base_capacity"];
+
+  repeated Endpoint endpoint = 3;
+
+  bool enhanced_vpc_routing = 4 [json_name = "enhanced_vpc_routing"];
+
+  string id = 5;
+
+  string namespace_name = 6 [json_name = "namespace_name"];
+
+  bool publicly_accessible = 7 [json_name = "publicly_accessible"];
+
+  repeated string security_group_ids = 8 [json_name = "security_group_ids"];
+
+  repeated string subnet_ids = 9 [json_name = "subnet_ids"];
+
+  map<string, string> tags = 10;
+
+  map<string, string> tags_all = 11 [json_name = "tags_all"];
+
+  string workgroup_id = 12 [json_name = "workgroup_id"];
+
+  string workgroup_name = 13 [json_name = "workgroup_name"];
+
+  repeated ConfigParameter config_parameter = 14 [json_name = "config_parameter"];
+
+  repeated Timeouts timeouts = 15;
+
+  map<string, string> for_each = 16 [json_name = "for_each"];
+
+  repeated string depends_on = 17 [json_name = "depends_on"];
+
+  int32 count = 18;
+
+  string provider = 19;
+
+  terraform.v1.Lifecycle lifecycle = 20;
+
+  message Endpoint {
+    // address: string
+    string address = 1;
+
+    // port: number
+    int64 port = 2;
+
+    // vpc_endpoint: list of object
+    repeated VpcEndpoint vpc_endpoint = 3 [json_name = "vpc_endpoint"];
+
+    message VpcEndpoint {
+      // network_interface: list of object
+      repeated NetworkInterface network_interface = 1 [json_name = "network_interface"];
+
+      // vpc_endpoint_id: string
+      string vpc_endpoint_id = 2 [json_name = "vpc_endpoint_id"];
+
+      // vpc_id: string
+      string vpc_id = 3 [json_name = "vpc_id"];
+
+      message NetworkInterface {
+        // availability_zone: string
+        string availability_zone = 1 [json_name = "availability_zone"];
+
+        // network_interface_id: string
+        string network_interface_id = 2 [json_name = "network_interface_id"];
+
+        // private_ip_address: string
+        string private_ip_address = 3 [json_name = "private_ip_address"];
+
+        // subnet_id: string
+        string subnet_id = 4 [json_name = "subnet_id"];
+      }
+    }
+  }
+
+  message ConfigParameter {
+    string parameter_key = 1 [json_name = "parameter_key"];
+
+    string parameter_value = 2 [json_name = "parameter_value"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

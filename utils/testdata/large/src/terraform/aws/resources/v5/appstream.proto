@@ -1,0 +1,335 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsAppstreamDirectoryConfig version is 0
+message AwsAppstreamDirectoryConfig {
+  string created_time = 1 [json_name = "created_time"];
+
+  string directory_name = 2 [json_name = "directory_name"];
+
+  string id = 3;
+
+  repeated string organizational_unit_distinguished_names = 4 [
+    json_name = "organizational_unit_distinguished_names"
+  ];
+
+  ServiceAccountCredentials service_account_credentials = 5 [json_name = "service_account_credentials"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message ServiceAccountCredentials {
+    string account_name = 1 [json_name = "account_name"];
+
+    string account_password = 2 [json_name = "account_password"];
+  }
+}
+
+// AwsAppstreamFleet version is 0
+message AwsAppstreamFleet {
+  string arn = 1;
+
+  string created_time = 2 [json_name = "created_time"];
+
+  string description = 3;
+
+  int64 disconnect_timeout_in_seconds = 4 [json_name = "disconnect_timeout_in_seconds"];
+
+  string display_name = 5 [json_name = "display_name"];
+
+  bool enable_default_internet_access = 6 [json_name = "enable_default_internet_access"];
+
+  string fleet_type = 7 [json_name = "fleet_type"];
+
+  string iam_role_arn = 8 [json_name = "iam_role_arn"];
+
+  string id = 9;
+
+  int64 idle_disconnect_timeout_in_seconds = 10 [json_name = "idle_disconnect_timeout_in_seconds"];
+
+  string image_arn = 11 [json_name = "image_arn"];
+
+  string image_name = 12 [json_name = "image_name"];
+
+  string instance_type = 13 [json_name = "instance_type"];
+
+  int64 max_user_duration_in_seconds = 14 [json_name = "max_user_duration_in_seconds"];
+
+  string name = 15;
+
+  string state = 16;
+
+  string stream_view = 17 [json_name = "stream_view"];
+
+  map<string, string> tags = 18;
+
+  map<string, string> tags_all = 19 [json_name = "tags_all"];
+
+  ComputeCapacity compute_capacity = 20 [json_name = "compute_capacity"];
+
+  DomainJoinInfo domain_join_info = 21 [json_name = "domain_join_info"];
+
+  VpcConfig vpc_config = 22 [json_name = "vpc_config"];
+
+  map<string, string> for_each = 23 [json_name = "for_each"];
+
+  repeated string depends_on = 24 [json_name = "depends_on"];
+
+  int32 count = 25;
+
+  string provider = 26;
+
+  terraform.v1.Lifecycle lifecycle = 27;
+
+  message ComputeCapacity {
+    int64 available = 1;
+
+    int64 desired_instances = 2 [json_name = "desired_instances"];
+
+    int64 in_use = 3 [json_name = "in_use"];
+
+    int64 running = 4;
+  }
+
+  message DomainJoinInfo {
+    string directory_name = 1 [json_name = "directory_name"];
+
+    string organizational_unit_distinguished_name = 2 [
+      json_name = "organizational_unit_distinguished_name"
+    ];
+  }
+
+  message VpcConfig {
+    repeated string security_group_ids = 1 [json_name = "security_group_ids"];
+
+    repeated string subnet_ids = 2 [json_name = "subnet_ids"];
+  }
+}
+
+// AwsAppstreamFleetStackAssociation version is 0
+message AwsAppstreamFleetStackAssociation {
+  string fleet_name = 1 [json_name = "fleet_name"];
+
+  string id = 2;
+
+  string stack_name = 3 [json_name = "stack_name"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsAppstreamImageBuilder version is 0
+message AwsAppstreamImageBuilder {
+  string appstream_agent_version = 1 [json_name = "appstream_agent_version"];
+
+  string arn = 2;
+
+  string created_time = 3 [json_name = "created_time"];
+
+  string description = 4;
+
+  string display_name = 5 [json_name = "display_name"];
+
+  bool enable_default_internet_access = 6 [json_name = "enable_default_internet_access"];
+
+  string iam_role_arn = 7 [json_name = "iam_role_arn"];
+
+  string id = 8;
+
+  string image_arn = 9 [json_name = "image_arn"];
+
+  string image_name = 10 [json_name = "image_name"];
+
+  string instance_type = 11 [json_name = "instance_type"];
+
+  string name = 12;
+
+  string state = 13;
+
+  map<string, string> tags = 14;
+
+  map<string, string> tags_all = 15 [json_name = "tags_all"];
+
+  repeated AccessEndpoint access_endpoint = 16 [json_name = "access_endpoint"];
+
+  DomainJoinInfo domain_join_info = 17 [json_name = "domain_join_info"];
+
+  VpcConfig vpc_config = 18 [json_name = "vpc_config"];
+
+  map<string, string> for_each = 19 [json_name = "for_each"];
+
+  repeated string depends_on = 20 [json_name = "depends_on"];
+
+  int32 count = 21;
+
+  string provider = 22;
+
+  terraform.v1.Lifecycle lifecycle = 23;
+
+  message AccessEndpoint {
+    string endpoint_type = 1 [json_name = "endpoint_type"];
+
+    string vpce_id = 2 [json_name = "vpce_id"];
+  }
+
+  message DomainJoinInfo {
+    string directory_name = 1 [json_name = "directory_name"];
+
+    string organizational_unit_distinguished_name = 2 [
+      json_name = "organizational_unit_distinguished_name"
+    ];
+  }
+
+  message VpcConfig {
+    repeated string security_group_ids = 1 [json_name = "security_group_ids"];
+
+    repeated string subnet_ids = 2 [json_name = "subnet_ids"];
+  }
+}
+
+// AwsAppstreamStack version is 0
+message AwsAppstreamStack {
+  string arn = 1;
+
+  string created_time = 2 [json_name = "created_time"];
+
+  string description = 3;
+
+  string display_name = 4 [json_name = "display_name"];
+
+  repeated string embed_host_domains = 5 [json_name = "embed_host_domains"];
+
+  string feedback_url = 6 [json_name = "feedback_url"];
+
+  string id = 7;
+
+  string name = 8;
+
+  string redirect_url = 9 [json_name = "redirect_url"];
+
+  map<string, string> tags = 10;
+
+  map<string, string> tags_all = 11 [json_name = "tags_all"];
+
+  repeated AccessEndpoints access_endpoints = 12 [json_name = "access_endpoints"];
+
+  ApplicationSettings application_settings = 13 [json_name = "application_settings"];
+
+  repeated StorageConnectors storage_connectors = 14 [json_name = "storage_connectors"];
+
+  StreamingExperienceSettings streaming_experience_settings = 15 [json_name = "streaming_experience_settings"];
+
+  repeated UserSettings user_settings = 16 [json_name = "user_settings"];
+
+  map<string, string> for_each = 17 [json_name = "for_each"];
+
+  repeated string depends_on = 18 [json_name = "depends_on"];
+
+  int32 count = 19;
+
+  string provider = 20;
+
+  terraform.v1.Lifecycle lifecycle = 21;
+
+  message AccessEndpoints {
+    string endpoint_type = 1 [json_name = "endpoint_type"];
+
+    string vpce_id = 2 [json_name = "vpce_id"];
+  }
+
+  message ApplicationSettings {
+    bool enabled = 1;
+
+    string settings_group = 2 [json_name = "settings_group"];
+  }
+
+  message StorageConnectors {
+    string connector_type = 1 [json_name = "connector_type"];
+
+    repeated string domains = 2;
+
+    string resource_identifier = 3 [json_name = "resource_identifier"];
+  }
+
+  message StreamingExperienceSettings {
+    string preferred_protocol = 1 [json_name = "preferred_protocol"];
+  }
+
+  message UserSettings {
+    string action = 1;
+
+    string permission = 2;
+  }
+}
+
+// AwsAppstreamUser version is 0
+message AwsAppstreamUser {
+  string arn = 1;
+
+  string authentication_type = 2 [json_name = "authentication_type"];
+
+  string created_time = 3 [json_name = "created_time"];
+
+  bool enabled = 4;
+
+  string first_name = 5 [json_name = "first_name"];
+
+  string id = 6;
+
+  string last_name = 7 [json_name = "last_name"];
+
+  bool send_email_notification = 8 [json_name = "send_email_notification"];
+
+  string user_name = 9 [json_name = "user_name"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+}
+
+// AwsAppstreamUserStackAssociation version is 0
+message AwsAppstreamUserStackAssociation {
+  string authentication_type = 1 [json_name = "authentication_type"];
+
+  string id = 2;
+
+  bool send_email_notification = 3 [json_name = "send_email_notification"];
+
+  string stack_name = 4 [json_name = "stack_name"];
+
+  string user_name = 5 [json_name = "user_name"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}

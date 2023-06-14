@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsControltowerControl version is 0
+message AwsControltowerControl {
+  string control_identifier = 1 [json_name = "control_identifier"];
+
+  string id = 2;
+
+  string target_identifier = 3 [json_name = "target_identifier"];
+
+  repeated Timeouts timeouts = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}

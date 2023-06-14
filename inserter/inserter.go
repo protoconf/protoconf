@@ -8,7 +8,10 @@ import (
 	"fmt"
 	"log"
 	"path/filepath"
+	"runtime"
 	"strings"
+	"sync"
+	"time"
 
 	"github.com/kvtools/consul"
 	"github.com/kvtools/etcdv3"
@@ -28,6 +31,13 @@ type cliConfig struct {
 	delete bool
 }
 
+func init() {
+	// set the number of CPUs to use.
+	// By default, the number of CPUs is the number of CPUs on the machine.
+	// Just to show we can change the number of CPUs
+	// I have added this below command.
+	runtime.GOMAXPROCS(runtime.NumCPU())
+}
 func newFlagSet() (*flag.FlagSet, *cliConfig, *command.KVStoreConfig) {
 	flags := flag.NewFlagSet("", flag.ExitOnError)
 	flags.Usage = func() {
@@ -93,13 +103,25 @@ func (c *cliCommand) Run(args []string) int {
 		}
 	} else {
 		protoconfRoot := strings.TrimSpace(flags.Args()[0])
-		for i := 1; i < flags.NArg(); i++ {
-			configName := filepath.ToSlash(strings.TrimSpace(flags.Args()[i]))
-			if err := insertConfig(configName, protoconfRoot, kvStore, kVConfig.Prefix); err != nil {
-				log.Printf("Error inserting config %s, err=%s", configName, err)
-				return 1
-			}
+		wg := &sync.WaitGroup{}
+		path := flags.Args()[1]
+		configName := filepath.ToSlash(strings.TrimSpace(path))
+		if err := insertConfig(configName, protoconfRoot, kvStore, kVConfig.Prefix); err != nil {
+			log.Printf("Error inserting config %s, err=%s", configName, err)
 		}
+		for i := 1; i < flags.NArg(); i++ {
+			wg.Add(1)
+			go func(path string) {
+				defer wg.Done()
+				log.Print(path)
+
+				configName := filepath.ToSlash(strings.TrimSpace(path))
+				if err := insertConfig(configName, protoconfRoot, kvStore, kVConfig.Prefix); err != nil {
+					log.Printf("Error inserting config %s, err=%s", configName, err)
+				}
+			}(flags.Args()[i])
+		}
+		wg.Wait()
 	}
 
 	return 0
@@ -125,6 +147,7 @@ func Command() (cli.Command, error) {
 }
 
 func insertConfig(configFile string, protoconfRoot string, kvStore store.Store, prefix string) error {
+	now := time.Now()
 	if !strings.HasSuffix(configFile, consts.CompiledConfigExtension) {
 		return fmt.Errorf("config must be a %s file, file=%s", consts.CompiledConfigExtension, configFile)
 	}
@@ -147,6 +170,6 @@ func insertConfig(configFile string, protoconfRoot string, kvStore store.Store, 
 		return fmt.Errorf("error writing to key-value store, path=%s", kvPath)
 	}
 
-	fmt.Printf("Path %s inserted successfully\n", kvPath)
+	fmt.Printf("Path %s inserted successfully (took: %v)\n", kvPath, time.Since(now))
 	return nil
 }

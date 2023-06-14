@@ -1,0 +1,343 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleAlloydbBackup version is 0
+message GoogleAlloydbBackup {
+  // The ID of the alloydb backup.
+  string backup_id = 1 [json_name = "backup_id"];
+
+  // The full resource name of the backup source cluster (e.g., projects/{project}/locations/{location}/clusters/{clusterId}).
+  string cluster_name = 2 [json_name = "cluster_name"];
+
+  // Time the Backup was created in UTC.
+  string create_time = 3 [json_name = "create_time"];
+
+  // User-provided description of the backup.
+  string description = 4;
+
+  // EncryptionInfo describes the encryption information of a cluster or a backup.
+  repeated EncryptionInfo encryption_info = 5 [json_name = "encryption_info"];
+
+  // A hash of the resource.
+  string etag = 6;
+
+  string id = 7;
+
+  // User-defined labels for the alloydb backup.
+  map<string, string> labels = 8;
+
+  // The location where the alloydb backup should reside.
+  string location = 9;
+
+  // Output only. The name of the backup resource with the format: * projects/{project}/locations/{region}/backups/{backupId}
+  string name = 10;
+
+  string project = 11;
+
+  // If true, indicates that the service is actively updating the resource. This can happen due to user-triggered updates or system actions like failover or maintenance.
+  bool reconciling = 12;
+
+  // The current state of the backup.
+  string state = 13;
+
+  // Output only. The system-generated UID of the resource. The UID is assigned when the resource is created, and it is retained until it is deleted.
+  string uid = 14;
+
+  // Time the Backup was updated in UTC.
+  string update_time = 15 [json_name = "update_time"];
+
+  EncryptionConfig encryption_config = 16 [json_name = "encryption_config"];
+
+  repeated Timeouts timeouts = 17;
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+
+  message EncryptionInfo {
+    // encryption_type: string
+    string encryption_type = 1 [json_name = "encryption_type"];
+
+    // kms_key_versions: list of string
+    repeated string kms_key_versions = 2 [json_name = "kms_key_versions"];
+  }
+
+  message EncryptionConfig {
+    // The fully-qualified resource name of the KMS key. Each Cloud KMS key is regionalized and has the following format: projects/[PROJECT]/locations/[REGION]/keyRings/[RING]/cryptoKeys/[KEY_NAME].
+    string kms_key_name = 1 [json_name = "kms_key_name"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleAlloydbCluster version is 0
+message GoogleAlloydbCluster {
+  // Cluster created from backup.
+  repeated BackupSource backup_source = 1 [json_name = "backup_source"];
+
+  // The ID of the alloydb cluster.
+  string cluster_id = 2 [json_name = "cluster_id"];
+
+  // The database engine major version. This is an output-only field and it's populated at the Cluster creation time. This field cannot be changed after cluster creation.
+  string database_version = 3 [json_name = "database_version"];
+
+  // User-settable and human-readable display name for the Cluster.
+  string display_name = 4 [json_name = "display_name"];
+
+  // EncryptionInfo describes the encryption information of a cluster or a backup.
+  repeated EncryptionInfo encryption_info = 5 [json_name = "encryption_info"];
+
+  string id = 6;
+
+  // User-defined labels for the alloydb cluster.
+  map<string, string> labels = 7;
+
+  // The location where the alloydb cluster should reside.
+  string location = 8;
+
+  // Cluster created via DMS migration.
+  repeated MigrationSource migration_source = 9 [json_name = "migration_source"];
+
+  // The name of the cluster resource.
+  string name = 10;
+
+  // The relative resource name of the VPC network on which the instance can be accessed. It is specified in the following form:
+  //
+  // "projects/{projectNumber}/global/networks/{network_id}".
+  string network = 11;
+
+  string project = 12;
+
+  // The system-generated UID of the resource.
+  string uid = 13;
+
+  AutomatedBackupPolicy automated_backup_policy = 14 [json_name = "automated_backup_policy"];
+
+  EncryptionConfig encryption_config = 15 [json_name = "encryption_config"];
+
+  InitialUser initial_user = 16 [json_name = "initial_user"];
+
+  repeated Timeouts timeouts = 17;
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+
+  message BackupSource {
+    // backup_name: string
+    string backup_name = 1 [json_name = "backup_name"];
+  }
+
+  message EncryptionInfo {
+    // encryption_type: string
+    string encryption_type = 1 [json_name = "encryption_type"];
+
+    // kms_key_versions: list of string
+    repeated string kms_key_versions = 2 [json_name = "kms_key_versions"];
+  }
+
+  message MigrationSource {
+    // host_port: string
+    string host_port = 1 [json_name = "host_port"];
+
+    // reference_id: string
+    string reference_id = 2 [json_name = "reference_id"];
+
+    // source_type: string
+    string source_type = 3 [json_name = "source_type"];
+  }
+
+  message AutomatedBackupPolicy {
+    // The length of the time window during which a backup can be taken. If a backup does not succeed within this time window, it will be canceled and considered failed.
+    //
+    // The backup window must be at least 5 minutes long. There is no upper bound on the window. If not set, it will default to 1 hour.
+    //
+    // A duration in seconds with up to nine fractional digits, terminated by 's'. Example: "3.5s".
+    string backup_window = 1 [json_name = "backup_window"];
+
+    // Whether automated backups are enabled.
+    bool enabled = 2;
+
+    // Labels to apply to backups created using this configuration.
+    map<string, string> labels = 3;
+
+    // The location where the backup will be stored. Currently, the only supported option is to store the backup in the same region as the cluster.
+    string location = 4;
+
+    EncryptionConfig encryption_config = 5 [json_name = "encryption_config"];
+
+    QuantityBasedRetention quantity_based_retention = 6 [json_name = "quantity_based_retention"];
+
+    TimeBasedRetention time_based_retention = 7 [json_name = "time_based_retention"];
+
+    WeeklySchedule weekly_schedule = 8 [json_name = "weekly_schedule"];
+
+    message EncryptionConfig {
+      // The fully-qualified resource name of the KMS key. Each Cloud KMS key is regionalized and has the following format: projects/[PROJECT]/locations/[REGION]/keyRings/[RING]/cryptoKeys/[KEY_NAME].
+      string kms_key_name = 1 [json_name = "kms_key_name"];
+    }
+
+    message QuantityBasedRetention {
+      // The number of backups to retain.
+      int64 count = 1;
+    }
+
+    message TimeBasedRetention {
+      // The retention period.
+      // A duration in seconds with up to nine fractional digits, terminated by 's'. Example: "3.5s".
+      string retention_period = 1 [json_name = "retention_period"];
+    }
+
+    message WeeklySchedule {
+      // The days of the week to perform a backup. At least one day of the week must be provided. Possible values: ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"]
+      repeated string days_of_week = 1 [json_name = "days_of_week"];
+
+      repeated StartTimes start_times = 2 [json_name = "start_times"];
+
+      message StartTimes {
+        // Hours of day in 24 hour format. Should be from 0 to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.
+        int64 hours = 1;
+
+        // Minutes of hour of day. Currently, only the value 0 is supported.
+        int64 minutes = 2;
+
+        // Fractions of seconds in nanoseconds. Currently, only the value 0 is supported.
+        int64 nanos = 3;
+
+        // Seconds of minutes of the time. Currently, only the value 0 is supported.
+        int64 seconds = 4;
+      }
+    }
+  }
+
+  message EncryptionConfig {
+    // The fully-qualified resource name of the KMS key. Each Cloud KMS key is regionalized and has the following format: projects/[PROJECT]/locations/[REGION]/keyRings/[RING]/cryptoKeys/[KEY_NAME].
+    string kms_key_name = 1 [json_name = "kms_key_name"];
+  }
+
+  message InitialUser {
+    // The initial password for the user.
+    string password = 1;
+
+    // The database username.
+    string user = 2;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleAlloydbInstance version is 0
+message GoogleAlloydbInstance {
+  // Annotations to allow client tools to store small amount of arbitrary data. This is distinct from labels.
+  map<string, string> annotations = 1;
+
+  // Availability type of an Instance. Defaults to REGIONAL for both primary and read instances. Note that primary and read instances can have different availability types. Possible values: ["AVAILABILITY_TYPE_UNSPECIFIED", "ZONAL", "REGIONAL"]
+  string availability_type = 2 [json_name = "availability_type"];
+
+  // Identifies the alloydb cluster. Must be in the format
+  // 'projects/{project}/locations/{location}/clusters/{cluster_id}'
+  string cluster = 3;
+
+  // Time the Instance was created in UTC.
+  string create_time = 4 [json_name = "create_time"];
+
+  // Database flags. Set at instance level. * They are copied from primary instance on read instance creation. * Read instances can set new or override existing flags that are relevant for reads, e.g. for enabling columnar cache on a read instance. Flags set on read instance may or may not be present on primary.
+  map<string, string> database_flags = 5 [json_name = "database_flags"];
+
+  // User-settable and human-readable display name for the Instance.
+  string display_name = 6 [json_name = "display_name"];
+
+  // The Compute Engine zone that the instance should serve from, per https://cloud.google.com/compute/docs/regions-zones This can ONLY be specified for ZONAL instances. If present for a REGIONAL instance, an error will be thrown. If this is absent for a ZONAL instance, instance is created in a random zone with available capacity.
+  string gce_zone = 7 [json_name = "gce_zone"];
+
+  string id = 8;
+
+  // The ID of the alloydb instance.
+  string instance_id = 9 [json_name = "instance_id"];
+
+  // The type of the instance. If the instance type is READ_POOL, provide the associated PRIMARY instance in the 'depends_on' meta-data attribute. Possible values: ["PRIMARY", "READ_POOL"]
+  string instance_type = 10 [json_name = "instance_type"];
+
+  // The IP address for the Instance. This is the connection endpoint for an end-user application.
+  string ip_address = 11 [json_name = "ip_address"];
+
+  // User-defined labels for the alloydb instance.
+  map<string, string> labels = 12;
+
+  // The name of the instance resource.
+  string name = 13;
+
+  // Set to true if the current state of Instance does not match the user's intended state, and the service is actively updating the resource to reconcile them. This can happen due to user-triggered updates or system actions like failover or maintenance.
+  bool reconciling = 14;
+
+  // The current state of the alloydb instance.
+  string state = 15;
+
+  // The system-generated UID of the resource.
+  string uid = 16;
+
+  // Time the Instance was updated in UTC.
+  string update_time = 17 [json_name = "update_time"];
+
+  MachineConfig machine_config = 18 [json_name = "machine_config"];
+
+  ReadPoolConfig read_pool_config = 19 [json_name = "read_pool_config"];
+
+  repeated Timeouts timeouts = 20;
+
+  map<string, string> for_each = 21 [json_name = "for_each"];
+
+  repeated string depends_on = 22 [json_name = "depends_on"];
+
+  int32 count = 23;
+
+  string provider = 24;
+
+  terraform.v1.Lifecycle lifecycle = 25;
+
+  message MachineConfig {
+    // The number of CPU's in the VM instance.
+    int64 cpu_count = 1 [json_name = "cpu_count"];
+  }
+
+  message ReadPoolConfig {
+    // Read capacity, i.e. number of nodes in a read pool instance.
+    int64 node_count = 1 [json_name = "node_count"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

@@ -1,0 +1,1763 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleAccessContextManagerAccessLevel version is 0
+message GoogleAccessContextManagerAccessLevel {
+  // Description of the AccessLevel and its use. Does not affect behavior.
+  string description = 1;
+
+  string id = 2;
+
+  // Resource name for the Access Level. The short_name component must begin
+  // with a letter and only include alphanumeric and '_'.
+  // Format: accessPolicies/{policy_id}/accessLevels/{short_name}
+  string name = 3;
+
+  // The AccessPolicy this AccessLevel lives in.
+  // Format: accessPolicies/{policy_id}
+  string parent = 4;
+
+  // Human readable title. Must be unique within the Policy.
+  string title = 5;
+
+  Basic basic = 6;
+
+  Custom custom = 7;
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Basic {
+    // How the conditions list should be combined to determine if a request
+    // is granted this AccessLevel. If AND is used, each Condition in
+    // conditions must be satisfied for the AccessLevel to be applied. If
+    // OR is used, at least one Condition in conditions must be satisfied
+    // for the AccessLevel to be applied. Default value: "AND" Possible values: ["AND", "OR"]
+    string combining_function = 1 [json_name = "combining_function"];
+
+    repeated Conditions conditions = 2;
+
+    message Conditions {
+      // A list of CIDR block IP subnetwork specification. May be IPv4
+      // or IPv6.
+      // Note that for a CIDR IP address block, the specified IP address
+      // portion must be properly truncated (i.e. all the host bits must
+      // be zero) or the input is considered malformed. For example,
+      // "192.0.2.0/24" is accepted but "192.0.2.1/24" is not. Similarly,
+      // for IPv6, "2001:db8::/32" is accepted whereas "2001:db8::1/32"
+      // is not. The originating IP of a request must be in one of the
+      // listed subnets in order for this Condition to be true.
+      // If empty, all IP addresses are allowed.
+      repeated string ip_subnetworks = 1 [json_name = "ip_subnetworks"];
+
+      // An allowed list of members (users, service accounts).
+      // Using groups is not supported yet.
+      //
+      // The signed-in user originating the request must be a part of one
+      // of the provided members. If not specified, a request may come
+      // from any user (logged in/not logged in, not present in any
+      // groups, etc.).
+      // Formats: 'user:{emailid}', 'serviceAccount:{emailid}'
+      repeated string members = 2;
+
+      // Whether to negate the Condition. If true, the Condition becomes
+      // a NAND over its non-empty fields, each field must be false for
+      // the Condition overall to be satisfied. Defaults to false.
+      bool negate = 3;
+
+      // The request must originate from one of the provided
+      // countries/regions.
+      // Format: A valid ISO 3166-1 alpha-2 code.
+      repeated string regions = 4;
+
+      // A list of other access levels defined in the same Policy,
+      // referenced by resource name. Referencing an AccessLevel which
+      // does not exist is an error. All access levels listed must be
+      // granted for the Condition to be true.
+      // Format: accessPolicies/{policy_id}/accessLevels/{short_name}
+      repeated string required_access_levels = 5 [json_name = "required_access_levels"];
+
+      DevicePolicy device_policy = 6 [json_name = "device_policy"];
+
+      message DevicePolicy {
+        // A list of allowed device management levels.
+        // An empty list allows all management levels. Possible values: ["MANAGEMENT_UNSPECIFIED", "NONE", "BASIC", "COMPLETE"]
+        repeated string allowed_device_management_levels = 1 [json_name = "allowed_device_management_levels"];
+
+        // A list of allowed encryptions statuses.
+        // An empty list allows all statuses. Possible values: ["ENCRYPTION_UNSPECIFIED", "ENCRYPTION_UNSUPPORTED", "UNENCRYPTED", "ENCRYPTED"]
+        repeated string allowed_encryption_statuses = 2 [json_name = "allowed_encryption_statuses"];
+
+        // Whether the device needs to be approved by the customer admin.
+        bool require_admin_approval = 3 [json_name = "require_admin_approval"];
+
+        // Whether the device needs to be corp owned.
+        bool require_corp_owned = 4 [json_name = "require_corp_owned"];
+
+        // Whether or not screenlock is required for the DevicePolicy
+        // to be true. Defaults to false.
+        bool require_screen_lock = 5 [json_name = "require_screen_lock"];
+
+        repeated OsConstraints os_constraints = 6 [json_name = "os_constraints"];
+
+        message OsConstraints {
+          // The minimum allowed OS version. If not set, any version
+          // of this OS satisfies the constraint.
+          // Format: "major.minor.patch" such as "10.5.301", "9.2.1".
+          string minimum_version = 1 [json_name = "minimum_version"];
+
+          // The operating system type of the device. Possible values: ["OS_UNSPECIFIED", "DESKTOP_MAC", "DESKTOP_WINDOWS", "DESKTOP_LINUX", "DESKTOP_CHROME_OS", "ANDROID", "IOS"]
+          string os_type = 2 [json_name = "os_type"];
+
+          // If you specify DESKTOP_CHROME_OS for osType, you can optionally include requireVerifiedChromeOs to require Chrome Verified Access.
+          bool require_verified_chrome_os = 3 [json_name = "require_verified_chrome_os"];
+        }
+      }
+    }
+  }
+
+  message Custom {
+    Expr expr = 1;
+
+    message Expr {
+      // Description of the expression
+      string description = 1;
+
+      // Textual representation of an expression in Common Expression Language syntax.
+      string expression = 2;
+
+      // String indicating the location of the expression for error reporting, e.g. a file name and a position in the file
+      string location = 3;
+
+      // Title for the expression, i.e. a short string describing its purpose.
+      string title = 4;
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleAccessContextManagerAccessLevelCondition version is 0
+message GoogleAccessContextManagerAccessLevelCondition {
+  // The name of the Access Level to add this condition to.
+  string access_level = 1 [json_name = "access_level"];
+
+  string id = 2;
+
+  // A list of CIDR block IP subnetwork specification. May be IPv4
+  // or IPv6.
+  // Note that for a CIDR IP address block, the specified IP address
+  // portion must be properly truncated (i.e. all the host bits must
+  // be zero) or the input is considered malformed. For example,
+  // "192.0.2.0/24" is accepted but "192.0.2.1/24" is not. Similarly,
+  // for IPv6, "2001:db8::/32" is accepted whereas "2001:db8::1/32"
+  // is not. The originating IP of a request must be in one of the
+  // listed subnets in order for this Condition to be true.
+  // If empty, all IP addresses are allowed.
+  repeated string ip_subnetworks = 3 [json_name = "ip_subnetworks"];
+
+  // An allowed list of members (users, service accounts).
+  // Using groups is not supported yet.
+  //
+  // The signed-in user originating the request must be a part of one
+  // of the provided members. If not specified, a request may come
+  // from any user (logged in/not logged in, not present in any
+  // groups, etc.).
+  // Formats: 'user:{emailid}', 'serviceAccount:{emailid}'
+  repeated string members = 4;
+
+  // Whether to negate the Condition. If true, the Condition becomes
+  // a NAND over its non-empty fields, each field must be false for
+  // the Condition overall to be satisfied. Defaults to false.
+  bool negate = 5;
+
+  // The request must originate from one of the provided
+  // countries/regions.
+  // Format: A valid ISO 3166-1 alpha-2 code.
+  repeated string regions = 6;
+
+  // A list of other access levels defined in the same Policy,
+  // referenced by resource name. Referencing an AccessLevel which
+  // does not exist is an error. All access levels listed must be
+  // granted for the Condition to be true.
+  // Format: accessPolicies/{policy_id}/accessLevels/{short_name}
+  repeated string required_access_levels = 7 [json_name = "required_access_levels"];
+
+  DevicePolicy device_policy = 8 [json_name = "device_policy"];
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message DevicePolicy {
+    // A list of allowed device management levels.
+    // An empty list allows all management levels. Possible values: ["MANAGEMENT_UNSPECIFIED", "NONE", "BASIC", "COMPLETE"]
+    repeated string allowed_device_management_levels = 1 [json_name = "allowed_device_management_levels"];
+
+    // A list of allowed encryptions statuses.
+    // An empty list allows all statuses. Possible values: ["ENCRYPTION_UNSPECIFIED", "ENCRYPTION_UNSUPPORTED", "UNENCRYPTED", "ENCRYPTED"]
+    repeated string allowed_encryption_statuses = 2 [json_name = "allowed_encryption_statuses"];
+
+    // Whether the device needs to be approved by the customer admin.
+    bool require_admin_approval = 3 [json_name = "require_admin_approval"];
+
+    // Whether the device needs to be corp owned.
+    bool require_corp_owned = 4 [json_name = "require_corp_owned"];
+
+    // Whether or not screenlock is required for the DevicePolicy
+    // to be true. Defaults to false.
+    bool require_screen_lock = 5 [json_name = "require_screen_lock"];
+
+    repeated OsConstraints os_constraints = 6 [json_name = "os_constraints"];
+
+    message OsConstraints {
+      // The minimum allowed OS version. If not set, any version
+      // of this OS satisfies the constraint.
+      // Format: "major.minor.patch" such as "10.5.301", "9.2.1".
+      string minimum_version = 1 [json_name = "minimum_version"];
+
+      // The operating system type of the device. Possible values: ["OS_UNSPECIFIED", "DESKTOP_MAC", "DESKTOP_WINDOWS", "DESKTOP_LINUX", "DESKTOP_CHROME_OS", "ANDROID", "IOS"]
+      string os_type = 2 [json_name = "os_type"];
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// GoogleAccessContextManagerAccessLevels version is 0
+message GoogleAccessContextManagerAccessLevels {
+  string id = 1;
+
+  // The AccessPolicy this AccessLevel lives in.
+  // Format: accessPolicies/{policy_id}
+  string parent = 2;
+
+  repeated AccessLevels access_levels = 3 [json_name = "access_levels"];
+
+  repeated Timeouts timeouts = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message AccessLevels {
+    // Description of the AccessLevel and its use. Does not affect behavior.
+    string description = 1;
+
+    // Resource name for the Access Level. The short_name component must begin
+    // with a letter and only include alphanumeric and '_'.
+    // Format: accessPolicies/{policy_id}/accessLevels/{short_name}
+    string name = 2;
+
+    // Human readable title. Must be unique within the Policy.
+    string title = 3;
+
+    Basic basic = 4;
+
+    Custom custom = 5;
+
+    message Basic {
+      // How the conditions list should be combined to determine if a request
+      // is granted this AccessLevel. If AND is used, each Condition in
+      // conditions must be satisfied for the AccessLevel to be applied. If
+      // OR is used, at least one Condition in conditions must be satisfied
+      // for the AccessLevel to be applied. Default value: "AND" Possible values: ["AND", "OR"]
+      string combining_function = 1 [json_name = "combining_function"];
+
+      repeated Conditions conditions = 2;
+
+      message Conditions {
+        // A list of CIDR block IP subnetwork specification. May be IPv4
+        // or IPv6.
+        // Note that for a CIDR IP address block, the specified IP address
+        // portion must be properly truncated (i.e. all the host bits must
+        // be zero) or the input is considered malformed. For example,
+        // "192.0.2.0/24" is accepted but "192.0.2.1/24" is not. Similarly,
+        // for IPv6, "2001:db8::/32" is accepted whereas "2001:db8::1/32"
+        // is not. The originating IP of a request must be in one of the
+        // listed subnets in order for this Condition to be true.
+        // If empty, all IP addresses are allowed.
+        repeated string ip_subnetworks = 1 [json_name = "ip_subnetworks"];
+
+        // An allowed list of members (users, service accounts).
+        // Using groups is not supported yet.
+        //
+        // The signed-in user originating the request must be a part of one
+        // of the provided members. If not specified, a request may come
+        // from any user (logged in/not logged in, not present in any
+        // groups, etc.).
+        // Formats: 'user:{emailid}', 'serviceAccount:{emailid}'
+        repeated string members = 2;
+
+        // Whether to negate the Condition. If true, the Condition becomes
+        // a NAND over its non-empty fields, each field must be false for
+        // the Condition overall to be satisfied. Defaults to false.
+        bool negate = 3;
+
+        // The request must originate from one of the provided
+        // countries/regions.
+        // Format: A valid ISO 3166-1 alpha-2 code.
+        repeated string regions = 4;
+
+        // A list of other access levels defined in the same Policy,
+        // referenced by resource name. Referencing an AccessLevel which
+        // does not exist is an error. All access levels listed must be
+        // granted for the Condition to be true.
+        // Format: accessPolicies/{policy_id}/accessLevels/{short_name}
+        repeated string required_access_levels = 5 [json_name = "required_access_levels"];
+
+        DevicePolicy device_policy = 6 [json_name = "device_policy"];
+
+        message DevicePolicy {
+          // A list of allowed device management levels.
+          // An empty list allows all management levels. Possible values: ["MANAGEMENT_UNSPECIFIED", "NONE", "BASIC", "COMPLETE"]
+          repeated string allowed_device_management_levels = 1 [json_name = "allowed_device_management_levels"];
+
+          // A list of allowed encryptions statuses.
+          // An empty list allows all statuses. Possible values: ["ENCRYPTION_UNSPECIFIED", "ENCRYPTION_UNSUPPORTED", "UNENCRYPTED", "ENCRYPTED"]
+          repeated string allowed_encryption_statuses = 2 [json_name = "allowed_encryption_statuses"];
+
+          // Whether the device needs to be approved by the customer admin.
+          bool require_admin_approval = 3 [json_name = "require_admin_approval"];
+
+          // Whether the device needs to be corp owned.
+          bool require_corp_owned = 4 [json_name = "require_corp_owned"];
+
+          // Whether or not screenlock is required for the DevicePolicy
+          // to be true. Defaults to false.
+          bool require_screen_lock = 5 [json_name = "require_screen_lock"];
+
+          repeated OsConstraints os_constraints = 6 [json_name = "os_constraints"];
+
+          message OsConstraints {
+            // The minimum allowed OS version. If not set, any version
+            // of this OS satisfies the constraint.
+            // Format: "major.minor.patch" such as "10.5.301", "9.2.1".
+            string minimum_version = 1 [json_name = "minimum_version"];
+
+            // The operating system type of the device. Possible values: ["OS_UNSPECIFIED", "DESKTOP_MAC", "DESKTOP_WINDOWS", "DESKTOP_LINUX", "DESKTOP_CHROME_OS", "ANDROID", "IOS"]
+            string os_type = 2 [json_name = "os_type"];
+          }
+        }
+      }
+    }
+
+    message Custom {
+      Expr expr = 1;
+
+      message Expr {
+        // Description of the expression
+        string description = 1;
+
+        // Textual representation of an expression in Common Expression Language syntax.
+        string expression = 2;
+
+        // String indicating the location of the expression for error reporting, e.g. a file name and a position in the file
+        string location = 3;
+
+        // Title for the expression, i.e. a short string describing its purpose.
+        string title = 4;
+      }
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleAccessContextManagerAccessPolicy version is 0
+message GoogleAccessContextManagerAccessPolicy {
+  // Time the AccessPolicy was created in UTC.
+  string create_time = 1 [json_name = "create_time"];
+
+  string id = 2;
+
+  // Resource name of the AccessPolicy. Format: {policy_id}
+  string name = 3;
+
+  // The parent of this AccessPolicy in the Cloud Resource Hierarchy.
+  // Format: organizations/{organization_id}
+  string parent = 4;
+
+  // Folder or project on which this policy is applicable.
+  // Format: folders/{{folder_id}} or projects/{{project_id}}
+  repeated string scopes = 5;
+
+  // Human readable title. Does not affect behavior.
+  string title = 6;
+
+  // Time the AccessPolicy was updated in UTC.
+  string update_time = 7 [json_name = "update_time"];
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleAccessContextManagerAccessPolicyIamBinding version is 0
+message GoogleAccessContextManagerAccessPolicyIamBinding {
+  string etag = 1;
+
+  string id = 2;
+
+  repeated string members = 3;
+
+  string name = 4;
+
+  string role = 5;
+
+  Condition condition = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleAccessContextManagerAccessPolicyIamMember version is 0
+message GoogleAccessContextManagerAccessPolicyIamMember {
+  string etag = 1;
+
+  string id = 2;
+
+  string member = 3;
+
+  string name = 4;
+
+  string role = 5;
+
+  Condition condition = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleAccessContextManagerAccessPolicyIamPolicy version is 0
+message GoogleAccessContextManagerAccessPolicyIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// GoogleAccessContextManagerAuthorizedOrgsDesc version is 0
+message GoogleAccessContextManagerAuthorizedOrgsDesc {
+  // The type of entities that need to use the authorization relationship during
+  // evaluation, such as a device. Valid values are "ASSET_TYPE_DEVICE" and
+  // "ASSET_TYPE_CREDENTIAL_STRENGTH". Possible values: ["ASSET_TYPE_DEVICE", "ASSET_TYPE_CREDENTIAL_STRENGTH"]
+  string asset_type = 1 [json_name = "asset_type"];
+
+  // The direction of the authorization relationship between this organization
+  // and the organizations listed in the "orgs" field. The valid values for this
+  // field include the following:
+  //
+  // AUTHORIZATION_DIRECTION_FROM: Allows this organization to evaluate traffic
+  // in the organizations listed in the 'orgs' field.
+  //
+  // AUTHORIZATION_DIRECTION_TO: Allows the organizations listed in the 'orgs'
+  // field to evaluate the traffic in this organization.
+  //
+  // For the authorization relationship to take effect, all of the organizations
+  // must authorize and specify the appropriate relationship direction. For
+  // example, if organization A authorized organization B and C to evaluate its
+  // traffic, by specifying "AUTHORIZATION_DIRECTION_TO" as the authorization
+  // direction, organizations B and C must specify
+  // "AUTHORIZATION_DIRECTION_FROM" as the authorization direction in their
+  // "AuthorizedOrgsDesc" resource. Possible values: ["AUTHORIZATION_DIRECTION_TO", "AUTHORIZATION_DIRECTION_FROM"]
+  string authorization_direction = 2 [json_name = "authorization_direction"];
+
+  // A granular control type for authorization levels. Valid value is "AUTHORIZATION_TYPE_TRUST". Possible values: ["AUTHORIZATION_TYPE_TRUST"]
+  string authorization_type = 3 [json_name = "authorization_type"];
+
+  // Time the AuthorizedOrgsDesc was created in UTC.
+  string create_time = 4 [json_name = "create_time"];
+
+  string id = 5;
+
+  // Resource name for the 'AuthorizedOrgsDesc'. Format:
+  // 'accessPolicies/{access_policy}/authorizedOrgsDescs/{authorized_orgs_desc}'.
+  // The 'authorized_orgs_desc' component must begin with a letter, followed by
+  // alphanumeric characters or '_'.
+  // After you create an 'AuthorizedOrgsDesc', you cannot change its 'name'.
+  string name = 6;
+
+  // The list of organization ids in this AuthorizedOrgsDesc.
+  // Format: 'organizations/<org_number>'
+  // Example: 'organizations/123456'
+  repeated string orgs = 7;
+
+  // Required. Resource name for the access policy which owns this 'AuthorizedOrgsDesc'.
+  string parent = 8;
+
+  // Time the AuthorizedOrgsDesc was updated in UTC.
+  string update_time = 9 [json_name = "update_time"];
+
+  repeated Timeouts timeouts = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleAccessContextManagerEgressPolicy version is 0
+message GoogleAccessContextManagerEgressPolicy {
+  // The name of the Service Perimeter to add this resource to.
+  string egress_policy_name = 1 [json_name = "egress_policy_name"];
+
+  string id = 2;
+
+  // A GCP resource that is inside of the service perimeter.
+  string resource = 3;
+
+  repeated Timeouts timeouts = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// GoogleAccessContextManagerGcpUserAccessBinding version is 0
+message GoogleAccessContextManagerGcpUserAccessBinding {
+  // Required. Access level that a user must have to be granted access. Only one access level is supported, not multiple. This repeated field must have exactly one element. Example: "accessPolicies/9522/accessLevels/device_trusted"
+  repeated string access_levels = 1 [json_name = "access_levels"];
+
+  // Required. Immutable. Google Group id whose members are subject to this binding's restrictions. See "id" in the G Suite Directory API's Groups resource. If a group's email address/alias is changed, this resource will continue to point at the changed group. This field does not accept group email addresses or aliases. Example: "01d520gv4vjcrht"
+  string group_key = 2 [json_name = "group_key"];
+
+  string id = 3;
+
+  // Immutable. Assigned by the server during creation. The last segment has an arbitrary length and has only URI unreserved characters (as defined by RFC 3986 Section 2.3). Should not be specified by the client during creation. Example: "organizations/256/gcpUserAccessBindings/b3-BhcX_Ud5N"
+  string name = 4;
+
+  // Required. ID of the parent organization.
+  string organization_id = 5 [json_name = "organization_id"];
+
+  repeated Timeouts timeouts = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleAccessContextManagerIngressPolicy version is 0
+message GoogleAccessContextManagerIngressPolicy {
+  string id = 1;
+
+  // The name of the Service Perimeter to add this resource to.
+  string ingress_policy_name = 2 [json_name = "ingress_policy_name"];
+
+  // A GCP resource that is inside of the service perimeter.
+  string resource = 3;
+
+  repeated Timeouts timeouts = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// GoogleAccessContextManagerServicePerimeter version is 0
+message GoogleAccessContextManagerServicePerimeter {
+  // Time the AccessPolicy was created in UTC.
+  string create_time = 1 [json_name = "create_time"];
+
+  // Description of the ServicePerimeter and its use. Does not affect
+  // behavior.
+  string description = 2;
+
+  string id = 3;
+
+  // Resource name for the ServicePerimeter. The short_name component must
+  // begin with a letter and only include alphanumeric and '_'.
+  // Format: accessPolicies/{policy_id}/servicePerimeters/{short_name}
+  string name = 4;
+
+  // The AccessPolicy this ServicePerimeter lives in.
+  // Format: accessPolicies/{policy_id}
+  string parent = 5;
+
+  // Specifies the type of the Perimeter. There are two types: regular and
+  // bridge. Regular Service Perimeter contains resources, access levels,
+  // and restricted services. Every resource can be in at most
+  // ONE regular Service Perimeter.
+  //
+  // In addition to being in a regular service perimeter, a resource can also
+  // be in zero or more perimeter bridges. A perimeter bridge only contains
+  // resources. Cross project operations are permitted if all effected
+  // resources share some perimeter (whether bridge or regular). Perimeter
+  // Bridge does not contain access levels or services: those are governed
+  // entirely by the regular perimeter that resource is in.
+  //
+  // Perimeter Bridges are typically useful when building more complex
+  // topologies with many independent perimeters that need to share some data
+  // with a common perimeter, but should not be able to share data among
+  // themselves. Default value: "PERIMETER_TYPE_REGULAR" Possible values: ["PERIMETER_TYPE_REGULAR", "PERIMETER_TYPE_BRIDGE"]
+  string perimeter_type = 6 [json_name = "perimeter_type"];
+
+  // Human readable title. Must be unique within the Policy.
+  string title = 7;
+
+  // Time the AccessPolicy was updated in UTC.
+  string update_time = 8 [json_name = "update_time"];
+
+  // Use explicit dry run spec flag. Ordinarily, a dry-run spec implicitly exists
+  // for all Service Perimeters, and that spec is identical to the status for those
+  // Service Perimeters. When this flag is set, it inhibits the generation of the
+  // implicit spec, thereby allowing the user to explicitly provide a
+  // configuration ("spec") to use in a dry-run version of the Service Perimeter.
+  // This allows the user to test changes to the enforced config ("status") without
+  // actually enforcing them. This testing is done through analyzing the differences
+  // between currently enforced and suggested restrictions. useExplicitDryRunSpec must
+  // bet set to True if any of the fields in the spec are set to non-default values.
+  bool use_explicit_dry_run_spec = 9 [json_name = "use_explicit_dry_run_spec"];
+
+  Spec spec = 10;
+
+  Status status = 11;
+
+  repeated Timeouts timeouts = 12;
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message Spec {
+    // A list of AccessLevel resource names that allow resources within
+    // the ServicePerimeter to be accessed from the internet.
+    // AccessLevels listed must be in the same policy as this
+    // ServicePerimeter. Referencing a nonexistent AccessLevel is a
+    // syntax error. If no AccessLevel names are listed, resources within
+    // the perimeter can only be accessed via GCP calls with request
+    // origins within the perimeter. For Service Perimeter Bridge, must
+    // be empty.
+    //
+    // Format: accessPolicies/{policy_id}/accessLevels/{access_level_name}
+    repeated string access_levels = 1 [json_name = "access_levels"];
+
+    // A list of GCP resources that are inside of the service perimeter.
+    // Currently only projects are allowed.
+    // Format: projects/{project_number}
+    repeated string resources = 2;
+
+    // GCP services that are subject to the Service Perimeter
+    // restrictions. Must contain a list of services. For example, if
+    // 'storage.googleapis.com' is specified, access to the storage
+    // buckets inside the perimeter must meet the perimeter's access
+    // restrictions.
+    repeated string restricted_services = 3 [json_name = "restricted_services"];
+
+    repeated EgressPolicies egress_policies = 4 [json_name = "egress_policies"];
+
+    repeated IngressPolicies ingress_policies = 5 [json_name = "ingress_policies"];
+
+    VpcAccessibleServices vpc_accessible_services = 6 [json_name = "vpc_accessible_services"];
+
+    message EgressPolicies {
+      EgressFrom egress_from = 1 [json_name = "egress_from"];
+
+      EgressTo egress_to = 2 [json_name = "egress_to"];
+
+      message EgressFrom {
+        // A list of identities that are allowed access through this 'EgressPolicy'.
+        // Should be in the format of email address. The email address should
+        // represent individual user or service account only.
+        repeated string identities = 1;
+
+        // Specifies the type of identities that are allowed access to outside the
+        // perimeter. If left unspecified, then members of 'identities' field will
+        // be allowed access. Possible values: ["IDENTITY_TYPE_UNSPECIFIED", "ANY_IDENTITY", "ANY_USER_ACCOUNT", "ANY_SERVICE_ACCOUNT"]
+        string identity_type = 2 [json_name = "identity_type"];
+      }
+
+      message EgressTo {
+        // A list of external resources that are allowed to be accessed. A request
+        // matches if it contains an external resource in this list (Example:
+        // s3://bucket/path). Currently '*' is not allowed.
+        repeated string external_resources = 1 [json_name = "external_resources"];
+
+        // A list of resources, currently only projects in the form
+        // 'projects/<projectnumber>', that match this to stanza. A request matches
+        // if it contains a resource in this list. If * is specified for resources,
+        // then this 'EgressTo' rule will authorize access to all resources outside
+        // the perimeter.
+        repeated string resources = 2;
+
+        repeated Operations operations = 3;
+
+        message Operations {
+          // The name of the API whose methods or permissions the 'IngressPolicy' or
+          // 'EgressPolicy' want to allow. A single 'ApiOperation' with serviceName
+          // field set to '*' will allow all methods AND permissions for all services.
+          string service_name = 1 [json_name = "service_name"];
+
+          repeated MethodSelectors method_selectors = 2 [json_name = "method_selectors"];
+
+          message MethodSelectors {
+            // Value for 'method' should be a valid method name for the corresponding
+            // 'serviceName' in 'ApiOperation'. If '*' used as value for method,
+            // then ALL methods and permissions are allowed.
+            string method = 1;
+
+            // Value for permission should be a valid Cloud IAM permission for the
+            // corresponding 'serviceName' in 'ApiOperation'.
+            string permission = 2;
+          }
+        }
+      }
+    }
+
+    message IngressPolicies {
+      IngressFrom ingress_from = 1 [json_name = "ingress_from"];
+
+      IngressTo ingress_to = 2 [json_name = "ingress_to"];
+
+      message IngressFrom {
+        // A list of identities that are allowed access through this ingress policy.
+        // Should be in the format of email address. The email address should represent
+        // individual user or service account only.
+        repeated string identities = 1;
+
+        // Specifies the type of identities that are allowed access from outside the
+        // perimeter. If left unspecified, then members of 'identities' field will be
+        // allowed access. Possible values: ["IDENTITY_TYPE_UNSPECIFIED", "ANY_IDENTITY", "ANY_USER_ACCOUNT", "ANY_SERVICE_ACCOUNT"]
+        string identity_type = 2 [json_name = "identity_type"];
+
+        repeated Sources sources = 3;
+
+        message Sources {
+          // An 'AccessLevel' resource name that allow resources within the
+          // 'ServicePerimeters' to be accessed from the internet. 'AccessLevels' listed
+          // must be in the same policy as this 'ServicePerimeter'. Referencing a nonexistent
+          // 'AccessLevel' will cause an error. If no 'AccessLevel' names are listed,
+          // resources within the perimeter can only be accessed via Google Cloud calls
+          // with request origins within the perimeter.
+          // Example 'accessPolicies/MY_POLICY/accessLevels/MY_LEVEL.'
+          // If * is specified, then all IngressSources will be allowed.
+          string access_level = 1 [json_name = "access_level"];
+
+          // A Google Cloud resource that is allowed to ingress the perimeter.
+          // Requests from these resources will be allowed to access perimeter data.
+          // Currently only projects are allowed. Format 'projects/{project_number}'
+          // The project may be in any Google Cloud organization, not just the
+          // organization that the perimeter is defined in. '*' is not allowed, the case
+          // of allowing all Google Cloud resources only is not supported.
+          string resource = 2;
+        }
+      }
+
+      message IngressTo {
+        // A list of resources, currently only projects in the form
+        // 'projects/<projectnumber>', protected by this 'ServicePerimeter'
+        // that are allowed to be accessed by sources defined in the
+        // corresponding 'IngressFrom'. A request matches if it contains
+        // a resource in this list. If '*' is specified for resources,
+        // then this 'IngressTo' rule will authorize access to all
+        // resources inside the perimeter, provided that the request
+        // also matches the 'operations' field.
+        repeated string resources = 1;
+
+        repeated Operations operations = 2;
+
+        message Operations {
+          // The name of the API whose methods or permissions the 'IngressPolicy' or
+          // 'EgressPolicy' want to allow. A single 'ApiOperation' with 'serviceName'
+          // field set to '*' will allow all methods AND permissions for all services.
+          string service_name = 1 [json_name = "service_name"];
+
+          repeated MethodSelectors method_selectors = 2 [json_name = "method_selectors"];
+
+          message MethodSelectors {
+            // Value for method should be a valid method name for the corresponding
+            // serviceName in 'ApiOperation'. If '*' used as value for 'method', then
+            // ALL methods and permissions are allowed.
+            string method = 1;
+
+            // Value for permission should be a valid Cloud IAM permission for the
+            // corresponding 'serviceName' in 'ApiOperation'.
+            string permission = 2;
+          }
+        }
+      }
+    }
+
+    message VpcAccessibleServices {
+      // The list of APIs usable within the Service Perimeter.
+      // Must be empty unless 'enableRestriction' is True.
+      repeated string allowed_services = 1 [json_name = "allowed_services"];
+
+      // Whether to restrict API calls within the Service Perimeter to the
+      // list of APIs specified in 'allowedServices'.
+      bool enable_restriction = 2 [json_name = "enable_restriction"];
+    }
+  }
+
+  message Status {
+    // A list of AccessLevel resource names that allow resources within
+    // the ServicePerimeter to be accessed from the internet.
+    // AccessLevels listed must be in the same policy as this
+    // ServicePerimeter. Referencing a nonexistent AccessLevel is a
+    // syntax error. If no AccessLevel names are listed, resources within
+    // the perimeter can only be accessed via GCP calls with request
+    // origins within the perimeter. For Service Perimeter Bridge, must
+    // be empty.
+    //
+    // Format: accessPolicies/{policy_id}/accessLevels/{access_level_name}
+    repeated string access_levels = 1 [json_name = "access_levels"];
+
+    // A list of GCP resources that are inside of the service perimeter.
+    // Currently only projects are allowed.
+    // Format: projects/{project_number}
+    repeated string resources = 2;
+
+    // GCP services that are subject to the Service Perimeter
+    // restrictions. Must contain a list of services. For example, if
+    // 'storage.googleapis.com' is specified, access to the storage
+    // buckets inside the perimeter must meet the perimeter's access
+    // restrictions.
+    repeated string restricted_services = 3 [json_name = "restricted_services"];
+
+    repeated EgressPolicies egress_policies = 4 [json_name = "egress_policies"];
+
+    repeated IngressPolicies ingress_policies = 5 [json_name = "ingress_policies"];
+
+    VpcAccessibleServices vpc_accessible_services = 6 [json_name = "vpc_accessible_services"];
+
+    message EgressPolicies {
+      EgressFrom egress_from = 1 [json_name = "egress_from"];
+
+      EgressTo egress_to = 2 [json_name = "egress_to"];
+
+      message EgressFrom {
+        // A list of identities that are allowed access through this 'EgressPolicy'.
+        // Should be in the format of email address. The email address should
+        // represent individual user or service account only.
+        repeated string identities = 1;
+
+        // Specifies the type of identities that are allowed access to outside the
+        // perimeter. If left unspecified, then members of 'identities' field will
+        // be allowed access. Possible values: ["IDENTITY_TYPE_UNSPECIFIED", "ANY_IDENTITY", "ANY_USER_ACCOUNT", "ANY_SERVICE_ACCOUNT"]
+        string identity_type = 2 [json_name = "identity_type"];
+      }
+
+      message EgressTo {
+        // A list of external resources that are allowed to be accessed. A request
+        // matches if it contains an external resource in this list (Example:
+        // s3://bucket/path). Currently '*' is not allowed.
+        repeated string external_resources = 1 [json_name = "external_resources"];
+
+        // A list of resources, currently only projects in the form
+        // 'projects/<projectnumber>', that match this to stanza. A request matches
+        // if it contains a resource in this list. If * is specified for resources,
+        // then this 'EgressTo' rule will authorize access to all resources outside
+        // the perimeter.
+        repeated string resources = 2;
+
+        repeated Operations operations = 3;
+
+        message Operations {
+          // The name of the API whose methods or permissions the 'IngressPolicy' or
+          // 'EgressPolicy' want to allow. A single 'ApiOperation' with serviceName
+          // field set to '*' will allow all methods AND permissions for all services.
+          string service_name = 1 [json_name = "service_name"];
+
+          repeated MethodSelectors method_selectors = 2 [json_name = "method_selectors"];
+
+          message MethodSelectors {
+            // Value for 'method' should be a valid method name for the corresponding
+            // 'serviceName' in 'ApiOperation'. If '*' used as value for method,
+            // then ALL methods and permissions are allowed.
+            string method = 1;
+
+            // Value for permission should be a valid Cloud IAM permission for the
+            // corresponding 'serviceName' in 'ApiOperation'.
+            string permission = 2;
+          }
+        }
+      }
+    }
+
+    message IngressPolicies {
+      IngressFrom ingress_from = 1 [json_name = "ingress_from"];
+
+      IngressTo ingress_to = 2 [json_name = "ingress_to"];
+
+      message IngressFrom {
+        // A list of identities that are allowed access through this ingress policy.
+        // Should be in the format of email address. The email address should represent
+        // individual user or service account only.
+        repeated string identities = 1;
+
+        // Specifies the type of identities that are allowed access from outside the
+        // perimeter. If left unspecified, then members of 'identities' field will be
+        // allowed access. Possible values: ["IDENTITY_TYPE_UNSPECIFIED", "ANY_IDENTITY", "ANY_USER_ACCOUNT", "ANY_SERVICE_ACCOUNT"]
+        string identity_type = 2 [json_name = "identity_type"];
+
+        repeated Sources sources = 3;
+
+        message Sources {
+          // An 'AccessLevel' resource name that allow resources within the
+          // 'ServicePerimeters' to be accessed from the internet. 'AccessLevels' listed
+          // must be in the same policy as this 'ServicePerimeter'. Referencing a nonexistent
+          // 'AccessLevel' will cause an error. If no 'AccessLevel' names are listed,
+          // resources within the perimeter can only be accessed via Google Cloud calls
+          // with request origins within the perimeter.
+          // Example 'accessPolicies/MY_POLICY/accessLevels/MY_LEVEL.'
+          // If * is specified, then all IngressSources will be allowed.
+          string access_level = 1 [json_name = "access_level"];
+
+          // A Google Cloud resource that is allowed to ingress the perimeter.
+          // Requests from these resources will be allowed to access perimeter data.
+          // Currently only projects are allowed. Format 'projects/{project_number}'
+          // The project may be in any Google Cloud organization, not just the
+          // organization that the perimeter is defined in. '*' is not allowed, the case
+          // of allowing all Google Cloud resources only is not supported.
+          string resource = 2;
+        }
+      }
+
+      message IngressTo {
+        // A list of resources, currently only projects in the form
+        // 'projects/<projectnumber>', protected by this 'ServicePerimeter'
+        // that are allowed to be accessed by sources defined in the
+        // corresponding 'IngressFrom'. A request matches if it contains
+        // a resource in this list. If '*' is specified for resources,
+        // then this 'IngressTo' rule will authorize access to all
+        // resources inside the perimeter, provided that the request
+        // also matches the 'operations' field.
+        repeated string resources = 1;
+
+        repeated Operations operations = 2;
+
+        message Operations {
+          // The name of the API whose methods or permissions the 'IngressPolicy' or
+          // 'EgressPolicy' want to allow. A single 'ApiOperation' with 'serviceName'
+          // field set to '*' will allow all methods AND permissions for all services.
+          string service_name = 1 [json_name = "service_name"];
+
+          repeated MethodSelectors method_selectors = 2 [json_name = "method_selectors"];
+
+          message MethodSelectors {
+            // Value for method should be a valid method name for the corresponding
+            // serviceName in 'ApiOperation'. If '*' used as value for 'method', then
+            // ALL methods and permissions are allowed.
+            string method = 1;
+
+            // Value for permission should be a valid Cloud IAM permission for the
+            // corresponding 'serviceName' in 'ApiOperation'.
+            string permission = 2;
+          }
+        }
+      }
+    }
+
+    message VpcAccessibleServices {
+      // The list of APIs usable within the Service Perimeter.
+      // Must be empty unless 'enableRestriction' is True.
+      repeated string allowed_services = 1 [json_name = "allowed_services"];
+
+      // Whether to restrict API calls within the Service Perimeter to the
+      // list of APIs specified in 'allowedServices'.
+      bool enable_restriction = 2 [json_name = "enable_restriction"];
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleAccessContextManagerServicePerimeterEgressPolicy version is 0
+message GoogleAccessContextManagerServicePerimeterEgressPolicy {
+  string id = 1;
+
+  // The name of the Service Perimeter to add this resource to.
+  string perimeter = 2;
+
+  EgressFrom egress_from = 3 [json_name = "egress_from"];
+
+  EgressTo egress_to = 4 [json_name = "egress_to"];
+
+  repeated Timeouts timeouts = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message EgressFrom {
+    // A list of identities that are allowed access through this 'EgressPolicy'.
+    // Should be in the format of email address. The email address should
+    // represent individual user or service account only.
+    repeated string identities = 1;
+
+    // Specifies the type of identities that are allowed access to outside the
+    // perimeter. If left unspecified, then members of 'identities' field will
+    // be allowed access. Possible values: ["ANY_IDENTITY", "ANY_USER_ACCOUNT", "ANY_SERVICE_ACCOUNT"]
+    string identity_type = 2 [json_name = "identity_type"];
+  }
+
+  message EgressTo {
+    // A list of external resources that are allowed to be accessed. A request
+    // matches if it contains an external resource in this list (Example:
+    // s3://bucket/path). Currently '*' is not allowed.
+    repeated string external_resources = 1 [json_name = "external_resources"];
+
+    // A list of resources, currently only projects in the form
+    // 'projects/<projectnumber>', that match this to stanza. A request matches
+    // if it contains a resource in this list. If * is specified for resources,
+    // then this 'EgressTo' rule will authorize access to all resources outside
+    // the perimeter.
+    repeated string resources = 2;
+
+    repeated Operations operations = 3;
+
+    message Operations {
+      // The name of the API whose methods or permissions the 'IngressPolicy' or
+      // 'EgressPolicy' want to allow. A single 'ApiOperation' with serviceName
+      // field set to '*' will allow all methods AND permissions for all services.
+      string service_name = 1 [json_name = "service_name"];
+
+      repeated MethodSelectors method_selectors = 2 [json_name = "method_selectors"];
+
+      message MethodSelectors {
+        // Value for 'method' should be a valid method name for the corresponding
+        // 'serviceName' in 'ApiOperation'. If '*' used as value for method,
+        // then ALL methods and permissions are allowed.
+        string method = 1;
+
+        // Value for permission should be a valid Cloud IAM permission for the
+        // corresponding 'serviceName' in 'ApiOperation'.
+        string permission = 2;
+      }
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleAccessContextManagerServicePerimeterIngressPolicy version is 0
+message GoogleAccessContextManagerServicePerimeterIngressPolicy {
+  string id = 1;
+
+  // The name of the Service Perimeter to add this resource to.
+  string perimeter = 2;
+
+  IngressFrom ingress_from = 3 [json_name = "ingress_from"];
+
+  IngressTo ingress_to = 4 [json_name = "ingress_to"];
+
+  repeated Timeouts timeouts = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message IngressFrom {
+    // A list of identities that are allowed access through this ingress policy.
+    // Should be in the format of email address. The email address should represent
+    // individual user or service account only.
+    repeated string identities = 1;
+
+    // Specifies the type of identities that are allowed access from outside the
+    // perimeter. If left unspecified, then members of 'identities' field will be
+    // allowed access. Possible values: ["ANY_IDENTITY", "ANY_USER_ACCOUNT", "ANY_SERVICE_ACCOUNT"]
+    string identity_type = 2 [json_name = "identity_type"];
+
+    repeated Sources sources = 3;
+
+    message Sources {
+      // An 'AccessLevel' resource name that allow resources within the
+      // 'ServicePerimeters' to be accessed from the internet. 'AccessLevels' listed
+      // must be in the same policy as this 'ServicePerimeter'. Referencing a nonexistent
+      // 'AccessLevel' will cause an error. If no 'AccessLevel' names are listed,
+      // resources within the perimeter can only be accessed via Google Cloud calls
+      // with request origins within the perimeter.
+      // Example 'accessPolicies/MY_POLICY/accessLevels/MY_LEVEL.'
+      // If * is specified, then all IngressSources will be allowed.
+      string access_level = 1 [json_name = "access_level"];
+
+      // A Google Cloud resource that is allowed to ingress the perimeter.
+      // Requests from these resources will be allowed to access perimeter data.
+      // Currently only projects are allowed. Format 'projects/{project_number}'
+      // The project may be in any Google Cloud organization, not just the
+      // organization that the perimeter is defined in. '*' is not allowed, the case
+      // of allowing all Google Cloud resources only is not supported.
+      string resource = 2;
+    }
+  }
+
+  message IngressTo {
+    // A list of resources, currently only projects in the form
+    // 'projects/<projectnumber>', protected by this 'ServicePerimeter'
+    // that are allowed to be accessed by sources defined in the
+    // corresponding 'IngressFrom'. A request matches if it contains
+    // a resource in this list. If '*' is specified for resources,
+    // then this 'IngressTo' rule will authorize access to all
+    // resources inside the perimeter, provided that the request
+    // also matches the 'operations' field.
+    repeated string resources = 1;
+
+    repeated Operations operations = 2;
+
+    message Operations {
+      // The name of the API whose methods or permissions the 'IngressPolicy' or
+      // 'EgressPolicy' want to allow. A single 'ApiOperation' with 'serviceName'
+      // field set to '*' will allow all methods AND permissions for all services.
+      string service_name = 1 [json_name = "service_name"];
+
+      repeated MethodSelectors method_selectors = 2 [json_name = "method_selectors"];
+
+      message MethodSelectors {
+        // Value for method should be a valid method name for the corresponding
+        // serviceName in 'ApiOperation'. If '*' used as value for 'method', then
+        // ALL methods and permissions are allowed.
+        string method = 1;
+
+        // Value for permission should be a valid Cloud IAM permission for the
+        // corresponding 'serviceName' in 'ApiOperation'.
+        string permission = 2;
+      }
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleAccessContextManagerServicePerimeterResource version is 0
+message GoogleAccessContextManagerServicePerimeterResource {
+  string id = 1;
+
+  // The name of the Service Perimeter to add this resource to.
+  string perimeter_name = 2 [json_name = "perimeter_name"];
+
+  // A GCP resource that is inside of the service perimeter.
+  // Currently only projects are allowed.
+  // Format: projects/{project_number}
+  string resource = 3;
+
+  repeated Timeouts timeouts = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// GoogleAccessContextManagerServicePerimeters version is 0
+message GoogleAccessContextManagerServicePerimeters {
+  string id = 1;
+
+  // The AccessPolicy this ServicePerimeter lives in.
+  // Format: accessPolicies/{policy_id}
+  string parent = 2;
+
+  repeated ServicePerimeters service_perimeters = 3 [json_name = "service_perimeters"];
+
+  repeated Timeouts timeouts = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message ServicePerimeters {
+    // Time the AccessPolicy was created in UTC.
+    string create_time = 1 [json_name = "create_time"];
+
+    // Description of the ServicePerimeter and its use. Does not affect
+    // behavior.
+    string description = 2;
+
+    // Resource name for the ServicePerimeter. The short_name component must
+    // begin with a letter and only include alphanumeric and '_'.
+    // Format: accessPolicies/{policy_id}/servicePerimeters/{short_name}
+    string name = 3;
+
+    // Specifies the type of the Perimeter. There are two types: regular and
+    // bridge. Regular Service Perimeter contains resources, access levels,
+    // and restricted services. Every resource can be in at most
+    // ONE regular Service Perimeter.
+    //
+    // In addition to being in a regular service perimeter, a resource can also
+    // be in zero or more perimeter bridges. A perimeter bridge only contains
+    // resources. Cross project operations are permitted if all effected
+    // resources share some perimeter (whether bridge or regular). Perimeter
+    // Bridge does not contain access levels or services: those are governed
+    // entirely by the regular perimeter that resource is in.
+    //
+    // Perimeter Bridges are typically useful when building more complex
+    // topologies with many independent perimeters that need to share some data
+    // with a common perimeter, but should not be able to share data among
+    // themselves. Default value: "PERIMETER_TYPE_REGULAR" Possible values: ["PERIMETER_TYPE_REGULAR", "PERIMETER_TYPE_BRIDGE"]
+    string perimeter_type = 4 [json_name = "perimeter_type"];
+
+    // Human readable title. Must be unique within the Policy.
+    string title = 5;
+
+    // Time the AccessPolicy was updated in UTC.
+    string update_time = 6 [json_name = "update_time"];
+
+    // Use explicit dry run spec flag. Ordinarily, a dry-run spec implicitly exists
+    // for all Service Perimeters, and that spec is identical to the status for those
+    // Service Perimeters. When this flag is set, it inhibits the generation of the
+    // implicit spec, thereby allowing the user to explicitly provide a
+    // configuration ("spec") to use in a dry-run version of the Service Perimeter.
+    // This allows the user to test changes to the enforced config ("status") without
+    // actually enforcing them. This testing is done through analyzing the differences
+    // between currently enforced and suggested restrictions. useExplicitDryRunSpec must
+    // bet set to True if any of the fields in the spec are set to non-default values.
+    bool use_explicit_dry_run_spec = 7 [json_name = "use_explicit_dry_run_spec"];
+
+    Spec spec = 8;
+
+    Status status = 9;
+
+    message Spec {
+      // A list of AccessLevel resource names that allow resources within
+      // the ServicePerimeter to be accessed from the internet.
+      // AccessLevels listed must be in the same policy as this
+      // ServicePerimeter. Referencing a nonexistent AccessLevel is a
+      // syntax error. If no AccessLevel names are listed, resources within
+      // the perimeter can only be accessed via GCP calls with request
+      // origins within the perimeter. For Service Perimeter Bridge, must
+      // be empty.
+      //
+      // Format: accessPolicies/{policy_id}/accessLevels/{access_level_name}
+      repeated string access_levels = 1 [json_name = "access_levels"];
+
+      // A list of GCP resources that are inside of the service perimeter.
+      // Currently only projects are allowed.
+      // Format: projects/{project_number}
+      repeated string resources = 2;
+
+      // GCP services that are subject to the Service Perimeter
+      // restrictions. Must contain a list of services. For example, if
+      // 'storage.googleapis.com' is specified, access to the storage
+      // buckets inside the perimeter must meet the perimeter's access
+      // restrictions.
+      repeated string restricted_services = 3 [json_name = "restricted_services"];
+
+      repeated EgressPolicies egress_policies = 4 [json_name = "egress_policies"];
+
+      repeated IngressPolicies ingress_policies = 5 [json_name = "ingress_policies"];
+
+      VpcAccessibleServices vpc_accessible_services = 6 [json_name = "vpc_accessible_services"];
+
+      message EgressPolicies {
+        EgressFrom egress_from = 1 [json_name = "egress_from"];
+
+        EgressTo egress_to = 2 [json_name = "egress_to"];
+
+        message EgressFrom {
+          // A list of identities that are allowed access through this 'EgressPolicy'.
+          // Should be in the format of email address. The email address should
+          // represent individual user or service account only.
+          repeated string identities = 1;
+
+          // Specifies the type of identities that are allowed access to outside the
+          // perimeter. If left unspecified, then members of 'identities' field will
+          // be allowed access. Possible values: ["IDENTITY_TYPE_UNSPECIFIED", "ANY_IDENTITY", "ANY_USER_ACCOUNT", "ANY_SERVICE_ACCOUNT"]
+          string identity_type = 2 [json_name = "identity_type"];
+        }
+
+        message EgressTo {
+          // A list of external resources that are allowed to be accessed. A request
+          // matches if it contains an external resource in this list (Example:
+          // s3://bucket/path). Currently '*' is not allowed.
+          repeated string external_resources = 1 [json_name = "external_resources"];
+
+          // A list of resources, currently only projects in the form
+          // 'projects/<projectnumber>', that match this to stanza. A request matches
+          // if it contains a resource in this list. If * is specified for resources,
+          // then this 'EgressTo' rule will authorize access to all resources outside
+          // the perimeter.
+          repeated string resources = 2;
+
+          repeated Operations operations = 3;
+
+          message Operations {
+            // The name of the API whose methods or permissions the 'IngressPolicy' or
+            // 'EgressPolicy' want to allow. A single 'ApiOperation' with serviceName
+            // field set to '*' will allow all methods AND permissions for all services.
+            string service_name = 1 [json_name = "service_name"];
+
+            repeated MethodSelectors method_selectors = 2 [json_name = "method_selectors"];
+
+            message MethodSelectors {
+              // Value for 'method' should be a valid method name for the corresponding
+              // 'serviceName' in 'ApiOperation'. If '*' used as value for method,
+              // then ALL methods and permissions are allowed.
+              string method = 1;
+
+              // Value for permission should be a valid Cloud IAM permission for the
+              // corresponding 'serviceName' in 'ApiOperation'.
+              string permission = 2;
+            }
+          }
+        }
+      }
+
+      message IngressPolicies {
+        IngressFrom ingress_from = 1 [json_name = "ingress_from"];
+
+        IngressTo ingress_to = 2 [json_name = "ingress_to"];
+
+        message IngressFrom {
+          // A list of identities that are allowed access through this ingress policy.
+          // Should be in the format of email address. The email address should represent
+          // individual user or service account only.
+          repeated string identities = 1;
+
+          // Specifies the type of identities that are allowed access from outside the
+          // perimeter. If left unspecified, then members of 'identities' field will be
+          // allowed access. Possible values: ["IDENTITY_TYPE_UNSPECIFIED", "ANY_IDENTITY", "ANY_USER_ACCOUNT", "ANY_SERVICE_ACCOUNT"]
+          string identity_type = 2 [json_name = "identity_type"];
+
+          repeated Sources sources = 3;
+
+          message Sources {
+            // An 'AccessLevel' resource name that allow resources within the
+            // 'ServicePerimeters' to be accessed from the internet. 'AccessLevels' listed
+            // must be in the same policy as this 'ServicePerimeter'. Referencing a nonexistent
+            // 'AccessLevel' will cause an error. If no 'AccessLevel' names are listed,
+            // resources within the perimeter can only be accessed via Google Cloud calls
+            // with request origins within the perimeter.
+            // Example 'accessPolicies/MY_POLICY/accessLevels/MY_LEVEL.'
+            // If * is specified, then all IngressSources will be allowed.
+            string access_level = 1 [json_name = "access_level"];
+
+            // A Google Cloud resource that is allowed to ingress the perimeter.
+            // Requests from these resources will be allowed to access perimeter data.
+            // Currently only projects are allowed. Format 'projects/{project_number}'
+            // The project may be in any Google Cloud organization, not just the
+            // organization that the perimeter is defined in. '*' is not allowed, the case
+            // of allowing all Google Cloud resources only is not supported.
+            string resource = 2;
+          }
+        }
+
+        message IngressTo {
+          // A list of resources, currently only projects in the form
+          // 'projects/<projectnumber>', protected by this 'ServicePerimeter'
+          // that are allowed to be accessed by sources defined in the
+          // corresponding 'IngressFrom'. A request matches if it contains
+          // a resource in this list. If '*' is specified for resources,
+          // then this 'IngressTo' rule will authorize access to all
+          // resources inside the perimeter, provided that the request
+          // also matches the 'operations' field.
+          repeated string resources = 1;
+
+          repeated Operations operations = 2;
+
+          message Operations {
+            // The name of the API whose methods or permissions the 'IngressPolicy' or
+            // 'EgressPolicy' want to allow. A single 'ApiOperation' with 'serviceName'
+            // field set to '*' will allow all methods AND permissions for all services.
+            string service_name = 1 [json_name = "service_name"];
+
+            repeated MethodSelectors method_selectors = 2 [json_name = "method_selectors"];
+
+            message MethodSelectors {
+              // Value for method should be a valid method name for the corresponding
+              // serviceName in 'ApiOperation'. If '*' used as value for 'method', then
+              // ALL methods and permissions are allowed.
+              string method = 1;
+
+              // Value for permission should be a valid Cloud IAM permission for the
+              // corresponding 'serviceName' in 'ApiOperation'.
+              string permission = 2;
+            }
+          }
+        }
+      }
+
+      message VpcAccessibleServices {
+        // The list of APIs usable within the Service Perimeter.
+        // Must be empty unless 'enableRestriction' is True.
+        repeated string allowed_services = 1 [json_name = "allowed_services"];
+
+        // Whether to restrict API calls within the Service Perimeter to the
+        // list of APIs specified in 'allowedServices'.
+        bool enable_restriction = 2 [json_name = "enable_restriction"];
+      }
+    }
+
+    message Status {
+      // A list of AccessLevel resource names that allow resources within
+      // the ServicePerimeter to be accessed from the internet.
+      // AccessLevels listed must be in the same policy as this
+      // ServicePerimeter. Referencing a nonexistent AccessLevel is a
+      // syntax error. If no AccessLevel names are listed, resources within
+      // the perimeter can only be accessed via GCP calls with request
+      // origins within the perimeter. For Service Perimeter Bridge, must
+      // be empty.
+      //
+      // Format: accessPolicies/{policy_id}/accessLevels/{access_level_name}
+      repeated string access_levels = 1 [json_name = "access_levels"];
+
+      // A list of GCP resources that are inside of the service perimeter.
+      // Currently only projects are allowed.
+      // Format: projects/{project_number}
+      repeated string resources = 2;
+
+      // GCP services that are subject to the Service Perimeter
+      // restrictions. Must contain a list of services. For example, if
+      // 'storage.googleapis.com' is specified, access to the storage
+      // buckets inside the perimeter must meet the perimeter's access
+      // restrictions.
+      repeated string restricted_services = 3 [json_name = "restricted_services"];
+
+      repeated EgressPolicies egress_policies = 4 [json_name = "egress_policies"];
+
+      repeated IngressPolicies ingress_policies = 5 [json_name = "ingress_policies"];
+
+      VpcAccessibleServices vpc_accessible_services = 6 [json_name = "vpc_accessible_services"];
+
+      message EgressPolicies {
+        EgressFrom egress_from = 1 [json_name = "egress_from"];
+
+        EgressTo egress_to = 2 [json_name = "egress_to"];
+
+        message EgressFrom {
+          // A list of identities that are allowed access through this 'EgressPolicy'.
+          // Should be in the format of email address. The email address should
+          // represent individual user or service account only.
+          repeated string identities = 1;
+
+          // Specifies the type of identities that are allowed access to outside the
+          // perimeter. If left unspecified, then members of 'identities' field will
+          // be allowed access. Possible values: ["IDENTITY_TYPE_UNSPECIFIED", "ANY_IDENTITY", "ANY_USER_ACCOUNT", "ANY_SERVICE_ACCOUNT"]
+          string identity_type = 2 [json_name = "identity_type"];
+        }
+
+        message EgressTo {
+          // A list of external resources that are allowed to be accessed. A request
+          // matches if it contains an external resource in this list (Example:
+          // s3://bucket/path). Currently '*' is not allowed.
+          repeated string external_resources = 1 [json_name = "external_resources"];
+
+          // A list of resources, currently only projects in the form
+          // 'projects/<projectnumber>', that match this to stanza. A request matches
+          // if it contains a resource in this list. If * is specified for resources,
+          // then this 'EgressTo' rule will authorize access to all resources outside
+          // the perimeter.
+          repeated string resources = 2;
+
+          repeated Operations operations = 3;
+
+          message Operations {
+            // The name of the API whose methods or permissions the 'IngressPolicy' or
+            // 'EgressPolicy' want to allow. A single 'ApiOperation' with serviceName
+            // field set to '*' will allow all methods AND permissions for all services.
+            string service_name = 1 [json_name = "service_name"];
+
+            repeated MethodSelectors method_selectors = 2 [json_name = "method_selectors"];
+
+            message MethodSelectors {
+              // Value for 'method' should be a valid method name for the corresponding
+              // 'serviceName' in 'ApiOperation'. If '*' used as value for method,
+              // then ALL methods and permissions are allowed.
+              string method = 1;
+
+              // Value for permission should be a valid Cloud IAM permission for the
+              // corresponding 'serviceName' in 'ApiOperation'.
+              string permission = 2;
+            }
+          }
+        }
+      }
+
+      message IngressPolicies {
+        IngressFrom ingress_from = 1 [json_name = "ingress_from"];
+
+        IngressTo ingress_to = 2 [json_name = "ingress_to"];
+
+        message IngressFrom {
+          // A list of identities that are allowed access through this ingress policy.
+          // Should be in the format of email address. The email address should represent
+          // individual user or service account only.
+          repeated string identities = 1;
+
+          // Specifies the type of identities that are allowed access from outside the
+          // perimeter. If left unspecified, then members of 'identities' field will be
+          // allowed access. Possible values: ["IDENTITY_TYPE_UNSPECIFIED", "ANY_IDENTITY", "ANY_USER_ACCOUNT", "ANY_SERVICE_ACCOUNT"]
+          string identity_type = 2 [json_name = "identity_type"];
+
+          repeated Sources sources = 3;
+
+          message Sources {
+            // An 'AccessLevel' resource name that allow resources within the
+            // 'ServicePerimeters' to be accessed from the internet. 'AccessLevels' listed
+            // must be in the same policy as this 'ServicePerimeter'. Referencing a nonexistent
+            // 'AccessLevel' will cause an error. If no 'AccessLevel' names are listed,
+            // resources within the perimeter can only be accessed via Google Cloud calls
+            // with request origins within the perimeter.
+            // Example 'accessPolicies/MY_POLICY/accessLevels/MY_LEVEL.'
+            // If * is specified, then all IngressSources will be allowed.
+            string access_level = 1 [json_name = "access_level"];
+
+            // A Google Cloud resource that is allowed to ingress the perimeter.
+            // Requests from these resources will be allowed to access perimeter data.
+            // Currently only projects are allowed. Format 'projects/{project_number}'
+            // The project may be in any Google Cloud organization, not just the
+            // organization that the perimeter is defined in. '*' is not allowed, the case
+            // of allowing all Google Cloud resources only is not supported.
+            string resource = 2;
+          }
+        }
+
+        message IngressTo {
+          // A list of resources, currently only projects in the form
+          // 'projects/<projectnumber>', protected by this 'ServicePerimeter'
+          // that are allowed to be accessed by sources defined in the
+          // corresponding 'IngressFrom'. A request matches if it contains
+          // a resource in this list. If '*' is specified for resources,
+          // then this 'IngressTo' rule will authorize access to all
+          // resources inside the perimeter, provided that the request
+          // also matches the 'operations' field.
+          repeated string resources = 1;
+
+          repeated Operations operations = 2;
+
+          message Operations {
+            // The name of the API whose methods or permissions the 'IngressPolicy' or
+            // 'EgressPolicy' want to allow. A single 'ApiOperation' with 'serviceName'
+            // field set to '*' will allow all methods AND permissions for all services.
+            string service_name = 1 [json_name = "service_name"];
+
+            repeated MethodSelectors method_selectors = 2 [json_name = "method_selectors"];
+
+            message MethodSelectors {
+              // Value for method should be a valid method name for the corresponding
+              // serviceName in 'ApiOperation'. If '*' used as value for 'method', then
+              // ALL methods and permissions are allowed.
+              string method = 1;
+
+              // Value for permission should be a valid Cloud IAM permission for the
+              // corresponding 'serviceName' in 'ApiOperation'.
+              string permission = 2;
+            }
+          }
+        }
+      }
+
+      message VpcAccessibleServices {
+        // The list of APIs usable within the Service Perimeter.
+        // Must be empty unless 'enableRestriction' is True.
+        repeated string allowed_services = 1 [json_name = "allowed_services"];
+
+        // Whether to restrict API calls within the Service Perimeter to the
+        // list of APIs specified in 'allowedServices'.
+        bool enable_restriction = 2 [json_name = "enable_restriction"];
+      }
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

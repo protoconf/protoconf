@@ -1,0 +1,873 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleLoggingBillingAccountBucketConfig version is 0
+message GoogleLoggingBillingAccountBucketConfig {
+  // The parent resource that contains the logging bucket.
+  string billing_account = 1 [json_name = "billing_account"];
+
+  // The name of the logging bucket. Logging automatically creates two log buckets: _Required and _Default.
+  string bucket_id = 2 [json_name = "bucket_id"];
+
+  // An optional description for this bucket.
+  string description = 3;
+
+  string id = 4;
+
+  // The bucket's lifecycle such as active or deleted.
+  string lifecycle_state = 5 [json_name = "lifecycle_state"];
+
+  // The location of the bucket.
+  string location = 6;
+
+  // The resource name of the bucket
+  string name = 7;
+
+  // Logs will be retained by default for this amount of time, after which they will automatically be deleted. The minimum retention period is 1 day. If this value is set to zero at bucket creation time, the default time of 30 days will be used.
+  int64 retention_days = 8 [json_name = "retention_days"];
+
+  CmekSettings cmek_settings = 9 [json_name = "cmek_settings"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message CmekSettings {
+    // The resource name for the configured Cloud KMS key.
+    // KMS key name format:
+    // "projects/[PROJECT_ID]/locations/[LOCATION]/keyRings/[KEYRING]/cryptoKeys/[KEY]"
+    // To enable CMEK for the bucket, set this field to a valid kmsKeyName for which the associated service account has the required cloudkms.cryptoKeyEncrypterDecrypter roles assigned for the key.
+    // The Cloud KMS key used by the bucket can be updated by changing the kmsKeyName to a new valid key name. Encryption operations that are in progress will be completed with the key that was in use when they started. Decryption operations will be completed using the key that was used at the time of encryption unless access to that key has been revoked.
+    // See [Enabling CMEK for Logging Buckets](https://cloud.google.com/logging/docs/routing/managed-encryption-storage) for more information.
+    string kms_key_name = 1 [json_name = "kms_key_name"];
+
+    // The CryptoKeyVersion resource name for the configured Cloud KMS key.
+    // KMS key name format:
+    // "projects/[PROJECT_ID]/locations/[LOCATION]/keyRings/[KEYRING]/cryptoKeys/[KEY]/cryptoKeyVersions/[VERSION]"
+    // For example:
+    // "projects/my-project/locations/us-central1/keyRings/my-ring/cryptoKeys/my-key/cryptoKeyVersions/1"
+    // This is a read-only field used to convey the specific configured CryptoKeyVersion of kms_key that has been configured. It will be populated in cases where the CMEK settings are bound to a single key version.
+    string kms_key_version_name = 2 [json_name = "kms_key_version_name"];
+
+    // The resource name of the CMEK settings.
+    string name = 3;
+
+    // The service account associated with a project for which CMEK will apply.
+    // Before enabling CMEK for a logging bucket, you must first assign the cloudkms.cryptoKeyEncrypterDecrypter role to the service account associated with the project for which CMEK will apply. Use [v2.getCmekSettings](https://cloud.google.com/logging/docs/reference/v2/rest/v2/TopLevel/getCmekSettings#google.logging.v2.ConfigServiceV2.GetCmekSettings) to obtain the service account ID.
+    // See [Enabling CMEK for Logging Buckets](https://cloud.google.com/logging/docs/routing/managed-encryption-storage) for more information.
+    string service_account_id = 4 [json_name = "service_account_id"];
+  }
+}
+
+// GoogleLoggingBillingAccountExclusion version is 0
+message GoogleLoggingBillingAccountExclusion {
+  string billing_account = 1 [json_name = "billing_account"];
+
+  // A human-readable description.
+  string description = 2;
+
+  // Whether this exclusion rule should be disabled or not. This defaults to false.
+  bool disabled = 3;
+
+  // The filter to apply when excluding logs. Only log entries that match the filter are excluded.
+  string filter = 4;
+
+  string id = 5;
+
+  // The name of the logging exclusion.
+  string name = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleLoggingBillingAccountSink version is 0
+message GoogleLoggingBillingAccountSink {
+  // The billing account exported to the sink.
+  string billing_account = 1 [json_name = "billing_account"];
+
+  // A description of this sink. The maximum length of the description is 8000 characters.
+  string description = 2;
+
+  // The destination of the sink (or, in other words, where logs are written to). Can be a Cloud Storage bucket, a PubSub topic, or a BigQuery dataset. Examples: "storage.googleapis.com/[GCS_BUCKET]" "bigquery.googleapis.com/projects/[PROJECT_ID]/datasets/[DATASET]" "pubsub.googleapis.com/projects/[PROJECT_ID]/topics/[TOPIC_ID]" The writer associated with the sink must have access to write to the above resource.
+  string destination = 3;
+
+  // If set to True, then this sink is disabled and it does not export any log entries.
+  bool disabled = 4;
+
+  // The filter to apply when exporting logs. Only log entries that match the filter are exported.
+  string filter = 5;
+
+  string id = 6;
+
+  // The name of the logging sink.
+  string name = 7;
+
+  // The identity associated with this sink. This identity must be granted write access to the configured destination.
+  string writer_identity = 8 [json_name = "writer_identity"];
+
+  BigqueryOptions bigquery_options = 9 [json_name = "bigquery_options"];
+
+  repeated Exclusions exclusions = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message BigqueryOptions {
+    // Whether to use BigQuery's partition tables. By default, Logging creates dated tables based on the log entries' timestamps, e.g. syslog_20170523. With partitioned tables the date suffix is no longer present and special query syntax has to be used instead. In both cases, tables are sharded based on UTC timezone.
+    bool use_partitioned_tables = 1 [json_name = "use_partitioned_tables"];
+  }
+
+  message Exclusions {
+    // A description of this exclusion.
+    string description = 1;
+
+    // If set to True, then this exclusion is disabled and it does not exclude any log entries
+    bool disabled = 2;
+
+    // An advanced logs filter that matches the log entries to be excluded. By using the sample function, you can exclude less than 100% of the matching log entries
+    string filter = 3;
+
+    // A client-assigned identifier, such as "load-balancer-exclusion". Identifiers are limited to 100 characters and can include only letters, digits, underscores, hyphens, and periods. First character has to be alphanumeric.
+    string name = 4;
+  }
+}
+
+// GoogleLoggingFolderBucketConfig version is 0
+message GoogleLoggingFolderBucketConfig {
+  // The name of the logging bucket. Logging automatically creates two log buckets: _Required and _Default.
+  string bucket_id = 1 [json_name = "bucket_id"];
+
+  // An optional description for this bucket.
+  string description = 2;
+
+  // The parent resource that contains the logging bucket.
+  string folder = 3;
+
+  string id = 4;
+
+  // The bucket's lifecycle such as active or deleted.
+  string lifecycle_state = 5 [json_name = "lifecycle_state"];
+
+  // The location of the bucket.
+  string location = 6;
+
+  // The resource name of the bucket
+  string name = 7;
+
+  // Logs will be retained by default for this amount of time, after which they will automatically be deleted. The minimum retention period is 1 day. If this value is set to zero at bucket creation time, the default time of 30 days will be used.
+  int64 retention_days = 8 [json_name = "retention_days"];
+
+  CmekSettings cmek_settings = 9 [json_name = "cmek_settings"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message CmekSettings {
+    // The resource name for the configured Cloud KMS key.
+    // KMS key name format:
+    // "projects/[PROJECT_ID]/locations/[LOCATION]/keyRings/[KEYRING]/cryptoKeys/[KEY]"
+    // To enable CMEK for the bucket, set this field to a valid kmsKeyName for which the associated service account has the required cloudkms.cryptoKeyEncrypterDecrypter roles assigned for the key.
+    // The Cloud KMS key used by the bucket can be updated by changing the kmsKeyName to a new valid key name. Encryption operations that are in progress will be completed with the key that was in use when they started. Decryption operations will be completed using the key that was used at the time of encryption unless access to that key has been revoked.
+    // See [Enabling CMEK for Logging Buckets](https://cloud.google.com/logging/docs/routing/managed-encryption-storage) for more information.
+    string kms_key_name = 1 [json_name = "kms_key_name"];
+
+    // The CryptoKeyVersion resource name for the configured Cloud KMS key.
+    // KMS key name format:
+    // "projects/[PROJECT_ID]/locations/[LOCATION]/keyRings/[KEYRING]/cryptoKeys/[KEY]/cryptoKeyVersions/[VERSION]"
+    // For example:
+    // "projects/my-project/locations/us-central1/keyRings/my-ring/cryptoKeys/my-key/cryptoKeyVersions/1"
+    // This is a read-only field used to convey the specific configured CryptoKeyVersion of kms_key that has been configured. It will be populated in cases where the CMEK settings are bound to a single key version.
+    string kms_key_version_name = 2 [json_name = "kms_key_version_name"];
+
+    // The resource name of the CMEK settings.
+    string name = 3;
+
+    // The service account associated with a project for which CMEK will apply.
+    // Before enabling CMEK for a logging bucket, you must first assign the cloudkms.cryptoKeyEncrypterDecrypter role to the service account associated with the project for which CMEK will apply. Use [v2.getCmekSettings](https://cloud.google.com/logging/docs/reference/v2/rest/v2/TopLevel/getCmekSettings#google.logging.v2.ConfigServiceV2.GetCmekSettings) to obtain the service account ID.
+    // See [Enabling CMEK for Logging Buckets](https://cloud.google.com/logging/docs/routing/managed-encryption-storage) for more information.
+    string service_account_id = 4 [json_name = "service_account_id"];
+  }
+}
+
+// GoogleLoggingFolderExclusion version is 0
+message GoogleLoggingFolderExclusion {
+  // A human-readable description.
+  string description = 1;
+
+  // Whether this exclusion rule should be disabled or not. This defaults to false.
+  bool disabled = 2;
+
+  // The filter to apply when excluding logs. Only log entries that match the filter are excluded.
+  string filter = 3;
+
+  string folder = 4;
+
+  string id = 5;
+
+  // The name of the logging exclusion.
+  string name = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleLoggingFolderSink version is 0
+message GoogleLoggingFolderSink {
+  // A description of this sink. The maximum length of the description is 8000 characters.
+  string description = 1;
+
+  // The destination of the sink (or, in other words, where logs are written to). Can be a Cloud Storage bucket, a PubSub topic, or a BigQuery dataset. Examples: "storage.googleapis.com/[GCS_BUCKET]" "bigquery.googleapis.com/projects/[PROJECT_ID]/datasets/[DATASET]" "pubsub.googleapis.com/projects/[PROJECT_ID]/topics/[TOPIC_ID]" The writer associated with the sink must have access to write to the above resource.
+  string destination = 2;
+
+  // If set to True, then this sink is disabled and it does not export any log entries.
+  bool disabled = 3;
+
+  // The filter to apply when exporting logs. Only log entries that match the filter are exported.
+  string filter = 4;
+
+  // The folder to be exported to the sink. Note that either [FOLDER_ID] or "folders/[FOLDER_ID]" is accepted.
+  string folder = 5;
+
+  string id = 6;
+
+  // Whether or not to include children folders in the sink export. If true, logs associated with child projects are also exported; otherwise only logs relating to the provided folder are included.
+  bool include_children = 7 [json_name = "include_children"];
+
+  // The name of the logging sink.
+  string name = 8;
+
+  // The identity associated with this sink. This identity must be granted write access to the configured destination.
+  string writer_identity = 9 [json_name = "writer_identity"];
+
+  BigqueryOptions bigquery_options = 10 [json_name = "bigquery_options"];
+
+  repeated Exclusions exclusions = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message BigqueryOptions {
+    // Whether to use BigQuery's partition tables. By default, Logging creates dated tables based on the log entries' timestamps, e.g. syslog_20170523. With partitioned tables the date suffix is no longer present and special query syntax has to be used instead. In both cases, tables are sharded based on UTC timezone.
+    bool use_partitioned_tables = 1 [json_name = "use_partitioned_tables"];
+  }
+
+  message Exclusions {
+    // A description of this exclusion.
+    string description = 1;
+
+    // If set to True, then this exclusion is disabled and it does not exclude any log entries
+    bool disabled = 2;
+
+    // An advanced logs filter that matches the log entries to be excluded. By using the sample function, you can exclude less than 100% of the matching log entries
+    string filter = 3;
+
+    // A client-assigned identifier, such as "load-balancer-exclusion". Identifiers are limited to 100 characters and can include only letters, digits, underscores, hyphens, and periods. First character has to be alphanumeric.
+    string name = 4;
+  }
+}
+
+// GoogleLoggingLinkedDataset version is 0
+message GoogleLoggingLinkedDataset {
+  // The bucket to which the linked dataset is attached.
+  string bucket = 1;
+
+  // Output only. The creation timestamp of the link. A timestamp in RFC3339 UTC "Zulu" format,
+  // with nanosecond resolution and up to nine fractional digits. Examples: "2014-10-02T15:01:23Z"
+  // and "2014-10-02T15:01:23.045123456Z".
+  string create_time = 2 [json_name = "create_time"];
+
+  // Describes this link. The maximum length of the description is 8000 characters.
+  string description = 3;
+
+  string id = 4;
+
+  // Output only. The linked dataset lifecycle state.
+  string lifecycle_state = 5 [json_name = "lifecycle_state"];
+
+  // The id of the linked dataset.
+  string link_id = 6 [json_name = "link_id"];
+
+  // The location of the linked dataset.
+  string location = 7;
+
+  // The resource name of the linked dataset. The name can have up to 100 characters. A valid link id
+  // (at the end of the link name) must only have alphanumeric characters and underscores within it.
+  string name = 8;
+
+  // The parent of the linked dataset.
+  string parent = 9;
+
+  repeated BigqueryDataset bigquery_dataset = 10 [json_name = "bigquery_dataset"];
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message BigqueryDataset {
+    // Output only. The full resource name of the BigQuery dataset. The DATASET_ID will match the ID
+    // of the link, so the link must match the naming restrictions of BigQuery datasets
+    // (alphanumeric characters and underscores only). The dataset will have a resource path of
+    // "bigquery.googleapis.com/projects/[PROJECT_ID]/datasets/[DATASET_ID]"
+    string dataset_id = 1 [json_name = "dataset_id"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// GoogleLoggingLogView version is 0
+message GoogleLoggingLogView {
+  // The bucket of the resource
+  string bucket = 1;
+
+  // Output only. The creation timestamp of the view.
+  string create_time = 2 [json_name = "create_time"];
+
+  // Describes this view.
+  string description = 3;
+
+  // Filter that restricts which log entries in a bucket are visible in this view. Filters are restricted to be a logical AND of ==/!= of any of the following: - originating project/folder/organization/billing account. - resource type - log id For example: SOURCE("projects/myproject") AND resource.type = "gce_instance" AND LOG_ID("stdout")
+  string filter = 4;
+
+  string id = 5;
+
+  // The location of the resource. The supported locations are: global, us-central1, us-east1, us-west1, asia-east1, europe-west1.
+  string location = 6;
+
+  // The resource name of the view. For example: \'projects/my-project/locations/global/buckets/my-bucket/views/my-view\'
+  string name = 7;
+
+  // The parent of the resource.
+  string parent = 8;
+
+  // Output only. The last update timestamp of the view.
+  string update_time = 9 [json_name = "update_time"];
+
+  repeated Timeouts timeouts = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleLoggingMetric version is 0
+message GoogleLoggingMetric {
+  // The resource name of the Log Bucket that owns the Log Metric. Only Log Buckets in projects
+  // are supported. The bucket has to be in the same project as the metric.
+  string bucket_name = 1 [json_name = "bucket_name"];
+
+  // A description of this metric, which is used in documentation. The maximum length of the
+  // description is 8000 characters.
+  string description = 2;
+
+  // If set to True, then this metric is disabled and it does not generate any points.
+  bool disabled = 3;
+
+  // An advanced logs filter (https://cloud.google.com/logging/docs/view/advanced-filters) which
+  // is used to match log entries.
+  string filter = 4;
+
+  string id = 5;
+
+  // A map from a label key string to an extractor expression which is used to extract data from a log
+  // entry field and assign as the label value. Each label key specified in the LabelDescriptor must
+  // have an associated extractor expression in this map. The syntax of the extractor expression is
+  // the same as for the valueExtractor field.
+  map<string, string> label_extractors = 6 [json_name = "label_extractors"];
+
+  // The client-assigned metric identifier. Examples - "error_count", "nginx/requests".
+  // Metric identifiers are limited to 100 characters and can include only the following
+  // characters A-Z, a-z, 0-9, and the special characters _-.,+!*',()%/. The forward-slash
+  // character (/) denotes a hierarchy of name pieces, and it cannot be the first character
+  // of the name.
+  string name = 7;
+
+  string project = 8;
+
+  // A valueExtractor is required when using a distribution logs-based metric to extract the values to
+  // record from a log entry. Two functions are supported for value extraction - EXTRACT(field) or
+  // REGEXP_EXTRACT(field, regex). The argument are 1. field - The name of the log entry field from which
+  // the value is to be extracted. 2. regex - A regular expression using the Google RE2 syntax
+  // (https://github.com/google/re2/wiki/Syntax) with a single capture group to extract data from the specified
+  // log entry field. The value of the field is converted to a string before applying the regex. It is an
+  // error to specify a regex that does not include exactly one capture group.
+  string value_extractor = 9 [json_name = "value_extractor"];
+
+  BucketOptions bucket_options = 10 [json_name = "bucket_options"];
+
+  MetricDescriptor metric_descriptor = 11 [json_name = "metric_descriptor"];
+
+  repeated Timeouts timeouts = 12;
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message BucketOptions {
+    ExplicitBuckets explicit_buckets = 1 [json_name = "explicit_buckets"];
+
+    ExponentialBuckets exponential_buckets = 2 [json_name = "exponential_buckets"];
+
+    LinearBuckets linear_buckets = 3 [json_name = "linear_buckets"];
+
+    message ExplicitBuckets {
+      // The values must be monotonically increasing.
+      repeated int64 bounds = 1;
+    }
+
+    message ExponentialBuckets {
+      // Must be greater than 1.
+      int64 growth_factor = 1 [json_name = "growth_factor"];
+
+      // Must be greater than 0.
+      int64 num_finite_buckets = 2 [json_name = "num_finite_buckets"];
+
+      // Must be greater than 0.
+      int64 scale = 3;
+    }
+
+    message LinearBuckets {
+      // Must be greater than 0.
+      int64 num_finite_buckets = 1 [json_name = "num_finite_buckets"];
+
+      // Lower bound of the first bucket.
+      int64 offset = 2;
+
+      // Must be greater than 0.
+      int64 width = 3;
+    }
+  }
+
+  message MetricDescriptor {
+    // A concise name for the metric, which can be displayed in user interfaces. Use sentence case
+    // without an ending period, for example "Request count". This field is optional but it is
+    // recommended to be set for any metrics associated with user-visible concepts, such as Quota.
+    string display_name = 1 [json_name = "display_name"];
+
+    // Whether the metric records instantaneous values, changes to a value, etc.
+    // Some combinations of metricKind and valueType might not be supported.
+    // For counter metrics, set this to DELTA. Possible values: ["DELTA", "GAUGE", "CUMULATIVE"]
+    string metric_kind = 2 [json_name = "metric_kind"];
+
+    // The unit in which the metric value is reported. It is only applicable if the valueType is
+    // 'INT64', 'DOUBLE', or 'DISTRIBUTION'. The supported units are a subset of
+    // [The Unified Code for Units of Measure](http://unitsofmeasure.org/ucum.html) standard
+    string unit = 3;
+
+    // Whether the measurement is an integer, a floating-point number, etc.
+    // Some combinations of metricKind and valueType might not be supported.
+    // For counter metrics, set this to INT64. Possible values: ["BOOL", "INT64", "DOUBLE", "STRING", "DISTRIBUTION", "MONEY"]
+    string value_type = 4 [json_name = "value_type"];
+
+    repeated Labels labels = 5;
+
+    message Labels {
+      // A human-readable description for the label.
+      string description = 1;
+
+      // The label key.
+      string key = 2;
+
+      // The type of data that can be assigned to the label. Default value: "STRING" Possible values: ["BOOL", "INT64", "STRING"]
+      string value_type = 3 [json_name = "value_type"];
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleLoggingOrganizationBucketConfig version is 0
+message GoogleLoggingOrganizationBucketConfig {
+  // The name of the logging bucket. Logging automatically creates two log buckets: _Required and _Default.
+  string bucket_id = 1 [json_name = "bucket_id"];
+
+  // An optional description for this bucket.
+  string description = 2;
+
+  string id = 3;
+
+  // The bucket's lifecycle such as active or deleted.
+  string lifecycle_state = 4 [json_name = "lifecycle_state"];
+
+  // The location of the bucket.
+  string location = 5;
+
+  // The resource name of the bucket
+  string name = 6;
+
+  // The parent resource that contains the logging bucket.
+  string organization = 7;
+
+  // Logs will be retained by default for this amount of time, after which they will automatically be deleted. The minimum retention period is 1 day. If this value is set to zero at bucket creation time, the default time of 30 days will be used.
+  int64 retention_days = 8 [json_name = "retention_days"];
+
+  CmekSettings cmek_settings = 9 [json_name = "cmek_settings"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message CmekSettings {
+    // The resource name for the configured Cloud KMS key.
+    // KMS key name format:
+    // "projects/[PROJECT_ID]/locations/[LOCATION]/keyRings/[KEYRING]/cryptoKeys/[KEY]"
+    // To enable CMEK for the bucket, set this field to a valid kmsKeyName for which the associated service account has the required cloudkms.cryptoKeyEncrypterDecrypter roles assigned for the key.
+    // The Cloud KMS key used by the bucket can be updated by changing the kmsKeyName to a new valid key name. Encryption operations that are in progress will be completed with the key that was in use when they started. Decryption operations will be completed using the key that was used at the time of encryption unless access to that key has been revoked.
+    // See [Enabling CMEK for Logging Buckets](https://cloud.google.com/logging/docs/routing/managed-encryption-storage) for more information.
+    string kms_key_name = 1 [json_name = "kms_key_name"];
+
+    // The CryptoKeyVersion resource name for the configured Cloud KMS key.
+    // KMS key name format:
+    // "projects/[PROJECT_ID]/locations/[LOCATION]/keyRings/[KEYRING]/cryptoKeys/[KEY]/cryptoKeyVersions/[VERSION]"
+    // For example:
+    // "projects/my-project/locations/us-central1/keyRings/my-ring/cryptoKeys/my-key/cryptoKeyVersions/1"
+    // This is a read-only field used to convey the specific configured CryptoKeyVersion of kms_key that has been configured. It will be populated in cases where the CMEK settings are bound to a single key version.
+    string kms_key_version_name = 2 [json_name = "kms_key_version_name"];
+
+    // The resource name of the CMEK settings.
+    string name = 3;
+
+    // The service account associated with a project for which CMEK will apply.
+    // Before enabling CMEK for a logging bucket, you must first assign the cloudkms.cryptoKeyEncrypterDecrypter role to the service account associated with the project for which CMEK will apply. Use [v2.getCmekSettings](https://cloud.google.com/logging/docs/reference/v2/rest/v2/TopLevel/getCmekSettings#google.logging.v2.ConfigServiceV2.GetCmekSettings) to obtain the service account ID.
+    // See [Enabling CMEK for Logging Buckets](https://cloud.google.com/logging/docs/routing/managed-encryption-storage) for more information.
+    string service_account_id = 4 [json_name = "service_account_id"];
+  }
+}
+
+// GoogleLoggingOrganizationExclusion version is 0
+message GoogleLoggingOrganizationExclusion {
+  // A human-readable description.
+  string description = 1;
+
+  // Whether this exclusion rule should be disabled or not. This defaults to false.
+  bool disabled = 2;
+
+  // The filter to apply when excluding logs. Only log entries that match the filter are excluded.
+  string filter = 3;
+
+  string id = 4;
+
+  // The name of the logging exclusion.
+  string name = 5;
+
+  string org_id = 6 [json_name = "org_id"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleLoggingOrganizationSink version is 0
+message GoogleLoggingOrganizationSink {
+  // A description of this sink. The maximum length of the description is 8000 characters.
+  string description = 1;
+
+  // The destination of the sink (or, in other words, where logs are written to). Can be a Cloud Storage bucket, a PubSub topic, or a BigQuery dataset. Examples: "storage.googleapis.com/[GCS_BUCKET]" "bigquery.googleapis.com/projects/[PROJECT_ID]/datasets/[DATASET]" "pubsub.googleapis.com/projects/[PROJECT_ID]/topics/[TOPIC_ID]" The writer associated with the sink must have access to write to the above resource.
+  string destination = 2;
+
+  // If set to True, then this sink is disabled and it does not export any log entries.
+  bool disabled = 3;
+
+  // The filter to apply when exporting logs. Only log entries that match the filter are exported.
+  string filter = 4;
+
+  string id = 5;
+
+  // Whether or not to include children organizations in the sink export. If true, logs associated with child projects are also exported; otherwise only logs relating to the provided organization are included.
+  bool include_children = 6 [json_name = "include_children"];
+
+  // The name of the logging sink.
+  string name = 7;
+
+  // The numeric ID of the organization to be exported to the sink.
+  string org_id = 8 [json_name = "org_id"];
+
+  // The identity associated with this sink. This identity must be granted write access to the configured destination.
+  string writer_identity = 9 [json_name = "writer_identity"];
+
+  BigqueryOptions bigquery_options = 10 [json_name = "bigquery_options"];
+
+  repeated Exclusions exclusions = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message BigqueryOptions {
+    // Whether to use BigQuery's partition tables. By default, Logging creates dated tables based on the log entries' timestamps, e.g. syslog_20170523. With partitioned tables the date suffix is no longer present and special query syntax has to be used instead. In both cases, tables are sharded based on UTC timezone.
+    bool use_partitioned_tables = 1 [json_name = "use_partitioned_tables"];
+  }
+
+  message Exclusions {
+    // A description of this exclusion.
+    string description = 1;
+
+    // If set to True, then this exclusion is disabled and it does not exclude any log entries
+    bool disabled = 2;
+
+    // An advanced logs filter that matches the log entries to be excluded. By using the sample function, you can exclude less than 100% of the matching log entries
+    string filter = 3;
+
+    // A client-assigned identifier, such as "load-balancer-exclusion". Identifiers are limited to 100 characters and can include only letters, digits, underscores, hyphens, and periods. First character has to be alphanumeric.
+    string name = 4;
+  }
+}
+
+// GoogleLoggingProjectBucketConfig version is 0
+message GoogleLoggingProjectBucketConfig {
+  // The name of the logging bucket. Logging automatically creates two log buckets: _Required and _Default.
+  string bucket_id = 1 [json_name = "bucket_id"];
+
+  // An optional description for this bucket.
+  string description = 2;
+
+  // Enable log analytics for the bucket. Cannot be disabled once enabled.
+  bool enable_analytics = 3 [json_name = "enable_analytics"];
+
+  string id = 4;
+
+  // The bucket's lifecycle such as active or deleted.
+  string lifecycle_state = 5 [json_name = "lifecycle_state"];
+
+  // The location of the bucket.
+  string location = 6;
+
+  // The resource name of the bucket
+  string name = 7;
+
+  // The parent project that contains the logging bucket.
+  string project = 8;
+
+  // Logs will be retained by default for this amount of time, after which they will automatically be deleted. The minimum retention period is 1 day. If this value is set to zero at bucket creation time, the default time of 30 days will be used.
+  int64 retention_days = 9 [json_name = "retention_days"];
+
+  CmekSettings cmek_settings = 10 [json_name = "cmek_settings"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message CmekSettings {
+    // The resource name for the configured Cloud KMS key.
+    // KMS key name format:
+    // "projects/[PROJECT_ID]/locations/[LOCATION]/keyRings/[KEYRING]/cryptoKeys/[KEY]"
+    // To enable CMEK for the bucket, set this field to a valid kmsKeyName for which the associated service account has the required cloudkms.cryptoKeyEncrypterDecrypter roles assigned for the key.
+    // The Cloud KMS key used by the bucket can be updated by changing the kmsKeyName to a new valid key name. Encryption operations that are in progress will be completed with the key that was in use when they started. Decryption operations will be completed using the key that was used at the time of encryption unless access to that key has been revoked.
+    // See [Enabling CMEK for Logging Buckets](https://cloud.google.com/logging/docs/routing/managed-encryption-storage) for more information.
+    string kms_key_name = 1 [json_name = "kms_key_name"];
+
+    // The CryptoKeyVersion resource name for the configured Cloud KMS key.
+    // KMS key name format:
+    // "projects/[PROJECT_ID]/locations/[LOCATION]/keyRings/[KEYRING]/cryptoKeys/[KEY]/cryptoKeyVersions/[VERSION]"
+    // For example:
+    // "projects/my-project/locations/us-central1/keyRings/my-ring/cryptoKeys/my-key/cryptoKeyVersions/1"
+    // This is a read-only field used to convey the specific configured CryptoKeyVersion of kms_key that has been configured. It will be populated in cases where the CMEK settings are bound to a single key version.
+    string kms_key_version_name = 2 [json_name = "kms_key_version_name"];
+
+    // The resource name of the CMEK settings.
+    string name = 3;
+
+    // The service account associated with a project for which CMEK will apply.
+    // Before enabling CMEK for a logging bucket, you must first assign the cloudkms.cryptoKeyEncrypterDecrypter role to the service account associated with the project for which CMEK will apply. Use [v2.getCmekSettings](https://cloud.google.com/logging/docs/reference/v2/rest/v2/TopLevel/getCmekSettings#google.logging.v2.ConfigServiceV2.GetCmekSettings) to obtain the service account ID.
+    // See [Enabling CMEK for Logging Buckets](https://cloud.google.com/logging/docs/routing/managed-encryption-storage) for more information.
+    string service_account_id = 4 [json_name = "service_account_id"];
+  }
+}
+
+// GoogleLoggingProjectExclusion version is 0
+message GoogleLoggingProjectExclusion {
+  // A human-readable description.
+  string description = 1;
+
+  // Whether this exclusion rule should be disabled or not. This defaults to false.
+  bool disabled = 2;
+
+  // The filter to apply when excluding logs. Only log entries that match the filter are excluded.
+  string filter = 3;
+
+  string id = 4;
+
+  // The name of the logging exclusion.
+  string name = 5;
+
+  string project = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleLoggingProjectSink version is 0
+message GoogleLoggingProjectSink {
+  // A description of this sink. The maximum length of the description is 8000 characters.
+  string description = 1;
+
+  // The destination of the sink (or, in other words, where logs are written to). Can be a Cloud Storage bucket, a PubSub topic, or a BigQuery dataset. Examples: "storage.googleapis.com/[GCS_BUCKET]" "bigquery.googleapis.com/projects/[PROJECT_ID]/datasets/[DATASET]" "pubsub.googleapis.com/projects/[PROJECT_ID]/topics/[TOPIC_ID]" The writer associated with the sink must have access to write to the above resource.
+  string destination = 2;
+
+  // If set to True, then this sink is disabled and it does not export any log entries.
+  bool disabled = 3;
+
+  // The filter to apply when exporting logs. Only log entries that match the filter are exported.
+  string filter = 4;
+
+  string id = 5;
+
+  // The name of the logging sink.
+  string name = 6;
+
+  // The ID of the project to create the sink in. If omitted, the project associated with the provider is used.
+  string project = 7;
+
+  // Whether or not to create a unique identity associated with this sink. If false (the default), then the writer_identity used is serviceAccount:cloud-logs@system.gserviceaccount.com. If true, then a unique service account is created and used for this sink. If you wish to publish logs across projects, you must set unique_writer_identity to true.
+  bool unique_writer_identity = 8 [json_name = "unique_writer_identity"];
+
+  // The identity associated with this sink. This identity must be granted write access to the configured destination.
+  string writer_identity = 9 [json_name = "writer_identity"];
+
+  BigqueryOptions bigquery_options = 10 [json_name = "bigquery_options"];
+
+  repeated Exclusions exclusions = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message BigqueryOptions {
+    // Whether to use BigQuery's partition tables. By default, Logging creates dated tables based on the log entries' timestamps, e.g. syslog_20170523. With partitioned tables the date suffix is no longer present and special query syntax has to be used instead. In both cases, tables are sharded based on UTC timezone.
+    bool use_partitioned_tables = 1 [json_name = "use_partitioned_tables"];
+  }
+
+  message Exclusions {
+    // A description of this exclusion.
+    string description = 1;
+
+    // If set to True, then this exclusion is disabled and it does not exclude any log entries
+    bool disabled = 2;
+
+    // An advanced logs filter that matches the log entries to be excluded. By using the sample function, you can exclude less than 100% of the matching log entries
+    string filter = 3;
+
+    // A client-assigned identifier, such as "load-balancer-exclusion". Identifiers are limited to 100 characters and can include only letters, digits, underscores, hyphens, and periods. First character has to be alphanumeric.
+    string name = 4;
+  }
+}

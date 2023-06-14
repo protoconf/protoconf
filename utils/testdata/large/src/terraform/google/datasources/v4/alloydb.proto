@@ -1,0 +1,105 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.datasources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleAlloydbLocations version is 0
+message GoogleAlloydbLocations {
+  string id = 1;
+
+  repeated Locations locations = 2;
+
+  // Project ID of the project.
+  string project = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+
+  message Locations {
+    // display_name: string
+    string display_name = 1 [json_name = "display_name"];
+
+    // labels: map of string
+    map<string, string> labels = 2;
+
+    // location_id: string
+    string location_id = 3 [json_name = "location_id"];
+
+    // metadata: map of string
+    map<string, string> metadata = 4;
+
+    // name: string
+    string name = 5;
+  }
+}
+
+// GoogleAlloydbSupportedDatabaseFlags version is 0
+message GoogleAlloydbSupportedDatabaseFlags {
+  string id = 1;
+
+  // The canonical id for the location. For example: "us-east1".
+  string location = 2;
+
+  // Project ID of the project.
+  string project = 3;
+
+  repeated SupportedDatabaseFlags supported_database_flags = 4 [json_name = "supported_database_flags"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message SupportedDatabaseFlags {
+    // accepts_multiple_values: bool
+    bool accepts_multiple_values = 1 [json_name = "accepts_multiple_values"];
+
+    // flag_name: string
+    string flag_name = 2 [json_name = "flag_name"];
+
+    // integer_restrictions: list of object
+    repeated IntegerRestrictions integer_restrictions = 3 [json_name = "integer_restrictions"];
+
+    // name: string
+    string name = 4;
+
+    // requires_db_restart: bool
+    bool requires_db_restart = 5 [json_name = "requires_db_restart"];
+
+    // string_restrictions: list of object
+    repeated StringRestrictions string_restrictions = 6 [json_name = "string_restrictions"];
+
+    // supported_db_versions: list of string
+    repeated string supported_db_versions = 7 [json_name = "supported_db_versions"];
+
+    // value_type: string
+    string value_type = 8 [json_name = "value_type"];
+
+    message IntegerRestrictions {
+      // max_value: string
+      string max_value = 1 [json_name = "max_value"];
+
+      // min_value: string
+      string min_value = 2 [json_name = "min_value"];
+    }
+
+    message StringRestrictions {
+      // allowed_values: list of string
+      repeated string allowed_values = 1 [json_name = "allowed_values"];
+    }
+  }
+}

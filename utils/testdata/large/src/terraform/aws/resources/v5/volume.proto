@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsVolumeAttachment version is 0
+message AwsVolumeAttachment {
+  string device_name = 1 [json_name = "device_name"];
+
+  bool force_detach = 2 [json_name = "force_detach"];
+
+  string id = 3;
+
+  string instance_id = 4 [json_name = "instance_id"];
+
+  bool skip_destroy = 5 [json_name = "skip_destroy"];
+
+  bool stop_instance_before_detaching = 6 [json_name = "stop_instance_before_detaching"];
+
+  string volume_id = 7 [json_name = "volume_id"];
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}

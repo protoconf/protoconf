@@ -1,0 +1,405 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleGkeBackupBackupPlan version is 0
+message GoogleGkeBackupBackupPlan {
+  // The source cluster from which Backups will be created via this BackupPlan.
+  string cluster = 1;
+
+  // This flag indicates whether this BackupPlan has been deactivated.
+  // Setting this field to True locks the BackupPlan such that no further updates will be allowed
+  // (except deletes), including the deactivated field itself. It also prevents any new Backups
+  // from being created via this BackupPlan (including scheduled Backups).
+  bool deactivated = 2;
+
+  // User specified descriptive string for this BackupPlan.
+  string description = 3;
+
+  // etag is used for optimistic concurrency control as a way to help prevent simultaneous
+  // updates of a backup plan from overwriting each other. It is strongly suggested that
+  // systems make use of the 'etag' in the read-modify-write cycle to perform BackupPlan updates
+  // in order to avoid race conditions: An etag is returned in the response to backupPlans.get,
+  // and systems are expected to put that etag in the request to backupPlans.patch or
+  // backupPlans.delete to ensure that their change will be applied to the same version of the resource.
+  string etag = 4;
+
+  string id = 5;
+
+  // Description: A set of custom labels supplied by the user.
+  // A list of key->value pairs.
+  // Example: { "name": "wrench", "mass": "1.3kg", "count": "3" }.
+  map<string, string> labels = 6;
+
+  // The region of the Backup Plan.
+  string location = 7;
+
+  // The full name of the BackupPlan Resource.
+  string name = 8;
+
+  string project = 9;
+
+  // The number of Kubernetes Pods backed up in the last successful Backup created via this BackupPlan.
+  int64 protected_pod_count = 10 [json_name = "protected_pod_count"];
+
+  // Server generated, unique identifier of UUID format.
+  string uid = 11;
+
+  BackupConfig backup_config = 12 [json_name = "backup_config"];
+
+  BackupSchedule backup_schedule = 13 [json_name = "backup_schedule"];
+
+  RetentionPolicy retention_policy = 14 [json_name = "retention_policy"];
+
+  repeated Timeouts timeouts = 15;
+
+  map<string, string> for_each = 16 [json_name = "for_each"];
+
+  repeated string depends_on = 17 [json_name = "depends_on"];
+
+  int32 count = 18;
+
+  string provider = 19;
+
+  terraform.v1.Lifecycle lifecycle = 20;
+
+  message BackupConfig {
+    // If True, include all namespaced resources.
+    bool all_namespaces = 1 [json_name = "all_namespaces"];
+
+    // This flag specifies whether Kubernetes Secret resources should be included
+    // when they fall into the scope of Backups.
+    bool include_secrets = 2 [json_name = "include_secrets"];
+
+    // This flag specifies whether volume data should be backed up when PVCs are
+    // included in the scope of a Backup.
+    bool include_volume_data = 3 [json_name = "include_volume_data"];
+
+    EncryptionKey encryption_key = 4 [json_name = "encryption_key"];
+
+    SelectedApplications selected_applications = 5 [json_name = "selected_applications"];
+
+    SelectedNamespaces selected_namespaces = 6 [json_name = "selected_namespaces"];
+
+    message EncryptionKey {
+      // Google Cloud KMS encryption key. Format: projects/*/locations/*/keyRings/*/cryptoKeys/*
+      string gcp_kms_encryption_key = 1 [json_name = "gcp_kms_encryption_key"];
+    }
+
+    message SelectedApplications {
+      repeated NamespacedNames namespaced_names = 1 [json_name = "namespaced_names"];
+
+      message NamespacedNames {
+        // The name of a Kubernetes Resource.
+        string name = 1;
+
+        // The namespace of a Kubernetes Resource.
+        string namespace = 2;
+      }
+    }
+
+    message SelectedNamespaces {
+      // A list of Kubernetes Namespaces.
+      repeated string namespaces = 1;
+    }
+  }
+
+  message BackupSchedule {
+    // A standard cron string that defines a repeating schedule for
+    // creating Backups via this BackupPlan.
+    // If this is defined, then backupRetainDays must also be defined.
+    string cron_schedule = 1 [json_name = "cron_schedule"];
+
+    // This flag denotes whether automatic Backup creation is paused for this BackupPlan.
+    bool paused = 2;
+  }
+
+  message RetentionPolicy {
+    // Minimum age for a Backup created via this BackupPlan (in days).
+    // Must be an integer value between 0-90 (inclusive).
+    // A Backup created under this BackupPlan will not be deletable
+    // until it reaches Backup's (create time + backup_delete_lock_days).
+    // Updating this field of a BackupPlan does not affect existing Backups.
+    // Backups created after a successful update will inherit this new value.
+    int64 backup_delete_lock_days = 1 [json_name = "backup_delete_lock_days"];
+
+    // The default maximum age of a Backup created via this BackupPlan.
+    // This field MUST be an integer value >= 0 and <= 365. If specified,
+    // a Backup created under this BackupPlan will be automatically deleted
+    // after its age reaches (createTime + backupRetainDays).
+    // If not specified, Backups created under this BackupPlan will NOT be
+    // subject to automatic deletion. Updating this field does NOT affect
+    // existing Backups under it. Backups created AFTER a successful update
+    // will automatically pick up the new value.
+    // NOTE: backupRetainDays must be >= backupDeleteLockDays.
+    // If cronSchedule is defined, then this must be <= 360 * the creation interval.]
+    int64 backup_retain_days = 2 [json_name = "backup_retain_days"];
+
+    // This flag denotes whether the retention policy of this BackupPlan is locked.
+    // If set to True, no further update is allowed on this policy, including
+    // the locked field itself.
+    bool locked = 3;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleGkeBackupBackupPlanIamBinding version is 0
+message GoogleGkeBackupBackupPlanIamBinding {
+  string etag = 1;
+
+  string id = 2;
+
+  string location = 3;
+
+  repeated string members = 4;
+
+  string name = 5;
+
+  string project = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleGkeBackupBackupPlanIamMember version is 0
+message GoogleGkeBackupBackupPlanIamMember {
+  string etag = 1;
+
+  string id = 2;
+
+  string location = 3;
+
+  string member = 4;
+
+  string name = 5;
+
+  string project = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleGkeBackupBackupPlanIamPolicy version is 0
+message GoogleGkeBackupBackupPlanIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string location = 3;
+
+  string name = 4;
+
+  string policy_data = 5 [json_name = "policy_data"];
+
+  string project = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleGkeHubMembership version is 0
+message GoogleGkeHubMembership {
+  string id = 1;
+
+  // Labels to apply to this membership.
+  map<string, string> labels = 2;
+
+  // The client-provided identifier of the membership.
+  string membership_id = 3 [json_name = "membership_id"];
+
+  // The unique identifier of the membership.
+  string name = 4;
+
+  string project = 5;
+
+  Authority authority = 6;
+
+  Endpoint endpoint = 7;
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Authority {
+    // A JSON Web Token (JWT) issuer URI. 'issuer' must start with 'https://' and // be a valid
+    // with length <2000 characters. For example: 'https://container.googleapis.com/v1/projects/my-project/locations/us-west1/clusters/my-cluster' (must be 'locations' rather than 'zones'). If the cluster is provisioned with Terraform, this is '"https://container.googleapis.com/v1/${google_container_cluster.my-cluster.id}"'.
+    string issuer = 1;
+  }
+
+  message Endpoint {
+    GkeCluster gke_cluster = 1 [json_name = "gke_cluster"];
+
+    message GkeCluster {
+      // Self-link of the GCP resource for the GKE cluster.
+      // For example: '//container.googleapis.com/projects/my-project/zones/us-west1-a/clusters/my-cluster'.
+      // It can be at the most 1000 characters in length. If the cluster is provisioned with Terraform,
+      // this can be '"//container.googleapis.com/${google_container_cluster.my-cluster.id}"' or
+      // 'google_container_cluster.my-cluster.id'.
+      string resource_link = 1 [json_name = "resource_link"];
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleGkeHubMembershipIamBinding version is 0
+message GoogleGkeHubMembershipIamBinding {
+  string etag = 1;
+
+  string id = 2;
+
+  repeated string members = 3;
+
+  string membership_id = 4 [json_name = "membership_id"];
+
+  string project = 5;
+
+  string role = 6;
+
+  Condition condition = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleGkeHubMembershipIamMember version is 0
+message GoogleGkeHubMembershipIamMember {
+  string etag = 1;
+
+  string id = 2;
+
+  string member = 3;
+
+  string membership_id = 4 [json_name = "membership_id"];
+
+  string project = 5;
+
+  string role = 6;
+
+  Condition condition = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleGkeHubMembershipIamPolicy version is 0
+message GoogleGkeHubMembershipIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string membership_id = 3 [json_name = "membership_id"];
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}

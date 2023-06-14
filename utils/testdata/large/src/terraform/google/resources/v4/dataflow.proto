@@ -1,0 +1,96 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleDataflowJob version is 0
+message GoogleDataflowJob {
+  // List of experiments that should be used by the job. An example value is ["enable_stackdriver_agent_metrics"].
+  repeated string additional_experiments = 1 [json_name = "additional_experiments"];
+
+  // Indicates if the job should use the streaming engine feature.
+  bool enable_streaming_engine = 2 [json_name = "enable_streaming_engine"];
+
+  string id = 3;
+
+  // The configuration for VM IPs. Options are "WORKER_IP_PUBLIC" or "WORKER_IP_PRIVATE".
+  string ip_configuration = 4 [json_name = "ip_configuration"];
+
+  // The unique ID of this job.
+  string job_id = 5 [json_name = "job_id"];
+
+  // The name for the Cloud KMS key for the job. Key format is: projects/PROJECT_ID/locations/LOCATION/keyRings/KEY_RING/cryptoKeys/KEY
+  string kms_key_name = 6 [json_name = "kms_key_name"];
+
+  // User labels to be specified for the job. Keys and values should follow the restrictions specified in the labeling restrictions page. NOTE: Google-provided Dataflow templates often provide default labels that begin with goog-dataflow-provided. Unless explicitly set in config, these labels will be ignored to prevent diffs on re-apply.
+  map<string, string> labels = 7;
+
+  // The machine type to use for the job.
+  string machine_type = 8 [json_name = "machine_type"];
+
+  // The number of workers permitted to work on the job. More workers may improve processing speed at additional cost.
+  int64 max_workers = 9 [json_name = "max_workers"];
+
+  // A unique name for the resource, required by Dataflow.
+  string name = 10;
+
+  // The network to which VMs will be assigned. If it is not provided, "default" will be used.
+  string network = 11;
+
+  // One of "drain" or "cancel". Specifies behavior of deletion during terraform destroy.
+  string on_delete = 12 [json_name = "on_delete"];
+
+  // Key/Value pairs to be passed to the Dataflow job (as used in the template).
+  map<string, string> parameters = 13;
+
+  // The project in which the resource belongs.
+  string project = 14;
+
+  // The region in which the created job should run.
+  string region = 15;
+
+  // The Service Account email used to create the job.
+  string service_account_email = 16 [json_name = "service_account_email"];
+
+  // If true, treat DRAINING and CANCELLING as terminal job states and do not wait for further changes before removing from terraform state and moving on. WARNING: this will lead to job name conflicts if you do not ensure that the job names are different, e.g. by embedding a release ID or by using a random_id.
+  bool skip_wait_on_job_termination = 17 [json_name = "skip_wait_on_job_termination"];
+
+  // The current state of the resource, selected from the JobState enum.
+  string state = 18;
+
+  // The subnetwork to which VMs will be assigned. Should be of the form "regions/REGION/subnetworks/SUBNETWORK".
+  string subnetwork = 19;
+
+  // A writeable location on Google Cloud Storage for the Dataflow job to dump its temporary data.
+  string temp_gcs_location = 20 [json_name = "temp_gcs_location"];
+
+  // The Google Cloud Storage path to the Dataflow job template.
+  string template_gcs_path = 21 [json_name = "template_gcs_path"];
+
+  // Only applicable when updating a pipeline. Map of transform name prefixes of the job to be replaced with the corresponding name prefixes of the new job.
+  map<string, string> transform_name_mapping = 22 [json_name = "transform_name_mapping"];
+
+  // The type of this job, selected from the JobType enum.
+  string type = 23;
+
+  // The zone in which the created job should run. If it is not provided, the provider zone is used.
+  string zone = 24;
+
+  repeated Timeouts timeouts = 25;
+
+  map<string, string> for_each = 26 [json_name = "for_each"];
+
+  repeated string depends_on = 27 [json_name = "depends_on"];
+
+  int32 count = 28;
+
+  string provider = 29;
+
+  terraform.v1.Lifecycle lifecycle = 30;
+
+  message Timeouts {
+    string update = 1;
+  }
+}

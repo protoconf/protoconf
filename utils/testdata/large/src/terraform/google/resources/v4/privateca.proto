@@ -1,0 +1,1756 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GooglePrivatecaCaPool version is 0
+message GooglePrivatecaCaPool {
+  string id = 1;
+
+  // Labels with user-defined metadata.
+  //
+  // An object containing a list of "key": value pairs. Example: { "name": "wrench", "mass":
+  // "1.3kg", "count": "3" }.
+  map<string, string> labels = 2;
+
+  // Location of the CaPool. A full list of valid locations can be found by
+  // running 'gcloud privateca locations list'.
+  string location = 3;
+
+  // The name for this CaPool.
+  string name = 4;
+
+  string project = 5;
+
+  // The Tier of this CaPool. Possible values: ["ENTERPRISE", "DEVOPS"]
+  string tier = 6;
+
+  IssuancePolicy issuance_policy = 7 [json_name = "issuance_policy"];
+
+  PublishingOptions publishing_options = 8 [json_name = "publishing_options"];
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message IssuancePolicy {
+    // The maximum lifetime allowed for issued Certificates. Note that if the issuing CertificateAuthority
+    // expires before a Certificate's requested maximumLifetime, the effective lifetime will be explicitly truncated to match it.
+    string maximum_lifetime = 1 [json_name = "maximum_lifetime"];
+
+    AllowedIssuanceModes allowed_issuance_modes = 2 [json_name = "allowed_issuance_modes"];
+
+    repeated AllowedKeyTypes allowed_key_types = 3 [json_name = "allowed_key_types"];
+
+    BaselineValues baseline_values = 4 [json_name = "baseline_values"];
+
+    IdentityConstraints identity_constraints = 5 [json_name = "identity_constraints"];
+
+    message AllowedIssuanceModes {
+      // When true, allows callers to create Certificates by specifying a CertificateConfig.
+      bool allow_config_based_issuance = 1 [json_name = "allow_config_based_issuance"];
+
+      // When true, allows callers to create Certificates by specifying a CSR.
+      bool allow_csr_based_issuance = 2 [json_name = "allow_csr_based_issuance"];
+    }
+
+    message AllowedKeyTypes {
+      EllipticCurve elliptic_curve = 1 [json_name = "elliptic_curve"];
+
+      Rsa rsa = 2;
+
+      message EllipticCurve {
+        // The algorithm used. Possible values: ["ECDSA_P256", "ECDSA_P384", "EDDSA_25519"]
+        string signature_algorithm = 1 [json_name = "signature_algorithm"];
+      }
+
+      message Rsa {
+        // The maximum allowed RSA modulus size, in bits. If this is not set, or if set to zero, the
+        // service will not enforce an explicit upper bound on RSA modulus sizes.
+        string max_modulus_size = 1 [json_name = "max_modulus_size"];
+
+        // The minimum allowed RSA modulus size, in bits. If this is not set, or if set to zero, the
+        // service-level min RSA modulus size will continue to apply.
+        string min_modulus_size = 2 [json_name = "min_modulus_size"];
+      }
+    }
+
+    message BaselineValues {
+      // Describes Online Certificate Status Protocol (OCSP) endpoint addresses that appear in the
+      // "Authority Information Access" extension in the certificate.
+      repeated string aia_ocsp_servers = 1 [json_name = "aia_ocsp_servers"];
+
+      repeated AdditionalExtensions additional_extensions = 2 [json_name = "additional_extensions"];
+
+      CaOptions ca_options = 3 [json_name = "ca_options"];
+
+      KeyUsage key_usage = 4 [json_name = "key_usage"];
+
+      NameConstraints name_constraints = 5 [json_name = "name_constraints"];
+
+      repeated PolicyIds policy_ids = 6 [json_name = "policy_ids"];
+
+      message AdditionalExtensions {
+        // Indicates whether or not this extension is critical (i.e., if the client does not know how to
+        // handle this extension, the client should consider this to be an error).
+        bool critical = 1;
+
+        // The value of this X.509 extension. A base64-encoded string.
+        string value = 2;
+
+        ObjectId object_id = 3 [json_name = "object_id"];
+
+        message ObjectId {
+          // An ObjectId specifies an object identifier (OID). These provide context and describe types in ASN.1 messages.
+          repeated int64 object_id_path = 1 [json_name = "object_id_path"];
+        }
+      }
+
+      message CaOptions {
+        // When true, the "CA" in Basic Constraints extension will be set to true.
+        bool is_ca = 1 [json_name = "is_ca"];
+
+        // Refers to the "path length constraint" in Basic Constraints extension. For a CA certificate, this value describes the depth of
+        // subordinate CA certificates that are allowed. If this value is less than 0, the request will fail.
+        int64 max_issuer_path_length = 2 [json_name = "max_issuer_path_length"];
+
+        // When true, the "CA" in Basic Constraints extension will be set to false.
+        // If both 'is_ca' and 'non_ca' are unset, the extension will be omitted from the CA certificate.
+        bool non_ca = 3 [json_name = "non_ca"];
+
+        // When true, the "path length constraint" in Basic Constraints extension will be set to 0.
+        // if both 'max_issuer_path_length' and 'zero_max_issuer_path_length' are unset,
+        // the max path length will be omitted from the CA certificate.
+        bool zero_max_issuer_path_length = 4 [json_name = "zero_max_issuer_path_length"];
+      }
+
+      message KeyUsage {
+        BaseKeyUsage base_key_usage = 1 [json_name = "base_key_usage"];
+
+        ExtendedKeyUsage extended_key_usage = 2 [json_name = "extended_key_usage"];
+
+        repeated UnknownExtendedKeyUsages unknown_extended_key_usages = 3 [json_name = "unknown_extended_key_usages"];
+
+        message BaseKeyUsage {
+          // The key may be used to sign certificates.
+          bool cert_sign = 1 [json_name = "cert_sign"];
+
+          // The key may be used for cryptographic commitments. Note that this may also be referred to as "non-repudiation".
+          bool content_commitment = 2 [json_name = "content_commitment"];
+
+          // The key may be used sign certificate revocation lists.
+          bool crl_sign = 3 [json_name = "crl_sign"];
+
+          // The key may be used to encipher data.
+          bool data_encipherment = 4 [json_name = "data_encipherment"];
+
+          // The key may be used to decipher only.
+          bool decipher_only = 5 [json_name = "decipher_only"];
+
+          // The key may be used for digital signatures.
+          bool digital_signature = 6 [json_name = "digital_signature"];
+
+          // The key may be used to encipher only.
+          bool encipher_only = 7 [json_name = "encipher_only"];
+
+          // The key may be used in a key agreement protocol.
+          bool key_agreement = 8 [json_name = "key_agreement"];
+
+          // The key may be used to encipher other keys.
+          bool key_encipherment = 9 [json_name = "key_encipherment"];
+        }
+
+        message ExtendedKeyUsage {
+          // Corresponds to OID 1.3.6.1.5.5.7.3.2. Officially described as "TLS WWW client authentication", though regularly used for non-WWW TLS.
+          bool client_auth = 1 [json_name = "client_auth"];
+
+          // Corresponds to OID 1.3.6.1.5.5.7.3.3. Officially described as "Signing of downloadable executable code client authentication".
+          bool code_signing = 2 [json_name = "code_signing"];
+
+          // Corresponds to OID 1.3.6.1.5.5.7.3.4. Officially described as "Email protection".
+          bool email_protection = 3 [json_name = "email_protection"];
+
+          // Corresponds to OID 1.3.6.1.5.5.7.3.9. Officially described as "Signing OCSP responses".
+          bool ocsp_signing = 4 [json_name = "ocsp_signing"];
+
+          // Corresponds to OID 1.3.6.1.5.5.7.3.1. Officially described as "TLS WWW server authentication", though regularly used for non-WWW TLS.
+          bool server_auth = 5 [json_name = "server_auth"];
+
+          // Corresponds to OID 1.3.6.1.5.5.7.3.8. Officially described as "Binding the hash of an object to a time".
+          bool time_stamping = 6 [json_name = "time_stamping"];
+        }
+
+        message UnknownExtendedKeyUsages {
+          // An ObjectId specifies an object identifier (OID). These provide context and describe types in ASN.1 messages.
+          repeated int64 object_id_path = 1 [json_name = "object_id_path"];
+        }
+      }
+
+      message NameConstraints {
+        // Indicates whether or not the name constraints are marked critical.
+        bool critical = 1;
+
+        // Contains excluded DNS names. Any DNS name that can be
+        // constructed by simply adding zero or more labels to
+        // the left-hand side of the name satisfies the name constraint.
+        // For example, 'example.com', 'www.example.com', 'www.sub.example.com'
+        // would satisfy 'example.com' while 'example1.com' does not.
+        repeated string excluded_dns_names = 2 [json_name = "excluded_dns_names"];
+
+        // Contains the excluded email addresses. The value can be a particular
+        // email address, a hostname to indicate all email addresses on that host or
+        // a domain with a leading period (e.g. '.example.com') to indicate
+        // all email addresses in that domain.
+        repeated string excluded_email_addresses = 3 [json_name = "excluded_email_addresses"];
+
+        // Contains the excluded IP ranges. For IPv4 addresses, the ranges
+        // are expressed using CIDR notation as specified in RFC 4632.
+        // For IPv6 addresses, the ranges are expressed in similar encoding as IPv4
+        // addresses.
+        repeated string excluded_ip_ranges = 4 [json_name = "excluded_ip_ranges"];
+
+        // Contains the excluded URIs that apply to the host part of the name.
+        // The value can be a hostname or a domain with a
+        // leading period (like '.example.com')
+        repeated string excluded_uris = 5 [json_name = "excluded_uris"];
+
+        // Contains permitted DNS names. Any DNS name that can be
+        // constructed by simply adding zero or more labels to
+        // the left-hand side of the name satisfies the name constraint.
+        // For example, 'example.com', 'www.example.com', 'www.sub.example.com'
+        // would satisfy 'example.com' while 'example1.com' does not.
+        repeated string permitted_dns_names = 6 [json_name = "permitted_dns_names"];
+
+        // Contains the permitted email addresses. The value can be a particular
+        // email address, a hostname to indicate all email addresses on that host or
+        // a domain with a leading period (e.g. '.example.com') to indicate
+        // all email addresses in that domain.
+        repeated string permitted_email_addresses = 7 [json_name = "permitted_email_addresses"];
+
+        // Contains the permitted IP ranges. For IPv4 addresses, the ranges
+        // are expressed using CIDR notation as specified in RFC 4632.
+        // For IPv6 addresses, the ranges are expressed in similar encoding as IPv4
+        // addresses.
+        repeated string permitted_ip_ranges = 8 [json_name = "permitted_ip_ranges"];
+
+        // Contains the permitted URIs that apply to the host part of the name.
+        // The value can be a hostname or a domain with a
+        // leading period (like '.example.com')
+        repeated string permitted_uris = 9 [json_name = "permitted_uris"];
+      }
+
+      message PolicyIds {
+        // An ObjectId specifies an object identifier (OID). These provide context and describe types in ASN.1 messages.
+        repeated int64 object_id_path = 1 [json_name = "object_id_path"];
+      }
+    }
+
+    message IdentityConstraints {
+      // If this is set, the SubjectAltNames extension may be copied from a certificate request into the signed certificate.
+      // Otherwise, the requested SubjectAltNames will be discarded.
+      bool allow_subject_alt_names_passthrough = 1 [json_name = "allow_subject_alt_names_passthrough"];
+
+      // If this is set, the Subject field may be copied from a certificate request into the signed certificate.
+      // Otherwise, the requested Subject will be discarded.
+      bool allow_subject_passthrough = 2 [json_name = "allow_subject_passthrough"];
+
+      CelExpression cel_expression = 3 [json_name = "cel_expression"];
+
+      message CelExpression {
+        // Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.
+        string description = 1;
+
+        // Textual representation of an expression in Common Expression Language syntax.
+        string expression = 2;
+
+        // String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.
+        string location = 3;
+
+        // Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.
+        string title = 4;
+      }
+    }
+  }
+
+  message PublishingOptions {
+    // Specifies the encoding format of each CertificateAuthority's CA
+    // certificate and CRLs. If this is omitted, CA certificates and CRLs
+    // will be published in PEM. Possible values: ["PEM", "DER"]
+    string encoding_format = 1 [json_name = "encoding_format"];
+
+    // When true, publishes each CertificateAuthority's CA certificate and includes its URL in the "Authority Information Access"
+    // X.509 extension in all issued Certificates. If this is false, the CA certificate will not be published and the corresponding
+    // X.509 extension will not be written in issued certificates.
+    bool publish_ca_cert = 2 [json_name = "publish_ca_cert"];
+
+    // When true, publishes each CertificateAuthority's CRL and includes its URL in the "CRL Distribution Points" X.509 extension
+    // in all issued Certificates. If this is false, CRLs will not be published and the corresponding X.509 extension will not
+    // be written in issued certificates. CRLs will expire 7 days from their creation. However, we will rebuild daily. CRLs are
+    // also rebuilt shortly after a certificate is revoked.
+    bool publish_crl = 3 [json_name = "publish_crl"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GooglePrivatecaCaPoolIamBinding version is 0
+message GooglePrivatecaCaPoolIamBinding {
+  string ca_pool = 1 [json_name = "ca_pool"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string location = 4;
+
+  repeated string members = 5;
+
+  string project = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GooglePrivatecaCaPoolIamMember version is 0
+message GooglePrivatecaCaPoolIamMember {
+  string ca_pool = 1 [json_name = "ca_pool"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string location = 4;
+
+  string member = 5;
+
+  string project = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GooglePrivatecaCaPoolIamPolicy version is 0
+message GooglePrivatecaCaPoolIamPolicy {
+  string ca_pool = 1 [json_name = "ca_pool"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string location = 4;
+
+  string policy_data = 5 [json_name = "policy_data"];
+
+  string project = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GooglePrivatecaCertificate version is 0
+message GooglePrivatecaCertificate {
+  // The Certificate Authority ID that should issue the certificate. For example, to issue a Certificate from
+  // a Certificate Authority with resource name 'projects/my-project/locations/us-central1/caPools/my-pool/certificateAuthorities/my-ca',
+  // argument 'pool' should be set to 'projects/my-project/locations/us-central1/caPools/my-pool', argument 'certificate_authority'
+  // should be set to 'my-ca'.
+  string certificate_authority = 1 [json_name = "certificate_authority"];
+
+  // Output only. Details regarding the revocation of this Certificate. This Certificate is considered revoked if and only if this field is present.
+  repeated CertificateDescription certificate_description = 2 [json_name = "certificate_description"];
+
+  // The resource name for a CertificateTemplate used to issue this certificate,
+  // in the format 'projects/*/locations/*/certificateTemplates/*'. If this is specified,
+  // the caller must have the necessary permission to use this template. If this is
+  // omitted, no template will be used. This template must be in the same location
+  // as the Certificate.
+  string certificate_template = 3 [json_name = "certificate_template"];
+
+  // The time that this resource was created on the server.
+  // This is in RFC3339 text format.
+  string create_time = 4 [json_name = "create_time"];
+
+  string id = 5;
+
+  // The resource name of the issuing CertificateAuthority in the format 'projects/*/locations/*/caPools/*/certificateAuthorities/*'.
+  string issuer_certificate_authority = 6 [json_name = "issuer_certificate_authority"];
+
+  // Labels with user-defined metadata to apply to this resource.
+  map<string, string> labels = 7;
+
+  // The desired lifetime of the CA certificate. Used to create the "notBeforeTime" and
+  // "notAfterTime" fields inside an X.509 certificate. A duration in seconds with up to nine
+  // fractional digits, terminated by 's'. Example: "3.5s".
+  string lifetime = 8;
+
+  // Location of the Certificate. A full list of valid locations can be found by
+  // running 'gcloud privateca locations list'.
+  string location = 9;
+
+  // The name for this Certificate.
+  string name = 10;
+
+  // Output only. The pem-encoded, signed X.509 certificate.
+  string pem_certificate = 11 [json_name = "pem_certificate"];
+
+  // The chain that may be used to verify the X.509 certificate. Expected to be in issuer-to-root order according to RFC 5246.
+  repeated string pem_certificate_chain = 12 [json_name = "pem_certificate_chain"];
+
+  // Required. Expected to be in leaf-to-root order according to RFC 5246.
+  repeated string pem_certificates = 13 [json_name = "pem_certificates"];
+
+  // Immutable. A pem-encoded X.509 certificate signing request (CSR).
+  string pem_csr = 14 [json_name = "pem_csr"];
+
+  // The name of the CaPool this Certificate belongs to.
+  string pool = 15;
+
+  string project = 16;
+
+  // Output only. Details regarding the revocation of this Certificate. This Certificate is
+  // considered revoked if and only if this field is present.
+  repeated RevocationDetails revocation_details = 17 [json_name = "revocation_details"];
+
+  // Output only. The time at which this CertificateAuthority was updated.
+  // This is in RFC3339 text format.
+  string update_time = 18 [json_name = "update_time"];
+
+  Config config = 19;
+
+  repeated Timeouts timeouts = 20;
+
+  map<string, string> for_each = 21 [json_name = "for_each"];
+
+  repeated string depends_on = 22 [json_name = "depends_on"];
+
+  int32 count = 23;
+
+  string provider = 24;
+
+  terraform.v1.Lifecycle lifecycle = 25;
+
+  message CertificateDescription {
+    // aia_issuing_certificate_urls: list of string
+    repeated string aia_issuing_certificate_urls = 1 [json_name = "aia_issuing_certificate_urls"];
+
+    // authority_key_id: list of object
+    repeated AuthorityKeyId authority_key_id = 2 [json_name = "authority_key_id"];
+
+    // cert_fingerprint: list of object
+    repeated CertFingerprint cert_fingerprint = 3 [json_name = "cert_fingerprint"];
+
+    // config_values: list of object
+    repeated ConfigValues config_values = 4 [json_name = "config_values"];
+
+    // crl_distribution_points: list of string
+    repeated string crl_distribution_points = 5 [json_name = "crl_distribution_points"];
+
+    // public_key: list of object
+    repeated PublicKey public_key = 6 [json_name = "public_key"];
+
+    // subject_description: list of object
+    repeated SubjectDescription subject_description = 7 [json_name = "subject_description"];
+
+    // subject_key_id: list of object
+    repeated SubjectKeyId subject_key_id = 8 [json_name = "subject_key_id"];
+
+    // x509_description: list of object
+    repeated X509Description x509_description = 9 [json_name = "x509_description"];
+
+    message AuthorityKeyId {
+      // key_id: string
+      string key_id = 1 [json_name = "key_id"];
+    }
+
+    message CertFingerprint {
+      // sha256_hash: string
+      string sha256_hash = 1 [json_name = "sha256_hash"];
+    }
+
+    message ConfigValues {
+      // key_usage: list of object
+      repeated KeyUsage key_usage = 1 [json_name = "key_usage"];
+
+      message KeyUsage {
+        // base_key_usage: list of object
+        repeated BaseKeyUsage base_key_usage = 1 [json_name = "base_key_usage"];
+
+        // extended_key_usage: list of object
+        repeated ExtendedKeyUsage extended_key_usage = 2 [json_name = "extended_key_usage"];
+
+        // unknown_extended_key_usages: list of object
+        repeated UnknownExtendedKeyUsages unknown_extended_key_usages = 3 [json_name = "unknown_extended_key_usages"];
+
+        message BaseKeyUsage {
+          // key_usage_options: list of object
+          repeated KeyUsageOptions key_usage_options = 1 [json_name = "key_usage_options"];
+
+          message KeyUsageOptions {
+            // cert_sign: bool
+            bool cert_sign = 1 [json_name = "cert_sign"];
+
+            // content_commitment: bool
+            bool content_commitment = 2 [json_name = "content_commitment"];
+
+            // crl_sign: bool
+            bool crl_sign = 3 [json_name = "crl_sign"];
+
+            // data_encipherment: bool
+            bool data_encipherment = 4 [json_name = "data_encipherment"];
+
+            // decipher_only: bool
+            bool decipher_only = 5 [json_name = "decipher_only"];
+
+            // digital_signature: bool
+            bool digital_signature = 6 [json_name = "digital_signature"];
+
+            // encipher_only: bool
+            bool encipher_only = 7 [json_name = "encipher_only"];
+
+            // key_agreement: bool
+            bool key_agreement = 8 [json_name = "key_agreement"];
+
+            // key_encipherment: bool
+            bool key_encipherment = 9 [json_name = "key_encipherment"];
+          }
+        }
+
+        message ExtendedKeyUsage {
+          // client_auth: bool
+          bool client_auth = 1 [json_name = "client_auth"];
+
+          // code_signing: bool
+          bool code_signing = 2 [json_name = "code_signing"];
+
+          // email_protection: bool
+          bool email_protection = 3 [json_name = "email_protection"];
+
+          // ocsp_signing: bool
+          bool ocsp_signing = 4 [json_name = "ocsp_signing"];
+
+          // server_auth: bool
+          bool server_auth = 5 [json_name = "server_auth"];
+
+          // time_stamping: bool
+          bool time_stamping = 6 [json_name = "time_stamping"];
+        }
+
+        message UnknownExtendedKeyUsages {
+          // obect_id: list of object
+          repeated ObectId obect_id = 1 [json_name = "obect_id"];
+
+          message ObectId {
+            // object_id_path: list of number
+            repeated int64 object_id_path = 1 [json_name = "object_id_path"];
+          }
+        }
+      }
+    }
+
+    message PublicKey {
+      // format: string
+      string format = 1;
+
+      // key: string
+      string key = 2;
+    }
+
+    message SubjectDescription {
+      // hex_serial_number: string
+      string hex_serial_number = 1 [json_name = "hex_serial_number"];
+
+      // lifetime: string
+      string lifetime = 2;
+
+      // not_after_time: string
+      string not_after_time = 3 [json_name = "not_after_time"];
+
+      // not_before_time: string
+      string not_before_time = 4 [json_name = "not_before_time"];
+
+      // subject: list of object
+      repeated Subject subject = 5;
+
+      // subject_alt_name: list of object
+      repeated SubjectAltName subject_alt_name = 6 [json_name = "subject_alt_name"];
+
+      message Subject {
+        // common_name: string
+        string common_name = 1 [json_name = "common_name"];
+
+        // country_code: string
+        string country_code = 2 [json_name = "country_code"];
+
+        // locality: string
+        string locality = 3;
+
+        // organization: string
+        string organization = 4;
+
+        // organizational_unit: string
+        string organizational_unit = 5 [json_name = "organizational_unit"];
+
+        // postal_code: string
+        string postal_code = 6 [json_name = "postal_code"];
+
+        // province: string
+        string province = 7;
+
+        // street_address: string
+        string street_address = 8 [json_name = "street_address"];
+      }
+
+      message SubjectAltName {
+        // custom_sans: list of object
+        repeated CustomSans custom_sans = 1 [json_name = "custom_sans"];
+
+        // dns_names: list of string
+        repeated string dns_names = 2 [json_name = "dns_names"];
+
+        // email_addresses: list of string
+        repeated string email_addresses = 3 [json_name = "email_addresses"];
+
+        // ip_addresses: list of string
+        repeated string ip_addresses = 4 [json_name = "ip_addresses"];
+
+        // uris: list of string
+        repeated string uris = 5;
+
+        message CustomSans {
+          // critical: bool
+          bool critical = 1;
+
+          // obect_id: list of object
+          repeated ObectId obect_id = 2 [json_name = "obect_id"];
+
+          // value: string
+          string value = 3;
+
+          message ObectId {
+            // object_id_path: list of number
+            repeated int64 object_id_path = 1 [json_name = "object_id_path"];
+          }
+        }
+      }
+    }
+
+    message SubjectKeyId {
+      // key_id: string
+      string key_id = 1 [json_name = "key_id"];
+    }
+
+    message X509Description {
+      // additional_extensions: list of object
+      repeated AdditionalExtensions additional_extensions = 1 [json_name = "additional_extensions"];
+
+      // aia_ocsp_servers: list of string
+      repeated string aia_ocsp_servers = 2 [json_name = "aia_ocsp_servers"];
+
+      // ca_options: list of object
+      repeated CaOptions ca_options = 3 [json_name = "ca_options"];
+
+      // key_usage: list of object
+      repeated KeyUsage key_usage = 4 [json_name = "key_usage"];
+
+      // name_constraints: list of object
+      repeated NameConstraints name_constraints = 5 [json_name = "name_constraints"];
+
+      // policy_ids: list of object
+      repeated PolicyIds policy_ids = 6 [json_name = "policy_ids"];
+
+      message AdditionalExtensions {
+        // critical: bool
+        bool critical = 1;
+
+        // object_id: list of object
+        repeated ObjectId object_id = 2 [json_name = "object_id"];
+
+        // value: string
+        string value = 3;
+
+        message ObjectId {
+          // object_id_path: list of number
+          repeated int64 object_id_path = 1 [json_name = "object_id_path"];
+        }
+      }
+
+      message CaOptions {
+        // is_ca: bool
+        bool is_ca = 1 [json_name = "is_ca"];
+
+        // max_issuer_path_length: number
+        int64 max_issuer_path_length = 2 [json_name = "max_issuer_path_length"];
+      }
+
+      message KeyUsage {
+        // base_key_usage: list of object
+        repeated BaseKeyUsage base_key_usage = 1 [json_name = "base_key_usage"];
+
+        // extended_key_usage: list of object
+        repeated ExtendedKeyUsage extended_key_usage = 2 [json_name = "extended_key_usage"];
+
+        // unknown_extended_key_usages: list of object
+        repeated UnknownExtendedKeyUsages unknown_extended_key_usages = 3 [json_name = "unknown_extended_key_usages"];
+
+        message BaseKeyUsage {
+          // cert_sign: bool
+          bool cert_sign = 1 [json_name = "cert_sign"];
+
+          // content_commitment: bool
+          bool content_commitment = 2 [json_name = "content_commitment"];
+
+          // crl_sign: bool
+          bool crl_sign = 3 [json_name = "crl_sign"];
+
+          // data_encipherment: bool
+          bool data_encipherment = 4 [json_name = "data_encipherment"];
+
+          // decipher_only: bool
+          bool decipher_only = 5 [json_name = "decipher_only"];
+
+          // digital_signature: bool
+          bool digital_signature = 6 [json_name = "digital_signature"];
+
+          // encipher_only: bool
+          bool encipher_only = 7 [json_name = "encipher_only"];
+
+          // key_agreement: bool
+          bool key_agreement = 8 [json_name = "key_agreement"];
+
+          // key_encipherment: bool
+          bool key_encipherment = 9 [json_name = "key_encipherment"];
+        }
+
+        message ExtendedKeyUsage {
+          // client_auth: bool
+          bool client_auth = 1 [json_name = "client_auth"];
+
+          // code_signing: bool
+          bool code_signing = 2 [json_name = "code_signing"];
+
+          // email_protection: bool
+          bool email_protection = 3 [json_name = "email_protection"];
+
+          // ocsp_signing: bool
+          bool ocsp_signing = 4 [json_name = "ocsp_signing"];
+
+          // server_auth: bool
+          bool server_auth = 5 [json_name = "server_auth"];
+
+          // time_stamping: bool
+          bool time_stamping = 6 [json_name = "time_stamping"];
+        }
+
+        message UnknownExtendedKeyUsages {
+          // object_id_path: list of number
+          repeated int64 object_id_path = 1 [json_name = "object_id_path"];
+        }
+      }
+
+      message NameConstraints {
+        // critical: bool
+        bool critical = 1;
+
+        // excluded_dns_names: list of string
+        repeated string excluded_dns_names = 2 [json_name = "excluded_dns_names"];
+
+        // excluded_email_addresses: list of string
+        repeated string excluded_email_addresses = 3 [json_name = "excluded_email_addresses"];
+
+        // excluded_ip_ranges: list of string
+        repeated string excluded_ip_ranges = 4 [json_name = "excluded_ip_ranges"];
+
+        // excluded_uris: list of string
+        repeated string excluded_uris = 5 [json_name = "excluded_uris"];
+
+        // permitted_dns_names: list of string
+        repeated string permitted_dns_names = 6 [json_name = "permitted_dns_names"];
+
+        // permitted_email_addresses: list of string
+        repeated string permitted_email_addresses = 7 [json_name = "permitted_email_addresses"];
+
+        // permitted_ip_ranges: list of string
+        repeated string permitted_ip_ranges = 8 [json_name = "permitted_ip_ranges"];
+
+        // permitted_uris: list of string
+        repeated string permitted_uris = 9 [json_name = "permitted_uris"];
+      }
+
+      message PolicyIds {
+        // object_id_path: list of number
+        repeated int64 object_id_path = 1 [json_name = "object_id_path"];
+      }
+    }
+  }
+
+  message RevocationDetails {
+    // revocation_state: string
+    string revocation_state = 1 [json_name = "revocation_state"];
+
+    // revocation_time: string
+    string revocation_time = 2 [json_name = "revocation_time"];
+  }
+
+  message Config {
+    PublicKey public_key = 1 [json_name = "public_key"];
+
+    SubjectConfig subject_config = 2 [json_name = "subject_config"];
+
+    X509Config x509_config = 3 [json_name = "x509_config"];
+
+    message PublicKey {
+      // The format of the public key. Currently, only PEM format is supported. Possible values: ["KEY_TYPE_UNSPECIFIED", "PEM"]
+      string format = 1;
+
+      // Required. A public key. When this is specified in a request, the padding and encoding can be any of the options described by the respective 'KeyType' value. When this is generated by the service, it will always be an RFC 5280 SubjectPublicKeyInfo structure containing an algorithm identifier and a key. A base64-encoded string.
+      string key = 2;
+    }
+
+    message SubjectConfig {
+      Subject subject = 1;
+
+      SubjectAltName subject_alt_name = 2 [json_name = "subject_alt_name"];
+
+      message Subject {
+        // The common name of the distinguished name.
+        string common_name = 1 [json_name = "common_name"];
+
+        // The country code of the subject.
+        string country_code = 2 [json_name = "country_code"];
+
+        // The locality or city of the subject.
+        string locality = 3;
+
+        // The organization of the subject.
+        string organization = 4;
+
+        // The organizational unit of the subject.
+        string organizational_unit = 5 [json_name = "organizational_unit"];
+
+        // The postal code of the subject.
+        string postal_code = 6 [json_name = "postal_code"];
+
+        // The province, territory, or regional state of the subject.
+        string province = 7;
+
+        // The street address of the subject.
+        string street_address = 8 [json_name = "street_address"];
+      }
+
+      message SubjectAltName {
+        // Contains only valid, fully-qualified host names.
+        repeated string dns_names = 1 [json_name = "dns_names"];
+
+        // Contains only valid RFC 2822 E-mail addresses.
+        repeated string email_addresses = 2 [json_name = "email_addresses"];
+
+        // Contains only valid 32-bit IPv4 addresses or RFC 4291 IPv6 addresses.
+        repeated string ip_addresses = 3 [json_name = "ip_addresses"];
+
+        // Contains only valid RFC 3986 URIs.
+        repeated string uris = 4;
+      }
+    }
+
+    message X509Config {
+      // Describes Online Certificate Status Protocol (OCSP) endpoint addresses that appear in the
+      // "Authority Information Access" extension in the certificate.
+      repeated string aia_ocsp_servers = 1 [json_name = "aia_ocsp_servers"];
+
+      repeated AdditionalExtensions additional_extensions = 2 [json_name = "additional_extensions"];
+
+      CaOptions ca_options = 3 [json_name = "ca_options"];
+
+      KeyUsage key_usage = 4 [json_name = "key_usage"];
+
+      NameConstraints name_constraints = 5 [json_name = "name_constraints"];
+
+      repeated PolicyIds policy_ids = 6 [json_name = "policy_ids"];
+
+      message AdditionalExtensions {
+        // Indicates whether or not this extension is critical (i.e., if the client does not know how to
+        // handle this extension, the client should consider this to be an error).
+        bool critical = 1;
+
+        // The value of this X.509 extension. A base64-encoded string.
+        string value = 2;
+
+        ObjectId object_id = 3 [json_name = "object_id"];
+
+        message ObjectId {
+          // An ObjectId specifies an object identifier (OID). These provide context and describe types in ASN.1 messages.
+          repeated int64 object_id_path = 1 [json_name = "object_id_path"];
+        }
+      }
+
+      message CaOptions {
+        // When true, the "CA" in Basic Constraints extension will be set to true.
+        bool is_ca = 1 [json_name = "is_ca"];
+
+        // Refers to the "path length constraint" in Basic Constraints extension. For a CA certificate, this value describes the depth of
+        // subordinate CA certificates that are allowed. If this value is less than 0, the request will fail.
+        int64 max_issuer_path_length = 2 [json_name = "max_issuer_path_length"];
+
+        // When true, the "CA" in Basic Constraints extension will be set to false.
+        // If both 'is_ca' and 'non_ca' are unset, the extension will be omitted from the CA certificate.
+        bool non_ca = 3 [json_name = "non_ca"];
+
+        // When true, the "path length constraint" in Basic Constraints extension will be set to 0.
+        // if both 'max_issuer_path_length' and 'zero_max_issuer_path_length' are unset,
+        // the max path length will be omitted from the CA certificate.
+        bool zero_max_issuer_path_length = 4 [json_name = "zero_max_issuer_path_length"];
+      }
+
+      message KeyUsage {
+        BaseKeyUsage base_key_usage = 1 [json_name = "base_key_usage"];
+
+        ExtendedKeyUsage extended_key_usage = 2 [json_name = "extended_key_usage"];
+
+        repeated UnknownExtendedKeyUsages unknown_extended_key_usages = 3 [json_name = "unknown_extended_key_usages"];
+
+        message BaseKeyUsage {
+          // The key may be used to sign certificates.
+          bool cert_sign = 1 [json_name = "cert_sign"];
+
+          // The key may be used for cryptographic commitments. Note that this may also be referred to as "non-repudiation".
+          bool content_commitment = 2 [json_name = "content_commitment"];
+
+          // The key may be used sign certificate revocation lists.
+          bool crl_sign = 3 [json_name = "crl_sign"];
+
+          // The key may be used to encipher data.
+          bool data_encipherment = 4 [json_name = "data_encipherment"];
+
+          // The key may be used to decipher only.
+          bool decipher_only = 5 [json_name = "decipher_only"];
+
+          // The key may be used for digital signatures.
+          bool digital_signature = 6 [json_name = "digital_signature"];
+
+          // The key may be used to encipher only.
+          bool encipher_only = 7 [json_name = "encipher_only"];
+
+          // The key may be used in a key agreement protocol.
+          bool key_agreement = 8 [json_name = "key_agreement"];
+
+          // The key may be used to encipher other keys.
+          bool key_encipherment = 9 [json_name = "key_encipherment"];
+        }
+
+        message ExtendedKeyUsage {
+          // Corresponds to OID 1.3.6.1.5.5.7.3.2. Officially described as "TLS WWW client authentication", though regularly used for non-WWW TLS.
+          bool client_auth = 1 [json_name = "client_auth"];
+
+          // Corresponds to OID 1.3.6.1.5.5.7.3.3. Officially described as "Signing of downloadable executable code client authentication".
+          bool code_signing = 2 [json_name = "code_signing"];
+
+          // Corresponds to OID 1.3.6.1.5.5.7.3.4. Officially described as "Email protection".
+          bool email_protection = 3 [json_name = "email_protection"];
+
+          // Corresponds to OID 1.3.6.1.5.5.7.3.9. Officially described as "Signing OCSP responses".
+          bool ocsp_signing = 4 [json_name = "ocsp_signing"];
+
+          // Corresponds to OID 1.3.6.1.5.5.7.3.1. Officially described as "TLS WWW server authentication", though regularly used for non-WWW TLS.
+          bool server_auth = 5 [json_name = "server_auth"];
+
+          // Corresponds to OID 1.3.6.1.5.5.7.3.8. Officially described as "Binding the hash of an object to a time".
+          bool time_stamping = 6 [json_name = "time_stamping"];
+        }
+
+        message UnknownExtendedKeyUsages {
+          // An ObjectId specifies an object identifier (OID). These provide context and describe types in ASN.1 messages.
+          repeated int64 object_id_path = 1 [json_name = "object_id_path"];
+        }
+      }
+
+      message NameConstraints {
+        // Indicates whether or not the name constraints are marked critical.
+        bool critical = 1;
+
+        // Contains excluded DNS names. Any DNS name that can be
+        // constructed by simply adding zero or more labels to
+        // the left-hand side of the name satisfies the name constraint.
+        // For example, 'example.com', 'www.example.com', 'www.sub.example.com'
+        // would satisfy 'example.com' while 'example1.com' does not.
+        repeated string excluded_dns_names = 2 [json_name = "excluded_dns_names"];
+
+        // Contains the excluded email addresses. The value can be a particular
+        // email address, a hostname to indicate all email addresses on that host or
+        // a domain with a leading period (e.g. '.example.com') to indicate
+        // all email addresses in that domain.
+        repeated string excluded_email_addresses = 3 [json_name = "excluded_email_addresses"];
+
+        // Contains the excluded IP ranges. For IPv4 addresses, the ranges
+        // are expressed using CIDR notation as specified in RFC 4632.
+        // For IPv6 addresses, the ranges are expressed in similar encoding as IPv4
+        // addresses.
+        repeated string excluded_ip_ranges = 4 [json_name = "excluded_ip_ranges"];
+
+        // Contains the excluded URIs that apply to the host part of the name.
+        // The value can be a hostname or a domain with a
+        // leading period (like '.example.com')
+        repeated string excluded_uris = 5 [json_name = "excluded_uris"];
+
+        // Contains permitted DNS names. Any DNS name that can be
+        // constructed by simply adding zero or more labels to
+        // the left-hand side of the name satisfies the name constraint.
+        // For example, 'example.com', 'www.example.com', 'www.sub.example.com'
+        // would satisfy 'example.com' while 'example1.com' does not.
+        repeated string permitted_dns_names = 6 [json_name = "permitted_dns_names"];
+
+        // Contains the permitted email addresses. The value can be a particular
+        // email address, a hostname to indicate all email addresses on that host or
+        // a domain with a leading period (e.g. '.example.com') to indicate
+        // all email addresses in that domain.
+        repeated string permitted_email_addresses = 7 [json_name = "permitted_email_addresses"];
+
+        // Contains the permitted IP ranges. For IPv4 addresses, the ranges
+        // are expressed using CIDR notation as specified in RFC 4632.
+        // For IPv6 addresses, the ranges are expressed in similar encoding as IPv4
+        // addresses.
+        repeated string permitted_ip_ranges = 8 [json_name = "permitted_ip_ranges"];
+
+        // Contains the permitted URIs that apply to the host part of the name.
+        // The value can be a hostname or a domain with a
+        // leading period (like '.example.com')
+        repeated string permitted_uris = 9 [json_name = "permitted_uris"];
+      }
+
+      message PolicyIds {
+        // An ObjectId specifies an object identifier (OID). These provide context and describe types in ASN.1 messages.
+        repeated int64 object_id_path = 1 [json_name = "object_id_path"];
+      }
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GooglePrivatecaCertificateAuthority version is 0
+message GooglePrivatecaCertificateAuthority {
+  // URLs for accessing content published by this CA, such as the CA certificate and CRLs.
+  repeated AccessUrls access_urls = 1 [json_name = "access_urls"];
+
+  // The user provided Resource ID for this Certificate Authority.
+  string certificate_authority_id = 2 [json_name = "certificate_authority_id"];
+
+  // The time at which this CertificateAuthority was created.
+  //
+  // A timestamp in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine
+  // fractional digits. Examples: "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z".
+  string create_time = 3 [json_name = "create_time"];
+
+  // Whether or not to allow Terraform to destroy the CertificateAuthority. Unless this field is set to false
+  // in Terraform state, a 'terraform destroy' or 'terraform apply' that would delete the instance will fail.
+  bool deletion_protection = 4 [json_name = "deletion_protection"];
+
+  // Desired state of the CertificateAuthority. Set this field to 'STAGED' to create a 'STAGED' root CA.
+  string desired_state = 5 [json_name = "desired_state"];
+
+  // The name of a Cloud Storage bucket where this CertificateAuthority will publish content,
+  // such as the CA certificate and CRLs. This must be a bucket name, without any prefixes
+  // (such as 'gs://') or suffixes (such as '.googleapis.com'). For example, to use a bucket named
+  // my-bucket, you would simply specify 'my-bucket'. If not specified, a managed bucket will be
+  // created.
+  string gcs_bucket = 6 [json_name = "gcs_bucket"];
+
+  string id = 7;
+
+  // This field allows the CA to be deleted even if the CA has active certs. Active certs include both unrevoked and unexpired certs.
+  // Use with care. Defaults to 'false'.
+  bool ignore_active_certificates_on_deletion = 8 [
+    json_name = "ignore_active_certificates_on_deletion"
+  ];
+
+  // Labels with user-defined metadata.
+  //
+  // An object containing a list of "key": value pairs. Example: { "name": "wrench", "mass":
+  // "1.3kg", "count": "3" }.
+  map<string, string> labels = 9;
+
+  // The desired lifetime of the CA certificate. Used to create the "notBeforeTime" and
+  // "notAfterTime" fields inside an X.509 certificate. A duration in seconds with up to nine
+  // fractional digits, terminated by 's'. Example: "3.5s".
+  string lifetime = 10;
+
+  // Location of the CertificateAuthority. A full list of valid locations can be found by
+  // running 'gcloud privateca locations list'.
+  string location = 11;
+
+  // The resource name for this CertificateAuthority in the format
+  // projects/*/locations/*/certificateAuthorities/*.
+  string name = 12;
+
+  // The signed CA certificate issued from the subordinated CA's CSR. This is needed when activating the subordiante CA with a third party issuer.
+  string pem_ca_certificate = 13 [json_name = "pem_ca_certificate"];
+
+  // This CertificateAuthority's certificate chain, including the current
+  // CertificateAuthority's certificate. Ordered such that the root issuer is the final
+  // element (consistent with RFC 5246). For a self-signed CA, this will only list the current
+  // CertificateAuthority's certificate.
+  repeated string pem_ca_certificates = 14 [json_name = "pem_ca_certificates"];
+
+  // The name of the CaPool this Certificate Authority belongs to.
+  string pool = 15;
+
+  string project = 16;
+
+  // If this flag is set, the Certificate Authority will be deleted as soon as
+  // possible without a 30-day grace period where undeletion would have been
+  // allowed. If you proceed, there will be no way to recover this CA.
+  // Use with care. Defaults to 'false'.
+  bool skip_grace_period = 17 [json_name = "skip_grace_period"];
+
+  // The State for this CertificateAuthority.
+  string state = 18;
+
+  // The Type of this CertificateAuthority.
+  //
+  // ~> **Note:** For 'SUBORDINATE' Certificate Authorities, they need to
+  // be activated before they can issue certificates. Default value: "SELF_SIGNED" Possible values: ["SELF_SIGNED", "SUBORDINATE"]
+  string type = 19;
+
+  // The time at which this CertificateAuthority was updated.
+  //
+  // A timestamp in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine
+  // fractional digits. Examples: "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z".
+  string update_time = 20 [json_name = "update_time"];
+
+  Config config = 21;
+
+  KeySpec key_spec = 22 [json_name = "key_spec"];
+
+  SubordinateConfig subordinate_config = 23 [json_name = "subordinate_config"];
+
+  repeated Timeouts timeouts = 24;
+
+  map<string, string> for_each = 25 [json_name = "for_each"];
+
+  repeated string depends_on = 26 [json_name = "depends_on"];
+
+  int32 count = 27;
+
+  string provider = 28;
+
+  terraform.v1.Lifecycle lifecycle = 29;
+
+  message AccessUrls {
+    // ca_certificate_access_url: string
+    string ca_certificate_access_url = 1 [json_name = "ca_certificate_access_url"];
+
+    // crl_access_urls: list of string
+    repeated string crl_access_urls = 2 [json_name = "crl_access_urls"];
+  }
+
+  message Config {
+    SubjectConfig subject_config = 1 [json_name = "subject_config"];
+
+    X509Config x509_config = 2 [json_name = "x509_config"];
+
+    message SubjectConfig {
+      Subject subject = 1;
+
+      SubjectAltName subject_alt_name = 2 [json_name = "subject_alt_name"];
+
+      message Subject {
+        // The common name of the distinguished name.
+        string common_name = 1 [json_name = "common_name"];
+
+        // The country code of the subject.
+        string country_code = 2 [json_name = "country_code"];
+
+        // The locality or city of the subject.
+        string locality = 3;
+
+        // The organization of the subject.
+        string organization = 4;
+
+        // The organizational unit of the subject.
+        string organizational_unit = 5 [json_name = "organizational_unit"];
+
+        // The postal code of the subject.
+        string postal_code = 6 [json_name = "postal_code"];
+
+        // The province, territory, or regional state of the subject.
+        string province = 7;
+
+        // The street address of the subject.
+        string street_address = 8 [json_name = "street_address"];
+      }
+
+      message SubjectAltName {
+        // Contains only valid, fully-qualified host names.
+        repeated string dns_names = 1 [json_name = "dns_names"];
+
+        // Contains only valid RFC 2822 E-mail addresses.
+        repeated string email_addresses = 2 [json_name = "email_addresses"];
+
+        // Contains only valid 32-bit IPv4 addresses or RFC 4291 IPv6 addresses.
+        repeated string ip_addresses = 3 [json_name = "ip_addresses"];
+
+        // Contains only valid RFC 3986 URIs.
+        repeated string uris = 4;
+      }
+    }
+
+    message X509Config {
+      // Describes Online Certificate Status Protocol (OCSP) endpoint addresses that appear in the
+      // "Authority Information Access" extension in the certificate.
+      repeated string aia_ocsp_servers = 1 [json_name = "aia_ocsp_servers"];
+
+      repeated AdditionalExtensions additional_extensions = 2 [json_name = "additional_extensions"];
+
+      CaOptions ca_options = 3 [json_name = "ca_options"];
+
+      KeyUsage key_usage = 4 [json_name = "key_usage"];
+
+      NameConstraints name_constraints = 5 [json_name = "name_constraints"];
+
+      repeated PolicyIds policy_ids = 6 [json_name = "policy_ids"];
+
+      message AdditionalExtensions {
+        // Indicates whether or not this extension is critical (i.e., if the client does not know how to
+        // handle this extension, the client should consider this to be an error).
+        bool critical = 1;
+
+        // The value of this X.509 extension. A base64-encoded string.
+        string value = 2;
+
+        ObjectId object_id = 3 [json_name = "object_id"];
+
+        message ObjectId {
+          // An ObjectId specifies an object identifier (OID). These provide context and describe types in ASN.1 messages.
+          repeated int64 object_id_path = 1 [json_name = "object_id_path"];
+        }
+      }
+
+      message CaOptions {
+        // When true, the "CA" in Basic Constraints extension will be set to true.
+        bool is_ca = 1 [json_name = "is_ca"];
+
+        // Refers to the "path length constraint" in Basic Constraints extension. For a CA certificate, this value describes the depth of
+        // subordinate CA certificates that are allowed. If this value is less than 0, the request will fail. Setting the value to 0
+        // requires setting 'zero_max_issuer_path_length = true'.
+        int64 max_issuer_path_length = 2 [json_name = "max_issuer_path_length"];
+
+        // When true, the "CA" in Basic Constraints extension will be set to false.
+        // If both 'is_ca' and 'non_ca' are unset, the extension will be omitted from the CA certificate.
+        bool non_ca = 3 [json_name = "non_ca"];
+
+        // When true, the "path length constraint" in Basic Constraints extension will be set to 0.
+        // If both 'max_issuer_path_length' and 'zero_max_issuer_path_length' are unset,
+        // the max path length will be omitted from the CA certificate.
+        bool zero_max_issuer_path_length = 4 [json_name = "zero_max_issuer_path_length"];
+      }
+
+      message KeyUsage {
+        BaseKeyUsage base_key_usage = 1 [json_name = "base_key_usage"];
+
+        ExtendedKeyUsage extended_key_usage = 2 [json_name = "extended_key_usage"];
+
+        repeated UnknownExtendedKeyUsages unknown_extended_key_usages = 3 [json_name = "unknown_extended_key_usages"];
+
+        message BaseKeyUsage {
+          // The key may be used to sign certificates.
+          bool cert_sign = 1 [json_name = "cert_sign"];
+
+          // The key may be used for cryptographic commitments. Note that this may also be referred to as "non-repudiation".
+          bool content_commitment = 2 [json_name = "content_commitment"];
+
+          // The key may be used sign certificate revocation lists.
+          bool crl_sign = 3 [json_name = "crl_sign"];
+
+          // The key may be used to encipher data.
+          bool data_encipherment = 4 [json_name = "data_encipherment"];
+
+          // The key may be used to decipher only.
+          bool decipher_only = 5 [json_name = "decipher_only"];
+
+          // The key may be used for digital signatures.
+          bool digital_signature = 6 [json_name = "digital_signature"];
+
+          // The key may be used to encipher only.
+          bool encipher_only = 7 [json_name = "encipher_only"];
+
+          // The key may be used in a key agreement protocol.
+          bool key_agreement = 8 [json_name = "key_agreement"];
+
+          // The key may be used to encipher other keys.
+          bool key_encipherment = 9 [json_name = "key_encipherment"];
+        }
+
+        message ExtendedKeyUsage {
+          // Corresponds to OID 1.3.6.1.5.5.7.3.2. Officially described as "TLS WWW client authentication", though regularly used for non-WWW TLS.
+          bool client_auth = 1 [json_name = "client_auth"];
+
+          // Corresponds to OID 1.3.6.1.5.5.7.3.3. Officially described as "Signing of downloadable executable code client authentication".
+          bool code_signing = 2 [json_name = "code_signing"];
+
+          // Corresponds to OID 1.3.6.1.5.5.7.3.4. Officially described as "Email protection".
+          bool email_protection = 3 [json_name = "email_protection"];
+
+          // Corresponds to OID 1.3.6.1.5.5.7.3.9. Officially described as "Signing OCSP responses".
+          bool ocsp_signing = 4 [json_name = "ocsp_signing"];
+
+          // Corresponds to OID 1.3.6.1.5.5.7.3.1. Officially described as "TLS WWW server authentication", though regularly used for non-WWW TLS.
+          bool server_auth = 5 [json_name = "server_auth"];
+
+          // Corresponds to OID 1.3.6.1.5.5.7.3.8. Officially described as "Binding the hash of an object to a time".
+          bool time_stamping = 6 [json_name = "time_stamping"];
+        }
+
+        message UnknownExtendedKeyUsages {
+          // An ObjectId specifies an object identifier (OID). These provide context and describe types in ASN.1 messages.
+          repeated int64 object_id_path = 1 [json_name = "object_id_path"];
+        }
+      }
+
+      message NameConstraints {
+        // Indicates whether or not the name constraints are marked critical.
+        bool critical = 1;
+
+        // Contains excluded DNS names. Any DNS name that can be
+        // constructed by simply adding zero or more labels to
+        // the left-hand side of the name satisfies the name constraint.
+        // For example, 'example.com', 'www.example.com', 'www.sub.example.com'
+        // would satisfy 'example.com' while 'example1.com' does not.
+        repeated string excluded_dns_names = 2 [json_name = "excluded_dns_names"];
+
+        // Contains the excluded email addresses. The value can be a particular
+        // email address, a hostname to indicate all email addresses on that host or
+        // a domain with a leading period (e.g. '.example.com') to indicate
+        // all email addresses in that domain.
+        repeated string excluded_email_addresses = 3 [json_name = "excluded_email_addresses"];
+
+        // Contains the excluded IP ranges. For IPv4 addresses, the ranges
+        // are expressed using CIDR notation as specified in RFC 4632.
+        // For IPv6 addresses, the ranges are expressed in similar encoding as IPv4
+        // addresses.
+        repeated string excluded_ip_ranges = 4 [json_name = "excluded_ip_ranges"];
+
+        // Contains the excluded URIs that apply to the host part of the name.
+        // The value can be a hostname or a domain with a
+        // leading period (like '.example.com')
+        repeated string excluded_uris = 5 [json_name = "excluded_uris"];
+
+        // Contains permitted DNS names. Any DNS name that can be
+        // constructed by simply adding zero or more labels to
+        // the left-hand side of the name satisfies the name constraint.
+        // For example, 'example.com', 'www.example.com', 'www.sub.example.com'
+        // would satisfy 'example.com' while 'example1.com' does not.
+        repeated string permitted_dns_names = 6 [json_name = "permitted_dns_names"];
+
+        // Contains the permitted email addresses. The value can be a particular
+        // email address, a hostname to indicate all email addresses on that host or
+        // a domain with a leading period (e.g. '.example.com') to indicate
+        // all email addresses in that domain.
+        repeated string permitted_email_addresses = 7 [json_name = "permitted_email_addresses"];
+
+        // Contains the permitted IP ranges. For IPv4 addresses, the ranges
+        // are expressed using CIDR notation as specified in RFC 4632.
+        // For IPv6 addresses, the ranges are expressed in similar encoding as IPv4
+        // addresses.
+        repeated string permitted_ip_ranges = 8 [json_name = "permitted_ip_ranges"];
+
+        // Contains the permitted URIs that apply to the host part of the name.
+        // The value can be a hostname or a domain with a
+        // leading period (like '.example.com')
+        repeated string permitted_uris = 9 [json_name = "permitted_uris"];
+      }
+
+      message PolicyIds {
+        // An ObjectId specifies an object identifier (OID). These provide context and describe types in ASN.1 messages.
+        repeated int64 object_id_path = 1 [json_name = "object_id_path"];
+      }
+    }
+  }
+
+  message KeySpec {
+    // The algorithm to use for creating a managed Cloud KMS key for a for a simplified
+    // experience. All managed keys will be have their ProtectionLevel as HSM. Possible values: ["SIGN_HASH_ALGORITHM_UNSPECIFIED", "RSA_PSS_2048_SHA256", "RSA_PSS_3072_SHA256", "RSA_PSS_4096_SHA256", "RSA_PKCS1_2048_SHA256", "RSA_PKCS1_3072_SHA256", "RSA_PKCS1_4096_SHA256", "EC_P256_SHA256", "EC_P384_SHA384"]
+    string algorithm = 1;
+
+    // The resource name for an existing Cloud KMS CryptoKeyVersion in the format
+    // 'projects/*/locations/*/keyRings/*/cryptoKeys/*/cryptoKeyVersions/*'.
+    string cloud_kms_key_version = 2 [json_name = "cloud_kms_key_version"];
+  }
+
+  message SubordinateConfig {
+    // This can refer to a CertificateAuthority that was used to create a
+    // subordinate CertificateAuthority. This field is used for information
+    // and usability purposes only. The resource name is in the format
+    // 'projects/*/locations/*/caPools/*/certificateAuthorities/*'.
+    string certificate_authority = 1 [json_name = "certificate_authority"];
+
+    PemIssuerChain pem_issuer_chain = 2 [json_name = "pem_issuer_chain"];
+
+    message PemIssuerChain {
+      // Expected to be in leaf-to-root order according to RFC 5246.
+      repeated string pem_certificates = 1 [json_name = "pem_certificates"];
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GooglePrivatecaCertificateTemplate version is 0
+message GooglePrivatecaCertificateTemplate {
+  // Output only. The time at which this CertificateTemplate was created.
+  string create_time = 1 [json_name = "create_time"];
+
+  // Optional. A human-readable description of scenarios this template is intended for.
+  string description = 2;
+
+  string id = 3;
+
+  // Optional. Labels with user-defined metadata.
+  map<string, string> labels = 4;
+
+  // The location for the resource
+  string location = 5;
+
+  // The resource name for this CertificateTemplate in the format `projects/*/locations/*/certificateTemplates/*`.
+  string name = 6;
+
+  // The project for the resource
+  string project = 7;
+
+  // Output only. The time at which this CertificateTemplate was updated.
+  string update_time = 8 [json_name = "update_time"];
+
+  IdentityConstraints identity_constraints = 9 [json_name = "identity_constraints"];
+
+  PassthroughExtensions passthrough_extensions = 10 [json_name = "passthrough_extensions"];
+
+  PredefinedValues predefined_values = 11 [json_name = "predefined_values"];
+
+  repeated Timeouts timeouts = 12;
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message IdentityConstraints {
+    // Required. If this is true, the SubjectAltNames extension may be copied from a certificate request into the signed certificate. Otherwise, the requested SubjectAltNames will be discarded.
+    bool allow_subject_alt_names_passthrough = 1 [json_name = "allow_subject_alt_names_passthrough"];
+
+    // Required. If this is true, the Subject field may be copied from a certificate request into the signed certificate. Otherwise, the requested Subject will be discarded.
+    bool allow_subject_passthrough = 2 [json_name = "allow_subject_passthrough"];
+
+    CelExpression cel_expression = 3 [json_name = "cel_expression"];
+
+    message CelExpression {
+      // Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.
+      string description = 1;
+
+      // Textual representation of an expression in Common Expression Language syntax.
+      string expression = 2;
+
+      // Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.
+      string location = 3;
+
+      // Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.
+      string title = 4;
+    }
+  }
+
+  message PassthroughExtensions {
+    // Optional. A set of named X.509 extensions. Will be combined with additional_extensions to determine the full set of X.509 extensions.
+    repeated string known_extensions = 1 [json_name = "known_extensions"];
+
+    repeated AdditionalExtensions additional_extensions = 2 [json_name = "additional_extensions"];
+
+    message AdditionalExtensions {
+      // Required. The parts of an OID path. The most significant parts of the path come first.
+      repeated int64 object_id_path = 1 [json_name = "object_id_path"];
+    }
+  }
+
+  message PredefinedValues {
+    // Optional. Describes Online Certificate Status Protocol (OCSP) endpoint addresses that appear in the "Authority Information Access" extension in the certificate.
+    repeated string aia_ocsp_servers = 1 [json_name = "aia_ocsp_servers"];
+
+    repeated AdditionalExtensions additional_extensions = 2 [json_name = "additional_extensions"];
+
+    CaOptions ca_options = 3 [json_name = "ca_options"];
+
+    KeyUsage key_usage = 4 [json_name = "key_usage"];
+
+    repeated PolicyIds policy_ids = 5 [json_name = "policy_ids"];
+
+    message AdditionalExtensions {
+      // Optional. Indicates whether or not this extension is critical (i.e., if the client does not know how to handle this extension, the client should consider this to be an error).
+      bool critical = 1;
+
+      // Required. The value of this X.509 extension.
+      string value = 2;
+
+      ObjectId object_id = 3 [json_name = "object_id"];
+
+      message ObjectId {
+        // Required. The parts of an OID path. The most significant parts of the path come first.
+        repeated int64 object_id_path = 1 [json_name = "object_id_path"];
+      }
+    }
+
+    message CaOptions {
+      // Optional. Refers to the "CA" X.509 extension, which is a boolean value. When this value is missing, the extension will be omitted from the CA certificate.
+      bool is_ca = 1 [json_name = "is_ca"];
+
+      // Optional. Refers to the path length restriction X.509 extension. For a CA certificate, this value describes the depth of subordinate CA certificates that are allowed. If this value is less than 0, the request will fail. If this value is missing, the max path length will be omitted from the CA certificate.
+      int64 max_issuer_path_length = 2 [json_name = "max_issuer_path_length"];
+    }
+
+    message KeyUsage {
+      BaseKeyUsage base_key_usage = 1 [json_name = "base_key_usage"];
+
+      ExtendedKeyUsage extended_key_usage = 2 [json_name = "extended_key_usage"];
+
+      repeated UnknownExtendedKeyUsages unknown_extended_key_usages = 3 [json_name = "unknown_extended_key_usages"];
+
+      message BaseKeyUsage {
+        // The key may be used to sign certificates.
+        bool cert_sign = 1 [json_name = "cert_sign"];
+
+        // The key may be used for cryptographic commitments. Note that this may also be referred to as "non-repudiation".
+        bool content_commitment = 2 [json_name = "content_commitment"];
+
+        // The key may be used sign certificate revocation lists.
+        bool crl_sign = 3 [json_name = "crl_sign"];
+
+        // The key may be used to encipher data.
+        bool data_encipherment = 4 [json_name = "data_encipherment"];
+
+        // The key may be used to decipher only.
+        bool decipher_only = 5 [json_name = "decipher_only"];
+
+        // The key may be used for digital signatures.
+        bool digital_signature = 6 [json_name = "digital_signature"];
+
+        // The key may be used to encipher only.
+        bool encipher_only = 7 [json_name = "encipher_only"];
+
+        // The key may be used in a key agreement protocol.
+        bool key_agreement = 8 [json_name = "key_agreement"];
+
+        // The key may be used to encipher other keys.
+        bool key_encipherment = 9 [json_name = "key_encipherment"];
+      }
+
+      message ExtendedKeyUsage {
+        // Corresponds to OID 1.3.6.1.5.5.7.3.2. Officially described as "TLS WWW client authentication", though regularly used for non-WWW TLS.
+        bool client_auth = 1 [json_name = "client_auth"];
+
+        // Corresponds to OID 1.3.6.1.5.5.7.3.3. Officially described as "Signing of downloadable executable code client authentication".
+        bool code_signing = 2 [json_name = "code_signing"];
+
+        // Corresponds to OID 1.3.6.1.5.5.7.3.4. Officially described as "Email protection".
+        bool email_protection = 3 [json_name = "email_protection"];
+
+        // Corresponds to OID 1.3.6.1.5.5.7.3.9. Officially described as "Signing OCSP responses".
+        bool ocsp_signing = 4 [json_name = "ocsp_signing"];
+
+        // Corresponds to OID 1.3.6.1.5.5.7.3.1. Officially described as "TLS WWW server authentication", though regularly used for non-WWW TLS.
+        bool server_auth = 5 [json_name = "server_auth"];
+
+        // Corresponds to OID 1.3.6.1.5.5.7.3.8. Officially described as "Binding the hash of an object to a time".
+        bool time_stamping = 6 [json_name = "time_stamping"];
+      }
+
+      message UnknownExtendedKeyUsages {
+        // Required. The parts of an OID path. The most significant parts of the path come first.
+        repeated int64 object_id_path = 1 [json_name = "object_id_path"];
+      }
+    }
+
+    message PolicyIds {
+      // Required. The parts of an OID path. The most significant parts of the path come first.
+      repeated int64 object_id_path = 1 [json_name = "object_id_path"];
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GooglePrivatecaCertificateTemplateIamBinding version is 0
+message GooglePrivatecaCertificateTemplateIamBinding {
+  string certificate_template = 1 [json_name = "certificate_template"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string location = 4;
+
+  repeated string members = 5;
+
+  string project = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GooglePrivatecaCertificateTemplateIamMember version is 0
+message GooglePrivatecaCertificateTemplateIamMember {
+  string certificate_template = 1 [json_name = "certificate_template"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string location = 4;
+
+  string member = 5;
+
+  string project = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GooglePrivatecaCertificateTemplateIamPolicy version is 0
+message GooglePrivatecaCertificateTemplateIamPolicy {
+  string certificate_template = 1 [json_name = "certificate_template"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string location = 4;
+
+  string policy_data = 5 [json_name = "policy_data"];
+
+  string project = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}

@@ -1,0 +1,446 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsNetworkfirewallFirewall version is 0
+message AwsNetworkfirewallFirewall {
+  string arn = 1;
+
+  bool delete_protection = 2 [json_name = "delete_protection"];
+
+  string description = 3;
+
+  string firewall_policy_arn = 4 [json_name = "firewall_policy_arn"];
+
+  bool firewall_policy_change_protection = 5 [json_name = "firewall_policy_change_protection"];
+
+  repeated FirewallStatus firewall_status = 6 [json_name = "firewall_status"];
+
+  string id = 7;
+
+  string name = 8;
+
+  bool subnet_change_protection = 9 [json_name = "subnet_change_protection"];
+
+  map<string, string> tags = 10;
+
+  map<string, string> tags_all = 11 [json_name = "tags_all"];
+
+  string update_token = 12 [json_name = "update_token"];
+
+  string vpc_id = 13 [json_name = "vpc_id"];
+
+  EncryptionConfiguration encryption_configuration = 14 [json_name = "encryption_configuration"];
+
+  repeated SubnetMapping subnet_mapping = 15 [json_name = "subnet_mapping"];
+
+  map<string, string> for_each = 16 [json_name = "for_each"];
+
+  repeated string depends_on = 17 [json_name = "depends_on"];
+
+  int32 count = 18;
+
+  string provider = 19;
+
+  terraform.v1.Lifecycle lifecycle = 20;
+
+  message FirewallStatus {
+    // sync_states: set of object
+    repeated SyncStates sync_states = 1 [json_name = "sync_states"];
+
+    message SyncStates {
+      // attachment: list of object
+      repeated Attachment attachment = 1;
+
+      // availability_zone: string
+      string availability_zone = 2 [json_name = "availability_zone"];
+
+      message Attachment {
+        // endpoint_id: string
+        string endpoint_id = 1 [json_name = "endpoint_id"];
+
+        // subnet_id: string
+        string subnet_id = 2 [json_name = "subnet_id"];
+      }
+    }
+  }
+
+  message EncryptionConfiguration {
+    string key_id = 1 [json_name = "key_id"];
+
+    string type = 2;
+  }
+
+  message SubnetMapping {
+    string ip_address_type = 1 [json_name = "ip_address_type"];
+
+    string subnet_id = 2 [json_name = "subnet_id"];
+  }
+}
+
+// AwsNetworkfirewallFirewallPolicy version is 0
+message AwsNetworkfirewallFirewallPolicy {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  string name = 4;
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  string update_token = 7 [json_name = "update_token"];
+
+  EncryptionConfiguration encryption_configuration = 8 [json_name = "encryption_configuration"];
+
+  FirewallPolicy firewall_policy = 9 [json_name = "firewall_policy"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message EncryptionConfiguration {
+    string key_id = 1 [json_name = "key_id"];
+
+    string type = 2;
+  }
+
+  message FirewallPolicy {
+    repeated string stateful_default_actions = 1 [json_name = "stateful_default_actions"];
+
+    repeated string stateless_default_actions = 2 [json_name = "stateless_default_actions"];
+
+    repeated string stateless_fragment_default_actions = 3 [json_name = "stateless_fragment_default_actions"];
+
+    StatefulEngineOptions stateful_engine_options = 4 [json_name = "stateful_engine_options"];
+
+    repeated StatefulRuleGroupReference stateful_rule_group_reference = 5 [json_name = "stateful_rule_group_reference"];
+
+    repeated StatelessCustomAction stateless_custom_action = 6 [json_name = "stateless_custom_action"];
+
+    repeated StatelessRuleGroupReference stateless_rule_group_reference = 7 [json_name = "stateless_rule_group_reference"];
+
+    message StatefulEngineOptions {
+      string rule_order = 1 [json_name = "rule_order"];
+
+      string stream_exception_policy = 2 [json_name = "stream_exception_policy"];
+    }
+
+    message StatefulRuleGroupReference {
+      int64 priority = 1;
+
+      string resource_arn = 2 [json_name = "resource_arn"];
+
+      Override override = 3;
+
+      message Override {
+        string action = 1;
+      }
+    }
+
+    message StatelessCustomAction {
+      string action_name = 1 [json_name = "action_name"];
+
+      ActionDefinition action_definition = 2 [json_name = "action_definition"];
+
+      message ActionDefinition {
+        PublishMetricAction publish_metric_action = 1 [json_name = "publish_metric_action"];
+
+        message PublishMetricAction {
+          repeated Dimension dimension = 1;
+
+          message Dimension {
+            string value = 1;
+          }
+        }
+      }
+    }
+
+    message StatelessRuleGroupReference {
+      int64 priority = 1;
+
+      string resource_arn = 2 [json_name = "resource_arn"];
+    }
+  }
+}
+
+// AwsNetworkfirewallLoggingConfiguration version is 0
+message AwsNetworkfirewallLoggingConfiguration {
+  string firewall_arn = 1 [json_name = "firewall_arn"];
+
+  string id = 2;
+
+  LoggingConfiguration logging_configuration = 3 [json_name = "logging_configuration"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+
+  message LoggingConfiguration {
+    repeated LogDestinationConfig log_destination_config = 1 [json_name = "log_destination_config"];
+
+    message LogDestinationConfig {
+      map<string, string> log_destination = 1 [json_name = "log_destination"];
+
+      string log_destination_type = 2 [json_name = "log_destination_type"];
+
+      string log_type = 3 [json_name = "log_type"];
+    }
+  }
+}
+
+// AwsNetworkfirewallResourcePolicy version is 0
+message AwsNetworkfirewallResourcePolicy {
+  string id = 1;
+
+  string policy = 2;
+
+  string resource_arn = 3 [json_name = "resource_arn"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsNetworkfirewallRuleGroup version is 0
+message AwsNetworkfirewallRuleGroup {
+  string arn = 1;
+
+  int64 capacity = 2;
+
+  string description = 3;
+
+  string id = 4;
+
+  string name = 5;
+
+  string rules = 6;
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  string type = 9;
+
+  string update_token = 10 [json_name = "update_token"];
+
+  EncryptionConfiguration encryption_configuration = 11 [json_name = "encryption_configuration"];
+
+  RuleGroup rule_group = 12 [json_name = "rule_group"];
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message EncryptionConfiguration {
+    string key_id = 1 [json_name = "key_id"];
+
+    string type = 2;
+  }
+
+  message RuleGroup {
+    ReferenceSets reference_sets = 1 [json_name = "reference_sets"];
+
+    RuleVariables rule_variables = 2 [json_name = "rule_variables"];
+
+    RulesSource rules_source = 3 [json_name = "rules_source"];
+
+    StatefulRuleOptions stateful_rule_options = 4 [json_name = "stateful_rule_options"];
+
+    message ReferenceSets {
+      repeated IpSetReferences ip_set_references = 1 [json_name = "ip_set_references"];
+
+      message IpSetReferences {
+        string key = 1;
+
+        repeated IpSetReference ip_set_reference = 2 [json_name = "ip_set_reference"];
+
+        message IpSetReference {
+          string reference_arn = 1 [json_name = "reference_arn"];
+        }
+      }
+    }
+
+    message RuleVariables {
+      repeated IpSets ip_sets = 1 [json_name = "ip_sets"];
+
+      repeated PortSets port_sets = 2 [json_name = "port_sets"];
+
+      message IpSets {
+        string key = 1;
+
+        IpSet ip_set = 2 [json_name = "ip_set"];
+
+        message IpSet {
+          repeated string definition = 1;
+        }
+      }
+
+      message PortSets {
+        string key = 1;
+
+        PortSet port_set = 2 [json_name = "port_set"];
+
+        message PortSet {
+          repeated string definition = 1;
+        }
+      }
+    }
+
+    message RulesSource {
+      string rules_string = 1 [json_name = "rules_string"];
+
+      RulesSourceList rules_source_list = 2 [json_name = "rules_source_list"];
+
+      repeated StatefulRule stateful_rule = 3 [json_name = "stateful_rule"];
+
+      StatelessRulesAndCustomActions stateless_rules_and_custom_actions = 4 [json_name = "stateless_rules_and_custom_actions"];
+
+      message RulesSourceList {
+        string generated_rules_type = 1 [json_name = "generated_rules_type"];
+
+        repeated string target_types = 2 [json_name = "target_types"];
+
+        repeated string targets = 3;
+      }
+
+      message StatefulRule {
+        string action = 1;
+
+        Header header = 2;
+
+        repeated RuleOption rule_option = 3 [json_name = "rule_option"];
+
+        message Header {
+          string destination = 1;
+
+          string destination_port = 2 [json_name = "destination_port"];
+
+          string direction = 3;
+
+          string protocol = 4;
+
+          string source = 5;
+
+          string source_port = 6 [json_name = "source_port"];
+        }
+
+        message RuleOption {
+          string keyword = 1;
+
+          repeated string settings = 2;
+        }
+      }
+
+      message StatelessRulesAndCustomActions {
+        repeated CustomAction custom_action = 1 [json_name = "custom_action"];
+
+        repeated StatelessRule stateless_rule = 2 [json_name = "stateless_rule"];
+
+        message CustomAction {
+          string action_name = 1 [json_name = "action_name"];
+
+          ActionDefinition action_definition = 2 [json_name = "action_definition"];
+
+          message ActionDefinition {
+            PublishMetricAction publish_metric_action = 1 [json_name = "publish_metric_action"];
+
+            message PublishMetricAction {
+              repeated Dimension dimension = 1;
+
+              message Dimension {
+                string value = 1;
+              }
+            }
+          }
+        }
+
+        message StatelessRule {
+          int64 priority = 1;
+
+          RuleDefinition rule_definition = 2 [json_name = "rule_definition"];
+
+          message RuleDefinition {
+            repeated string actions = 1;
+
+            MatchAttributes match_attributes = 2 [json_name = "match_attributes"];
+
+            message MatchAttributes {
+              repeated int64 protocols = 1;
+
+              repeated Destination destination = 2;
+
+              repeated DestinationPort destination_port = 3 [json_name = "destination_port"];
+
+              repeated Source source = 4;
+
+              repeated SourcePort source_port = 5 [json_name = "source_port"];
+
+              repeated TcpFlag tcp_flag = 6 [json_name = "tcp_flag"];
+
+              message Destination {
+                string address_definition = 1 [json_name = "address_definition"];
+              }
+
+              message DestinationPort {
+                int64 from_port = 1 [json_name = "from_port"];
+
+                int64 to_port = 2 [json_name = "to_port"];
+              }
+
+              message Source {
+                string address_definition = 1 [json_name = "address_definition"];
+              }
+
+              message SourcePort {
+                int64 from_port = 1 [json_name = "from_port"];
+
+                int64 to_port = 2 [json_name = "to_port"];
+              }
+
+              message TcpFlag {
+                repeated string flags = 1;
+
+                repeated string masks = 2;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    message StatefulRuleOptions {
+      string rule_order = 1 [json_name = "rule_order"];
+    }
+  }
+}

@@ -1,0 +1,208 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsBudgetsBudget version is 0
+message AwsBudgetsBudget {
+  string account_id = 1 [json_name = "account_id"];
+
+  string arn = 2;
+
+  string budget_type = 3 [json_name = "budget_type"];
+
+  string id = 4;
+
+  string limit_amount = 5 [json_name = "limit_amount"];
+
+  string limit_unit = 6 [json_name = "limit_unit"];
+
+  string name = 7;
+
+  string name_prefix = 8 [json_name = "name_prefix"];
+
+  string time_period_end = 9 [json_name = "time_period_end"];
+
+  string time_period_start = 10 [json_name = "time_period_start"];
+
+  string time_unit = 11 [json_name = "time_unit"];
+
+  AutoAdjustData auto_adjust_data = 12 [json_name = "auto_adjust_data"];
+
+  repeated CostFilter cost_filter = 13 [json_name = "cost_filter"];
+
+  CostTypes cost_types = 14 [json_name = "cost_types"];
+
+  repeated Notification notification = 15;
+
+  repeated PlannedLimit planned_limit = 16 [json_name = "planned_limit"];
+
+  map<string, string> for_each = 17 [json_name = "for_each"];
+
+  repeated string depends_on = 18 [json_name = "depends_on"];
+
+  int32 count = 19;
+
+  string provider = 20;
+
+  terraform.v1.Lifecycle lifecycle = 21;
+
+  message AutoAdjustData {
+    string auto_adjust_type = 1 [json_name = "auto_adjust_type"];
+
+    string last_auto_adjust_time = 2 [json_name = "last_auto_adjust_time"];
+
+    HistoricalOptions historical_options = 3 [json_name = "historical_options"];
+
+    message HistoricalOptions {
+      int64 budget_adjustment_period = 1 [json_name = "budget_adjustment_period"];
+
+      int64 lookback_available_periods = 2 [json_name = "lookback_available_periods"];
+    }
+  }
+
+  message CostFilter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+
+  message CostTypes {
+    bool include_credit = 1 [json_name = "include_credit"];
+
+    bool include_discount = 2 [json_name = "include_discount"];
+
+    bool include_other_subscription = 3 [json_name = "include_other_subscription"];
+
+    bool include_recurring = 4 [json_name = "include_recurring"];
+
+    bool include_refund = 5 [json_name = "include_refund"];
+
+    bool include_subscription = 6 [json_name = "include_subscription"];
+
+    bool include_support = 7 [json_name = "include_support"];
+
+    bool include_tax = 8 [json_name = "include_tax"];
+
+    bool include_upfront = 9 [json_name = "include_upfront"];
+
+    bool use_amortized = 10 [json_name = "use_amortized"];
+
+    bool use_blended = 11 [json_name = "use_blended"];
+  }
+
+  message Notification {
+    string comparison_operator = 1 [json_name = "comparison_operator"];
+
+    string notification_type = 2 [json_name = "notification_type"];
+
+    repeated string subscriber_email_addresses = 3 [json_name = "subscriber_email_addresses"];
+
+    repeated string subscriber_sns_topic_arns = 4 [json_name = "subscriber_sns_topic_arns"];
+
+    int64 threshold = 5;
+
+    string threshold_type = 6 [json_name = "threshold_type"];
+  }
+
+  message PlannedLimit {
+    string amount = 1;
+
+    string start_time = 2 [json_name = "start_time"];
+
+    string unit = 3;
+  }
+}
+
+// AwsBudgetsBudgetAction version is 0
+message AwsBudgetsBudgetAction {
+  string account_id = 1 [json_name = "account_id"];
+
+  string action_id = 2 [json_name = "action_id"];
+
+  string action_type = 3 [json_name = "action_type"];
+
+  string approval_model = 4 [json_name = "approval_model"];
+
+  string arn = 5;
+
+  string budget_name = 6 [json_name = "budget_name"];
+
+  string execution_role_arn = 7 [json_name = "execution_role_arn"];
+
+  string id = 8;
+
+  string notification_type = 9 [json_name = "notification_type"];
+
+  string status = 10;
+
+  ActionThreshold action_threshold = 11 [json_name = "action_threshold"];
+
+  Definition definition = 12;
+
+  repeated Subscriber subscriber = 13;
+
+  repeated Timeouts timeouts = 14;
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+
+  message ActionThreshold {
+    string action_threshold_type = 1 [json_name = "action_threshold_type"];
+
+    int64 action_threshold_value = 2 [json_name = "action_threshold_value"];
+  }
+
+  message Definition {
+    IamActionDefinition iam_action_definition = 1 [json_name = "iam_action_definition"];
+
+    ScpActionDefinition scp_action_definition = 2 [json_name = "scp_action_definition"];
+
+    SsmActionDefinition ssm_action_definition = 3 [json_name = "ssm_action_definition"];
+
+    message IamActionDefinition {
+      repeated string groups = 1;
+
+      string policy_arn = 2 [json_name = "policy_arn"];
+
+      repeated string roles = 3;
+
+      repeated string users = 4;
+    }
+
+    message ScpActionDefinition {
+      string policy_id = 1 [json_name = "policy_id"];
+
+      repeated string target_ids = 2 [json_name = "target_ids"];
+    }
+
+    message SsmActionDefinition {
+      string action_sub_type = 1 [json_name = "action_sub_type"];
+
+      repeated string instance_ids = 2 [json_name = "instance_ids"];
+
+      string region = 3;
+    }
+  }
+
+  message Subscriber {
+    string address = 1;
+
+    string subscription_type = 2 [json_name = "subscription_type"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string update = 2;
+  }
+}

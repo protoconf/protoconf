@@ -1,0 +1,837 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleIapAppEngineServiceIamBinding version is 0
+message GoogleIapAppEngineServiceIamBinding {
+  string app_id = 1 [json_name = "app_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  repeated string members = 4;
+
+  string project = 5;
+
+  string role = 6;
+
+  string service = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleIapAppEngineServiceIamMember version is 0
+message GoogleIapAppEngineServiceIamMember {
+  string app_id = 1 [json_name = "app_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string member = 4;
+
+  string project = 5;
+
+  string role = 6;
+
+  string service = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleIapAppEngineServiceIamPolicy version is 0
+message GoogleIapAppEngineServiceIamPolicy {
+  string app_id = 1 [json_name = "app_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  string service = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleIapAppEngineVersionIamBinding version is 0
+message GoogleIapAppEngineVersionIamBinding {
+  string app_id = 1 [json_name = "app_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  repeated string members = 4;
+
+  string project = 5;
+
+  string role = 6;
+
+  string service = 7;
+
+  string version_id = 8 [json_name = "version_id"];
+
+  Condition condition = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleIapAppEngineVersionIamMember version is 0
+message GoogleIapAppEngineVersionIamMember {
+  string app_id = 1 [json_name = "app_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string member = 4;
+
+  string project = 5;
+
+  string role = 6;
+
+  string service = 7;
+
+  string version_id = 8 [json_name = "version_id"];
+
+  Condition condition = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleIapAppEngineVersionIamPolicy version is 0
+message GoogleIapAppEngineVersionIamPolicy {
+  string app_id = 1 [json_name = "app_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  string service = 6;
+
+  string version_id = 7 [json_name = "version_id"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// GoogleIapBrand version is 0
+message GoogleIapBrand {
+  // Application name displayed on OAuth consent screen.
+  string application_title = 1 [json_name = "application_title"];
+
+  string id = 2;
+
+  // Output only. Identifier of the brand, in the format 'projects/{project_number}/brands/{brand_id}'
+  // NOTE: The name can also be expressed as 'projects/{project_id}/brands/{brand_id}', e.g. when importing.
+  // NOTE: The brand identification corresponds to the project number as only one
+  // brand can be created per project.
+  string name = 3;
+
+  // Whether the brand is only intended for usage inside the GSuite organization only.
+  bool org_internal_only = 4 [json_name = "org_internal_only"];
+
+  string project = 5;
+
+  // Support email displayed on the OAuth consent screen. Can be either a
+  // user or group email. When a user email is specified, the caller must
+  // be the user with the associated email address. When a group email is
+  // specified, the caller can be either a user or a service account which
+  // is an owner of the specified group in Cloud Identity.
+  string support_email = 6 [json_name = "support_email"];
+
+  repeated Timeouts timeouts = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// GoogleIapClient version is 0
+message GoogleIapClient {
+  // Identifier of the brand to which this client
+  // is attached to. The format is
+  // 'projects/{project_number}/brands/{brand_id}/identityAwareProxyClients/{client_id}'.
+  string brand = 1;
+
+  // Output only. Unique identifier of the OAuth client.
+  string client_id = 2 [json_name = "client_id"];
+
+  // Human-friendly name given to the OAuth client.
+  string display_name = 3 [json_name = "display_name"];
+
+  string id = 4;
+
+  // Output only. Client secret of the OAuth client.
+  string secret = 5;
+
+  repeated Timeouts timeouts = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// GoogleIapTunnelIamBinding version is 0
+message GoogleIapTunnelIamBinding {
+  string etag = 1;
+
+  string id = 2;
+
+  repeated string members = 3;
+
+  string project = 4;
+
+  string role = 5;
+
+  Condition condition = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleIapTunnelIamMember version is 0
+message GoogleIapTunnelIamMember {
+  string etag = 1;
+
+  string id = 2;
+
+  string member = 3;
+
+  string project = 4;
+
+  string role = 5;
+
+  Condition condition = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleIapTunnelIamPolicy version is 0
+message GoogleIapTunnelIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string policy_data = 3 [json_name = "policy_data"];
+
+  string project = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// GoogleIapTunnelInstanceIamBinding version is 0
+message GoogleIapTunnelInstanceIamBinding {
+  string etag = 1;
+
+  string id = 2;
+
+  string instance = 3;
+
+  repeated string members = 4;
+
+  string project = 5;
+
+  string role = 6;
+
+  string zone = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleIapTunnelInstanceIamMember version is 0
+message GoogleIapTunnelInstanceIamMember {
+  string etag = 1;
+
+  string id = 2;
+
+  string instance = 3;
+
+  string member = 4;
+
+  string project = 5;
+
+  string role = 6;
+
+  string zone = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleIapTunnelInstanceIamPolicy version is 0
+message GoogleIapTunnelInstanceIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string instance = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  string zone = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleIapWebBackendServiceIamBinding version is 0
+message GoogleIapWebBackendServiceIamBinding {
+  string etag = 1;
+
+  string id = 2;
+
+  repeated string members = 3;
+
+  string project = 4;
+
+  string role = 5;
+
+  string web_backend_service = 6 [json_name = "web_backend_service"];
+
+  Condition condition = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleIapWebBackendServiceIamMember version is 0
+message GoogleIapWebBackendServiceIamMember {
+  string etag = 1;
+
+  string id = 2;
+
+  string member = 3;
+
+  string project = 4;
+
+  string role = 5;
+
+  string web_backend_service = 6 [json_name = "web_backend_service"];
+
+  Condition condition = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleIapWebBackendServiceIamPolicy version is 0
+message GoogleIapWebBackendServiceIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string policy_data = 3 [json_name = "policy_data"];
+
+  string project = 4;
+
+  string web_backend_service = 5 [json_name = "web_backend_service"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// GoogleIapWebIamBinding version is 0
+message GoogleIapWebIamBinding {
+  string etag = 1;
+
+  string id = 2;
+
+  repeated string members = 3;
+
+  string project = 4;
+
+  string role = 5;
+
+  Condition condition = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleIapWebIamMember version is 0
+message GoogleIapWebIamMember {
+  string etag = 1;
+
+  string id = 2;
+
+  string member = 3;
+
+  string project = 4;
+
+  string role = 5;
+
+  Condition condition = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleIapWebIamPolicy version is 0
+message GoogleIapWebIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string policy_data = 3 [json_name = "policy_data"];
+
+  string project = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// GoogleIapWebTypeAppEngineIamBinding version is 0
+message GoogleIapWebTypeAppEngineIamBinding {
+  string app_id = 1 [json_name = "app_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  repeated string members = 4;
+
+  string project = 5;
+
+  string role = 6;
+
+  Condition condition = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleIapWebTypeAppEngineIamMember version is 0
+message GoogleIapWebTypeAppEngineIamMember {
+  string app_id = 1 [json_name = "app_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string member = 4;
+
+  string project = 5;
+
+  string role = 6;
+
+  Condition condition = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleIapWebTypeAppEngineIamPolicy version is 0
+message GoogleIapWebTypeAppEngineIamPolicy {
+  string app_id = 1 [json_name = "app_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// GoogleIapWebTypeComputeIamBinding version is 0
+message GoogleIapWebTypeComputeIamBinding {
+  string etag = 1;
+
+  string id = 2;
+
+  repeated string members = 3;
+
+  string project = 4;
+
+  string role = 5;
+
+  Condition condition = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleIapWebTypeComputeIamMember version is 0
+message GoogleIapWebTypeComputeIamMember {
+  string etag = 1;
+
+  string id = 2;
+
+  string member = 3;
+
+  string project = 4;
+
+  string role = 5;
+
+  Condition condition = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleIapWebTypeComputeIamPolicy version is 0
+message GoogleIapWebTypeComputeIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string policy_data = 3 [json_name = "policy_data"];
+
+  string project = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}

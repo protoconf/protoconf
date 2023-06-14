@@ -1,0 +1,339 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsGuarddutyDetector version is 0
+message AwsGuarddutyDetector {
+  string account_id = 1 [json_name = "account_id"];
+
+  string arn = 2;
+
+  bool enable = 3;
+
+  string finding_publishing_frequency = 4 [json_name = "finding_publishing_frequency"];
+
+  string id = 5;
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  Datasources datasources = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Datasources {
+    Kubernetes kubernetes = 1;
+
+    MalwareProtection malware_protection = 2 [json_name = "malware_protection"];
+
+    S3Logs s3_logs = 3 [json_name = "s3_logs"];
+
+    message Kubernetes {
+      AuditLogs audit_logs = 1 [json_name = "audit_logs"];
+
+      message AuditLogs {
+        bool enable = 1;
+      }
+    }
+
+    message MalwareProtection {
+      ScanEc2InstanceWithFindings scan_ec2_instance_with_findings = 1 [json_name = "scan_ec2_instance_with_findings"];
+
+      message ScanEc2InstanceWithFindings {
+        EbsVolumes ebs_volumes = 1 [json_name = "ebs_volumes"];
+
+        message EbsVolumes {
+          bool enable = 1;
+        }
+      }
+    }
+
+    message S3Logs {
+      bool enable = 1;
+    }
+  }
+}
+
+// AwsGuarddutyFilter version is 0
+message AwsGuarddutyFilter {
+  string action = 1;
+
+  string arn = 2;
+
+  string description = 3;
+
+  string detector_id = 4 [json_name = "detector_id"];
+
+  string id = 5;
+
+  string name = 6;
+
+  int64 rank = 7;
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  FindingCriteria finding_criteria = 10 [json_name = "finding_criteria"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message FindingCriteria {
+    repeated Criterion criterion = 1;
+
+    message Criterion {
+      repeated string equals = 1;
+
+      string field = 2;
+
+      string greater_than = 3 [json_name = "greater_than"];
+
+      string greater_than_or_equal = 4 [json_name = "greater_than_or_equal"];
+
+      string less_than = 5 [json_name = "less_than"];
+
+      string less_than_or_equal = 6 [json_name = "less_than_or_equal"];
+
+      repeated string not_equals = 7 [json_name = "not_equals"];
+    }
+  }
+}
+
+// AwsGuarddutyInviteAccepter version is 0
+message AwsGuarddutyInviteAccepter {
+  string detector_id = 1 [json_name = "detector_id"];
+
+  string id = 2;
+
+  string master_account_id = 3 [json_name = "master_account_id"];
+
+  repeated Timeouts timeouts = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message Timeouts {
+    string create = 1;
+  }
+}
+
+// AwsGuarddutyIpset version is 0
+message AwsGuarddutyIpset {
+  bool activate = 1;
+
+  string arn = 2;
+
+  string detector_id = 3 [json_name = "detector_id"];
+
+  string format = 4;
+
+  string id = 5;
+
+  string location = 6;
+
+  string name = 7;
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+}
+
+// AwsGuarddutyMember version is 0
+message AwsGuarddutyMember {
+  string account_id = 1 [json_name = "account_id"];
+
+  string detector_id = 2 [json_name = "detector_id"];
+
+  bool disable_email_notification = 3 [json_name = "disable_email_notification"];
+
+  string email = 4;
+
+  string id = 5;
+
+  string invitation_message = 6 [json_name = "invitation_message"];
+
+  bool invite = 7;
+
+  string relationship_status = 8 [json_name = "relationship_status"];
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Timeouts {
+    string create = 1;
+
+    string update = 2;
+  }
+}
+
+// AwsGuarddutyOrganizationAdminAccount version is 0
+message AwsGuarddutyOrganizationAdminAccount {
+  string admin_account_id = 1 [json_name = "admin_account_id"];
+
+  string id = 2;
+
+  map<string, string> for_each = 3 [json_name = "for_each"];
+
+  repeated string depends_on = 4 [json_name = "depends_on"];
+
+  int32 count = 5;
+
+  string provider = 6;
+
+  terraform.v1.Lifecycle lifecycle = 7;
+}
+
+// AwsGuarddutyOrganizationConfiguration version is 0
+message AwsGuarddutyOrganizationConfiguration {
+  bool auto_enable = 1 [json_name = "auto_enable"];
+
+  string auto_enable_organization_members = 2 [json_name = "auto_enable_organization_members"];
+
+  string detector_id = 3 [json_name = "detector_id"];
+
+  string id = 4;
+
+  Datasources datasources = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message Datasources {
+    Kubernetes kubernetes = 1;
+
+    MalwareProtection malware_protection = 2 [json_name = "malware_protection"];
+
+    S3Logs s3_logs = 3 [json_name = "s3_logs"];
+
+    message Kubernetes {
+      AuditLogs audit_logs = 1 [json_name = "audit_logs"];
+
+      message AuditLogs {
+        bool enable = 1;
+      }
+    }
+
+    message MalwareProtection {
+      ScanEc2InstanceWithFindings scan_ec2_instance_with_findings = 1 [json_name = "scan_ec2_instance_with_findings"];
+
+      message ScanEc2InstanceWithFindings {
+        EbsVolumes ebs_volumes = 1 [json_name = "ebs_volumes"];
+
+        message EbsVolumes {
+          bool auto_enable = 1 [json_name = "auto_enable"];
+        }
+      }
+    }
+
+    message S3Logs {
+      bool auto_enable = 1 [json_name = "auto_enable"];
+    }
+  }
+}
+
+// AwsGuarddutyPublishingDestination version is 0
+message AwsGuarddutyPublishingDestination {
+  string destination_arn = 1 [json_name = "destination_arn"];
+
+  string destination_type = 2 [json_name = "destination_type"];
+
+  string detector_id = 3 [json_name = "detector_id"];
+
+  string id = 4;
+
+  string kms_key_arn = 5 [json_name = "kms_key_arn"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsGuarddutyThreatintelset version is 0
+message AwsGuarddutyThreatintelset {
+  bool activate = 1;
+
+  string arn = 2;
+
+  string detector_id = 3 [json_name = "detector_id"];
+
+  string format = 4;
+
+  string id = 5;
+
+  string location = 6;
+
+  string name = 7;
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+}

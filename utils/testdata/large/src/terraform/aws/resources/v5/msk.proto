@@ -1,0 +1,302 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsMskCluster version is 0
+message AwsMskCluster {
+  string arn = 1;
+
+  string bootstrap_brokers = 2 [json_name = "bootstrap_brokers"];
+
+  string bootstrap_brokers_public_sasl_iam = 3 [json_name = "bootstrap_brokers_public_sasl_iam"];
+
+  string bootstrap_brokers_public_sasl_scram = 4 [json_name = "bootstrap_brokers_public_sasl_scram"];
+
+  string bootstrap_brokers_public_tls = 5 [json_name = "bootstrap_brokers_public_tls"];
+
+  string bootstrap_brokers_sasl_iam = 6 [json_name = "bootstrap_brokers_sasl_iam"];
+
+  string bootstrap_brokers_sasl_scram = 7 [json_name = "bootstrap_brokers_sasl_scram"];
+
+  string bootstrap_brokers_tls = 8 [json_name = "bootstrap_brokers_tls"];
+
+  string cluster_name = 9 [json_name = "cluster_name"];
+
+  string current_version = 10 [json_name = "current_version"];
+
+  string enhanced_monitoring = 11 [json_name = "enhanced_monitoring"];
+
+  string id = 12;
+
+  string kafka_version = 13 [json_name = "kafka_version"];
+
+  int64 number_of_broker_nodes = 14 [json_name = "number_of_broker_nodes"];
+
+  string storage_mode = 15 [json_name = "storage_mode"];
+
+  map<string, string> tags = 16;
+
+  map<string, string> tags_all = 17 [json_name = "tags_all"];
+
+  string zookeeper_connect_string = 18 [json_name = "zookeeper_connect_string"];
+
+  string zookeeper_connect_string_tls = 19 [json_name = "zookeeper_connect_string_tls"];
+
+  BrokerNodeGroupInfo broker_node_group_info = 20 [json_name = "broker_node_group_info"];
+
+  ClientAuthentication client_authentication = 21 [json_name = "client_authentication"];
+
+  ConfigurationInfo configuration_info = 22 [json_name = "configuration_info"];
+
+  EncryptionInfo encryption_info = 23 [json_name = "encryption_info"];
+
+  LoggingInfo logging_info = 24 [json_name = "logging_info"];
+
+  OpenMonitoring open_monitoring = 25 [json_name = "open_monitoring"];
+
+  repeated Timeouts timeouts = 26;
+
+  map<string, string> for_each = 27 [json_name = "for_each"];
+
+  repeated string depends_on = 28 [json_name = "depends_on"];
+
+  int32 count = 29;
+
+  string provider = 30;
+
+  terraform.v1.Lifecycle lifecycle = 31;
+
+  message BrokerNodeGroupInfo {
+    string az_distribution = 1 [json_name = "az_distribution"];
+
+    repeated string client_subnets = 2 [json_name = "client_subnets"];
+
+    string instance_type = 3 [json_name = "instance_type"];
+
+    repeated string security_groups = 4 [json_name = "security_groups"];
+
+    ConnectivityInfo connectivity_info = 5 [json_name = "connectivity_info"];
+
+    StorageInfo storage_info = 6 [json_name = "storage_info"];
+
+    message ConnectivityInfo {
+      PublicAccess public_access = 1 [json_name = "public_access"];
+
+      message PublicAccess {
+        string type = 1;
+      }
+    }
+
+    message StorageInfo {
+      EbsStorageInfo ebs_storage_info = 1 [json_name = "ebs_storage_info"];
+
+      message EbsStorageInfo {
+        int64 volume_size = 1 [json_name = "volume_size"];
+
+        ProvisionedThroughput provisioned_throughput = 2 [json_name = "provisioned_throughput"];
+
+        message ProvisionedThroughput {
+          bool enabled = 1;
+
+          int64 volume_throughput = 2 [json_name = "volume_throughput"];
+        }
+      }
+    }
+  }
+
+  message ClientAuthentication {
+    bool unauthenticated = 1;
+
+    Sasl sasl = 2;
+
+    Tls tls = 3;
+
+    message Sasl {
+      bool iam = 1;
+
+      bool scram = 2;
+    }
+
+    message Tls {
+      repeated string certificate_authority_arns = 1 [json_name = "certificate_authority_arns"];
+    }
+  }
+
+  message ConfigurationInfo {
+    string arn = 1;
+
+    int64 revision = 2;
+  }
+
+  message EncryptionInfo {
+    string encryption_at_rest_kms_key_arn = 1 [json_name = "encryption_at_rest_kms_key_arn"];
+
+    EncryptionInTransit encryption_in_transit = 2 [json_name = "encryption_in_transit"];
+
+    message EncryptionInTransit {
+      string client_broker = 1 [json_name = "client_broker"];
+
+      bool in_cluster = 2 [json_name = "in_cluster"];
+    }
+  }
+
+  message LoggingInfo {
+    BrokerLogs broker_logs = 1 [json_name = "broker_logs"];
+
+    message BrokerLogs {
+      CloudwatchLogs cloudwatch_logs = 1 [json_name = "cloudwatch_logs"];
+
+      Firehose firehose = 2;
+
+      S3 s3 = 3;
+
+      message CloudwatchLogs {
+        bool enabled = 1;
+
+        string log_group = 2 [json_name = "log_group"];
+      }
+
+      message Firehose {
+        string delivery_stream = 1 [json_name = "delivery_stream"];
+
+        bool enabled = 2;
+      }
+
+      message S3 {
+        string bucket = 1;
+
+        bool enabled = 2;
+
+        string prefix = 3;
+      }
+    }
+  }
+
+  message OpenMonitoring {
+    Prometheus prometheus = 1;
+
+    message Prometheus {
+      JmxExporter jmx_exporter = 1 [json_name = "jmx_exporter"];
+
+      NodeExporter node_exporter = 2 [json_name = "node_exporter"];
+
+      message JmxExporter {
+        bool enabled_in_broker = 1 [json_name = "enabled_in_broker"];
+      }
+
+      message NodeExporter {
+        bool enabled_in_broker = 1 [json_name = "enabled_in_broker"];
+      }
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsMskConfiguration version is 0
+message AwsMskConfiguration {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  repeated string kafka_versions = 4 [json_name = "kafka_versions"];
+
+  int64 latest_revision = 5 [json_name = "latest_revision"];
+
+  string name = 6;
+
+  string server_properties = 7 [json_name = "server_properties"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsMskScramSecretAssociation version is 0
+message AwsMskScramSecretAssociation {
+  string cluster_arn = 1 [json_name = "cluster_arn"];
+
+  string id = 2;
+
+  repeated string secret_arn_list = 3 [json_name = "secret_arn_list"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsMskServerlessCluster version is 0
+message AwsMskServerlessCluster {
+  string arn = 1;
+
+  string cluster_name = 2 [json_name = "cluster_name"];
+
+  string id = 3;
+
+  map<string, string> tags = 4;
+
+  map<string, string> tags_all = 5 [json_name = "tags_all"];
+
+  ClientAuthentication client_authentication = 6 [json_name = "client_authentication"];
+
+  repeated Timeouts timeouts = 7;
+
+  repeated VpcConfig vpc_config = 8 [json_name = "vpc_config"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message ClientAuthentication {
+    Sasl sasl = 1;
+
+    message Sasl {
+      Iam iam = 1;
+
+      message Iam {
+        bool enabled = 1;
+      }
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+
+  message VpcConfig {
+    repeated string security_group_ids = 1 [json_name = "security_group_ids"];
+
+    repeated string subnet_ids = 2 [json_name = "subnet_ids"];
+  }
+}

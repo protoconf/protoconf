@@ -1,0 +1,586 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsImagebuilderComponent version is 0
+message AwsImagebuilderComponent {
+  string arn = 1;
+
+  string change_description = 2 [json_name = "change_description"];
+
+  string data = 3;
+
+  string date_created = 4 [json_name = "date_created"];
+
+  string description = 5;
+
+  bool encrypted = 6;
+
+  string id = 7;
+
+  string kms_key_id = 8 [json_name = "kms_key_id"];
+
+  string name = 9;
+
+  string owner = 10;
+
+  string platform = 11;
+
+  bool skip_destroy = 12 [json_name = "skip_destroy"];
+
+  repeated string supported_os_versions = 13 [json_name = "supported_os_versions"];
+
+  map<string, string> tags = 14;
+
+  map<string, string> tags_all = 15 [json_name = "tags_all"];
+
+  string type = 16;
+
+  string uri = 17;
+
+  string version = 18;
+
+  map<string, string> for_each = 19 [json_name = "for_each"];
+
+  repeated string depends_on = 20 [json_name = "depends_on"];
+
+  int32 count = 21;
+
+  string provider = 22;
+
+  terraform.v1.Lifecycle lifecycle = 23;
+}
+
+// AwsImagebuilderContainerRecipe version is 0
+message AwsImagebuilderContainerRecipe {
+  string arn = 1;
+
+  string container_type = 2 [json_name = "container_type"];
+
+  string date_created = 3 [json_name = "date_created"];
+
+  string description = 4;
+
+  string dockerfile_template_data = 5 [json_name = "dockerfile_template_data"];
+
+  string dockerfile_template_uri = 6 [json_name = "dockerfile_template_uri"];
+
+  bool encrypted = 7;
+
+  string id = 8;
+
+  string kms_key_id = 9 [json_name = "kms_key_id"];
+
+  string name = 10;
+
+  string owner = 11;
+
+  string parent_image = 12 [json_name = "parent_image"];
+
+  string platform = 13;
+
+  string platform_override = 14 [json_name = "platform_override"];
+
+  map<string, string> tags = 15;
+
+  map<string, string> tags_all = 16 [json_name = "tags_all"];
+
+  string version = 17;
+
+  string working_directory = 18 [json_name = "working_directory"];
+
+  repeated Component component = 19;
+
+  InstanceConfiguration instance_configuration = 20 [json_name = "instance_configuration"];
+
+  TargetRepository target_repository = 21 [json_name = "target_repository"];
+
+  map<string, string> for_each = 22 [json_name = "for_each"];
+
+  repeated string depends_on = 23 [json_name = "depends_on"];
+
+  int32 count = 24;
+
+  string provider = 25;
+
+  terraform.v1.Lifecycle lifecycle = 26;
+
+  message Component {
+    string component_arn = 1 [json_name = "component_arn"];
+
+    repeated Parameter parameter = 2;
+
+    message Parameter {
+      string name = 1;
+
+      string value = 2;
+    }
+  }
+
+  message InstanceConfiguration {
+    string image = 1;
+
+    repeated BlockDeviceMapping block_device_mapping = 2 [json_name = "block_device_mapping"];
+
+    message BlockDeviceMapping {
+      string device_name = 1 [json_name = "device_name"];
+
+      bool no_device = 2 [json_name = "no_device"];
+
+      string virtual_name = 3 [json_name = "virtual_name"];
+
+      Ebs ebs = 4;
+
+      message Ebs {
+        string delete_on_termination = 1 [json_name = "delete_on_termination"];
+
+        string encrypted = 2;
+
+        int64 iops = 3;
+
+        string kms_key_id = 4 [json_name = "kms_key_id"];
+
+        string snapshot_id = 5 [json_name = "snapshot_id"];
+
+        int64 throughput = 6;
+
+        int64 volume_size = 7 [json_name = "volume_size"];
+
+        string volume_type = 8 [json_name = "volume_type"];
+      }
+    }
+  }
+
+  message TargetRepository {
+    string repository_name = 1 [json_name = "repository_name"];
+
+    string service = 2;
+  }
+}
+
+// AwsImagebuilderDistributionConfiguration version is 0
+message AwsImagebuilderDistributionConfiguration {
+  string arn = 1;
+
+  string date_created = 2 [json_name = "date_created"];
+
+  string date_updated = 3 [json_name = "date_updated"];
+
+  string description = 4;
+
+  string id = 5;
+
+  string name = 6;
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  repeated Distribution distribution = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Distribution {
+    repeated string license_configuration_arns = 1 [json_name = "license_configuration_arns"];
+
+    string region = 2;
+
+    AmiDistributionConfiguration ami_distribution_configuration = 3 [json_name = "ami_distribution_configuration"];
+
+    ContainerDistributionConfiguration container_distribution_configuration = 4 [json_name = "container_distribution_configuration"];
+
+    repeated FastLaunchConfiguration fast_launch_configuration = 5 [json_name = "fast_launch_configuration"];
+
+    repeated LaunchTemplateConfiguration launch_template_configuration = 6 [json_name = "launch_template_configuration"];
+
+    message AmiDistributionConfiguration {
+      map<string, string> ami_tags = 1 [json_name = "ami_tags"];
+
+      string description = 2;
+
+      string kms_key_id = 3 [json_name = "kms_key_id"];
+
+      string name = 4;
+
+      repeated string target_account_ids = 5 [json_name = "target_account_ids"];
+
+      LaunchPermission launch_permission = 6 [json_name = "launch_permission"];
+
+      message LaunchPermission {
+        repeated string organization_arns = 1 [json_name = "organization_arns"];
+
+        repeated string organizational_unit_arns = 2 [json_name = "organizational_unit_arns"];
+
+        repeated string user_groups = 3 [json_name = "user_groups"];
+
+        repeated string user_ids = 4 [json_name = "user_ids"];
+      }
+    }
+
+    message ContainerDistributionConfiguration {
+      repeated string container_tags = 1 [json_name = "container_tags"];
+
+      string description = 2;
+
+      TargetRepository target_repository = 3 [json_name = "target_repository"];
+
+      message TargetRepository {
+        string repository_name = 1 [json_name = "repository_name"];
+
+        string service = 2;
+      }
+    }
+
+    message FastLaunchConfiguration {
+      string account_id = 1 [json_name = "account_id"];
+
+      bool enabled = 2;
+
+      int64 max_parallel_launches = 3 [json_name = "max_parallel_launches"];
+
+      LaunchTemplate launch_template = 4 [json_name = "launch_template"];
+
+      SnapshotConfiguration snapshot_configuration = 5 [json_name = "snapshot_configuration"];
+
+      message LaunchTemplate {
+        string launch_template_id = 1 [json_name = "launch_template_id"];
+
+        string launch_template_name = 2 [json_name = "launch_template_name"];
+
+        string launch_template_version = 3 [json_name = "launch_template_version"];
+      }
+
+      message SnapshotConfiguration {
+        int64 target_resource_count = 1 [json_name = "target_resource_count"];
+      }
+    }
+
+    message LaunchTemplateConfiguration {
+      string account_id = 1 [json_name = "account_id"];
+
+      bool default = 2;
+
+      string launch_template_id = 3 [json_name = "launch_template_id"];
+    }
+  }
+}
+
+// AwsImagebuilderImage version is 0
+message AwsImagebuilderImage {
+  string arn = 1;
+
+  string container_recipe_arn = 2 [json_name = "container_recipe_arn"];
+
+  string date_created = 3 [json_name = "date_created"];
+
+  string distribution_configuration_arn = 4 [json_name = "distribution_configuration_arn"];
+
+  bool enhanced_image_metadata_enabled = 5 [json_name = "enhanced_image_metadata_enabled"];
+
+  string id = 6;
+
+  string image_recipe_arn = 7 [json_name = "image_recipe_arn"];
+
+  string infrastructure_configuration_arn = 8 [json_name = "infrastructure_configuration_arn"];
+
+  string name = 9;
+
+  string os_version = 10 [json_name = "os_version"];
+
+  repeated OutputResources output_resources = 11 [json_name = "output_resources"];
+
+  string platform = 12;
+
+  map<string, string> tags = 13;
+
+  map<string, string> tags_all = 14 [json_name = "tags_all"];
+
+  string version = 15;
+
+  ImageTestsConfiguration image_tests_configuration = 16 [json_name = "image_tests_configuration"];
+
+  repeated Timeouts timeouts = 17;
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+
+  message OutputResources {
+    // amis: set of object
+    repeated Amis amis = 1;
+
+    // containers: set of object
+    repeated Containers containers = 2;
+
+    message Amis {
+      // account_id: string
+      string account_id = 1 [json_name = "account_id"];
+
+      // description: string
+      string description = 2;
+
+      // image: string
+      string image = 3;
+
+      // name: string
+      string name = 4;
+
+      // region: string
+      string region = 5;
+    }
+
+    message Containers {
+      // image_uris: set of string
+      repeated string image_uris = 1 [json_name = "image_uris"];
+
+      // region: string
+      string region = 2;
+    }
+  }
+
+  message ImageTestsConfiguration {
+    bool image_tests_enabled = 1 [json_name = "image_tests_enabled"];
+
+    int64 timeout_minutes = 2 [json_name = "timeout_minutes"];
+  }
+
+  message Timeouts {
+    string create = 1;
+  }
+}
+
+// AwsImagebuilderImagePipeline version is 0
+message AwsImagebuilderImagePipeline {
+  string arn = 1;
+
+  string container_recipe_arn = 2 [json_name = "container_recipe_arn"];
+
+  string date_created = 3 [json_name = "date_created"];
+
+  string date_last_run = 4 [json_name = "date_last_run"];
+
+  string date_next_run = 5 [json_name = "date_next_run"];
+
+  string date_updated = 6 [json_name = "date_updated"];
+
+  string description = 7;
+
+  string distribution_configuration_arn = 8 [json_name = "distribution_configuration_arn"];
+
+  bool enhanced_image_metadata_enabled = 9 [json_name = "enhanced_image_metadata_enabled"];
+
+  string id = 10;
+
+  string image_recipe_arn = 11 [json_name = "image_recipe_arn"];
+
+  string infrastructure_configuration_arn = 12 [json_name = "infrastructure_configuration_arn"];
+
+  string name = 13;
+
+  string platform = 14;
+
+  string status = 15;
+
+  map<string, string> tags = 16;
+
+  map<string, string> tags_all = 17 [json_name = "tags_all"];
+
+  ImageTestsConfiguration image_tests_configuration = 18 [json_name = "image_tests_configuration"];
+
+  Schedule schedule = 19;
+
+  map<string, string> for_each = 20 [json_name = "for_each"];
+
+  repeated string depends_on = 21 [json_name = "depends_on"];
+
+  int32 count = 22;
+
+  string provider = 23;
+
+  terraform.v1.Lifecycle lifecycle = 24;
+
+  message ImageTestsConfiguration {
+    bool image_tests_enabled = 1 [json_name = "image_tests_enabled"];
+
+    int64 timeout_minutes = 2 [json_name = "timeout_minutes"];
+  }
+
+  message Schedule {
+    string pipeline_execution_start_condition = 1 [json_name = "pipeline_execution_start_condition"];
+
+    string schedule_expression = 2 [json_name = "schedule_expression"];
+
+    string timezone = 3;
+  }
+}
+
+// AwsImagebuilderImageRecipe version is 0
+message AwsImagebuilderImageRecipe {
+  string arn = 1;
+
+  string date_created = 2 [json_name = "date_created"];
+
+  string description = 3;
+
+  string id = 4;
+
+  string name = 5;
+
+  string owner = 6;
+
+  string parent_image = 7 [json_name = "parent_image"];
+
+  string platform = 8;
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  string user_data_base64 = 11 [json_name = "user_data_base64"];
+
+  string version = 12;
+
+  string working_directory = 13 [json_name = "working_directory"];
+
+  repeated BlockDeviceMapping block_device_mapping = 14 [json_name = "block_device_mapping"];
+
+  repeated Component component = 15;
+
+  SystemsManagerAgent systems_manager_agent = 16 [json_name = "systems_manager_agent"];
+
+  map<string, string> for_each = 17 [json_name = "for_each"];
+
+  repeated string depends_on = 18 [json_name = "depends_on"];
+
+  int32 count = 19;
+
+  string provider = 20;
+
+  terraform.v1.Lifecycle lifecycle = 21;
+
+  message BlockDeviceMapping {
+    string device_name = 1 [json_name = "device_name"];
+
+    bool no_device = 2 [json_name = "no_device"];
+
+    string virtual_name = 3 [json_name = "virtual_name"];
+
+    Ebs ebs = 4;
+
+    message Ebs {
+      string delete_on_termination = 1 [json_name = "delete_on_termination"];
+
+      string encrypted = 2;
+
+      int64 iops = 3;
+
+      string kms_key_id = 4 [json_name = "kms_key_id"];
+
+      string snapshot_id = 5 [json_name = "snapshot_id"];
+
+      int64 throughput = 6;
+
+      int64 volume_size = 7 [json_name = "volume_size"];
+
+      string volume_type = 8 [json_name = "volume_type"];
+    }
+  }
+
+  message Component {
+    string component_arn = 1 [json_name = "component_arn"];
+
+    repeated Parameter parameter = 2;
+
+    message Parameter {
+      string name = 1;
+
+      string value = 2;
+    }
+  }
+
+  message SystemsManagerAgent {
+    bool uninstall_after_build = 1 [json_name = "uninstall_after_build"];
+  }
+}
+
+// AwsImagebuilderInfrastructureConfiguration version is 0
+message AwsImagebuilderInfrastructureConfiguration {
+  string arn = 1;
+
+  string date_created = 2 [json_name = "date_created"];
+
+  string date_updated = 3 [json_name = "date_updated"];
+
+  string description = 4;
+
+  string id = 5;
+
+  string instance_profile_name = 6 [json_name = "instance_profile_name"];
+
+  repeated string instance_types = 7 [json_name = "instance_types"];
+
+  string key_pair = 8 [json_name = "key_pair"];
+
+  string name = 9;
+
+  map<string, string> resource_tags = 10 [json_name = "resource_tags"];
+
+  repeated string security_group_ids = 11 [json_name = "security_group_ids"];
+
+  string sns_topic_arn = 12 [json_name = "sns_topic_arn"];
+
+  string subnet_id = 13 [json_name = "subnet_id"];
+
+  map<string, string> tags = 14;
+
+  map<string, string> tags_all = 15 [json_name = "tags_all"];
+
+  bool terminate_instance_on_failure = 16 [json_name = "terminate_instance_on_failure"];
+
+  InstanceMetadataOptions instance_metadata_options = 17 [json_name = "instance_metadata_options"];
+
+  Logging logging = 18;
+
+  map<string, string> for_each = 19 [json_name = "for_each"];
+
+  repeated string depends_on = 20 [json_name = "depends_on"];
+
+  int32 count = 21;
+
+  string provider = 22;
+
+  terraform.v1.Lifecycle lifecycle = 23;
+
+  message InstanceMetadataOptions {
+    int64 http_put_response_hop_limit = 1 [json_name = "http_put_response_hop_limit"];
+
+    string http_tokens = 2 [json_name = "http_tokens"];
+  }
+
+  message Logging {
+    S3Logs s3_logs = 1 [json_name = "s3_logs"];
+
+    message S3Logs {
+      string s3_bucket_name = 1 [json_name = "s3_bucket_name"];
+
+      string s3_key_prefix = 2 [json_name = "s3_key_prefix"];
+    }
+  }
+}

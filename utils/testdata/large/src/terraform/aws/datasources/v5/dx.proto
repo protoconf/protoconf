@@ -1,0 +1,149 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsDxConnection version is 0
+message AwsDxConnection {
+  string arn = 1;
+
+  string aws_device = 2 [json_name = "aws_device"];
+
+  string bandwidth = 3;
+
+  string id = 4;
+
+  string location = 5;
+
+  string name = 6;
+
+  string owner_account_id = 7 [json_name = "owner_account_id"];
+
+  string partner_name = 8 [json_name = "partner_name"];
+
+  string provider_name = 9 [json_name = "provider_name"];
+
+  map<string, string> tags = 10;
+
+  int64 vlan_id = 11 [json_name = "vlan_id"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+}
+
+// AwsDxGateway version is 0
+message AwsDxGateway {
+  string amazon_side_asn = 1 [json_name = "amazon_side_asn"];
+
+  string id = 2;
+
+  string name = 3;
+
+  string owner_account_id = 4 [json_name = "owner_account_id"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsDxLocation version is 0
+message AwsDxLocation {
+  repeated string available_macsec_port_speeds = 1 [json_name = "available_macsec_port_speeds"];
+
+  repeated string available_port_speeds = 2 [json_name = "available_port_speeds"];
+
+  repeated string available_providers = 3 [json_name = "available_providers"];
+
+  string id = 4;
+
+  string location_code = 5 [json_name = "location_code"];
+
+  string location_name = 6 [json_name = "location_name"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsDxLocations version is 0
+message AwsDxLocations {
+  string id = 1;
+
+  repeated string location_codes = 2 [json_name = "location_codes"];
+
+  map<string, string> for_each = 3 [json_name = "for_each"];
+
+  repeated string depends_on = 4 [json_name = "depends_on"];
+
+  int32 count = 5;
+
+  string provider = 6;
+
+  terraform.v1.Lifecycle lifecycle = 7;
+}
+
+// AwsDxRouterConfiguration version is 0
+message AwsDxRouterConfiguration {
+  string customer_router_config = 1 [json_name = "customer_router_config"];
+
+  string id = 2;
+
+  repeated Router router = 3;
+
+  string router_type_identifier = 4 [json_name = "router_type_identifier"];
+
+  string virtual_interface_id = 5 [json_name = "virtual_interface_id"];
+
+  string virtual_interface_name = 6 [json_name = "virtual_interface_name"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Router {
+    // platform: string
+    string platform = 1;
+
+    // router_type_identifier: string
+    string router_type_identifier = 2 [json_name = "router_type_identifier"];
+
+    // software: string
+    string software = 3;
+
+    // vendor: string
+    string vendor = 4;
+
+    // xslt_template_name: string
+    string xslt_template_name = 5 [json_name = "xslt_template_name"];
+
+    // xslt_template_name_for_mac_sec: string
+    string xslt_template_name_for_mac_sec = 6 [json_name = "xslt_template_name_for_mac_sec"];
+  }
+}

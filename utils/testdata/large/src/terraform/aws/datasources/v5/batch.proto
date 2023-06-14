@@ -1,0 +1,122 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsBatchComputeEnvironment version is 0
+message AwsBatchComputeEnvironment {
+  string arn = 1;
+
+  string compute_environment_name = 2 [json_name = "compute_environment_name"];
+
+  string ecs_cluster_arn = 3 [json_name = "ecs_cluster_arn"];
+
+  string id = 4;
+
+  string service_role = 5 [json_name = "service_role"];
+
+  string state = 6;
+
+  string status = 7;
+
+  string status_reason = 8 [json_name = "status_reason"];
+
+  map<string, string> tags = 9;
+
+  string type = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+}
+
+// AwsBatchJobQueue version is 0
+message AwsBatchJobQueue {
+  string arn = 1;
+
+  repeated ComputeEnvironmentOrder compute_environment_order = 2 [json_name = "compute_environment_order"];
+
+  string id = 3;
+
+  string name = 4;
+
+  int64 priority = 5;
+
+  string scheduling_policy_arn = 6 [json_name = "scheduling_policy_arn"];
+
+  string state = 7;
+
+  string status = 8;
+
+  string status_reason = 9 [json_name = "status_reason"];
+
+  map<string, string> tags = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message ComputeEnvironmentOrder {
+    // compute_environment: string
+    string compute_environment = 1 [json_name = "compute_environment"];
+
+    // order: number
+    int64 order = 2;
+  }
+}
+
+// AwsBatchSchedulingPolicy version is 0
+message AwsBatchSchedulingPolicy {
+  string arn = 1;
+
+  repeated FairSharePolicy fair_share_policy = 2 [json_name = "fair_share_policy"];
+
+  string id = 3;
+
+  string name = 4;
+
+  map<string, string> tags = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message FairSharePolicy {
+    // compute_reservation: number
+    int64 compute_reservation = 1 [json_name = "compute_reservation"];
+
+    // share_decay_seconds: number
+    int64 share_decay_seconds = 2 [json_name = "share_decay_seconds"];
+
+    // share_distribution: set of object
+    repeated ShareDistribution share_distribution = 3 [json_name = "share_distribution"];
+
+    message ShareDistribution {
+      // share_identifier: string
+      string share_identifier = 1 [json_name = "share_identifier"];
+
+      // weight_factor: number
+      int64 weight_factor = 2 [json_name = "weight_factor"];
+    }
+  }
+}

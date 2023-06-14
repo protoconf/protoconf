@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsPipesPipe version is 0
+message AwsPipesPipe {
+  string arn = 1;
+
+  string description = 2;
+
+  string desired_state = 3 [json_name = "desired_state"];
+
+  string enrichment = 4;
+
+  string id = 5;
+
+  string name = 6;
+
+  string name_prefix = 7 [json_name = "name_prefix"];
+
+  string role_arn = 8 [json_name = "role_arn"];
+
+  string source = 9;
+
+  map<string, string> tags = 10;
+
+  map<string, string> tags_all = 11 [json_name = "tags_all"];
+
+  string target = 12;
+
+  SourceParameters source_parameters = 13 [json_name = "source_parameters"];
+
+  TargetParameters target_parameters = 14 [json_name = "target_parameters"];
+
+  repeated Timeouts timeouts = 15;
+
+  map<string, string> for_each = 16 [json_name = "for_each"];
+
+  repeated string depends_on = 17 [json_name = "depends_on"];
+
+  int32 count = 18;
+
+  string provider = 19;
+
+  terraform.v1.Lifecycle lifecycle = 20;
+
+  message SourceParameters {
+    FilterCriteria filter_criteria = 1 [json_name = "filter_criteria"];
+
+    message FilterCriteria {
+      repeated Filter filter = 1;
+
+      message Filter {
+        string pattern = 1;
+      }
+    }
+  }
+
+  message TargetParameters {
+    string input_template = 1 [json_name = "input_template"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

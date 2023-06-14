@@ -1,0 +1,430 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsCeAnomalyMonitor version is 0
+message AwsCeAnomalyMonitor {
+  string arn = 1;
+
+  string id = 2;
+
+  string monitor_dimension = 3 [json_name = "monitor_dimension"];
+
+  string monitor_specification = 4 [json_name = "monitor_specification"];
+
+  string monitor_type = 5 [json_name = "monitor_type"];
+
+  string name = 6;
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+}
+
+// AwsCeAnomalySubscription version is 0
+message AwsCeAnomalySubscription {
+  string account_id = 1 [json_name = "account_id"];
+
+  string arn = 2;
+
+  string frequency = 3;
+
+  string id = 4;
+
+  repeated string monitor_arn_list = 5 [json_name = "monitor_arn_list"];
+
+  string name = 6;
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  repeated Subscriber subscriber = 9;
+
+  ThresholdExpression threshold_expression = 10 [json_name = "threshold_expression"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Subscriber {
+    string address = 1;
+
+    string type = 2;
+  }
+
+  message ThresholdExpression {
+    repeated And and = 1;
+
+    CostCategory cost_category = 2 [json_name = "cost_category"];
+
+    Dimension dimension = 3;
+
+    Not not = 4;
+
+    repeated Or or = 5;
+
+    Tags tags = 6;
+
+    message And {
+      CostCategory cost_category = 1 [json_name = "cost_category"];
+
+      Dimension dimension = 2;
+
+      Tags tags = 3;
+
+      message CostCategory {
+        string key = 1;
+
+        repeated string match_options = 2 [json_name = "match_options"];
+
+        repeated string values = 3;
+      }
+
+      message Dimension {
+        string key = 1;
+
+        repeated string match_options = 2 [json_name = "match_options"];
+
+        repeated string values = 3;
+      }
+
+      message Tags {
+        string key = 1;
+
+        repeated string match_options = 2 [json_name = "match_options"];
+
+        repeated string values = 3;
+      }
+    }
+
+    message CostCategory {
+      string key = 1;
+
+      repeated string match_options = 2 [json_name = "match_options"];
+
+      repeated string values = 3;
+    }
+
+    message Dimension {
+      string key = 1;
+
+      repeated string match_options = 2 [json_name = "match_options"];
+
+      repeated string values = 3;
+    }
+
+    message Not {
+      CostCategory cost_category = 1 [json_name = "cost_category"];
+
+      Dimension dimension = 2;
+
+      Tags tags = 3;
+
+      message CostCategory {
+        string key = 1;
+
+        repeated string match_options = 2 [json_name = "match_options"];
+
+        repeated string values = 3;
+      }
+
+      message Dimension {
+        string key = 1;
+
+        repeated string match_options = 2 [json_name = "match_options"];
+
+        repeated string values = 3;
+      }
+
+      message Tags {
+        string key = 1;
+
+        repeated string match_options = 2 [json_name = "match_options"];
+
+        repeated string values = 3;
+      }
+    }
+
+    message Or {
+      CostCategory cost_category = 1 [json_name = "cost_category"];
+
+      Dimension dimension = 2;
+
+      Tags tags = 3;
+
+      message CostCategory {
+        string key = 1;
+
+        repeated string match_options = 2 [json_name = "match_options"];
+
+        repeated string values = 3;
+      }
+
+      message Dimension {
+        string key = 1;
+
+        repeated string match_options = 2 [json_name = "match_options"];
+
+        repeated string values = 3;
+      }
+
+      message Tags {
+        string key = 1;
+
+        repeated string match_options = 2 [json_name = "match_options"];
+
+        repeated string values = 3;
+      }
+    }
+
+    message Tags {
+      string key = 1;
+
+      repeated string match_options = 2 [json_name = "match_options"];
+
+      repeated string values = 3;
+    }
+  }
+}
+
+// AwsCeCostAllocationTag version is 0
+message AwsCeCostAllocationTag {
+  string id = 1;
+
+  string status = 2;
+
+  string tag_key = 3 [json_name = "tag_key"];
+
+  string type = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsCeCostCategory version is 0
+message AwsCeCostCategory {
+  string arn = 1;
+
+  string default_value = 2 [json_name = "default_value"];
+
+  string effective_end = 3 [json_name = "effective_end"];
+
+  string effective_start = 4 [json_name = "effective_start"];
+
+  string id = 5;
+
+  string name = 6;
+
+  string rule_version = 7 [json_name = "rule_version"];
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  repeated Rule rule = 10;
+
+  repeated SplitChargeRule split_charge_rule = 11 [json_name = "split_charge_rule"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message Rule {
+    string type = 1;
+
+    string value = 2;
+
+    InheritedValue inherited_value = 3 [json_name = "inherited_value"];
+
+    Rule rule = 4;
+
+    message InheritedValue {
+      string dimension_key = 1 [json_name = "dimension_key"];
+
+      string dimension_name = 2 [json_name = "dimension_name"];
+    }
+
+    message Rule {
+      repeated And and = 1;
+
+      CostCategory cost_category = 2 [json_name = "cost_category"];
+
+      Dimension dimension = 3;
+
+      Not not = 4;
+
+      repeated Or or = 5;
+
+      Tags tags = 6;
+
+      message And {
+        CostCategory cost_category = 1 [json_name = "cost_category"];
+
+        Dimension dimension = 2;
+
+        Tags tags = 3;
+
+        message CostCategory {
+          string key = 1;
+
+          repeated string match_options = 2 [json_name = "match_options"];
+
+          repeated string values = 3;
+        }
+
+        message Dimension {
+          string key = 1;
+
+          repeated string match_options = 2 [json_name = "match_options"];
+
+          repeated string values = 3;
+        }
+
+        message Tags {
+          string key = 1;
+
+          repeated string match_options = 2 [json_name = "match_options"];
+
+          repeated string values = 3;
+        }
+      }
+
+      message CostCategory {
+        string key = 1;
+
+        repeated string match_options = 2 [json_name = "match_options"];
+
+        repeated string values = 3;
+      }
+
+      message Dimension {
+        string key = 1;
+
+        repeated string match_options = 2 [json_name = "match_options"];
+
+        repeated string values = 3;
+      }
+
+      message Not {
+        CostCategory cost_category = 1 [json_name = "cost_category"];
+
+        Dimension dimension = 2;
+
+        Tags tags = 3;
+
+        message CostCategory {
+          string key = 1;
+
+          repeated string match_options = 2 [json_name = "match_options"];
+
+          repeated string values = 3;
+        }
+
+        message Dimension {
+          string key = 1;
+
+          repeated string match_options = 2 [json_name = "match_options"];
+
+          repeated string values = 3;
+        }
+
+        message Tags {
+          string key = 1;
+
+          repeated string match_options = 2 [json_name = "match_options"];
+
+          repeated string values = 3;
+        }
+      }
+
+      message Or {
+        CostCategory cost_category = 1 [json_name = "cost_category"];
+
+        Dimension dimension = 2;
+
+        Tags tags = 3;
+
+        message CostCategory {
+          string key = 1;
+
+          repeated string match_options = 2 [json_name = "match_options"];
+
+          repeated string values = 3;
+        }
+
+        message Dimension {
+          string key = 1;
+
+          repeated string match_options = 2 [json_name = "match_options"];
+
+          repeated string values = 3;
+        }
+
+        message Tags {
+          string key = 1;
+
+          repeated string match_options = 2 [json_name = "match_options"];
+
+          repeated string values = 3;
+        }
+      }
+
+      message Tags {
+        string key = 1;
+
+        repeated string match_options = 2 [json_name = "match_options"];
+
+        repeated string values = 3;
+      }
+    }
+  }
+
+  message SplitChargeRule {
+    string method = 1;
+
+    string source = 2;
+
+    repeated string targets = 3;
+
+    repeated Parameter parameter = 4;
+
+    message Parameter {
+      string type = 1;
+
+      repeated string values = 2;
+    }
+  }
+}

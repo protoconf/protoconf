@@ -1,0 +1,186 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsSignerSigningJob version is 0
+message AwsSignerSigningJob {
+  string completed_at = 1 [json_name = "completed_at"];
+
+  string created_at = 2 [json_name = "created_at"];
+
+  string id = 3;
+
+  bool ignore_signing_job_failure = 4 [json_name = "ignore_signing_job_failure"];
+
+  string job_id = 5 [json_name = "job_id"];
+
+  string job_invoker = 6 [json_name = "job_invoker"];
+
+  string job_owner = 7 [json_name = "job_owner"];
+
+  string platform_display_name = 8 [json_name = "platform_display_name"];
+
+  string platform_id = 9 [json_name = "platform_id"];
+
+  string profile_name = 10 [json_name = "profile_name"];
+
+  string profile_version = 11 [json_name = "profile_version"];
+
+  string requested_by = 12 [json_name = "requested_by"];
+
+  repeated RevocationRecord revocation_record = 13 [json_name = "revocation_record"];
+
+  string signature_expires_at = 14 [json_name = "signature_expires_at"];
+
+  repeated SignedObject signed_object = 15 [json_name = "signed_object"];
+
+  string status = 16;
+
+  string status_reason = 17 [json_name = "status_reason"];
+
+  Destination destination = 18;
+
+  Source source = 19;
+
+  map<string, string> for_each = 20 [json_name = "for_each"];
+
+  repeated string depends_on = 21 [json_name = "depends_on"];
+
+  int32 count = 22;
+
+  string provider = 23;
+
+  terraform.v1.Lifecycle lifecycle = 24;
+
+  message RevocationRecord {
+    // reason: string
+    string reason = 1;
+
+    // revoked_at: string
+    string revoked_at = 2 [json_name = "revoked_at"];
+
+    // revoked_by: string
+    string revoked_by = 3 [json_name = "revoked_by"];
+  }
+
+  message SignedObject {
+    // s3: list of object
+    repeated S3 s3 = 1;
+
+    message S3 {
+      // bucket: string
+      string bucket = 1;
+
+      // key: string
+      string key = 2;
+    }
+  }
+
+  message Destination {
+    S3 s3 = 1;
+
+    message S3 {
+      string bucket = 1;
+
+      string prefix = 2;
+    }
+  }
+
+  message Source {
+    S3 s3 = 1;
+
+    message S3 {
+      string bucket = 1;
+
+      string key = 2;
+
+      string version = 3;
+    }
+  }
+}
+
+// AwsSignerSigningProfile version is 0
+message AwsSignerSigningProfile {
+  string arn = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  string name_prefix = 4 [json_name = "name_prefix"];
+
+  string platform_display_name = 5 [json_name = "platform_display_name"];
+
+  string platform_id = 6 [json_name = "platform_id"];
+
+  repeated RevocationRecord revocation_record = 7 [json_name = "revocation_record"];
+
+  string status = 8;
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  string version = 11;
+
+  string version_arn = 12 [json_name = "version_arn"];
+
+  SignatureValidityPeriod signature_validity_period = 13 [json_name = "signature_validity_period"];
+
+  map<string, string> for_each = 14 [json_name = "for_each"];
+
+  repeated string depends_on = 15 [json_name = "depends_on"];
+
+  int32 count = 16;
+
+  string provider = 17;
+
+  terraform.v1.Lifecycle lifecycle = 18;
+
+  message RevocationRecord {
+    // revocation_effective_from: string
+    string revocation_effective_from = 1 [json_name = "revocation_effective_from"];
+
+    // revoked_at: string
+    string revoked_at = 2 [json_name = "revoked_at"];
+
+    // revoked_by: string
+    string revoked_by = 3 [json_name = "revoked_by"];
+  }
+
+  message SignatureValidityPeriod {
+    string type = 1;
+
+    int64 value = 2;
+  }
+}
+
+// AwsSignerSigningProfilePermission version is 0
+message AwsSignerSigningProfilePermission {
+  string action = 1;
+
+  string id = 2;
+
+  string principal = 3;
+
+  string profile_name = 4 [json_name = "profile_name"];
+
+  string profile_version = 5 [json_name = "profile_version"];
+
+  string statement_id = 6 [json_name = "statement_id"];
+
+  string statement_id_prefix = 7 [json_name = "statement_id_prefix"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}

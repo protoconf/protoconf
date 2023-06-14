@@ -1,0 +1,181 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleMemcacheInstance version is 0
+message GoogleMemcacheInstance {
+  // The full name of the GCE network to connect the instance to.  If not provided,
+  // 'default' will be used.
+  string authorized_network = 1 [json_name = "authorized_network"];
+
+  // Creation timestamp in RFC3339 text format.
+  string create_time = 2 [json_name = "create_time"];
+
+  // Endpoint for Discovery API
+  string discovery_endpoint = 3 [json_name = "discovery_endpoint"];
+
+  // A user-visible name for the instance.
+  string display_name = 4 [json_name = "display_name"];
+
+  string id = 5;
+
+  // Resource labels to represent user-provided metadata.
+  map<string, string> labels = 6;
+
+  // Output only. Published maintenance schedule.
+  repeated MaintenanceSchedule maintenance_schedule = 7 [json_name = "maintenance_schedule"];
+
+  // The full version of memcached server running on this instance.
+  string memcache_full_version = 8 [json_name = "memcache_full_version"];
+
+  // Additional information about the instance state, if available.
+  repeated MemcacheNodes memcache_nodes = 9 [json_name = "memcache_nodes"];
+
+  // The major version of Memcached software. If not provided, latest supported version will be used.
+  // Currently the latest supported major version is MEMCACHE_1_5. The minor version will be automatically
+  // determined by our system based on the latest supported minor version. Default value: "MEMCACHE_1_5" Possible values: ["MEMCACHE_1_5"]
+  string memcache_version = 10 [json_name = "memcache_version"];
+
+  // The resource name of the instance.
+  string name = 11;
+
+  // Number of nodes in the memcache instance.
+  int64 node_count = 12 [json_name = "node_count"];
+
+  string project = 13;
+
+  // The region of the Memcache instance. If it is not provided, the provider region is used.
+  string region = 14;
+
+  // Zones where memcache nodes should be provisioned.  If not
+  // provided, all zones will be used.
+  repeated string zones = 15;
+
+  MaintenancePolicy maintenance_policy = 16 [json_name = "maintenance_policy"];
+
+  MemcacheParameters memcache_parameters = 17 [json_name = "memcache_parameters"];
+
+  NodeConfig node_config = 18 [json_name = "node_config"];
+
+  repeated Timeouts timeouts = 19;
+
+  map<string, string> for_each = 20 [json_name = "for_each"];
+
+  repeated string depends_on = 21 [json_name = "depends_on"];
+
+  int32 count = 22;
+
+  string provider = 23;
+
+  terraform.v1.Lifecycle lifecycle = 24;
+
+  message MaintenanceSchedule {
+    // end_time: string
+    string end_time = 1 [json_name = "end_time"];
+
+    // schedule_deadline_time: string
+    string schedule_deadline_time = 2 [json_name = "schedule_deadline_time"];
+
+    // start_time: string
+    string start_time = 3 [json_name = "start_time"];
+  }
+
+  message MemcacheNodes {
+    // host: string
+    string host = 1;
+
+    // node_id: string
+    string node_id = 2 [json_name = "node_id"];
+
+    // port: number
+    int64 port = 3;
+
+    // state: string
+    string state = 4;
+
+    // zone: string
+    string zone = 5;
+  }
+
+  message MaintenancePolicy {
+    // Output only. The time when the policy was created.
+    // A timestamp in RFC3339 UTC "Zulu" format, with nanosecond
+    // resolution and up to nine fractional digits
+    string create_time = 1 [json_name = "create_time"];
+
+    // Optional. Description of what this policy is for.
+    // Create/Update methods return INVALID_ARGUMENT if the
+    // length is greater than 512.
+    string description = 2;
+
+    // Output only. The time when the policy was updated.
+    // A timestamp in RFC3339 UTC "Zulu" format, with nanosecond
+    // resolution and up to nine fractional digits.
+    string update_time = 3 [json_name = "update_time"];
+
+    repeated WeeklyMaintenanceWindow weekly_maintenance_window = 4 [json_name = "weekly_maintenance_window"];
+
+    message WeeklyMaintenanceWindow {
+      // Required. The day of week that maintenance updates occur.
+      // - DAY_OF_WEEK_UNSPECIFIED: The day of the week is unspecified.
+      // - MONDAY: Monday
+      // - TUESDAY: Tuesday
+      // - WEDNESDAY: Wednesday
+      // - THURSDAY: Thursday
+      // - FRIDAY: Friday
+      // - SATURDAY: Saturday
+      // - SUNDAY: Sunday Possible values: ["DAY_OF_WEEK_UNSPECIFIED", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"]
+      string day = 1;
+
+      // Required. The length of the maintenance window, ranging from 3 hours to 8 hours.
+      // A duration in seconds with up to nine fractional digits,
+      // terminated by 's'. Example: "3.5s".
+      string duration = 2;
+
+      StartTime start_time = 3 [json_name = "start_time"];
+
+      message StartTime {
+        // Hours of day in 24 hour format. Should be from 0 to 23.
+        // An API may choose to allow the value "24:00:00" for scenarios like business closing time.
+        int64 hours = 1;
+
+        // Minutes of hour of day. Must be from 0 to 59.
+        int64 minutes = 2;
+
+        // Fractions of seconds in nanoseconds. Must be from 0 to 999,999,999.
+        int64 nanos = 3;
+
+        // Seconds of minutes of the time. Must normally be from 0 to 59.
+        // An API may allow the value 60 if it allows leap-seconds.
+        int64 seconds = 4;
+      }
+    }
+  }
+
+  message MemcacheParameters {
+    // This is a unique ID associated with this set of parameters.
+    string id = 1;
+
+    // User-defined set of parameters to use in the memcache process.
+    map<string, string> params = 2;
+  }
+
+  message NodeConfig {
+    // Number of CPUs per node.
+    int64 cpu_count = 1 [json_name = "cpu_count"];
+
+    // Memory size in Mebibytes for each memcache node.
+    int64 memory_size_mb = 2 [json_name = "memory_size_mb"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

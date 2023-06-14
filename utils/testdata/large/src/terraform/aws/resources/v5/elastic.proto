@@ -1,0 +1,200 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsElasticBeanstalkApplication version is 0
+message AwsElasticBeanstalkApplication {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  string name = 4;
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  AppversionLifecycle appversion_lifecycle = 7 [json_name = "appversion_lifecycle"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message AppversionLifecycle {
+    bool delete_source_from_s3 = 1 [json_name = "delete_source_from_s3"];
+
+    int64 max_age_in_days = 2 [json_name = "max_age_in_days"];
+
+    int64 max_count = 3 [json_name = "max_count"];
+
+    string service_role = 4 [json_name = "service_role"];
+  }
+}
+
+// AwsElasticBeanstalkApplicationVersion version is 0
+message AwsElasticBeanstalkApplicationVersion {
+  string application = 1;
+
+  string arn = 2;
+
+  string bucket = 3;
+
+  string description = 4;
+
+  bool force_delete = 5 [json_name = "force_delete"];
+
+  string id = 6;
+
+  string key = 7;
+
+  string name = 8;
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+}
+
+// AwsElasticBeanstalkConfigurationTemplate version is 0
+message AwsElasticBeanstalkConfigurationTemplate {
+  string application = 1;
+
+  string description = 2;
+
+  string environment_id = 3 [json_name = "environment_id"];
+
+  string id = 4;
+
+  string name = 5;
+
+  string solution_stack_name = 6 [json_name = "solution_stack_name"];
+
+  repeated Setting setting = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Setting {
+    string name = 1;
+
+    string namespace = 2;
+
+    string resource = 3;
+
+    string value = 4;
+  }
+}
+
+// AwsElasticBeanstalkEnvironment version is 1
+message AwsElasticBeanstalkEnvironment {
+  repeated AllSettings all_settings = 1 [json_name = "all_settings"];
+
+  string application = 2;
+
+  string arn = 3;
+
+  repeated string autoscaling_groups = 4 [json_name = "autoscaling_groups"];
+
+  string cname = 5;
+
+  string cname_prefix = 6 [json_name = "cname_prefix"];
+
+  string description = 7;
+
+  string endpoint_url = 8 [json_name = "endpoint_url"];
+
+  string id = 9;
+
+  repeated string instances = 10;
+
+  repeated string launch_configurations = 11 [json_name = "launch_configurations"];
+
+  repeated string load_balancers = 12 [json_name = "load_balancers"];
+
+  string name = 13;
+
+  string platform_arn = 14 [json_name = "platform_arn"];
+
+  string poll_interval = 15 [json_name = "poll_interval"];
+
+  repeated string queues = 16;
+
+  string solution_stack_name = 17 [json_name = "solution_stack_name"];
+
+  map<string, string> tags = 18;
+
+  map<string, string> tags_all = 19 [json_name = "tags_all"];
+
+  string template_name = 20 [json_name = "template_name"];
+
+  string tier = 21;
+
+  repeated string triggers = 22;
+
+  string version_label = 23 [json_name = "version_label"];
+
+  string wait_for_ready_timeout = 24 [json_name = "wait_for_ready_timeout"];
+
+  repeated Setting setting = 25;
+
+  map<string, string> for_each = 26 [json_name = "for_each"];
+
+  repeated string depends_on = 27 [json_name = "depends_on"];
+
+  int32 count = 28;
+
+  string provider = 29;
+
+  terraform.v1.Lifecycle lifecycle = 30;
+
+  message AllSettings {
+    // name: string
+    string name = 1;
+
+    // namespace: string
+    string namespace = 2;
+
+    // resource: string
+    string resource = 3;
+
+    // value: string
+    string value = 4;
+  }
+
+  message Setting {
+    string name = 1;
+
+    string namespace = 2;
+
+    string resource = 3;
+
+    string value = 4;
+  }
+}

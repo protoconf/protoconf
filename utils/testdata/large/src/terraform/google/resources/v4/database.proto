@@ -1,0 +1,307 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleDatabaseMigrationServiceConnectionProfile version is 0
+message GoogleDatabaseMigrationServiceConnectionProfile {
+  // The ID of the connection profile.
+  string connection_profile_id = 1 [json_name = "connection_profile_id"];
+
+  // Output only. The timestamp when the resource was created. A timestamp in RFC3339 UTC 'Zulu' format, accurate to nanoseconds. Example: '2014-10-02T15:01:23.045123456Z'.
+  string create_time = 2 [json_name = "create_time"];
+
+  // The database provider.
+  string dbprovider = 3;
+
+  // The connection profile display name.
+  string display_name = 4 [json_name = "display_name"];
+
+  // Output only. The error details in case of state FAILED.
+  repeated Error error = 5;
+
+  string id = 6;
+
+  // The resource labels for connection profile to use to annotate any related underlying resources such as Compute Engine VMs.
+  map<string, string> labels = 7;
+
+  // The location where the connection profile should reside.
+  string location = 8;
+
+  // The name of this connection profile resource in the form of projects/{project}/locations/{location}/connectionProfiles/{connectionProfile}.
+  string name = 9;
+
+  string project = 10;
+
+  // The current connection profile state.
+  string state = 11;
+
+  Alloydb alloydb = 12;
+
+  Cloudsql cloudsql = 13;
+
+  Mysql mysql = 14;
+
+  Postgresql postgresql = 15;
+
+  repeated Timeouts timeouts = 16;
+
+  map<string, string> for_each = 17 [json_name = "for_each"];
+
+  repeated string depends_on = 18 [json_name = "depends_on"];
+
+  int32 count = 19;
+
+  string provider = 20;
+
+  terraform.v1.Lifecycle lifecycle = 21;
+
+  message Error {
+    // code: number
+    int64 code = 1;
+
+    // details: list of map of string
+    map<string, string> details = 2;
+
+    // message: string
+    string message = 3;
+  }
+
+  message Alloydb {
+    // Required. The AlloyDB cluster ID that this connection profile is associated with.
+    string cluster_id = 1 [json_name = "cluster_id"];
+
+    Settings settings = 2;
+
+    message Settings {
+      // Labels for the AlloyDB cluster created by DMS.
+      map<string, string> labels = 1;
+
+      // Required. The resource link for the VPC network in which cluster resources are created and from which they are accessible via Private IP. The network must belong to the same project as the cluster.
+      // It is specified in the form: 'projects/{project_number}/global/networks/{network_id}'. This is required to create a cluster.
+      string vpc_network = 2 [json_name = "vpc_network"];
+
+      InitialUser initial_user = 3 [json_name = "initial_user"];
+
+      PrimaryInstanceSettings primary_instance_settings = 4 [json_name = "primary_instance_settings"];
+
+      message InitialUser {
+        // The initial password for the user.
+        string password = 1;
+
+        // Output only. Indicates if the initialUser.password field has been set.
+        bool password_set = 2 [json_name = "password_set"];
+
+        // The database username.
+        string user = 3;
+      }
+
+      message PrimaryInstanceSettings {
+        // Database flags to pass to AlloyDB when DMS is creating the AlloyDB cluster and instances. See the AlloyDB documentation for how these can be used.
+        map<string, string> database_flags = 1 [json_name = "database_flags"];
+
+        // The database username.
+        string id = 2;
+
+        // Labels for the AlloyDB primary instance created by DMS.
+        map<string, string> labels = 3;
+
+        // Output only. The private IP address for the Instance. This is the connection endpoint for an end-user application.
+        string private_ip = 4 [json_name = "private_ip"];
+
+        MachineConfig machine_config = 5 [json_name = "machine_config"];
+
+        message MachineConfig {
+          // The number of CPU's in the VM instance.
+          int64 cpu_count = 1 [json_name = "cpu_count"];
+        }
+      }
+    }
+  }
+
+  message Cloudsql {
+    // Output only. The Cloud SQL instance ID that this connection profile is associated with.
+    string cloud_sql_id = 1 [json_name = "cloud_sql_id"];
+
+    // Output only. The Cloud SQL database instance's private IP.
+    string private_ip = 2 [json_name = "private_ip"];
+
+    // Output only. The Cloud SQL database instance's public IP.
+    string public_ip = 3 [json_name = "public_ip"];
+
+    Settings settings = 4;
+
+    message Settings {
+      // The activation policy specifies when the instance is activated; it is applicable only when the instance state is 'RUNNABLE'. Possible values: ["ALWAYS", "NEVER"]
+      string activation_policy = 1 [json_name = "activation_policy"];
+
+      // If you enable this setting, Cloud SQL checks your available storage every 30 seconds. If the available storage falls below a threshold size, Cloud SQL automatically adds additional storage capacity.
+      // If the available storage repeatedly falls below the threshold size, Cloud SQL continues to add storage until it reaches the maximum of 30 TB.
+      bool auto_storage_increase = 2 [json_name = "auto_storage_increase"];
+
+      // The KMS key name used for the csql instance.
+      string cmek_key_name = 3 [json_name = "cmek_key_name"];
+
+      // The Cloud SQL default instance level collation.
+      string collation = 4;
+
+      // The storage capacity available to the database, in GB. The minimum (and default) size is 10GB.
+      string data_disk_size_gb = 5 [json_name = "data_disk_size_gb"];
+
+      // The type of storage. Possible values: ["PD_SSD", "PD_HDD"]
+      string data_disk_type = 6 [json_name = "data_disk_type"];
+
+      // The database flags passed to the Cloud SQL instance at startup.
+      map<string, string> database_flags = 7 [json_name = "database_flags"];
+
+      // The database engine type and version.
+      // Currently supported values located at https://cloud.google.com/database-migration/docs/reference/rest/v1/projects.locations.connectionProfiles#sqldatabaseversion
+      string database_version = 8 [json_name = "database_version"];
+
+      // Input only. Initial root password.
+      string root_password = 9 [json_name = "root_password"];
+
+      // Output only. Indicates If this connection profile root password is stored.
+      bool root_password_set = 10 [json_name = "root_password_set"];
+
+      // The Database Migration Service source connection profile ID, in the format: projects/my_project_name/locations/us-central1/connectionProfiles/connection_profile_ID
+      string source_id = 11 [json_name = "source_id"];
+
+      // The maximum size to which storage capacity can be automatically increased. The default value is 0, which specifies that there is no limit.
+      string storage_auto_resize_limit = 12 [json_name = "storage_auto_resize_limit"];
+
+      // The tier (or machine type) for this instance, for example: db-n1-standard-1 (MySQL instances) or db-custom-1-3840 (PostgreSQL instances).
+      // For more information, see https://cloud.google.com/sql/docs/mysql/instance-settings
+      string tier = 13;
+
+      // The resource labels for a Cloud SQL instance to use to annotate any related underlying resources such as Compute Engine VMs.
+      map<string, string> user_labels = 14 [json_name = "user_labels"];
+
+      // The Google Cloud Platform zone where your Cloud SQL datdabse instance is located.
+      string zone = 15;
+
+      IpConfig ip_config = 16 [json_name = "ip_config"];
+
+      message IpConfig {
+        // Whether the instance should be assigned an IPv4 address or not.
+        bool enable_ipv4 = 1 [json_name = "enable_ipv4"];
+
+        // The resource link for the VPC network from which the Cloud SQL instance is accessible for private IP. For example, projects/myProject/global/networks/default.
+        // This setting can be updated, but it cannot be removed after it is set.
+        string private_network = 2 [json_name = "private_network"];
+
+        // Whether SSL connections over IP should be enforced or not.
+        bool require_ssl = 3 [json_name = "require_ssl"];
+
+        repeated AuthorizedNetworks authorized_networks = 4 [json_name = "authorized_networks"];
+
+        message AuthorizedNetworks {
+          // The time when this access control entry expires in RFC 3339 format.
+          string expire_time = 1 [json_name = "expire_time"];
+
+          // A label to identify this entry.
+          string label = 2;
+
+          // Input only. The time-to-leave of this access control entry.
+          string ttl = 3;
+
+          // The allowlisted value for the access control list.
+          string value = 4;
+        }
+      }
+    }
+  }
+
+  message Mysql {
+    // If the source is a Cloud SQL database, use this field to provide the Cloud SQL instance ID of the source.
+    string cloud_sql_id = 1 [json_name = "cloud_sql_id"];
+
+    // Required. The IP or hostname of the source MySQL database.
+    string host = 2;
+
+    // Required. Input only. The password for the user that Database Migration Service will be using to connect to the database.
+    // This field is not returned on request, and the value is encrypted when stored in Database Migration Service.
+    string password = 3;
+
+    // Output only. Indicates If this connection profile password is stored.
+    bool password_set = 4 [json_name = "password_set"];
+
+    // Required. The network port of the source MySQL database.
+    int64 port = 5;
+
+    // Required. The username that Database Migration Service will use to connect to the database. The value is encrypted when stored in Database Migration Service.
+    string username = 6;
+
+    Ssl ssl = 7;
+
+    message Ssl {
+      // Required. Input only. The x509 PEM-encoded certificate of the CA that signed the source database server's certificate.
+      // The replica will use this certificate to verify it's connecting to the right host.
+      string ca_certificate = 1 [json_name = "ca_certificate"];
+
+      // Input only. The x509 PEM-encoded certificate that will be used by the replica to authenticate against the source database server.
+      // If this field is used then the 'clientKey' field is mandatory
+      string client_certificate = 2 [json_name = "client_certificate"];
+
+      // Input only. The unencrypted PKCS#1 or PKCS#8 PEM-encoded private key associated with the Client Certificate.
+      // If this field is used then the 'clientCertificate' field is mandatory.
+      string client_key = 3 [json_name = "client_key"];
+
+      // The current connection profile state.
+      string type = 4;
+    }
+  }
+
+  message Postgresql {
+    // If the source is a Cloud SQL database, use this field to provide the Cloud SQL instance ID of the source.
+    string cloud_sql_id = 1 [json_name = "cloud_sql_id"];
+
+    // Required. The IP or hostname of the source MySQL database.
+    string host = 2;
+
+    // Output only. If the source is a Cloud SQL database, this field indicates the network architecture it's associated with.
+    string network_architecture = 3 [json_name = "network_architecture"];
+
+    // Required. Input only. The password for the user that Database Migration Service will be using to connect to the database.
+    // This field is not returned on request, and the value is encrypted when stored in Database Migration Service.
+    string password = 4;
+
+    // Output only. Indicates If this connection profile password is stored.
+    bool password_set = 5 [json_name = "password_set"];
+
+    // Required. The network port of the source MySQL database.
+    int64 port = 6;
+
+    // Required. The username that Database Migration Service will use to connect to the database. The value is encrypted when stored in Database Migration Service.
+    string username = 7;
+
+    Ssl ssl = 8;
+
+    message Ssl {
+      // Required. Input only. The x509 PEM-encoded certificate of the CA that signed the source database server's certificate.
+      // The replica will use this certificate to verify it's connecting to the right host.
+      string ca_certificate = 1 [json_name = "ca_certificate"];
+
+      // Input only. The x509 PEM-encoded certificate that will be used by the replica to authenticate against the source database server.
+      // If this field is used then the 'clientKey' field is mandatory
+      string client_certificate = 2 [json_name = "client_certificate"];
+
+      // Input only. The unencrypted PKCS#1 or PKCS#8 PEM-encoded private key associated with the Client Certificate.
+      // If this field is used then the 'clientCertificate' field is mandatory.
+      string client_key = 3 [json_name = "client_key"];
+
+      // The current connection profile state.
+      string type = 4;
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

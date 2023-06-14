@@ -1,0 +1,88 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsRumAppMonitor version is 0
+message AwsRumAppMonitor {
+  string app_monitor_id = 1 [json_name = "app_monitor_id"];
+
+  string arn = 2;
+
+  bool cw_log_enabled = 3 [json_name = "cw_log_enabled"];
+
+  string cw_log_group = 4 [json_name = "cw_log_group"];
+
+  string domain = 5;
+
+  string id = 6;
+
+  string name = 7;
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  AppMonitorConfiguration app_monitor_configuration = 10 [json_name = "app_monitor_configuration"];
+
+  CustomEvents custom_events = 11 [json_name = "custom_events"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message AppMonitorConfiguration {
+    bool allow_cookies = 1 [json_name = "allow_cookies"];
+
+    bool enable_xray = 2 [json_name = "enable_xray"];
+
+    repeated string excluded_pages = 3 [json_name = "excluded_pages"];
+
+    repeated string favorite_pages = 4 [json_name = "favorite_pages"];
+
+    string guest_role_arn = 5 [json_name = "guest_role_arn"];
+
+    string identity_pool_id = 6 [json_name = "identity_pool_id"];
+
+    repeated string included_pages = 7 [json_name = "included_pages"];
+
+    int64 session_sample_rate = 8 [json_name = "session_sample_rate"];
+
+    repeated string telemetries = 9;
+  }
+
+  message CustomEvents {
+    string status = 1;
+  }
+}
+
+// AwsRumMetricsDestination version is 0
+message AwsRumMetricsDestination {
+  string app_monitor_name = 1 [json_name = "app_monitor_name"];
+
+  string destination = 2;
+
+  string destination_arn = 3 [json_name = "destination_arn"];
+
+  string iam_role_arn = 4 [json_name = "iam_role_arn"];
+
+  string id = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}

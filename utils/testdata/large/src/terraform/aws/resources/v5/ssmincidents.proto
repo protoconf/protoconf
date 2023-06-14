@@ -1,0 +1,146 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsSsmincidentsReplicationSet version is 0
+message AwsSsmincidentsReplicationSet {
+  string arn = 1;
+
+  string created_by = 2 [json_name = "created_by"];
+
+  bool deletion_protected = 3 [json_name = "deletion_protected"];
+
+  string id = 4;
+
+  string last_modified_by = 5 [json_name = "last_modified_by"];
+
+  string status = 6;
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  repeated Region region = 9;
+
+  repeated Timeouts timeouts = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Region {
+    string kms_key_arn = 1 [json_name = "kms_key_arn"];
+
+    string name = 2;
+
+    string status = 3;
+
+    string status_message = 4 [json_name = "status_message"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsSsmincidentsResponsePlan version is 0
+message AwsSsmincidentsResponsePlan {
+  string arn = 1;
+
+  repeated string chat_channel = 2 [json_name = "chat_channel"];
+
+  string display_name = 3 [json_name = "display_name"];
+
+  repeated string engagements = 4;
+
+  string id = 5;
+
+  string name = 6;
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  Action action = 9;
+
+  IncidentTemplate incident_template = 10 [json_name = "incident_template"];
+
+  Integration integration = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message Action {
+    repeated SsmAutomation ssm_automation = 1 [json_name = "ssm_automation"];
+
+    message SsmAutomation {
+      string document_name = 1 [json_name = "document_name"];
+
+      string document_version = 2 [json_name = "document_version"];
+
+      map<string, string> dynamic_parameters = 3 [json_name = "dynamic_parameters"];
+
+      string role_arn = 4 [json_name = "role_arn"];
+
+      string target_account = 5 [json_name = "target_account"];
+
+      repeated Parameter parameter = 6;
+
+      message Parameter {
+        string name = 1;
+
+        repeated string values = 2;
+      }
+    }
+  }
+
+  message IncidentTemplate {
+    string dedupe_string = 1 [json_name = "dedupe_string"];
+
+    int64 impact = 2;
+
+    map<string, string> incident_tags = 3 [json_name = "incident_tags"];
+
+    string summary = 4;
+
+    string title = 5;
+
+    repeated NotificationTarget notification_target = 6 [json_name = "notification_target"];
+
+    message NotificationTarget {
+      string sns_topic_arn = 1 [json_name = "sns_topic_arn"];
+    }
+  }
+
+  message Integration {
+    repeated Pagerduty pagerduty = 1;
+
+    message Pagerduty {
+      string name = 1;
+
+      string secret_id = 2 [json_name = "secret_id"];
+
+      string service_id = 3 [json_name = "service_id"];
+    }
+  }
+}

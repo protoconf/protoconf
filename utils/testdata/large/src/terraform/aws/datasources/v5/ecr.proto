@@ -1,0 +1,131 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsEcrAuthorizationToken version is 0
+message AwsEcrAuthorizationToken {
+  string authorization_token = 1 [json_name = "authorization_token"];
+
+  string expires_at = 2 [json_name = "expires_at"];
+
+  string id = 3;
+
+  string password = 4;
+
+  string proxy_endpoint = 5 [json_name = "proxy_endpoint"];
+
+  string registry_id = 6 [json_name = "registry_id"];
+
+  string user_name = 7 [json_name = "user_name"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsEcrImage version is 0
+message AwsEcrImage {
+  string id = 1;
+
+  string image_digest = 2 [json_name = "image_digest"];
+
+  int64 image_pushed_at = 3 [json_name = "image_pushed_at"];
+
+  int64 image_size_in_bytes = 4 [json_name = "image_size_in_bytes"];
+
+  string image_tag = 5 [json_name = "image_tag"];
+
+  repeated string image_tags = 6 [json_name = "image_tags"];
+
+  bool most_recent = 7 [json_name = "most_recent"];
+
+  string registry_id = 8 [json_name = "registry_id"];
+
+  string repository_name = 9 [json_name = "repository_name"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+}
+
+// AwsEcrPullThroughCacheRule version is 0
+message AwsEcrPullThroughCacheRule {
+  string ecr_repository_prefix = 1 [json_name = "ecr_repository_prefix"];
+
+  string id = 2;
+
+  string registry_id = 3 [json_name = "registry_id"];
+
+  string upstream_registry_url = 4 [json_name = "upstream_registry_url"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsEcrRepository version is 0
+message AwsEcrRepository {
+  string arn = 1;
+
+  repeated EncryptionConfiguration encryption_configuration = 2 [json_name = "encryption_configuration"];
+
+  string id = 3;
+
+  repeated ImageScanningConfiguration image_scanning_configuration = 4 [json_name = "image_scanning_configuration"];
+
+  string image_tag_mutability = 5 [json_name = "image_tag_mutability"];
+
+  repeated string most_recent_image_tags = 6 [json_name = "most_recent_image_tags"];
+
+  string name = 7;
+
+  string registry_id = 8 [json_name = "registry_id"];
+
+  string repository_url = 9 [json_name = "repository_url"];
+
+  map<string, string> tags = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message EncryptionConfiguration {
+    // encryption_type: string
+    string encryption_type = 1 [json_name = "encryption_type"];
+
+    // kms_key: string
+    string kms_key = 2 [json_name = "kms_key"];
+  }
+
+  message ImageScanningConfiguration {
+    // scan_on_push: bool
+    bool scan_on_push = 1 [json_name = "scan_on_push"];
+  }
+}

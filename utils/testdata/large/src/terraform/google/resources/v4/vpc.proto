@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleVpcAccessConnector version is 0
+message GoogleVpcAccessConnector {
+  string id = 1;
+
+  // The range of internal addresses that follows RFC 4632 notation. Example: '10.132.0.0/28'.
+  string ip_cidr_range = 2 [json_name = "ip_cidr_range"];
+
+  // Machine type of VM Instance underlying connector. Default is e2-micro
+  string machine_type = 3 [json_name = "machine_type"];
+
+  // Maximum value of instances in autoscaling group underlying the connector.
+  int64 max_instances = 4 [json_name = "max_instances"];
+
+  // Maximum throughput of the connector in Mbps, must be greater than 'min_throughput'. Default is 300.
+  int64 max_throughput = 5 [json_name = "max_throughput"];
+
+  // Minimum value of instances in autoscaling group underlying the connector.
+  int64 min_instances = 6 [json_name = "min_instances"];
+
+  // Minimum throughput of the connector in Mbps. Default and min is 200.
+  int64 min_throughput = 7 [json_name = "min_throughput"];
+
+  // The name of the resource (Max 25 characters).
+  string name = 8;
+
+  // Name or self_link of the VPC network. Required if 'ip_cidr_range' is set.
+  string network = 9;
+
+  string project = 10;
+
+  // Region where the VPC Access connector resides. If it is not provided, the provider region is used.
+  string region = 11;
+
+  // The fully qualified name of this VPC connector
+  string self_link = 12 [json_name = "self_link"];
+
+  // State of the VPC access connector.
+  string state = 13;
+
+  Subnet subnet = 14;
+
+  repeated Timeouts timeouts = 15;
+
+  map<string, string> for_each = 16 [json_name = "for_each"];
+
+  repeated string depends_on = 17 [json_name = "depends_on"];
+
+  int32 count = 18;
+
+  string provider = 19;
+
+  terraform.v1.Lifecycle lifecycle = 20;
+
+  message Subnet {
+    // Subnet name (relative, not fully qualified). E.g. if the full subnet selfLink is
+    // https://compute.googleapis.com/compute/v1/projects/{project}/regions/{region}/subnetworks/{subnetName} the correct input for this field would be {subnetName}"
+    string name = 1;
+
+    // Project in which the subnet exists. If not set, this project is assumed to be the project for which the connector create request was issued.
+    string project_id = 2 [json_name = "project_id"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}

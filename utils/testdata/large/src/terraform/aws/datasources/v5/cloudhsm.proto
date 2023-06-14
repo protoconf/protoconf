@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsCloudhsmV2Cluster version is 0
+message AwsCloudhsmV2Cluster {
+  repeated ClusterCertificates cluster_certificates = 1 [json_name = "cluster_certificates"];
+
+  string cluster_id = 2 [json_name = "cluster_id"];
+
+  string cluster_state = 3 [json_name = "cluster_state"];
+
+  string id = 4;
+
+  string security_group_id = 5 [json_name = "security_group_id"];
+
+  repeated string subnet_ids = 6 [json_name = "subnet_ids"];
+
+  string vpc_id = 7 [json_name = "vpc_id"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message ClusterCertificates {
+    // aws_hardware_certificate: string
+    string aws_hardware_certificate = 1 [json_name = "aws_hardware_certificate"];
+
+    // cluster_certificate: string
+    string cluster_certificate = 2 [json_name = "cluster_certificate"];
+
+    // cluster_csr: string
+    string cluster_csr = 3 [json_name = "cluster_csr"];
+
+    // hsm_certificate: string
+    string hsm_certificate = 4 [json_name = "hsm_certificate"];
+
+    // manufacturer_hardware_certificate: string
+    string manufacturer_hardware_certificate = 5 [json_name = "manufacturer_hardware_certificate"];
+  }
+}

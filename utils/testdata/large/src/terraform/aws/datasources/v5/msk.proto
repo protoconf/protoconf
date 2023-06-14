@@ -1,0 +1,136 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsMskBrokerNodes version is 0
+message AwsMskBrokerNodes {
+  string cluster_arn = 1 [json_name = "cluster_arn"];
+
+  string id = 2;
+
+  repeated NodeInfoList node_info_list = 3 [json_name = "node_info_list"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+
+  message NodeInfoList {
+    // attached_eni_id: string
+    string attached_eni_id = 1 [json_name = "attached_eni_id"];
+
+    // broker_id: number
+    int64 broker_id = 2 [json_name = "broker_id"];
+
+    // client_subnet: string
+    string client_subnet = 3 [json_name = "client_subnet"];
+
+    // client_vpc_ip_address: string
+    string client_vpc_ip_address = 4 [json_name = "client_vpc_ip_address"];
+
+    // endpoints: set of string
+    repeated string endpoints = 5;
+
+    // node_arn: string
+    string node_arn = 6 [json_name = "node_arn"];
+  }
+}
+
+// AwsMskCluster version is 0
+message AwsMskCluster {
+  string arn = 1;
+
+  string bootstrap_brokers = 2 [json_name = "bootstrap_brokers"];
+
+  string bootstrap_brokers_public_sasl_iam = 3 [json_name = "bootstrap_brokers_public_sasl_iam"];
+
+  string bootstrap_brokers_public_sasl_scram = 4 [json_name = "bootstrap_brokers_public_sasl_scram"];
+
+  string bootstrap_brokers_public_tls = 5 [json_name = "bootstrap_brokers_public_tls"];
+
+  string bootstrap_brokers_sasl_iam = 6 [json_name = "bootstrap_brokers_sasl_iam"];
+
+  string bootstrap_brokers_sasl_scram = 7 [json_name = "bootstrap_brokers_sasl_scram"];
+
+  string bootstrap_brokers_tls = 8 [json_name = "bootstrap_brokers_tls"];
+
+  string cluster_name = 9 [json_name = "cluster_name"];
+
+  string id = 10;
+
+  string kafka_version = 11 [json_name = "kafka_version"];
+
+  int64 number_of_broker_nodes = 12 [json_name = "number_of_broker_nodes"];
+
+  map<string, string> tags = 13;
+
+  string zookeeper_connect_string = 14 [json_name = "zookeeper_connect_string"];
+
+  string zookeeper_connect_string_tls = 15 [json_name = "zookeeper_connect_string_tls"];
+
+  map<string, string> for_each = 16 [json_name = "for_each"];
+
+  repeated string depends_on = 17 [json_name = "depends_on"];
+
+  int32 count = 18;
+
+  string provider = 19;
+
+  terraform.v1.Lifecycle lifecycle = 20;
+}
+
+// AwsMskConfiguration version is 0
+message AwsMskConfiguration {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  repeated string kafka_versions = 4 [json_name = "kafka_versions"];
+
+  int64 latest_revision = 5 [json_name = "latest_revision"];
+
+  string name = 6;
+
+  string server_properties = 7 [json_name = "server_properties"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsMskKafkaVersion version is 0
+message AwsMskKafkaVersion {
+  string id = 1;
+
+  repeated string preferred_versions = 2 [json_name = "preferred_versions"];
+
+  string status = 3;
+
+  string version = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}

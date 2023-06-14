@@ -1,0 +1,208 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsElastictranscoderPipeline version is 0
+message AwsElastictranscoderPipeline {
+  string arn = 1;
+
+  string aws_kms_key_arn = 2 [json_name = "aws_kms_key_arn"];
+
+  string id = 3;
+
+  string input_bucket = 4 [json_name = "input_bucket"];
+
+  string name = 5;
+
+  string output_bucket = 6 [json_name = "output_bucket"];
+
+  string role = 7;
+
+  ContentConfig content_config = 8 [json_name = "content_config"];
+
+  repeated ContentConfigPermissions content_config_permissions = 9 [json_name = "content_config_permissions"];
+
+  Notifications notifications = 10;
+
+  ThumbnailConfig thumbnail_config = 11 [json_name = "thumbnail_config"];
+
+  repeated ThumbnailConfigPermissions thumbnail_config_permissions = 12 [json_name = "thumbnail_config_permissions"];
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message ContentConfig {
+    string bucket = 1;
+
+    string storage_class = 2 [json_name = "storage_class"];
+  }
+
+  message ContentConfigPermissions {
+    repeated string access = 1;
+
+    string grantee = 2;
+
+    string grantee_type = 3 [json_name = "grantee_type"];
+  }
+
+  message Notifications {
+    string completed = 1;
+
+    string error = 2;
+
+    string progressing = 3;
+
+    string warning = 4;
+  }
+
+  message ThumbnailConfig {
+    string bucket = 1;
+
+    string storage_class = 2 [json_name = "storage_class"];
+  }
+
+  message ThumbnailConfigPermissions {
+    repeated string access = 1;
+
+    string grantee = 2;
+
+    string grantee_type = 3 [json_name = "grantee_type"];
+  }
+}
+
+// AwsElastictranscoderPreset version is 0
+message AwsElastictranscoderPreset {
+  string arn = 1;
+
+  string container = 2;
+
+  string description = 3;
+
+  string id = 4;
+
+  string name = 5;
+
+  string type = 6;
+
+  map<string, string> video_codec_options = 7 [json_name = "video_codec_options"];
+
+  Audio audio = 8;
+
+  AudioCodecOptions audio_codec_options = 9 [json_name = "audio_codec_options"];
+
+  Thumbnails thumbnails = 10;
+
+  Video video = 11;
+
+  repeated VideoWatermarks video_watermarks = 12 [json_name = "video_watermarks"];
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message Audio {
+    string audio_packing_mode = 1 [json_name = "audio_packing_mode"];
+
+    string bit_rate = 2 [json_name = "bit_rate"];
+
+    string channels = 3;
+
+    string codec = 4;
+
+    string sample_rate = 5 [json_name = "sample_rate"];
+  }
+
+  message AudioCodecOptions {
+    string bit_depth = 1 [json_name = "bit_depth"];
+
+    string bit_order = 2 [json_name = "bit_order"];
+
+    string profile = 3;
+
+    string signed = 4;
+  }
+
+  message Thumbnails {
+    string aspect_ratio = 1 [json_name = "aspect_ratio"];
+
+    string format = 2;
+
+    string interval = 3;
+
+    string max_height = 4 [json_name = "max_height"];
+
+    string max_width = 5 [json_name = "max_width"];
+
+    string padding_policy = 6 [json_name = "padding_policy"];
+
+    string resolution = 7;
+
+    string sizing_policy = 8 [json_name = "sizing_policy"];
+  }
+
+  message Video {
+    string aspect_ratio = 1 [json_name = "aspect_ratio"];
+
+    string bit_rate = 2 [json_name = "bit_rate"];
+
+    string codec = 3;
+
+    string display_aspect_ratio = 4 [json_name = "display_aspect_ratio"];
+
+    string fixed_gop = 5 [json_name = "fixed_gop"];
+
+    string frame_rate = 6 [json_name = "frame_rate"];
+
+    string keyframes_max_dist = 7 [json_name = "keyframes_max_dist"];
+
+    string max_frame_rate = 8 [json_name = "max_frame_rate"];
+
+    string max_height = 9 [json_name = "max_height"];
+
+    string max_width = 10 [json_name = "max_width"];
+
+    string padding_policy = 11 [json_name = "padding_policy"];
+
+    string resolution = 12;
+
+    string sizing_policy = 13 [json_name = "sizing_policy"];
+  }
+
+  message VideoWatermarks {
+    string horizontal_align = 1 [json_name = "horizontal_align"];
+
+    string horizontal_offset = 2 [json_name = "horizontal_offset"];
+
+    string id = 3;
+
+    string max_height = 4 [json_name = "max_height"];
+
+    string max_width = 5 [json_name = "max_width"];
+
+    string opacity = 6;
+
+    string sizing_policy = 7 [json_name = "sizing_policy"];
+
+    string target = 8;
+
+    string vertical_align = 9 [json_name = "vertical_align"];
+
+    string vertical_offset = 10 [json_name = "vertical_offset"];
+  }
+}

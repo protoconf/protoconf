@@ -1,0 +1,931 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsFsxBackup version is 0
+message AwsFsxBackup {
+  string arn = 1;
+
+  string file_system_id = 2 [json_name = "file_system_id"];
+
+  string id = 3;
+
+  string kms_key_id = 4 [json_name = "kms_key_id"];
+
+  string owner_id = 5 [json_name = "owner_id"];
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  string type = 8;
+
+  string volume_id = 9 [json_name = "volume_id"];
+
+  repeated Timeouts timeouts = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsFsxDataRepositoryAssociation version is 0
+message AwsFsxDataRepositoryAssociation {
+  string arn = 1;
+
+  string association_id = 2 [json_name = "association_id"];
+
+  bool batch_import_meta_data_on_create = 3 [json_name = "batch_import_meta_data_on_create"];
+
+  string data_repository_path = 4 [json_name = "data_repository_path"];
+
+  bool delete_data_in_filesystem = 5 [json_name = "delete_data_in_filesystem"];
+
+  string file_system_id = 6 [json_name = "file_system_id"];
+
+  string file_system_path = 7 [json_name = "file_system_path"];
+
+  string id = 8;
+
+  int64 imported_file_chunk_size = 9 [json_name = "imported_file_chunk_size"];
+
+  map<string, string> tags = 10;
+
+  map<string, string> tags_all = 11 [json_name = "tags_all"];
+
+  S3 s3 = 12;
+
+  repeated Timeouts timeouts = 13;
+
+  map<string, string> for_each = 14 [json_name = "for_each"];
+
+  repeated string depends_on = 15 [json_name = "depends_on"];
+
+  int32 count = 16;
+
+  string provider = 17;
+
+  terraform.v1.Lifecycle lifecycle = 18;
+
+  message S3 {
+    AutoExportPolicy auto_export_policy = 1 [json_name = "auto_export_policy"];
+
+    AutoImportPolicy auto_import_policy = 2 [json_name = "auto_import_policy"];
+
+    message AutoExportPolicy {
+      repeated string events = 1;
+    }
+
+    message AutoImportPolicy {
+      repeated string events = 1;
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsFsxFileCache version is 0
+message AwsFsxFileCache {
+  string arn = 1;
+
+  bool copy_tags_to_data_repository_associations = 2 [
+    json_name = "copy_tags_to_data_repository_associations"
+  ];
+
+  repeated string data_repository_association_ids = 3 [json_name = "data_repository_association_ids"];
+
+  string dns_name = 4 [json_name = "dns_name"];
+
+  string file_cache_id = 5 [json_name = "file_cache_id"];
+
+  string file_cache_type = 6 [json_name = "file_cache_type"];
+
+  string file_cache_type_version = 7 [json_name = "file_cache_type_version"];
+
+  string id = 8;
+
+  string kms_key_id = 9 [json_name = "kms_key_id"];
+
+  repeated string network_interface_ids = 10 [json_name = "network_interface_ids"];
+
+  string owner_id = 11 [json_name = "owner_id"];
+
+  repeated string security_group_ids = 12 [json_name = "security_group_ids"];
+
+  int64 storage_capacity = 13 [json_name = "storage_capacity"];
+
+  repeated string subnet_ids = 14 [json_name = "subnet_ids"];
+
+  map<string, string> tags = 15;
+
+  map<string, string> tags_all = 16 [json_name = "tags_all"];
+
+  string vpc_id = 17 [json_name = "vpc_id"];
+
+  repeated DataRepositoryAssociation data_repository_association = 18 [json_name = "data_repository_association"];
+
+  repeated LustreConfiguration lustre_configuration = 19 [json_name = "lustre_configuration"];
+
+  repeated Timeouts timeouts = 20;
+
+  map<string, string> for_each = 21 [json_name = "for_each"];
+
+  repeated string depends_on = 22 [json_name = "depends_on"];
+
+  int32 count = 23;
+
+  string provider = 24;
+
+  terraform.v1.Lifecycle lifecycle = 25;
+
+  message DataRepositoryAssociation {
+    string association_id = 1 [json_name = "association_id"];
+
+    string data_repository_path = 2 [json_name = "data_repository_path"];
+
+    repeated string data_repository_subdirectories = 3 [json_name = "data_repository_subdirectories"];
+
+    string file_cache_id = 4 [json_name = "file_cache_id"];
+
+    string file_cache_path = 5 [json_name = "file_cache_path"];
+
+    string file_system_id = 6 [json_name = "file_system_id"];
+
+    string file_system_path = 7 [json_name = "file_system_path"];
+
+    int64 imported_file_chunk_size = 8 [json_name = "imported_file_chunk_size"];
+
+    string resource_arn = 9 [json_name = "resource_arn"];
+
+    map<string, string> tags = 10;
+
+    repeated Nfs nfs = 11;
+
+    message Nfs {
+      repeated string dns_ips = 1 [json_name = "dns_ips"];
+
+      string version = 2;
+    }
+  }
+
+  message LustreConfiguration {
+    string deployment_type = 1 [json_name = "deployment_type"];
+
+    repeated LogConfiguration log_configuration = 2 [json_name = "log_configuration"];
+
+    string mount_name = 3 [json_name = "mount_name"];
+
+    int64 per_unit_storage_throughput = 4 [json_name = "per_unit_storage_throughput"];
+
+    string weekly_maintenance_start_time = 5 [json_name = "weekly_maintenance_start_time"];
+
+    repeated MetadataConfiguration metadata_configuration = 6 [json_name = "metadata_configuration"];
+
+    message LogConfiguration {
+      // destination: string
+      string destination = 1;
+
+      // level: string
+      string level = 2;
+    }
+
+    message MetadataConfiguration {
+      int64 storage_capacity = 1 [json_name = "storage_capacity"];
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsFsxLustreFileSystem version is 0
+message AwsFsxLustreFileSystem {
+  string arn = 1;
+
+  string auto_import_policy = 2 [json_name = "auto_import_policy"];
+
+  int64 automatic_backup_retention_days = 3 [json_name = "automatic_backup_retention_days"];
+
+  string backup_id = 4 [json_name = "backup_id"];
+
+  bool copy_tags_to_backups = 5 [json_name = "copy_tags_to_backups"];
+
+  string daily_automatic_backup_start_time = 6 [json_name = "daily_automatic_backup_start_time"];
+
+  string data_compression_type = 7 [json_name = "data_compression_type"];
+
+  string deployment_type = 8 [json_name = "deployment_type"];
+
+  string dns_name = 9 [json_name = "dns_name"];
+
+  string drive_cache_type = 10 [json_name = "drive_cache_type"];
+
+  string export_path = 11 [json_name = "export_path"];
+
+  string file_system_type_version = 12 [json_name = "file_system_type_version"];
+
+  string id = 13;
+
+  string import_path = 14 [json_name = "import_path"];
+
+  int64 imported_file_chunk_size = 15 [json_name = "imported_file_chunk_size"];
+
+  string kms_key_id = 16 [json_name = "kms_key_id"];
+
+  string mount_name = 17 [json_name = "mount_name"];
+
+  repeated string network_interface_ids = 18 [json_name = "network_interface_ids"];
+
+  string owner_id = 19 [json_name = "owner_id"];
+
+  int64 per_unit_storage_throughput = 20 [json_name = "per_unit_storage_throughput"];
+
+  repeated string security_group_ids = 21 [json_name = "security_group_ids"];
+
+  int64 storage_capacity = 22 [json_name = "storage_capacity"];
+
+  string storage_type = 23 [json_name = "storage_type"];
+
+  repeated string subnet_ids = 24 [json_name = "subnet_ids"];
+
+  map<string, string> tags = 25;
+
+  map<string, string> tags_all = 26 [json_name = "tags_all"];
+
+  string vpc_id = 27 [json_name = "vpc_id"];
+
+  string weekly_maintenance_start_time = 28 [json_name = "weekly_maintenance_start_time"];
+
+  LogConfiguration log_configuration = 29 [json_name = "log_configuration"];
+
+  RootSquashConfiguration root_squash_configuration = 30 [json_name = "root_squash_configuration"];
+
+  repeated Timeouts timeouts = 31;
+
+  map<string, string> for_each = 32 [json_name = "for_each"];
+
+  repeated string depends_on = 33 [json_name = "depends_on"];
+
+  int32 count = 34;
+
+  string provider = 35;
+
+  terraform.v1.Lifecycle lifecycle = 36;
+
+  message LogConfiguration {
+    string destination = 1;
+
+    string level = 2;
+  }
+
+  message RootSquashConfiguration {
+    repeated string no_squash_nids = 1 [json_name = "no_squash_nids"];
+
+    string root_squash = 2 [json_name = "root_squash"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsFsxOntapFileSystem version is 0
+message AwsFsxOntapFileSystem {
+  string arn = 1;
+
+  int64 automatic_backup_retention_days = 2 [json_name = "automatic_backup_retention_days"];
+
+  string daily_automatic_backup_start_time = 3 [json_name = "daily_automatic_backup_start_time"];
+
+  string deployment_type = 4 [json_name = "deployment_type"];
+
+  string dns_name = 5 [json_name = "dns_name"];
+
+  string endpoint_ip_address_range = 6 [json_name = "endpoint_ip_address_range"];
+
+  repeated Endpoints endpoints = 7;
+
+  string fsx_admin_password = 8 [json_name = "fsx_admin_password"];
+
+  string id = 9;
+
+  string kms_key_id = 10 [json_name = "kms_key_id"];
+
+  repeated string network_interface_ids = 11 [json_name = "network_interface_ids"];
+
+  string owner_id = 12 [json_name = "owner_id"];
+
+  string preferred_subnet_id = 13 [json_name = "preferred_subnet_id"];
+
+  repeated string route_table_ids = 14 [json_name = "route_table_ids"];
+
+  repeated string security_group_ids = 15 [json_name = "security_group_ids"];
+
+  int64 storage_capacity = 16 [json_name = "storage_capacity"];
+
+  string storage_type = 17 [json_name = "storage_type"];
+
+  repeated string subnet_ids = 18 [json_name = "subnet_ids"];
+
+  map<string, string> tags = 19;
+
+  map<string, string> tags_all = 20 [json_name = "tags_all"];
+
+  int64 throughput_capacity = 21 [json_name = "throughput_capacity"];
+
+  string vpc_id = 22 [json_name = "vpc_id"];
+
+  string weekly_maintenance_start_time = 23 [json_name = "weekly_maintenance_start_time"];
+
+  DiskIopsConfiguration disk_iops_configuration = 24 [json_name = "disk_iops_configuration"];
+
+  repeated Timeouts timeouts = 25;
+
+  map<string, string> for_each = 26 [json_name = "for_each"];
+
+  repeated string depends_on = 27 [json_name = "depends_on"];
+
+  int32 count = 28;
+
+  string provider = 29;
+
+  terraform.v1.Lifecycle lifecycle = 30;
+
+  message Endpoints {
+    // intercluster: list of object
+    repeated Intercluster intercluster = 1;
+
+    // management: list of object
+    repeated Management management = 2;
+
+    message Intercluster {
+      // dns_name: string
+      string dns_name = 1 [json_name = "dns_name"];
+
+      // ip_addresses: set of string
+      repeated string ip_addresses = 2 [json_name = "ip_addresses"];
+    }
+
+    message Management {
+      // dns_name: string
+      string dns_name = 1 [json_name = "dns_name"];
+
+      // ip_addresses: set of string
+      repeated string ip_addresses = 2 [json_name = "ip_addresses"];
+    }
+  }
+
+  message DiskIopsConfiguration {
+    int64 iops = 1;
+
+    string mode = 2;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsFsxOntapStorageVirtualMachine version is 1
+message AwsFsxOntapStorageVirtualMachine {
+  string arn = 1;
+
+  repeated Endpoints endpoints = 2;
+
+  string file_system_id = 3 [json_name = "file_system_id"];
+
+  string id = 4;
+
+  string name = 5;
+
+  string root_volume_security_style = 6 [json_name = "root_volume_security_style"];
+
+  string subtype = 7;
+
+  string svm_admin_password = 8 [json_name = "svm_admin_password"];
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  string uuid = 11;
+
+  ActiveDirectoryConfiguration active_directory_configuration = 12 [json_name = "active_directory_configuration"];
+
+  repeated Timeouts timeouts = 13;
+
+  map<string, string> for_each = 14 [json_name = "for_each"];
+
+  repeated string depends_on = 15 [json_name = "depends_on"];
+
+  int32 count = 16;
+
+  string provider = 17;
+
+  terraform.v1.Lifecycle lifecycle = 18;
+
+  message Endpoints {
+    // iscsi: list of object
+    repeated Iscsi iscsi = 1;
+
+    // management: list of object
+    repeated Management management = 2;
+
+    // nfs: list of object
+    repeated Nfs nfs = 3;
+
+    // smb: list of object
+    repeated Smb smb = 4;
+
+    message Iscsi {
+      // dns_name: string
+      string dns_name = 1 [json_name = "dns_name"];
+
+      // ip_addresses: set of string
+      repeated string ip_addresses = 2 [json_name = "ip_addresses"];
+    }
+
+    message Management {
+      // dns_name: string
+      string dns_name = 1 [json_name = "dns_name"];
+
+      // ip_addresses: set of string
+      repeated string ip_addresses = 2 [json_name = "ip_addresses"];
+    }
+
+    message Nfs {
+      // dns_name: string
+      string dns_name = 1 [json_name = "dns_name"];
+
+      // ip_addresses: set of string
+      repeated string ip_addresses = 2 [json_name = "ip_addresses"];
+    }
+
+    message Smb {
+      // dns_name: string
+      string dns_name = 1 [json_name = "dns_name"];
+
+      // ip_addresses: set of string
+      repeated string ip_addresses = 2 [json_name = "ip_addresses"];
+    }
+  }
+
+  message ActiveDirectoryConfiguration {
+    string netbios_name = 1 [json_name = "netbios_name"];
+
+    SelfManagedActiveDirectoryConfiguration self_managed_active_directory_configuration = 2 [
+      json_name = "self_managed_active_directory_configuration"
+    ];
+
+    message SelfManagedActiveDirectoryConfiguration {
+      repeated string dns_ips = 1 [json_name = "dns_ips"];
+
+      string domain_name = 2 [json_name = "domain_name"];
+
+      string file_system_administrators_group = 3 [json_name = "file_system_administrators_group"];
+
+      string organizational_unit_distinguished_name = 4 [
+        json_name = "organizational_unit_distinguished_name"
+      ];
+
+      string password = 5;
+
+      string username = 6;
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsFsxOntapVolume version is 0
+message AwsFsxOntapVolume {
+  string arn = 1;
+
+  string file_system_id = 2 [json_name = "file_system_id"];
+
+  string flexcache_endpoint_type = 3 [json_name = "flexcache_endpoint_type"];
+
+  string id = 4;
+
+  string junction_path = 5 [json_name = "junction_path"];
+
+  string name = 6;
+
+  string ontap_volume_type = 7 [json_name = "ontap_volume_type"];
+
+  string security_style = 8 [json_name = "security_style"];
+
+  int64 size_in_megabytes = 9 [json_name = "size_in_megabytes"];
+
+  bool skip_final_backup = 10 [json_name = "skip_final_backup"];
+
+  bool storage_efficiency_enabled = 11 [json_name = "storage_efficiency_enabled"];
+
+  string storage_virtual_machine_id = 12 [json_name = "storage_virtual_machine_id"];
+
+  map<string, string> tags = 13;
+
+  map<string, string> tags_all = 14 [json_name = "tags_all"];
+
+  string uuid = 15;
+
+  string volume_type = 16 [json_name = "volume_type"];
+
+  TieringPolicy tiering_policy = 17 [json_name = "tiering_policy"];
+
+  repeated Timeouts timeouts = 18;
+
+  map<string, string> for_each = 19 [json_name = "for_each"];
+
+  repeated string depends_on = 20 [json_name = "depends_on"];
+
+  int32 count = 21;
+
+  string provider = 22;
+
+  terraform.v1.Lifecycle lifecycle = 23;
+
+  message TieringPolicy {
+    int64 cooling_period = 1 [json_name = "cooling_period"];
+
+    string name = 2;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsFsxOpenzfsFileSystem version is 0
+message AwsFsxOpenzfsFileSystem {
+  string arn = 1;
+
+  int64 automatic_backup_retention_days = 2 [json_name = "automatic_backup_retention_days"];
+
+  string backup_id = 3 [json_name = "backup_id"];
+
+  bool copy_tags_to_backups = 4 [json_name = "copy_tags_to_backups"];
+
+  bool copy_tags_to_volumes = 5 [json_name = "copy_tags_to_volumes"];
+
+  string daily_automatic_backup_start_time = 6 [json_name = "daily_automatic_backup_start_time"];
+
+  string deployment_type = 7 [json_name = "deployment_type"];
+
+  string dns_name = 8 [json_name = "dns_name"];
+
+  string id = 9;
+
+  string kms_key_id = 10 [json_name = "kms_key_id"];
+
+  repeated string network_interface_ids = 11 [json_name = "network_interface_ids"];
+
+  string owner_id = 12 [json_name = "owner_id"];
+
+  string root_volume_id = 13 [json_name = "root_volume_id"];
+
+  repeated string security_group_ids = 14 [json_name = "security_group_ids"];
+
+  int64 storage_capacity = 15 [json_name = "storage_capacity"];
+
+  string storage_type = 16 [json_name = "storage_type"];
+
+  repeated string subnet_ids = 17 [json_name = "subnet_ids"];
+
+  map<string, string> tags = 18;
+
+  map<string, string> tags_all = 19 [json_name = "tags_all"];
+
+  int64 throughput_capacity = 20 [json_name = "throughput_capacity"];
+
+  string vpc_id = 21 [json_name = "vpc_id"];
+
+  string weekly_maintenance_start_time = 22 [json_name = "weekly_maintenance_start_time"];
+
+  DiskIopsConfiguration disk_iops_configuration = 23 [json_name = "disk_iops_configuration"];
+
+  RootVolumeConfiguration root_volume_configuration = 24 [json_name = "root_volume_configuration"];
+
+  repeated Timeouts timeouts = 25;
+
+  map<string, string> for_each = 26 [json_name = "for_each"];
+
+  repeated string depends_on = 27 [json_name = "depends_on"];
+
+  int32 count = 28;
+
+  string provider = 29;
+
+  terraform.v1.Lifecycle lifecycle = 30;
+
+  message DiskIopsConfiguration {
+    int64 iops = 1;
+
+    string mode = 2;
+  }
+
+  message RootVolumeConfiguration {
+    bool copy_tags_to_snapshots = 1 [json_name = "copy_tags_to_snapshots"];
+
+    string data_compression_type = 2 [json_name = "data_compression_type"];
+
+    bool read_only = 3 [json_name = "read_only"];
+
+    int64 record_size_kib = 4 [json_name = "record_size_kib"];
+
+    NfsExports nfs_exports = 5 [json_name = "nfs_exports"];
+
+    repeated UserAndGroupQuotas user_and_group_quotas = 6 [json_name = "user_and_group_quotas"];
+
+    message NfsExports {
+      repeated ClientConfigurations client_configurations = 1 [json_name = "client_configurations"];
+
+      message ClientConfigurations {
+        string clients = 1;
+
+        repeated string options = 2;
+      }
+    }
+
+    message UserAndGroupQuotas {
+      int64 id = 1;
+
+      int64 storage_capacity_quota_gib = 2 [json_name = "storage_capacity_quota_gib"];
+
+      string type = 3;
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsFsxOpenzfsSnapshot version is 0
+message AwsFsxOpenzfsSnapshot {
+  string arn = 1;
+
+  string creation_time = 2 [json_name = "creation_time"];
+
+  string id = 3;
+
+  string name = 4;
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  string volume_id = 7 [json_name = "volume_id"];
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string read = 3;
+
+    string update = 4;
+  }
+}
+
+// AwsFsxOpenzfsVolume version is 0
+message AwsFsxOpenzfsVolume {
+  string arn = 1;
+
+  bool copy_tags_to_snapshots = 2 [json_name = "copy_tags_to_snapshots"];
+
+  string data_compression_type = 3 [json_name = "data_compression_type"];
+
+  string id = 4;
+
+  string name = 5;
+
+  string parent_volume_id = 6 [json_name = "parent_volume_id"];
+
+  bool read_only = 7 [json_name = "read_only"];
+
+  int64 record_size_kib = 8 [json_name = "record_size_kib"];
+
+  int64 storage_capacity_quota_gib = 9 [json_name = "storage_capacity_quota_gib"];
+
+  int64 storage_capacity_reservation_gib = 10 [json_name = "storage_capacity_reservation_gib"];
+
+  map<string, string> tags = 11;
+
+  map<string, string> tags_all = 12 [json_name = "tags_all"];
+
+  string volume_type = 13 [json_name = "volume_type"];
+
+  NfsExports nfs_exports = 14 [json_name = "nfs_exports"];
+
+  OriginSnapshot origin_snapshot = 15 [json_name = "origin_snapshot"];
+
+  repeated Timeouts timeouts = 16;
+
+  repeated UserAndGroupQuotas user_and_group_quotas = 17 [json_name = "user_and_group_quotas"];
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+
+  message NfsExports {
+    repeated ClientConfigurations client_configurations = 1 [json_name = "client_configurations"];
+
+    message ClientConfigurations {
+      string clients = 1;
+
+      repeated string options = 2;
+    }
+  }
+
+  message OriginSnapshot {
+    string copy_strategy = 1 [json_name = "copy_strategy"];
+
+    string snapshot_arn = 2 [json_name = "snapshot_arn"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+
+  message UserAndGroupQuotas {
+    int64 id = 1;
+
+    int64 storage_capacity_quota_gib = 2 [json_name = "storage_capacity_quota_gib"];
+
+    string type = 3;
+  }
+}
+
+// AwsFsxWindowsFileSystem version is 0
+message AwsFsxWindowsFileSystem {
+  string active_directory_id = 1 [json_name = "active_directory_id"];
+
+  repeated string aliases = 2;
+
+  string arn = 3;
+
+  int64 automatic_backup_retention_days = 4 [json_name = "automatic_backup_retention_days"];
+
+  string backup_id = 5 [json_name = "backup_id"];
+
+  bool copy_tags_to_backups = 6 [json_name = "copy_tags_to_backups"];
+
+  string daily_automatic_backup_start_time = 7 [json_name = "daily_automatic_backup_start_time"];
+
+  string deployment_type = 8 [json_name = "deployment_type"];
+
+  string dns_name = 9 [json_name = "dns_name"];
+
+  string id = 10;
+
+  string kms_key_id = 11 [json_name = "kms_key_id"];
+
+  repeated string network_interface_ids = 12 [json_name = "network_interface_ids"];
+
+  string owner_id = 13 [json_name = "owner_id"];
+
+  string preferred_file_server_ip = 14 [json_name = "preferred_file_server_ip"];
+
+  string preferred_subnet_id = 15 [json_name = "preferred_subnet_id"];
+
+  string remote_administration_endpoint = 16 [json_name = "remote_administration_endpoint"];
+
+  repeated string security_group_ids = 17 [json_name = "security_group_ids"];
+
+  bool skip_final_backup = 18 [json_name = "skip_final_backup"];
+
+  int64 storage_capacity = 19 [json_name = "storage_capacity"];
+
+  string storage_type = 20 [json_name = "storage_type"];
+
+  repeated string subnet_ids = 21 [json_name = "subnet_ids"];
+
+  map<string, string> tags = 22;
+
+  map<string, string> tags_all = 23 [json_name = "tags_all"];
+
+  int64 throughput_capacity = 24 [json_name = "throughput_capacity"];
+
+  string vpc_id = 25 [json_name = "vpc_id"];
+
+  string weekly_maintenance_start_time = 26 [json_name = "weekly_maintenance_start_time"];
+
+  AuditLogConfiguration audit_log_configuration = 27 [json_name = "audit_log_configuration"];
+
+  SelfManagedActiveDirectory self_managed_active_directory = 28 [json_name = "self_managed_active_directory"];
+
+  repeated Timeouts timeouts = 29;
+
+  map<string, string> for_each = 30 [json_name = "for_each"];
+
+  repeated string depends_on = 31 [json_name = "depends_on"];
+
+  int32 count = 32;
+
+  string provider = 33;
+
+  terraform.v1.Lifecycle lifecycle = 34;
+
+  message AuditLogConfiguration {
+    string audit_log_destination = 1 [json_name = "audit_log_destination"];
+
+    string file_access_audit_log_level = 2 [json_name = "file_access_audit_log_level"];
+
+    string file_share_access_audit_log_level = 3 [json_name = "file_share_access_audit_log_level"];
+  }
+
+  message SelfManagedActiveDirectory {
+    repeated string dns_ips = 1 [json_name = "dns_ips"];
+
+    string domain_name = 2 [json_name = "domain_name"];
+
+    string file_system_administrators_group = 3 [json_name = "file_system_administrators_group"];
+
+    string organizational_unit_distinguished_name = 4 [
+      json_name = "organizational_unit_distinguished_name"
+    ];
+
+    string password = 5;
+
+    string username = 6;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

@@ -1,0 +1,511 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleDnsManagedZone version is 0
+message GoogleDnsManagedZone {
+  // The time that this resource was created on the server.
+  // This is in RFC3339 text format.
+  string creation_time = 1 [json_name = "creation_time"];
+
+  // A textual description field. Defaults to 'Managed by Terraform'.
+  string description = 2;
+
+  // The DNS name of this managed zone, for instance "example.com.".
+  string dns_name = 3 [json_name = "dns_name"];
+
+  // Set this true to delete all records in the zone.
+  bool force_destroy = 4 [json_name = "force_destroy"];
+
+  string id = 5;
+
+  // A set of key/value label pairs to assign to this ManagedZone.
+  map<string, string> labels = 6;
+
+  // Unique identifier for the resource; defined by the server.
+  int64 managed_zone_id = 7 [json_name = "managed_zone_id"];
+
+  // User assigned name for this resource.
+  // Must be unique within the project.
+  string name = 8;
+
+  // Delegate your managed_zone to these virtual name servers;
+  // defined by the server
+  repeated string name_servers = 9 [json_name = "name_servers"];
+
+  string project = 10;
+
+  // The zone's visibility: public zones are exposed to the Internet,
+  // while private zones are visible only to Virtual Private Cloud resources. Default value: "public" Possible values: ["private", "public"]
+  string visibility = 11;
+
+  CloudLoggingConfig cloud_logging_config = 12 [json_name = "cloud_logging_config"];
+
+  DnssecConfig dnssec_config = 13 [json_name = "dnssec_config"];
+
+  ForwardingConfig forwarding_config = 14 [json_name = "forwarding_config"];
+
+  PeeringConfig peering_config = 15 [json_name = "peering_config"];
+
+  PrivateVisibilityConfig private_visibility_config = 16 [json_name = "private_visibility_config"];
+
+  repeated Timeouts timeouts = 17;
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+
+  message CloudLoggingConfig {
+    // If set, enable query logging for this ManagedZone. False by default, making logging opt-in.
+    bool enable_logging = 1 [json_name = "enable_logging"];
+  }
+
+  message DnssecConfig {
+    // Identifies what kind of resource this is
+    string kind = 1;
+
+    // Specifies the mechanism used to provide authenticated denial-of-existence responses.
+    // non_existence can only be updated when the state is 'off'. Possible values: ["nsec", "nsec3"]
+    string non_existence = 2 [json_name = "non_existence"];
+
+    // Specifies whether DNSSEC is enabled, and what mode it is in Possible values: ["off", "on", "transfer"]
+    string state = 3;
+
+    repeated DefaultKeySpecs default_key_specs = 4 [json_name = "default_key_specs"];
+
+    message DefaultKeySpecs {
+      // String mnemonic specifying the DNSSEC algorithm of this key Possible values: ["ecdsap256sha256", "ecdsap384sha384", "rsasha1", "rsasha256", "rsasha512"]
+      string algorithm = 1;
+
+      // Length of the keys in bits
+      int64 key_length = 2 [json_name = "key_length"];
+
+      // Specifies whether this is a key signing key (KSK) or a zone
+      // signing key (ZSK). Key signing keys have the Secure Entry
+      // Point flag set and, when active, will only be used to sign
+      // resource record sets of type DNSKEY. Zone signing keys do
+      // not have the Secure Entry Point flag set and will be used
+      // to sign all other types of resource record sets. Possible values: ["keySigning", "zoneSigning"]
+      string key_type = 3 [json_name = "key_type"];
+
+      // Identifies what kind of resource this is
+      string kind = 4;
+    }
+  }
+
+  message ForwardingConfig {
+    repeated TargetNameServers target_name_servers = 1 [json_name = "target_name_servers"];
+
+    message TargetNameServers {
+      // Forwarding path for this TargetNameServer. If unset or 'default' Cloud DNS will make forwarding
+      // decision based on address ranges, i.e. RFC1918 addresses go to the VPC, Non-RFC1918 addresses go
+      // to the Internet. When set to 'private', Cloud DNS will always send queries through VPC for this target Possible values: ["default", "private"]
+      string forwarding_path = 1 [json_name = "forwarding_path"];
+
+      // IPv4 address of a target name server.
+      string ipv4_address = 2 [json_name = "ipv4_address"];
+    }
+  }
+
+  message PeeringConfig {
+    TargetNetwork target_network = 1 [json_name = "target_network"];
+
+    message TargetNetwork {
+      // The id or fully qualified URL of the VPC network to forward queries to.
+      // This should be formatted like 'projects/{project}/global/networks/{network}' or
+      // 'https://www.googleapis.com/compute/v1/projects/{project}/global/networks/{network}'
+      string network_url = 1 [json_name = "network_url"];
+    }
+  }
+
+  message PrivateVisibilityConfig {
+    repeated GkeClusters gke_clusters = 1 [json_name = "gke_clusters"];
+
+    repeated Networks networks = 2;
+
+    message GkeClusters {
+      // The resource name of the cluster to bind this ManagedZone to.
+      // This should be specified in the format like
+      // 'projects/*/locations/*/clusters/*'
+      string gke_cluster_name = 1 [json_name = "gke_cluster_name"];
+    }
+
+    message Networks {
+      // The id or fully qualified URL of the VPC network to bind to.
+      // This should be formatted like 'projects/{project}/global/networks/{network}' or
+      // 'https://www.googleapis.com/compute/v1/projects/{project}/global/networks/{network}'
+      string network_url = 1 [json_name = "network_url"];
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleDnsManagedZoneIamBinding version is 0
+message GoogleDnsManagedZoneIamBinding {
+  string etag = 1;
+
+  string id = 2;
+
+  string managed_zone = 3 [json_name = "managed_zone"];
+
+  repeated string members = 4;
+
+  string project = 5;
+
+  string role = 6;
+
+  Condition condition = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleDnsManagedZoneIamMember version is 0
+message GoogleDnsManagedZoneIamMember {
+  string etag = 1;
+
+  string id = 2;
+
+  string managed_zone = 3 [json_name = "managed_zone"];
+
+  string member = 4;
+
+  string project = 5;
+
+  string role = 6;
+
+  Condition condition = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleDnsManagedZoneIamPolicy version is 0
+message GoogleDnsManagedZoneIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string managed_zone = 3 [json_name = "managed_zone"];
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// GoogleDnsPolicy version is 0
+message GoogleDnsPolicy {
+  // A textual description field. Defaults to 'Managed by Terraform'.
+  string description = 1;
+
+  // Allows networks bound to this policy to receive DNS queries sent
+  // by VMs or applications over VPN connections. When enabled, a
+  // virtual IP address will be allocated from each of the sub-networks
+  // that are bound to this policy.
+  bool enable_inbound_forwarding = 2 [json_name = "enable_inbound_forwarding"];
+
+  // Controls whether logging is enabled for the networks bound to this policy.
+  // Defaults to no logging if not set.
+  bool enable_logging = 3 [json_name = "enable_logging"];
+
+  string id = 4;
+
+  // User assigned name for this policy.
+  string name = 5;
+
+  string project = 6;
+
+  AlternativeNameServerConfig alternative_name_server_config = 7 [json_name = "alternative_name_server_config"];
+
+  repeated Networks networks = 8;
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message AlternativeNameServerConfig {
+    repeated TargetNameServers target_name_servers = 1 [json_name = "target_name_servers"];
+
+    message TargetNameServers {
+      // Forwarding path for this TargetNameServer. If unset or 'default' Cloud DNS will make forwarding
+      // decision based on address ranges, i.e. RFC1918 addresses go to the VPC, Non-RFC1918 addresses go
+      // to the Internet. When set to 'private', Cloud DNS will always send queries through VPC for this target Possible values: ["default", "private"]
+      string forwarding_path = 1 [json_name = "forwarding_path"];
+
+      // IPv4 address to forward to.
+      string ipv4_address = 2 [json_name = "ipv4_address"];
+    }
+  }
+
+  message Networks {
+    // The id or fully qualified URL of the VPC network to forward queries to.
+    // This should be formatted like 'projects/{project}/global/networks/{network}' or
+    // 'https://www.googleapis.com/compute/v1/projects/{project}/global/networks/{network}'
+    string network_url = 1 [json_name = "network_url"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleDnsRecordSet version is 0
+message GoogleDnsRecordSet {
+  string id = 1;
+
+  // The name of the zone in which this record set will reside.
+  string managed_zone = 2 [json_name = "managed_zone"];
+
+  // The DNS name this record set will apply to.
+  string name = 3;
+
+  // The ID of the project in which the resource belongs. If it is not provided, the provider project is used.
+  string project = 4;
+
+  // The string data for the records in this record set whose meaning depends on the DNS type. For TXT record, if the string data contains spaces, add surrounding \" if you don't want your string to get split on spaces. To specify a single record value longer than 255 characters such as a TXT record for DKIM, add \"\" inside the Terraform configuration string (e.g. "first255characters\"\"morecharacters").
+  repeated string rrdatas = 5;
+
+  // The time-to-live of this record set (seconds).
+  int64 ttl = 6;
+
+  // The DNS record set type.
+  string type = 7;
+
+  RoutingPolicy routing_policy = 8 [json_name = "routing_policy"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message RoutingPolicy {
+    // Specifies whether to enable fencing for geo queries.
+    bool enable_geo_fencing = 1 [json_name = "enable_geo_fencing"];
+
+    repeated Geo geo = 2;
+
+    PrimaryBackup primary_backup = 3 [json_name = "primary_backup"];
+
+    repeated Wrr wrr = 4;
+
+    message Geo {
+      // The location name defined in Google Cloud.
+      string location = 1;
+
+      repeated string rrdatas = 2;
+
+      HealthCheckedTargets health_checked_targets = 3 [json_name = "health_checked_targets"];
+
+      message HealthCheckedTargets {
+        repeated InternalLoadBalancers internal_load_balancers = 1 [json_name = "internal_load_balancers"];
+
+        message InternalLoadBalancers {
+          // The frontend IP address of the load balancer.
+          string ip_address = 1 [json_name = "ip_address"];
+
+          // The configured IP protocol of the load balancer. This value is case-sensitive. Possible values: ["tcp", "udp"]
+          string ip_protocol = 2 [json_name = "ip_protocol"];
+
+          // The type of load balancer. This value is case-sensitive. Possible values: ["regionalL4ilb", "regionalL7ilb]
+          string load_balancer_type = 3 [json_name = "load_balancer_type"];
+
+          // The fully qualified url of the network in which the load balancer belongs. This should be formatted like `https://www.googleapis.com/compute/v1/projects/{project}/global/networks/{network}`.
+          string network_url = 4 [json_name = "network_url"];
+
+          // The configured port of the load balancer.
+          string port = 5;
+
+          // The ID of the project in which the load balancer belongs.
+          string project = 6;
+
+          // The region of the load balancer. Only needed for regional load balancers.
+          string region = 7;
+        }
+      }
+    }
+
+    message PrimaryBackup {
+      // Specifies whether to enable fencing for backup geo queries.
+      bool enable_geo_fencing_for_backups = 1 [json_name = "enable_geo_fencing_for_backups"];
+
+      // Specifies the percentage of traffic to send to the backup targets even when the primary targets are healthy.
+      int64 trickle_ratio = 2 [json_name = "trickle_ratio"];
+
+      repeated BackupGeo backup_geo = 3 [json_name = "backup_geo"];
+
+      Primary primary = 4;
+
+      message BackupGeo {
+        // The location name defined in Google Cloud.
+        string location = 1;
+
+        repeated string rrdatas = 2;
+
+        HealthCheckedTargets health_checked_targets = 3 [json_name = "health_checked_targets"];
+
+        message HealthCheckedTargets {
+          repeated InternalLoadBalancers internal_load_balancers = 1 [json_name = "internal_load_balancers"];
+
+          message InternalLoadBalancers {
+            // The frontend IP address of the load balancer.
+            string ip_address = 1 [json_name = "ip_address"];
+
+            // The configured IP protocol of the load balancer. This value is case-sensitive. Possible values: ["tcp", "udp"]
+            string ip_protocol = 2 [json_name = "ip_protocol"];
+
+            // The type of load balancer. This value is case-sensitive. Possible values: ["regionalL4ilb", "regionalL7ilb]
+            string load_balancer_type = 3 [json_name = "load_balancer_type"];
+
+            // The fully qualified url of the network in which the load balancer belongs. This should be formatted like `https://www.googleapis.com/compute/v1/projects/{project}/global/networks/{network}`.
+            string network_url = 4 [json_name = "network_url"];
+
+            // The configured port of the load balancer.
+            string port = 5;
+
+            // The ID of the project in which the load balancer belongs.
+            string project = 6;
+
+            // The region of the load balancer. Only needed for regional load balancers.
+            string region = 7;
+          }
+        }
+      }
+
+      message Primary {
+        repeated InternalLoadBalancers internal_load_balancers = 1 [json_name = "internal_load_balancers"];
+
+        message InternalLoadBalancers {
+          // The frontend IP address of the load balancer.
+          string ip_address = 1 [json_name = "ip_address"];
+
+          // The configured IP protocol of the load balancer. This value is case-sensitive. Possible values: ["tcp", "udp"]
+          string ip_protocol = 2 [json_name = "ip_protocol"];
+
+          // The type of load balancer. This value is case-sensitive. Possible values: ["regionalL4ilb", "regionalL7ilb]
+          string load_balancer_type = 3 [json_name = "load_balancer_type"];
+
+          // The fully qualified url of the network in which the load balancer belongs. This should be formatted like `https://www.googleapis.com/compute/v1/projects/{project}/global/networks/{network}`.
+          string network_url = 4 [json_name = "network_url"];
+
+          // The configured port of the load balancer.
+          string port = 5;
+
+          // The ID of the project in which the load balancer belongs.
+          string project = 6;
+
+          // The region of the load balancer. Only needed for regional load balancers.
+          string region = 7;
+        }
+      }
+    }
+
+    message Wrr {
+      repeated string rrdatas = 1;
+
+      // The ratio of traffic routed to the target.
+      int64 weight = 2;
+
+      HealthCheckedTargets health_checked_targets = 3 [json_name = "health_checked_targets"];
+
+      message HealthCheckedTargets {
+        repeated InternalLoadBalancers internal_load_balancers = 1 [json_name = "internal_load_balancers"];
+
+        message InternalLoadBalancers {
+          // The frontend IP address of the load balancer.
+          string ip_address = 1 [json_name = "ip_address"];
+
+          // The configured IP protocol of the load balancer. This value is case-sensitive. Possible values: ["tcp", "udp"]
+          string ip_protocol = 2 [json_name = "ip_protocol"];
+
+          // The type of load balancer. This value is case-sensitive. Possible values: ["regionalL4ilb", "regionalL7ilb]
+          string load_balancer_type = 3 [json_name = "load_balancer_type"];
+
+          // The fully qualified url of the network in which the load balancer belongs. This should be formatted like `https://www.googleapis.com/compute/v1/projects/{project}/global/networks/{network}`.
+          string network_url = 4 [json_name = "network_url"];
+
+          // The configured port of the load balancer.
+          string port = 5;
+
+          // The ID of the project in which the load balancer belongs.
+          string project = 6;
+
+          // The region of the load balancer. Only needed for regional load balancers.
+          string region = 7;
+        }
+      }
+    }
+  }
+}

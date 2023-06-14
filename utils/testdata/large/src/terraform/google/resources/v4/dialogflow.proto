@@ -1,0 +1,1160 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleDialogflowAgent version is 0
+message GoogleDialogflowAgent {
+  // API version displayed in Dialogflow console. If not specified, V2 API is assumed. Clients are free to query
+  // different service endpoints for different API versions. However, bots connectors and webhook calls will follow
+  // the specified API version.
+  // * API_VERSION_V1: Legacy V1 API.
+  // * API_VERSION_V2: V2 API.
+  // * API_VERSION_V2_BETA_1: V2beta1 API. Possible values: ["API_VERSION_V1", "API_VERSION_V2", "API_VERSION_V2_BETA_1"]
+  string api_version = 1 [json_name = "api_version"];
+
+  // The URI of the agent's avatar, which are used throughout the Dialogflow console. When an image URL is entered
+  // into this field, the Dialogflow will save the image in the backend. The address of the backend image returned
+  // from the API will be shown in the [avatarUriBackend] field.
+  string avatar_uri = 2 [json_name = "avatar_uri"];
+
+  // The URI of the agent's avatar as returned from the API. Output only. To provide an image URL for the agent avatar,
+  // the [avatarUri] field can be used.
+  string avatar_uri_backend = 3 [json_name = "avatar_uri_backend"];
+
+  // To filter out false positive results and still get variety in matched natural language inputs for your agent,
+  // you can tune the machine learning classification threshold. If the returned score value is less than the threshold
+  // value, then a fallback intent will be triggered or, if there are no fallback intents defined, no intent will be
+  // triggered. The score values range from 0.0 (completely uncertain) to 1.0 (completely certain). If set to 0.0, the
+  // default of 0.3 is used.
+  int64 classification_threshold = 4 [json_name = "classification_threshold"];
+
+  // The default language of the agent as a language tag. [See Language Support](https://cloud.google.com/dialogflow/docs/reference/language)
+  // for a list of the currently supported language codes. This field cannot be updated after creation.
+  string default_language_code = 5 [json_name = "default_language_code"];
+
+  // The description of this agent. The maximum length is 500 characters. If exceeded, the request is rejected.
+  string description = 6;
+
+  // The name of this agent.
+  string display_name = 7 [json_name = "display_name"];
+
+  // Determines whether this agent should log conversation queries.
+  bool enable_logging = 8 [json_name = "enable_logging"];
+
+  string id = 9;
+
+  // Determines how intents are detected from user queries.
+  // * MATCH_MODE_HYBRID: Best for agents with a small number of examples in intents and/or wide use of templates
+  // syntax and composite entities.
+  // * MATCH_MODE_ML_ONLY: Can be used for agents with a large number of examples in intents, especially the ones
+  // using @sys.any or very large developer entities. Possible values: ["MATCH_MODE_HYBRID", "MATCH_MODE_ML_ONLY"]
+  string match_mode = 10 [json_name = "match_mode"];
+
+  string project = 11;
+
+  // The list of all languages supported by this agent (except for the defaultLanguageCode).
+  repeated string supported_language_codes = 12 [json_name = "supported_language_codes"];
+
+  // The agent tier. If not specified, TIER_STANDARD is assumed.
+  // * TIER_STANDARD: Standard tier.
+  // * TIER_ENTERPRISE: Enterprise tier (Essentials).
+  // * TIER_ENTERPRISE_PLUS: Enterprise tier (Plus).
+  // NOTE: Due to consistency issues, the provider will not read this field from the API. Drift is possible between
+  // the Terraform state and Dialogflow if the agent tier is changed outside of Terraform. Possible values: ["TIER_STANDARD", "TIER_ENTERPRISE", "TIER_ENTERPRISE_PLUS"]
+  string tier = 13;
+
+  // The time zone of this agent from the [time zone database](https://www.iana.org/time-zones), e.g., America/New_York,
+  // Europe/Paris.
+  string time_zone = 14 [json_name = "time_zone"];
+
+  repeated Timeouts timeouts = 15;
+
+  map<string, string> for_each = 16 [json_name = "for_each"];
+
+  repeated string depends_on = 17 [json_name = "depends_on"];
+
+  int32 count = 18;
+
+  string provider = 19;
+
+  terraform.v1.Lifecycle lifecycle = 20;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleDialogflowCxAgent version is 0
+message GoogleDialogflowCxAgent {
+  // The URI of the agent's avatar. Avatars are used throughout the Dialogflow console and in the self-hosted Web Demo integration.
+  string avatar_uri = 1 [json_name = "avatar_uri"];
+
+  // The default language of the agent as a language tag. [See Language Support](https://cloud.google.com/dialogflow/cx/docs/reference/language)
+  // for a list of the currently supported language codes. This field cannot be updated after creation.
+  string default_language_code = 2 [json_name = "default_language_code"];
+
+  // The description of this agent. The maximum length is 500 characters. If exceeded, the request is rejected.
+  string description = 3;
+
+  // The human-readable name of the agent, unique within the location.
+  string display_name = 4 [json_name = "display_name"];
+
+  // Indicates if automatic spell correction is enabled in detect intent requests.
+  bool enable_spell_correction = 5 [json_name = "enable_spell_correction"];
+
+  // Determines whether this agent should log conversation queries.
+  bool enable_stackdriver_logging = 6 [json_name = "enable_stackdriver_logging"];
+
+  string id = 7;
+
+  // The name of the location this agent is located in.
+  //
+  // ~> **Note:** The first time you are deploying an Agent in your project you must configure location settings.
+  // This is a one time step but at the moment you can only [configure location settings](https://cloud.google.com/dialogflow/cx/docs/concept/region#location-settings) via the Dialogflow CX console.
+  // Another options is to use global location so you don't need to manually configure location settings.
+  string location = 8;
+
+  // The unique identifier of the agent.
+  string name = 9;
+
+  string project = 10;
+
+  // Name of the SecuritySettings reference for the agent. Format: projects/<Project ID>/locations/<Location ID>/securitySettings/<Security Settings ID>.
+  string security_settings = 11 [json_name = "security_settings"];
+
+  // Name of the start flow in this agent. A start flow will be automatically created when the agent is created, and can only be deleted by deleting the agent. Format: projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/flows/<Flow ID>.
+  string start_flow = 12 [json_name = "start_flow"];
+
+  // The list of all languages supported by this agent (except for the default_language_code).
+  repeated string supported_language_codes = 13 [json_name = "supported_language_codes"];
+
+  // The time zone of this agent from the [time zone database](https://www.iana.org/time-zones), e.g., America/New_York,
+  // Europe/Paris.
+  string time_zone = 14 [json_name = "time_zone"];
+
+  SpeechToTextSettings speech_to_text_settings = 15 [json_name = "speech_to_text_settings"];
+
+  repeated Timeouts timeouts = 16;
+
+  map<string, string> for_each = 17 [json_name = "for_each"];
+
+  repeated string depends_on = 18 [json_name = "depends_on"];
+
+  int32 count = 19;
+
+  string provider = 20;
+
+  terraform.v1.Lifecycle lifecycle = 21;
+
+  message SpeechToTextSettings {
+    // Whether to use speech adaptation for speech recognition.
+    bool enable_speech_adaptation = 1 [json_name = "enable_speech_adaptation"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleDialogflowCxEntityType version is 0
+message GoogleDialogflowCxEntityType {
+  // Represents kinds of entities.
+  // * AUTO_EXPANSION_MODE_UNSPECIFIED: Auto expansion disabled for the entity.
+  // * AUTO_EXPANSION_MODE_DEFAULT: Allows an agent to recognize values that have not been explicitly listed in the entity. Possible values: ["AUTO_EXPANSION_MODE_DEFAULT", "AUTO_EXPANSION_MODE_UNSPECIFIED"]
+  string auto_expansion_mode = 1 [json_name = "auto_expansion_mode"];
+
+  // The human-readable name of the entity type, unique within the agent.
+  string display_name = 2 [json_name = "display_name"];
+
+  // Enables fuzzy entity extraction during classification.
+  bool enable_fuzzy_extraction = 3 [json_name = "enable_fuzzy_extraction"];
+
+  string id = 4;
+
+  // Indicates whether the entity type can be automatically expanded.
+  // * KIND_MAP: Map entity types allow mapping of a group of synonyms to a canonical value.
+  // * KIND_LIST: List entity types contain a set of entries that do not map to canonical values. However, list entity types can contain references to other entity types (with or without aliases).
+  // * KIND_REGEXP: Regexp entity types allow to specify regular expressions in entries values. Possible values: ["KIND_MAP", "KIND_LIST", "KIND_REGEXP"]
+  string kind = 5;
+
+  // The language of the following fields in entityType:
+  // EntityType.entities.value
+  // EntityType.entities.synonyms
+  // EntityType.excluded_phrases.value
+  // If not specified, the agent's default language is used. Many languages are supported. Note: languages must be enabled in the agent before they can be used.
+  string language_code = 6 [json_name = "language_code"];
+
+  // The unique identifier of the entity type.
+  // Format: projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/entityTypes/<Entity Type ID>.
+  string name = 7;
+
+  // The agent to create a entity type for.
+  // Format: projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>.
+  string parent = 8;
+
+  // Indicates whether parameters of the entity type should be redacted in log. If redaction is enabled, page parameters and intent parameters referring to the entity type will be replaced by parameter name when logging.
+  bool redact = 9;
+
+  repeated Entities entities = 10;
+
+  repeated ExcludedPhrases excluded_phrases = 11 [json_name = "excluded_phrases"];
+
+  repeated Timeouts timeouts = 12;
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message Entities {
+    // A collection of value synonyms. For example, if the entity type is vegetable, and value is scallions, a synonym could be green onions.
+    // For KIND_LIST entity types: This collection must contain exactly one synonym equal to value.
+    repeated string synonyms = 1;
+
+    // The primary value associated with this entity entry. For example, if the entity type is vegetable, the value could be scallions.
+    // For KIND_MAP entity types: A canonical value to be used in place of synonyms.
+    // For KIND_LIST entity types: A string that can contain references to other entity types (with or without aliases).
+    string value = 2;
+  }
+
+  message ExcludedPhrases {
+    // The word or phrase to be excluded.
+    string value = 1;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleDialogflowCxEnvironment version is 0
+message GoogleDialogflowCxEnvironment {
+  // The human-readable description of the environment. The maximum length is 500 characters. If exceeded, the request is rejected.
+  string description = 1;
+
+  // The human-readable name of the environment (unique in an agent). Limit of 64 characters.
+  string display_name = 2 [json_name = "display_name"];
+
+  string id = 3;
+
+  // The name of the environment.
+  string name = 4;
+
+  // The Agent to create an Environment for.
+  // Format: projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>.
+  string parent = 5;
+
+  // Update time of this environment. A timestamp in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits. Examples: "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z".
+  string update_time = 6 [json_name = "update_time"];
+
+  repeated Timeouts timeouts = 7;
+
+  repeated VersionConfigs version_configs = 8 [json_name = "version_configs"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+
+  message VersionConfigs {
+    // Format: projects/{{project}}/locations/{{location}}/agents/{{agent}}/flows/{{flow}}/versions/{{version}}.
+    string version = 1;
+  }
+}
+
+// GoogleDialogflowCxFlow version is 0
+message GoogleDialogflowCxFlow {
+  // The description of the flow. The maximum length is 500 characters. If exceeded, the request is rejected.
+  string description = 1;
+
+  // The human-readable name of the flow.
+  string display_name = 2 [json_name = "display_name"];
+
+  string id = 3;
+
+  // The language of the following fields in flow:
+  // Flow.event_handlers.trigger_fulfillment.messages
+  // Flow.event_handlers.trigger_fulfillment.conditional_cases
+  // Flow.transition_routes.trigger_fulfillment.messages
+  // Flow.transition_routes.trigger_fulfillment.conditional_cases
+  // If not specified, the agent's default language is used. Many languages are supported. Note: languages must be enabled in the agent before they can be used.
+  string language_code = 4 [json_name = "language_code"];
+
+  // The unique identifier of the flow.
+  // Format: projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/flows/<Flow ID>.
+  string name = 5;
+
+  // The agent to create a flow for.
+  // Format: projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>.
+  string parent = 6;
+
+  // A flow's transition route group serve two purposes:
+  // They are responsible for matching the user's first utterances in the flow.
+  // They are inherited by every page's [transition route groups][Page.transition_route_groups]. Transition route groups defined in the page have higher priority than those defined in the flow.
+  // Format:projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/flows/<Flow ID>/transitionRouteGroups/<TransitionRouteGroup ID>.
+  repeated string transition_route_groups = 7 [json_name = "transition_route_groups"];
+
+  repeated EventHandlers event_handlers = 8 [json_name = "event_handlers"];
+
+  NluSettings nlu_settings = 9 [json_name = "nlu_settings"];
+
+  repeated Timeouts timeouts = 10;
+
+  repeated TransitionRoutes transition_routes = 11 [json_name = "transition_routes"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message EventHandlers {
+    // The name of the event to handle.
+    string event = 1;
+
+    // The unique identifier of this event handler.
+    string name = 2;
+
+    // The target flow to transition to.
+    // Format: projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/flows/<Flow ID>.
+    string target_flow = 3 [json_name = "target_flow"];
+
+    // The target page to transition to.
+    // Format: projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/flows/<Flow ID>/pages/<Page ID>.
+    string target_page = 4 [json_name = "target_page"];
+
+    TriggerFulfillment trigger_fulfillment = 5 [json_name = "trigger_fulfillment"];
+
+    message TriggerFulfillment {
+      // Whether Dialogflow should return currently queued fulfillment response messages in streaming APIs. If a webhook is specified, it happens before Dialogflow invokes webhook. Warning: 1) This flag only affects streaming API. Responses are still queued and returned once in non-streaming API. 2) The flag can be enabled in any fulfillment but only the first 3 partial responses will be returned. You may only want to apply it to fulfillments that have slow webhooks.
+      bool return_partial_responses = 1 [json_name = "return_partial_responses"];
+
+      // The tag used by the webhook to identify which fulfillment is being called. This field is required if webhook is specified.
+      string tag = 2;
+
+      // The webhook to call. Format: projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/webhooks/<Webhook ID>.
+      string webhook = 3;
+
+      repeated Messages messages = 4;
+
+      message Messages {
+        Text text = 1;
+
+        message Text {
+          // Whether the playback of this message can be interrupted by the end user's speech and the client can then starts the next Dialogflow request.
+          bool allow_playback_interruption = 1 [json_name = "allow_playback_interruption"];
+
+          // A collection of text responses.
+          repeated string text = 2;
+        }
+      }
+    }
+  }
+
+  message NluSettings {
+    // To filter out false positive results and still get variety in matched natural language inputs for your agent, you can tune the machine learning classification threshold.
+    // If the returned score value is less than the threshold value, then a no-match event will be triggered. The score values range from 0.0 (completely uncertain) to 1.0 (completely certain). If set to 0.0, the default of 0.3 is used.
+    int64 classification_threshold = 1 [json_name = "classification_threshold"];
+
+    // Indicates NLU model training mode.
+    // * MODEL_TRAINING_MODE_AUTOMATIC: NLU model training is automatically triggered when a flow gets modified. User can also manually trigger model training in this mode.
+    // * MODEL_TRAINING_MODE_MANUAL: User needs to manually trigger NLU model training. Best for large flows whose models take long time to train. Possible values: ["MODEL_TRAINING_MODE_AUTOMATIC", "MODEL_TRAINING_MODE_MANUAL"]
+    string model_training_mode = 2 [json_name = "model_training_mode"];
+
+    // Indicates the type of NLU model.
+    // * MODEL_TYPE_STANDARD: Use standard NLU model.
+    // * MODEL_TYPE_ADVANCED: Use advanced NLU model. Possible values: ["MODEL_TYPE_STANDARD", "MODEL_TYPE_ADVANCED"]
+    string model_type = 3 [json_name = "model_type"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+
+  message TransitionRoutes {
+    // The condition to evaluate against form parameters or session parameters.
+    // At least one of intent or condition must be specified. When both intent and condition are specified, the transition can only happen when both are fulfilled.
+    string condition = 1;
+
+    // The unique identifier of an Intent.
+    // Format: projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/intents/<Intent ID>. Indicates that the transition can only happen when the given intent is matched. At least one of intent or condition must be specified. When both intent and condition are specified, the transition can only happen when both are fulfilled.
+    string intent = 2;
+
+    // The unique identifier of this transition route.
+    string name = 3;
+
+    // The target flow to transition to.
+    // Format: projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/flows/<Flow ID>.
+    string target_flow = 4 [json_name = "target_flow"];
+
+    // The target page to transition to.
+    // Format: projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/flows/<Flow ID>/pages/<Page ID>.
+    string target_page = 5 [json_name = "target_page"];
+
+    TriggerFulfillment trigger_fulfillment = 6 [json_name = "trigger_fulfillment"];
+
+    message TriggerFulfillment {
+      // Whether Dialogflow should return currently queued fulfillment response messages in streaming APIs. If a webhook is specified, it happens before Dialogflow invokes webhook. Warning: 1) This flag only affects streaming API. Responses are still queued and returned once in non-streaming API. 2) The flag can be enabled in any fulfillment but only the first 3 partial responses will be returned. You may only want to apply it to fulfillments that have slow webhooks.
+      bool return_partial_responses = 1 [json_name = "return_partial_responses"];
+
+      // The tag used by the webhook to identify which fulfillment is being called. This field is required if webhook is specified.
+      string tag = 2;
+
+      // The webhook to call. Format: projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/webhooks/<Webhook ID>.
+      string webhook = 3;
+
+      repeated Messages messages = 4;
+
+      message Messages {
+        Text text = 1;
+
+        message Text {
+          // Whether the playback of this message can be interrupted by the end user's speech and the client can then starts the next Dialogflow request.
+          bool allow_playback_interruption = 1 [json_name = "allow_playback_interruption"];
+
+          // A collection of text responses.
+          repeated string text = 2;
+        }
+      }
+    }
+  }
+}
+
+// GoogleDialogflowCxIntent version is 0
+message GoogleDialogflowCxIntent {
+  // Human readable description for better understanding an intent like its scope, content, result etc. Maximum character limit: 140 characters.
+  string description = 1;
+
+  // The human-readable name of the intent, unique within the agent.
+  string display_name = 2 [json_name = "display_name"];
+
+  string id = 3;
+
+  // Indicates whether this is a fallback intent. Currently only default fallback intent is allowed in the agent, which is added upon agent creation.
+  // Adding training phrases to fallback intent is useful in the case of requests that are mistakenly matched, since training phrases assigned to fallback intents act as negative examples that triggers no-match event.
+  bool is_fallback = 4 [json_name = "is_fallback"];
+
+  // The key/value metadata to label an intent. Labels can contain lowercase letters, digits and the symbols '-' and '_'. International characters are allowed, including letters from unicase alphabets. Keys must start with a letter. Keys and values can be no longer than 63 characters and no more than 128 bytes.
+  // Prefix "sys-" is reserved for Dialogflow defined labels. Currently allowed Dialogflow defined labels include: * sys-head * sys-contextual The above labels do not require value. "sys-head" means the intent is a head intent. "sys.contextual" means the intent is a contextual intent.
+  // An object containing a list of "key": value pairs. Example: { "name": "wrench", "mass": "1.3kg", "count": "3" }.
+  map<string, string> labels = 5;
+
+  // The language of the following fields in intent:
+  // Intent.training_phrases.parts.text
+  // If not specified, the agent's default language is used. Many languages are supported. Note: languages must be enabled in the agent before they can be used.
+  string language_code = 6 [json_name = "language_code"];
+
+  // The unique identifier of the intent.
+  // Format: projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/intents/<Intent ID>.
+  string name = 7;
+
+  // The agent to create an intent for.
+  // Format: projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>.
+  string parent = 8;
+
+  // The priority of this intent. Higher numbers represent higher priorities.
+  // If the supplied value is unspecified or 0, the service translates the value to 500,000, which corresponds to the Normal priority in the console.
+  // If the supplied value is negative, the intent is ignored in runtime detect intent requests.
+  int64 priority = 9;
+
+  repeated Parameters parameters = 10;
+
+  repeated Timeouts timeouts = 11;
+
+  repeated TrainingPhrases training_phrases = 12 [json_name = "training_phrases"];
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message Parameters {
+    // The entity type of the parameter.
+    // Format: projects/-/locations/-/agents/-/entityTypes/<System Entity Type ID> for system entity types (for example, projects/-/locations/-/agents/-/entityTypes/sys.date), or projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/entityTypes/<Entity Type ID> for developer entity types.
+    string entity_type = 1 [json_name = "entity_type"];
+
+    // The unique identifier of the parameter. This field is used by training phrases to annotate their parts.
+    string id = 2;
+
+    // Indicates whether the parameter represents a list of values.
+    bool is_list = 3 [json_name = "is_list"];
+
+    // Indicates whether the parameter content should be redacted in log. If redaction is enabled, the parameter content will be replaced by parameter name during logging.
+    // Note: the parameter content is subject to redaction if either parameter level redaction or entity type level redaction is enabled.
+    bool redact = 4;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+
+  message TrainingPhrases {
+    // The unique identifier of the training phrase.
+    string id = 1;
+
+    // Indicates how many times this example was added to the intent.
+    int64 repeat_count = 2 [json_name = "repeat_count"];
+
+    repeated Parts parts = 3;
+
+    message Parts {
+      // The parameter used to annotate this part of the training phrase. This field is required for annotated parts of the training phrase.
+      string parameter_id = 1 [json_name = "parameter_id"];
+
+      // The text for this part.
+      string text = 2;
+    }
+  }
+}
+
+// GoogleDialogflowCxPage version is 0
+message GoogleDialogflowCxPage {
+  // The human-readable name of the page, unique within the agent.
+  string display_name = 1 [json_name = "display_name"];
+
+  string id = 2;
+
+  // The language of the following fields in page:
+  //
+  // Page.entry_fulfillment.messages
+  // Page.entry_fulfillment.conditional_cases
+  // Page.event_handlers.trigger_fulfillment.messages
+  // Page.event_handlers.trigger_fulfillment.conditional_cases
+  // Page.form.parameters.fill_behavior.initial_prompt_fulfillment.messages
+  // Page.form.parameters.fill_behavior.initial_prompt_fulfillment.conditional_cases
+  // Page.form.parameters.fill_behavior.reprompt_event_handlers.messages
+  // Page.form.parameters.fill_behavior.reprompt_event_handlers.conditional_cases
+  // Page.transition_routes.trigger_fulfillment.messages
+  // Page.transition_routes.trigger_fulfillment.conditional_cases
+  // If not specified, the agent's default language is used. Many languages are supported. Note: languages must be enabled in the agent before they can be used.
+  string language_code = 3 [json_name = "language_code"];
+
+  // The unique identifier of the page.
+  // Format: projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/flows/<Flow ID>/pages/<Page ID>.
+  string name = 4;
+
+  // The flow to create a page for.
+  // Format: projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/flows/<Flow ID>.
+  string parent = 5;
+
+  // Ordered list of TransitionRouteGroups associated with the page. Transition route groups must be unique within a page.
+  // If multiple transition routes within a page scope refer to the same intent, then the precedence order is: page's transition route -> page's transition route group -> flow's transition routes.
+  // If multiple transition route groups within a page contain the same intent, then the first group in the ordered list takes precedence.
+  // Format:projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/flows/<Flow ID>/transitionRouteGroups/<TransitionRouteGroup ID>.
+  repeated string transition_route_groups = 6 [json_name = "transition_route_groups"];
+
+  EntryFulfillment entry_fulfillment = 7 [json_name = "entry_fulfillment"];
+
+  repeated EventHandlers event_handlers = 8 [json_name = "event_handlers"];
+
+  Form form = 9;
+
+  repeated Timeouts timeouts = 10;
+
+  repeated TransitionRoutes transition_routes = 11 [json_name = "transition_routes"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message EntryFulfillment {
+    // Whether Dialogflow should return currently queued fulfillment response messages in streaming APIs. If a webhook is specified, it happens before Dialogflow invokes webhook. Warning: 1) This flag only affects streaming API. Responses are still queued and returned once in non-streaming API. 2) The flag can be enabled in any fulfillment but only the first 3 partial responses will be returned. You may only want to apply it to fulfillments that have slow webhooks.
+    bool return_partial_responses = 1 [json_name = "return_partial_responses"];
+
+    // The tag used by the webhook to identify which fulfillment is being called. This field is required if webhook is specified.
+    string tag = 2;
+
+    // The webhook to call. Format: projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/webhooks/<Webhook ID>.
+    string webhook = 3;
+
+    repeated Messages messages = 4;
+
+    message Messages {
+      Text text = 1;
+
+      message Text {
+        // Whether the playback of this message can be interrupted by the end user's speech and the client can then starts the next Dialogflow request.
+        bool allow_playback_interruption = 1 [json_name = "allow_playback_interruption"];
+
+        // A collection of text responses.
+        repeated string text = 2;
+      }
+    }
+  }
+
+  message EventHandlers {
+    // The name of the event to handle.
+    string event = 1;
+
+    // The unique identifier of this event handler.
+    string name = 2;
+
+    // The target flow to transition to.
+    // Format: projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/flows/<Flow ID>.
+    string target_flow = 3 [json_name = "target_flow"];
+
+    // The target page to transition to.
+    // Format: projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/flows/<Flow ID>/pages/<Page ID>.
+    string target_page = 4 [json_name = "target_page"];
+
+    TriggerFulfillment trigger_fulfillment = 5 [json_name = "trigger_fulfillment"];
+
+    message TriggerFulfillment {
+      // Whether Dialogflow should return currently queued fulfillment response messages in streaming APIs. If a webhook is specified, it happens before Dialogflow invokes webhook. Warning: 1) This flag only affects streaming API. Responses are still queued and returned once in non-streaming API. 2) The flag can be enabled in any fulfillment but only the first 3 partial responses will be returned. You may only want to apply it to fulfillments that have slow webhooks.
+      bool return_partial_responses = 1 [json_name = "return_partial_responses"];
+
+      // The tag used by the webhook to identify which fulfillment is being called. This field is required if webhook is specified.
+      string tag = 2;
+
+      // The webhook to call. Format: projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/webhooks/<Webhook ID>.
+      string webhook = 3;
+
+      repeated Messages messages = 4;
+
+      message Messages {
+        Text text = 1;
+
+        message Text {
+          // Whether the playback of this message can be interrupted by the end user's speech and the client can then starts the next Dialogflow request.
+          bool allow_playback_interruption = 1 [json_name = "allow_playback_interruption"];
+
+          // A collection of text responses.
+          repeated string text = 2;
+        }
+      }
+    }
+  }
+
+  message Form {
+    repeated Parameters parameters = 1;
+
+    message Parameters {
+      // The human-readable name of the parameter, unique within the form.
+      string display_name = 1 [json_name = "display_name"];
+
+      // The entity type of the parameter.
+      // Format: projects/-/locations/-/agents/-/entityTypes/<System Entity Type ID> for system entity types (for example, projects/-/locations/-/agents/-/entityTypes/sys.date), or projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/entityTypes/<Entity Type ID> for developer entity types.
+      string entity_type = 2 [json_name = "entity_type"];
+
+      // Indicates whether the parameter represents a list of values.
+      bool is_list = 3 [json_name = "is_list"];
+
+      // Indicates whether the parameter content should be redacted in log.
+      // If redaction is enabled, the parameter content will be replaced by parameter name during logging. Note: the parameter content is subject to redaction if either parameter level redaction or entity type level redaction is enabled.
+      bool redact = 4;
+
+      // Indicates whether the parameter is required. Optional parameters will not trigger prompts; however, they are filled if the user specifies them.
+      // Required parameters must be filled before form filling concludes.
+      bool required = 5;
+
+      FillBehavior fill_behavior = 6 [json_name = "fill_behavior"];
+
+      message FillBehavior {
+        InitialPromptFulfillment initial_prompt_fulfillment = 1 [json_name = "initial_prompt_fulfillment"];
+
+        message InitialPromptFulfillment {
+          // Whether Dialogflow should return currently queued fulfillment response messages in streaming APIs. If a webhook is specified, it happens before Dialogflow invokes webhook. Warning: 1) This flag only affects streaming API. Responses are still queued and returned once in non-streaming API. 2) The flag can be enabled in any fulfillment but only the first 3 partial responses will be returned. You may only want to apply it to fulfillments that have slow webhooks.
+          bool return_partial_responses = 1 [json_name = "return_partial_responses"];
+
+          // The tag used by the webhook to identify which fulfillment is being called. This field is required if webhook is specified.
+          string tag = 2;
+
+          // The webhook to call. Format: projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/webhooks/<Webhook ID>.
+          string webhook = 3;
+
+          repeated Messages messages = 4;
+
+          message Messages {
+            Text text = 1;
+
+            message Text {
+              // Whether the playback of this message can be interrupted by the end user's speech and the client can then starts the next Dialogflow request.
+              bool allow_playback_interruption = 1 [json_name = "allow_playback_interruption"];
+
+              // A collection of text responses.
+              repeated string text = 2;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+
+  message TransitionRoutes {
+    // The condition to evaluate against form parameters or session parameters.
+    // At least one of intent or condition must be specified. When both intent and condition are specified, the transition can only happen when both are fulfilled.
+    string condition = 1;
+
+    // The unique identifier of an Intent.
+    // Format: projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/intents/<Intent ID>. Indicates that the transition can only happen when the given intent is matched. At least one of intent or condition must be specified. When both intent and condition are specified, the transition can only happen when both are fulfilled.
+    string intent = 2;
+
+    // The unique identifier of this transition route.
+    string name = 3;
+
+    // The target flow to transition to.
+    // Format: projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/flows/<Flow ID>.
+    string target_flow = 4 [json_name = "target_flow"];
+
+    // The target page to transition to.
+    // Format: projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/flows/<Flow ID>/pages/<Page ID>.
+    string target_page = 5 [json_name = "target_page"];
+
+    TriggerFulfillment trigger_fulfillment = 6 [json_name = "trigger_fulfillment"];
+
+    message TriggerFulfillment {
+      // Whether Dialogflow should return currently queued fulfillment response messages in streaming APIs. If a webhook is specified, it happens before Dialogflow invokes webhook. Warning: 1) This flag only affects streaming API. Responses are still queued and returned once in non-streaming API. 2) The flag can be enabled in any fulfillment but only the first 3 partial responses will be returned. You may only want to apply it to fulfillments that have slow webhooks.
+      bool return_partial_responses = 1 [json_name = "return_partial_responses"];
+
+      // The tag used by the webhook to identify which fulfillment is being called. This field is required if webhook is specified.
+      string tag = 2;
+
+      // The webhook to call. Format: projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/webhooks/<Webhook ID>.
+      string webhook = 3;
+
+      repeated Messages messages = 4;
+
+      message Messages {
+        Text text = 1;
+
+        message Text {
+          // Whether the playback of this message can be interrupted by the end user's speech and the client can then starts the next Dialogflow request.
+          bool allow_playback_interruption = 1 [json_name = "allow_playback_interruption"];
+
+          // A collection of text responses.
+          repeated string text = 2;
+        }
+      }
+    }
+  }
+}
+
+// GoogleDialogflowCxVersion version is 0
+message GoogleDialogflowCxVersion {
+  // A timestamp in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits. Examples: "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z".
+  string create_time = 1 [json_name = "create_time"];
+
+  // The description of the version. The maximum length is 500 characters. If exceeded, the request is rejected.
+  string description = 2;
+
+  // The human-readable name of the version. Limit of 64 characters.
+  string display_name = 3 [json_name = "display_name"];
+
+  string id = 4;
+
+  // Format: projects//locations//agents//flows//versions/. Version ID is a self-increasing number generated by Dialogflow upon version creation.
+  string name = 5;
+
+  // The NLU settings of the flow at version creation.
+  repeated NluSettings nlu_settings = 6 [json_name = "nlu_settings"];
+
+  // The Flow to create an Version for.
+  // Format: projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/flows/<Flow ID>.
+  string parent = 7;
+
+  // The state of this version.
+  // * RUNNING: Version is not ready to serve (e.g. training is running).
+  // * SUCCEEDED: Training has succeeded and this version is ready to serve.
+  // * FAILED: Version training failed.
+  string state = 8;
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message NluSettings {
+    // classification_threshold: number
+    int64 classification_threshold = 1 [json_name = "classification_threshold"];
+
+    // model_training_mode: string
+    string model_training_mode = 2 [json_name = "model_training_mode"];
+
+    // model_type: string
+    string model_type = 3 [json_name = "model_type"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleDialogflowCxWebhook version is 0
+message GoogleDialogflowCxWebhook {
+  // Indicates whether the webhook is disabled.
+  bool disabled = 1;
+
+  // The human-readable name of the webhook, unique within the agent.
+  string display_name = 2 [json_name = "display_name"];
+
+  // Indicates if automatic spell correction is enabled in detect intent requests.
+  bool enable_spell_correction = 3 [json_name = "enable_spell_correction"];
+
+  // Determines whether this agent should log conversation queries.
+  bool enable_stackdriver_logging = 4 [json_name = "enable_stackdriver_logging"];
+
+  string id = 5;
+
+  // The unique identifier of the webhook.
+  // Format: projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/webhooks/<Webhook ID>.
+  string name = 6;
+
+  // The agent to create a webhook for.
+  // Format: projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>.
+  string parent = 7;
+
+  // Name of the SecuritySettings reference for the agent. Format: projects/<Project ID>/locations/<Location ID>/securitySettings/<Security Settings ID>.
+  string security_settings = 8 [json_name = "security_settings"];
+
+  // Name of the start flow in this agent. A start flow will be automatically created when the agent is created, and can only be deleted by deleting the agent. Format: projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/flows/<Flow ID>.
+  string start_flow = 9 [json_name = "start_flow"];
+
+  // Webhook execution timeout.
+  string timeout = 10;
+
+  GenericWebService generic_web_service = 11 [json_name = "generic_web_service"];
+
+  ServiceDirectory service_directory = 12 [json_name = "service_directory"];
+
+  repeated Timeouts timeouts = 13;
+
+  map<string, string> for_each = 14 [json_name = "for_each"];
+
+  repeated string depends_on = 15 [json_name = "depends_on"];
+
+  int32 count = 16;
+
+  string provider = 17;
+
+  terraform.v1.Lifecycle lifecycle = 18;
+
+  message GenericWebService {
+    // Specifies a list of allowed custom CA certificates (in DER format) for HTTPS verification.
+    repeated string allowed_ca_certs = 1 [json_name = "allowed_ca_certs"];
+
+    // The HTTP request headers to send together with webhook requests.
+    map<string, string> request_headers = 2 [json_name = "request_headers"];
+
+    // Whether to use speech adaptation for speech recognition.
+    string uri = 3;
+  }
+
+  message ServiceDirectory {
+    // The name of Service Directory service.
+    string service = 1;
+
+    GenericWebService generic_web_service = 2 [json_name = "generic_web_service"];
+
+    message GenericWebService {
+      // Specifies a list of allowed custom CA certificates (in DER format) for HTTPS verification.
+      repeated string allowed_ca_certs = 1 [json_name = "allowed_ca_certs"];
+
+      // The HTTP request headers to send together with webhook requests.
+      map<string, string> request_headers = 2 [json_name = "request_headers"];
+
+      // Whether to use speech adaptation for speech recognition.
+      string uri = 3;
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleDialogflowEntityType version is 0
+message GoogleDialogflowEntityType {
+  // The name of this entity type to be displayed on the console.
+  string display_name = 1 [json_name = "display_name"];
+
+  // Enables fuzzy entity extraction during classification.
+  bool enable_fuzzy_extraction = 2 [json_name = "enable_fuzzy_extraction"];
+
+  string id = 3;
+
+  // Indicates the kind of entity type.
+  // * KIND_MAP: Map entity types allow mapping of a group of synonyms to a reference value.
+  // * KIND_LIST: List entity types contain a set of entries that do not map to reference values. However, list entity
+  // types can contain references to other entity types (with or without aliases).
+  // * KIND_REGEXP: Regexp entity types allow to specify regular expressions in entries values. Possible values: ["KIND_MAP", "KIND_LIST", "KIND_REGEXP"]
+  string kind = 4;
+
+  // The unique identifier of the entity type.
+  // Format: projects/<Project ID>/agent/entityTypes/<Entity type ID>.
+  string name = 5;
+
+  string project = 6;
+
+  repeated Entities entities = 7;
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Entities {
+    // A collection of value synonyms. For example, if the entity type is vegetable, and value is scallions, a synonym
+    // could be green onions.
+    // For KIND_LIST entity types:
+    // * This collection must contain exactly one synonym equal to value.
+    repeated string synonyms = 1;
+
+    // The primary value associated with this entity entry. For example, if the entity type is vegetable, the value
+    // could be scallions.
+    // For KIND_MAP entity types:
+    // * A reference value to be used in place of synonyms.
+    // For KIND_LIST entity types:
+    // * A string that can contain references to other entity types (with or without aliases).
+    string value = 2;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleDialogflowFulfillment version is 0
+message GoogleDialogflowFulfillment {
+  // The human-readable name of the fulfillment, unique within the agent.
+  string display_name = 1 [json_name = "display_name"];
+
+  // Whether fulfillment is enabled.
+  bool enabled = 2;
+
+  string id = 3;
+
+  // The unique identifier of the fulfillment.
+  // Format: projects/<Project ID>/agent/fulfillment - projects/<Project ID>/locations/<Location ID>/agent/fulfillment
+  string name = 4;
+
+  string project = 5;
+
+  repeated Features features = 6;
+
+  GenericWebService generic_web_service = 7 [json_name = "generic_web_service"];
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Features {
+    // The type of the feature that enabled for fulfillment.
+    // * SMALLTALK: Fulfillment is enabled for SmallTalk. Possible values: ["SMALLTALK"]
+    string type = 1;
+  }
+
+  message GenericWebService {
+    // The password for HTTP Basic authentication.
+    string password = 1;
+
+    // The HTTP request headers to send together with fulfillment requests.
+    map<string, string> request_headers = 2 [json_name = "request_headers"];
+
+    // The fulfillment URI for receiving POST requests. It must use https protocol.
+    string uri = 3;
+
+    // The user name for HTTP Basic authentication.
+    string username = 4;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleDialogflowIntent version is 0
+message GoogleDialogflowIntent {
+  // The name of the action associated with the intent.
+  // Note: The action name must not contain whitespaces.
+  string action = 1;
+
+  // The list of platforms for which the first responses will be copied from the messages in PLATFORM_UNSPECIFIED
+  // (i.e. default platform). Possible values: ["FACEBOOK", "SLACK", "TELEGRAM", "KIK", "SKYPE", "LINE", "VIBER", "ACTIONS_ON_GOOGLE", "GOOGLE_HANGOUTS"]
+  repeated string default_response_platforms = 2 [json_name = "default_response_platforms"];
+
+  // The name of this intent to be displayed on the console.
+  string display_name = 3 [json_name = "display_name"];
+
+  // The collection of event names that trigger the intent. If the collection of input contexts is not empty, all of
+  // the contexts must be present in the active user session for an event to trigger this intent. See the
+  // [events reference](https://cloud.google.com/dialogflow/docs/events-overview) for more details.
+  repeated string events = 4;
+
+  // Information about all followup intents that have this intent as a direct or indirect parent. We populate this field
+  // only in the output.
+  repeated FollowupIntentInfo followup_intent_info = 5 [json_name = "followup_intent_info"];
+
+  string id = 6;
+
+  // The list of context names required for this intent to be triggered.
+  // Format: projects/<Project ID>/agent/sessions/-/contexts/<Context ID>.
+  repeated string input_context_names = 7 [json_name = "input_context_names"];
+
+  // Indicates whether this is a fallback intent.
+  bool is_fallback = 8 [json_name = "is_fallback"];
+
+  // Indicates whether Machine Learning is disabled for the intent.
+  // Note: If mlDisabled setting is set to true, then this intent is not taken into account during inference in ML
+  // ONLY match mode. Also, auto-markup in the UI is turned off.
+  bool ml_disabled = 9 [json_name = "ml_disabled"];
+
+  // The unique identifier of this intent.
+  // Format: projects/<Project ID>/agent/intents/<Intent ID>.
+  string name = 10;
+
+  // The unique identifier of the parent intent in the chain of followup intents.
+  // Format: projects/<Project ID>/agent/intents/<Intent ID>.
+  string parent_followup_intent_name = 11 [json_name = "parent_followup_intent_name"];
+
+  // The priority of this intent. Higher numbers represent higher priorities.
+  //  - If the supplied value is unspecified or 0, the service translates the value to 500,000, which corresponds
+  //  to the Normal priority in the console.
+  //  - If the supplied value is negative, the intent is ignored in runtime detect intent requests.
+  int64 priority = 12;
+
+  string project = 13;
+
+  // Indicates whether to delete all contexts in the current session when this intent is matched.
+  bool reset_contexts = 14 [json_name = "reset_contexts"];
+
+  // The unique identifier of the root intent in the chain of followup intents. It identifies the correct followup
+  // intents chain for this intent.
+  // Format: projects/<Project ID>/agent/intents/<Intent ID>.
+  string root_followup_intent_name = 15 [json_name = "root_followup_intent_name"];
+
+  // Indicates whether webhooks are enabled for the intent.
+  // * WEBHOOK_STATE_ENABLED: Webhook is enabled in the agent and in the intent.
+  // * WEBHOOK_STATE_ENABLED_FOR_SLOT_FILLING: Webhook is enabled in the agent and in the intent. Also, each slot
+  // filling prompt is forwarded to the webhook. Possible values: ["WEBHOOK_STATE_ENABLED", "WEBHOOK_STATE_ENABLED_FOR_SLOT_FILLING"]
+  string webhook_state = 16 [json_name = "webhook_state"];
+
+  repeated Timeouts timeouts = 17;
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+
+  message FollowupIntentInfo {
+    // followup_intent_name: string
+    string followup_intent_name = 1 [json_name = "followup_intent_name"];
+
+    // parent_followup_intent_name: string
+    string parent_followup_intent_name = 2 [json_name = "parent_followup_intent_name"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

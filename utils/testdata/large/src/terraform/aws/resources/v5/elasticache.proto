@@ -1,0 +1,463 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsElasticacheCluster version is 0
+message AwsElasticacheCluster {
+  bool apply_immediately = 1 [json_name = "apply_immediately"];
+
+  string arn = 2;
+
+  string auto_minor_version_upgrade = 3 [json_name = "auto_minor_version_upgrade"];
+
+  string availability_zone = 4 [json_name = "availability_zone"];
+
+  string az_mode = 5 [json_name = "az_mode"];
+
+  repeated CacheNodes cache_nodes = 6 [json_name = "cache_nodes"];
+
+  string cluster_address = 7 [json_name = "cluster_address"];
+
+  string cluster_id = 8 [json_name = "cluster_id"];
+
+  string configuration_endpoint = 9 [json_name = "configuration_endpoint"];
+
+  string engine = 10;
+
+  string engine_version = 11 [json_name = "engine_version"];
+
+  string engine_version_actual = 12 [json_name = "engine_version_actual"];
+
+  string final_snapshot_identifier = 13 [json_name = "final_snapshot_identifier"];
+
+  string id = 14;
+
+  string ip_discovery = 15 [json_name = "ip_discovery"];
+
+  string maintenance_window = 16 [json_name = "maintenance_window"];
+
+  string network_type = 17 [json_name = "network_type"];
+
+  string node_type = 18 [json_name = "node_type"];
+
+  string notification_topic_arn = 19 [json_name = "notification_topic_arn"];
+
+  int64 num_cache_nodes = 20 [json_name = "num_cache_nodes"];
+
+  string outpost_mode = 21 [json_name = "outpost_mode"];
+
+  string parameter_group_name = 22 [json_name = "parameter_group_name"];
+
+  int64 port = 23;
+
+  repeated string preferred_availability_zones = 24 [json_name = "preferred_availability_zones"];
+
+  string preferred_outpost_arn = 25 [json_name = "preferred_outpost_arn"];
+
+  string replication_group_id = 26 [json_name = "replication_group_id"];
+
+  repeated string security_group_ids = 27 [json_name = "security_group_ids"];
+
+  repeated string snapshot_arns = 28 [json_name = "snapshot_arns"];
+
+  string snapshot_name = 29 [json_name = "snapshot_name"];
+
+  int64 snapshot_retention_limit = 30 [json_name = "snapshot_retention_limit"];
+
+  string snapshot_window = 31 [json_name = "snapshot_window"];
+
+  string subnet_group_name = 32 [json_name = "subnet_group_name"];
+
+  map<string, string> tags = 33;
+
+  map<string, string> tags_all = 34 [json_name = "tags_all"];
+
+  repeated LogDeliveryConfiguration log_delivery_configuration = 35 [json_name = "log_delivery_configuration"];
+
+  map<string, string> for_each = 36 [json_name = "for_each"];
+
+  repeated string depends_on = 37 [json_name = "depends_on"];
+
+  int32 count = 38;
+
+  string provider = 39;
+
+  terraform.v1.Lifecycle lifecycle = 40;
+
+  message CacheNodes {
+    // address: string
+    string address = 1;
+
+    // availability_zone: string
+    string availability_zone = 2 [json_name = "availability_zone"];
+
+    // id: string
+    string id = 3;
+
+    // outpost_arn: string
+    string outpost_arn = 4 [json_name = "outpost_arn"];
+
+    // port: number
+    int64 port = 5;
+  }
+
+  message LogDeliveryConfiguration {
+    string destination = 1;
+
+    string destination_type = 2 [json_name = "destination_type"];
+
+    string log_format = 3 [json_name = "log_format"];
+
+    string log_type = 4 [json_name = "log_type"];
+  }
+}
+
+// AwsElasticacheGlobalReplicationGroup version is 0
+message AwsElasticacheGlobalReplicationGroup {
+  string arn = 1;
+
+  bool at_rest_encryption_enabled = 2 [json_name = "at_rest_encryption_enabled"];
+
+  bool auth_token_enabled = 3 [json_name = "auth_token_enabled"];
+
+  bool automatic_failover_enabled = 4 [json_name = "automatic_failover_enabled"];
+
+  string cache_node_type = 5 [json_name = "cache_node_type"];
+
+  bool cluster_enabled = 6 [json_name = "cluster_enabled"];
+
+  string engine = 7;
+
+  string engine_version = 8 [json_name = "engine_version"];
+
+  string engine_version_actual = 9 [json_name = "engine_version_actual"];
+
+  repeated GlobalNodeGroups global_node_groups = 10 [json_name = "global_node_groups"];
+
+  string global_replication_group_description = 11 [json_name = "global_replication_group_description"];
+
+  string global_replication_group_id = 12 [json_name = "global_replication_group_id"];
+
+  string global_replication_group_id_suffix = 13 [json_name = "global_replication_group_id_suffix"];
+
+  string id = 14;
+
+  int64 num_node_groups = 15 [json_name = "num_node_groups"];
+
+  string parameter_group_name = 16 [json_name = "parameter_group_name"];
+
+  string primary_replication_group_id = 17 [json_name = "primary_replication_group_id"];
+
+  bool transit_encryption_enabled = 18 [json_name = "transit_encryption_enabled"];
+
+  repeated Timeouts timeouts = 19;
+
+  map<string, string> for_each = 20 [json_name = "for_each"];
+
+  repeated string depends_on = 21 [json_name = "depends_on"];
+
+  int32 count = 22;
+
+  string provider = 23;
+
+  terraform.v1.Lifecycle lifecycle = 24;
+
+  message GlobalNodeGroups {
+    // global_node_group_id: string
+    string global_node_group_id = 1 [json_name = "global_node_group_id"];
+
+    // slots: string
+    string slots = 2;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsElasticacheParameterGroup version is 0
+message AwsElasticacheParameterGroup {
+  string arn = 1;
+
+  string description = 2;
+
+  string family = 3;
+
+  string id = 4;
+
+  string name = 5;
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  repeated Parameter parameter = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Parameter {
+    string name = 1;
+
+    string value = 2;
+  }
+}
+
+// AwsElasticacheReplicationGroup version is 1
+message AwsElasticacheReplicationGroup {
+  bool apply_immediately = 1 [json_name = "apply_immediately"];
+
+  string arn = 2;
+
+  bool at_rest_encryption_enabled = 3 [json_name = "at_rest_encryption_enabled"];
+
+  string auth_token = 4 [json_name = "auth_token"];
+
+  string auto_minor_version_upgrade = 5 [json_name = "auto_minor_version_upgrade"];
+
+  bool automatic_failover_enabled = 6 [json_name = "automatic_failover_enabled"];
+
+  bool cluster_enabled = 7 [json_name = "cluster_enabled"];
+
+  string configuration_endpoint_address = 8 [json_name = "configuration_endpoint_address"];
+
+  bool data_tiering_enabled = 9 [json_name = "data_tiering_enabled"];
+
+  string description = 10;
+
+  string engine = 11;
+
+  string engine_version = 12 [json_name = "engine_version"];
+
+  string engine_version_actual = 13 [json_name = "engine_version_actual"];
+
+  string final_snapshot_identifier = 14 [json_name = "final_snapshot_identifier"];
+
+  string global_replication_group_id = 15 [json_name = "global_replication_group_id"];
+
+  string id = 16;
+
+  string kms_key_id = 17 [json_name = "kms_key_id"];
+
+  string maintenance_window = 18 [json_name = "maintenance_window"];
+
+  repeated string member_clusters = 19 [json_name = "member_clusters"];
+
+  bool multi_az_enabled = 20 [json_name = "multi_az_enabled"];
+
+  string node_type = 21 [json_name = "node_type"];
+
+  string notification_topic_arn = 22 [json_name = "notification_topic_arn"];
+
+  int64 num_cache_clusters = 23 [json_name = "num_cache_clusters"];
+
+  int64 num_node_groups = 24 [json_name = "num_node_groups"];
+
+  string parameter_group_name = 25 [json_name = "parameter_group_name"];
+
+  int64 port = 26;
+
+  repeated string preferred_cache_cluster_azs = 27 [json_name = "preferred_cache_cluster_azs"];
+
+  string primary_endpoint_address = 28 [json_name = "primary_endpoint_address"];
+
+  string reader_endpoint_address = 29 [json_name = "reader_endpoint_address"];
+
+  int64 replicas_per_node_group = 30 [json_name = "replicas_per_node_group"];
+
+  string replication_group_id = 31 [json_name = "replication_group_id"];
+
+  repeated string security_group_ids = 32 [json_name = "security_group_ids"];
+
+  repeated string security_group_names = 33 [json_name = "security_group_names"];
+
+  repeated string snapshot_arns = 34 [json_name = "snapshot_arns"];
+
+  string snapshot_name = 35 [json_name = "snapshot_name"];
+
+  int64 snapshot_retention_limit = 36 [json_name = "snapshot_retention_limit"];
+
+  string snapshot_window = 37 [json_name = "snapshot_window"];
+
+  string subnet_group_name = 38 [json_name = "subnet_group_name"];
+
+  map<string, string> tags = 39;
+
+  map<string, string> tags_all = 40 [json_name = "tags_all"];
+
+  bool transit_encryption_enabled = 41 [json_name = "transit_encryption_enabled"];
+
+  repeated string user_group_ids = 42 [json_name = "user_group_ids"];
+
+  repeated LogDeliveryConfiguration log_delivery_configuration = 43 [json_name = "log_delivery_configuration"];
+
+  repeated Timeouts timeouts = 44;
+
+  map<string, string> for_each = 45 [json_name = "for_each"];
+
+  repeated string depends_on = 46 [json_name = "depends_on"];
+
+  int32 count = 47;
+
+  string provider = 48;
+
+  terraform.v1.Lifecycle lifecycle = 49;
+
+  message LogDeliveryConfiguration {
+    string destination = 1;
+
+    string destination_type = 2 [json_name = "destination_type"];
+
+    string log_format = 3 [json_name = "log_format"];
+
+    string log_type = 4 [json_name = "log_type"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsElasticacheSubnetGroup version is 0
+message AwsElasticacheSubnetGroup {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  string name = 4;
+
+  repeated string subnet_ids = 5 [json_name = "subnet_ids"];
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsElasticacheUser version is 0
+message AwsElasticacheUser {
+  string access_string = 1 [json_name = "access_string"];
+
+  string arn = 2;
+
+  string engine = 3;
+
+  string id = 4;
+
+  bool no_password_required = 5 [json_name = "no_password_required"];
+
+  repeated string passwords = 6;
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  string user_id = 9 [json_name = "user_id"];
+
+  string user_name = 10 [json_name = "user_name"];
+
+  AuthenticationMode authentication_mode = 11 [json_name = "authentication_mode"];
+
+  repeated Timeouts timeouts = 12;
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message AuthenticationMode {
+    int64 password_count = 1 [json_name = "password_count"];
+
+    repeated string passwords = 2;
+
+    string type = 3;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsElasticacheUserGroup version is 0
+message AwsElasticacheUserGroup {
+  string arn = 1;
+
+  string engine = 2;
+
+  string id = 3;
+
+  map<string, string> tags = 4;
+
+  map<string, string> tags_all = 5 [json_name = "tags_all"];
+
+  string user_group_id = 6 [json_name = "user_group_id"];
+
+  repeated string user_ids = 7 [json_name = "user_ids"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsElasticacheUserGroupAssociation version is 0
+message AwsElasticacheUserGroupAssociation {
+  string id = 1;
+
+  string user_group_id = 2 [json_name = "user_group_id"];
+
+  string user_id = 3 [json_name = "user_id"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}

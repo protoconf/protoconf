@@ -1,0 +1,412 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsLexBot version is 0
+message AwsLexBot {
+  string arn = 1;
+
+  string checksum = 2;
+
+  bool child_directed = 3 [json_name = "child_directed"];
+
+  bool create_version = 4 [json_name = "create_version"];
+
+  string created_date = 5 [json_name = "created_date"];
+
+  string description = 6;
+
+  bool detect_sentiment = 7 [json_name = "detect_sentiment"];
+
+  bool enable_model_improvements = 8 [json_name = "enable_model_improvements"];
+
+  string failure_reason = 9 [json_name = "failure_reason"];
+
+  string id = 10;
+
+  int64 idle_session_ttl_in_seconds = 11 [json_name = "idle_session_ttl_in_seconds"];
+
+  string last_updated_date = 12 [json_name = "last_updated_date"];
+
+  string locale = 13;
+
+  string name = 14;
+
+  int64 nlu_intent_confidence_threshold = 15 [json_name = "nlu_intent_confidence_threshold"];
+
+  string process_behavior = 16 [json_name = "process_behavior"];
+
+  string status = 17;
+
+  string version = 18;
+
+  string voice_id = 19 [json_name = "voice_id"];
+
+  AbortStatement abort_statement = 20 [json_name = "abort_statement"];
+
+  ClarificationPrompt clarification_prompt = 21 [json_name = "clarification_prompt"];
+
+  repeated Intent intent = 22;
+
+  repeated Timeouts timeouts = 23;
+
+  map<string, string> for_each = 24 [json_name = "for_each"];
+
+  repeated string depends_on = 25 [json_name = "depends_on"];
+
+  int32 count = 26;
+
+  string provider = 27;
+
+  terraform.v1.Lifecycle lifecycle = 28;
+
+  message AbortStatement {
+    string response_card = 1 [json_name = "response_card"];
+
+    repeated Message message = 2;
+
+    message Message {
+      string content = 1;
+
+      string content_type = 2 [json_name = "content_type"];
+
+      int64 group_number = 3 [json_name = "group_number"];
+    }
+  }
+
+  message ClarificationPrompt {
+    int64 max_attempts = 1 [json_name = "max_attempts"];
+
+    string response_card = 2 [json_name = "response_card"];
+
+    repeated Message message = 3;
+
+    message Message {
+      string content = 1;
+
+      string content_type = 2 [json_name = "content_type"];
+
+      int64 group_number = 3 [json_name = "group_number"];
+    }
+  }
+
+  message Intent {
+    string intent_name = 1 [json_name = "intent_name"];
+
+    string intent_version = 2 [json_name = "intent_version"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsLexBotAlias version is 0
+message AwsLexBotAlias {
+  string arn = 1;
+
+  string bot_name = 2 [json_name = "bot_name"];
+
+  string bot_version = 3 [json_name = "bot_version"];
+
+  string checksum = 4;
+
+  string created_date = 5 [json_name = "created_date"];
+
+  string description = 6;
+
+  string id = 7;
+
+  string last_updated_date = 8 [json_name = "last_updated_date"];
+
+  string name = 9;
+
+  ConversationLogs conversation_logs = 10 [json_name = "conversation_logs"];
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message ConversationLogs {
+    string iam_role_arn = 1 [json_name = "iam_role_arn"];
+
+    repeated LogSettings log_settings = 2 [json_name = "log_settings"];
+
+    message LogSettings {
+      string destination = 1;
+
+      string kms_key_arn = 2 [json_name = "kms_key_arn"];
+
+      string log_type = 3 [json_name = "log_type"];
+
+      string resource_arn = 4 [json_name = "resource_arn"];
+
+      string resource_prefix = 5 [json_name = "resource_prefix"];
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsLexIntent version is 0
+message AwsLexIntent {
+  string arn = 1;
+
+  string checksum = 2;
+
+  bool create_version = 3 [json_name = "create_version"];
+
+  string created_date = 4 [json_name = "created_date"];
+
+  string description = 5;
+
+  string id = 6;
+
+  string last_updated_date = 7 [json_name = "last_updated_date"];
+
+  string name = 8;
+
+  string parent_intent_signature = 9 [json_name = "parent_intent_signature"];
+
+  repeated string sample_utterances = 10 [json_name = "sample_utterances"];
+
+  string version = 11;
+
+  ConclusionStatement conclusion_statement = 12 [json_name = "conclusion_statement"];
+
+  ConfirmationPrompt confirmation_prompt = 13 [json_name = "confirmation_prompt"];
+
+  DialogCodeHook dialog_code_hook = 14 [json_name = "dialog_code_hook"];
+
+  FollowUpPrompt follow_up_prompt = 15 [json_name = "follow_up_prompt"];
+
+  FulfillmentActivity fulfillment_activity = 16 [json_name = "fulfillment_activity"];
+
+  RejectionStatement rejection_statement = 17 [json_name = "rejection_statement"];
+
+  repeated Slot slot = 18;
+
+  repeated Timeouts timeouts = 19;
+
+  map<string, string> for_each = 20 [json_name = "for_each"];
+
+  repeated string depends_on = 21 [json_name = "depends_on"];
+
+  int32 count = 22;
+
+  string provider = 23;
+
+  terraform.v1.Lifecycle lifecycle = 24;
+
+  message ConclusionStatement {
+    string response_card = 1 [json_name = "response_card"];
+
+    repeated Message message = 2;
+
+    message Message {
+      string content = 1;
+
+      string content_type = 2 [json_name = "content_type"];
+
+      int64 group_number = 3 [json_name = "group_number"];
+    }
+  }
+
+  message ConfirmationPrompt {
+    int64 max_attempts = 1 [json_name = "max_attempts"];
+
+    string response_card = 2 [json_name = "response_card"];
+
+    repeated Message message = 3;
+
+    message Message {
+      string content = 1;
+
+      string content_type = 2 [json_name = "content_type"];
+
+      int64 group_number = 3 [json_name = "group_number"];
+    }
+  }
+
+  message DialogCodeHook {
+    string message_version = 1 [json_name = "message_version"];
+
+    string uri = 2;
+  }
+
+  message FollowUpPrompt {
+    Prompt prompt = 1;
+
+    RejectionStatement rejection_statement = 2 [json_name = "rejection_statement"];
+
+    message Prompt {
+      int64 max_attempts = 1 [json_name = "max_attempts"];
+
+      string response_card = 2 [json_name = "response_card"];
+
+      repeated Message message = 3;
+
+      message Message {
+        string content = 1;
+
+        string content_type = 2 [json_name = "content_type"];
+
+        int64 group_number = 3 [json_name = "group_number"];
+      }
+    }
+
+    message RejectionStatement {
+      string response_card = 1 [json_name = "response_card"];
+
+      repeated Message message = 2;
+
+      message Message {
+        string content = 1;
+
+        string content_type = 2 [json_name = "content_type"];
+
+        int64 group_number = 3 [json_name = "group_number"];
+      }
+    }
+  }
+
+  message FulfillmentActivity {
+    string type = 1;
+
+    CodeHook code_hook = 2 [json_name = "code_hook"];
+
+    message CodeHook {
+      string message_version = 1 [json_name = "message_version"];
+
+      string uri = 2;
+    }
+  }
+
+  message RejectionStatement {
+    string response_card = 1 [json_name = "response_card"];
+
+    repeated Message message = 2;
+
+    message Message {
+      string content = 1;
+
+      string content_type = 2 [json_name = "content_type"];
+
+      int64 group_number = 3 [json_name = "group_number"];
+    }
+  }
+
+  message Slot {
+    string description = 1;
+
+    string name = 2;
+
+    int64 priority = 3;
+
+    string response_card = 4 [json_name = "response_card"];
+
+    repeated string sample_utterances = 5 [json_name = "sample_utterances"];
+
+    string slot_constraint = 6 [json_name = "slot_constraint"];
+
+    string slot_type = 7 [json_name = "slot_type"];
+
+    string slot_type_version = 8 [json_name = "slot_type_version"];
+
+    ValueElicitationPrompt value_elicitation_prompt = 9 [json_name = "value_elicitation_prompt"];
+
+    message ValueElicitationPrompt {
+      int64 max_attempts = 1 [json_name = "max_attempts"];
+
+      string response_card = 2 [json_name = "response_card"];
+
+      repeated Message message = 3;
+
+      message Message {
+        string content = 1;
+
+        string content_type = 2 [json_name = "content_type"];
+
+        int64 group_number = 3 [json_name = "group_number"];
+      }
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsLexSlotType version is 0
+message AwsLexSlotType {
+  string checksum = 1;
+
+  bool create_version = 2 [json_name = "create_version"];
+
+  string created_date = 3 [json_name = "created_date"];
+
+  string description = 4;
+
+  string id = 5;
+
+  string last_updated_date = 6 [json_name = "last_updated_date"];
+
+  string name = 7;
+
+  string value_selection_strategy = 8 [json_name = "value_selection_strategy"];
+
+  string version = 9;
+
+  repeated EnumerationValue enumeration_value = 10 [json_name = "enumeration_value"];
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message EnumerationValue {
+    repeated string synonyms = 1;
+
+    string value = 2;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

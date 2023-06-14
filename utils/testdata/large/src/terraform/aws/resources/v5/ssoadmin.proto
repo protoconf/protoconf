@@ -1,0 +1,203 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsSsoadminAccountAssignment version is 0
+message AwsSsoadminAccountAssignment {
+  string id = 1;
+
+  string instance_arn = 2 [json_name = "instance_arn"];
+
+  string permission_set_arn = 3 [json_name = "permission_set_arn"];
+
+  string principal_id = 4 [json_name = "principal_id"];
+
+  string principal_type = 5 [json_name = "principal_type"];
+
+  string target_id = 6 [json_name = "target_id"];
+
+  string target_type = 7 [json_name = "target_type"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsSsoadminCustomerManagedPolicyAttachment version is 0
+message AwsSsoadminCustomerManagedPolicyAttachment {
+  string id = 1;
+
+  string instance_arn = 2 [json_name = "instance_arn"];
+
+  string permission_set_arn = 3 [json_name = "permission_set_arn"];
+
+  CustomerManagedPolicyReference customer_managed_policy_reference = 4 [json_name = "customer_managed_policy_reference"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message CustomerManagedPolicyReference {
+    string name = 1;
+
+    string path = 2;
+  }
+}
+
+// AwsSsoadminInstanceAccessControlAttributes version is 0
+message AwsSsoadminInstanceAccessControlAttributes {
+  string id = 1;
+
+  string instance_arn = 2 [json_name = "instance_arn"];
+
+  string status = 3;
+
+  string status_reason = 4 [json_name = "status_reason"];
+
+  repeated Attribute attribute = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message Attribute {
+    string key = 1;
+
+    repeated Value value = 2;
+
+    message Value {
+      repeated string source = 1;
+    }
+  }
+}
+
+// AwsSsoadminManagedPolicyAttachment version is 0
+message AwsSsoadminManagedPolicyAttachment {
+  string id = 1;
+
+  string instance_arn = 2 [json_name = "instance_arn"];
+
+  string managed_policy_arn = 3 [json_name = "managed_policy_arn"];
+
+  string managed_policy_name = 4 [json_name = "managed_policy_name"];
+
+  string permission_set_arn = 5 [json_name = "permission_set_arn"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsSsoadminPermissionSet version is 0
+message AwsSsoadminPermissionSet {
+  string arn = 1;
+
+  string created_date = 2 [json_name = "created_date"];
+
+  string description = 3;
+
+  string id = 4;
+
+  string instance_arn = 5 [json_name = "instance_arn"];
+
+  string name = 6;
+
+  string relay_state = 7 [json_name = "relay_state"];
+
+  string session_duration = 8 [json_name = "session_duration"];
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+}
+
+// AwsSsoadminPermissionSetInlinePolicy version is 0
+message AwsSsoadminPermissionSetInlinePolicy {
+  string id = 1;
+
+  string inline_policy = 2 [json_name = "inline_policy"];
+
+  string instance_arn = 3 [json_name = "instance_arn"];
+
+  string permission_set_arn = 4 [json_name = "permission_set_arn"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsSsoadminPermissionsBoundaryAttachment version is 0
+message AwsSsoadminPermissionsBoundaryAttachment {
+  string id = 1;
+
+  string instance_arn = 2 [json_name = "instance_arn"];
+
+  string permission_set_arn = 3 [json_name = "permission_set_arn"];
+
+  PermissionsBoundary permissions_boundary = 4 [json_name = "permissions_boundary"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message PermissionsBoundary {
+    string managed_policy_arn = 1 [json_name = "managed_policy_arn"];
+
+    CustomerManagedPolicyReference customer_managed_policy_reference = 2 [json_name = "customer_managed_policy_reference"];
+
+    message CustomerManagedPolicyReference {
+      string name = 1;
+
+      string path = 2;
+    }
+  }
+}

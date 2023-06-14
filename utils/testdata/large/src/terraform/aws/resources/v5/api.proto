@@ -1,0 +1,856 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsApiGatewayAccount version is 0
+message AwsApiGatewayAccount {
+  string cloudwatch_role_arn = 1 [json_name = "cloudwatch_role_arn"];
+
+  string id = 2;
+
+  repeated ThrottleSettings throttle_settings = 3 [json_name = "throttle_settings"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+
+  message ThrottleSettings {
+    // burst_limit: number
+    int64 burst_limit = 1 [json_name = "burst_limit"];
+
+    // rate_limit: number
+    int64 rate_limit = 2 [json_name = "rate_limit"];
+  }
+}
+
+// AwsApiGatewayApiKey version is 0
+message AwsApiGatewayApiKey {
+  string arn = 1;
+
+  string created_date = 2 [json_name = "created_date"];
+
+  string description = 3;
+
+  bool enabled = 4;
+
+  string id = 5;
+
+  string last_updated_date = 6 [json_name = "last_updated_date"];
+
+  string name = 7;
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  string value = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+}
+
+// AwsApiGatewayAuthorizer version is 0
+message AwsApiGatewayAuthorizer {
+  string arn = 1;
+
+  string authorizer_credentials = 2 [json_name = "authorizer_credentials"];
+
+  int64 authorizer_result_ttl_in_seconds = 3 [json_name = "authorizer_result_ttl_in_seconds"];
+
+  string authorizer_uri = 4 [json_name = "authorizer_uri"];
+
+  string id = 5;
+
+  string identity_source = 6 [json_name = "identity_source"];
+
+  string identity_validation_expression = 7 [json_name = "identity_validation_expression"];
+
+  string name = 8;
+
+  repeated string provider_arns = 9 [json_name = "provider_arns"];
+
+  string rest_api_id = 10 [json_name = "rest_api_id"];
+
+  string type = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+}
+
+// AwsApiGatewayBasePathMapping version is 0
+message AwsApiGatewayBasePathMapping {
+  string api_id = 1 [json_name = "api_id"];
+
+  string base_path = 2 [json_name = "base_path"];
+
+  string domain_name = 3 [json_name = "domain_name"];
+
+  string id = 4;
+
+  string stage_name = 5 [json_name = "stage_name"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsApiGatewayClientCertificate version is 0
+message AwsApiGatewayClientCertificate {
+  string arn = 1;
+
+  string created_date = 2 [json_name = "created_date"];
+
+  string description = 3;
+
+  string expiration_date = 4 [json_name = "expiration_date"];
+
+  string id = 5;
+
+  string pem_encoded_certificate = 6 [json_name = "pem_encoded_certificate"];
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+}
+
+// AwsApiGatewayDeployment version is 0
+message AwsApiGatewayDeployment {
+  string created_date = 1 [json_name = "created_date"];
+
+  string description = 2;
+
+  string execution_arn = 3 [json_name = "execution_arn"];
+
+  string id = 4;
+
+  string invoke_url = 5 [json_name = "invoke_url"];
+
+  string rest_api_id = 6 [json_name = "rest_api_id"];
+
+  string stage_description = 7 [json_name = "stage_description"];
+
+  string stage_name = 8 [json_name = "stage_name"];
+
+  map<string, string> triggers = 9;
+
+  map<string, string> variables = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+}
+
+// AwsApiGatewayDocumentationPart version is 0
+message AwsApiGatewayDocumentationPart {
+  string id = 1;
+
+  string properties = 2;
+
+  string rest_api_id = 3 [json_name = "rest_api_id"];
+
+  Location location = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message Location {
+    string method = 1;
+
+    string name = 2;
+
+    string path = 3;
+
+    string status_code = 4 [json_name = "status_code"];
+
+    string type = 5;
+  }
+}
+
+// AwsApiGatewayDocumentationVersion version is 0
+message AwsApiGatewayDocumentationVersion {
+  string description = 1;
+
+  string id = 2;
+
+  string rest_api_id = 3 [json_name = "rest_api_id"];
+
+  string version = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsApiGatewayDomainName version is 0
+message AwsApiGatewayDomainName {
+  string arn = 1;
+
+  string certificate_arn = 2 [json_name = "certificate_arn"];
+
+  string certificate_body = 3 [json_name = "certificate_body"];
+
+  string certificate_chain = 4 [json_name = "certificate_chain"];
+
+  string certificate_name = 5 [json_name = "certificate_name"];
+
+  string certificate_private_key = 6 [json_name = "certificate_private_key"];
+
+  string certificate_upload_date = 7 [json_name = "certificate_upload_date"];
+
+  string cloudfront_domain_name = 8 [json_name = "cloudfront_domain_name"];
+
+  string cloudfront_zone_id = 9 [json_name = "cloudfront_zone_id"];
+
+  string domain_name = 10 [json_name = "domain_name"];
+
+  string id = 11;
+
+  string ownership_verification_certificate_arn = 12 [
+    json_name = "ownership_verification_certificate_arn"
+  ];
+
+  string regional_certificate_arn = 13 [json_name = "regional_certificate_arn"];
+
+  string regional_certificate_name = 14 [json_name = "regional_certificate_name"];
+
+  string regional_domain_name = 15 [json_name = "regional_domain_name"];
+
+  string regional_zone_id = 16 [json_name = "regional_zone_id"];
+
+  string security_policy = 17 [json_name = "security_policy"];
+
+  map<string, string> tags = 18;
+
+  map<string, string> tags_all = 19 [json_name = "tags_all"];
+
+  EndpointConfiguration endpoint_configuration = 20 [json_name = "endpoint_configuration"];
+
+  MutualTlsAuthentication mutual_tls_authentication = 21 [json_name = "mutual_tls_authentication"];
+
+  map<string, string> for_each = 22 [json_name = "for_each"];
+
+  repeated string depends_on = 23 [json_name = "depends_on"];
+
+  int32 count = 24;
+
+  string provider = 25;
+
+  terraform.v1.Lifecycle lifecycle = 26;
+
+  message EndpointConfiguration {
+    repeated string types = 1;
+  }
+
+  message MutualTlsAuthentication {
+    string truststore_uri = 1 [json_name = "truststore_uri"];
+
+    string truststore_version = 2 [json_name = "truststore_version"];
+  }
+}
+
+// AwsApiGatewayGatewayResponse version is 0
+message AwsApiGatewayGatewayResponse {
+  string id = 1;
+
+  map<string, string> response_parameters = 2 [json_name = "response_parameters"];
+
+  map<string, string> response_templates = 3 [json_name = "response_templates"];
+
+  string response_type = 4 [json_name = "response_type"];
+
+  string rest_api_id = 5 [json_name = "rest_api_id"];
+
+  string status_code = 6 [json_name = "status_code"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsApiGatewayIntegration version is 0
+message AwsApiGatewayIntegration {
+  repeated string cache_key_parameters = 1 [json_name = "cache_key_parameters"];
+
+  string cache_namespace = 2 [json_name = "cache_namespace"];
+
+  string connection_id = 3 [json_name = "connection_id"];
+
+  string connection_type = 4 [json_name = "connection_type"];
+
+  string content_handling = 5 [json_name = "content_handling"];
+
+  string credentials = 6;
+
+  string http_method = 7 [json_name = "http_method"];
+
+  string id = 8;
+
+  string integration_http_method = 9 [json_name = "integration_http_method"];
+
+  string passthrough_behavior = 10 [json_name = "passthrough_behavior"];
+
+  map<string, string> request_parameters = 11 [json_name = "request_parameters"];
+
+  map<string, string> request_templates = 12 [json_name = "request_templates"];
+
+  string resource_id = 13 [json_name = "resource_id"];
+
+  string rest_api_id = 14 [json_name = "rest_api_id"];
+
+  int64 timeout_milliseconds = 15 [json_name = "timeout_milliseconds"];
+
+  string type = 16;
+
+  string uri = 17;
+
+  TlsConfig tls_config = 18 [json_name = "tls_config"];
+
+  map<string, string> for_each = 19 [json_name = "for_each"];
+
+  repeated string depends_on = 20 [json_name = "depends_on"];
+
+  int32 count = 21;
+
+  string provider = 22;
+
+  terraform.v1.Lifecycle lifecycle = 23;
+
+  message TlsConfig {
+    bool insecure_skip_verification = 1 [json_name = "insecure_skip_verification"];
+  }
+}
+
+// AwsApiGatewayIntegrationResponse version is 0
+message AwsApiGatewayIntegrationResponse {
+  string content_handling = 1 [json_name = "content_handling"];
+
+  string http_method = 2 [json_name = "http_method"];
+
+  string id = 3;
+
+  string resource_id = 4 [json_name = "resource_id"];
+
+  map<string, string> response_parameters = 5 [json_name = "response_parameters"];
+
+  map<string, string> response_templates = 6 [json_name = "response_templates"];
+
+  string rest_api_id = 7 [json_name = "rest_api_id"];
+
+  string selection_pattern = 8 [json_name = "selection_pattern"];
+
+  string status_code = 9 [json_name = "status_code"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+}
+
+// AwsApiGatewayMethod version is 0
+message AwsApiGatewayMethod {
+  bool api_key_required = 1 [json_name = "api_key_required"];
+
+  string authorization = 2;
+
+  repeated string authorization_scopes = 3 [json_name = "authorization_scopes"];
+
+  string authorizer_id = 4 [json_name = "authorizer_id"];
+
+  string http_method = 5 [json_name = "http_method"];
+
+  string id = 6;
+
+  string operation_name = 7 [json_name = "operation_name"];
+
+  map<string, string> request_models = 8 [json_name = "request_models"];
+
+  map<string, string> request_parameters = 9 [json_name = "request_parameters"];
+
+  string request_validator_id = 10 [json_name = "request_validator_id"];
+
+  string resource_id = 11 [json_name = "resource_id"];
+
+  string rest_api_id = 12 [json_name = "rest_api_id"];
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+}
+
+// AwsApiGatewayMethodResponse version is 0
+message AwsApiGatewayMethodResponse {
+  string http_method = 1 [json_name = "http_method"];
+
+  string id = 2;
+
+  string resource_id = 3 [json_name = "resource_id"];
+
+  map<string, string> response_models = 4 [json_name = "response_models"];
+
+  map<string, string> response_parameters = 5 [json_name = "response_parameters"];
+
+  string rest_api_id = 6 [json_name = "rest_api_id"];
+
+  string status_code = 7 [json_name = "status_code"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsApiGatewayMethodSettings version is 0
+message AwsApiGatewayMethodSettings {
+  string id = 1;
+
+  string method_path = 2 [json_name = "method_path"];
+
+  string rest_api_id = 3 [json_name = "rest_api_id"];
+
+  string stage_name = 4 [json_name = "stage_name"];
+
+  Settings settings = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message Settings {
+    bool cache_data_encrypted = 1 [json_name = "cache_data_encrypted"];
+
+    int64 cache_ttl_in_seconds = 2 [json_name = "cache_ttl_in_seconds"];
+
+    bool caching_enabled = 3 [json_name = "caching_enabled"];
+
+    bool data_trace_enabled = 4 [json_name = "data_trace_enabled"];
+
+    string logging_level = 5 [json_name = "logging_level"];
+
+    bool metrics_enabled = 6 [json_name = "metrics_enabled"];
+
+    bool require_authorization_for_cache_control = 7 [
+      json_name = "require_authorization_for_cache_control"
+    ];
+
+    int64 throttling_burst_limit = 8 [json_name = "throttling_burst_limit"];
+
+    int64 throttling_rate_limit = 9 [json_name = "throttling_rate_limit"];
+
+    string unauthorized_cache_control_header_strategy = 10 [
+      json_name = "unauthorized_cache_control_header_strategy"
+    ];
+  }
+}
+
+// AwsApiGatewayModel version is 0
+message AwsApiGatewayModel {
+  string content_type = 1 [json_name = "content_type"];
+
+  string description = 2;
+
+  string id = 3;
+
+  string name = 4;
+
+  string rest_api_id = 5 [json_name = "rest_api_id"];
+
+  string schema = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsApiGatewayRequestValidator version is 0
+message AwsApiGatewayRequestValidator {
+  string id = 1;
+
+  string name = 2;
+
+  string rest_api_id = 3 [json_name = "rest_api_id"];
+
+  bool validate_request_body = 4 [json_name = "validate_request_body"];
+
+  bool validate_request_parameters = 5 [json_name = "validate_request_parameters"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsApiGatewayResource version is 0
+message AwsApiGatewayResource {
+  string id = 1;
+
+  string parent_id = 2 [json_name = "parent_id"];
+
+  string path = 3;
+
+  string path_part = 4 [json_name = "path_part"];
+
+  string rest_api_id = 5 [json_name = "rest_api_id"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsApiGatewayRestApi version is 0
+message AwsApiGatewayRestApi {
+  string api_key_source = 1 [json_name = "api_key_source"];
+
+  string arn = 2;
+
+  repeated string binary_media_types = 3 [json_name = "binary_media_types"];
+
+  string body = 4;
+
+  string created_date = 5 [json_name = "created_date"];
+
+  string description = 6;
+
+  bool disable_execute_api_endpoint = 7 [json_name = "disable_execute_api_endpoint"];
+
+  string execution_arn = 8 [json_name = "execution_arn"];
+
+  bool fail_on_warnings = 9 [json_name = "fail_on_warnings"];
+
+  string id = 10;
+
+  string minimum_compression_size = 11 [json_name = "minimum_compression_size"];
+
+  string name = 12;
+
+  map<string, string> parameters = 13;
+
+  string policy = 14;
+
+  string put_rest_api_mode = 15 [json_name = "put_rest_api_mode"];
+
+  string root_resource_id = 16 [json_name = "root_resource_id"];
+
+  map<string, string> tags = 17;
+
+  map<string, string> tags_all = 18 [json_name = "tags_all"];
+
+  EndpointConfiguration endpoint_configuration = 19 [json_name = "endpoint_configuration"];
+
+  map<string, string> for_each = 20 [json_name = "for_each"];
+
+  repeated string depends_on = 21 [json_name = "depends_on"];
+
+  int32 count = 22;
+
+  string provider = 23;
+
+  terraform.v1.Lifecycle lifecycle = 24;
+
+  message EndpointConfiguration {
+    repeated string types = 1;
+
+    repeated string vpc_endpoint_ids = 2 [json_name = "vpc_endpoint_ids"];
+  }
+}
+
+// AwsApiGatewayRestApiPolicy version is 0
+message AwsApiGatewayRestApiPolicy {
+  string id = 1;
+
+  string policy = 2;
+
+  string rest_api_id = 3 [json_name = "rest_api_id"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsApiGatewayStage version is 0
+message AwsApiGatewayStage {
+  string arn = 1;
+
+  bool cache_cluster_enabled = 2 [json_name = "cache_cluster_enabled"];
+
+  string cache_cluster_size = 3 [json_name = "cache_cluster_size"];
+
+  string client_certificate_id = 4 [json_name = "client_certificate_id"];
+
+  string deployment_id = 5 [json_name = "deployment_id"];
+
+  string description = 6;
+
+  string documentation_version = 7 [json_name = "documentation_version"];
+
+  string execution_arn = 8 [json_name = "execution_arn"];
+
+  string id = 9;
+
+  string invoke_url = 10 [json_name = "invoke_url"];
+
+  string rest_api_id = 11 [json_name = "rest_api_id"];
+
+  string stage_name = 12 [json_name = "stage_name"];
+
+  map<string, string> tags = 13;
+
+  map<string, string> tags_all = 14 [json_name = "tags_all"];
+
+  map<string, string> variables = 15;
+
+  string web_acl_arn = 16 [json_name = "web_acl_arn"];
+
+  bool xray_tracing_enabled = 17 [json_name = "xray_tracing_enabled"];
+
+  AccessLogSettings access_log_settings = 18 [json_name = "access_log_settings"];
+
+  CanarySettings canary_settings = 19 [json_name = "canary_settings"];
+
+  map<string, string> for_each = 20 [json_name = "for_each"];
+
+  repeated string depends_on = 21 [json_name = "depends_on"];
+
+  int32 count = 22;
+
+  string provider = 23;
+
+  terraform.v1.Lifecycle lifecycle = 24;
+
+  message AccessLogSettings {
+    string destination_arn = 1 [json_name = "destination_arn"];
+
+    string format = 2;
+  }
+
+  message CanarySettings {
+    int64 percent_traffic = 1 [json_name = "percent_traffic"];
+
+    map<string, string> stage_variable_overrides = 2 [json_name = "stage_variable_overrides"];
+
+    bool use_stage_cache = 3 [json_name = "use_stage_cache"];
+  }
+}
+
+// AwsApiGatewayUsagePlan version is 0
+message AwsApiGatewayUsagePlan {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  string name = 4;
+
+  string product_code = 5 [json_name = "product_code"];
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  repeated ApiStages api_stages = 8 [json_name = "api_stages"];
+
+  QuotaSettings quota_settings = 9 [json_name = "quota_settings"];
+
+  ThrottleSettings throttle_settings = 10 [json_name = "throttle_settings"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message ApiStages {
+    string api_id = 1 [json_name = "api_id"];
+
+    string stage = 2;
+
+    repeated Throttle throttle = 3;
+
+    message Throttle {
+      int64 burst_limit = 1 [json_name = "burst_limit"];
+
+      string path = 2;
+
+      int64 rate_limit = 3 [json_name = "rate_limit"];
+    }
+  }
+
+  message QuotaSettings {
+    int64 limit = 1;
+
+    int64 offset = 2;
+
+    string period = 3;
+  }
+
+  message ThrottleSettings {
+    int64 burst_limit = 1 [json_name = "burst_limit"];
+
+    int64 rate_limit = 2 [json_name = "rate_limit"];
+  }
+}
+
+// AwsApiGatewayUsagePlanKey version is 0
+message AwsApiGatewayUsagePlanKey {
+  string id = 1;
+
+  string key_id = 2 [json_name = "key_id"];
+
+  string key_type = 3 [json_name = "key_type"];
+
+  string name = 4;
+
+  string usage_plan_id = 5 [json_name = "usage_plan_id"];
+
+  string value = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsApiGatewayVpcLink version is 0
+message AwsApiGatewayVpcLink {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  string name = 4;
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  repeated string target_arns = 7 [json_name = "target_arns"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}

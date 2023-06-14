@@ -1,0 +1,82 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsCodestarconnectionsConnection version is 0
+message AwsCodestarconnectionsConnection {
+  string arn = 1;
+
+  string connection_status = 2 [json_name = "connection_status"];
+
+  string host_arn = 3 [json_name = "host_arn"];
+
+  string id = 4;
+
+  string name = 5;
+
+  string provider_type = 6 [json_name = "provider_type"];
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+}
+
+// AwsCodestarconnectionsHost version is 0
+message AwsCodestarconnectionsHost {
+  string arn = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  string provider_endpoint = 4 [json_name = "provider_endpoint"];
+
+  string provider_type = 5 [json_name = "provider_type"];
+
+  string status = 6;
+
+  repeated Timeouts timeouts = 7;
+
+  VpcConfiguration vpc_configuration = 8 [json_name = "vpc_configuration"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+
+  message VpcConfiguration {
+    repeated string security_group_ids = 1 [json_name = "security_group_ids"];
+
+    repeated string subnet_ids = 2 [json_name = "subnet_ids"];
+
+    string tls_certificate = 3 [json_name = "tls_certificate"];
+
+    string vpc_id = 4 [json_name = "vpc_id"];
+  }
+}

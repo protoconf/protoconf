@@ -1,0 +1,949 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleOsConfigOsPolicyAssignment version is 0
+message GoogleOsConfigOsPolicyAssignment {
+  // Output only. Indicates that this revision has been successfully rolled out in this zone and new VMs will be assigned OS policies from this revision. For a given OS policy assignment, there is only one revision with a value of `true` for this field.
+  bool baseline = 1;
+
+  // Output only. Indicates that this revision deletes the OS policy assignment.
+  bool deleted = 2;
+
+  // OS policy assignment description. Length of the description is limited to 1024 characters.
+  string description = 3;
+
+  // The etag for this OS policy assignment. If this is provided on update, it must match the server's etag.
+  string etag = 4;
+
+  string id = 5;
+
+  // The location for the resource
+  string location = 6;
+
+  // Resource name.
+  string name = 7;
+
+  // The project for the resource
+  string project = 8;
+
+  // Output only. Indicates that reconciliation is in progress for the revision. This value is `true` when the `rollout_state` is one of: * IN_PROGRESS * CANCELLING
+  bool reconciling = 9;
+
+  // Output only. The timestamp that the revision was created.
+  string revision_create_time = 10 [json_name = "revision_create_time"];
+
+  // Output only. The assignment revision ID A new revision is committed whenever a rollout is triggered for a OS policy assignment
+  string revision_id = 11 [json_name = "revision_id"];
+
+  // Output only. OS policy assignment rollout state Possible values: ROLLOUT_STATE_UNSPECIFIED, IN_PROGRESS, CANCELLING, CANCELLED, SUCCEEDED
+  string rollout_state = 12 [json_name = "rollout_state"];
+
+  // Set to true to skip awaiting rollout during resource creation and update.
+  bool skip_await_rollout = 13 [json_name = "skip_await_rollout"];
+
+  // Output only. Server generated unique id for the OS policy assignment resource.
+  string uid = 14;
+
+  InstanceFilter instance_filter = 15 [json_name = "instance_filter"];
+
+  repeated OsPolicies os_policies = 16 [json_name = "os_policies"];
+
+  Rollout rollout = 17;
+
+  repeated Timeouts timeouts = 18;
+
+  map<string, string> for_each = 19 [json_name = "for_each"];
+
+  repeated string depends_on = 20 [json_name = "depends_on"];
+
+  int32 count = 21;
+
+  string provider = 22;
+
+  terraform.v1.Lifecycle lifecycle = 23;
+
+  message InstanceFilter {
+    // Target all VMs in the project. If true, no other criteria is permitted.
+    bool all = 1;
+
+    repeated ExclusionLabels exclusion_labels = 2 [json_name = "exclusion_labels"];
+
+    repeated InclusionLabels inclusion_labels = 3 [json_name = "inclusion_labels"];
+
+    repeated Inventories inventories = 4;
+
+    message ExclusionLabels {
+      // Labels are identified by key/value pairs in this map. A VM should contain all the key/value pairs specified in this map to be selected.
+      map<string, string> labels = 1;
+    }
+
+    message InclusionLabels {
+      // Labels are identified by key/value pairs in this map. A VM should contain all the key/value pairs specified in this map to be selected.
+      map<string, string> labels = 1;
+    }
+
+    message Inventories {
+      // Required. The OS short name
+      string os_short_name = 1 [json_name = "os_short_name"];
+
+      // The OS version Prefix matches are supported if asterisk(*) is provided as the last character. For example, to match all versions with a major version of `7`, specify the following value for this field `7.*` An empty string matches all OS versions.
+      string os_version = 2 [json_name = "os_version"];
+    }
+  }
+
+  message OsPolicies {
+    // This flag determines the OS policy compliance status when none of the resource groups within the policy are applicable for a VM. Set this value to `true` if the policy needs to be reported as compliant even if the policy has nothing to validate or enforce.
+    bool allow_no_resource_group_match = 1 [json_name = "allow_no_resource_group_match"];
+
+    // Policy description. Length of the description is limited to 1024 characters.
+    string description = 2;
+
+    // Required. The id of the OS policy with the following restrictions: * Must contain only lowercase letters, numbers, and hyphens. * Must start with a letter. * Must be between 1-63 characters. * Must end with a number or a letter. * Must be unique within the assignment.
+    string id = 3;
+
+    // Required. Policy mode Possible values: MODE_UNSPECIFIED, VALIDATION, ENFORCEMENT
+    string mode = 4;
+
+    repeated ResourceGroups resource_groups = 5 [json_name = "resource_groups"];
+
+    message ResourceGroups {
+      repeated InventoryFilters inventory_filters = 1 [json_name = "inventory_filters"];
+
+      repeated Resources resources = 2;
+
+      message InventoryFilters {
+        // Required. The OS short name
+        string os_short_name = 1 [json_name = "os_short_name"];
+
+        // The OS version Prefix matches are supported if asterisk(*) is provided as the last character. For example, to match all versions with a major version of `7`, specify the following value for this field `7.*` An empty string matches all OS versions.
+        string os_version = 2 [json_name = "os_version"];
+      }
+
+      message Resources {
+        // Required. The id of the resource with the following restrictions: * Must contain only lowercase letters, numbers, and hyphens. * Must start with a letter. * Must be between 1-63 characters. * Must end with a number or a letter. * Must be unique within the OS policy.
+        string id = 1;
+
+        Exec exec = 2;
+
+        File file = 3;
+
+        Pkg pkg = 4;
+
+        Repository repository = 5;
+
+        message Exec {
+          Enforce enforce = 1;
+
+          Validate validate = 2;
+
+          message Enforce {
+            // Optional arguments to pass to the source during execution.
+            repeated string args = 1;
+
+            // Required. The script interpreter to use. Possible values: INTERPRETER_UNSPECIFIED, NONE, SHELL, POWERSHELL
+            string interpreter = 2;
+
+            // Only recorded for enforce Exec. Path to an output file (that is created by this Exec) whose content will be recorded in OSPolicyResourceCompliance after a successful run. Absence or failure to read this file will result in this ExecResource being non-compliant. Output file size is limited to 100K bytes.
+            string output_file_path = 3 [json_name = "output_file_path"];
+
+            // An inline script. The size of the script is limited to 1024 characters.
+            string script = 4;
+
+            File file = 5;
+
+            message File {
+              // Defaults to false. When false, files are subject to validations based on the file type: Remote: A checksum must be specified. Cloud Storage: An object generation number must be specified.
+              bool allow_insecure = 1 [json_name = "allow_insecure"];
+
+              // A local path within the VM to use.
+              string local_path = 2 [json_name = "local_path"];
+
+              Gcs gcs = 3;
+
+              Remote remote = 4;
+
+              message Gcs {
+                // Required. Bucket of the Cloud Storage object.
+                string bucket = 1;
+
+                // Generation number of the Cloud Storage object.
+                int64 generation = 2;
+
+                // Required. Name of the Cloud Storage object.
+                string object = 3;
+              }
+
+              message Remote {
+                // SHA256 checksum of the remote file.
+                string sha256_checksum = 1 [json_name = "sha256_checksum"];
+
+                // Required. URI from which to fetch the object. It should contain both the protocol and path following the format `{protocol}://{location}`.
+                string uri = 2;
+              }
+            }
+          }
+
+          message Validate {
+            // Optional arguments to pass to the source during execution.
+            repeated string args = 1;
+
+            // Required. The script interpreter to use. Possible values: INTERPRETER_UNSPECIFIED, NONE, SHELL, POWERSHELL
+            string interpreter = 2;
+
+            // Only recorded for enforce Exec. Path to an output file (that is created by this Exec) whose content will be recorded in OSPolicyResourceCompliance after a successful run. Absence or failure to read this file will result in this ExecResource being non-compliant. Output file size is limited to 100K bytes.
+            string output_file_path = 3 [json_name = "output_file_path"];
+
+            // An inline script. The size of the script is limited to 1024 characters.
+            string script = 4;
+
+            File file = 5;
+
+            message File {
+              // Defaults to false. When false, files are subject to validations based on the file type: Remote: A checksum must be specified. Cloud Storage: An object generation number must be specified.
+              bool allow_insecure = 1 [json_name = "allow_insecure"];
+
+              // A local path within the VM to use.
+              string local_path = 2 [json_name = "local_path"];
+
+              Gcs gcs = 3;
+
+              Remote remote = 4;
+
+              message Gcs {
+                // Required. Bucket of the Cloud Storage object.
+                string bucket = 1;
+
+                // Generation number of the Cloud Storage object.
+                int64 generation = 2;
+
+                // Required. Name of the Cloud Storage object.
+                string object = 3;
+              }
+
+              message Remote {
+                // SHA256 checksum of the remote file.
+                string sha256_checksum = 1 [json_name = "sha256_checksum"];
+
+                // Required. URI from which to fetch the object. It should contain both the protocol and path following the format `{protocol}://{location}`.
+                string uri = 2;
+              }
+            }
+          }
+        }
+
+        message File {
+          // A a file with this content. The size of the content is limited to 1024 characters.
+          string content = 1;
+
+          // Required. The absolute path of the file within the VM.
+          string path = 2;
+
+          // Consists of three octal digits which represent, in order, the permissions of the owner, group, and other users for the file (similarly to the numeric mode used in the linux chmod utility). Each digit represents a three bit number with the 4 bit corresponding to the read permissions, the 2 bit corresponds to the write bit, and the one bit corresponds to the execute permission. Default behavior is 755. Below are some examples of permissions and their associated values: read, write, and execute: 7 read and execute: 5 read and write: 6 read only: 4
+          string permissions = 3;
+
+          // Required. Desired state of the file. Possible values: OS_POLICY_COMPLIANCE_STATE_UNSPECIFIED, COMPLIANT, NON_COMPLIANT, UNKNOWN, NO_OS_POLICIES_APPLICABLE
+          string state = 4;
+
+          File file = 5;
+
+          message File {
+            // Defaults to false. When false, files are subject to validations based on the file type: Remote: A checksum must be specified. Cloud Storage: An object generation number must be specified.
+            bool allow_insecure = 1 [json_name = "allow_insecure"];
+
+            // A local path within the VM to use.
+            string local_path = 2 [json_name = "local_path"];
+
+            Gcs gcs = 3;
+
+            Remote remote = 4;
+
+            message Gcs {
+              // Required. Bucket of the Cloud Storage object.
+              string bucket = 1;
+
+              // Generation number of the Cloud Storage object.
+              int64 generation = 2;
+
+              // Required. Name of the Cloud Storage object.
+              string object = 3;
+            }
+
+            message Remote {
+              // SHA256 checksum of the remote file.
+              string sha256_checksum = 1 [json_name = "sha256_checksum"];
+
+              // Required. URI from which to fetch the object. It should contain both the protocol and path following the format `{protocol}://{location}`.
+              string uri = 2;
+            }
+          }
+        }
+
+        message Pkg {
+          // Required. The desired state the agent should maintain for this package. Possible values: DESIRED_STATE_UNSPECIFIED, INSTALLED, REMOVED
+          string desired_state = 1 [json_name = "desired_state"];
+
+          Apt apt = 2;
+
+          Deb deb = 3;
+
+          Googet googet = 4;
+
+          Msi msi = 5;
+
+          Rpm rpm = 6;
+
+          Yum yum = 7;
+
+          Zypper zypper = 8;
+
+          message Apt {
+            // Required. Package name.
+            string name = 1;
+          }
+
+          message Deb {
+            // Whether dependencies should also be installed. - install when false: `dpkg -i package` - install when true: `apt-get update && apt-get -y install package.deb`
+            bool pull_deps = 1 [json_name = "pull_deps"];
+
+            Source source = 2;
+
+            message Source {
+              // Defaults to false. When false, files are subject to validations based on the file type: Remote: A checksum must be specified. Cloud Storage: An object generation number must be specified.
+              bool allow_insecure = 1 [json_name = "allow_insecure"];
+
+              // A local path within the VM to use.
+              string local_path = 2 [json_name = "local_path"];
+
+              Gcs gcs = 3;
+
+              Remote remote = 4;
+
+              message Gcs {
+                // Required. Bucket of the Cloud Storage object.
+                string bucket = 1;
+
+                // Generation number of the Cloud Storage object.
+                int64 generation = 2;
+
+                // Required. Name of the Cloud Storage object.
+                string object = 3;
+              }
+
+              message Remote {
+                // SHA256 checksum of the remote file.
+                string sha256_checksum = 1 [json_name = "sha256_checksum"];
+
+                // Required. URI from which to fetch the object. It should contain both the protocol and path following the format `{protocol}://{location}`.
+                string uri = 2;
+              }
+            }
+          }
+
+          message Googet {
+            // Required. Package name.
+            string name = 1;
+          }
+
+          message Msi {
+            // Additional properties to use during installation. This should be in the format of Property=Setting. Appended to the defaults of `ACTION=INSTALL REBOOT=ReallySuppress`.
+            repeated string properties = 1;
+
+            Source source = 2;
+
+            message Source {
+              // Defaults to false. When false, files are subject to validations based on the file type: Remote: A checksum must be specified. Cloud Storage: An object generation number must be specified.
+              bool allow_insecure = 1 [json_name = "allow_insecure"];
+
+              // A local path within the VM to use.
+              string local_path = 2 [json_name = "local_path"];
+
+              Gcs gcs = 3;
+
+              Remote remote = 4;
+
+              message Gcs {
+                // Required. Bucket of the Cloud Storage object.
+                string bucket = 1;
+
+                // Generation number of the Cloud Storage object.
+                int64 generation = 2;
+
+                // Required. Name of the Cloud Storage object.
+                string object = 3;
+              }
+
+              message Remote {
+                // SHA256 checksum of the remote file.
+                string sha256_checksum = 1 [json_name = "sha256_checksum"];
+
+                // Required. URI from which to fetch the object. It should contain both the protocol and path following the format `{protocol}://{location}`.
+                string uri = 2;
+              }
+            }
+          }
+
+          message Rpm {
+            // Whether dependencies should also be installed. - install when false: `rpm --upgrade --replacepkgs package.rpm` - install when true: `yum -y install package.rpm` or `zypper -y install package.rpm`
+            bool pull_deps = 1 [json_name = "pull_deps"];
+
+            Source source = 2;
+
+            message Source {
+              // Defaults to false. When false, files are subject to validations based on the file type: Remote: A checksum must be specified. Cloud Storage: An object generation number must be specified.
+              bool allow_insecure = 1 [json_name = "allow_insecure"];
+
+              // A local path within the VM to use.
+              string local_path = 2 [json_name = "local_path"];
+
+              Gcs gcs = 3;
+
+              Remote remote = 4;
+
+              message Gcs {
+                // Required. Bucket of the Cloud Storage object.
+                string bucket = 1;
+
+                // Generation number of the Cloud Storage object.
+                int64 generation = 2;
+
+                // Required. Name of the Cloud Storage object.
+                string object = 3;
+              }
+
+              message Remote {
+                // SHA256 checksum of the remote file.
+                string sha256_checksum = 1 [json_name = "sha256_checksum"];
+
+                // Required. URI from which to fetch the object. It should contain both the protocol and path following the format `{protocol}://{location}`.
+                string uri = 2;
+              }
+            }
+          }
+
+          message Yum {
+            // Required. Package name.
+            string name = 1;
+          }
+
+          message Zypper {
+            // Required. Package name.
+            string name = 1;
+          }
+        }
+
+        message Repository {
+          Apt apt = 1;
+
+          Goo goo = 2;
+
+          Yum yum = 3;
+
+          Zypper zypper = 4;
+
+          message Apt {
+            // Required. Type of archive files in this repository. Possible values: ARCHIVE_TYPE_UNSPECIFIED, DEB, DEB_SRC
+            string archive_type = 1 [json_name = "archive_type"];
+
+            // Required. List of components for this repository. Must contain at least one item.
+            repeated string components = 2;
+
+            // Required. Distribution of this repository.
+            string distribution = 3;
+
+            // URI of the key file for this repository. The agent maintains a keyring at `/etc/apt/trusted.gpg.d/osconfig_agent_managed.gpg`.
+            string gpg_key = 4 [json_name = "gpg_key"];
+
+            // Required. URI for this repository.
+            string uri = 5;
+          }
+
+          message Goo {
+            // Required. The name of the repository.
+            string name = 1;
+
+            // Required. The url of the repository.
+            string url = 2;
+          }
+
+          message Yum {
+            // Required. The location of the repository directory.
+            string base_url = 1 [json_name = "base_url"];
+
+            // The display name of the repository.
+            string display_name = 2 [json_name = "display_name"];
+
+            // URIs of GPG keys.
+            repeated string gpg_keys = 3 [json_name = "gpg_keys"];
+
+            // Required. A one word, unique name for this repository. This is the `repo id` in the yum config file and also the `display_name` if `display_name` is omitted. This id is also used as the unique identifier when checking for resource conflicts.
+            string id = 4;
+          }
+
+          message Zypper {
+            // Required. The location of the repository directory.
+            string base_url = 1 [json_name = "base_url"];
+
+            // The display name of the repository.
+            string display_name = 2 [json_name = "display_name"];
+
+            // URIs of GPG keys.
+            repeated string gpg_keys = 3 [json_name = "gpg_keys"];
+
+            // Required. A one word, unique name for this repository. This is the `repo id` in the zypper config file and also the `display_name` if `display_name` is omitted. This id is also used as the unique identifier when checking for GuestPolicy conflicts.
+            string id = 4;
+          }
+        }
+      }
+    }
+  }
+
+  message Rollout {
+    // Required. This determines the minimum duration of time to wait after the configuration changes are applied through the current rollout. A VM continues to count towards the `disruption_budget` at least until this duration of time has passed after configuration changes are applied.
+    string min_wait_duration = 1 [json_name = "min_wait_duration"];
+
+    DisruptionBudget disruption_budget = 2 [json_name = "disruption_budget"];
+
+    message DisruptionBudget {
+      // Specifies a fixed value.
+      int64 fixed = 1;
+
+      // Specifies the relative value defined as a percentage, which will be multiplied by a reference value.
+      int64 percent = 2;
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleOsConfigPatchDeployment version is 0
+message GoogleOsConfigPatchDeployment {
+  // Time the patch deployment was created. Timestamp is in RFC3339 text format.
+  // A timestamp in RFC3339 UTC "Zulu" format, accurate to nanoseconds. Example: "2014-10-02T15:01:23.045123456Z".
+  string create_time = 1 [json_name = "create_time"];
+
+  // Description of the patch deployment. Length of the description is limited to 1024 characters.
+  string description = 2;
+
+  // Duration of the patch. After the duration ends, the patch times out.
+  // A duration in seconds with up to nine fractional digits, terminated by 's'. Example: "3.5s"
+  string duration = 3;
+
+  string id = 4;
+
+  // The last time a patch job was started by this deployment. Timestamp is in RFC3339 text format.
+  // A timestamp in RFC3339 UTC "Zulu" format, accurate to nanoseconds. Example: "2014-10-02T15:01:23.045123456Z".
+  string last_execute_time = 5 [json_name = "last_execute_time"];
+
+  // Unique name for the patch deployment resource in a project.
+  // The patch deployment name is in the form: projects/{project_id}/patchDeployments/{patchDeploymentId}.
+  string name = 6;
+
+  // A name for the patch deployment in the project. When creating a name the following rules apply:
+  // * Must contain only lowercase letters, numbers, and hyphens.
+  // * Must start with a letter.
+  // * Must be between 1-63 characters.
+  // * Must end with a number or a letter.
+  // * Must be unique within the project.
+  string patch_deployment_id = 7 [json_name = "patch_deployment_id"];
+
+  string project = 8;
+
+  // Time the patch deployment was last updated. Timestamp is in RFC3339 text format.
+  // A timestamp in RFC3339 UTC "Zulu" format, accurate to nanoseconds. Example: "2014-10-02T15:01:23.045123456Z".
+  string update_time = 9 [json_name = "update_time"];
+
+  InstanceFilter instance_filter = 10 [json_name = "instance_filter"];
+
+  OneTimeSchedule one_time_schedule = 11 [json_name = "one_time_schedule"];
+
+  PatchConfig patch_config = 12 [json_name = "patch_config"];
+
+  RecurringSchedule recurring_schedule = 13 [json_name = "recurring_schedule"];
+
+  Rollout rollout = 14;
+
+  repeated Timeouts timeouts = 15;
+
+  map<string, string> for_each = 16 [json_name = "for_each"];
+
+  repeated string depends_on = 17 [json_name = "depends_on"];
+
+  int32 count = 18;
+
+  string provider = 19;
+
+  terraform.v1.Lifecycle lifecycle = 20;
+
+  message InstanceFilter {
+    // Target all VM instances in the project. If true, no other criteria is permitted.
+    bool all = 1;
+
+    // Targets VMs whose name starts with one of these prefixes. Similar to labels, this is another way to group
+    // VMs when targeting configs, for example prefix="prod-".
+    repeated string instance_name_prefixes = 2 [json_name = "instance_name_prefixes"];
+
+    // Targets any of the VM instances specified. Instances are specified by their URI in the 'form zones/{{zone}}/instances/{{instance_name}}',
+    // 'projects/{{project_id}}/zones/{{zone}}/instances/{{instance_name}}', or
+    // 'https://www.googleapis.com/compute/v1/projects/{{project_id}}/zones/{{zone}}/instances/{{instance_name}}'
+    repeated string instances = 3;
+
+    // Targets VM instances in ANY of these zones. Leave empty to target VM instances in any zone.
+    repeated string zones = 4;
+
+    repeated GroupLabels group_labels = 5 [json_name = "group_labels"];
+
+    message GroupLabels {
+      // Compute Engine instance labels that must be present for a VM instance to be targeted by this filter
+      map<string, string> labels = 1;
+    }
+  }
+
+  message OneTimeSchedule {
+    // The desired patch job execution time. A timestamp in RFC3339 UTC "Zulu" format,
+    // accurate to nanoseconds. Example: "2014-10-02T15:01:23.045123456Z".
+    string execute_time = 1 [json_name = "execute_time"];
+  }
+
+  message PatchConfig {
+    // Allows the patch job to run on Managed instance groups (MIGs).
+    bool mig_instances_allowed = 1 [json_name = "mig_instances_allowed"];
+
+    // Post-patch reboot settings. Possible values: ["DEFAULT", "ALWAYS", "NEVER"]
+    string reboot_config = 2 [json_name = "reboot_config"];
+
+    Apt apt = 3;
+
+    Goo goo = 4;
+
+    PostStep post_step = 5 [json_name = "post_step"];
+
+    PreStep pre_step = 6 [json_name = "pre_step"];
+
+    WindowsUpdate windows_update = 7 [json_name = "windows_update"];
+
+    Yum yum = 8;
+
+    Zypper zypper = 9;
+
+    message Apt {
+      // List of packages to exclude from update. These packages will be excluded.
+      repeated string excludes = 1;
+
+      // An exclusive list of packages to be updated. These are the only packages that will be updated.
+      // If these packages are not installed, they will be ignored. This field cannot be specified with
+      // any other patch configuration fields.
+      repeated string exclusive_packages = 2 [json_name = "exclusive_packages"];
+
+      // By changing the type to DIST, the patching is performed using apt-get dist-upgrade instead. Possible values: ["DIST", "UPGRADE"]
+      string type = 3;
+    }
+
+    message Goo {
+      // goo update settings. Use this setting to override the default goo patch rules.
+      bool enabled = 1;
+    }
+
+    message PostStep {
+      LinuxExecStepConfig linux_exec_step_config = 1 [json_name = "linux_exec_step_config"];
+
+      WindowsExecStepConfig windows_exec_step_config = 2 [json_name = "windows_exec_step_config"];
+
+      message LinuxExecStepConfig {
+        // Defaults to [0]. A list of possible return values that the execution can return to indicate a success.
+        repeated int64 allowed_success_codes = 1 [json_name = "allowed_success_codes"];
+
+        // The script interpreter to use to run the script. If no interpreter is specified the script will
+        // be executed directly, which will likely only succeed for scripts with shebang lines. Possible values: ["SHELL", "POWERSHELL"]
+        string interpreter = 2;
+
+        // An absolute path to the executable on the VM.
+        string local_path = 3 [json_name = "local_path"];
+
+        GcsObject gcs_object = 4 [json_name = "gcs_object"];
+
+        message GcsObject {
+          // Bucket of the Cloud Storage object.
+          string bucket = 1;
+
+          // Generation number of the Cloud Storage object. This is used to ensure that the ExecStep specified by this PatchJob does not change.
+          string generation_number = 2 [json_name = "generation_number"];
+
+          // Name of the Cloud Storage object.
+          string object = 3;
+        }
+      }
+
+      message WindowsExecStepConfig {
+        // Defaults to [0]. A list of possible return values that the execution can return to indicate a success.
+        repeated int64 allowed_success_codes = 1 [json_name = "allowed_success_codes"];
+
+        // The script interpreter to use to run the script. If no interpreter is specified the script will
+        // be executed directly, which will likely only succeed for scripts with shebang lines. Possible values: ["SHELL", "POWERSHELL"]
+        string interpreter = 2;
+
+        // An absolute path to the executable on the VM.
+        string local_path = 3 [json_name = "local_path"];
+
+        GcsObject gcs_object = 4 [json_name = "gcs_object"];
+
+        message GcsObject {
+          // Bucket of the Cloud Storage object.
+          string bucket = 1;
+
+          // Generation number of the Cloud Storage object. This is used to ensure that the ExecStep specified by this PatchJob does not change.
+          string generation_number = 2 [json_name = "generation_number"];
+
+          // Name of the Cloud Storage object.
+          string object = 3;
+        }
+      }
+    }
+
+    message PreStep {
+      LinuxExecStepConfig linux_exec_step_config = 1 [json_name = "linux_exec_step_config"];
+
+      WindowsExecStepConfig windows_exec_step_config = 2 [json_name = "windows_exec_step_config"];
+
+      message LinuxExecStepConfig {
+        // Defaults to [0]. A list of possible return values that the execution can return to indicate a success.
+        repeated int64 allowed_success_codes = 1 [json_name = "allowed_success_codes"];
+
+        // The script interpreter to use to run the script. If no interpreter is specified the script will
+        // be executed directly, which will likely only succeed for scripts with shebang lines. Possible values: ["SHELL", "POWERSHELL"]
+        string interpreter = 2;
+
+        // An absolute path to the executable on the VM.
+        string local_path = 3 [json_name = "local_path"];
+
+        GcsObject gcs_object = 4 [json_name = "gcs_object"];
+
+        message GcsObject {
+          // Bucket of the Cloud Storage object.
+          string bucket = 1;
+
+          // Generation number of the Cloud Storage object. This is used to ensure that the ExecStep specified by this PatchJob does not change.
+          string generation_number = 2 [json_name = "generation_number"];
+
+          // Name of the Cloud Storage object.
+          string object = 3;
+        }
+      }
+
+      message WindowsExecStepConfig {
+        // Defaults to [0]. A list of possible return values that the execution can return to indicate a success.
+        repeated int64 allowed_success_codes = 1 [json_name = "allowed_success_codes"];
+
+        // The script interpreter to use to run the script. If no interpreter is specified the script will
+        // be executed directly, which will likely only succeed for scripts with shebang lines. Possible values: ["SHELL", "POWERSHELL"]
+        string interpreter = 2;
+
+        // An absolute path to the executable on the VM.
+        string local_path = 3 [json_name = "local_path"];
+
+        GcsObject gcs_object = 4 [json_name = "gcs_object"];
+
+        message GcsObject {
+          // Bucket of the Cloud Storage object.
+          string bucket = 1;
+
+          // Generation number of the Cloud Storage object. This is used to ensure that the ExecStep specified by this PatchJob does not change.
+          string generation_number = 2 [json_name = "generation_number"];
+
+          // Name of the Cloud Storage object.
+          string object = 3;
+        }
+      }
+    }
+
+    message WindowsUpdate {
+      // Only apply updates of these windows update classifications. If empty, all updates are applied. Possible values: ["CRITICAL", "SECURITY", "DEFINITION", "DRIVER", "FEATURE_PACK", "SERVICE_PACK", "TOOL", "UPDATE_ROLLUP", "UPDATE"]
+      repeated string classifications = 1;
+
+      // List of KBs to exclude from update.
+      repeated string excludes = 2;
+
+      // An exclusive list of kbs to be updated. These are the only patches that will be updated.
+      // This field must not be used with other patch configurations.
+      repeated string exclusive_patches = 3 [json_name = "exclusive_patches"];
+    }
+
+    message Yum {
+      // List of packages to exclude from update. These packages will be excluded.
+      repeated string excludes = 1;
+
+      // An exclusive list of packages to be updated. These are the only packages that will be updated.
+      // If these packages are not installed, they will be ignored. This field cannot be specified with
+      // any other patch configuration fields.
+      repeated string exclusive_packages = 2 [json_name = "exclusive_packages"];
+
+      // Will cause patch to run yum update-minimal instead.
+      bool minimal = 3;
+
+      // Adds the --security flag to yum update. Not supported on all platforms.
+      bool security = 4;
+    }
+
+    message Zypper {
+      // Install only patches with these categories. Common categories include security, recommended, and feature.
+      repeated string categories = 1;
+
+      // List of packages to exclude from update.
+      repeated string excludes = 2;
+
+      // An exclusive list of patches to be updated. These are the only patches that will be installed using 'zypper patch patch:' command.
+      // This field must not be used with any other patch configuration fields.
+      repeated string exclusive_patches = 3 [json_name = "exclusive_patches"];
+
+      // Install only patches with these severities. Common severities include critical, important, moderate, and low.
+      repeated string severities = 4;
+
+      // Adds the --with-optional flag to zypper patch.
+      bool with_optional = 5 [json_name = "with_optional"];
+
+      // Adds the --with-update flag, to zypper patch.
+      bool with_update = 6 [json_name = "with_update"];
+    }
+  }
+
+  message RecurringSchedule {
+    // The end time at which a recurring patch deployment schedule is no longer active.
+    // A timestamp in RFC3339 UTC "Zulu" format, accurate to nanoseconds. Example: "2014-10-02T15:01:23.045123456Z".
+    string end_time = 1 [json_name = "end_time"];
+
+    // The time the last patch job ran successfully.
+    // A timestamp in RFC3339 UTC "Zulu" format, accurate to nanoseconds. Example: "2014-10-02T15:01:23.045123456Z".
+    string last_execute_time = 2 [json_name = "last_execute_time"];
+
+    // The time the next patch job is scheduled to run.
+    // A timestamp in RFC3339 UTC "Zulu" format, accurate to nanoseconds. Example: "2014-10-02T15:01:23.045123456Z".
+    string next_execute_time = 3 [json_name = "next_execute_time"];
+
+    // The time that the recurring schedule becomes effective. Defaults to createTime of the patch deployment.
+    // A timestamp in RFC3339 UTC "Zulu" format, accurate to nanoseconds. Example: "2014-10-02T15:01:23.045123456Z".
+    string start_time = 4 [json_name = "start_time"];
+
+    Monthly monthly = 5;
+
+    TimeOfDay time_of_day = 6 [json_name = "time_of_day"];
+
+    TimeZone time_zone = 7 [json_name = "time_zone"];
+
+    Weekly weekly = 8;
+
+    message Monthly {
+      // One day of the month. 1-31 indicates the 1st to the 31st day. -1 indicates the last day of the month.
+      // Months without the target day will be skipped. For example, a schedule to run "every month on the 31st"
+      // will not run in February, April, June, etc.
+      int64 month_day = 1 [json_name = "month_day"];
+
+      WeekDayOfMonth week_day_of_month = 2 [json_name = "week_day_of_month"];
+
+      message WeekDayOfMonth {
+        // A day of the week. Possible values: ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"]
+        string day_of_week = 1 [json_name = "day_of_week"];
+
+        // Week number in a month. 1-4 indicates the 1st to 4th week of the month. -1 indicates the last week of the month.
+        int64 week_ordinal = 2 [json_name = "week_ordinal"];
+      }
+    }
+
+    message TimeOfDay {
+      // Hours of day in 24 hour format. Should be from 0 to 23.
+      // An API may choose to allow the value "24:00:00" for scenarios like business closing time.
+      int64 hours = 1;
+
+      // Minutes of hour of day. Must be from 0 to 59.
+      int64 minutes = 2;
+
+      // Fractions of seconds in nanoseconds. Must be from 0 to 999,999,999.
+      int64 nanos = 3;
+
+      // Seconds of minutes of the time. Must normally be from 0 to 59. An API may allow the value 60 if it allows leap-seconds.
+      int64 seconds = 4;
+    }
+
+    message TimeZone {
+      // IANA Time Zone Database time zone, e.g. "America/New_York".
+      string id = 1;
+
+      // IANA Time Zone Database version number, e.g. "2019a".
+      string version = 2;
+    }
+
+    message Weekly {
+      // IANA Time Zone Database time zone, e.g. "America/New_York". Possible values: ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"]
+      string day_of_week = 1 [json_name = "day_of_week"];
+    }
+  }
+
+  message Rollout {
+    // Mode of the patch rollout. Possible values: ["ZONE_BY_ZONE", "CONCURRENT_ZONES"]
+    string mode = 1;
+
+    DisruptionBudget disruption_budget = 2 [json_name = "disruption_budget"];
+
+    message DisruptionBudget {
+      // Specifies a fixed value.
+      int64 fixed = 1;
+
+      // Specifies the relative value defined as a percentage, which will be multiplied by a reference value.
+      int64 percentage = 2;
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// GoogleOsLoginSshPublicKey version is 0
+message GoogleOsLoginSshPublicKey {
+  // An expiration time in microseconds since epoch.
+  string expiration_time_usec = 1 [json_name = "expiration_time_usec"];
+
+  // The SHA-256 fingerprint of the SSH public key.
+  string fingerprint = 2;
+
+  string id = 3;
+
+  // Public key text in SSH format, defined by RFC4253 section 6.6.
+  string key = 4;
+
+  // The project ID of the Google Cloud Platform project.
+  string project = 5;
+
+  // The user email.
+  string user = 6;
+
+  repeated Timeouts timeouts = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

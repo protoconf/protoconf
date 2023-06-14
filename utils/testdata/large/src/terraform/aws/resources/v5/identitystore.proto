@@ -1,0 +1,165 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsIdentitystoreGroup version is 0
+message AwsIdentitystoreGroup {
+  string description = 1;
+
+  string display_name = 2 [json_name = "display_name"];
+
+  repeated ExternalIds external_ids = 3 [json_name = "external_ids"];
+
+  string group_id = 4 [json_name = "group_id"];
+
+  string id = 5;
+
+  string identity_store_id = 6 [json_name = "identity_store_id"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message ExternalIds {
+    // id: string
+    string id = 1;
+
+    // issuer: string
+    string issuer = 2;
+  }
+}
+
+// AwsIdentitystoreGroupMembership version is 0
+message AwsIdentitystoreGroupMembership {
+  string group_id = 1 [json_name = "group_id"];
+
+  string id = 2;
+
+  string identity_store_id = 3 [json_name = "identity_store_id"];
+
+  string member_id = 4 [json_name = "member_id"];
+
+  string membership_id = 5 [json_name = "membership_id"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsIdentitystoreUser version is 0
+message AwsIdentitystoreUser {
+  string display_name = 1 [json_name = "display_name"];
+
+  repeated ExternalIds external_ids = 2 [json_name = "external_ids"];
+
+  string id = 3;
+
+  string identity_store_id = 4 [json_name = "identity_store_id"];
+
+  string locale = 5;
+
+  string nickname = 6;
+
+  string preferred_language = 7 [json_name = "preferred_language"];
+
+  string profile_url = 8 [json_name = "profile_url"];
+
+  string timezone = 9;
+
+  string title = 10;
+
+  string user_id = 11 [json_name = "user_id"];
+
+  string user_name = 12 [json_name = "user_name"];
+
+  string user_type = 13 [json_name = "user_type"];
+
+  Addresses addresses = 14;
+
+  Emails emails = 15;
+
+  Name name = 16;
+
+  PhoneNumbers phone_numbers = 17 [json_name = "phone_numbers"];
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+
+  message ExternalIds {
+    // id: string
+    string id = 1;
+
+    // issuer: string
+    string issuer = 2;
+  }
+
+  message Addresses {
+    string country = 1;
+
+    string formatted = 2;
+
+    string locality = 3;
+
+    string postal_code = 4 [json_name = "postal_code"];
+
+    bool primary = 5;
+
+    string region = 6;
+
+    string street_address = 7 [json_name = "street_address"];
+
+    string type = 8;
+  }
+
+  message Emails {
+    bool primary = 1;
+
+    string type = 2;
+
+    string value = 3;
+  }
+
+  message Name {
+    string family_name = 1 [json_name = "family_name"];
+
+    string formatted = 2;
+
+    string given_name = 3 [json_name = "given_name"];
+
+    string honorific_prefix = 4 [json_name = "honorific_prefix"];
+
+    string honorific_suffix = 5 [json_name = "honorific_suffix"];
+
+    string middle_name = 6 [json_name = "middle_name"];
+  }
+
+  message PhoneNumbers {
+    bool primary = 1;
+
+    string type = 2;
+
+    string value = 3;
+  }
+}

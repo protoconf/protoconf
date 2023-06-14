@@ -1,0 +1,109 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsWafv2IpSet version is 0
+message AwsWafv2IpSet {
+  repeated string addresses = 1;
+
+  string arn = 2;
+
+  string description = 3;
+
+  string id = 4;
+
+  string ip_address_version = 5 [json_name = "ip_address_version"];
+
+  string name = 6;
+
+  string scope = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsWafv2RegexPatternSet version is 0
+message AwsWafv2RegexPatternSet {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  string name = 4;
+
+  repeated RegularExpression regular_expression = 5 [json_name = "regular_expression"];
+
+  string scope = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message RegularExpression {
+    // regex_string: string
+    string regex_string = 1 [json_name = "regex_string"];
+  }
+}
+
+// AwsWafv2RuleGroup version is 0
+message AwsWafv2RuleGroup {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  string name = 4;
+
+  string scope = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsWafv2WebAcl version is 0
+message AwsWafv2WebAcl {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  string name = 4;
+
+  string scope = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}

@@ -1,0 +1,158 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsCognitoUserPoolClient version is 0
+message AwsCognitoUserPoolClient {
+  int64 access_token_validity = 1 [json_name = "access_token_validity"];
+
+  repeated string allowed_oauth_flows = 2 [json_name = "allowed_oauth_flows"];
+
+  bool allowed_oauth_flows_user_pool_client = 3 [json_name = "allowed_oauth_flows_user_pool_client"];
+
+  repeated string allowed_oauth_scopes = 4 [json_name = "allowed_oauth_scopes"];
+
+  repeated AnalyticsConfiguration analytics_configuration = 5 [json_name = "analytics_configuration"];
+
+  repeated string callback_urls = 6 [json_name = "callback_urls"];
+
+  string client_id = 7 [json_name = "client_id"];
+
+  string client_secret = 8 [json_name = "client_secret"];
+
+  string default_redirect_uri = 9 [json_name = "default_redirect_uri"];
+
+  bool enable_propagate_additional_user_context_data = 10 [
+    json_name = "enable_propagate_additional_user_context_data"
+  ];
+
+  bool enable_token_revocation = 11 [json_name = "enable_token_revocation"];
+
+  repeated string explicit_auth_flows = 12 [json_name = "explicit_auth_flows"];
+
+  bool generate_secret = 13 [json_name = "generate_secret"];
+
+  string id = 14;
+
+  int64 id_token_validity = 15 [json_name = "id_token_validity"];
+
+  repeated string logout_urls = 16 [json_name = "logout_urls"];
+
+  string name = 17;
+
+  string prevent_user_existence_errors = 18 [json_name = "prevent_user_existence_errors"];
+
+  repeated string read_attributes = 19 [json_name = "read_attributes"];
+
+  int64 refresh_token_validity = 20 [json_name = "refresh_token_validity"];
+
+  repeated string supported_identity_providers = 21 [json_name = "supported_identity_providers"];
+
+  repeated TokenValidityUnits token_validity_units = 22 [json_name = "token_validity_units"];
+
+  string user_pool_id = 23 [json_name = "user_pool_id"];
+
+  repeated string write_attributes = 24 [json_name = "write_attributes"];
+
+  map<string, string> for_each = 25 [json_name = "for_each"];
+
+  repeated string depends_on = 26 [json_name = "depends_on"];
+
+  int32 count = 27;
+
+  string provider = 28;
+
+  terraform.v1.Lifecycle lifecycle = 29;
+
+  message AnalyticsConfiguration {
+    // application_arn: string
+    string application_arn = 1 [json_name = "application_arn"];
+
+    // application_id: string
+    string application_id = 2 [json_name = "application_id"];
+
+    // external_id: string
+    string external_id = 3 [json_name = "external_id"];
+
+    // role_arn: string
+    string role_arn = 4 [json_name = "role_arn"];
+
+    // user_data_shared: bool
+    bool user_data_shared = 5 [json_name = "user_data_shared"];
+  }
+
+  message TokenValidityUnits {
+    // access_token: string
+    string access_token = 1 [json_name = "access_token"];
+
+    // id_token: string
+    string id_token = 2 [json_name = "id_token"];
+
+    // refresh_token: string
+    string refresh_token = 3 [json_name = "refresh_token"];
+  }
+}
+
+// AwsCognitoUserPoolClients version is 0
+message AwsCognitoUserPoolClients {
+  repeated string client_ids = 1 [json_name = "client_ids"];
+
+  repeated string client_names = 2 [json_name = "client_names"];
+
+  string id = 3;
+
+  string user_pool_id = 4 [json_name = "user_pool_id"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsCognitoUserPoolSigningCertificate version is 0
+message AwsCognitoUserPoolSigningCertificate {
+  string certificate = 1;
+
+  string id = 2;
+
+  string user_pool_id = 3 [json_name = "user_pool_id"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsCognitoUserPools version is 0
+message AwsCognitoUserPools {
+  repeated string arns = 1;
+
+  string id = 2;
+
+  repeated string ids = 3;
+
+  string name = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}

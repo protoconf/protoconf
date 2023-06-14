@@ -1,0 +1,294 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsAppconfigApplication version is 0
+message AwsAppconfigApplication {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  string name = 4;
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsAppconfigConfigurationProfile version is 0
+message AwsAppconfigConfigurationProfile {
+  string application_id = 1 [json_name = "application_id"];
+
+  string arn = 2;
+
+  string configuration_profile_id = 3 [json_name = "configuration_profile_id"];
+
+  string description = 4;
+
+  string id = 5;
+
+  string location_uri = 6 [json_name = "location_uri"];
+
+  string name = 7;
+
+  string retrieval_role_arn = 8 [json_name = "retrieval_role_arn"];
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  string type = 11;
+
+  repeated Validator validator = 12;
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message Validator {
+    string content = 1;
+
+    string type = 2;
+  }
+}
+
+// AwsAppconfigDeployment version is 0
+message AwsAppconfigDeployment {
+  string application_id = 1 [json_name = "application_id"];
+
+  string arn = 2;
+
+  string configuration_profile_id = 3 [json_name = "configuration_profile_id"];
+
+  string configuration_version = 4 [json_name = "configuration_version"];
+
+  int64 deployment_number = 5 [json_name = "deployment_number"];
+
+  string deployment_strategy_id = 6 [json_name = "deployment_strategy_id"];
+
+  string description = 7;
+
+  string environment_id = 8 [json_name = "environment_id"];
+
+  string id = 9;
+
+  string state = 10;
+
+  map<string, string> tags = 11;
+
+  map<string, string> tags_all = 12 [json_name = "tags_all"];
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+}
+
+// AwsAppconfigDeploymentStrategy version is 0
+message AwsAppconfigDeploymentStrategy {
+  string arn = 1;
+
+  int64 deployment_duration_in_minutes = 2 [json_name = "deployment_duration_in_minutes"];
+
+  string description = 3;
+
+  int64 final_bake_time_in_minutes = 4 [json_name = "final_bake_time_in_minutes"];
+
+  int64 growth_factor = 5 [json_name = "growth_factor"];
+
+  string growth_type = 6 [json_name = "growth_type"];
+
+  string id = 7;
+
+  string name = 8;
+
+  string replicate_to = 9 [json_name = "replicate_to"];
+
+  map<string, string> tags = 10;
+
+  map<string, string> tags_all = 11 [json_name = "tags_all"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+}
+
+// AwsAppconfigEnvironment version is 0
+message AwsAppconfigEnvironment {
+  string application_id = 1 [json_name = "application_id"];
+
+  string arn = 2;
+
+  string description = 3;
+
+  string environment_id = 4 [json_name = "environment_id"];
+
+  string id = 5;
+
+  string name = 6;
+
+  string state = 7;
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  repeated Monitor monitor = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Monitor {
+    string alarm_arn = 1 [json_name = "alarm_arn"];
+
+    string alarm_role_arn = 2 [json_name = "alarm_role_arn"];
+  }
+}
+
+// AwsAppconfigExtension version is 0
+message AwsAppconfigExtension {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  string name = 4;
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  int64 version = 7;
+
+  repeated ActionPoint action_point = 8 [json_name = "action_point"];
+
+  repeated Parameter parameter = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message ActionPoint {
+    string point = 1;
+
+    repeated Action action = 2;
+
+    message Action {
+      string description = 1;
+
+      string name = 2;
+
+      string role_arn = 3 [json_name = "role_arn"];
+
+      string uri = 4;
+    }
+  }
+
+  message Parameter {
+    string description = 1;
+
+    string name = 2;
+
+    bool required = 3;
+  }
+}
+
+// AwsAppconfigExtensionAssociation version is 0
+message AwsAppconfigExtensionAssociation {
+  string arn = 1;
+
+  string extension_arn = 2 [json_name = "extension_arn"];
+
+  int64 extension_version = 3 [json_name = "extension_version"];
+
+  string id = 4;
+
+  map<string, string> parameters = 5;
+
+  string resource_arn = 6 [json_name = "resource_arn"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsAppconfigHostedConfigurationVersion version is 0
+message AwsAppconfigHostedConfigurationVersion {
+  string application_id = 1 [json_name = "application_id"];
+
+  string arn = 2;
+
+  string configuration_profile_id = 3 [json_name = "configuration_profile_id"];
+
+  string content = 4;
+
+  string content_type = 5 [json_name = "content_type"];
+
+  string description = 6;
+
+  string id = 7;
+
+  int64 version_number = 8 [json_name = "version_number"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+}

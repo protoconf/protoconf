@@ -1,0 +1,81 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsElasticBeanstalkApplication version is 0
+message AwsElasticBeanstalkApplication {
+  repeated AppversionLifecycle appversion_lifecycle = 1 [json_name = "appversion_lifecycle"];
+
+  string arn = 2;
+
+  string description = 3;
+
+  string id = 4;
+
+  string name = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message AppversionLifecycle {
+    // delete_source_from_s3: bool
+    bool delete_source_from_s3 = 1 [json_name = "delete_source_from_s3"];
+
+    // max_age_in_days: number
+    int64 max_age_in_days = 2 [json_name = "max_age_in_days"];
+
+    // max_count: number
+    int64 max_count = 3 [json_name = "max_count"];
+
+    // service_role: string
+    string service_role = 4 [json_name = "service_role"];
+  }
+}
+
+// AwsElasticBeanstalkHostedZone version is 0
+message AwsElasticBeanstalkHostedZone {
+  string id = 1;
+
+  string region = 2;
+
+  map<string, string> for_each = 3 [json_name = "for_each"];
+
+  repeated string depends_on = 4 [json_name = "depends_on"];
+
+  int32 count = 5;
+
+  string provider = 6;
+
+  terraform.v1.Lifecycle lifecycle = 7;
+}
+
+// AwsElasticBeanstalkSolutionStack version is 0
+message AwsElasticBeanstalkSolutionStack {
+  string id = 1;
+
+  bool most_recent = 2 [json_name = "most_recent"];
+
+  string name = 3;
+
+  string name_regex = 4 [json_name = "name_regex"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}

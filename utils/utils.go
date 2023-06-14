@@ -22,10 +22,15 @@ import (
 	"github.com/protoconf/protoconf/consts"
 	protoconfvalue "github.com/protoconf/protoconf/datatypes/proto/v1"
 	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/reflect/protodesc"
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/reflect/protoregistry"
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/dynamicpb"
+)
+
+var (
+	localResolver *protoregistry.Types
 )
 
 // ReadConfig reads a materialized config
@@ -37,8 +42,12 @@ func ReadConfig(protoconfRoot string, configName string) (*protoconfvalue.Protoc
 		return nil, fmt.Errorf("error opening config file, file=%s", filename)
 	}
 
+	if localResolver == nil {
+		localResolver = LocalResolver(protoconfRoot)
+	}
+
 	val := &protoconfvalue.ProtoconfValue{}
-	err = protojson.UnmarshalOptions{Resolver: LocalResolver(protoconfRoot)}.Unmarshal(configReader, val)
+	err = protojson.UnmarshalOptions{Resolver: localResolver}.Unmarshal(configReader, val)
 	if err != nil {
 		return nil, err
 	}
@@ -48,20 +57,22 @@ func ReadConfig(protoconfRoot string, configName string) (*protoconfvalue.Protoc
 
 func LocalResolver(protoconfRoot string) *protoregistry.Types {
 	localTypes := new(protoregistry.Types)
-	localFiles, err := LoadLocalProtoFiles(protoconfRoot)
+	localFiles, err := LoadLocalProtoFilesFast(protoconfRoot)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("LocalResolver:", err)
 	}
-	for _, file := range localFiles {
+	localFiles.RangeFiles(func(file protoreflect.FileDescriptor) bool {
 		_, err := protoregistry.GlobalFiles.FindFileByPath(file.Path())
 		if err != nil {
 			protoregistry.GlobalFiles.RegisterFile(file)
 		}
-	}
+		return true
+	})
 	protoregistry.GlobalFiles.RangeFiles(func(fd protoreflect.FileDescriptor) bool {
 		if fd.Messages().Len() > 0 {
 			for i := 0; i < fd.Messages().Len(); i++ {
-				msg := dynamicpb.NewMessageType(fd.Messages().Get(i))
+				fdm := fd.Messages().Get(i)
+				msg := dynamicpb.NewMessageType(fdm)
 				localTypes.RegisterMessage(msg)
 			}
 		}
@@ -181,16 +192,42 @@ func find(root, ext string) []string {
 	return a
 }
 
-func LoadLocalProtoFiles(root string) (fds []protoreflect.FileDescriptor, err error) {
+func LoadLocalProtoFiles(root string) (*protoregistry.Files, error) {
 	rootPath := filepath.Join(root, consts.SrcPath)
 	files := find(rootPath, ".proto")
 	parser := &protoparse.Parser{ImportPaths: []string{rootPath}}
 	descriptors, err := parser.ParseFiles(files...)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("parser: %v", err)
 	}
-	for _, d := range descriptors {
-		fds = append(fds, d.UnwrapFile())
+	protoFiles := new(protoregistry.Files)
+	for _, fd := range descriptors {
+		err = protoFiles.RegisterFile(fd.UnwrapFile())
+		if err != nil {
+			return nil, fmt.Errorf("new files: %v", err)
+		}
 	}
-	return fds, nil
+	return protoFiles, err
+
+}
+
+func LoadLocalProtoFilesFast(root string) (*protoregistry.Files, error) {
+	rootPath := filepath.Join(root, consts.SrcPath)
+	files := find(rootPath, ".proto")
+	parser := &protoparse.Parser{
+		ImportPaths:                     []string{rootPath},
+		InterpretOptionsInUnlinkedFiles: true,
+	}
+	descriptors, err := parser.ParseFilesButDoNotLink(files...)
+	if err != nil {
+		return nil, fmt.Errorf("parser: %v", err)
+	}
+	fds := &descriptorpb.FileDescriptorSet{File: descriptors}
+	fileoptions := &protodesc.FileOptions{AllowUnresolvable: true}
+	protoFiles, err := fileoptions.NewFiles(fds)
+	if err != nil {
+		return nil, fmt.Errorf("new files: %v", err)
+	}
+	return protoFiles, err
+
 }

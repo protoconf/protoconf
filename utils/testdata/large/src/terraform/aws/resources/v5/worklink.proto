@@ -1,0 +1,80 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsWorklinkFleet version is 0
+message AwsWorklinkFleet {
+  string arn = 1;
+
+  string audit_stream_arn = 2 [json_name = "audit_stream_arn"];
+
+  string company_code = 3 [json_name = "company_code"];
+
+  string created_time = 4 [json_name = "created_time"];
+
+  string device_ca_certificate = 5 [json_name = "device_ca_certificate"];
+
+  string display_name = 6 [json_name = "display_name"];
+
+  string id = 7;
+
+  string last_updated_time = 8 [json_name = "last_updated_time"];
+
+  string name = 9;
+
+  bool optimize_for_end_user_location = 10 [json_name = "optimize_for_end_user_location"];
+
+  IdentityProvider identity_provider = 11 [json_name = "identity_provider"];
+
+  Network network = 12;
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message IdentityProvider {
+    string saml_metadata = 1 [json_name = "saml_metadata"];
+
+    string type = 2;
+  }
+
+  message Network {
+    repeated string security_group_ids = 1 [json_name = "security_group_ids"];
+
+    repeated string subnet_ids = 2 [json_name = "subnet_ids"];
+
+    string vpc_id = 3 [json_name = "vpc_id"];
+  }
+}
+
+// AwsWorklinkWebsiteCertificateAuthorityAssociation version is 0
+message AwsWorklinkWebsiteCertificateAuthorityAssociation {
+  string certificate = 1;
+
+  string display_name = 2 [json_name = "display_name"];
+
+  string fleet_arn = 3 [json_name = "fleet_arn"];
+
+  string id = 4;
+
+  string website_ca_id = 5 [json_name = "website_ca_id"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}

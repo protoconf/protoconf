@@ -1,0 +1,1504 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsS3AccessPoint version is 0
+message AwsS3AccessPoint {
+  string account_id = 1 [json_name = "account_id"];
+
+  string alias = 2;
+
+  string arn = 3;
+
+  string bucket = 4;
+
+  string bucket_account_id = 5 [json_name = "bucket_account_id"];
+
+  string domain_name = 6 [json_name = "domain_name"];
+
+  map<string, string> endpoints = 7;
+
+  bool has_public_access_policy = 8 [json_name = "has_public_access_policy"];
+
+  string id = 9;
+
+  string name = 10;
+
+  string network_origin = 11 [json_name = "network_origin"];
+
+  string policy = 12;
+
+  PublicAccessBlockConfiguration public_access_block_configuration = 13 [json_name = "public_access_block_configuration"];
+
+  VpcConfiguration vpc_configuration = 14 [json_name = "vpc_configuration"];
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+
+  message PublicAccessBlockConfiguration {
+    bool block_public_acls = 1 [json_name = "block_public_acls"];
+
+    bool block_public_policy = 2 [json_name = "block_public_policy"];
+
+    bool ignore_public_acls = 3 [json_name = "ignore_public_acls"];
+
+    bool restrict_public_buckets = 4 [json_name = "restrict_public_buckets"];
+  }
+
+  message VpcConfiguration {
+    string vpc_id = 1 [json_name = "vpc_id"];
+  }
+}
+
+// AwsS3AccountPublicAccessBlock version is 0
+message AwsS3AccountPublicAccessBlock {
+  string account_id = 1 [json_name = "account_id"];
+
+  bool block_public_acls = 2 [json_name = "block_public_acls"];
+
+  bool block_public_policy = 3 [json_name = "block_public_policy"];
+
+  string id = 4;
+
+  bool ignore_public_acls = 5 [json_name = "ignore_public_acls"];
+
+  bool restrict_public_buckets = 6 [json_name = "restrict_public_buckets"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsS3Bucket version is 0
+message AwsS3Bucket {
+  string acceleration_status = 1 [json_name = "acceleration_status"];
+
+  string acl = 2;
+
+  string arn = 3;
+
+  string bucket = 4;
+
+  string bucket_domain_name = 5 [json_name = "bucket_domain_name"];
+
+  string bucket_prefix = 6 [json_name = "bucket_prefix"];
+
+  string bucket_regional_domain_name = 7 [json_name = "bucket_regional_domain_name"];
+
+  bool force_destroy = 8 [json_name = "force_destroy"];
+
+  string hosted_zone_id = 9 [json_name = "hosted_zone_id"];
+
+  string id = 10;
+
+  bool object_lock_enabled = 11 [json_name = "object_lock_enabled"];
+
+  string policy = 12;
+
+  string region = 13;
+
+  string request_payer = 14 [json_name = "request_payer"];
+
+  map<string, string> tags = 15;
+
+  map<string, string> tags_all = 16 [json_name = "tags_all"];
+
+  string website_domain = 17 [json_name = "website_domain"];
+
+  string website_endpoint = 18 [json_name = "website_endpoint"];
+
+  repeated CorsRule cors_rule = 19 [json_name = "cors_rule"];
+
+  repeated Grant grant = 20;
+
+  repeated LifecycleRule lifecycle_rule = 21 [json_name = "lifecycle_rule"];
+
+  Logging logging = 22;
+
+  ObjectLockConfiguration object_lock_configuration = 23 [json_name = "object_lock_configuration"];
+
+  ReplicationConfiguration replication_configuration = 24 [json_name = "replication_configuration"];
+
+  ServerSideEncryptionConfiguration server_side_encryption_configuration = 25 [json_name = "server_side_encryption_configuration"];
+
+  repeated Timeouts timeouts = 26;
+
+  Versioning versioning = 27;
+
+  Website website = 28;
+
+  map<string, string> for_each = 29 [json_name = "for_each"];
+
+  repeated string depends_on = 30 [json_name = "depends_on"];
+
+  int32 count = 31;
+
+  string provider = 32;
+
+  terraform.v1.Lifecycle lifecycle = 33;
+
+  message CorsRule {
+    repeated string allowed_headers = 1 [json_name = "allowed_headers"];
+
+    repeated string allowed_methods = 2 [json_name = "allowed_methods"];
+
+    repeated string allowed_origins = 3 [json_name = "allowed_origins"];
+
+    repeated string expose_headers = 4 [json_name = "expose_headers"];
+
+    int64 max_age_seconds = 5 [json_name = "max_age_seconds"];
+  }
+
+  message Grant {
+    string id = 1;
+
+    repeated string permissions = 2;
+
+    string type = 3;
+
+    string uri = 4;
+  }
+
+  message LifecycleRule {
+    int64 abort_incomplete_multipart_upload_days = 1 [
+      json_name = "abort_incomplete_multipart_upload_days"
+    ];
+
+    bool enabled = 2;
+
+    string id = 3;
+
+    string prefix = 4;
+
+    map<string, string> tags = 5;
+
+    Expiration expiration = 6;
+
+    NoncurrentVersionExpiration noncurrent_version_expiration = 7 [json_name = "noncurrent_version_expiration"];
+
+    repeated NoncurrentVersionTransition noncurrent_version_transition = 8 [json_name = "noncurrent_version_transition"];
+
+    repeated Transition transition = 9;
+
+    message Expiration {
+      string date = 1;
+
+      int64 days = 2;
+
+      bool expired_object_delete_marker = 3 [json_name = "expired_object_delete_marker"];
+    }
+
+    message NoncurrentVersionExpiration {
+      int64 days = 1;
+    }
+
+    message NoncurrentVersionTransition {
+      int64 days = 1;
+
+      string storage_class = 2 [json_name = "storage_class"];
+    }
+
+    message Transition {
+      string date = 1;
+
+      int64 days = 2;
+
+      string storage_class = 3 [json_name = "storage_class"];
+    }
+  }
+
+  message Logging {
+    string target_bucket = 1 [json_name = "target_bucket"];
+
+    string target_prefix = 2 [json_name = "target_prefix"];
+  }
+
+  message ObjectLockConfiguration {
+    string object_lock_enabled = 1 [json_name = "object_lock_enabled"];
+
+    Rule rule = 2;
+
+    message Rule {
+      DefaultRetention default_retention = 1 [json_name = "default_retention"];
+
+      message DefaultRetention {
+        int64 days = 1;
+
+        string mode = 2;
+
+        int64 years = 3;
+      }
+    }
+  }
+
+  message ReplicationConfiguration {
+    string role = 1;
+
+    repeated Rules rules = 2;
+
+    message Rules {
+      string delete_marker_replication_status = 1 [json_name = "delete_marker_replication_status"];
+
+      string id = 2;
+
+      string prefix = 3;
+
+      int64 priority = 4;
+
+      string status = 5;
+
+      Destination destination = 6;
+
+      Filter filter = 7;
+
+      SourceSelectionCriteria source_selection_criteria = 8 [json_name = "source_selection_criteria"];
+
+      message Destination {
+        string account_id = 1 [json_name = "account_id"];
+
+        string bucket = 2;
+
+        string replica_kms_key_id = 3 [json_name = "replica_kms_key_id"];
+
+        string storage_class = 4 [json_name = "storage_class"];
+
+        AccessControlTranslation access_control_translation = 5 [json_name = "access_control_translation"];
+
+        Metrics metrics = 6;
+
+        ReplicationTime replication_time = 7 [json_name = "replication_time"];
+
+        message AccessControlTranslation {
+          string owner = 1;
+        }
+
+        message Metrics {
+          int64 minutes = 1;
+
+          string status = 2;
+        }
+
+        message ReplicationTime {
+          int64 minutes = 1;
+
+          string status = 2;
+        }
+      }
+
+      message Filter {
+        string prefix = 1;
+
+        map<string, string> tags = 2;
+      }
+
+      message SourceSelectionCriteria {
+        SseKmsEncryptedObjects sse_kms_encrypted_objects = 1 [json_name = "sse_kms_encrypted_objects"];
+
+        message SseKmsEncryptedObjects {
+          bool enabled = 1;
+        }
+      }
+    }
+  }
+
+  message ServerSideEncryptionConfiguration {
+    Rule rule = 1;
+
+    message Rule {
+      bool bucket_key_enabled = 1 [json_name = "bucket_key_enabled"];
+
+      ApplyServerSideEncryptionByDefault apply_server_side_encryption_by_default = 2 [
+        json_name = "apply_server_side_encryption_by_default"
+      ];
+
+      message ApplyServerSideEncryptionByDefault {
+        string kms_master_key_id = 1 [json_name = "kms_master_key_id"];
+
+        string sse_algorithm = 2 [json_name = "sse_algorithm"];
+      }
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string read = 3;
+
+    string update = 4;
+  }
+
+  message Versioning {
+    bool enabled = 1;
+
+    bool mfa_delete = 2 [json_name = "mfa_delete"];
+  }
+
+  message Website {
+    string error_document = 1 [json_name = "error_document"];
+
+    string index_document = 2 [json_name = "index_document"];
+
+    string redirect_all_requests_to = 3 [json_name = "redirect_all_requests_to"];
+
+    string routing_rules = 4 [json_name = "routing_rules"];
+  }
+}
+
+// AwsS3BucketAccelerateConfiguration version is 0
+message AwsS3BucketAccelerateConfiguration {
+  string bucket = 1;
+
+  string expected_bucket_owner = 2 [json_name = "expected_bucket_owner"];
+
+  string id = 3;
+
+  string status = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsS3BucketAcl version is 0
+message AwsS3BucketAcl {
+  string acl = 1;
+
+  string bucket = 2;
+
+  string expected_bucket_owner = 3 [json_name = "expected_bucket_owner"];
+
+  string id = 4;
+
+  AccessControlPolicy access_control_policy = 5 [json_name = "access_control_policy"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message AccessControlPolicy {
+    repeated Grant grant = 1;
+
+    Owner owner = 2;
+
+    message Grant {
+      string permission = 1;
+
+      Grantee grantee = 2;
+
+      message Grantee {
+        string display_name = 1 [json_name = "display_name"];
+
+        string email_address = 2 [json_name = "email_address"];
+
+        string id = 3;
+
+        string type = 4;
+
+        string uri = 5;
+      }
+    }
+
+    message Owner {
+      string display_name = 1 [json_name = "display_name"];
+
+      string id = 2;
+    }
+  }
+}
+
+// AwsS3BucketAnalyticsConfiguration version is 0
+message AwsS3BucketAnalyticsConfiguration {
+  string bucket = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  Filter filter = 4;
+
+  StorageClassAnalysis storage_class_analysis = 5 [json_name = "storage_class_analysis"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message Filter {
+    string prefix = 1;
+
+    map<string, string> tags = 2;
+  }
+
+  message StorageClassAnalysis {
+    DataExport data_export = 1 [json_name = "data_export"];
+
+    message DataExport {
+      string output_schema_version = 1 [json_name = "output_schema_version"];
+
+      Destination destination = 2;
+
+      message Destination {
+        S3BucketDestination s3_bucket_destination = 1 [json_name = "s3_bucket_destination"];
+
+        message S3BucketDestination {
+          string bucket_account_id = 1 [json_name = "bucket_account_id"];
+
+          string bucket_arn = 2 [json_name = "bucket_arn"];
+
+          string format = 3;
+
+          string prefix = 4;
+        }
+      }
+    }
+  }
+}
+
+// AwsS3BucketCorsConfiguration version is 0
+message AwsS3BucketCorsConfiguration {
+  string bucket = 1;
+
+  string expected_bucket_owner = 2 [json_name = "expected_bucket_owner"];
+
+  string id = 3;
+
+  repeated CorsRule cors_rule = 4 [json_name = "cors_rule"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message CorsRule {
+    repeated string allowed_headers = 1 [json_name = "allowed_headers"];
+
+    repeated string allowed_methods = 2 [json_name = "allowed_methods"];
+
+    repeated string allowed_origins = 3 [json_name = "allowed_origins"];
+
+    repeated string expose_headers = 4 [json_name = "expose_headers"];
+
+    string id = 5;
+
+    int64 max_age_seconds = 6 [json_name = "max_age_seconds"];
+  }
+}
+
+// AwsS3BucketIntelligentTieringConfiguration version is 0
+message AwsS3BucketIntelligentTieringConfiguration {
+  string bucket = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  string status = 4;
+
+  Filter filter = 5;
+
+  repeated Tiering tiering = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Filter {
+    string prefix = 1;
+
+    map<string, string> tags = 2;
+  }
+
+  message Tiering {
+    string access_tier = 1 [json_name = "access_tier"];
+
+    int64 days = 2;
+  }
+}
+
+// AwsS3BucketInventory version is 0
+message AwsS3BucketInventory {
+  string bucket = 1;
+
+  bool enabled = 2;
+
+  string id = 3;
+
+  string included_object_versions = 4 [json_name = "included_object_versions"];
+
+  string name = 5;
+
+  repeated string optional_fields = 6 [json_name = "optional_fields"];
+
+  Destination destination = 7;
+
+  Filter filter = 8;
+
+  Schedule schedule = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Destination {
+    Bucket bucket = 1;
+
+    message Bucket {
+      string account_id = 1 [json_name = "account_id"];
+
+      string bucket_arn = 2 [json_name = "bucket_arn"];
+
+      string format = 3;
+
+      string prefix = 4;
+
+      Encryption encryption = 5;
+
+      message Encryption {
+        SseKms sse_kms = 1 [json_name = "sse_kms"];
+
+        SseS3 sse_s3 = 2 [json_name = "sse_s3"];
+
+        message SseKms {
+          string key_id = 1 [json_name = "key_id"];
+        }
+
+        message SseS3 {
+        }
+      }
+    }
+  }
+
+  message Filter {
+    string prefix = 1;
+  }
+
+  message Schedule {
+    string frequency = 1;
+  }
+}
+
+// AwsS3BucketLifecycleConfiguration version is 0
+message AwsS3BucketLifecycleConfiguration {
+  string bucket = 1;
+
+  string expected_bucket_owner = 2 [json_name = "expected_bucket_owner"];
+
+  string id = 3;
+
+  repeated Rule rule = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message Rule {
+    string id = 1;
+
+    string prefix = 2;
+
+    string status = 3;
+
+    AbortIncompleteMultipartUpload abort_incomplete_multipart_upload = 4 [json_name = "abort_incomplete_multipart_upload"];
+
+    Expiration expiration = 5;
+
+    Filter filter = 6;
+
+    NoncurrentVersionExpiration noncurrent_version_expiration = 7 [json_name = "noncurrent_version_expiration"];
+
+    repeated NoncurrentVersionTransition noncurrent_version_transition = 8 [json_name = "noncurrent_version_transition"];
+
+    repeated Transition transition = 9;
+
+    message AbortIncompleteMultipartUpload {
+      int64 days_after_initiation = 1 [json_name = "days_after_initiation"];
+    }
+
+    message Expiration {
+      string date = 1;
+
+      int64 days = 2;
+
+      bool expired_object_delete_marker = 3 [json_name = "expired_object_delete_marker"];
+    }
+
+    message Filter {
+      string object_size_greater_than = 1 [json_name = "object_size_greater_than"];
+
+      string object_size_less_than = 2 [json_name = "object_size_less_than"];
+
+      string prefix = 3;
+
+      And and = 4;
+
+      Tag tag = 5;
+
+      message And {
+        int64 object_size_greater_than = 1 [json_name = "object_size_greater_than"];
+
+        int64 object_size_less_than = 2 [json_name = "object_size_less_than"];
+
+        string prefix = 3;
+
+        map<string, string> tags = 4;
+      }
+
+      message Tag {
+        string key = 1;
+
+        string value = 2;
+      }
+    }
+
+    message NoncurrentVersionExpiration {
+      string newer_noncurrent_versions = 1 [json_name = "newer_noncurrent_versions"];
+
+      int64 noncurrent_days = 2 [json_name = "noncurrent_days"];
+    }
+
+    message NoncurrentVersionTransition {
+      string newer_noncurrent_versions = 1 [json_name = "newer_noncurrent_versions"];
+
+      int64 noncurrent_days = 2 [json_name = "noncurrent_days"];
+
+      string storage_class = 3 [json_name = "storage_class"];
+    }
+
+    message Transition {
+      string date = 1;
+
+      int64 days = 2;
+
+      string storage_class = 3 [json_name = "storage_class"];
+    }
+  }
+}
+
+// AwsS3BucketLogging version is 0
+message AwsS3BucketLogging {
+  string bucket = 1;
+
+  string expected_bucket_owner = 2 [json_name = "expected_bucket_owner"];
+
+  string id = 3;
+
+  string target_bucket = 4 [json_name = "target_bucket"];
+
+  string target_prefix = 5 [json_name = "target_prefix"];
+
+  repeated TargetGrant target_grant = 6 [json_name = "target_grant"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message TargetGrant {
+    string permission = 1;
+
+    Grantee grantee = 2;
+
+    message Grantee {
+      string display_name = 1 [json_name = "display_name"];
+
+      string email_address = 2 [json_name = "email_address"];
+
+      string id = 3;
+
+      string type = 4;
+
+      string uri = 5;
+    }
+  }
+}
+
+// AwsS3BucketMetric version is 0
+message AwsS3BucketMetric {
+  string bucket = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  Filter filter = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message Filter {
+    string prefix = 1;
+
+    map<string, string> tags = 2;
+  }
+}
+
+// AwsS3BucketNotification version is 0
+message AwsS3BucketNotification {
+  string bucket = 1;
+
+  bool eventbridge = 2;
+
+  string id = 3;
+
+  repeated LambdaFunction lambda_function = 4 [json_name = "lambda_function"];
+
+  repeated Queue queue = 5;
+
+  repeated Topic topic = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message LambdaFunction {
+    repeated string events = 1;
+
+    string filter_prefix = 2 [json_name = "filter_prefix"];
+
+    string filter_suffix = 3 [json_name = "filter_suffix"];
+
+    string id = 4;
+
+    string lambda_function_arn = 5 [json_name = "lambda_function_arn"];
+  }
+
+  message Queue {
+    repeated string events = 1;
+
+    string filter_prefix = 2 [json_name = "filter_prefix"];
+
+    string filter_suffix = 3 [json_name = "filter_suffix"];
+
+    string id = 4;
+
+    string queue_arn = 5 [json_name = "queue_arn"];
+  }
+
+  message Topic {
+    repeated string events = 1;
+
+    string filter_prefix = 2 [json_name = "filter_prefix"];
+
+    string filter_suffix = 3 [json_name = "filter_suffix"];
+
+    string id = 4;
+
+    string topic_arn = 5 [json_name = "topic_arn"];
+  }
+}
+
+// AwsS3BucketObject version is 0
+message AwsS3BucketObject {
+  string acl = 1;
+
+  string bucket = 2;
+
+  bool bucket_key_enabled = 3 [json_name = "bucket_key_enabled"];
+
+  string cache_control = 4 [json_name = "cache_control"];
+
+  string content = 5;
+
+  string content_base64 = 6 [json_name = "content_base64"];
+
+  string content_disposition = 7 [json_name = "content_disposition"];
+
+  string content_encoding = 8 [json_name = "content_encoding"];
+
+  string content_language = 9 [json_name = "content_language"];
+
+  string content_type = 10 [json_name = "content_type"];
+
+  string etag = 11;
+
+  bool force_destroy = 12 [json_name = "force_destroy"];
+
+  string id = 13;
+
+  string key = 14;
+
+  string kms_key_id = 15 [json_name = "kms_key_id"];
+
+  map<string, string> metadata = 16;
+
+  string object_lock_legal_hold_status = 17 [json_name = "object_lock_legal_hold_status"];
+
+  string object_lock_mode = 18 [json_name = "object_lock_mode"];
+
+  string object_lock_retain_until_date = 19 [json_name = "object_lock_retain_until_date"];
+
+  string server_side_encryption = 20 [json_name = "server_side_encryption"];
+
+  string source = 21;
+
+  string source_hash = 22 [json_name = "source_hash"];
+
+  string storage_class = 23 [json_name = "storage_class"];
+
+  map<string, string> tags = 24;
+
+  map<string, string> tags_all = 25 [json_name = "tags_all"];
+
+  string version_id = 26 [json_name = "version_id"];
+
+  string website_redirect = 27 [json_name = "website_redirect"];
+
+  map<string, string> for_each = 28 [json_name = "for_each"];
+
+  repeated string depends_on = 29 [json_name = "depends_on"];
+
+  int32 count = 30;
+
+  string provider = 31;
+
+  terraform.v1.Lifecycle lifecycle = 32;
+}
+
+// AwsS3BucketObjectLockConfiguration version is 0
+message AwsS3BucketObjectLockConfiguration {
+  string bucket = 1;
+
+  string expected_bucket_owner = 2 [json_name = "expected_bucket_owner"];
+
+  string id = 3;
+
+  string object_lock_enabled = 4 [json_name = "object_lock_enabled"];
+
+  string token = 5;
+
+  Rule rule = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Rule {
+    DefaultRetention default_retention = 1 [json_name = "default_retention"];
+
+    message DefaultRetention {
+      int64 days = 1;
+
+      string mode = 2;
+
+      int64 years = 3;
+    }
+  }
+}
+
+// AwsS3BucketOwnershipControls version is 0
+message AwsS3BucketOwnershipControls {
+  string bucket = 1;
+
+  string id = 2;
+
+  Rule rule = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+
+  message Rule {
+    string object_ownership = 1 [json_name = "object_ownership"];
+  }
+}
+
+// AwsS3BucketPolicy version is 0
+message AwsS3BucketPolicy {
+  string bucket = 1;
+
+  string id = 2;
+
+  string policy = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsS3BucketPublicAccessBlock version is 0
+message AwsS3BucketPublicAccessBlock {
+  bool block_public_acls = 1 [json_name = "block_public_acls"];
+
+  bool block_public_policy = 2 [json_name = "block_public_policy"];
+
+  string bucket = 3;
+
+  string id = 4;
+
+  bool ignore_public_acls = 5 [json_name = "ignore_public_acls"];
+
+  bool restrict_public_buckets = 6 [json_name = "restrict_public_buckets"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsS3BucketReplicationConfiguration version is 0
+message AwsS3BucketReplicationConfiguration {
+  string bucket = 1;
+
+  string id = 2;
+
+  string role = 3;
+
+  string token = 4;
+
+  repeated Rule rule = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message Rule {
+    string id = 1;
+
+    string prefix = 2;
+
+    int64 priority = 3;
+
+    string status = 4;
+
+    DeleteMarkerReplication delete_marker_replication = 5 [json_name = "delete_marker_replication"];
+
+    Destination destination = 6;
+
+    ExistingObjectReplication existing_object_replication = 7 [json_name = "existing_object_replication"];
+
+    Filter filter = 8;
+
+    SourceSelectionCriteria source_selection_criteria = 9 [json_name = "source_selection_criteria"];
+
+    message DeleteMarkerReplication {
+      string status = 1;
+    }
+
+    message Destination {
+      string account = 1;
+
+      string bucket = 2;
+
+      string storage_class = 3 [json_name = "storage_class"];
+
+      AccessControlTranslation access_control_translation = 4 [json_name = "access_control_translation"];
+
+      EncryptionConfiguration encryption_configuration = 5 [json_name = "encryption_configuration"];
+
+      Metrics metrics = 6;
+
+      ReplicationTime replication_time = 7 [json_name = "replication_time"];
+
+      message AccessControlTranslation {
+        string owner = 1;
+      }
+
+      message EncryptionConfiguration {
+        string replica_kms_key_id = 1 [json_name = "replica_kms_key_id"];
+      }
+
+      message Metrics {
+        string status = 1;
+
+        EventThreshold event_threshold = 2 [json_name = "event_threshold"];
+
+        message EventThreshold {
+          int64 minutes = 1;
+        }
+      }
+
+      message ReplicationTime {
+        string status = 1;
+
+        Time time = 2;
+
+        message Time {
+          int64 minutes = 1;
+        }
+      }
+    }
+
+    message ExistingObjectReplication {
+      string status = 1;
+    }
+
+    message Filter {
+      string prefix = 1;
+
+      And and = 2;
+
+      Tag tag = 3;
+
+      message And {
+        string prefix = 1;
+
+        map<string, string> tags = 2;
+      }
+
+      message Tag {
+        string key = 1;
+
+        string value = 2;
+      }
+    }
+
+    message SourceSelectionCriteria {
+      ReplicaModifications replica_modifications = 1 [json_name = "replica_modifications"];
+
+      SseKmsEncryptedObjects sse_kms_encrypted_objects = 2 [json_name = "sse_kms_encrypted_objects"];
+
+      message ReplicaModifications {
+        string status = 1;
+      }
+
+      message SseKmsEncryptedObjects {
+        string status = 1;
+      }
+    }
+  }
+}
+
+// AwsS3BucketRequestPaymentConfiguration version is 0
+message AwsS3BucketRequestPaymentConfiguration {
+  string bucket = 1;
+
+  string expected_bucket_owner = 2 [json_name = "expected_bucket_owner"];
+
+  string id = 3;
+
+  string payer = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsS3BucketServerSideEncryptionConfiguration version is 0
+message AwsS3BucketServerSideEncryptionConfiguration {
+  string bucket = 1;
+
+  string expected_bucket_owner = 2 [json_name = "expected_bucket_owner"];
+
+  string id = 3;
+
+  repeated Rule rule = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message Rule {
+    bool bucket_key_enabled = 1 [json_name = "bucket_key_enabled"];
+
+    ApplyServerSideEncryptionByDefault apply_server_side_encryption_by_default = 2 [
+      json_name = "apply_server_side_encryption_by_default"
+    ];
+
+    message ApplyServerSideEncryptionByDefault {
+      string kms_master_key_id = 1 [json_name = "kms_master_key_id"];
+
+      string sse_algorithm = 2 [json_name = "sse_algorithm"];
+    }
+  }
+}
+
+// AwsS3BucketVersioning version is 0
+message AwsS3BucketVersioning {
+  string bucket = 1;
+
+  string expected_bucket_owner = 2 [json_name = "expected_bucket_owner"];
+
+  string id = 3;
+
+  string mfa = 4;
+
+  VersioningConfiguration versioning_configuration = 5 [json_name = "versioning_configuration"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message VersioningConfiguration {
+    string mfa_delete = 1 [json_name = "mfa_delete"];
+
+    string status = 2;
+  }
+}
+
+// AwsS3BucketWebsiteConfiguration version is 0
+message AwsS3BucketWebsiteConfiguration {
+  string bucket = 1;
+
+  string expected_bucket_owner = 2 [json_name = "expected_bucket_owner"];
+
+  string id = 3;
+
+  string routing_rules = 4 [json_name = "routing_rules"];
+
+  string website_domain = 5 [json_name = "website_domain"];
+
+  string website_endpoint = 6 [json_name = "website_endpoint"];
+
+  ErrorDocument error_document = 7 [json_name = "error_document"];
+
+  IndexDocument index_document = 8 [json_name = "index_document"];
+
+  RedirectAllRequestsTo redirect_all_requests_to = 9 [json_name = "redirect_all_requests_to"];
+
+  repeated RoutingRule routing_rule = 10 [json_name = "routing_rule"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message ErrorDocument {
+    string key = 1;
+  }
+
+  message IndexDocument {
+    string suffix = 1;
+  }
+
+  message RedirectAllRequestsTo {
+    string host_name = 1 [json_name = "host_name"];
+
+    string protocol = 2;
+  }
+
+  message RoutingRule {
+    Condition condition = 1;
+
+    Redirect redirect = 2;
+
+    message Condition {
+      string http_error_code_returned_equals = 1 [json_name = "http_error_code_returned_equals"];
+
+      string key_prefix_equals = 2 [json_name = "key_prefix_equals"];
+    }
+
+    message Redirect {
+      string host_name = 1 [json_name = "host_name"];
+
+      string http_redirect_code = 2 [json_name = "http_redirect_code"];
+
+      string protocol = 3;
+
+      string replace_key_prefix_with = 4 [json_name = "replace_key_prefix_with"];
+
+      string replace_key_with = 5 [json_name = "replace_key_with"];
+    }
+  }
+}
+
+// AwsS3Object version is 0
+message AwsS3Object {
+  string acl = 1;
+
+  string bucket = 2;
+
+  bool bucket_key_enabled = 3 [json_name = "bucket_key_enabled"];
+
+  string cache_control = 4 [json_name = "cache_control"];
+
+  string content = 5;
+
+  string content_base64 = 6 [json_name = "content_base64"];
+
+  string content_disposition = 7 [json_name = "content_disposition"];
+
+  string content_encoding = 8 [json_name = "content_encoding"];
+
+  string content_language = 9 [json_name = "content_language"];
+
+  string content_type = 10 [json_name = "content_type"];
+
+  string etag = 11;
+
+  bool force_destroy = 12 [json_name = "force_destroy"];
+
+  string id = 13;
+
+  string key = 14;
+
+  string kms_key_id = 15 [json_name = "kms_key_id"];
+
+  map<string, string> metadata = 16;
+
+  string object_lock_legal_hold_status = 17 [json_name = "object_lock_legal_hold_status"];
+
+  string object_lock_mode = 18 [json_name = "object_lock_mode"];
+
+  string object_lock_retain_until_date = 19 [json_name = "object_lock_retain_until_date"];
+
+  string server_side_encryption = 20 [json_name = "server_side_encryption"];
+
+  string source = 21;
+
+  string source_hash = 22 [json_name = "source_hash"];
+
+  string storage_class = 23 [json_name = "storage_class"];
+
+  map<string, string> tags = 24;
+
+  map<string, string> tags_all = 25 [json_name = "tags_all"];
+
+  string version_id = 26 [json_name = "version_id"];
+
+  string website_redirect = 27 [json_name = "website_redirect"];
+
+  map<string, string> for_each = 28 [json_name = "for_each"];
+
+  repeated string depends_on = 29 [json_name = "depends_on"];
+
+  int32 count = 30;
+
+  string provider = 31;
+
+  terraform.v1.Lifecycle lifecycle = 32;
+}
+
+// AwsS3ObjectCopy version is 0
+message AwsS3ObjectCopy {
+  string acl = 1;
+
+  string bucket = 2;
+
+  bool bucket_key_enabled = 3 [json_name = "bucket_key_enabled"];
+
+  string cache_control = 4 [json_name = "cache_control"];
+
+  string content_disposition = 5 [json_name = "content_disposition"];
+
+  string content_encoding = 6 [json_name = "content_encoding"];
+
+  string content_language = 7 [json_name = "content_language"];
+
+  string content_type = 8 [json_name = "content_type"];
+
+  string copy_if_match = 9 [json_name = "copy_if_match"];
+
+  string copy_if_modified_since = 10 [json_name = "copy_if_modified_since"];
+
+  string copy_if_none_match = 11 [json_name = "copy_if_none_match"];
+
+  string copy_if_unmodified_since = 12 [json_name = "copy_if_unmodified_since"];
+
+  string customer_algorithm = 13 [json_name = "customer_algorithm"];
+
+  string customer_key = 14 [json_name = "customer_key"];
+
+  string customer_key_md5 = 15 [json_name = "customer_key_md5"];
+
+  string etag = 16;
+
+  string expected_bucket_owner = 17 [json_name = "expected_bucket_owner"];
+
+  string expected_source_bucket_owner = 18 [json_name = "expected_source_bucket_owner"];
+
+  string expiration = 19;
+
+  string expires = 20;
+
+  bool force_destroy = 21 [json_name = "force_destroy"];
+
+  string id = 22;
+
+  string key = 23;
+
+  string kms_encryption_context = 24 [json_name = "kms_encryption_context"];
+
+  string kms_key_id = 25 [json_name = "kms_key_id"];
+
+  string last_modified = 26 [json_name = "last_modified"];
+
+  map<string, string> metadata = 27;
+
+  string metadata_directive = 28 [json_name = "metadata_directive"];
+
+  string object_lock_legal_hold_status = 29 [json_name = "object_lock_legal_hold_status"];
+
+  string object_lock_mode = 30 [json_name = "object_lock_mode"];
+
+  string object_lock_retain_until_date = 31 [json_name = "object_lock_retain_until_date"];
+
+  bool request_charged = 32 [json_name = "request_charged"];
+
+  string request_payer = 33 [json_name = "request_payer"];
+
+  string server_side_encryption = 34 [json_name = "server_side_encryption"];
+
+  string source = 35;
+
+  string source_customer_algorithm = 36 [json_name = "source_customer_algorithm"];
+
+  string source_customer_key = 37 [json_name = "source_customer_key"];
+
+  string source_customer_key_md5 = 38 [json_name = "source_customer_key_md5"];
+
+  string source_version_id = 39 [json_name = "source_version_id"];
+
+  string storage_class = 40 [json_name = "storage_class"];
+
+  string tagging_directive = 41 [json_name = "tagging_directive"];
+
+  map<string, string> tags = 42;
+
+  map<string, string> tags_all = 43 [json_name = "tags_all"];
+
+  string version_id = 44 [json_name = "version_id"];
+
+  string website_redirect = 45 [json_name = "website_redirect"];
+
+  repeated Grant grant = 46;
+
+  map<string, string> for_each = 47 [json_name = "for_each"];
+
+  repeated string depends_on = 48 [json_name = "depends_on"];
+
+  int32 count = 49;
+
+  string provider = 50;
+
+  terraform.v1.Lifecycle lifecycle = 51;
+
+  message Grant {
+    string email = 1;
+
+    string id = 2;
+
+    repeated string permissions = 3;
+
+    string type = 4;
+
+    string uri = 5;
+  }
+}

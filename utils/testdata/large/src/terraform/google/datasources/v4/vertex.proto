@@ -1,0 +1,127 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.datasources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleVertexAiIndex version is 0
+message GoogleVertexAiIndex {
+  // The timestamp of when the Index was created in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits.
+  string create_time = 1 [json_name = "create_time"];
+
+  // The pointers to DeployedIndexes created from this Index. An Index can be only deleted if all its DeployedIndexes had been undeployed first.
+  repeated DeployedIndexes deployed_indexes = 2 [json_name = "deployed_indexes"];
+
+  // The description of the Index.
+  string description = 3;
+
+  // The display name of the Index. The name can be up to 128 characters long and can consist of any UTF-8 characters.
+  string display_name = 4 [json_name = "display_name"];
+
+  // Used to perform consistent read-modify-write updates.
+  string etag = 5;
+
+  string id = 6;
+
+  // Stats of the index resource.
+  repeated IndexStats index_stats = 7 [json_name = "index_stats"];
+
+  // The update method to use with this Index. The value must be the followings. If not set, BATCH_UPDATE will be used by default.
+  // * BATCH_UPDATE: user can call indexes.patch with files on Cloud Storage of datapoints to update.
+  // * STREAM_UPDATE: user can call indexes.upsertDatapoints/DeleteDatapoints to update the Index and the updates will be applied in corresponding DeployedIndexes in nearly real-time.
+  string index_update_method = 8 [json_name = "index_update_method"];
+
+  // The labels with user-defined metadata to organize your Indexes.
+  map<string, string> labels = 9;
+
+  // An additional information about the Index
+  repeated Metadata metadata = 10;
+
+  // Points to a YAML file stored on Google Cloud Storage describing additional information about the Index, that is specific to it. Unset if the Index does not have any additional information.
+  string metadata_schema_uri = 11 [json_name = "metadata_schema_uri"];
+
+  // The resource name of the Index.
+  string name = 12;
+
+  string project = 13;
+
+  // The region of the index. eg us-central1
+  string region = 14;
+
+  // The timestamp of when the Index was last updated in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits.
+  string update_time = 15 [json_name = "update_time"];
+
+  map<string, string> for_each = 16 [json_name = "for_each"];
+
+  repeated string depends_on = 17 [json_name = "depends_on"];
+
+  int32 count = 18;
+
+  string provider = 19;
+
+  terraform.v1.Lifecycle lifecycle = 20;
+
+  message DeployedIndexes {
+    // deployed_index_id: string
+    string deployed_index_id = 1 [json_name = "deployed_index_id"];
+
+    // index_endpoint: string
+    string index_endpoint = 2 [json_name = "index_endpoint"];
+  }
+
+  message IndexStats {
+    // shards_count: number
+    int64 shards_count = 1 [json_name = "shards_count"];
+
+    // vectors_count: string
+    string vectors_count = 2 [json_name = "vectors_count"];
+  }
+
+  message Metadata {
+    // config: list of object
+    repeated Config config = 1;
+
+    // contents_delta_uri: string
+    string contents_delta_uri = 2 [json_name = "contents_delta_uri"];
+
+    // is_complete_overwrite: bool
+    bool is_complete_overwrite = 3 [json_name = "is_complete_overwrite"];
+
+    message Config {
+      // algorithm_config: list of object
+      repeated AlgorithmConfig algorithm_config = 1 [json_name = "algorithm_config"];
+
+      // approximate_neighbors_count: number
+      int64 approximate_neighbors_count = 2 [json_name = "approximate_neighbors_count"];
+
+      // dimensions: number
+      int64 dimensions = 3;
+
+      // distance_measure_type: string
+      string distance_measure_type = 4 [json_name = "distance_measure_type"];
+
+      // feature_norm_type: string
+      string feature_norm_type = 5 [json_name = "feature_norm_type"];
+
+      message AlgorithmConfig {
+        // brute_force_config: list of object
+        repeated BruteForceConfig brute_force_config = 1 [json_name = "brute_force_config"];
+
+        // tree_ah_config: list of object
+        repeated TreeAhConfig tree_ah_config = 2 [json_name = "tree_ah_config"];
+
+        message BruteForceConfig {
+        }
+
+        message TreeAhConfig {
+          // leaf_node_embedding_count: number
+          int64 leaf_node_embedding_count = 1 [json_name = "leaf_node_embedding_count"];
+
+          // leaf_nodes_to_search_percent: number
+          int64 leaf_nodes_to_search_percent = 2 [json_name = "leaf_nodes_to_search_percent"];
+        }
+      }
+    }
+  }
+}

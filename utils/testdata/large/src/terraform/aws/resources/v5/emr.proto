@@ -1,0 +1,643 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsEmrBlockPublicAccessConfiguration version is 0
+message AwsEmrBlockPublicAccessConfiguration {
+  bool block_public_security_group_rules = 1 [json_name = "block_public_security_group_rules"];
+
+  string id = 2;
+
+  repeated PermittedPublicSecurityGroupRuleRange permitted_public_security_group_rule_range = 3 [
+    json_name = "permitted_public_security_group_rule_range"
+  ];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+
+  message PermittedPublicSecurityGroupRuleRange {
+    int64 max_range = 1 [json_name = "max_range"];
+
+    int64 min_range = 2 [json_name = "min_range"];
+  }
+}
+
+// AwsEmrCluster version is 0
+message AwsEmrCluster {
+  string additional_info = 1 [json_name = "additional_info"];
+
+  repeated string applications = 2;
+
+  string arn = 3;
+
+  string autoscaling_role = 4 [json_name = "autoscaling_role"];
+
+  string cluster_state = 5 [json_name = "cluster_state"];
+
+  string configurations = 6;
+
+  string configurations_json = 7 [json_name = "configurations_json"];
+
+  string custom_ami_id = 8 [json_name = "custom_ami_id"];
+
+  int64 ebs_root_volume_size = 9 [json_name = "ebs_root_volume_size"];
+
+  string id = 10;
+
+  bool keep_job_flow_alive_when_no_steps = 11 [json_name = "keep_job_flow_alive_when_no_steps"];
+
+  repeated string list_steps_states = 12 [json_name = "list_steps_states"];
+
+  string log_encryption_kms_key_id = 13 [json_name = "log_encryption_kms_key_id"];
+
+  string log_uri = 14 [json_name = "log_uri"];
+
+  string master_public_dns = 15 [json_name = "master_public_dns"];
+
+  string name = 16;
+
+  repeated PlacementGroupConfig placement_group_config = 17 [json_name = "placement_group_config"];
+
+  string release_label = 18 [json_name = "release_label"];
+
+  string scale_down_behavior = 19 [json_name = "scale_down_behavior"];
+
+  string security_configuration = 20 [json_name = "security_configuration"];
+
+  string service_role = 21 [json_name = "service_role"];
+
+  repeated Step step = 22;
+
+  int64 step_concurrency_level = 23 [json_name = "step_concurrency_level"];
+
+  map<string, string> tags = 24;
+
+  map<string, string> tags_all = 25 [json_name = "tags_all"];
+
+  bool termination_protection = 26 [json_name = "termination_protection"];
+
+  bool visible_to_all_users = 27 [json_name = "visible_to_all_users"];
+
+  AutoTerminationPolicy auto_termination_policy = 28 [json_name = "auto_termination_policy"];
+
+  repeated BootstrapAction bootstrap_action = 29 [json_name = "bootstrap_action"];
+
+  CoreInstanceFleet core_instance_fleet = 30 [json_name = "core_instance_fleet"];
+
+  CoreInstanceGroup core_instance_group = 31 [json_name = "core_instance_group"];
+
+  Ec2Attributes ec2_attributes = 32 [json_name = "ec2_attributes"];
+
+  KerberosAttributes kerberos_attributes = 33 [json_name = "kerberos_attributes"];
+
+  MasterInstanceFleet master_instance_fleet = 34 [json_name = "master_instance_fleet"];
+
+  MasterInstanceGroup master_instance_group = 35 [json_name = "master_instance_group"];
+
+  map<string, string> for_each = 36 [json_name = "for_each"];
+
+  repeated string depends_on = 37 [json_name = "depends_on"];
+
+  int32 count = 38;
+
+  string provider = 39;
+
+  terraform.v1.Lifecycle lifecycle = 40;
+
+  message PlacementGroupConfig {
+    // instance_role: string
+    string instance_role = 1 [json_name = "instance_role"];
+
+    // placement_strategy: string
+    string placement_strategy = 2 [json_name = "placement_strategy"];
+  }
+
+  message Step {
+    // action_on_failure: string
+    string action_on_failure = 1 [json_name = "action_on_failure"];
+
+    // hadoop_jar_step: list of object
+    repeated HadoopJarStep hadoop_jar_step = 2 [json_name = "hadoop_jar_step"];
+
+    // name: string
+    string name = 3;
+
+    message HadoopJarStep {
+      // args: list of string
+      repeated string args = 1;
+
+      // jar: string
+      string jar = 2;
+
+      // main_class: string
+      string main_class = 3 [json_name = "main_class"];
+
+      // properties: map of string
+      map<string, string> properties = 4;
+    }
+  }
+
+  message AutoTerminationPolicy {
+    int64 idle_timeout = 1 [json_name = "idle_timeout"];
+  }
+
+  message BootstrapAction {
+    repeated string args = 1;
+
+    string name = 2;
+
+    string path = 3;
+  }
+
+  message CoreInstanceFleet {
+    string id = 1;
+
+    string name = 2;
+
+    int64 provisioned_on_demand_capacity = 3 [json_name = "provisioned_on_demand_capacity"];
+
+    int64 provisioned_spot_capacity = 4 [json_name = "provisioned_spot_capacity"];
+
+    int64 target_on_demand_capacity = 5 [json_name = "target_on_demand_capacity"];
+
+    int64 target_spot_capacity = 6 [json_name = "target_spot_capacity"];
+
+    repeated InstanceTypeConfigs instance_type_configs = 7 [json_name = "instance_type_configs"];
+
+    LaunchSpecifications launch_specifications = 8 [json_name = "launch_specifications"];
+
+    message InstanceTypeConfigs {
+      string bid_price = 1 [json_name = "bid_price"];
+
+      int64 bid_price_as_percentage_of_on_demand_price = 2 [
+        json_name = "bid_price_as_percentage_of_on_demand_price"
+      ];
+
+      string instance_type = 3 [json_name = "instance_type"];
+
+      int64 weighted_capacity = 4 [json_name = "weighted_capacity"];
+
+      repeated Configurations configurations = 5;
+
+      repeated EbsConfig ebs_config = 6 [json_name = "ebs_config"];
+
+      message Configurations {
+        string classification = 1;
+
+        map<string, string> properties = 2;
+      }
+
+      message EbsConfig {
+        int64 iops = 1;
+
+        int64 size = 2;
+
+        string type = 3;
+
+        int64 volumes_per_instance = 4 [json_name = "volumes_per_instance"];
+      }
+    }
+
+    message LaunchSpecifications {
+      repeated OnDemandSpecification on_demand_specification = 1 [json_name = "on_demand_specification"];
+
+      repeated SpotSpecification spot_specification = 2 [json_name = "spot_specification"];
+
+      message OnDemandSpecification {
+        string allocation_strategy = 1 [json_name = "allocation_strategy"];
+      }
+
+      message SpotSpecification {
+        string allocation_strategy = 1 [json_name = "allocation_strategy"];
+
+        int64 block_duration_minutes = 2 [json_name = "block_duration_minutes"];
+
+        string timeout_action = 3 [json_name = "timeout_action"];
+
+        int64 timeout_duration_minutes = 4 [json_name = "timeout_duration_minutes"];
+      }
+    }
+  }
+
+  message CoreInstanceGroup {
+    string autoscaling_policy = 1 [json_name = "autoscaling_policy"];
+
+    string bid_price = 2 [json_name = "bid_price"];
+
+    string id = 3;
+
+    int64 instance_count = 4 [json_name = "instance_count"];
+
+    string instance_type = 5 [json_name = "instance_type"];
+
+    string name = 6;
+
+    repeated EbsConfig ebs_config = 7 [json_name = "ebs_config"];
+
+    message EbsConfig {
+      int64 iops = 1;
+
+      int64 size = 2;
+
+      int64 throughput = 3;
+
+      string type = 4;
+
+      int64 volumes_per_instance = 5 [json_name = "volumes_per_instance"];
+    }
+  }
+
+  message Ec2Attributes {
+    string additional_master_security_groups = 1 [json_name = "additional_master_security_groups"];
+
+    string additional_slave_security_groups = 2 [json_name = "additional_slave_security_groups"];
+
+    string emr_managed_master_security_group = 3 [json_name = "emr_managed_master_security_group"];
+
+    string emr_managed_slave_security_group = 4 [json_name = "emr_managed_slave_security_group"];
+
+    string instance_profile = 5 [json_name = "instance_profile"];
+
+    string key_name = 6 [json_name = "key_name"];
+
+    string service_access_security_group = 7 [json_name = "service_access_security_group"];
+
+    string subnet_id = 8 [json_name = "subnet_id"];
+
+    repeated string subnet_ids = 9 [json_name = "subnet_ids"];
+  }
+
+  message KerberosAttributes {
+    string ad_domain_join_password = 1 [json_name = "ad_domain_join_password"];
+
+    string ad_domain_join_user = 2 [json_name = "ad_domain_join_user"];
+
+    string cross_realm_trust_principal_password = 3 [json_name = "cross_realm_trust_principal_password"];
+
+    string kdc_admin_password = 4 [json_name = "kdc_admin_password"];
+
+    string realm = 5;
+  }
+
+  message MasterInstanceFleet {
+    string id = 1;
+
+    string name = 2;
+
+    int64 provisioned_on_demand_capacity = 3 [json_name = "provisioned_on_demand_capacity"];
+
+    int64 provisioned_spot_capacity = 4 [json_name = "provisioned_spot_capacity"];
+
+    int64 target_on_demand_capacity = 5 [json_name = "target_on_demand_capacity"];
+
+    int64 target_spot_capacity = 6 [json_name = "target_spot_capacity"];
+
+    repeated InstanceTypeConfigs instance_type_configs = 7 [json_name = "instance_type_configs"];
+
+    LaunchSpecifications launch_specifications = 8 [json_name = "launch_specifications"];
+
+    message InstanceTypeConfigs {
+      string bid_price = 1 [json_name = "bid_price"];
+
+      int64 bid_price_as_percentage_of_on_demand_price = 2 [
+        json_name = "bid_price_as_percentage_of_on_demand_price"
+      ];
+
+      string instance_type = 3 [json_name = "instance_type"];
+
+      int64 weighted_capacity = 4 [json_name = "weighted_capacity"];
+
+      repeated Configurations configurations = 5;
+
+      repeated EbsConfig ebs_config = 6 [json_name = "ebs_config"];
+
+      message Configurations {
+        string classification = 1;
+
+        map<string, string> properties = 2;
+      }
+
+      message EbsConfig {
+        int64 iops = 1;
+
+        int64 size = 2;
+
+        string type = 3;
+
+        int64 volumes_per_instance = 4 [json_name = "volumes_per_instance"];
+      }
+    }
+
+    message LaunchSpecifications {
+      repeated OnDemandSpecification on_demand_specification = 1 [json_name = "on_demand_specification"];
+
+      repeated SpotSpecification spot_specification = 2 [json_name = "spot_specification"];
+
+      message OnDemandSpecification {
+        string allocation_strategy = 1 [json_name = "allocation_strategy"];
+      }
+
+      message SpotSpecification {
+        string allocation_strategy = 1 [json_name = "allocation_strategy"];
+
+        int64 block_duration_minutes = 2 [json_name = "block_duration_minutes"];
+
+        string timeout_action = 3 [json_name = "timeout_action"];
+
+        int64 timeout_duration_minutes = 4 [json_name = "timeout_duration_minutes"];
+      }
+    }
+  }
+
+  message MasterInstanceGroup {
+    string bid_price = 1 [json_name = "bid_price"];
+
+    string id = 2;
+
+    int64 instance_count = 3 [json_name = "instance_count"];
+
+    string instance_type = 4 [json_name = "instance_type"];
+
+    string name = 5;
+
+    repeated EbsConfig ebs_config = 6 [json_name = "ebs_config"];
+
+    message EbsConfig {
+      int64 iops = 1;
+
+      int64 size = 2;
+
+      int64 throughput = 3;
+
+      string type = 4;
+
+      int64 volumes_per_instance = 5 [json_name = "volumes_per_instance"];
+    }
+  }
+}
+
+// AwsEmrInstanceFleet version is 0
+message AwsEmrInstanceFleet {
+  string cluster_id = 1 [json_name = "cluster_id"];
+
+  string id = 2;
+
+  string name = 3;
+
+  int64 provisioned_on_demand_capacity = 4 [json_name = "provisioned_on_demand_capacity"];
+
+  int64 provisioned_spot_capacity = 5 [json_name = "provisioned_spot_capacity"];
+
+  int64 target_on_demand_capacity = 6 [json_name = "target_on_demand_capacity"];
+
+  int64 target_spot_capacity = 7 [json_name = "target_spot_capacity"];
+
+  repeated InstanceTypeConfigs instance_type_configs = 8 [json_name = "instance_type_configs"];
+
+  LaunchSpecifications launch_specifications = 9 [json_name = "launch_specifications"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message InstanceTypeConfigs {
+    string bid_price = 1 [json_name = "bid_price"];
+
+    int64 bid_price_as_percentage_of_on_demand_price = 2 [
+      json_name = "bid_price_as_percentage_of_on_demand_price"
+    ];
+
+    string instance_type = 3 [json_name = "instance_type"];
+
+    int64 weighted_capacity = 4 [json_name = "weighted_capacity"];
+
+    repeated Configurations configurations = 5;
+
+    repeated EbsConfig ebs_config = 6 [json_name = "ebs_config"];
+
+    message Configurations {
+      string classification = 1;
+
+      map<string, string> properties = 2;
+    }
+
+    message EbsConfig {
+      int64 iops = 1;
+
+      int64 size = 2;
+
+      string type = 3;
+
+      int64 volumes_per_instance = 4 [json_name = "volumes_per_instance"];
+    }
+  }
+
+  message LaunchSpecifications {
+    repeated OnDemandSpecification on_demand_specification = 1 [json_name = "on_demand_specification"];
+
+    repeated SpotSpecification spot_specification = 2 [json_name = "spot_specification"];
+
+    message OnDemandSpecification {
+      string allocation_strategy = 1 [json_name = "allocation_strategy"];
+    }
+
+    message SpotSpecification {
+      string allocation_strategy = 1 [json_name = "allocation_strategy"];
+
+      int64 block_duration_minutes = 2 [json_name = "block_duration_minutes"];
+
+      string timeout_action = 3 [json_name = "timeout_action"];
+
+      int64 timeout_duration_minutes = 4 [json_name = "timeout_duration_minutes"];
+    }
+  }
+}
+
+// AwsEmrInstanceGroup version is 0
+message AwsEmrInstanceGroup {
+  string autoscaling_policy = 1 [json_name = "autoscaling_policy"];
+
+  string bid_price = 2 [json_name = "bid_price"];
+
+  string cluster_id = 3 [json_name = "cluster_id"];
+
+  string configurations_json = 4 [json_name = "configurations_json"];
+
+  bool ebs_optimized = 5 [json_name = "ebs_optimized"];
+
+  string id = 6;
+
+  int64 instance_count = 7 [json_name = "instance_count"];
+
+  string instance_type = 8 [json_name = "instance_type"];
+
+  string name = 9;
+
+  int64 running_instance_count = 10 [json_name = "running_instance_count"];
+
+  string status = 11;
+
+  repeated EbsConfig ebs_config = 12 [json_name = "ebs_config"];
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message EbsConfig {
+    int64 iops = 1;
+
+    int64 size = 2;
+
+    string type = 3;
+
+    int64 volumes_per_instance = 4 [json_name = "volumes_per_instance"];
+  }
+}
+
+// AwsEmrManagedScalingPolicy version is 0
+message AwsEmrManagedScalingPolicy {
+  string cluster_id = 1 [json_name = "cluster_id"];
+
+  string id = 2;
+
+  repeated ComputeLimits compute_limits = 3 [json_name = "compute_limits"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+
+  message ComputeLimits {
+    int64 maximum_capacity_units = 1 [json_name = "maximum_capacity_units"];
+
+    int64 maximum_core_capacity_units = 2 [json_name = "maximum_core_capacity_units"];
+
+    int64 maximum_ondemand_capacity_units = 3 [json_name = "maximum_ondemand_capacity_units"];
+
+    int64 minimum_capacity_units = 4 [json_name = "minimum_capacity_units"];
+
+    string unit_type = 5 [json_name = "unit_type"];
+  }
+}
+
+// AwsEmrSecurityConfiguration version is 0
+message AwsEmrSecurityConfiguration {
+  string configuration = 1;
+
+  string creation_date = 2 [json_name = "creation_date"];
+
+  string id = 3;
+
+  string name = 4;
+
+  string name_prefix = 5 [json_name = "name_prefix"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsEmrStudio version is 0
+message AwsEmrStudio {
+  string arn = 1;
+
+  string auth_mode = 2 [json_name = "auth_mode"];
+
+  string default_s3_location = 3 [json_name = "default_s3_location"];
+
+  string description = 4;
+
+  string engine_security_group_id = 5 [json_name = "engine_security_group_id"];
+
+  string id = 6;
+
+  string idp_auth_url = 7 [json_name = "idp_auth_url"];
+
+  string idp_relay_state_parameter_name = 8 [json_name = "idp_relay_state_parameter_name"];
+
+  string name = 9;
+
+  string service_role = 10 [json_name = "service_role"];
+
+  repeated string subnet_ids = 11 [json_name = "subnet_ids"];
+
+  map<string, string> tags = 12;
+
+  map<string, string> tags_all = 13 [json_name = "tags_all"];
+
+  string url = 14;
+
+  string user_role = 15 [json_name = "user_role"];
+
+  string vpc_id = 16 [json_name = "vpc_id"];
+
+  string workspace_security_group_id = 17 [json_name = "workspace_security_group_id"];
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+}
+
+// AwsEmrStudioSessionMapping version is 0
+message AwsEmrStudioSessionMapping {
+  string id = 1;
+
+  string identity_id = 2 [json_name = "identity_id"];
+
+  string identity_name = 3 [json_name = "identity_name"];
+
+  string identity_type = 4 [json_name = "identity_type"];
+
+  string session_policy_arn = 5 [json_name = "session_policy_arn"];
+
+  string studio_id = 6 [json_name = "studio_id"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}

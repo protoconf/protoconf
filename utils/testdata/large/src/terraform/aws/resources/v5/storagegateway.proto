@@ -1,0 +1,513 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsStoragegatewayCache version is 0
+message AwsStoragegatewayCache {
+  string disk_id = 1 [json_name = "disk_id"];
+
+  string gateway_arn = 2 [json_name = "gateway_arn"];
+
+  string id = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsStoragegatewayCachedIscsiVolume version is 0
+message AwsStoragegatewayCachedIscsiVolume {
+  string arn = 1;
+
+  bool chap_enabled = 2 [json_name = "chap_enabled"];
+
+  string gateway_arn = 3 [json_name = "gateway_arn"];
+
+  string id = 4;
+
+  bool kms_encrypted = 5 [json_name = "kms_encrypted"];
+
+  string kms_key = 6 [json_name = "kms_key"];
+
+  int64 lun_number = 7 [json_name = "lun_number"];
+
+  string network_interface_id = 8 [json_name = "network_interface_id"];
+
+  int64 network_interface_port = 9 [json_name = "network_interface_port"];
+
+  string snapshot_id = 10 [json_name = "snapshot_id"];
+
+  string source_volume_arn = 11 [json_name = "source_volume_arn"];
+
+  map<string, string> tags = 12;
+
+  map<string, string> tags_all = 13 [json_name = "tags_all"];
+
+  string target_arn = 14 [json_name = "target_arn"];
+
+  string target_name = 15 [json_name = "target_name"];
+
+  string volume_arn = 16 [json_name = "volume_arn"];
+
+  string volume_id = 17 [json_name = "volume_id"];
+
+  int64 volume_size_in_bytes = 18 [json_name = "volume_size_in_bytes"];
+
+  map<string, string> for_each = 19 [json_name = "for_each"];
+
+  repeated string depends_on = 20 [json_name = "depends_on"];
+
+  int32 count = 21;
+
+  string provider = 22;
+
+  terraform.v1.Lifecycle lifecycle = 23;
+}
+
+// AwsStoragegatewayFileSystemAssociation version is 0
+message AwsStoragegatewayFileSystemAssociation {
+  string arn = 1;
+
+  string audit_destination_arn = 2 [json_name = "audit_destination_arn"];
+
+  string gateway_arn = 3 [json_name = "gateway_arn"];
+
+  string id = 4;
+
+  string location_arn = 5 [json_name = "location_arn"];
+
+  string password = 6;
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  string username = 9;
+
+  CacheAttributes cache_attributes = 10 [json_name = "cache_attributes"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message CacheAttributes {
+    int64 cache_stale_timeout_in_seconds = 1 [json_name = "cache_stale_timeout_in_seconds"];
+  }
+}
+
+// AwsStoragegatewayGateway version is 0
+message AwsStoragegatewayGateway {
+  string activation_key = 1 [json_name = "activation_key"];
+
+  string arn = 2;
+
+  int64 average_download_rate_limit_in_bits_per_sec = 3 [
+    json_name = "average_download_rate_limit_in_bits_per_sec"
+  ];
+
+  int64 average_upload_rate_limit_in_bits_per_sec = 4 [
+    json_name = "average_upload_rate_limit_in_bits_per_sec"
+  ];
+
+  string cloudwatch_log_group_arn = 5 [json_name = "cloudwatch_log_group_arn"];
+
+  string ec2_instance_id = 6 [json_name = "ec2_instance_id"];
+
+  string endpoint_type = 7 [json_name = "endpoint_type"];
+
+  string gateway_id = 8 [json_name = "gateway_id"];
+
+  string gateway_ip_address = 9 [json_name = "gateway_ip_address"];
+
+  string gateway_name = 10 [json_name = "gateway_name"];
+
+  repeated GatewayNetworkInterface gateway_network_interface = 11 [json_name = "gateway_network_interface"];
+
+  string gateway_timezone = 12 [json_name = "gateway_timezone"];
+
+  string gateway_type = 13 [json_name = "gateway_type"];
+
+  string gateway_vpc_endpoint = 14 [json_name = "gateway_vpc_endpoint"];
+
+  string host_environment = 15 [json_name = "host_environment"];
+
+  string id = 16;
+
+  string medium_changer_type = 17 [json_name = "medium_changer_type"];
+
+  bool smb_file_share_visibility = 18 [json_name = "smb_file_share_visibility"];
+
+  string smb_guest_password = 19 [json_name = "smb_guest_password"];
+
+  string smb_security_strategy = 20 [json_name = "smb_security_strategy"];
+
+  map<string, string> tags = 21;
+
+  map<string, string> tags_all = 22 [json_name = "tags_all"];
+
+  string tape_drive_type = 23 [json_name = "tape_drive_type"];
+
+  MaintenanceStartTime maintenance_start_time = 24 [json_name = "maintenance_start_time"];
+
+  SmbActiveDirectorySettings smb_active_directory_settings = 25 [json_name = "smb_active_directory_settings"];
+
+  repeated Timeouts timeouts = 26;
+
+  map<string, string> for_each = 27 [json_name = "for_each"];
+
+  repeated string depends_on = 28 [json_name = "depends_on"];
+
+  int32 count = 29;
+
+  string provider = 30;
+
+  terraform.v1.Lifecycle lifecycle = 31;
+
+  message GatewayNetworkInterface {
+    // ipv4_address: string
+    string ipv4_address = 1 [json_name = "ipv4_address"];
+  }
+
+  message MaintenanceStartTime {
+    string day_of_month = 1 [json_name = "day_of_month"];
+
+    string day_of_week = 2 [json_name = "day_of_week"];
+
+    int64 hour_of_day = 3 [json_name = "hour_of_day"];
+
+    int64 minute_of_hour = 4 [json_name = "minute_of_hour"];
+  }
+
+  message SmbActiveDirectorySettings {
+    string active_directory_status = 1 [json_name = "active_directory_status"];
+
+    repeated string domain_controllers = 2 [json_name = "domain_controllers"];
+
+    string domain_name = 3 [json_name = "domain_name"];
+
+    string organizational_unit = 4 [json_name = "organizational_unit"];
+
+    string password = 5;
+
+    int64 timeout_in_seconds = 6 [json_name = "timeout_in_seconds"];
+
+    string username = 7;
+  }
+
+  message Timeouts {
+    string create = 1;
+  }
+}
+
+// AwsStoragegatewayNfsFileShare version is 0
+message AwsStoragegatewayNfsFileShare {
+  string arn = 1;
+
+  string audit_destination_arn = 2 [json_name = "audit_destination_arn"];
+
+  string bucket_region = 3 [json_name = "bucket_region"];
+
+  repeated string client_list = 4 [json_name = "client_list"];
+
+  string default_storage_class = 5 [json_name = "default_storage_class"];
+
+  string file_share_name = 6 [json_name = "file_share_name"];
+
+  string fileshare_id = 7 [json_name = "fileshare_id"];
+
+  string gateway_arn = 8 [json_name = "gateway_arn"];
+
+  bool guess_mime_type_enabled = 9 [json_name = "guess_mime_type_enabled"];
+
+  string id = 10;
+
+  bool kms_encrypted = 11 [json_name = "kms_encrypted"];
+
+  string kms_key_arn = 12 [json_name = "kms_key_arn"];
+
+  string location_arn = 13 [json_name = "location_arn"];
+
+  string notification_policy = 14 [json_name = "notification_policy"];
+
+  string object_acl = 15 [json_name = "object_acl"];
+
+  string path = 16;
+
+  bool read_only = 17 [json_name = "read_only"];
+
+  bool requester_pays = 18 [json_name = "requester_pays"];
+
+  string role_arn = 19 [json_name = "role_arn"];
+
+  string squash = 20;
+
+  map<string, string> tags = 21;
+
+  map<string, string> tags_all = 22 [json_name = "tags_all"];
+
+  string vpc_endpoint_dns_name = 23 [json_name = "vpc_endpoint_dns_name"];
+
+  CacheAttributes cache_attributes = 24 [json_name = "cache_attributes"];
+
+  NfsFileShareDefaults nfs_file_share_defaults = 25 [json_name = "nfs_file_share_defaults"];
+
+  repeated Timeouts timeouts = 26;
+
+  map<string, string> for_each = 27 [json_name = "for_each"];
+
+  repeated string depends_on = 28 [json_name = "depends_on"];
+
+  int32 count = 29;
+
+  string provider = 30;
+
+  terraform.v1.Lifecycle lifecycle = 31;
+
+  message CacheAttributes {
+    int64 cache_stale_timeout_in_seconds = 1 [json_name = "cache_stale_timeout_in_seconds"];
+  }
+
+  message NfsFileShareDefaults {
+    string directory_mode = 1 [json_name = "directory_mode"];
+
+    string file_mode = 2 [json_name = "file_mode"];
+
+    string group_id = 3 [json_name = "group_id"];
+
+    string owner_id = 4 [json_name = "owner_id"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsStoragegatewaySmbFileShare version is 0
+message AwsStoragegatewaySmbFileShare {
+  bool access_based_enumeration = 1 [json_name = "access_based_enumeration"];
+
+  repeated string admin_user_list = 2 [json_name = "admin_user_list"];
+
+  string arn = 3;
+
+  string audit_destination_arn = 4 [json_name = "audit_destination_arn"];
+
+  string authentication = 5;
+
+  string bucket_region = 6 [json_name = "bucket_region"];
+
+  string case_sensitivity = 7 [json_name = "case_sensitivity"];
+
+  string default_storage_class = 8 [json_name = "default_storage_class"];
+
+  string file_share_name = 9 [json_name = "file_share_name"];
+
+  string fileshare_id = 10 [json_name = "fileshare_id"];
+
+  string gateway_arn = 11 [json_name = "gateway_arn"];
+
+  bool guess_mime_type_enabled = 12 [json_name = "guess_mime_type_enabled"];
+
+  string id = 13;
+
+  repeated string invalid_user_list = 14 [json_name = "invalid_user_list"];
+
+  bool kms_encrypted = 15 [json_name = "kms_encrypted"];
+
+  string kms_key_arn = 16 [json_name = "kms_key_arn"];
+
+  string location_arn = 17 [json_name = "location_arn"];
+
+  string notification_policy = 18 [json_name = "notification_policy"];
+
+  string object_acl = 19 [json_name = "object_acl"];
+
+  bool oplocks_enabled = 20 [json_name = "oplocks_enabled"];
+
+  string path = 21;
+
+  bool read_only = 22 [json_name = "read_only"];
+
+  bool requester_pays = 23 [json_name = "requester_pays"];
+
+  string role_arn = 24 [json_name = "role_arn"];
+
+  bool smb_acl_enabled = 25 [json_name = "smb_acl_enabled"];
+
+  map<string, string> tags = 26;
+
+  map<string, string> tags_all = 27 [json_name = "tags_all"];
+
+  repeated string valid_user_list = 28 [json_name = "valid_user_list"];
+
+  string vpc_endpoint_dns_name = 29 [json_name = "vpc_endpoint_dns_name"];
+
+  CacheAttributes cache_attributes = 30 [json_name = "cache_attributes"];
+
+  repeated Timeouts timeouts = 31;
+
+  map<string, string> for_each = 32 [json_name = "for_each"];
+
+  repeated string depends_on = 33 [json_name = "depends_on"];
+
+  int32 count = 34;
+
+  string provider = 35;
+
+  terraform.v1.Lifecycle lifecycle = 36;
+
+  message CacheAttributes {
+    int64 cache_stale_timeout_in_seconds = 1 [json_name = "cache_stale_timeout_in_seconds"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsStoragegatewayStoredIscsiVolume version is 0
+message AwsStoragegatewayStoredIscsiVolume {
+  string arn = 1;
+
+  bool chap_enabled = 2 [json_name = "chap_enabled"];
+
+  string disk_id = 3 [json_name = "disk_id"];
+
+  string gateway_arn = 4 [json_name = "gateway_arn"];
+
+  string id = 5;
+
+  bool kms_encrypted = 6 [json_name = "kms_encrypted"];
+
+  string kms_key = 7 [json_name = "kms_key"];
+
+  int64 lun_number = 8 [json_name = "lun_number"];
+
+  string network_interface_id = 9 [json_name = "network_interface_id"];
+
+  int64 network_interface_port = 10 [json_name = "network_interface_port"];
+
+  bool preserve_existing_data = 11 [json_name = "preserve_existing_data"];
+
+  string snapshot_id = 12 [json_name = "snapshot_id"];
+
+  map<string, string> tags = 13;
+
+  map<string, string> tags_all = 14 [json_name = "tags_all"];
+
+  string target_arn = 15 [json_name = "target_arn"];
+
+  string target_name = 16 [json_name = "target_name"];
+
+  string volume_attachment_status = 17 [json_name = "volume_attachment_status"];
+
+  string volume_id = 18 [json_name = "volume_id"];
+
+  int64 volume_size_in_bytes = 19 [json_name = "volume_size_in_bytes"];
+
+  string volume_status = 20 [json_name = "volume_status"];
+
+  string volume_type = 21 [json_name = "volume_type"];
+
+  map<string, string> for_each = 22 [json_name = "for_each"];
+
+  repeated string depends_on = 23 [json_name = "depends_on"];
+
+  int32 count = 24;
+
+  string provider = 25;
+
+  terraform.v1.Lifecycle lifecycle = 26;
+}
+
+// AwsStoragegatewayTapePool version is 0
+message AwsStoragegatewayTapePool {
+  string arn = 1;
+
+  string id = 2;
+
+  string pool_name = 3 [json_name = "pool_name"];
+
+  int64 retention_lock_time_in_days = 4 [json_name = "retention_lock_time_in_days"];
+
+  string retention_lock_type = 5 [json_name = "retention_lock_type"];
+
+  string storage_class = 6 [json_name = "storage_class"];
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+}
+
+// AwsStoragegatewayUploadBuffer version is 0
+message AwsStoragegatewayUploadBuffer {
+  string disk_id = 1 [json_name = "disk_id"];
+
+  string disk_path = 2 [json_name = "disk_path"];
+
+  string gateway_arn = 3 [json_name = "gateway_arn"];
+
+  string id = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsStoragegatewayWorkingStorage version is 0
+message AwsStoragegatewayWorkingStorage {
+  string disk_id = 1 [json_name = "disk_id"];
+
+  string gateway_arn = 2 [json_name = "gateway_arn"];
+
+  string id = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}

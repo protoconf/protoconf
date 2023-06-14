@@ -1,0 +1,138 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsCodeartifactDomain version is 0
+message AwsCodeartifactDomain {
+  string arn = 1;
+
+  int64 asset_size_bytes = 2 [json_name = "asset_size_bytes"];
+
+  string created_time = 3 [json_name = "created_time"];
+
+  string domain = 4;
+
+  string encryption_key = 5 [json_name = "encryption_key"];
+
+  string id = 6;
+
+  string owner = 7;
+
+  int64 repository_count = 8 [json_name = "repository_count"];
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+}
+
+// AwsCodeartifactDomainPermissionsPolicy version is 0
+message AwsCodeartifactDomainPermissionsPolicy {
+  string domain = 1;
+
+  string domain_owner = 2 [json_name = "domain_owner"];
+
+  string id = 3;
+
+  string policy_document = 4 [json_name = "policy_document"];
+
+  string policy_revision = 5 [json_name = "policy_revision"];
+
+  string resource_arn = 6 [json_name = "resource_arn"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsCodeartifactRepository version is 0
+message AwsCodeartifactRepository {
+  string administrator_account = 1 [json_name = "administrator_account"];
+
+  string arn = 2;
+
+  string description = 3;
+
+  string domain = 4;
+
+  string domain_owner = 5 [json_name = "domain_owner"];
+
+  string id = 6;
+
+  string repository = 7;
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  ExternalConnections external_connections = 10 [json_name = "external_connections"];
+
+  repeated Upstream upstream = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message ExternalConnections {
+    string external_connection_name = 1 [json_name = "external_connection_name"];
+
+    string package_format = 2 [json_name = "package_format"];
+
+    string status = 3;
+  }
+
+  message Upstream {
+    string repository_name = 1 [json_name = "repository_name"];
+  }
+}
+
+// AwsCodeartifactRepositoryPermissionsPolicy version is 0
+message AwsCodeartifactRepositoryPermissionsPolicy {
+  string domain = 1;
+
+  string domain_owner = 2 [json_name = "domain_owner"];
+
+  string id = 3;
+
+  string policy_document = 4 [json_name = "policy_document"];
+
+  string policy_revision = 5 [json_name = "policy_revision"];
+
+  string repository = 6;
+
+  string resource_arn = 7 [json_name = "resource_arn"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}

@@ -1,0 +1,139 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsDaxCluster version is 0
+message AwsDaxCluster {
+  string arn = 1;
+
+  repeated string availability_zones = 2 [json_name = "availability_zones"];
+
+  string cluster_address = 3 [json_name = "cluster_address"];
+
+  string cluster_endpoint_encryption_type = 4 [json_name = "cluster_endpoint_encryption_type"];
+
+  string cluster_name = 5 [json_name = "cluster_name"];
+
+  string configuration_endpoint = 6 [json_name = "configuration_endpoint"];
+
+  string description = 7;
+
+  string iam_role_arn = 8 [json_name = "iam_role_arn"];
+
+  string id = 9;
+
+  string maintenance_window = 10 [json_name = "maintenance_window"];
+
+  string node_type = 11 [json_name = "node_type"];
+
+  repeated Nodes nodes = 12;
+
+  string notification_topic_arn = 13 [json_name = "notification_topic_arn"];
+
+  string parameter_group_name = 14 [json_name = "parameter_group_name"];
+
+  int64 port = 15;
+
+  int64 replication_factor = 16 [json_name = "replication_factor"];
+
+  repeated string security_group_ids = 17 [json_name = "security_group_ids"];
+
+  string subnet_group_name = 18 [json_name = "subnet_group_name"];
+
+  map<string, string> tags = 19;
+
+  map<string, string> tags_all = 20 [json_name = "tags_all"];
+
+  ServerSideEncryption server_side_encryption = 21 [json_name = "server_side_encryption"];
+
+  repeated Timeouts timeouts = 22;
+
+  map<string, string> for_each = 23 [json_name = "for_each"];
+
+  repeated string depends_on = 24 [json_name = "depends_on"];
+
+  int32 count = 25;
+
+  string provider = 26;
+
+  terraform.v1.Lifecycle lifecycle = 27;
+
+  message Nodes {
+    // address: string
+    string address = 1;
+
+    // availability_zone: string
+    string availability_zone = 2 [json_name = "availability_zone"];
+
+    // id: string
+    string id = 3;
+
+    // port: number
+    int64 port = 4;
+  }
+
+  message ServerSideEncryption {
+    bool enabled = 1;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsDaxParameterGroup version is 0
+message AwsDaxParameterGroup {
+  string description = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  repeated Parameters parameters = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message Parameters {
+    string name = 1;
+
+    string value = 2;
+  }
+}
+
+// AwsDaxSubnetGroup version is 0
+message AwsDaxSubnetGroup {
+  string description = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  repeated string subnet_ids = 4 [json_name = "subnet_ids"];
+
+  string vpc_id = 5 [json_name = "vpc_id"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}

@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.datasources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleAppEngineDefaultServiceAccount version is 0
+message GoogleAppEngineDefaultServiceAccount {
+  string display_name = 1 [json_name = "display_name"];
+
+  string email = 2;
+
+  string id = 3;
+
+  string member = 4;
+
+  string name = 5;
+
+  string project = 6;
+
+  string unique_id = 7 [json_name = "unique_id"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}

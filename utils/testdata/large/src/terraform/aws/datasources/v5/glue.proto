@@ -1,0 +1,333 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsGlueCatalogTable version is 0
+message AwsGlueCatalogTable {
+  string arn = 1;
+
+  string catalog_id = 2 [json_name = "catalog_id"];
+
+  string database_name = 3 [json_name = "database_name"];
+
+  string description = 4;
+
+  string id = 5;
+
+  string name = 6;
+
+  string owner = 7;
+
+  map<string, string> parameters = 8;
+
+  repeated PartitionIndex partition_index = 9 [json_name = "partition_index"];
+
+  repeated PartitionKeys partition_keys = 10 [json_name = "partition_keys"];
+
+  string query_as_of_time = 11 [json_name = "query_as_of_time"];
+
+  int64 retention = 12;
+
+  repeated StorageDescriptor storage_descriptor = 13 [json_name = "storage_descriptor"];
+
+  string table_type = 14 [json_name = "table_type"];
+
+  repeated TargetTable target_table = 15 [json_name = "target_table"];
+
+  int64 transaction_id = 16 [json_name = "transaction_id"];
+
+  string view_expanded_text = 17 [json_name = "view_expanded_text"];
+
+  string view_original_text = 18 [json_name = "view_original_text"];
+
+  map<string, string> for_each = 19 [json_name = "for_each"];
+
+  repeated string depends_on = 20 [json_name = "depends_on"];
+
+  int32 count = 21;
+
+  string provider = 22;
+
+  terraform.v1.Lifecycle lifecycle = 23;
+
+  message PartitionIndex {
+    // index_name: string
+    string index_name = 1 [json_name = "index_name"];
+
+    // index_status: string
+    string index_status = 2 [json_name = "index_status"];
+
+    // keys: list of string
+    repeated string keys = 3;
+  }
+
+  message PartitionKeys {
+    // comment: string
+    string comment = 1;
+
+    // name: string
+    string name = 2;
+
+    // type: string
+    string type = 3;
+  }
+
+  message StorageDescriptor {
+    // bucket_columns: list of string
+    repeated string bucket_columns = 1 [json_name = "bucket_columns"];
+
+    // columns: list of object
+    repeated Columns columns = 2;
+
+    // compressed: bool
+    bool compressed = 3;
+
+    // input_format: string
+    string input_format = 4 [json_name = "input_format"];
+
+    // location: string
+    string location = 5;
+
+    // number_of_buckets: number
+    int64 number_of_buckets = 6 [json_name = "number_of_buckets"];
+
+    // output_format: string
+    string output_format = 7 [json_name = "output_format"];
+
+    // parameters: map of string
+    map<string, string> parameters = 8;
+
+    // schema_reference: list of object
+    repeated SchemaReference schema_reference = 9 [json_name = "schema_reference"];
+
+    // ser_de_info: list of object
+    repeated SerDeInfo ser_de_info = 10 [json_name = "ser_de_info"];
+
+    // skewed_info: list of object
+    repeated SkewedInfo skewed_info = 11 [json_name = "skewed_info"];
+
+    // sort_columns: list of object
+    repeated SortColumns sort_columns = 12 [json_name = "sort_columns"];
+
+    // stored_as_sub_directories: bool
+    bool stored_as_sub_directories = 13 [json_name = "stored_as_sub_directories"];
+
+    message Columns {
+      // comment: string
+      string comment = 1;
+
+      // name: string
+      string name = 2;
+
+      // parameters: map of string
+      map<string, string> parameters = 3;
+
+      // type: string
+      string type = 4;
+    }
+
+    message SchemaReference {
+      // schema_id: list of object
+      repeated SchemaId schema_id = 1 [json_name = "schema_id"];
+
+      // schema_version_id: string
+      string schema_version_id = 2 [json_name = "schema_version_id"];
+
+      // schema_version_number: number
+      int64 schema_version_number = 3 [json_name = "schema_version_number"];
+
+      message SchemaId {
+        // registry_name: string
+        string registry_name = 1 [json_name = "registry_name"];
+
+        // schema_arn: string
+        string schema_arn = 2 [json_name = "schema_arn"];
+
+        // schema_name: string
+        string schema_name = 3 [json_name = "schema_name"];
+      }
+    }
+
+    message SerDeInfo {
+      // name: string
+      string name = 1;
+
+      // parameters: map of string
+      map<string, string> parameters = 2;
+
+      // serialization_library: string
+      string serialization_library = 3 [json_name = "serialization_library"];
+    }
+
+    message SkewedInfo {
+      // skewed_column_names: list of string
+      repeated string skewed_column_names = 1 [json_name = "skewed_column_names"];
+
+      // skewed_column_value_location_maps: map of string
+      map<string, string> skewed_column_value_location_maps = 2 [json_name = "skewed_column_value_location_maps"];
+
+      // skewed_column_values: list of string
+      repeated string skewed_column_values = 3 [json_name = "skewed_column_values"];
+    }
+
+    message SortColumns {
+      // column: string
+      string column = 1;
+
+      // sort_order: number
+      int64 sort_order = 2 [json_name = "sort_order"];
+    }
+  }
+
+  message TargetTable {
+    // catalog_id: string
+    string catalog_id = 1 [json_name = "catalog_id"];
+
+    // database_name: string
+    string database_name = 2 [json_name = "database_name"];
+
+    // name: string
+    string name = 3;
+  }
+}
+
+// AwsGlueConnection version is 0
+message AwsGlueConnection {
+  string arn = 1;
+
+  string catalog_id = 2 [json_name = "catalog_id"];
+
+  map<string, string> connection_properties = 3 [json_name = "connection_properties"];
+
+  string connection_type = 4 [json_name = "connection_type"];
+
+  string description = 5;
+
+  string id = 6;
+
+  repeated string match_criteria = 7 [json_name = "match_criteria"];
+
+  string name = 8;
+
+  repeated PhysicalConnectionRequirements physical_connection_requirements = 9 [json_name = "physical_connection_requirements"];
+
+  map<string, string> tags = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message PhysicalConnectionRequirements {
+    // availability_zone: string
+    string availability_zone = 1 [json_name = "availability_zone"];
+
+    // security_group_id_list: set of string
+    repeated string security_group_id_list = 2 [json_name = "security_group_id_list"];
+
+    // subnet_id: string
+    string subnet_id = 3 [json_name = "subnet_id"];
+  }
+}
+
+// AwsGlueDataCatalogEncryptionSettings version is 0
+message AwsGlueDataCatalogEncryptionSettings {
+  string catalog_id = 1 [json_name = "catalog_id"];
+
+  repeated DataCatalogEncryptionSettings data_catalog_encryption_settings = 2 [json_name = "data_catalog_encryption_settings"];
+
+  string id = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+
+  message DataCatalogEncryptionSettings {
+    // connection_password_encryption: list of object
+    repeated ConnectionPasswordEncryption connection_password_encryption = 1 [json_name = "connection_password_encryption"];
+
+    // encryption_at_rest: list of object
+    repeated EncryptionAtRest encryption_at_rest = 2 [json_name = "encryption_at_rest"];
+
+    message ConnectionPasswordEncryption {
+      // aws_kms_key_id: string
+      string aws_kms_key_id = 1 [json_name = "aws_kms_key_id"];
+
+      // return_connection_password_encrypted: bool
+      bool return_connection_password_encrypted = 2 [json_name = "return_connection_password_encrypted"];
+    }
+
+    message EncryptionAtRest {
+      // catalog_encryption_mode: string
+      string catalog_encryption_mode = 1 [json_name = "catalog_encryption_mode"];
+
+      // sse_aws_kms_key_id: string
+      string sse_aws_kms_key_id = 2 [json_name = "sse_aws_kms_key_id"];
+    }
+  }
+}
+
+// AwsGlueScript version is 0
+message AwsGlueScript {
+  string id = 1;
+
+  string language = 2;
+
+  string python_script = 3 [json_name = "python_script"];
+
+  string scala_code = 4 [json_name = "scala_code"];
+
+  repeated DagEdge dag_edge = 5 [json_name = "dag_edge"];
+
+  repeated DagNode dag_node = 6 [json_name = "dag_node"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message DagEdge {
+    string source = 1;
+
+    string target = 2;
+
+    string target_parameter = 3 [json_name = "target_parameter"];
+  }
+
+  message DagNode {
+    string id = 1;
+
+    int64 line_number = 2 [json_name = "line_number"];
+
+    string node_type = 3 [json_name = "node_type"];
+
+    repeated Args args = 4;
+
+    message Args {
+      string name = 1;
+
+      bool param = 2;
+
+      string value = 3;
+    }
+  }
+}

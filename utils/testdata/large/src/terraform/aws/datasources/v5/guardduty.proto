@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsGuarddutyDetector version is 0
+message AwsGuarddutyDetector {
+  string finding_publishing_frequency = 1 [json_name = "finding_publishing_frequency"];
+
+  string id = 2;
+
+  string service_role_arn = 3 [json_name = "service_role_arn"];
+
+  string status = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsGuarddutyFindingIds version is 0
+message AwsGuarddutyFindingIds {
+  string detector_id = 1 [json_name = "detector_id"];
+
+  repeated string finding_ids = 2 [json_name = "finding_ids"];
+
+  bool has_findings = 3 [json_name = "has_findings"];
+
+  string id = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}

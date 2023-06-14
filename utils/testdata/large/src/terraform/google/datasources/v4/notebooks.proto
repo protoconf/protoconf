@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.datasources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleNotebooksInstanceIamPolicy version is 0
+message GoogleNotebooksInstanceIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string instance_name = 3 [json_name = "instance_name"];
+
+  string location = 4;
+
+  string policy_data = 5 [json_name = "policy_data"];
+
+  string project = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleNotebooksRuntimeIamPolicy version is 0
+message GoogleNotebooksRuntimeIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string location = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  string runtime_name = 6 [json_name = "runtime_name"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}

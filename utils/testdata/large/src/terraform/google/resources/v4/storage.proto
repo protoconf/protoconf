@@ -1,0 +1,1007 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleStorageBucket version is 0
+message GoogleStorageBucket {
+  // Whether or not to automatically apply an eventBasedHold to new objects added to the bucket.
+  bool default_event_based_hold = 1 [json_name = "default_event_based_hold"];
+
+  // When deleting a bucket, this boolean option will delete all contained objects. If you try to delete a bucket that contains objects, Terraform will fail that run.
+  bool force_destroy = 2 [json_name = "force_destroy"];
+
+  string id = 3;
+
+  // A set of key/value label pairs to assign to the bucket.
+  map<string, string> labels = 4;
+
+  // The Google Cloud Storage location
+  string location = 5;
+
+  // The name of the bucket.
+  string name = 6;
+
+  // The ID of the project in which the resource belongs. If it is not provided, the provider project is used.
+  string project = 7;
+
+  // Prevents public access to a bucket.
+  string public_access_prevention = 8 [json_name = "public_access_prevention"];
+
+  // Enables Requester Pays on a storage bucket.
+  bool requester_pays = 9 [json_name = "requester_pays"];
+
+  // The URI of the created resource.
+  string self_link = 10 [json_name = "self_link"];
+
+  // The Storage Class of the new bucket. Supported values include: STANDARD, MULTI_REGIONAL, REGIONAL, NEARLINE, COLDLINE, ARCHIVE.
+  string storage_class = 11 [json_name = "storage_class"];
+
+  // Enables uniform bucket-level access on a bucket.
+  bool uniform_bucket_level_access = 12 [json_name = "uniform_bucket_level_access"];
+
+  // The base URL of the bucket, in the format gs://<bucket-name>.
+  string url = 13;
+
+  Autoclass autoclass = 14;
+
+  repeated Cors cors = 15;
+
+  CustomPlacementConfig custom_placement_config = 16 [json_name = "custom_placement_config"];
+
+  Encryption encryption = 17;
+
+  repeated LifecycleRule lifecycle_rule = 18 [json_name = "lifecycle_rule"];
+
+  Logging logging = 19;
+
+  RetentionPolicy retention_policy = 20 [json_name = "retention_policy"];
+
+  repeated Timeouts timeouts = 21;
+
+  Versioning versioning = 22;
+
+  Website website = 23;
+
+  map<string, string> for_each = 24 [json_name = "for_each"];
+
+  repeated string depends_on = 25 [json_name = "depends_on"];
+
+  int32 count = 26;
+
+  string provider = 27;
+
+  terraform.v1.Lifecycle lifecycle = 28;
+
+  message Autoclass {
+    // While set to true, autoclass automatically transitions objects in your bucket to appropriate storage classes based on each object's access pattern.
+    bool enabled = 1;
+  }
+
+  message Cors {
+    // The value, in seconds, to return in the Access-Control-Max-Age header used in preflight responses.
+    int64 max_age_seconds = 1 [json_name = "max_age_seconds"];
+
+    // The list of HTTP methods on which to include CORS response headers, (GET, OPTIONS, POST, etc) Note: "*" is permitted in the list of methods, and means "any method".
+    repeated string method = 2;
+
+    // The list of Origins eligible to receive CORS response headers. Note: "*" is permitted in the list of origins, and means "any Origin".
+    repeated string origin = 3;
+
+    // The list of HTTP headers other than the simple response headers to give permission for the user-agent to share across domains.
+    repeated string response_header = 4 [json_name = "response_header"];
+  }
+
+  message CustomPlacementConfig {
+    // The list of individual regions that comprise a dual-region bucket. See the docs for a list of acceptable regions. Note: If any of the data_locations changes, it will recreate the bucket.
+    repeated string data_locations = 1 [json_name = "data_locations"];
+  }
+
+  message Encryption {
+    // A Cloud KMS key that will be used to encrypt objects inserted into this bucket, if no encryption method is specified. You must pay attention to whether the crypto key is available in the location that this bucket is created in. See the docs for more details.
+    string default_kms_key_name = 1 [json_name = "default_kms_key_name"];
+  }
+
+  message LifecycleRule {
+    Action action = 1;
+
+    Condition condition = 2;
+
+    message Action {
+      // The target Storage Class of objects affected by this Lifecycle Rule. Supported values include: MULTI_REGIONAL, REGIONAL, NEARLINE, COLDLINE, ARCHIVE.
+      string storage_class = 1 [json_name = "storage_class"];
+
+      // The type of the action of this Lifecycle Rule. Supported values include: Delete, SetStorageClass and AbortIncompleteMultipartUpload.
+      string type = 2;
+    }
+
+    message Condition {
+      // Minimum age of an object in days to satisfy this condition.
+      int64 age = 1;
+
+      // Creation date of an object in RFC 3339 (e.g. 2017-06-13) to satisfy this condition.
+      string created_before = 2 [json_name = "created_before"];
+
+      // Creation date of an object in RFC 3339 (e.g. 2017-06-13) to satisfy this condition.
+      string custom_time_before = 3 [json_name = "custom_time_before"];
+
+      // Number of days elapsed since the user-specified timestamp set on an object.
+      int64 days_since_custom_time = 4 [json_name = "days_since_custom_time"];
+
+      // Number of days elapsed since the noncurrent timestamp of an object. This
+      // 										condition is relevant only for versioned objects.
+      int64 days_since_noncurrent_time = 5 [json_name = "days_since_noncurrent_time"];
+
+      // One or more matching name prefixes to satisfy this condition.
+      repeated string matches_prefix = 6 [json_name = "matches_prefix"];
+
+      // Storage Class of objects to satisfy this condition. Supported values include: MULTI_REGIONAL, REGIONAL, NEARLINE, COLDLINE, ARCHIVE, STANDARD, DURABLE_REDUCED_AVAILABILITY.
+      repeated string matches_storage_class = 7 [json_name = "matches_storage_class"];
+
+      // One or more matching name suffixes to satisfy this condition.
+      repeated string matches_suffix = 8 [json_name = "matches_suffix"];
+
+      // Creation date of an object in RFC 3339 (e.g. 2017-06-13) to satisfy this condition.
+      string noncurrent_time_before = 9 [json_name = "noncurrent_time_before"];
+
+      // Relevant only for versioned objects. The number of newer versions of an object to satisfy this condition.
+      int64 num_newer_versions = 10 [json_name = "num_newer_versions"];
+
+      // Match to live and/or archived objects. Unversioned buckets have only live objects. Supported values include: "LIVE", "ARCHIVED", "ANY".
+      string with_state = 11 [json_name = "with_state"];
+    }
+  }
+
+  message Logging {
+    // The bucket that will receive log objects.
+    string log_bucket = 1 [json_name = "log_bucket"];
+
+    // The object prefix for log objects. If it's not provided, by default Google Cloud Storage sets this to this bucket's name.
+    string log_object_prefix = 2 [json_name = "log_object_prefix"];
+  }
+
+  message RetentionPolicy {
+    // If set to true, the bucket will be locked and permanently restrict edits to the bucket's retention policy.  Caution: Locking a bucket is an irreversible action.
+    bool is_locked = 1 [json_name = "is_locked"];
+
+    // The period of time, in seconds, that objects in the bucket must be retained and cannot be deleted, overwritten, or archived. The value must be less than 3,155,760,000 seconds.
+    int64 retention_period = 2 [json_name = "retention_period"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string read = 2;
+
+    string update = 3;
+  }
+
+  message Versioning {
+    // While set to true, versioning is fully enabled for this bucket.
+    bool enabled = 1;
+  }
+
+  message Website {
+    // Behaves as the bucket's directory index where missing objects are treated as potential directories.
+    string main_page_suffix = 1 [json_name = "main_page_suffix"];
+
+    // The custom object to return when a requested resource is not found.
+    string not_found_page = 2 [json_name = "not_found_page"];
+  }
+}
+
+// GoogleStorageBucketAccessControl version is 0
+message GoogleStorageBucketAccessControl {
+  // The name of the bucket.
+  string bucket = 1;
+
+  // The domain associated with the entity.
+  string domain = 2;
+
+  // The email address associated with the entity.
+  string email = 3;
+
+  // The entity holding the permission, in one of the following forms:
+  //  user-userId
+  //  user-email
+  //  group-groupId
+  //  group-email
+  //  domain-domain
+  //  project-team-projectId
+  //  allUsers
+  //  allAuthenticatedUsers
+  // Examples:
+  //  The user liz@example.com would be user-liz@example.com.
+  //  The group example@googlegroups.com would be
+  //  group-example@googlegroups.com.
+  //  To refer to all members of the Google Apps for Business domain
+  //  example.com, the entity would be domain-example.com.
+  string entity = 4;
+
+  string id = 5;
+
+  // The access permission for the entity. Possible values: ["OWNER", "READER", "WRITER"]
+  string role = 6;
+
+  repeated Timeouts timeouts = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleStorageBucketAcl version is 0
+message GoogleStorageBucketAcl {
+  // The name of the bucket it applies to.
+  string bucket = 1;
+
+  // Configure this ACL to be the default ACL.
+  string default_acl = 2 [json_name = "default_acl"];
+
+  string id = 3;
+
+  // The canned GCS ACL to apply. Must be set if role_entity is not.
+  string predefined_acl = 4 [json_name = "predefined_acl"];
+
+  // List of role/entity pairs in the form ROLE:entity. See GCS Bucket ACL documentation  for more details. Must be set if predefined_acl is not.
+  repeated string role_entity = 5 [json_name = "role_entity"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// GoogleStorageBucketIamBinding version is 0
+message GoogleStorageBucketIamBinding {
+  string bucket = 1;
+
+  string etag = 2;
+
+  string id = 3;
+
+  repeated string members = 4;
+
+  string role = 5;
+
+  Condition condition = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleStorageBucketIamMember version is 0
+message GoogleStorageBucketIamMember {
+  string bucket = 1;
+
+  string etag = 2;
+
+  string id = 3;
+
+  string member = 4;
+
+  string role = 5;
+
+  Condition condition = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleStorageBucketIamPolicy version is 0
+message GoogleStorageBucketIamPolicy {
+  string bucket = 1;
+
+  string etag = 2;
+
+  string id = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// GoogleStorageBucketObject version is 0
+message GoogleStorageBucketObject {
+  // The name of the containing bucket.
+  string bucket = 1;
+
+  // Cache-Control directive to specify caching behavior of object data. If omitted and object is accessible to all anonymous users, the default will be public, max-age=3600
+  string cache_control = 2 [json_name = "cache_control"];
+
+  // Data as string to be uploaded. Must be defined if source is not. Note: The content field is marked as sensitive. To view the raw contents of the object, please define an output.
+  string content = 3;
+
+  // Content-Disposition of the object data.
+  string content_disposition = 4 [json_name = "content_disposition"];
+
+  // Content-Encoding of the object data.
+  string content_encoding = 5 [json_name = "content_encoding"];
+
+  // Content-Language of the object data.
+  string content_language = 6 [json_name = "content_language"];
+
+  // Content-Type of the object data. Defaults to "application/octet-stream" or "text/plain; charset=utf-8".
+  string content_type = 7 [json_name = "content_type"];
+
+  // Base 64 CRC32 hash of the uploaded data.
+  string crc32c = 8;
+
+  string detect_md5hash = 9 [json_name = "detect_md5hash"];
+
+  // Whether an object is under event-based hold. Event-based hold is a way to retain objects until an event occurs, which is signified by the hold's release (i.e. this value is set to false). After being released (set to false), such objects will be subject to bucket-level retention (if any).
+  bool event_based_hold = 10 [json_name = "event_based_hold"];
+
+  string id = 11;
+
+  // Resource name of the Cloud KMS key that will be used to encrypt the object. Overrides the object metadata's kmsKeyName value, if any.
+  string kms_key_name = 12 [json_name = "kms_key_name"];
+
+  // Base 64 MD5 hash of the uploaded data.
+  string md5hash = 13;
+
+  // A url reference to download this object.
+  string media_link = 14 [json_name = "media_link"];
+
+  // User-provided metadata, in key/value pairs.
+  map<string, string> metadata = 15;
+
+  // The name of the object. If you're interpolating the name of this object, see output_name instead.
+  string name = 16;
+
+  // The name of the object. Use this field in interpolations with google_storage_object_acl to recreate google_storage_object_acl resources when your google_storage_bucket_object is recreated.
+  string output_name = 17 [json_name = "output_name"];
+
+  // A url reference to this object.
+  string self_link = 18 [json_name = "self_link"];
+
+  // A path to the data you want to upload. Must be defined if content is not.
+  string source = 19;
+
+  // The StorageClass of the new bucket object. Supported values include: MULTI_REGIONAL, REGIONAL, NEARLINE, COLDLINE, ARCHIVE. If not provided, this defaults to the bucket's default storage class or to a standard class.
+  string storage_class = 20 [json_name = "storage_class"];
+
+  // Whether an object is under temporary hold. While this flag is set to true, the object is protected against deletion and overwrites.
+  bool temporary_hold = 21 [json_name = "temporary_hold"];
+
+  CustomerEncryption customer_encryption = 22 [json_name = "customer_encryption"];
+
+  repeated Timeouts timeouts = 23;
+
+  map<string, string> for_each = 24 [json_name = "for_each"];
+
+  repeated string depends_on = 25 [json_name = "depends_on"];
+
+  int32 count = 26;
+
+  string provider = 27;
+
+  terraform.v1.Lifecycle lifecycle = 28;
+
+  message CustomerEncryption {
+    // The encryption algorithm. Default: AES256
+    string encryption_algorithm = 1 [json_name = "encryption_algorithm"];
+
+    // Base64 encoded customer supplied encryption key.
+    string encryption_key = 2 [json_name = "encryption_key"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleStorageDefaultObjectAccessControl version is 0
+message GoogleStorageDefaultObjectAccessControl {
+  // The name of the bucket.
+  string bucket = 1;
+
+  // The domain associated with the entity.
+  string domain = 2;
+
+  // The email address associated with the entity.
+  string email = 3;
+
+  // The entity holding the permission, in one of the following forms:
+  //  * user-{{userId}}
+  //  * user-{{email}} (such as "user-liz@example.com")
+  //  * group-{{groupId}}
+  //  * group-{{email}} (such as "group-example@googlegroups.com")
+  //  * domain-{{domain}} (such as "domain-example.com")
+  //  * project-team-{{projectId}}
+  //  * allUsers
+  //  * allAuthenticatedUsers
+  string entity = 4;
+
+  // The ID for the entity
+  string entity_id = 5 [json_name = "entity_id"];
+
+  // The content generation of the object, if applied to an object.
+  int64 generation = 6;
+
+  string id = 7;
+
+  // The name of the object, if applied to an object.
+  string object = 8;
+
+  // The project team associated with the entity
+  repeated ProjectTeam project_team = 9 [json_name = "project_team"];
+
+  // The access permission for the entity. Possible values: ["OWNER", "READER"]
+  string role = 10;
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message ProjectTeam {
+    // project_number: string
+    string project_number = 1 [json_name = "project_number"];
+
+    // team: string
+    string team = 2;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleStorageDefaultObjectAcl version is 0
+message GoogleStorageDefaultObjectAcl {
+  string bucket = 1;
+
+  string id = 2;
+
+  repeated string role_entity = 3 [json_name = "role_entity"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// GoogleStorageHmacKey version is 0
+message GoogleStorageHmacKey {
+  // The access ID of the HMAC Key.
+  string access_id = 1 [json_name = "access_id"];
+
+  string id = 2;
+
+  string project = 3;
+
+  // HMAC secret key material.
+  string secret = 4;
+
+  // The email address of the key's associated service account.
+  string service_account_email = 5 [json_name = "service_account_email"];
+
+  // The state of the key. Can be set to one of ACTIVE, INACTIVE. Default value: "ACTIVE" Possible values: ["ACTIVE", "INACTIVE"]
+  string state = 6;
+
+  // 'The creation time of the HMAC key in RFC 3339 format. '
+  string time_created = 7 [json_name = "time_created"];
+
+  // 'The last modification time of the HMAC key metadata in RFC 3339 format.'
+  string updated = 8;
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleStorageNotification version is 0
+message GoogleStorageNotification {
+  // The name of the bucket.
+  string bucket = 1;
+
+  // A set of key/value attribute pairs to attach to each Cloud Pub/Sub message published for this notification subscription
+  map<string, string> custom_attributes = 2 [json_name = "custom_attributes"];
+
+  // List of event type filters for this notification config. If not specified, Cloud Storage will send notifications for all event types. The valid types are: "OBJECT_FINALIZE", "OBJECT_METADATA_UPDATE", "OBJECT_DELETE", "OBJECT_ARCHIVE"
+  repeated string event_types = 3 [json_name = "event_types"];
+
+  string id = 4;
+
+  // The ID of the created notification.
+  string notification_id = 5 [json_name = "notification_id"];
+
+  // Specifies a prefix path filter for this notification config. Cloud Storage will only send notifications for objects in this bucket whose names begin with the specified prefix.
+  string object_name_prefix = 6 [json_name = "object_name_prefix"];
+
+  // The desired content of the Payload. One of "JSON_API_V1" or "NONE".
+  string payload_format = 7 [json_name = "payload_format"];
+
+  // The URI of the created resource.
+  string self_link = 8 [json_name = "self_link"];
+
+  // The Cloud Pub/Sub topic to which this subscription publishes. Expects either the  topic name, assumed to belong to the default GCP provider project, or the project-level name,  i.e. projects/my-gcp-project/topics/my-topic or my-topic. If the project is not set in the provider, you will need to use the project-level name.
+  string topic = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+}
+
+// GoogleStorageObjectAccessControl version is 0
+message GoogleStorageObjectAccessControl {
+  // The name of the bucket.
+  string bucket = 1;
+
+  // The domain associated with the entity.
+  string domain = 2;
+
+  // The email address associated with the entity.
+  string email = 3;
+
+  // The entity holding the permission, in one of the following forms:
+  //  * user-{{userId}}
+  //  * user-{{email}} (such as "user-liz@example.com")
+  //  * group-{{groupId}}
+  //  * group-{{email}} (such as "group-example@googlegroups.com")
+  //  * domain-{{domain}} (such as "domain-example.com")
+  //  * project-team-{{projectId}}
+  //  * allUsers
+  //  * allAuthenticatedUsers
+  string entity = 4;
+
+  // The ID for the entity
+  string entity_id = 5 [json_name = "entity_id"];
+
+  // The content generation of the object, if applied to an object.
+  int64 generation = 6;
+
+  string id = 7;
+
+  // The name of the object to apply the access control to.
+  string object = 8;
+
+  // The project team associated with the entity
+  repeated ProjectTeam project_team = 9 [json_name = "project_team"];
+
+  // The access permission for the entity. Possible values: ["OWNER", "READER"]
+  string role = 10;
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message ProjectTeam {
+    // project_number: string
+    string project_number = 1 [json_name = "project_number"];
+
+    // team: string
+    string team = 2;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleStorageObjectAcl version is 0
+message GoogleStorageObjectAcl {
+  string bucket = 1;
+
+  string id = 2;
+
+  string object = 3;
+
+  string predefined_acl = 4 [json_name = "predefined_acl"];
+
+  repeated string role_entity = 5 [json_name = "role_entity"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// GoogleStorageTransferAgentPool version is 0
+message GoogleStorageTransferAgentPool {
+  // Specifies the client-specified AgentPool description.
+  string display_name = 1 [json_name = "display_name"];
+
+  string id = 2;
+
+  // The ID of the agent pool to create.
+  //
+  // The agentPoolId must meet the following requirements:
+  // * Length of 128 characters or less.
+  // * Not start with the string goog.
+  // * Start with a lowercase ASCII character, followed by:
+  //  * Zero or more: lowercase Latin alphabet characters, numerals, hyphens (-), periods (.), underscores (_), or tildes (~).
+  //  * One or more numerals or lowercase ASCII characters.
+  //
+  // As expressed by the regular expression: ^(?!goog)[a-z]([a-z0-9-._~]*[a-z0-9])?$.
+  string name = 3;
+
+  string project = 4;
+
+  // Specifies the state of the AgentPool.
+  string state = 5;
+
+  BandwidthLimit bandwidth_limit = 6 [json_name = "bandwidth_limit"];
+
+  repeated Timeouts timeouts = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message BandwidthLimit {
+    // Bandwidth rate in megabytes per second, distributed across all the agents in the pool.
+    string limit_mbps = 1 [json_name = "limit_mbps"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleStorageTransferJob version is 0
+message GoogleStorageTransferJob {
+  // When the Transfer Job was created.
+  string creation_time = 1 [json_name = "creation_time"];
+
+  // When the Transfer Job was deleted.
+  string deletion_time = 2 [json_name = "deletion_time"];
+
+  // Unique description to identify the Transfer Job.
+  string description = 3;
+
+  string id = 4;
+
+  // When the Transfer Job was last modified.
+  string last_modification_time = 5 [json_name = "last_modification_time"];
+
+  // The name of the Transfer Job.
+  string name = 6;
+
+  // The project in which the resource belongs. If it is not provided, the provider project is used.
+  string project = 7;
+
+  // Status of the job. Default: ENABLED. NOTE: The effect of the new job status takes place during a subsequent job run. For example, if you change the job status from ENABLED to DISABLED, and an operation spawned by the transfer is running, the status change would not affect the current operation.
+  string status = 8;
+
+  NotificationConfig notification_config = 9 [json_name = "notification_config"];
+
+  Schedule schedule = 10;
+
+  TransferSpec transfer_spec = 11 [json_name = "transfer_spec"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message NotificationConfig {
+    // Event types for which a notification is desired. If empty, send notifications for all event types. The valid types are "TRANSFER_OPERATION_SUCCESS", "TRANSFER_OPERATION_FAILED", "TRANSFER_OPERATION_ABORTED".
+    repeated string event_types = 1 [json_name = "event_types"];
+
+    // The desired format of the notification message payloads. One of "NONE" or "JSON".
+    string payload_format = 2 [json_name = "payload_format"];
+
+    // The Topic.name of the Pub/Sub topic to which to publish notifications.
+    string pubsub_topic = 3 [json_name = "pubsub_topic"];
+  }
+
+  message Schedule {
+    // Interval between the start of each scheduled transfer. If unspecified, the default value is 24 hours. This value may not be less than 1 hour. A duration in seconds with up to nine fractional digits, terminated by 's'. Example: "3.5s".
+    string repeat_interval = 1 [json_name = "repeat_interval"];
+
+    ScheduleEndDate schedule_end_date = 2 [json_name = "schedule_end_date"];
+
+    ScheduleStartDate schedule_start_date = 3 [json_name = "schedule_start_date"];
+
+    StartTimeOfDay start_time_of_day = 4 [json_name = "start_time_of_day"];
+
+    message ScheduleEndDate {
+      // Day of month. Must be from 1 to 31 and valid for the year and month.
+      int64 day = 1;
+
+      // Month of year. Must be from 1 to 12.
+      int64 month = 2;
+
+      // Year of date. Must be from 1 to 9999.
+      int64 year = 3;
+    }
+
+    message ScheduleStartDate {
+      // Day of month. Must be from 1 to 31 and valid for the year and month.
+      int64 day = 1;
+
+      // Month of year. Must be from 1 to 12.
+      int64 month = 2;
+
+      // Year of date. Must be from 1 to 9999.
+      int64 year = 3;
+    }
+
+    message StartTimeOfDay {
+      // Hours of day in 24 hour format. Should be from 0 to 23.
+      int64 hours = 1;
+
+      // Minutes of hour of day. Must be from 0 to 59.
+      int64 minutes = 2;
+
+      // Fractions of seconds in nanoseconds. Must be from 0 to 999,999,999.
+      int64 nanos = 3;
+
+      // Seconds of minutes of the time. Must normally be from 0 to 59.
+      int64 seconds = 4;
+    }
+  }
+
+  message TransferSpec {
+    // Specifies the agent pool name associated with the posix data source. When unspecified, the default name is used.
+    string sink_agent_pool_name = 1 [json_name = "sink_agent_pool_name"];
+
+    // Specifies the agent pool name associated with the posix data source. When unspecified, the default name is used.
+    string source_agent_pool_name = 2 [json_name = "source_agent_pool_name"];
+
+    AwsS3DataSource aws_s3_data_source = 3 [json_name = "aws_s3_data_source"];
+
+    AzureBlobStorageDataSource azure_blob_storage_data_source = 4 [json_name = "azure_blob_storage_data_source"];
+
+    GcsDataSink gcs_data_sink = 5 [json_name = "gcs_data_sink"];
+
+    GcsDataSource gcs_data_source = 6 [json_name = "gcs_data_source"];
+
+    HttpDataSource http_data_source = 7 [json_name = "http_data_source"];
+
+    ObjectConditions object_conditions = 8 [json_name = "object_conditions"];
+
+    PosixDataSink posix_data_sink = 9 [json_name = "posix_data_sink"];
+
+    PosixDataSource posix_data_source = 10 [json_name = "posix_data_source"];
+
+    TransferOptions transfer_options = 11 [json_name = "transfer_options"];
+
+    message AwsS3DataSource {
+      // S3 Bucket name.
+      string bucket_name = 1 [json_name = "bucket_name"];
+
+      // S3 Bucket path in bucket to transfer.
+      string path = 2;
+
+      // The Amazon Resource Name (ARN) of the role to support temporary credentials via 'AssumeRoleWithWebIdentity'. For more information about ARNs, see [IAM ARNs](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns). When a role ARN is provided, Transfer Service fetches temporary credentials for the session using a 'AssumeRoleWithWebIdentity' call for the provided role using the [GoogleServiceAccount][] for this project.
+      string role_arn = 3 [json_name = "role_arn"];
+
+      AwsAccessKey aws_access_key = 4 [json_name = "aws_access_key"];
+
+      message AwsAccessKey {
+        // AWS Key ID.
+        string access_key_id = 1 [json_name = "access_key_id"];
+
+        // AWS Secret Access Key.
+        string secret_access_key = 2 [json_name = "secret_access_key"];
+      }
+    }
+
+    message AzureBlobStorageDataSource {
+      // The container to transfer from the Azure Storage account.
+      string container = 1;
+
+      // Root path to transfer objects. Must be an empty string or full path name that ends with a '/'. This field is treated as an object prefix. As such, it should generally not begin with a '/'.
+      string path = 2;
+
+      // The name of the Azure Storage account.
+      string storage_account = 3 [json_name = "storage_account"];
+
+      AzureCredentials azure_credentials = 4 [json_name = "azure_credentials"];
+
+      message AzureCredentials {
+        // Azure shared access signature.
+        string sas_token = 1 [json_name = "sas_token"];
+      }
+    }
+
+    message GcsDataSink {
+      // Google Cloud Storage bucket name.
+      string bucket_name = 1 [json_name = "bucket_name"];
+
+      // Google Cloud Storage path in bucket to transfer
+      string path = 2;
+    }
+
+    message GcsDataSource {
+      // Google Cloud Storage bucket name.
+      string bucket_name = 1 [json_name = "bucket_name"];
+
+      // Google Cloud Storage path in bucket to transfer
+      string path = 2;
+    }
+
+    message HttpDataSource {
+      // The URL that points to the file that stores the object list entries. This file must allow public access. Currently, only URLs with HTTP and HTTPS schemes are supported.
+      string list_url = 1 [json_name = "list_url"];
+    }
+
+    message ObjectConditions {
+      // exclude_prefixes must follow the requirements described for include_prefixes.
+      repeated string exclude_prefixes = 1 [json_name = "exclude_prefixes"];
+
+      // If include_refixes is specified, objects that satisfy the object conditions must have names that start with one of the include_prefixes and that do not start with any of the exclude_prefixes. If include_prefixes is not specified, all objects except those that have names starting with one of the exclude_prefixes must satisfy the object conditions.
+      repeated string include_prefixes = 2 [json_name = "include_prefixes"];
+
+      // If specified, only objects with a "last modification time" before this timestamp and objects that don't have a "last modification time" are transferred. A timestamp in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits. Examples: "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z".
+      string last_modified_before = 3 [json_name = "last_modified_before"];
+
+      // If specified, only objects with a "last modification time" on or after this timestamp and objects that don't have a "last modification time" are transferred. A timestamp in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits. Examples: "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z".
+      string last_modified_since = 4 [json_name = "last_modified_since"];
+
+      // A duration in seconds with up to nine fractional digits, terminated by 's'. Example: "3.5s".
+      string max_time_elapsed_since_last_modification = 5 [
+        json_name = "max_time_elapsed_since_last_modification"
+      ];
+
+      // A duration in seconds with up to nine fractional digits, terminated by 's'. Example: "3.5s".
+      string min_time_elapsed_since_last_modification = 6 [
+        json_name = "min_time_elapsed_since_last_modification"
+      ];
+    }
+
+    message PosixDataSink {
+      // Root directory path to the filesystem.
+      string root_directory = 1 [json_name = "root_directory"];
+    }
+
+    message PosixDataSource {
+      // Root directory path to the filesystem.
+      string root_directory = 1 [json_name = "root_directory"];
+    }
+
+    message TransferOptions {
+      // Whether objects should be deleted from the source after they are transferred to the sink. Note that this option and delete_objects_unique_in_sink are mutually exclusive.
+      bool delete_objects_from_source_after_transfer = 1 [
+        json_name = "delete_objects_from_source_after_transfer"
+      ];
+
+      // Whether objects that exist only in the sink should be deleted. Note that this option and delete_objects_from_source_after_transfer are mutually exclusive.
+      bool delete_objects_unique_in_sink = 2 [json_name = "delete_objects_unique_in_sink"];
+
+      // Whether overwriting objects that already exist in the sink is allowed.
+      bool overwrite_objects_already_existing_in_sink = 3 [
+        json_name = "overwrite_objects_already_existing_in_sink"
+      ];
+
+      // When to overwrite objects that already exist in the sink. If not set, overwrite behavior is determined by overwriteObjectsAlreadyExistingInSink.
+      string overwrite_when = 4 [json_name = "overwrite_when"];
+    }
+  }
+}

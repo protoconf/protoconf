@@ -1,0 +1,130 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsInspector2DelegatedAdminAccount version is 0
+message AwsInspector2DelegatedAdminAccount {
+  string account_id = 1 [json_name = "account_id"];
+
+  string id = 2;
+
+  string relationship_status = 3 [json_name = "relationship_status"];
+
+  repeated Timeouts timeouts = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsInspector2Enabler version is 0
+message AwsInspector2Enabler {
+  repeated string account_ids = 1 [json_name = "account_ids"];
+
+  string id = 2;
+
+  repeated string resource_types = 3 [json_name = "resource_types"];
+
+  repeated Timeouts timeouts = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsInspector2MemberAssociation version is 0
+message AwsInspector2MemberAssociation {
+  string account_id = 1 [json_name = "account_id"];
+
+  string delegated_admin_account_id = 2 [json_name = "delegated_admin_account_id"];
+
+  string id = 3;
+
+  string relationship_status = 4 [json_name = "relationship_status"];
+
+  string updated_at = 5 [json_name = "updated_at"];
+
+  repeated Timeouts timeouts = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsInspector2OrganizationConfiguration version is 0
+message AwsInspector2OrganizationConfiguration {
+  string id = 1;
+
+  bool max_account_limit_reached = 2 [json_name = "max_account_limit_reached"];
+
+  AutoEnable auto_enable = 3 [json_name = "auto_enable"];
+
+  repeated Timeouts timeouts = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message AutoEnable {
+    bool ec2 = 1;
+
+    bool ecr = 2;
+
+    bool lambda = 3;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

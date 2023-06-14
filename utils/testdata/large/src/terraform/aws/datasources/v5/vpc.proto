@@ -1,0 +1,655 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsVpc version is 0
+message AwsVpc {
+  string arn = 1;
+
+  string cidr_block = 2 [json_name = "cidr_block"];
+
+  repeated CidrBlockAssociations cidr_block_associations = 3 [json_name = "cidr_block_associations"];
+
+  bool default = 4;
+
+  string dhcp_options_id = 5 [json_name = "dhcp_options_id"];
+
+  bool enable_dns_hostnames = 6 [json_name = "enable_dns_hostnames"];
+
+  bool enable_dns_support = 7 [json_name = "enable_dns_support"];
+
+  bool enable_network_address_usage_metrics = 8 [json_name = "enable_network_address_usage_metrics"];
+
+  string id = 9;
+
+  string instance_tenancy = 10 [json_name = "instance_tenancy"];
+
+  string ipv6_association_id = 11 [json_name = "ipv6_association_id"];
+
+  string ipv6_cidr_block = 12 [json_name = "ipv6_cidr_block"];
+
+  string main_route_table_id = 13 [json_name = "main_route_table_id"];
+
+  string owner_id = 14 [json_name = "owner_id"];
+
+  string state = 15;
+
+  map<string, string> tags = 16;
+
+  repeated Filter filter = 17;
+
+  repeated Timeouts timeouts = 18;
+
+  map<string, string> for_each = 19 [json_name = "for_each"];
+
+  repeated string depends_on = 20 [json_name = "depends_on"];
+
+  int32 count = 21;
+
+  string provider = 22;
+
+  terraform.v1.Lifecycle lifecycle = 23;
+
+  message CidrBlockAssociations {
+    // association_id: string
+    string association_id = 1 [json_name = "association_id"];
+
+    // cidr_block: string
+    string cidr_block = 2 [json_name = "cidr_block"];
+
+    // state: string
+    string state = 3;
+  }
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+
+  message Timeouts {
+    string read = 1;
+  }
+}
+
+// AwsVpcDhcpOptions version is 0
+message AwsVpcDhcpOptions {
+  string arn = 1;
+
+  string dhcp_options_id = 2 [json_name = "dhcp_options_id"];
+
+  string domain_name = 3 [json_name = "domain_name"];
+
+  repeated string domain_name_servers = 4 [json_name = "domain_name_servers"];
+
+  string id = 5;
+
+  repeated string netbios_name_servers = 6 [json_name = "netbios_name_servers"];
+
+  string netbios_node_type = 7 [json_name = "netbios_node_type"];
+
+  repeated string ntp_servers = 8 [json_name = "ntp_servers"];
+
+  string owner_id = 9 [json_name = "owner_id"];
+
+  map<string, string> tags = 10;
+
+  repeated Filter filter = 11;
+
+  repeated Timeouts timeouts = 12;
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+
+  message Timeouts {
+    string read = 1;
+  }
+}
+
+// AwsVpcEndpoint version is 0
+message AwsVpcEndpoint {
+  string arn = 1;
+
+  repeated string cidr_blocks = 2 [json_name = "cidr_blocks"];
+
+  repeated DnsEntry dns_entry = 3 [json_name = "dns_entry"];
+
+  repeated DnsOptions dns_options = 4 [json_name = "dns_options"];
+
+  string id = 5;
+
+  string ip_address_type = 6 [json_name = "ip_address_type"];
+
+  repeated string network_interface_ids = 7 [json_name = "network_interface_ids"];
+
+  string owner_id = 8 [json_name = "owner_id"];
+
+  string policy = 9;
+
+  string prefix_list_id = 10 [json_name = "prefix_list_id"];
+
+  bool private_dns_enabled = 11 [json_name = "private_dns_enabled"];
+
+  bool requester_managed = 12 [json_name = "requester_managed"];
+
+  repeated string route_table_ids = 13 [json_name = "route_table_ids"];
+
+  repeated string security_group_ids = 14 [json_name = "security_group_ids"];
+
+  string service_name = 15 [json_name = "service_name"];
+
+  string state = 16;
+
+  repeated string subnet_ids = 17 [json_name = "subnet_ids"];
+
+  map<string, string> tags = 18;
+
+  string vpc_endpoint_type = 19 [json_name = "vpc_endpoint_type"];
+
+  string vpc_id = 20 [json_name = "vpc_id"];
+
+  repeated Filter filter = 21;
+
+  repeated Timeouts timeouts = 22;
+
+  map<string, string> for_each = 23 [json_name = "for_each"];
+
+  repeated string depends_on = 24 [json_name = "depends_on"];
+
+  int32 count = 25;
+
+  string provider = 26;
+
+  terraform.v1.Lifecycle lifecycle = 27;
+
+  message DnsEntry {
+    // dns_name: string
+    string dns_name = 1 [json_name = "dns_name"];
+
+    // hosted_zone_id: string
+    string hosted_zone_id = 2 [json_name = "hosted_zone_id"];
+  }
+
+  message DnsOptions {
+    // dns_record_ip_type: string
+    string dns_record_ip_type = 1 [json_name = "dns_record_ip_type"];
+  }
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+
+  message Timeouts {
+    string read = 1;
+  }
+}
+
+// AwsVpcEndpointService version is 0
+message AwsVpcEndpointService {
+  bool acceptance_required = 1 [json_name = "acceptance_required"];
+
+  string arn = 2;
+
+  repeated string availability_zones = 3 [json_name = "availability_zones"];
+
+  repeated string base_endpoint_dns_names = 4 [json_name = "base_endpoint_dns_names"];
+
+  string id = 5;
+
+  bool manages_vpc_endpoints = 6 [json_name = "manages_vpc_endpoints"];
+
+  string owner = 7;
+
+  string private_dns_name = 8 [json_name = "private_dns_name"];
+
+  string service = 9;
+
+  string service_id = 10 [json_name = "service_id"];
+
+  string service_name = 11 [json_name = "service_name"];
+
+  string service_type = 12 [json_name = "service_type"];
+
+  repeated string supported_ip_address_types = 13 [json_name = "supported_ip_address_types"];
+
+  map<string, string> tags = 14;
+
+  bool vpc_endpoint_policy_supported = 15 [json_name = "vpc_endpoint_policy_supported"];
+
+  repeated Filter filter = 16;
+
+  repeated Timeouts timeouts = 17;
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+
+  message Timeouts {
+    string read = 1;
+  }
+}
+
+// AwsVpcIpamPool version is 0
+message AwsVpcIpamPool {
+  string address_family = 1 [json_name = "address_family"];
+
+  int64 allocation_default_netmask_length = 2 [json_name = "allocation_default_netmask_length"];
+
+  int64 allocation_max_netmask_length = 3 [json_name = "allocation_max_netmask_length"];
+
+  int64 allocation_min_netmask_length = 4 [json_name = "allocation_min_netmask_length"];
+
+  map<string, string> allocation_resource_tags = 5 [json_name = "allocation_resource_tags"];
+
+  string arn = 6;
+
+  bool auto_import = 7 [json_name = "auto_import"];
+
+  string aws_service = 8 [json_name = "aws_service"];
+
+  string description = 9;
+
+  string id = 10;
+
+  string ipam_pool_id = 11 [json_name = "ipam_pool_id"];
+
+  string ipam_scope_id = 12 [json_name = "ipam_scope_id"];
+
+  string ipam_scope_type = 13 [json_name = "ipam_scope_type"];
+
+  string locale = 14;
+
+  int64 pool_depth = 15 [json_name = "pool_depth"];
+
+  bool publicly_advertisable = 16 [json_name = "publicly_advertisable"];
+
+  string source_ipam_pool_id = 17 [json_name = "source_ipam_pool_id"];
+
+  string state = 18;
+
+  map<string, string> tags = 19;
+
+  repeated Filter filter = 20;
+
+  repeated Timeouts timeouts = 21;
+
+  map<string, string> for_each = 22 [json_name = "for_each"];
+
+  repeated string depends_on = 23 [json_name = "depends_on"];
+
+  int32 count = 24;
+
+  string provider = 25;
+
+  terraform.v1.Lifecycle lifecycle = 26;
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+
+  message Timeouts {
+    string read = 1;
+  }
+}
+
+// AwsVpcIpamPoolCidrs version is 0
+message AwsVpcIpamPoolCidrs {
+  string id = 1;
+
+  repeated IpamPoolCidrs ipam_pool_cidrs = 2 [json_name = "ipam_pool_cidrs"];
+
+  string ipam_pool_id = 3 [json_name = "ipam_pool_id"];
+
+  repeated Filter filter = 4;
+
+  repeated Timeouts timeouts = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message IpamPoolCidrs {
+    // cidr: string
+    string cidr = 1;
+
+    // state: string
+    string state = 2;
+  }
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+
+  message Timeouts {
+    string read = 1;
+  }
+}
+
+// AwsVpcIpamPools version is 0
+message AwsVpcIpamPools {
+  string id = 1;
+
+  repeated IpamPools ipam_pools = 2 [json_name = "ipam_pools"];
+
+  repeated Filter filter = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+
+  message IpamPools {
+    // address_family: string
+    string address_family = 1 [json_name = "address_family"];
+
+    // allocation_default_netmask_length: number
+    int64 allocation_default_netmask_length = 2 [json_name = "allocation_default_netmask_length"];
+
+    // allocation_max_netmask_length: number
+    int64 allocation_max_netmask_length = 3 [json_name = "allocation_max_netmask_length"];
+
+    // allocation_min_netmask_length: number
+    int64 allocation_min_netmask_length = 4 [json_name = "allocation_min_netmask_length"];
+
+    // allocation_resource_tags: map of string
+    map<string, string> allocation_resource_tags = 5 [json_name = "allocation_resource_tags"];
+
+    // arn: string
+    string arn = 6;
+
+    // auto_import: bool
+    bool auto_import = 7 [json_name = "auto_import"];
+
+    // aws_service: string
+    string aws_service = 8 [json_name = "aws_service"];
+
+    // description: string
+    string description = 9;
+
+    // id: string
+    string id = 10;
+
+    // ipam_pool_id: string
+    string ipam_pool_id = 11 [json_name = "ipam_pool_id"];
+
+    // ipam_scope_id: string
+    string ipam_scope_id = 12 [json_name = "ipam_scope_id"];
+
+    // ipam_scope_type: string
+    string ipam_scope_type = 13 [json_name = "ipam_scope_type"];
+
+    // locale: string
+    string locale = 14;
+
+    // pool_depth: number
+    int64 pool_depth = 15 [json_name = "pool_depth"];
+
+    // publicly_advertisable: bool
+    bool publicly_advertisable = 16 [json_name = "publicly_advertisable"];
+
+    // source_ipam_pool_id: string
+    string source_ipam_pool_id = 17 [json_name = "source_ipam_pool_id"];
+
+    // state: string
+    string state = 18;
+
+    // tags: map of string
+    map<string, string> tags = 19;
+  }
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+}
+
+// AwsVpcIpamPreviewNextCidr version is 0
+message AwsVpcIpamPreviewNextCidr {
+  string cidr = 1;
+
+  repeated string disallowed_cidrs = 2 [json_name = "disallowed_cidrs"];
+
+  string id = 3;
+
+  string ipam_pool_id = 4 [json_name = "ipam_pool_id"];
+
+  int64 netmask_length = 5 [json_name = "netmask_length"];
+
+  repeated Timeouts timeouts = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Timeouts {
+    string read = 1;
+  }
+}
+
+// AwsVpcPeeringConnection version is 0
+message AwsVpcPeeringConnection {
+  map<string, string> accepter = 1;
+
+  string cidr_block = 2 [json_name = "cidr_block"];
+
+  repeated CidrBlockSet cidr_block_set = 3 [json_name = "cidr_block_set"];
+
+  string id = 4;
+
+  string owner_id = 5 [json_name = "owner_id"];
+
+  string peer_cidr_block = 6 [json_name = "peer_cidr_block"];
+
+  repeated PeerCidrBlockSet peer_cidr_block_set = 7 [json_name = "peer_cidr_block_set"];
+
+  string peer_owner_id = 8 [json_name = "peer_owner_id"];
+
+  string peer_region = 9 [json_name = "peer_region"];
+
+  string peer_vpc_id = 10 [json_name = "peer_vpc_id"];
+
+  string region = 11;
+
+  map<string, string> requester = 12;
+
+  string status = 13;
+
+  map<string, string> tags = 14;
+
+  string vpc_id = 15 [json_name = "vpc_id"];
+
+  repeated Filter filter = 16;
+
+  repeated Timeouts timeouts = 17;
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+
+  message CidrBlockSet {
+    // cidr_block: string
+    string cidr_block = 1 [json_name = "cidr_block"];
+  }
+
+  message PeerCidrBlockSet {
+    // cidr_block: string
+    string cidr_block = 1 [json_name = "cidr_block"];
+  }
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+
+  message Timeouts {
+    string read = 1;
+  }
+}
+
+// AwsVpcPeeringConnections version is 0
+message AwsVpcPeeringConnections {
+  string id = 1;
+
+  repeated string ids = 2;
+
+  map<string, string> tags = 3;
+
+  repeated Filter filter = 4;
+
+  repeated Timeouts timeouts = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+
+  message Timeouts {
+    string read = 1;
+  }
+}
+
+// AwsVpcSecurityGroupRule version is 0
+message AwsVpcSecurityGroupRule {
+  string arn = 1;
+
+  string cidr_ipv4 = 2 [json_name = "cidr_ipv4"];
+
+  string cidr_ipv6 = 3 [json_name = "cidr_ipv6"];
+
+  string description = 4;
+
+  int64 from_port = 5 [json_name = "from_port"];
+
+  string id = 6;
+
+  string ip_protocol = 7 [json_name = "ip_protocol"];
+
+  bool is_egress = 8 [json_name = "is_egress"];
+
+  string prefix_list_id = 9 [json_name = "prefix_list_id"];
+
+  string referenced_security_group_id = 10 [json_name = "referenced_security_group_id"];
+
+  string security_group_id = 11 [json_name = "security_group_id"];
+
+  string security_group_rule_id = 12 [json_name = "security_group_rule_id"];
+
+  map<string, string> tags = 13;
+
+  int64 to_port = 14 [json_name = "to_port"];
+
+  repeated Filter filter = 15;
+
+  map<string, string> for_each = 16 [json_name = "for_each"];
+
+  repeated string depends_on = 17 [json_name = "depends_on"];
+
+  int32 count = 18;
+
+  string provider = 19;
+
+  terraform.v1.Lifecycle lifecycle = 20;
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+}
+
+// AwsVpcSecurityGroupRules version is 0
+message AwsVpcSecurityGroupRules {
+  string id = 1;
+
+  repeated string ids = 2;
+
+  map<string, string> tags = 3;
+
+  repeated Filter filter = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+}

@@ -1,0 +1,94 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsTimestreamwriteDatabase version is 0
+message AwsTimestreamwriteDatabase {
+  string arn = 1;
+
+  string database_name = 2 [json_name = "database_name"];
+
+  string id = 3;
+
+  string kms_key_id = 4 [json_name = "kms_key_id"];
+
+  int64 table_count = 5 [json_name = "table_count"];
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsTimestreamwriteTable version is 0
+message AwsTimestreamwriteTable {
+  string arn = 1;
+
+  string database_name = 2 [json_name = "database_name"];
+
+  string id = 3;
+
+  string table_name = 4 [json_name = "table_name"];
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  MagneticStoreWriteProperties magnetic_store_write_properties = 7 [json_name = "magnetic_store_write_properties"];
+
+  RetentionProperties retention_properties = 8 [json_name = "retention_properties"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message MagneticStoreWriteProperties {
+    bool enable_magnetic_store_writes = 1 [json_name = "enable_magnetic_store_writes"];
+
+    MagneticStoreRejectedDataLocation magnetic_store_rejected_data_location = 2 [
+      json_name = "magnetic_store_rejected_data_location"
+    ];
+
+    message MagneticStoreRejectedDataLocation {
+      S3Configuration s3_configuration = 1 [json_name = "s3_configuration"];
+
+      message S3Configuration {
+        string bucket_name = 1 [json_name = "bucket_name"];
+
+        string encryption_option = 2 [json_name = "encryption_option"];
+
+        string kms_key_id = 3 [json_name = "kms_key_id"];
+
+        string object_key_prefix = 4 [json_name = "object_key_prefix"];
+      }
+    }
+  }
+
+  message RetentionProperties {
+    int64 magnetic_store_retention_period_in_days = 1 [
+      json_name = "magnetic_store_retention_period_in_days"
+    ];
+
+    int64 memory_store_retention_period_in_hours = 2 [
+      json_name = "memory_store_retention_period_in_hours"
+    ];
+  }
+}

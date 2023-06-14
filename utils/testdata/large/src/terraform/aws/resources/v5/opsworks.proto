@@ -1,0 +1,2099 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsOpsworksApplication version is 0
+message AwsOpsworksApplication {
+  string auto_bundle_on_deploy = 1 [json_name = "auto_bundle_on_deploy"];
+
+  string aws_flow_ruby_settings = 2 [json_name = "aws_flow_ruby_settings"];
+
+  string data_source_arn = 3 [json_name = "data_source_arn"];
+
+  string data_source_database_name = 4 [json_name = "data_source_database_name"];
+
+  string data_source_type = 5 [json_name = "data_source_type"];
+
+  string description = 6;
+
+  string document_root = 7 [json_name = "document_root"];
+
+  repeated string domains = 8;
+
+  bool enable_ssl = 9 [json_name = "enable_ssl"];
+
+  string id = 10;
+
+  string name = 11;
+
+  string rails_env = 12 [json_name = "rails_env"];
+
+  string short_name = 13 [json_name = "short_name"];
+
+  string stack_id = 14 [json_name = "stack_id"];
+
+  string type = 15;
+
+  repeated AppSource app_source = 16 [json_name = "app_source"];
+
+  repeated Environment environment = 17;
+
+  repeated SslConfiguration ssl_configuration = 18 [json_name = "ssl_configuration"];
+
+  map<string, string> for_each = 19 [json_name = "for_each"];
+
+  repeated string depends_on = 20 [json_name = "depends_on"];
+
+  int32 count = 21;
+
+  string provider = 22;
+
+  terraform.v1.Lifecycle lifecycle = 23;
+
+  message AppSource {
+    string password = 1;
+
+    string revision = 2;
+
+    string ssh_key = 3 [json_name = "ssh_key"];
+
+    string type = 4;
+
+    string url = 5;
+
+    string username = 6;
+  }
+
+  message Environment {
+    string key = 1;
+
+    bool secure = 2;
+
+    string value = 3;
+  }
+
+  message SslConfiguration {
+    string certificate = 1;
+
+    string chain = 2;
+
+    string private_key = 3 [json_name = "private_key"];
+  }
+}
+
+// AwsOpsworksCustomLayer version is 0
+message AwsOpsworksCustomLayer {
+  string arn = 1;
+
+  bool auto_assign_elastic_ips = 2 [json_name = "auto_assign_elastic_ips"];
+
+  bool auto_assign_public_ips = 3 [json_name = "auto_assign_public_ips"];
+
+  bool auto_healing = 4 [json_name = "auto_healing"];
+
+  repeated string custom_configure_recipes = 5 [json_name = "custom_configure_recipes"];
+
+  repeated string custom_deploy_recipes = 6 [json_name = "custom_deploy_recipes"];
+
+  string custom_instance_profile_arn = 7 [json_name = "custom_instance_profile_arn"];
+
+  string custom_json = 8 [json_name = "custom_json"];
+
+  repeated string custom_security_group_ids = 9 [json_name = "custom_security_group_ids"];
+
+  repeated string custom_setup_recipes = 10 [json_name = "custom_setup_recipes"];
+
+  repeated string custom_shutdown_recipes = 11 [json_name = "custom_shutdown_recipes"];
+
+  repeated string custom_undeploy_recipes = 12 [json_name = "custom_undeploy_recipes"];
+
+  bool drain_elb_on_shutdown = 13 [json_name = "drain_elb_on_shutdown"];
+
+  string elastic_load_balancer = 14 [json_name = "elastic_load_balancer"];
+
+  string id = 15;
+
+  bool install_updates_on_boot = 16 [json_name = "install_updates_on_boot"];
+
+  int64 instance_shutdown_timeout = 17 [json_name = "instance_shutdown_timeout"];
+
+  string name = 18;
+
+  string short_name = 19 [json_name = "short_name"];
+
+  string stack_id = 20 [json_name = "stack_id"];
+
+  repeated string system_packages = 21 [json_name = "system_packages"];
+
+  map<string, string> tags = 22;
+
+  map<string, string> tags_all = 23 [json_name = "tags_all"];
+
+  bool use_ebs_optimized_instances = 24 [json_name = "use_ebs_optimized_instances"];
+
+  CloudwatchConfiguration cloudwatch_configuration = 25 [json_name = "cloudwatch_configuration"];
+
+  repeated EbsVolume ebs_volume = 26 [json_name = "ebs_volume"];
+
+  LoadBasedAutoScaling load_based_auto_scaling = 27 [json_name = "load_based_auto_scaling"];
+
+  map<string, string> for_each = 28 [json_name = "for_each"];
+
+  repeated string depends_on = 29 [json_name = "depends_on"];
+
+  int32 count = 30;
+
+  string provider = 31;
+
+  terraform.v1.Lifecycle lifecycle = 32;
+
+  message CloudwatchConfiguration {
+    bool enabled = 1;
+
+    repeated LogStreams log_streams = 2 [json_name = "log_streams"];
+
+    message LogStreams {
+      int64 batch_count = 1 [json_name = "batch_count"];
+
+      int64 batch_size = 2 [json_name = "batch_size"];
+
+      int64 buffer_duration = 3 [json_name = "buffer_duration"];
+
+      string datetime_format = 4 [json_name = "datetime_format"];
+
+      string encoding = 5;
+
+      string file = 6;
+
+      string file_fingerprint_lines = 7 [json_name = "file_fingerprint_lines"];
+
+      string initial_position = 8 [json_name = "initial_position"];
+
+      string log_group_name = 9 [json_name = "log_group_name"];
+
+      string multiline_start_pattern = 10 [json_name = "multiline_start_pattern"];
+
+      string time_zone = 11 [json_name = "time_zone"];
+    }
+  }
+
+  message EbsVolume {
+    bool encrypted = 1;
+
+    int64 iops = 2;
+
+    string mount_point = 3 [json_name = "mount_point"];
+
+    int64 number_of_disks = 4 [json_name = "number_of_disks"];
+
+    string raid_level = 5 [json_name = "raid_level"];
+
+    int64 size = 6;
+
+    string type = 7;
+  }
+
+  message LoadBasedAutoScaling {
+    bool enable = 1;
+
+    Downscaling downscaling = 2;
+
+    Upscaling upscaling = 3;
+
+    message Downscaling {
+      repeated string alarms = 1;
+
+      int64 cpu_threshold = 2 [json_name = "cpu_threshold"];
+
+      int64 ignore_metrics_time = 3 [json_name = "ignore_metrics_time"];
+
+      int64 instance_count = 4 [json_name = "instance_count"];
+
+      int64 load_threshold = 5 [json_name = "load_threshold"];
+
+      int64 memory_threshold = 6 [json_name = "memory_threshold"];
+
+      int64 thresholds_wait_time = 7 [json_name = "thresholds_wait_time"];
+    }
+
+    message Upscaling {
+      repeated string alarms = 1;
+
+      int64 cpu_threshold = 2 [json_name = "cpu_threshold"];
+
+      int64 ignore_metrics_time = 3 [json_name = "ignore_metrics_time"];
+
+      int64 instance_count = 4 [json_name = "instance_count"];
+
+      int64 load_threshold = 5 [json_name = "load_threshold"];
+
+      int64 memory_threshold = 6 [json_name = "memory_threshold"];
+
+      int64 thresholds_wait_time = 7 [json_name = "thresholds_wait_time"];
+    }
+  }
+}
+
+// AwsOpsworksEcsClusterLayer version is 0
+message AwsOpsworksEcsClusterLayer {
+  string arn = 1;
+
+  bool auto_assign_elastic_ips = 2 [json_name = "auto_assign_elastic_ips"];
+
+  bool auto_assign_public_ips = 3 [json_name = "auto_assign_public_ips"];
+
+  bool auto_healing = 4 [json_name = "auto_healing"];
+
+  repeated string custom_configure_recipes = 5 [json_name = "custom_configure_recipes"];
+
+  repeated string custom_deploy_recipes = 6 [json_name = "custom_deploy_recipes"];
+
+  string custom_instance_profile_arn = 7 [json_name = "custom_instance_profile_arn"];
+
+  string custom_json = 8 [json_name = "custom_json"];
+
+  repeated string custom_security_group_ids = 9 [json_name = "custom_security_group_ids"];
+
+  repeated string custom_setup_recipes = 10 [json_name = "custom_setup_recipes"];
+
+  repeated string custom_shutdown_recipes = 11 [json_name = "custom_shutdown_recipes"];
+
+  repeated string custom_undeploy_recipes = 12 [json_name = "custom_undeploy_recipes"];
+
+  bool drain_elb_on_shutdown = 13 [json_name = "drain_elb_on_shutdown"];
+
+  string ecs_cluster_arn = 14 [json_name = "ecs_cluster_arn"];
+
+  string elastic_load_balancer = 15 [json_name = "elastic_load_balancer"];
+
+  string id = 16;
+
+  bool install_updates_on_boot = 17 [json_name = "install_updates_on_boot"];
+
+  int64 instance_shutdown_timeout = 18 [json_name = "instance_shutdown_timeout"];
+
+  string name = 19;
+
+  string stack_id = 20 [json_name = "stack_id"];
+
+  repeated string system_packages = 21 [json_name = "system_packages"];
+
+  map<string, string> tags = 22;
+
+  map<string, string> tags_all = 23 [json_name = "tags_all"];
+
+  bool use_ebs_optimized_instances = 24 [json_name = "use_ebs_optimized_instances"];
+
+  CloudwatchConfiguration cloudwatch_configuration = 25 [json_name = "cloudwatch_configuration"];
+
+  repeated EbsVolume ebs_volume = 26 [json_name = "ebs_volume"];
+
+  LoadBasedAutoScaling load_based_auto_scaling = 27 [json_name = "load_based_auto_scaling"];
+
+  map<string, string> for_each = 28 [json_name = "for_each"];
+
+  repeated string depends_on = 29 [json_name = "depends_on"];
+
+  int32 count = 30;
+
+  string provider = 31;
+
+  terraform.v1.Lifecycle lifecycle = 32;
+
+  message CloudwatchConfiguration {
+    bool enabled = 1;
+
+    repeated LogStreams log_streams = 2 [json_name = "log_streams"];
+
+    message LogStreams {
+      int64 batch_count = 1 [json_name = "batch_count"];
+
+      int64 batch_size = 2 [json_name = "batch_size"];
+
+      int64 buffer_duration = 3 [json_name = "buffer_duration"];
+
+      string datetime_format = 4 [json_name = "datetime_format"];
+
+      string encoding = 5;
+
+      string file = 6;
+
+      string file_fingerprint_lines = 7 [json_name = "file_fingerprint_lines"];
+
+      string initial_position = 8 [json_name = "initial_position"];
+
+      string log_group_name = 9 [json_name = "log_group_name"];
+
+      string multiline_start_pattern = 10 [json_name = "multiline_start_pattern"];
+
+      string time_zone = 11 [json_name = "time_zone"];
+    }
+  }
+
+  message EbsVolume {
+    bool encrypted = 1;
+
+    int64 iops = 2;
+
+    string mount_point = 3 [json_name = "mount_point"];
+
+    int64 number_of_disks = 4 [json_name = "number_of_disks"];
+
+    string raid_level = 5 [json_name = "raid_level"];
+
+    int64 size = 6;
+
+    string type = 7;
+  }
+
+  message LoadBasedAutoScaling {
+    bool enable = 1;
+
+    Downscaling downscaling = 2;
+
+    Upscaling upscaling = 3;
+
+    message Downscaling {
+      repeated string alarms = 1;
+
+      int64 cpu_threshold = 2 [json_name = "cpu_threshold"];
+
+      int64 ignore_metrics_time = 3 [json_name = "ignore_metrics_time"];
+
+      int64 instance_count = 4 [json_name = "instance_count"];
+
+      int64 load_threshold = 5 [json_name = "load_threshold"];
+
+      int64 memory_threshold = 6 [json_name = "memory_threshold"];
+
+      int64 thresholds_wait_time = 7 [json_name = "thresholds_wait_time"];
+    }
+
+    message Upscaling {
+      repeated string alarms = 1;
+
+      int64 cpu_threshold = 2 [json_name = "cpu_threshold"];
+
+      int64 ignore_metrics_time = 3 [json_name = "ignore_metrics_time"];
+
+      int64 instance_count = 4 [json_name = "instance_count"];
+
+      int64 load_threshold = 5 [json_name = "load_threshold"];
+
+      int64 memory_threshold = 6 [json_name = "memory_threshold"];
+
+      int64 thresholds_wait_time = 7 [json_name = "thresholds_wait_time"];
+    }
+  }
+}
+
+// AwsOpsworksGangliaLayer version is 0
+message AwsOpsworksGangliaLayer {
+  string arn = 1;
+
+  bool auto_assign_elastic_ips = 2 [json_name = "auto_assign_elastic_ips"];
+
+  bool auto_assign_public_ips = 3 [json_name = "auto_assign_public_ips"];
+
+  bool auto_healing = 4 [json_name = "auto_healing"];
+
+  repeated string custom_configure_recipes = 5 [json_name = "custom_configure_recipes"];
+
+  repeated string custom_deploy_recipes = 6 [json_name = "custom_deploy_recipes"];
+
+  string custom_instance_profile_arn = 7 [json_name = "custom_instance_profile_arn"];
+
+  string custom_json = 8 [json_name = "custom_json"];
+
+  repeated string custom_security_group_ids = 9 [json_name = "custom_security_group_ids"];
+
+  repeated string custom_setup_recipes = 10 [json_name = "custom_setup_recipes"];
+
+  repeated string custom_shutdown_recipes = 11 [json_name = "custom_shutdown_recipes"];
+
+  repeated string custom_undeploy_recipes = 12 [json_name = "custom_undeploy_recipes"];
+
+  bool drain_elb_on_shutdown = 13 [json_name = "drain_elb_on_shutdown"];
+
+  string elastic_load_balancer = 14 [json_name = "elastic_load_balancer"];
+
+  string id = 15;
+
+  bool install_updates_on_boot = 16 [json_name = "install_updates_on_boot"];
+
+  int64 instance_shutdown_timeout = 17 [json_name = "instance_shutdown_timeout"];
+
+  string name = 18;
+
+  string password = 19;
+
+  string stack_id = 20 [json_name = "stack_id"];
+
+  repeated string system_packages = 21 [json_name = "system_packages"];
+
+  map<string, string> tags = 22;
+
+  map<string, string> tags_all = 23 [json_name = "tags_all"];
+
+  string url = 24;
+
+  bool use_ebs_optimized_instances = 25 [json_name = "use_ebs_optimized_instances"];
+
+  string username = 26;
+
+  CloudwatchConfiguration cloudwatch_configuration = 27 [json_name = "cloudwatch_configuration"];
+
+  repeated EbsVolume ebs_volume = 28 [json_name = "ebs_volume"];
+
+  LoadBasedAutoScaling load_based_auto_scaling = 29 [json_name = "load_based_auto_scaling"];
+
+  map<string, string> for_each = 30 [json_name = "for_each"];
+
+  repeated string depends_on = 31 [json_name = "depends_on"];
+
+  int32 count = 32;
+
+  string provider = 33;
+
+  terraform.v1.Lifecycle lifecycle = 34;
+
+  message CloudwatchConfiguration {
+    bool enabled = 1;
+
+    repeated LogStreams log_streams = 2 [json_name = "log_streams"];
+
+    message LogStreams {
+      int64 batch_count = 1 [json_name = "batch_count"];
+
+      int64 batch_size = 2 [json_name = "batch_size"];
+
+      int64 buffer_duration = 3 [json_name = "buffer_duration"];
+
+      string datetime_format = 4 [json_name = "datetime_format"];
+
+      string encoding = 5;
+
+      string file = 6;
+
+      string file_fingerprint_lines = 7 [json_name = "file_fingerprint_lines"];
+
+      string initial_position = 8 [json_name = "initial_position"];
+
+      string log_group_name = 9 [json_name = "log_group_name"];
+
+      string multiline_start_pattern = 10 [json_name = "multiline_start_pattern"];
+
+      string time_zone = 11 [json_name = "time_zone"];
+    }
+  }
+
+  message EbsVolume {
+    bool encrypted = 1;
+
+    int64 iops = 2;
+
+    string mount_point = 3 [json_name = "mount_point"];
+
+    int64 number_of_disks = 4 [json_name = "number_of_disks"];
+
+    string raid_level = 5 [json_name = "raid_level"];
+
+    int64 size = 6;
+
+    string type = 7;
+  }
+
+  message LoadBasedAutoScaling {
+    bool enable = 1;
+
+    Downscaling downscaling = 2;
+
+    Upscaling upscaling = 3;
+
+    message Downscaling {
+      repeated string alarms = 1;
+
+      int64 cpu_threshold = 2 [json_name = "cpu_threshold"];
+
+      int64 ignore_metrics_time = 3 [json_name = "ignore_metrics_time"];
+
+      int64 instance_count = 4 [json_name = "instance_count"];
+
+      int64 load_threshold = 5 [json_name = "load_threshold"];
+
+      int64 memory_threshold = 6 [json_name = "memory_threshold"];
+
+      int64 thresholds_wait_time = 7 [json_name = "thresholds_wait_time"];
+    }
+
+    message Upscaling {
+      repeated string alarms = 1;
+
+      int64 cpu_threshold = 2 [json_name = "cpu_threshold"];
+
+      int64 ignore_metrics_time = 3 [json_name = "ignore_metrics_time"];
+
+      int64 instance_count = 4 [json_name = "instance_count"];
+
+      int64 load_threshold = 5 [json_name = "load_threshold"];
+
+      int64 memory_threshold = 6 [json_name = "memory_threshold"];
+
+      int64 thresholds_wait_time = 7 [json_name = "thresholds_wait_time"];
+    }
+  }
+}
+
+// AwsOpsworksHaproxyLayer version is 0
+message AwsOpsworksHaproxyLayer {
+  string arn = 1;
+
+  bool auto_assign_elastic_ips = 2 [json_name = "auto_assign_elastic_ips"];
+
+  bool auto_assign_public_ips = 3 [json_name = "auto_assign_public_ips"];
+
+  bool auto_healing = 4 [json_name = "auto_healing"];
+
+  repeated string custom_configure_recipes = 5 [json_name = "custom_configure_recipes"];
+
+  repeated string custom_deploy_recipes = 6 [json_name = "custom_deploy_recipes"];
+
+  string custom_instance_profile_arn = 7 [json_name = "custom_instance_profile_arn"];
+
+  string custom_json = 8 [json_name = "custom_json"];
+
+  repeated string custom_security_group_ids = 9 [json_name = "custom_security_group_ids"];
+
+  repeated string custom_setup_recipes = 10 [json_name = "custom_setup_recipes"];
+
+  repeated string custom_shutdown_recipes = 11 [json_name = "custom_shutdown_recipes"];
+
+  repeated string custom_undeploy_recipes = 12 [json_name = "custom_undeploy_recipes"];
+
+  bool drain_elb_on_shutdown = 13 [json_name = "drain_elb_on_shutdown"];
+
+  string elastic_load_balancer = 14 [json_name = "elastic_load_balancer"];
+
+  string healthcheck_method = 15 [json_name = "healthcheck_method"];
+
+  string healthcheck_url = 16 [json_name = "healthcheck_url"];
+
+  string id = 17;
+
+  bool install_updates_on_boot = 18 [json_name = "install_updates_on_boot"];
+
+  int64 instance_shutdown_timeout = 19 [json_name = "instance_shutdown_timeout"];
+
+  string name = 20;
+
+  string stack_id = 21 [json_name = "stack_id"];
+
+  bool stats_enabled = 22 [json_name = "stats_enabled"];
+
+  string stats_password = 23 [json_name = "stats_password"];
+
+  string stats_url = 24 [json_name = "stats_url"];
+
+  string stats_user = 25 [json_name = "stats_user"];
+
+  repeated string system_packages = 26 [json_name = "system_packages"];
+
+  map<string, string> tags = 27;
+
+  map<string, string> tags_all = 28 [json_name = "tags_all"];
+
+  bool use_ebs_optimized_instances = 29 [json_name = "use_ebs_optimized_instances"];
+
+  CloudwatchConfiguration cloudwatch_configuration = 30 [json_name = "cloudwatch_configuration"];
+
+  repeated EbsVolume ebs_volume = 31 [json_name = "ebs_volume"];
+
+  LoadBasedAutoScaling load_based_auto_scaling = 32 [json_name = "load_based_auto_scaling"];
+
+  map<string, string> for_each = 33 [json_name = "for_each"];
+
+  repeated string depends_on = 34 [json_name = "depends_on"];
+
+  int32 count = 35;
+
+  string provider = 36;
+
+  terraform.v1.Lifecycle lifecycle = 37;
+
+  message CloudwatchConfiguration {
+    bool enabled = 1;
+
+    repeated LogStreams log_streams = 2 [json_name = "log_streams"];
+
+    message LogStreams {
+      int64 batch_count = 1 [json_name = "batch_count"];
+
+      int64 batch_size = 2 [json_name = "batch_size"];
+
+      int64 buffer_duration = 3 [json_name = "buffer_duration"];
+
+      string datetime_format = 4 [json_name = "datetime_format"];
+
+      string encoding = 5;
+
+      string file = 6;
+
+      string file_fingerprint_lines = 7 [json_name = "file_fingerprint_lines"];
+
+      string initial_position = 8 [json_name = "initial_position"];
+
+      string log_group_name = 9 [json_name = "log_group_name"];
+
+      string multiline_start_pattern = 10 [json_name = "multiline_start_pattern"];
+
+      string time_zone = 11 [json_name = "time_zone"];
+    }
+  }
+
+  message EbsVolume {
+    bool encrypted = 1;
+
+    int64 iops = 2;
+
+    string mount_point = 3 [json_name = "mount_point"];
+
+    int64 number_of_disks = 4 [json_name = "number_of_disks"];
+
+    string raid_level = 5 [json_name = "raid_level"];
+
+    int64 size = 6;
+
+    string type = 7;
+  }
+
+  message LoadBasedAutoScaling {
+    bool enable = 1;
+
+    Downscaling downscaling = 2;
+
+    Upscaling upscaling = 3;
+
+    message Downscaling {
+      repeated string alarms = 1;
+
+      int64 cpu_threshold = 2 [json_name = "cpu_threshold"];
+
+      int64 ignore_metrics_time = 3 [json_name = "ignore_metrics_time"];
+
+      int64 instance_count = 4 [json_name = "instance_count"];
+
+      int64 load_threshold = 5 [json_name = "load_threshold"];
+
+      int64 memory_threshold = 6 [json_name = "memory_threshold"];
+
+      int64 thresholds_wait_time = 7 [json_name = "thresholds_wait_time"];
+    }
+
+    message Upscaling {
+      repeated string alarms = 1;
+
+      int64 cpu_threshold = 2 [json_name = "cpu_threshold"];
+
+      int64 ignore_metrics_time = 3 [json_name = "ignore_metrics_time"];
+
+      int64 instance_count = 4 [json_name = "instance_count"];
+
+      int64 load_threshold = 5 [json_name = "load_threshold"];
+
+      int64 memory_threshold = 6 [json_name = "memory_threshold"];
+
+      int64 thresholds_wait_time = 7 [json_name = "thresholds_wait_time"];
+    }
+  }
+}
+
+// AwsOpsworksInstance version is 0
+message AwsOpsworksInstance {
+  string agent_version = 1 [json_name = "agent_version"];
+
+  string ami_id = 2 [json_name = "ami_id"];
+
+  string architecture = 3;
+
+  string auto_scaling_type = 4 [json_name = "auto_scaling_type"];
+
+  string availability_zone = 5 [json_name = "availability_zone"];
+
+  string created_at = 6 [json_name = "created_at"];
+
+  bool delete_ebs = 7 [json_name = "delete_ebs"];
+
+  bool delete_eip = 8 [json_name = "delete_eip"];
+
+  bool ebs_optimized = 9 [json_name = "ebs_optimized"];
+
+  string ec2_instance_id = 10 [json_name = "ec2_instance_id"];
+
+  string ecs_cluster_arn = 11 [json_name = "ecs_cluster_arn"];
+
+  string elastic_ip = 12 [json_name = "elastic_ip"];
+
+  string hostname = 13;
+
+  string id = 14;
+
+  string infrastructure_class = 15 [json_name = "infrastructure_class"];
+
+  bool install_updates_on_boot = 16 [json_name = "install_updates_on_boot"];
+
+  string instance_profile_arn = 17 [json_name = "instance_profile_arn"];
+
+  string instance_type = 18 [json_name = "instance_type"];
+
+  string last_service_error_id = 19 [json_name = "last_service_error_id"];
+
+  repeated string layer_ids = 20 [json_name = "layer_ids"];
+
+  string os = 21;
+
+  string platform = 22;
+
+  string private_dns = 23 [json_name = "private_dns"];
+
+  string private_ip = 24 [json_name = "private_ip"];
+
+  string public_dns = 25 [json_name = "public_dns"];
+
+  string public_ip = 26 [json_name = "public_ip"];
+
+  string registered_by = 27 [json_name = "registered_by"];
+
+  string reported_agent_version = 28 [json_name = "reported_agent_version"];
+
+  string reported_os_family = 29 [json_name = "reported_os_family"];
+
+  string reported_os_name = 30 [json_name = "reported_os_name"];
+
+  string reported_os_version = 31 [json_name = "reported_os_version"];
+
+  string root_device_type = 32 [json_name = "root_device_type"];
+
+  string root_device_volume_id = 33 [json_name = "root_device_volume_id"];
+
+  repeated string security_group_ids = 34 [json_name = "security_group_ids"];
+
+  string ssh_host_dsa_key_fingerprint = 35 [json_name = "ssh_host_dsa_key_fingerprint"];
+
+  string ssh_host_rsa_key_fingerprint = 36 [json_name = "ssh_host_rsa_key_fingerprint"];
+
+  string ssh_key_name = 37 [json_name = "ssh_key_name"];
+
+  string stack_id = 38 [json_name = "stack_id"];
+
+  string state = 39;
+
+  string status = 40;
+
+  string subnet_id = 41 [json_name = "subnet_id"];
+
+  string tenancy = 42;
+
+  string virtualization_type = 43 [json_name = "virtualization_type"];
+
+  repeated EbsBlockDevice ebs_block_device = 44 [json_name = "ebs_block_device"];
+
+  repeated EphemeralBlockDevice ephemeral_block_device = 45 [json_name = "ephemeral_block_device"];
+
+  repeated RootBlockDevice root_block_device = 46 [json_name = "root_block_device"];
+
+  repeated Timeouts timeouts = 47;
+
+  map<string, string> for_each = 48 [json_name = "for_each"];
+
+  repeated string depends_on = 49 [json_name = "depends_on"];
+
+  int32 count = 50;
+
+  string provider = 51;
+
+  terraform.v1.Lifecycle lifecycle = 52;
+
+  message EbsBlockDevice {
+    bool delete_on_termination = 1 [json_name = "delete_on_termination"];
+
+    string device_name = 2 [json_name = "device_name"];
+
+    int64 iops = 3;
+
+    string snapshot_id = 4 [json_name = "snapshot_id"];
+
+    int64 volume_size = 5 [json_name = "volume_size"];
+
+    string volume_type = 6 [json_name = "volume_type"];
+  }
+
+  message EphemeralBlockDevice {
+    string device_name = 1 [json_name = "device_name"];
+
+    string virtual_name = 2 [json_name = "virtual_name"];
+  }
+
+  message RootBlockDevice {
+    bool delete_on_termination = 1 [json_name = "delete_on_termination"];
+
+    int64 iops = 2;
+
+    int64 volume_size = 3 [json_name = "volume_size"];
+
+    string volume_type = 4 [json_name = "volume_type"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsOpsworksJavaAppLayer version is 0
+message AwsOpsworksJavaAppLayer {
+  string app_server = 1 [json_name = "app_server"];
+
+  string app_server_version = 2 [json_name = "app_server_version"];
+
+  string arn = 3;
+
+  bool auto_assign_elastic_ips = 4 [json_name = "auto_assign_elastic_ips"];
+
+  bool auto_assign_public_ips = 5 [json_name = "auto_assign_public_ips"];
+
+  bool auto_healing = 6 [json_name = "auto_healing"];
+
+  repeated string custom_configure_recipes = 7 [json_name = "custom_configure_recipes"];
+
+  repeated string custom_deploy_recipes = 8 [json_name = "custom_deploy_recipes"];
+
+  string custom_instance_profile_arn = 9 [json_name = "custom_instance_profile_arn"];
+
+  string custom_json = 10 [json_name = "custom_json"];
+
+  repeated string custom_security_group_ids = 11 [json_name = "custom_security_group_ids"];
+
+  repeated string custom_setup_recipes = 12 [json_name = "custom_setup_recipes"];
+
+  repeated string custom_shutdown_recipes = 13 [json_name = "custom_shutdown_recipes"];
+
+  repeated string custom_undeploy_recipes = 14 [json_name = "custom_undeploy_recipes"];
+
+  bool drain_elb_on_shutdown = 15 [json_name = "drain_elb_on_shutdown"];
+
+  string elastic_load_balancer = 16 [json_name = "elastic_load_balancer"];
+
+  string id = 17;
+
+  bool install_updates_on_boot = 18 [json_name = "install_updates_on_boot"];
+
+  int64 instance_shutdown_timeout = 19 [json_name = "instance_shutdown_timeout"];
+
+  string jvm_options = 20 [json_name = "jvm_options"];
+
+  string jvm_type = 21 [json_name = "jvm_type"];
+
+  string jvm_version = 22 [json_name = "jvm_version"];
+
+  string name = 23;
+
+  string stack_id = 24 [json_name = "stack_id"];
+
+  repeated string system_packages = 25 [json_name = "system_packages"];
+
+  map<string, string> tags = 26;
+
+  map<string, string> tags_all = 27 [json_name = "tags_all"];
+
+  bool use_ebs_optimized_instances = 28 [json_name = "use_ebs_optimized_instances"];
+
+  CloudwatchConfiguration cloudwatch_configuration = 29 [json_name = "cloudwatch_configuration"];
+
+  repeated EbsVolume ebs_volume = 30 [json_name = "ebs_volume"];
+
+  LoadBasedAutoScaling load_based_auto_scaling = 31 [json_name = "load_based_auto_scaling"];
+
+  map<string, string> for_each = 32 [json_name = "for_each"];
+
+  repeated string depends_on = 33 [json_name = "depends_on"];
+
+  int32 count = 34;
+
+  string provider = 35;
+
+  terraform.v1.Lifecycle lifecycle = 36;
+
+  message CloudwatchConfiguration {
+    bool enabled = 1;
+
+    repeated LogStreams log_streams = 2 [json_name = "log_streams"];
+
+    message LogStreams {
+      int64 batch_count = 1 [json_name = "batch_count"];
+
+      int64 batch_size = 2 [json_name = "batch_size"];
+
+      int64 buffer_duration = 3 [json_name = "buffer_duration"];
+
+      string datetime_format = 4 [json_name = "datetime_format"];
+
+      string encoding = 5;
+
+      string file = 6;
+
+      string file_fingerprint_lines = 7 [json_name = "file_fingerprint_lines"];
+
+      string initial_position = 8 [json_name = "initial_position"];
+
+      string log_group_name = 9 [json_name = "log_group_name"];
+
+      string multiline_start_pattern = 10 [json_name = "multiline_start_pattern"];
+
+      string time_zone = 11 [json_name = "time_zone"];
+    }
+  }
+
+  message EbsVolume {
+    bool encrypted = 1;
+
+    int64 iops = 2;
+
+    string mount_point = 3 [json_name = "mount_point"];
+
+    int64 number_of_disks = 4 [json_name = "number_of_disks"];
+
+    string raid_level = 5 [json_name = "raid_level"];
+
+    int64 size = 6;
+
+    string type = 7;
+  }
+
+  message LoadBasedAutoScaling {
+    bool enable = 1;
+
+    Downscaling downscaling = 2;
+
+    Upscaling upscaling = 3;
+
+    message Downscaling {
+      repeated string alarms = 1;
+
+      int64 cpu_threshold = 2 [json_name = "cpu_threshold"];
+
+      int64 ignore_metrics_time = 3 [json_name = "ignore_metrics_time"];
+
+      int64 instance_count = 4 [json_name = "instance_count"];
+
+      int64 load_threshold = 5 [json_name = "load_threshold"];
+
+      int64 memory_threshold = 6 [json_name = "memory_threshold"];
+
+      int64 thresholds_wait_time = 7 [json_name = "thresholds_wait_time"];
+    }
+
+    message Upscaling {
+      repeated string alarms = 1;
+
+      int64 cpu_threshold = 2 [json_name = "cpu_threshold"];
+
+      int64 ignore_metrics_time = 3 [json_name = "ignore_metrics_time"];
+
+      int64 instance_count = 4 [json_name = "instance_count"];
+
+      int64 load_threshold = 5 [json_name = "load_threshold"];
+
+      int64 memory_threshold = 6 [json_name = "memory_threshold"];
+
+      int64 thresholds_wait_time = 7 [json_name = "thresholds_wait_time"];
+    }
+  }
+}
+
+// AwsOpsworksMemcachedLayer version is 0
+message AwsOpsworksMemcachedLayer {
+  int64 allocated_memory = 1 [json_name = "allocated_memory"];
+
+  string arn = 2;
+
+  bool auto_assign_elastic_ips = 3 [json_name = "auto_assign_elastic_ips"];
+
+  bool auto_assign_public_ips = 4 [json_name = "auto_assign_public_ips"];
+
+  bool auto_healing = 5 [json_name = "auto_healing"];
+
+  repeated string custom_configure_recipes = 6 [json_name = "custom_configure_recipes"];
+
+  repeated string custom_deploy_recipes = 7 [json_name = "custom_deploy_recipes"];
+
+  string custom_instance_profile_arn = 8 [json_name = "custom_instance_profile_arn"];
+
+  string custom_json = 9 [json_name = "custom_json"];
+
+  repeated string custom_security_group_ids = 10 [json_name = "custom_security_group_ids"];
+
+  repeated string custom_setup_recipes = 11 [json_name = "custom_setup_recipes"];
+
+  repeated string custom_shutdown_recipes = 12 [json_name = "custom_shutdown_recipes"];
+
+  repeated string custom_undeploy_recipes = 13 [json_name = "custom_undeploy_recipes"];
+
+  bool drain_elb_on_shutdown = 14 [json_name = "drain_elb_on_shutdown"];
+
+  string elastic_load_balancer = 15 [json_name = "elastic_load_balancer"];
+
+  string id = 16;
+
+  bool install_updates_on_boot = 17 [json_name = "install_updates_on_boot"];
+
+  int64 instance_shutdown_timeout = 18 [json_name = "instance_shutdown_timeout"];
+
+  string name = 19;
+
+  string stack_id = 20 [json_name = "stack_id"];
+
+  repeated string system_packages = 21 [json_name = "system_packages"];
+
+  map<string, string> tags = 22;
+
+  map<string, string> tags_all = 23 [json_name = "tags_all"];
+
+  bool use_ebs_optimized_instances = 24 [json_name = "use_ebs_optimized_instances"];
+
+  CloudwatchConfiguration cloudwatch_configuration = 25 [json_name = "cloudwatch_configuration"];
+
+  repeated EbsVolume ebs_volume = 26 [json_name = "ebs_volume"];
+
+  LoadBasedAutoScaling load_based_auto_scaling = 27 [json_name = "load_based_auto_scaling"];
+
+  map<string, string> for_each = 28 [json_name = "for_each"];
+
+  repeated string depends_on = 29 [json_name = "depends_on"];
+
+  int32 count = 30;
+
+  string provider = 31;
+
+  terraform.v1.Lifecycle lifecycle = 32;
+
+  message CloudwatchConfiguration {
+    bool enabled = 1;
+
+    repeated LogStreams log_streams = 2 [json_name = "log_streams"];
+
+    message LogStreams {
+      int64 batch_count = 1 [json_name = "batch_count"];
+
+      int64 batch_size = 2 [json_name = "batch_size"];
+
+      int64 buffer_duration = 3 [json_name = "buffer_duration"];
+
+      string datetime_format = 4 [json_name = "datetime_format"];
+
+      string encoding = 5;
+
+      string file = 6;
+
+      string file_fingerprint_lines = 7 [json_name = "file_fingerprint_lines"];
+
+      string initial_position = 8 [json_name = "initial_position"];
+
+      string log_group_name = 9 [json_name = "log_group_name"];
+
+      string multiline_start_pattern = 10 [json_name = "multiline_start_pattern"];
+
+      string time_zone = 11 [json_name = "time_zone"];
+    }
+  }
+
+  message EbsVolume {
+    bool encrypted = 1;
+
+    int64 iops = 2;
+
+    string mount_point = 3 [json_name = "mount_point"];
+
+    int64 number_of_disks = 4 [json_name = "number_of_disks"];
+
+    string raid_level = 5 [json_name = "raid_level"];
+
+    int64 size = 6;
+
+    string type = 7;
+  }
+
+  message LoadBasedAutoScaling {
+    bool enable = 1;
+
+    Downscaling downscaling = 2;
+
+    Upscaling upscaling = 3;
+
+    message Downscaling {
+      repeated string alarms = 1;
+
+      int64 cpu_threshold = 2 [json_name = "cpu_threshold"];
+
+      int64 ignore_metrics_time = 3 [json_name = "ignore_metrics_time"];
+
+      int64 instance_count = 4 [json_name = "instance_count"];
+
+      int64 load_threshold = 5 [json_name = "load_threshold"];
+
+      int64 memory_threshold = 6 [json_name = "memory_threshold"];
+
+      int64 thresholds_wait_time = 7 [json_name = "thresholds_wait_time"];
+    }
+
+    message Upscaling {
+      repeated string alarms = 1;
+
+      int64 cpu_threshold = 2 [json_name = "cpu_threshold"];
+
+      int64 ignore_metrics_time = 3 [json_name = "ignore_metrics_time"];
+
+      int64 instance_count = 4 [json_name = "instance_count"];
+
+      int64 load_threshold = 5 [json_name = "load_threshold"];
+
+      int64 memory_threshold = 6 [json_name = "memory_threshold"];
+
+      int64 thresholds_wait_time = 7 [json_name = "thresholds_wait_time"];
+    }
+  }
+}
+
+// AwsOpsworksMysqlLayer version is 0
+message AwsOpsworksMysqlLayer {
+  string arn = 1;
+
+  bool auto_assign_elastic_ips = 2 [json_name = "auto_assign_elastic_ips"];
+
+  bool auto_assign_public_ips = 3 [json_name = "auto_assign_public_ips"];
+
+  bool auto_healing = 4 [json_name = "auto_healing"];
+
+  repeated string custom_configure_recipes = 5 [json_name = "custom_configure_recipes"];
+
+  repeated string custom_deploy_recipes = 6 [json_name = "custom_deploy_recipes"];
+
+  string custom_instance_profile_arn = 7 [json_name = "custom_instance_profile_arn"];
+
+  string custom_json = 8 [json_name = "custom_json"];
+
+  repeated string custom_security_group_ids = 9 [json_name = "custom_security_group_ids"];
+
+  repeated string custom_setup_recipes = 10 [json_name = "custom_setup_recipes"];
+
+  repeated string custom_shutdown_recipes = 11 [json_name = "custom_shutdown_recipes"];
+
+  repeated string custom_undeploy_recipes = 12 [json_name = "custom_undeploy_recipes"];
+
+  bool drain_elb_on_shutdown = 13 [json_name = "drain_elb_on_shutdown"];
+
+  string elastic_load_balancer = 14 [json_name = "elastic_load_balancer"];
+
+  string id = 15;
+
+  bool install_updates_on_boot = 16 [json_name = "install_updates_on_boot"];
+
+  int64 instance_shutdown_timeout = 17 [json_name = "instance_shutdown_timeout"];
+
+  string name = 18;
+
+  string root_password = 19 [json_name = "root_password"];
+
+  bool root_password_on_all_instances = 20 [json_name = "root_password_on_all_instances"];
+
+  string stack_id = 21 [json_name = "stack_id"];
+
+  repeated string system_packages = 22 [json_name = "system_packages"];
+
+  map<string, string> tags = 23;
+
+  map<string, string> tags_all = 24 [json_name = "tags_all"];
+
+  bool use_ebs_optimized_instances = 25 [json_name = "use_ebs_optimized_instances"];
+
+  CloudwatchConfiguration cloudwatch_configuration = 26 [json_name = "cloudwatch_configuration"];
+
+  repeated EbsVolume ebs_volume = 27 [json_name = "ebs_volume"];
+
+  LoadBasedAutoScaling load_based_auto_scaling = 28 [json_name = "load_based_auto_scaling"];
+
+  map<string, string> for_each = 29 [json_name = "for_each"];
+
+  repeated string depends_on = 30 [json_name = "depends_on"];
+
+  int32 count = 31;
+
+  string provider = 32;
+
+  terraform.v1.Lifecycle lifecycle = 33;
+
+  message CloudwatchConfiguration {
+    bool enabled = 1;
+
+    repeated LogStreams log_streams = 2 [json_name = "log_streams"];
+
+    message LogStreams {
+      int64 batch_count = 1 [json_name = "batch_count"];
+
+      int64 batch_size = 2 [json_name = "batch_size"];
+
+      int64 buffer_duration = 3 [json_name = "buffer_duration"];
+
+      string datetime_format = 4 [json_name = "datetime_format"];
+
+      string encoding = 5;
+
+      string file = 6;
+
+      string file_fingerprint_lines = 7 [json_name = "file_fingerprint_lines"];
+
+      string initial_position = 8 [json_name = "initial_position"];
+
+      string log_group_name = 9 [json_name = "log_group_name"];
+
+      string multiline_start_pattern = 10 [json_name = "multiline_start_pattern"];
+
+      string time_zone = 11 [json_name = "time_zone"];
+    }
+  }
+
+  message EbsVolume {
+    bool encrypted = 1;
+
+    int64 iops = 2;
+
+    string mount_point = 3 [json_name = "mount_point"];
+
+    int64 number_of_disks = 4 [json_name = "number_of_disks"];
+
+    string raid_level = 5 [json_name = "raid_level"];
+
+    int64 size = 6;
+
+    string type = 7;
+  }
+
+  message LoadBasedAutoScaling {
+    bool enable = 1;
+
+    Downscaling downscaling = 2;
+
+    Upscaling upscaling = 3;
+
+    message Downscaling {
+      repeated string alarms = 1;
+
+      int64 cpu_threshold = 2 [json_name = "cpu_threshold"];
+
+      int64 ignore_metrics_time = 3 [json_name = "ignore_metrics_time"];
+
+      int64 instance_count = 4 [json_name = "instance_count"];
+
+      int64 load_threshold = 5 [json_name = "load_threshold"];
+
+      int64 memory_threshold = 6 [json_name = "memory_threshold"];
+
+      int64 thresholds_wait_time = 7 [json_name = "thresholds_wait_time"];
+    }
+
+    message Upscaling {
+      repeated string alarms = 1;
+
+      int64 cpu_threshold = 2 [json_name = "cpu_threshold"];
+
+      int64 ignore_metrics_time = 3 [json_name = "ignore_metrics_time"];
+
+      int64 instance_count = 4 [json_name = "instance_count"];
+
+      int64 load_threshold = 5 [json_name = "load_threshold"];
+
+      int64 memory_threshold = 6 [json_name = "memory_threshold"];
+
+      int64 thresholds_wait_time = 7 [json_name = "thresholds_wait_time"];
+    }
+  }
+}
+
+// AwsOpsworksNodejsAppLayer version is 0
+message AwsOpsworksNodejsAppLayer {
+  string arn = 1;
+
+  bool auto_assign_elastic_ips = 2 [json_name = "auto_assign_elastic_ips"];
+
+  bool auto_assign_public_ips = 3 [json_name = "auto_assign_public_ips"];
+
+  bool auto_healing = 4 [json_name = "auto_healing"];
+
+  repeated string custom_configure_recipes = 5 [json_name = "custom_configure_recipes"];
+
+  repeated string custom_deploy_recipes = 6 [json_name = "custom_deploy_recipes"];
+
+  string custom_instance_profile_arn = 7 [json_name = "custom_instance_profile_arn"];
+
+  string custom_json = 8 [json_name = "custom_json"];
+
+  repeated string custom_security_group_ids = 9 [json_name = "custom_security_group_ids"];
+
+  repeated string custom_setup_recipes = 10 [json_name = "custom_setup_recipes"];
+
+  repeated string custom_shutdown_recipes = 11 [json_name = "custom_shutdown_recipes"];
+
+  repeated string custom_undeploy_recipes = 12 [json_name = "custom_undeploy_recipes"];
+
+  bool drain_elb_on_shutdown = 13 [json_name = "drain_elb_on_shutdown"];
+
+  string elastic_load_balancer = 14 [json_name = "elastic_load_balancer"];
+
+  string id = 15;
+
+  bool install_updates_on_boot = 16 [json_name = "install_updates_on_boot"];
+
+  int64 instance_shutdown_timeout = 17 [json_name = "instance_shutdown_timeout"];
+
+  string name = 18;
+
+  string nodejs_version = 19 [json_name = "nodejs_version"];
+
+  string stack_id = 20 [json_name = "stack_id"];
+
+  repeated string system_packages = 21 [json_name = "system_packages"];
+
+  map<string, string> tags = 22;
+
+  map<string, string> tags_all = 23 [json_name = "tags_all"];
+
+  bool use_ebs_optimized_instances = 24 [json_name = "use_ebs_optimized_instances"];
+
+  CloudwatchConfiguration cloudwatch_configuration = 25 [json_name = "cloudwatch_configuration"];
+
+  repeated EbsVolume ebs_volume = 26 [json_name = "ebs_volume"];
+
+  LoadBasedAutoScaling load_based_auto_scaling = 27 [json_name = "load_based_auto_scaling"];
+
+  map<string, string> for_each = 28 [json_name = "for_each"];
+
+  repeated string depends_on = 29 [json_name = "depends_on"];
+
+  int32 count = 30;
+
+  string provider = 31;
+
+  terraform.v1.Lifecycle lifecycle = 32;
+
+  message CloudwatchConfiguration {
+    bool enabled = 1;
+
+    repeated LogStreams log_streams = 2 [json_name = "log_streams"];
+
+    message LogStreams {
+      int64 batch_count = 1 [json_name = "batch_count"];
+
+      int64 batch_size = 2 [json_name = "batch_size"];
+
+      int64 buffer_duration = 3 [json_name = "buffer_duration"];
+
+      string datetime_format = 4 [json_name = "datetime_format"];
+
+      string encoding = 5;
+
+      string file = 6;
+
+      string file_fingerprint_lines = 7 [json_name = "file_fingerprint_lines"];
+
+      string initial_position = 8 [json_name = "initial_position"];
+
+      string log_group_name = 9 [json_name = "log_group_name"];
+
+      string multiline_start_pattern = 10 [json_name = "multiline_start_pattern"];
+
+      string time_zone = 11 [json_name = "time_zone"];
+    }
+  }
+
+  message EbsVolume {
+    bool encrypted = 1;
+
+    int64 iops = 2;
+
+    string mount_point = 3 [json_name = "mount_point"];
+
+    int64 number_of_disks = 4 [json_name = "number_of_disks"];
+
+    string raid_level = 5 [json_name = "raid_level"];
+
+    int64 size = 6;
+
+    string type = 7;
+  }
+
+  message LoadBasedAutoScaling {
+    bool enable = 1;
+
+    Downscaling downscaling = 2;
+
+    Upscaling upscaling = 3;
+
+    message Downscaling {
+      repeated string alarms = 1;
+
+      int64 cpu_threshold = 2 [json_name = "cpu_threshold"];
+
+      int64 ignore_metrics_time = 3 [json_name = "ignore_metrics_time"];
+
+      int64 instance_count = 4 [json_name = "instance_count"];
+
+      int64 load_threshold = 5 [json_name = "load_threshold"];
+
+      int64 memory_threshold = 6 [json_name = "memory_threshold"];
+
+      int64 thresholds_wait_time = 7 [json_name = "thresholds_wait_time"];
+    }
+
+    message Upscaling {
+      repeated string alarms = 1;
+
+      int64 cpu_threshold = 2 [json_name = "cpu_threshold"];
+
+      int64 ignore_metrics_time = 3 [json_name = "ignore_metrics_time"];
+
+      int64 instance_count = 4 [json_name = "instance_count"];
+
+      int64 load_threshold = 5 [json_name = "load_threshold"];
+
+      int64 memory_threshold = 6 [json_name = "memory_threshold"];
+
+      int64 thresholds_wait_time = 7 [json_name = "thresholds_wait_time"];
+    }
+  }
+}
+
+// AwsOpsworksPermission version is 0
+message AwsOpsworksPermission {
+  bool allow_ssh = 1 [json_name = "allow_ssh"];
+
+  bool allow_sudo = 2 [json_name = "allow_sudo"];
+
+  string id = 3;
+
+  string level = 4;
+
+  string stack_id = 5 [json_name = "stack_id"];
+
+  string user_arn = 6 [json_name = "user_arn"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsOpsworksPhpAppLayer version is 0
+message AwsOpsworksPhpAppLayer {
+  string arn = 1;
+
+  bool auto_assign_elastic_ips = 2 [json_name = "auto_assign_elastic_ips"];
+
+  bool auto_assign_public_ips = 3 [json_name = "auto_assign_public_ips"];
+
+  bool auto_healing = 4 [json_name = "auto_healing"];
+
+  repeated string custom_configure_recipes = 5 [json_name = "custom_configure_recipes"];
+
+  repeated string custom_deploy_recipes = 6 [json_name = "custom_deploy_recipes"];
+
+  string custom_instance_profile_arn = 7 [json_name = "custom_instance_profile_arn"];
+
+  string custom_json = 8 [json_name = "custom_json"];
+
+  repeated string custom_security_group_ids = 9 [json_name = "custom_security_group_ids"];
+
+  repeated string custom_setup_recipes = 10 [json_name = "custom_setup_recipes"];
+
+  repeated string custom_shutdown_recipes = 11 [json_name = "custom_shutdown_recipes"];
+
+  repeated string custom_undeploy_recipes = 12 [json_name = "custom_undeploy_recipes"];
+
+  bool drain_elb_on_shutdown = 13 [json_name = "drain_elb_on_shutdown"];
+
+  string elastic_load_balancer = 14 [json_name = "elastic_load_balancer"];
+
+  string id = 15;
+
+  bool install_updates_on_boot = 16 [json_name = "install_updates_on_boot"];
+
+  int64 instance_shutdown_timeout = 17 [json_name = "instance_shutdown_timeout"];
+
+  string name = 18;
+
+  string stack_id = 19 [json_name = "stack_id"];
+
+  repeated string system_packages = 20 [json_name = "system_packages"];
+
+  map<string, string> tags = 21;
+
+  map<string, string> tags_all = 22 [json_name = "tags_all"];
+
+  bool use_ebs_optimized_instances = 23 [json_name = "use_ebs_optimized_instances"];
+
+  CloudwatchConfiguration cloudwatch_configuration = 24 [json_name = "cloudwatch_configuration"];
+
+  repeated EbsVolume ebs_volume = 25 [json_name = "ebs_volume"];
+
+  LoadBasedAutoScaling load_based_auto_scaling = 26 [json_name = "load_based_auto_scaling"];
+
+  map<string, string> for_each = 27 [json_name = "for_each"];
+
+  repeated string depends_on = 28 [json_name = "depends_on"];
+
+  int32 count = 29;
+
+  string provider = 30;
+
+  terraform.v1.Lifecycle lifecycle = 31;
+
+  message CloudwatchConfiguration {
+    bool enabled = 1;
+
+    repeated LogStreams log_streams = 2 [json_name = "log_streams"];
+
+    message LogStreams {
+      int64 batch_count = 1 [json_name = "batch_count"];
+
+      int64 batch_size = 2 [json_name = "batch_size"];
+
+      int64 buffer_duration = 3 [json_name = "buffer_duration"];
+
+      string datetime_format = 4 [json_name = "datetime_format"];
+
+      string encoding = 5;
+
+      string file = 6;
+
+      string file_fingerprint_lines = 7 [json_name = "file_fingerprint_lines"];
+
+      string initial_position = 8 [json_name = "initial_position"];
+
+      string log_group_name = 9 [json_name = "log_group_name"];
+
+      string multiline_start_pattern = 10 [json_name = "multiline_start_pattern"];
+
+      string time_zone = 11 [json_name = "time_zone"];
+    }
+  }
+
+  message EbsVolume {
+    bool encrypted = 1;
+
+    int64 iops = 2;
+
+    string mount_point = 3 [json_name = "mount_point"];
+
+    int64 number_of_disks = 4 [json_name = "number_of_disks"];
+
+    string raid_level = 5 [json_name = "raid_level"];
+
+    int64 size = 6;
+
+    string type = 7;
+  }
+
+  message LoadBasedAutoScaling {
+    bool enable = 1;
+
+    Downscaling downscaling = 2;
+
+    Upscaling upscaling = 3;
+
+    message Downscaling {
+      repeated string alarms = 1;
+
+      int64 cpu_threshold = 2 [json_name = "cpu_threshold"];
+
+      int64 ignore_metrics_time = 3 [json_name = "ignore_metrics_time"];
+
+      int64 instance_count = 4 [json_name = "instance_count"];
+
+      int64 load_threshold = 5 [json_name = "load_threshold"];
+
+      int64 memory_threshold = 6 [json_name = "memory_threshold"];
+
+      int64 thresholds_wait_time = 7 [json_name = "thresholds_wait_time"];
+    }
+
+    message Upscaling {
+      repeated string alarms = 1;
+
+      int64 cpu_threshold = 2 [json_name = "cpu_threshold"];
+
+      int64 ignore_metrics_time = 3 [json_name = "ignore_metrics_time"];
+
+      int64 instance_count = 4 [json_name = "instance_count"];
+
+      int64 load_threshold = 5 [json_name = "load_threshold"];
+
+      int64 memory_threshold = 6 [json_name = "memory_threshold"];
+
+      int64 thresholds_wait_time = 7 [json_name = "thresholds_wait_time"];
+    }
+  }
+}
+
+// AwsOpsworksRailsAppLayer version is 0
+message AwsOpsworksRailsAppLayer {
+  string app_server = 1 [json_name = "app_server"];
+
+  string arn = 2;
+
+  bool auto_assign_elastic_ips = 3 [json_name = "auto_assign_elastic_ips"];
+
+  bool auto_assign_public_ips = 4 [json_name = "auto_assign_public_ips"];
+
+  bool auto_healing = 5 [json_name = "auto_healing"];
+
+  string bundler_version = 6 [json_name = "bundler_version"];
+
+  repeated string custom_configure_recipes = 7 [json_name = "custom_configure_recipes"];
+
+  repeated string custom_deploy_recipes = 8 [json_name = "custom_deploy_recipes"];
+
+  string custom_instance_profile_arn = 9 [json_name = "custom_instance_profile_arn"];
+
+  string custom_json = 10 [json_name = "custom_json"];
+
+  repeated string custom_security_group_ids = 11 [json_name = "custom_security_group_ids"];
+
+  repeated string custom_setup_recipes = 12 [json_name = "custom_setup_recipes"];
+
+  repeated string custom_shutdown_recipes = 13 [json_name = "custom_shutdown_recipes"];
+
+  repeated string custom_undeploy_recipes = 14 [json_name = "custom_undeploy_recipes"];
+
+  bool drain_elb_on_shutdown = 15 [json_name = "drain_elb_on_shutdown"];
+
+  string elastic_load_balancer = 16 [json_name = "elastic_load_balancer"];
+
+  string id = 17;
+
+  bool install_updates_on_boot = 18 [json_name = "install_updates_on_boot"];
+
+  int64 instance_shutdown_timeout = 19 [json_name = "instance_shutdown_timeout"];
+
+  bool manage_bundler = 20 [json_name = "manage_bundler"];
+
+  string name = 21;
+
+  string passenger_version = 22 [json_name = "passenger_version"];
+
+  string ruby_version = 23 [json_name = "ruby_version"];
+
+  string rubygems_version = 24 [json_name = "rubygems_version"];
+
+  string stack_id = 25 [json_name = "stack_id"];
+
+  repeated string system_packages = 26 [json_name = "system_packages"];
+
+  map<string, string> tags = 27;
+
+  map<string, string> tags_all = 28 [json_name = "tags_all"];
+
+  bool use_ebs_optimized_instances = 29 [json_name = "use_ebs_optimized_instances"];
+
+  CloudwatchConfiguration cloudwatch_configuration = 30 [json_name = "cloudwatch_configuration"];
+
+  repeated EbsVolume ebs_volume = 31 [json_name = "ebs_volume"];
+
+  LoadBasedAutoScaling load_based_auto_scaling = 32 [json_name = "load_based_auto_scaling"];
+
+  map<string, string> for_each = 33 [json_name = "for_each"];
+
+  repeated string depends_on = 34 [json_name = "depends_on"];
+
+  int32 count = 35;
+
+  string provider = 36;
+
+  terraform.v1.Lifecycle lifecycle = 37;
+
+  message CloudwatchConfiguration {
+    bool enabled = 1;
+
+    repeated LogStreams log_streams = 2 [json_name = "log_streams"];
+
+    message LogStreams {
+      int64 batch_count = 1 [json_name = "batch_count"];
+
+      int64 batch_size = 2 [json_name = "batch_size"];
+
+      int64 buffer_duration = 3 [json_name = "buffer_duration"];
+
+      string datetime_format = 4 [json_name = "datetime_format"];
+
+      string encoding = 5;
+
+      string file = 6;
+
+      string file_fingerprint_lines = 7 [json_name = "file_fingerprint_lines"];
+
+      string initial_position = 8 [json_name = "initial_position"];
+
+      string log_group_name = 9 [json_name = "log_group_name"];
+
+      string multiline_start_pattern = 10 [json_name = "multiline_start_pattern"];
+
+      string time_zone = 11 [json_name = "time_zone"];
+    }
+  }
+
+  message EbsVolume {
+    bool encrypted = 1;
+
+    int64 iops = 2;
+
+    string mount_point = 3 [json_name = "mount_point"];
+
+    int64 number_of_disks = 4 [json_name = "number_of_disks"];
+
+    string raid_level = 5 [json_name = "raid_level"];
+
+    int64 size = 6;
+
+    string type = 7;
+  }
+
+  message LoadBasedAutoScaling {
+    bool enable = 1;
+
+    Downscaling downscaling = 2;
+
+    Upscaling upscaling = 3;
+
+    message Downscaling {
+      repeated string alarms = 1;
+
+      int64 cpu_threshold = 2 [json_name = "cpu_threshold"];
+
+      int64 ignore_metrics_time = 3 [json_name = "ignore_metrics_time"];
+
+      int64 instance_count = 4 [json_name = "instance_count"];
+
+      int64 load_threshold = 5 [json_name = "load_threshold"];
+
+      int64 memory_threshold = 6 [json_name = "memory_threshold"];
+
+      int64 thresholds_wait_time = 7 [json_name = "thresholds_wait_time"];
+    }
+
+    message Upscaling {
+      repeated string alarms = 1;
+
+      int64 cpu_threshold = 2 [json_name = "cpu_threshold"];
+
+      int64 ignore_metrics_time = 3 [json_name = "ignore_metrics_time"];
+
+      int64 instance_count = 4 [json_name = "instance_count"];
+
+      int64 load_threshold = 5 [json_name = "load_threshold"];
+
+      int64 memory_threshold = 6 [json_name = "memory_threshold"];
+
+      int64 thresholds_wait_time = 7 [json_name = "thresholds_wait_time"];
+    }
+  }
+}
+
+// AwsOpsworksRdsDbInstance version is 0
+message AwsOpsworksRdsDbInstance {
+  string db_password = 1 [json_name = "db_password"];
+
+  string db_user = 2 [json_name = "db_user"];
+
+  string id = 3;
+
+  string rds_db_instance_arn = 4 [json_name = "rds_db_instance_arn"];
+
+  string stack_id = 5 [json_name = "stack_id"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsOpsworksStack version is 0
+message AwsOpsworksStack {
+  string agent_version = 1 [json_name = "agent_version"];
+
+  string arn = 2;
+
+  string berkshelf_version = 3 [json_name = "berkshelf_version"];
+
+  string color = 4;
+
+  string configuration_manager_name = 5 [json_name = "configuration_manager_name"];
+
+  string configuration_manager_version = 6 [json_name = "configuration_manager_version"];
+
+  string custom_json = 7 [json_name = "custom_json"];
+
+  string default_availability_zone = 8 [json_name = "default_availability_zone"];
+
+  string default_instance_profile_arn = 9 [json_name = "default_instance_profile_arn"];
+
+  string default_os = 10 [json_name = "default_os"];
+
+  string default_root_device_type = 11 [json_name = "default_root_device_type"];
+
+  string default_ssh_key_name = 12 [json_name = "default_ssh_key_name"];
+
+  string default_subnet_id = 13 [json_name = "default_subnet_id"];
+
+  string hostname_theme = 14 [json_name = "hostname_theme"];
+
+  string id = 15;
+
+  bool manage_berkshelf = 16 [json_name = "manage_berkshelf"];
+
+  string name = 17;
+
+  string region = 18;
+
+  string service_role_arn = 19 [json_name = "service_role_arn"];
+
+  string stack_endpoint = 20 [json_name = "stack_endpoint"];
+
+  map<string, string> tags = 21;
+
+  map<string, string> tags_all = 22 [json_name = "tags_all"];
+
+  bool use_custom_cookbooks = 23 [json_name = "use_custom_cookbooks"];
+
+  bool use_opsworks_security_groups = 24 [json_name = "use_opsworks_security_groups"];
+
+  string vpc_id = 25 [json_name = "vpc_id"];
+
+  CustomCookbooksSource custom_cookbooks_source = 26 [json_name = "custom_cookbooks_source"];
+
+  repeated Timeouts timeouts = 27;
+
+  map<string, string> for_each = 28 [json_name = "for_each"];
+
+  repeated string depends_on = 29 [json_name = "depends_on"];
+
+  int32 count = 30;
+
+  string provider = 31;
+
+  terraform.v1.Lifecycle lifecycle = 32;
+
+  message CustomCookbooksSource {
+    string password = 1;
+
+    string revision = 2;
+
+    string ssh_key = 3 [json_name = "ssh_key"];
+
+    string type = 4;
+
+    string url = 5;
+
+    string username = 6;
+  }
+
+  message Timeouts {
+    string create = 1;
+  }
+}
+
+// AwsOpsworksStaticWebLayer version is 0
+message AwsOpsworksStaticWebLayer {
+  string arn = 1;
+
+  bool auto_assign_elastic_ips = 2 [json_name = "auto_assign_elastic_ips"];
+
+  bool auto_assign_public_ips = 3 [json_name = "auto_assign_public_ips"];
+
+  bool auto_healing = 4 [json_name = "auto_healing"];
+
+  repeated string custom_configure_recipes = 5 [json_name = "custom_configure_recipes"];
+
+  repeated string custom_deploy_recipes = 6 [json_name = "custom_deploy_recipes"];
+
+  string custom_instance_profile_arn = 7 [json_name = "custom_instance_profile_arn"];
+
+  string custom_json = 8 [json_name = "custom_json"];
+
+  repeated string custom_security_group_ids = 9 [json_name = "custom_security_group_ids"];
+
+  repeated string custom_setup_recipes = 10 [json_name = "custom_setup_recipes"];
+
+  repeated string custom_shutdown_recipes = 11 [json_name = "custom_shutdown_recipes"];
+
+  repeated string custom_undeploy_recipes = 12 [json_name = "custom_undeploy_recipes"];
+
+  bool drain_elb_on_shutdown = 13 [json_name = "drain_elb_on_shutdown"];
+
+  string elastic_load_balancer = 14 [json_name = "elastic_load_balancer"];
+
+  string id = 15;
+
+  bool install_updates_on_boot = 16 [json_name = "install_updates_on_boot"];
+
+  int64 instance_shutdown_timeout = 17 [json_name = "instance_shutdown_timeout"];
+
+  string name = 18;
+
+  string stack_id = 19 [json_name = "stack_id"];
+
+  repeated string system_packages = 20 [json_name = "system_packages"];
+
+  map<string, string> tags = 21;
+
+  map<string, string> tags_all = 22 [json_name = "tags_all"];
+
+  bool use_ebs_optimized_instances = 23 [json_name = "use_ebs_optimized_instances"];
+
+  CloudwatchConfiguration cloudwatch_configuration = 24 [json_name = "cloudwatch_configuration"];
+
+  repeated EbsVolume ebs_volume = 25 [json_name = "ebs_volume"];
+
+  LoadBasedAutoScaling load_based_auto_scaling = 26 [json_name = "load_based_auto_scaling"];
+
+  map<string, string> for_each = 27 [json_name = "for_each"];
+
+  repeated string depends_on = 28 [json_name = "depends_on"];
+
+  int32 count = 29;
+
+  string provider = 30;
+
+  terraform.v1.Lifecycle lifecycle = 31;
+
+  message CloudwatchConfiguration {
+    bool enabled = 1;
+
+    repeated LogStreams log_streams = 2 [json_name = "log_streams"];
+
+    message LogStreams {
+      int64 batch_count = 1 [json_name = "batch_count"];
+
+      int64 batch_size = 2 [json_name = "batch_size"];
+
+      int64 buffer_duration = 3 [json_name = "buffer_duration"];
+
+      string datetime_format = 4 [json_name = "datetime_format"];
+
+      string encoding = 5;
+
+      string file = 6;
+
+      string file_fingerprint_lines = 7 [json_name = "file_fingerprint_lines"];
+
+      string initial_position = 8 [json_name = "initial_position"];
+
+      string log_group_name = 9 [json_name = "log_group_name"];
+
+      string multiline_start_pattern = 10 [json_name = "multiline_start_pattern"];
+
+      string time_zone = 11 [json_name = "time_zone"];
+    }
+  }
+
+  message EbsVolume {
+    bool encrypted = 1;
+
+    int64 iops = 2;
+
+    string mount_point = 3 [json_name = "mount_point"];
+
+    int64 number_of_disks = 4 [json_name = "number_of_disks"];
+
+    string raid_level = 5 [json_name = "raid_level"];
+
+    int64 size = 6;
+
+    string type = 7;
+  }
+
+  message LoadBasedAutoScaling {
+    bool enable = 1;
+
+    Downscaling downscaling = 2;
+
+    Upscaling upscaling = 3;
+
+    message Downscaling {
+      repeated string alarms = 1;
+
+      int64 cpu_threshold = 2 [json_name = "cpu_threshold"];
+
+      int64 ignore_metrics_time = 3 [json_name = "ignore_metrics_time"];
+
+      int64 instance_count = 4 [json_name = "instance_count"];
+
+      int64 load_threshold = 5 [json_name = "load_threshold"];
+
+      int64 memory_threshold = 6 [json_name = "memory_threshold"];
+
+      int64 thresholds_wait_time = 7 [json_name = "thresholds_wait_time"];
+    }
+
+    message Upscaling {
+      repeated string alarms = 1;
+
+      int64 cpu_threshold = 2 [json_name = "cpu_threshold"];
+
+      int64 ignore_metrics_time = 3 [json_name = "ignore_metrics_time"];
+
+      int64 instance_count = 4 [json_name = "instance_count"];
+
+      int64 load_threshold = 5 [json_name = "load_threshold"];
+
+      int64 memory_threshold = 6 [json_name = "memory_threshold"];
+
+      int64 thresholds_wait_time = 7 [json_name = "thresholds_wait_time"];
+    }
+  }
+}
+
+// AwsOpsworksUserProfile version is 0
+message AwsOpsworksUserProfile {
+  bool allow_self_management = 1 [json_name = "allow_self_management"];
+
+  string id = 2;
+
+  string ssh_public_key = 3 [json_name = "ssh_public_key"];
+
+  string ssh_username = 4 [json_name = "ssh_username"];
+
+  string user_arn = 5 [json_name = "user_arn"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}

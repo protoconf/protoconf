@@ -1,0 +1,1873 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsSagemakerApp version is 0
+message AwsSagemakerApp {
+  string app_name = 1 [json_name = "app_name"];
+
+  string app_type = 2 [json_name = "app_type"];
+
+  string arn = 3;
+
+  string domain_id = 4 [json_name = "domain_id"];
+
+  string id = 5;
+
+  string space_name = 6 [json_name = "space_name"];
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  string user_profile_name = 9 [json_name = "user_profile_name"];
+
+  ResourceSpec resource_spec = 10 [json_name = "resource_spec"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message ResourceSpec {
+    string instance_type = 1 [json_name = "instance_type"];
+
+    string lifecycle_config_arn = 2 [json_name = "lifecycle_config_arn"];
+
+    string sagemaker_image_arn = 3 [json_name = "sagemaker_image_arn"];
+
+    string sagemaker_image_version_arn = 4 [json_name = "sagemaker_image_version_arn"];
+  }
+}
+
+// AwsSagemakerAppImageConfig version is 0
+message AwsSagemakerAppImageConfig {
+  string app_image_config_name = 1 [json_name = "app_image_config_name"];
+
+  string arn = 2;
+
+  string id = 3;
+
+  map<string, string> tags = 4;
+
+  map<string, string> tags_all = 5 [json_name = "tags_all"];
+
+  KernelGatewayImageConfig kernel_gateway_image_config = 6 [json_name = "kernel_gateway_image_config"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message KernelGatewayImageConfig {
+    FileSystemConfig file_system_config = 1 [json_name = "file_system_config"];
+
+    KernelSpec kernel_spec = 2 [json_name = "kernel_spec"];
+
+    message FileSystemConfig {
+      int64 default_gid = 1 [json_name = "default_gid"];
+
+      int64 default_uid = 2 [json_name = "default_uid"];
+
+      string mount_path = 3 [json_name = "mount_path"];
+    }
+
+    message KernelSpec {
+      string display_name = 1 [json_name = "display_name"];
+
+      string name = 2;
+    }
+  }
+}
+
+// AwsSagemakerCodeRepository version is 0
+message AwsSagemakerCodeRepository {
+  string arn = 1;
+
+  string code_repository_name = 2 [json_name = "code_repository_name"];
+
+  string id = 3;
+
+  map<string, string> tags = 4;
+
+  map<string, string> tags_all = 5 [json_name = "tags_all"];
+
+  GitConfig git_config = 6 [json_name = "git_config"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message GitConfig {
+    string branch = 1;
+
+    string repository_url = 2 [json_name = "repository_url"];
+
+    string secret_arn = 3 [json_name = "secret_arn"];
+  }
+}
+
+// AwsSagemakerDataQualityJobDefinition version is 0
+message AwsSagemakerDataQualityJobDefinition {
+  string arn = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  string role_arn = 4 [json_name = "role_arn"];
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  DataQualityAppSpecification data_quality_app_specification = 7 [json_name = "data_quality_app_specification"];
+
+  DataQualityBaselineConfig data_quality_baseline_config = 8 [json_name = "data_quality_baseline_config"];
+
+  DataQualityJobInput data_quality_job_input = 9 [json_name = "data_quality_job_input"];
+
+  DataQualityJobOutputConfig data_quality_job_output_config = 10 [json_name = "data_quality_job_output_config"];
+
+  JobResources job_resources = 11 [json_name = "job_resources"];
+
+  NetworkConfig network_config = 12 [json_name = "network_config"];
+
+  StoppingCondition stopping_condition = 13 [json_name = "stopping_condition"];
+
+  map<string, string> for_each = 14 [json_name = "for_each"];
+
+  repeated string depends_on = 15 [json_name = "depends_on"];
+
+  int32 count = 16;
+
+  string provider = 17;
+
+  terraform.v1.Lifecycle lifecycle = 18;
+
+  message DataQualityAppSpecification {
+    map<string, string> environment = 1;
+
+    string image_uri = 2 [json_name = "image_uri"];
+
+    string post_analytics_processor_source_uri = 3 [json_name = "post_analytics_processor_source_uri"];
+
+    string record_preprocessor_source_uri = 4 [json_name = "record_preprocessor_source_uri"];
+  }
+
+  message DataQualityBaselineConfig {
+    ConstraintsResource constraints_resource = 1 [json_name = "constraints_resource"];
+
+    StatisticsResource statistics_resource = 2 [json_name = "statistics_resource"];
+
+    message ConstraintsResource {
+      string s3_uri = 1 [json_name = "s3_uri"];
+    }
+
+    message StatisticsResource {
+      string s3_uri = 1 [json_name = "s3_uri"];
+    }
+  }
+
+  message DataQualityJobInput {
+    BatchTransformInput batch_transform_input = 1 [json_name = "batch_transform_input"];
+
+    EndpointInput endpoint_input = 2 [json_name = "endpoint_input"];
+
+    message BatchTransformInput {
+      string data_captured_destination_s3_uri = 1 [json_name = "data_captured_destination_s3_uri"];
+
+      string local_path = 2 [json_name = "local_path"];
+
+      string s3_data_distribution_type = 3 [json_name = "s3_data_distribution_type"];
+
+      string s3_input_mode = 4 [json_name = "s3_input_mode"];
+
+      DatasetFormat dataset_format = 5 [json_name = "dataset_format"];
+
+      message DatasetFormat {
+        Csv csv = 1;
+
+        Json json = 2;
+
+        message Csv {
+          bool header = 1;
+        }
+
+        message Json {
+          bool line = 1;
+        }
+      }
+    }
+
+    message EndpointInput {
+      string endpoint_name = 1 [json_name = "endpoint_name"];
+
+      string local_path = 2 [json_name = "local_path"];
+
+      string s3_data_distribution_type = 3 [json_name = "s3_data_distribution_type"];
+
+      string s3_input_mode = 4 [json_name = "s3_input_mode"];
+    }
+  }
+
+  message DataQualityJobOutputConfig {
+    string kms_key_id = 1 [json_name = "kms_key_id"];
+
+    MonitoringOutputs monitoring_outputs = 2 [json_name = "monitoring_outputs"];
+
+    message MonitoringOutputs {
+      S3Output s3_output = 1 [json_name = "s3_output"];
+
+      message S3Output {
+        string local_path = 1 [json_name = "local_path"];
+
+        string s3_upload_mode = 2 [json_name = "s3_upload_mode"];
+
+        string s3_uri = 3 [json_name = "s3_uri"];
+      }
+    }
+  }
+
+  message JobResources {
+    ClusterConfig cluster_config = 1 [json_name = "cluster_config"];
+
+    message ClusterConfig {
+      int64 instance_count = 1 [json_name = "instance_count"];
+
+      string instance_type = 2 [json_name = "instance_type"];
+
+      string volume_kms_key_id = 3 [json_name = "volume_kms_key_id"];
+
+      int64 volume_size_in_gb = 4 [json_name = "volume_size_in_gb"];
+    }
+  }
+
+  message NetworkConfig {
+    bool enable_inter_container_traffic_encryption = 1 [
+      json_name = "enable_inter_container_traffic_encryption"
+    ];
+
+    bool enable_network_isolation = 2 [json_name = "enable_network_isolation"];
+
+    VpcConfig vpc_config = 3 [json_name = "vpc_config"];
+
+    message VpcConfig {
+      repeated string security_group_ids = 1 [json_name = "security_group_ids"];
+
+      repeated string subnets = 2;
+    }
+  }
+
+  message StoppingCondition {
+    int64 max_runtime_in_seconds = 1 [json_name = "max_runtime_in_seconds"];
+  }
+}
+
+// AwsSagemakerDevice version is 0
+message AwsSagemakerDevice {
+  string agent_version = 1 [json_name = "agent_version"];
+
+  string arn = 2;
+
+  string device_fleet_name = 3 [json_name = "device_fleet_name"];
+
+  string id = 4;
+
+  Device device = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message Device {
+    string description = 1;
+
+    string device_name = 2 [json_name = "device_name"];
+
+    string iot_thing_name = 3 [json_name = "iot_thing_name"];
+  }
+}
+
+// AwsSagemakerDeviceFleet version is 0
+message AwsSagemakerDeviceFleet {
+  string arn = 1;
+
+  string description = 2;
+
+  string device_fleet_name = 3 [json_name = "device_fleet_name"];
+
+  bool enable_iot_role_alias = 4 [json_name = "enable_iot_role_alias"];
+
+  string id = 5;
+
+  string iot_role_alias = 6 [json_name = "iot_role_alias"];
+
+  string role_arn = 7 [json_name = "role_arn"];
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  OutputConfig output_config = 10 [json_name = "output_config"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message OutputConfig {
+    string kms_key_id = 1 [json_name = "kms_key_id"];
+
+    string s3_output_location = 2 [json_name = "s3_output_location"];
+  }
+}
+
+// AwsSagemakerDomain version is 0
+message AwsSagemakerDomain {
+  string app_network_access_type = 1 [json_name = "app_network_access_type"];
+
+  string app_security_group_management = 2 [json_name = "app_security_group_management"];
+
+  string arn = 3;
+
+  string auth_mode = 4 [json_name = "auth_mode"];
+
+  string domain_name = 5 [json_name = "domain_name"];
+
+  string home_efs_file_system_id = 6 [json_name = "home_efs_file_system_id"];
+
+  string id = 7;
+
+  string kms_key_id = 8 [json_name = "kms_key_id"];
+
+  string security_group_id_for_domain_boundary = 9 [
+    json_name = "security_group_id_for_domain_boundary"
+  ];
+
+  string single_sign_on_managed_application_instance_id = 10 [
+    json_name = "single_sign_on_managed_application_instance_id"
+  ];
+
+  repeated string subnet_ids = 11 [json_name = "subnet_ids"];
+
+  map<string, string> tags = 12;
+
+  map<string, string> tags_all = 13 [json_name = "tags_all"];
+
+  string url = 14;
+
+  string vpc_id = 15 [json_name = "vpc_id"];
+
+  DefaultSpaceSettings default_space_settings = 16 [json_name = "default_space_settings"];
+
+  DefaultUserSettings default_user_settings = 17 [json_name = "default_user_settings"];
+
+  DomainSettings domain_settings = 18 [json_name = "domain_settings"];
+
+  RetentionPolicy retention_policy = 19 [json_name = "retention_policy"];
+
+  map<string, string> for_each = 20 [json_name = "for_each"];
+
+  repeated string depends_on = 21 [json_name = "depends_on"];
+
+  int32 count = 22;
+
+  string provider = 23;
+
+  terraform.v1.Lifecycle lifecycle = 24;
+
+  message DefaultSpaceSettings {
+    string execution_role = 1 [json_name = "execution_role"];
+
+    repeated string security_groups = 2 [json_name = "security_groups"];
+
+    JupyterServerAppSettings jupyter_server_app_settings = 3 [json_name = "jupyter_server_app_settings"];
+
+    KernelGatewayAppSettings kernel_gateway_app_settings = 4 [json_name = "kernel_gateway_app_settings"];
+
+    message JupyterServerAppSettings {
+      repeated string lifecycle_config_arns = 1 [json_name = "lifecycle_config_arns"];
+
+      repeated CodeRepository code_repository = 2 [json_name = "code_repository"];
+
+      DefaultResourceSpec default_resource_spec = 3 [json_name = "default_resource_spec"];
+
+      message CodeRepository {
+        string repository_url = 1 [json_name = "repository_url"];
+      }
+
+      message DefaultResourceSpec {
+        string instance_type = 1 [json_name = "instance_type"];
+
+        string lifecycle_config_arn = 2 [json_name = "lifecycle_config_arn"];
+
+        string sagemaker_image_arn = 3 [json_name = "sagemaker_image_arn"];
+
+        string sagemaker_image_version_arn = 4 [json_name = "sagemaker_image_version_arn"];
+      }
+    }
+
+    message KernelGatewayAppSettings {
+      repeated string lifecycle_config_arns = 1 [json_name = "lifecycle_config_arns"];
+
+      repeated CustomImage custom_image = 2 [json_name = "custom_image"];
+
+      DefaultResourceSpec default_resource_spec = 3 [json_name = "default_resource_spec"];
+
+      message CustomImage {
+        string app_image_config_name = 1 [json_name = "app_image_config_name"];
+
+        string image_name = 2 [json_name = "image_name"];
+
+        int64 image_version_number = 3 [json_name = "image_version_number"];
+      }
+
+      message DefaultResourceSpec {
+        string instance_type = 1 [json_name = "instance_type"];
+
+        string lifecycle_config_arn = 2 [json_name = "lifecycle_config_arn"];
+
+        string sagemaker_image_arn = 3 [json_name = "sagemaker_image_arn"];
+
+        string sagemaker_image_version_arn = 4 [json_name = "sagemaker_image_version_arn"];
+      }
+    }
+  }
+
+  message DefaultUserSettings {
+    string execution_role = 1 [json_name = "execution_role"];
+
+    repeated string security_groups = 2 [json_name = "security_groups"];
+
+    CanvasAppSettings canvas_app_settings = 3 [json_name = "canvas_app_settings"];
+
+    JupyterServerAppSettings jupyter_server_app_settings = 4 [json_name = "jupyter_server_app_settings"];
+
+    KernelGatewayAppSettings kernel_gateway_app_settings = 5 [json_name = "kernel_gateway_app_settings"];
+
+    RSessionAppSettings r_session_app_settings = 6 [json_name = "r_session_app_settings"];
+
+    RStudioServerProAppSettings r_studio_server_pro_app_settings = 7 [json_name = "r_studio_server_pro_app_settings"];
+
+    SharingSettings sharing_settings = 8 [json_name = "sharing_settings"];
+
+    TensorBoardAppSettings tensor_board_app_settings = 9 [json_name = "tensor_board_app_settings"];
+
+    message CanvasAppSettings {
+      ModelRegisterSettings model_register_settings = 1 [json_name = "model_register_settings"];
+
+      TimeSeriesForecastingSettings time_series_forecasting_settings = 2 [json_name = "time_series_forecasting_settings"];
+
+      message ModelRegisterSettings {
+        string cross_account_model_register_role_arn = 1 [
+          json_name = "cross_account_model_register_role_arn"
+        ];
+
+        string status = 2;
+      }
+
+      message TimeSeriesForecastingSettings {
+        string amazon_forecast_role_arn = 1 [json_name = "amazon_forecast_role_arn"];
+
+        string status = 2;
+      }
+    }
+
+    message JupyterServerAppSettings {
+      repeated string lifecycle_config_arns = 1 [json_name = "lifecycle_config_arns"];
+
+      repeated CodeRepository code_repository = 2 [json_name = "code_repository"];
+
+      DefaultResourceSpec default_resource_spec = 3 [json_name = "default_resource_spec"];
+
+      message CodeRepository {
+        string repository_url = 1 [json_name = "repository_url"];
+      }
+
+      message DefaultResourceSpec {
+        string instance_type = 1 [json_name = "instance_type"];
+
+        string lifecycle_config_arn = 2 [json_name = "lifecycle_config_arn"];
+
+        string sagemaker_image_arn = 3 [json_name = "sagemaker_image_arn"];
+
+        string sagemaker_image_version_arn = 4 [json_name = "sagemaker_image_version_arn"];
+      }
+    }
+
+    message KernelGatewayAppSettings {
+      repeated string lifecycle_config_arns = 1 [json_name = "lifecycle_config_arns"];
+
+      repeated CustomImage custom_image = 2 [json_name = "custom_image"];
+
+      DefaultResourceSpec default_resource_spec = 3 [json_name = "default_resource_spec"];
+
+      message CustomImage {
+        string app_image_config_name = 1 [json_name = "app_image_config_name"];
+
+        string image_name = 2 [json_name = "image_name"];
+
+        int64 image_version_number = 3 [json_name = "image_version_number"];
+      }
+
+      message DefaultResourceSpec {
+        string instance_type = 1 [json_name = "instance_type"];
+
+        string lifecycle_config_arn = 2 [json_name = "lifecycle_config_arn"];
+
+        string sagemaker_image_arn = 3 [json_name = "sagemaker_image_arn"];
+
+        string sagemaker_image_version_arn = 4 [json_name = "sagemaker_image_version_arn"];
+      }
+    }
+
+    message RSessionAppSettings {
+      repeated CustomImage custom_image = 1 [json_name = "custom_image"];
+
+      DefaultResourceSpec default_resource_spec = 2 [json_name = "default_resource_spec"];
+
+      message CustomImage {
+        string app_image_config_name = 1 [json_name = "app_image_config_name"];
+
+        string image_name = 2 [json_name = "image_name"];
+
+        int64 image_version_number = 3 [json_name = "image_version_number"];
+      }
+
+      message DefaultResourceSpec {
+        string instance_type = 1 [json_name = "instance_type"];
+
+        string lifecycle_config_arn = 2 [json_name = "lifecycle_config_arn"];
+
+        string sagemaker_image_arn = 3 [json_name = "sagemaker_image_arn"];
+
+        string sagemaker_image_version_arn = 4 [json_name = "sagemaker_image_version_arn"];
+      }
+    }
+
+    message RStudioServerProAppSettings {
+      string access_status = 1 [json_name = "access_status"];
+
+      string user_group = 2 [json_name = "user_group"];
+    }
+
+    message SharingSettings {
+      string notebook_output_option = 1 [json_name = "notebook_output_option"];
+
+      string s3_kms_key_id = 2 [json_name = "s3_kms_key_id"];
+
+      string s3_output_path = 3 [json_name = "s3_output_path"];
+    }
+
+    message TensorBoardAppSettings {
+      DefaultResourceSpec default_resource_spec = 1 [json_name = "default_resource_spec"];
+
+      message DefaultResourceSpec {
+        string instance_type = 1 [json_name = "instance_type"];
+
+        string lifecycle_config_arn = 2 [json_name = "lifecycle_config_arn"];
+
+        string sagemaker_image_arn = 3 [json_name = "sagemaker_image_arn"];
+
+        string sagemaker_image_version_arn = 4 [json_name = "sagemaker_image_version_arn"];
+      }
+    }
+  }
+
+  message DomainSettings {
+    string execution_role_identity_config = 1 [json_name = "execution_role_identity_config"];
+
+    repeated string security_group_ids = 2 [json_name = "security_group_ids"];
+
+    RStudioServerProDomainSettings r_studio_server_pro_domain_settings = 3 [json_name = "r_studio_server_pro_domain_settings"];
+
+    message RStudioServerProDomainSettings {
+      string domain_execution_role_arn = 1 [json_name = "domain_execution_role_arn"];
+
+      string r_studio_connect_url = 2 [json_name = "r_studio_connect_url"];
+
+      string r_studio_package_manager_url = 3 [json_name = "r_studio_package_manager_url"];
+
+      DefaultResourceSpec default_resource_spec = 4 [json_name = "default_resource_spec"];
+
+      message DefaultResourceSpec {
+        string instance_type = 1 [json_name = "instance_type"];
+
+        string lifecycle_config_arn = 2 [json_name = "lifecycle_config_arn"];
+
+        string sagemaker_image_arn = 3 [json_name = "sagemaker_image_arn"];
+
+        string sagemaker_image_version_arn = 4 [json_name = "sagemaker_image_version_arn"];
+      }
+    }
+  }
+
+  message RetentionPolicy {
+    string home_efs_file_system = 1 [json_name = "home_efs_file_system"];
+  }
+}
+
+// AwsSagemakerEndpoint version is 0
+message AwsSagemakerEndpoint {
+  string arn = 1;
+
+  string endpoint_config_name = 2 [json_name = "endpoint_config_name"];
+
+  string id = 3;
+
+  string name = 4;
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  DeploymentConfig deployment_config = 7 [json_name = "deployment_config"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message DeploymentConfig {
+    AutoRollbackConfiguration auto_rollback_configuration = 1 [json_name = "auto_rollback_configuration"];
+
+    BlueGreenUpdatePolicy blue_green_update_policy = 2 [json_name = "blue_green_update_policy"];
+
+    message AutoRollbackConfiguration {
+      repeated Alarms alarms = 1;
+
+      message Alarms {
+        string alarm_name = 1 [json_name = "alarm_name"];
+      }
+    }
+
+    message BlueGreenUpdatePolicy {
+      int64 maximum_execution_timeout_in_seconds = 1 [json_name = "maximum_execution_timeout_in_seconds"];
+
+      int64 termination_wait_in_seconds = 2 [json_name = "termination_wait_in_seconds"];
+
+      TrafficRoutingConfiguration traffic_routing_configuration = 3 [json_name = "traffic_routing_configuration"];
+
+      message TrafficRoutingConfiguration {
+        string type = 1;
+
+        int64 wait_interval_in_seconds = 2 [json_name = "wait_interval_in_seconds"];
+
+        CanarySize canary_size = 3 [json_name = "canary_size"];
+
+        LinearStepSize linear_step_size = 4 [json_name = "linear_step_size"];
+
+        message CanarySize {
+          string type = 1;
+
+          int64 value = 2;
+        }
+
+        message LinearStepSize {
+          string type = 1;
+
+          int64 value = 2;
+        }
+      }
+    }
+  }
+}
+
+// AwsSagemakerEndpointConfiguration version is 0
+message AwsSagemakerEndpointConfiguration {
+  string arn = 1;
+
+  string id = 2;
+
+  string kms_key_arn = 3 [json_name = "kms_key_arn"];
+
+  string name = 4;
+
+  string name_prefix = 5 [json_name = "name_prefix"];
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  AsyncInferenceConfig async_inference_config = 8 [json_name = "async_inference_config"];
+
+  DataCaptureConfig data_capture_config = 9 [json_name = "data_capture_config"];
+
+  repeated ProductionVariants production_variants = 10 [json_name = "production_variants"];
+
+  repeated ShadowProductionVariants shadow_production_variants = 11 [json_name = "shadow_production_variants"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message AsyncInferenceConfig {
+    ClientConfig client_config = 1 [json_name = "client_config"];
+
+    OutputConfig output_config = 2 [json_name = "output_config"];
+
+    message ClientConfig {
+      int64 max_concurrent_invocations_per_instance = 1 [
+        json_name = "max_concurrent_invocations_per_instance"
+      ];
+    }
+
+    message OutputConfig {
+      string kms_key_id = 1 [json_name = "kms_key_id"];
+
+      string s3_failure_path = 2 [json_name = "s3_failure_path"];
+
+      string s3_output_path = 3 [json_name = "s3_output_path"];
+
+      NotificationConfig notification_config = 4 [json_name = "notification_config"];
+
+      message NotificationConfig {
+        string error_topic = 1 [json_name = "error_topic"];
+
+        repeated string include_inference_response_in = 2 [json_name = "include_inference_response_in"];
+
+        string success_topic = 3 [json_name = "success_topic"];
+      }
+    }
+  }
+
+  message DataCaptureConfig {
+    string destination_s3_uri = 1 [json_name = "destination_s3_uri"];
+
+    bool enable_capture = 2 [json_name = "enable_capture"];
+
+    int64 initial_sampling_percentage = 3 [json_name = "initial_sampling_percentage"];
+
+    string kms_key_id = 4 [json_name = "kms_key_id"];
+
+    CaptureContentTypeHeader capture_content_type_header = 5 [json_name = "capture_content_type_header"];
+
+    repeated CaptureOptions capture_options = 6 [json_name = "capture_options"];
+
+    message CaptureContentTypeHeader {
+      repeated string csv_content_types = 1 [json_name = "csv_content_types"];
+
+      repeated string json_content_types = 2 [json_name = "json_content_types"];
+    }
+
+    message CaptureOptions {
+      string capture_mode = 1 [json_name = "capture_mode"];
+    }
+  }
+
+  message ProductionVariants {
+    string accelerator_type = 1 [json_name = "accelerator_type"];
+
+    int64 container_startup_health_check_timeout_in_seconds = 2 [
+      json_name = "container_startup_health_check_timeout_in_seconds"
+    ];
+
+    bool enable_ssm_access = 3 [json_name = "enable_ssm_access"];
+
+    int64 initial_instance_count = 4 [json_name = "initial_instance_count"];
+
+    int64 initial_variant_weight = 5 [json_name = "initial_variant_weight"];
+
+    string instance_type = 6 [json_name = "instance_type"];
+
+    int64 model_data_download_timeout_in_seconds = 7 [
+      json_name = "model_data_download_timeout_in_seconds"
+    ];
+
+    string model_name = 8 [json_name = "model_name"];
+
+    string variant_name = 9 [json_name = "variant_name"];
+
+    int64 volume_size_in_gb = 10 [json_name = "volume_size_in_gb"];
+
+    CoreDumpConfig core_dump_config = 11 [json_name = "core_dump_config"];
+
+    ServerlessConfig serverless_config = 12 [json_name = "serverless_config"];
+
+    message CoreDumpConfig {
+      string destination_s3_uri = 1 [json_name = "destination_s3_uri"];
+
+      string kms_key_id = 2 [json_name = "kms_key_id"];
+    }
+
+    message ServerlessConfig {
+      int64 max_concurrency = 1 [json_name = "max_concurrency"];
+
+      int64 memory_size_in_mb = 2 [json_name = "memory_size_in_mb"];
+
+      int64 provisioned_concurrency = 3 [json_name = "provisioned_concurrency"];
+    }
+  }
+
+  message ShadowProductionVariants {
+    string accelerator_type = 1 [json_name = "accelerator_type"];
+
+    int64 container_startup_health_check_timeout_in_seconds = 2 [
+      json_name = "container_startup_health_check_timeout_in_seconds"
+    ];
+
+    bool enable_ssm_access = 3 [json_name = "enable_ssm_access"];
+
+    int64 initial_instance_count = 4 [json_name = "initial_instance_count"];
+
+    int64 initial_variant_weight = 5 [json_name = "initial_variant_weight"];
+
+    string instance_type = 6 [json_name = "instance_type"];
+
+    int64 model_data_download_timeout_in_seconds = 7 [
+      json_name = "model_data_download_timeout_in_seconds"
+    ];
+
+    string model_name = 8 [json_name = "model_name"];
+
+    string variant_name = 9 [json_name = "variant_name"];
+
+    int64 volume_size_in_gb = 10 [json_name = "volume_size_in_gb"];
+
+    CoreDumpConfig core_dump_config = 11 [json_name = "core_dump_config"];
+
+    ServerlessConfig serverless_config = 12 [json_name = "serverless_config"];
+
+    message CoreDumpConfig {
+      string destination_s3_uri = 1 [json_name = "destination_s3_uri"];
+
+      string kms_key_id = 2 [json_name = "kms_key_id"];
+    }
+
+    message ServerlessConfig {
+      int64 max_concurrency = 1 [json_name = "max_concurrency"];
+
+      int64 memory_size_in_mb = 2 [json_name = "memory_size_in_mb"];
+
+      int64 provisioned_concurrency = 3 [json_name = "provisioned_concurrency"];
+    }
+  }
+}
+
+// AwsSagemakerFeatureGroup version is 0
+message AwsSagemakerFeatureGroup {
+  string arn = 1;
+
+  string description = 2;
+
+  string event_time_feature_name = 3 [json_name = "event_time_feature_name"];
+
+  string feature_group_name = 4 [json_name = "feature_group_name"];
+
+  string id = 5;
+
+  string record_identifier_feature_name = 6 [json_name = "record_identifier_feature_name"];
+
+  string role_arn = 7 [json_name = "role_arn"];
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  repeated FeatureDefinition feature_definition = 10 [json_name = "feature_definition"];
+
+  OfflineStoreConfig offline_store_config = 11 [json_name = "offline_store_config"];
+
+  OnlineStoreConfig online_store_config = 12 [json_name = "online_store_config"];
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message FeatureDefinition {
+    string feature_name = 1 [json_name = "feature_name"];
+
+    string feature_type = 2 [json_name = "feature_type"];
+  }
+
+  message OfflineStoreConfig {
+    bool disable_glue_table_creation = 1 [json_name = "disable_glue_table_creation"];
+
+    string table_format = 2 [json_name = "table_format"];
+
+    DataCatalogConfig data_catalog_config = 3 [json_name = "data_catalog_config"];
+
+    S3StorageConfig s3_storage_config = 4 [json_name = "s3_storage_config"];
+
+    message DataCatalogConfig {
+      string catalog = 1;
+
+      string database = 2;
+
+      string table_name = 3 [json_name = "table_name"];
+    }
+
+    message S3StorageConfig {
+      string kms_key_id = 1 [json_name = "kms_key_id"];
+
+      string s3_uri = 2 [json_name = "s3_uri"];
+    }
+  }
+
+  message OnlineStoreConfig {
+    bool enable_online_store = 1 [json_name = "enable_online_store"];
+
+    SecurityConfig security_config = 2 [json_name = "security_config"];
+
+    message SecurityConfig {
+      string kms_key_id = 1 [json_name = "kms_key_id"];
+    }
+  }
+}
+
+// AwsSagemakerFlowDefinition version is 0
+message AwsSagemakerFlowDefinition {
+  string arn = 1;
+
+  string flow_definition_name = 2 [json_name = "flow_definition_name"];
+
+  string id = 3;
+
+  string role_arn = 4 [json_name = "role_arn"];
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  HumanLoopActivationConfig human_loop_activation_config = 7 [json_name = "human_loop_activation_config"];
+
+  HumanLoopConfig human_loop_config = 8 [json_name = "human_loop_config"];
+
+  HumanLoopRequestSource human_loop_request_source = 9 [json_name = "human_loop_request_source"];
+
+  OutputConfig output_config = 10 [json_name = "output_config"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message HumanLoopActivationConfig {
+    HumanLoopActivationConditionsConfig human_loop_activation_conditions_config = 1 [
+      json_name = "human_loop_activation_conditions_config"
+    ];
+
+    message HumanLoopActivationConditionsConfig {
+      string human_loop_activation_conditions = 1 [json_name = "human_loop_activation_conditions"];
+    }
+  }
+
+  message HumanLoopConfig {
+    string human_task_ui_arn = 1 [json_name = "human_task_ui_arn"];
+
+    int64 task_availability_lifetime_in_seconds = 2 [
+      json_name = "task_availability_lifetime_in_seconds"
+    ];
+
+    int64 task_count = 3 [json_name = "task_count"];
+
+    string task_description = 4 [json_name = "task_description"];
+
+    repeated string task_keywords = 5 [json_name = "task_keywords"];
+
+    int64 task_time_limit_in_seconds = 6 [json_name = "task_time_limit_in_seconds"];
+
+    string task_title = 7 [json_name = "task_title"];
+
+    string workteam_arn = 8 [json_name = "workteam_arn"];
+
+    PublicWorkforceTaskPrice public_workforce_task_price = 9 [json_name = "public_workforce_task_price"];
+
+    message PublicWorkforceTaskPrice {
+      AmountInUsd amount_in_usd = 1 [json_name = "amount_in_usd"];
+
+      message AmountInUsd {
+        int64 cents = 1;
+
+        int64 dollars = 2;
+
+        int64 tenth_fractions_of_a_cent = 3 [json_name = "tenth_fractions_of_a_cent"];
+      }
+    }
+  }
+
+  message HumanLoopRequestSource {
+    string aws_managed_human_loop_request_source = 1 [
+      json_name = "aws_managed_human_loop_request_source"
+    ];
+  }
+
+  message OutputConfig {
+    string kms_key_id = 1 [json_name = "kms_key_id"];
+
+    string s3_output_path = 2 [json_name = "s3_output_path"];
+  }
+}
+
+// AwsSagemakerHumanTaskUi version is 0
+message AwsSagemakerHumanTaskUi {
+  string arn = 1;
+
+  string human_task_ui_name = 2 [json_name = "human_task_ui_name"];
+
+  string id = 3;
+
+  map<string, string> tags = 4;
+
+  map<string, string> tags_all = 5 [json_name = "tags_all"];
+
+  UiTemplate ui_template = 6 [json_name = "ui_template"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message UiTemplate {
+    string content = 1;
+
+    string content_sha256 = 2 [json_name = "content_sha256"];
+
+    string url = 3;
+  }
+}
+
+// AwsSagemakerImage version is 0
+message AwsSagemakerImage {
+  string arn = 1;
+
+  string description = 2;
+
+  string display_name = 3 [json_name = "display_name"];
+
+  string id = 4;
+
+  string image_name = 5 [json_name = "image_name"];
+
+  string role_arn = 6 [json_name = "role_arn"];
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+}
+
+// AwsSagemakerImageVersion version is 0
+message AwsSagemakerImageVersion {
+  string arn = 1;
+
+  string base_image = 2 [json_name = "base_image"];
+
+  string container_image = 3 [json_name = "container_image"];
+
+  string id = 4;
+
+  string image_arn = 5 [json_name = "image_arn"];
+
+  string image_name = 6 [json_name = "image_name"];
+
+  int64 version = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsSagemakerModel version is 0
+message AwsSagemakerModel {
+  string arn = 1;
+
+  bool enable_network_isolation = 2 [json_name = "enable_network_isolation"];
+
+  string execution_role_arn = 3 [json_name = "execution_role_arn"];
+
+  string id = 4;
+
+  string name = 5;
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  repeated Container container = 8;
+
+  InferenceExecutionConfig inference_execution_config = 9 [json_name = "inference_execution_config"];
+
+  PrimaryContainer primary_container = 10 [json_name = "primary_container"];
+
+  VpcConfig vpc_config = 11 [json_name = "vpc_config"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message Container {
+    string container_hostname = 1 [json_name = "container_hostname"];
+
+    map<string, string> environment = 2;
+
+    string image = 3;
+
+    string mode = 4;
+
+    string model_data_url = 5 [json_name = "model_data_url"];
+
+    string model_package_name = 6 [json_name = "model_package_name"];
+
+    ImageConfig image_config = 7 [json_name = "image_config"];
+
+    message ImageConfig {
+      string repository_access_mode = 1 [json_name = "repository_access_mode"];
+
+      RepositoryAuthConfig repository_auth_config = 2 [json_name = "repository_auth_config"];
+
+      message RepositoryAuthConfig {
+        string repository_credentials_provider_arn = 1 [json_name = "repository_credentials_provider_arn"];
+      }
+    }
+  }
+
+  message InferenceExecutionConfig {
+    string mode = 1;
+  }
+
+  message PrimaryContainer {
+    string container_hostname = 1 [json_name = "container_hostname"];
+
+    map<string, string> environment = 2;
+
+    string image = 3;
+
+    string mode = 4;
+
+    string model_data_url = 5 [json_name = "model_data_url"];
+
+    string model_package_name = 6 [json_name = "model_package_name"];
+
+    ImageConfig image_config = 7 [json_name = "image_config"];
+
+    message ImageConfig {
+      string repository_access_mode = 1 [json_name = "repository_access_mode"];
+
+      RepositoryAuthConfig repository_auth_config = 2 [json_name = "repository_auth_config"];
+
+      message RepositoryAuthConfig {
+        string repository_credentials_provider_arn = 1 [json_name = "repository_credentials_provider_arn"];
+      }
+    }
+  }
+
+  message VpcConfig {
+    repeated string security_group_ids = 1 [json_name = "security_group_ids"];
+
+    repeated string subnets = 2;
+  }
+}
+
+// AwsSagemakerModelPackageGroup version is 0
+message AwsSagemakerModelPackageGroup {
+  string arn = 1;
+
+  string id = 2;
+
+  string model_package_group_description = 3 [json_name = "model_package_group_description"];
+
+  string model_package_group_name = 4 [json_name = "model_package_group_name"];
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsSagemakerModelPackageGroupPolicy version is 0
+message AwsSagemakerModelPackageGroupPolicy {
+  string id = 1;
+
+  string model_package_group_name = 2 [json_name = "model_package_group_name"];
+
+  string resource_policy = 3 [json_name = "resource_policy"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsSagemakerMonitoringSchedule version is 0
+message AwsSagemakerMonitoringSchedule {
+  string arn = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  map<string, string> tags = 4;
+
+  map<string, string> tags_all = 5 [json_name = "tags_all"];
+
+  MonitoringScheduleConfig monitoring_schedule_config = 6 [json_name = "monitoring_schedule_config"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message MonitoringScheduleConfig {
+    string monitoring_job_definition_name = 1 [json_name = "monitoring_job_definition_name"];
+
+    string monitoring_type = 2 [json_name = "monitoring_type"];
+
+    ScheduleConfig schedule_config = 3 [json_name = "schedule_config"];
+
+    message ScheduleConfig {
+      string schedule_expression = 1 [json_name = "schedule_expression"];
+    }
+  }
+}
+
+// AwsSagemakerNotebookInstance version is 0
+message AwsSagemakerNotebookInstance {
+  repeated string accelerator_types = 1 [json_name = "accelerator_types"];
+
+  repeated string additional_code_repositories = 2 [json_name = "additional_code_repositories"];
+
+  string arn = 3;
+
+  string default_code_repository = 4 [json_name = "default_code_repository"];
+
+  string direct_internet_access = 5 [json_name = "direct_internet_access"];
+
+  string id = 6;
+
+  string instance_type = 7 [json_name = "instance_type"];
+
+  string kms_key_id = 8 [json_name = "kms_key_id"];
+
+  string lifecycle_config_name = 9 [json_name = "lifecycle_config_name"];
+
+  string name = 10;
+
+  string network_interface_id = 11 [json_name = "network_interface_id"];
+
+  string platform_identifier = 12 [json_name = "platform_identifier"];
+
+  string role_arn = 13 [json_name = "role_arn"];
+
+  string root_access = 14 [json_name = "root_access"];
+
+  repeated string security_groups = 15 [json_name = "security_groups"];
+
+  string subnet_id = 16 [json_name = "subnet_id"];
+
+  map<string, string> tags = 17;
+
+  map<string, string> tags_all = 18 [json_name = "tags_all"];
+
+  string url = 19;
+
+  int64 volume_size = 20 [json_name = "volume_size"];
+
+  InstanceMetadataServiceConfiguration instance_metadata_service_configuration = 21 [
+    json_name = "instance_metadata_service_configuration"
+  ];
+
+  map<string, string> for_each = 22 [json_name = "for_each"];
+
+  repeated string depends_on = 23 [json_name = "depends_on"];
+
+  int32 count = 24;
+
+  string provider = 25;
+
+  terraform.v1.Lifecycle lifecycle = 26;
+
+  message InstanceMetadataServiceConfiguration {
+    string minimum_instance_metadata_service_version = 1 [
+      json_name = "minimum_instance_metadata_service_version"
+    ];
+  }
+}
+
+// AwsSagemakerNotebookInstanceLifecycleConfiguration version is 0
+message AwsSagemakerNotebookInstanceLifecycleConfiguration {
+  string arn = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  string on_create = 4 [json_name = "on_create"];
+
+  string on_start = 5 [json_name = "on_start"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsSagemakerProject version is 0
+message AwsSagemakerProject {
+  string arn = 1;
+
+  string id = 2;
+
+  string project_description = 3 [json_name = "project_description"];
+
+  string project_id = 4 [json_name = "project_id"];
+
+  string project_name = 5 [json_name = "project_name"];
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  ServiceCatalogProvisioningDetails service_catalog_provisioning_details = 8 [json_name = "service_catalog_provisioning_details"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message ServiceCatalogProvisioningDetails {
+    string path_id = 1 [json_name = "path_id"];
+
+    string product_id = 2 [json_name = "product_id"];
+
+    string provisioning_artifact_id = 3 [json_name = "provisioning_artifact_id"];
+
+    repeated ProvisioningParameter provisioning_parameter = 4 [json_name = "provisioning_parameter"];
+
+    message ProvisioningParameter {
+      string key = 1;
+
+      string value = 2;
+    }
+  }
+}
+
+// AwsSagemakerServicecatalogPortfolioStatus version is 0
+message AwsSagemakerServicecatalogPortfolioStatus {
+  string id = 1;
+
+  string status = 2;
+
+  map<string, string> for_each = 3 [json_name = "for_each"];
+
+  repeated string depends_on = 4 [json_name = "depends_on"];
+
+  int32 count = 5;
+
+  string provider = 6;
+
+  terraform.v1.Lifecycle lifecycle = 7;
+}
+
+// AwsSagemakerSpace version is 0
+message AwsSagemakerSpace {
+  string arn = 1;
+
+  string domain_id = 2 [json_name = "domain_id"];
+
+  string home_efs_file_system_uid = 3 [json_name = "home_efs_file_system_uid"];
+
+  string id = 4;
+
+  string space_name = 5 [json_name = "space_name"];
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  SpaceSettings space_settings = 8 [json_name = "space_settings"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message SpaceSettings {
+    JupyterServerAppSettings jupyter_server_app_settings = 1 [json_name = "jupyter_server_app_settings"];
+
+    KernelGatewayAppSettings kernel_gateway_app_settings = 2 [json_name = "kernel_gateway_app_settings"];
+
+    message JupyterServerAppSettings {
+      repeated string lifecycle_config_arns = 1 [json_name = "lifecycle_config_arns"];
+
+      repeated CodeRepository code_repository = 2 [json_name = "code_repository"];
+
+      DefaultResourceSpec default_resource_spec = 3 [json_name = "default_resource_spec"];
+
+      message CodeRepository {
+        string repository_url = 1 [json_name = "repository_url"];
+      }
+
+      message DefaultResourceSpec {
+        string instance_type = 1 [json_name = "instance_type"];
+
+        string lifecycle_config_arn = 2 [json_name = "lifecycle_config_arn"];
+
+        string sagemaker_image_arn = 3 [json_name = "sagemaker_image_arn"];
+
+        string sagemaker_image_version_arn = 4 [json_name = "sagemaker_image_version_arn"];
+      }
+    }
+
+    message KernelGatewayAppSettings {
+      repeated string lifecycle_config_arns = 1 [json_name = "lifecycle_config_arns"];
+
+      repeated CustomImage custom_image = 2 [json_name = "custom_image"];
+
+      DefaultResourceSpec default_resource_spec = 3 [json_name = "default_resource_spec"];
+
+      message CustomImage {
+        string app_image_config_name = 1 [json_name = "app_image_config_name"];
+
+        string image_name = 2 [json_name = "image_name"];
+
+        int64 image_version_number = 3 [json_name = "image_version_number"];
+      }
+
+      message DefaultResourceSpec {
+        string instance_type = 1 [json_name = "instance_type"];
+
+        string lifecycle_config_arn = 2 [json_name = "lifecycle_config_arn"];
+
+        string sagemaker_image_arn = 3 [json_name = "sagemaker_image_arn"];
+
+        string sagemaker_image_version_arn = 4 [json_name = "sagemaker_image_version_arn"];
+      }
+    }
+  }
+}
+
+// AwsSagemakerStudioLifecycleConfig version is 0
+message AwsSagemakerStudioLifecycleConfig {
+  string arn = 1;
+
+  string id = 2;
+
+  string studio_lifecycle_config_app_type = 3 [json_name = "studio_lifecycle_config_app_type"];
+
+  string studio_lifecycle_config_content = 4 [json_name = "studio_lifecycle_config_content"];
+
+  string studio_lifecycle_config_name = 5 [json_name = "studio_lifecycle_config_name"];
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsSagemakerUserProfile version is 0
+message AwsSagemakerUserProfile {
+  string arn = 1;
+
+  string domain_id = 2 [json_name = "domain_id"];
+
+  string home_efs_file_system_uid = 3 [json_name = "home_efs_file_system_uid"];
+
+  string id = 4;
+
+  string single_sign_on_user_identifier = 5 [json_name = "single_sign_on_user_identifier"];
+
+  string single_sign_on_user_value = 6 [json_name = "single_sign_on_user_value"];
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  string user_profile_name = 9 [json_name = "user_profile_name"];
+
+  UserSettings user_settings = 10 [json_name = "user_settings"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message UserSettings {
+    string execution_role = 1 [json_name = "execution_role"];
+
+    repeated string security_groups = 2 [json_name = "security_groups"];
+
+    CanvasAppSettings canvas_app_settings = 3 [json_name = "canvas_app_settings"];
+
+    JupyterServerAppSettings jupyter_server_app_settings = 4 [json_name = "jupyter_server_app_settings"];
+
+    KernelGatewayAppSettings kernel_gateway_app_settings = 5 [json_name = "kernel_gateway_app_settings"];
+
+    RSessionAppSettings r_session_app_settings = 6 [json_name = "r_session_app_settings"];
+
+    RStudioServerProAppSettings r_studio_server_pro_app_settings = 7 [json_name = "r_studio_server_pro_app_settings"];
+
+    SharingSettings sharing_settings = 8 [json_name = "sharing_settings"];
+
+    TensorBoardAppSettings tensor_board_app_settings = 9 [json_name = "tensor_board_app_settings"];
+
+    message CanvasAppSettings {
+      ModelRegisterSettings model_register_settings = 1 [json_name = "model_register_settings"];
+
+      TimeSeriesForecastingSettings time_series_forecasting_settings = 2 [json_name = "time_series_forecasting_settings"];
+
+      message ModelRegisterSettings {
+        string cross_account_model_register_role_arn = 1 [
+          json_name = "cross_account_model_register_role_arn"
+        ];
+
+        string status = 2;
+      }
+
+      message TimeSeriesForecastingSettings {
+        string amazon_forecast_role_arn = 1 [json_name = "amazon_forecast_role_arn"];
+
+        string status = 2;
+      }
+    }
+
+    message JupyterServerAppSettings {
+      repeated string lifecycle_config_arns = 1 [json_name = "lifecycle_config_arns"];
+
+      repeated CodeRepository code_repository = 2 [json_name = "code_repository"];
+
+      DefaultResourceSpec default_resource_spec = 3 [json_name = "default_resource_spec"];
+
+      message CodeRepository {
+        string repository_url = 1 [json_name = "repository_url"];
+      }
+
+      message DefaultResourceSpec {
+        string instance_type = 1 [json_name = "instance_type"];
+
+        string lifecycle_config_arn = 2 [json_name = "lifecycle_config_arn"];
+
+        string sagemaker_image_arn = 3 [json_name = "sagemaker_image_arn"];
+
+        string sagemaker_image_version_arn = 4 [json_name = "sagemaker_image_version_arn"];
+      }
+    }
+
+    message KernelGatewayAppSettings {
+      repeated string lifecycle_config_arns = 1 [json_name = "lifecycle_config_arns"];
+
+      repeated CustomImage custom_image = 2 [json_name = "custom_image"];
+
+      DefaultResourceSpec default_resource_spec = 3 [json_name = "default_resource_spec"];
+
+      message CustomImage {
+        string app_image_config_name = 1 [json_name = "app_image_config_name"];
+
+        string image_name = 2 [json_name = "image_name"];
+
+        int64 image_version_number = 3 [json_name = "image_version_number"];
+      }
+
+      message DefaultResourceSpec {
+        string instance_type = 1 [json_name = "instance_type"];
+
+        string lifecycle_config_arn = 2 [json_name = "lifecycle_config_arn"];
+
+        string sagemaker_image_arn = 3 [json_name = "sagemaker_image_arn"];
+
+        string sagemaker_image_version_arn = 4 [json_name = "sagemaker_image_version_arn"];
+      }
+    }
+
+    message RSessionAppSettings {
+      repeated CustomImage custom_image = 1 [json_name = "custom_image"];
+
+      DefaultResourceSpec default_resource_spec = 2 [json_name = "default_resource_spec"];
+
+      message CustomImage {
+        string app_image_config_name = 1 [json_name = "app_image_config_name"];
+
+        string image_name = 2 [json_name = "image_name"];
+
+        int64 image_version_number = 3 [json_name = "image_version_number"];
+      }
+
+      message DefaultResourceSpec {
+        string instance_type = 1 [json_name = "instance_type"];
+
+        string lifecycle_config_arn = 2 [json_name = "lifecycle_config_arn"];
+
+        string sagemaker_image_arn = 3 [json_name = "sagemaker_image_arn"];
+
+        string sagemaker_image_version_arn = 4 [json_name = "sagemaker_image_version_arn"];
+      }
+    }
+
+    message RStudioServerProAppSettings {
+      string access_status = 1 [json_name = "access_status"];
+
+      string user_group = 2 [json_name = "user_group"];
+    }
+
+    message SharingSettings {
+      string notebook_output_option = 1 [json_name = "notebook_output_option"];
+
+      string s3_kms_key_id = 2 [json_name = "s3_kms_key_id"];
+
+      string s3_output_path = 3 [json_name = "s3_output_path"];
+    }
+
+    message TensorBoardAppSettings {
+      DefaultResourceSpec default_resource_spec = 1 [json_name = "default_resource_spec"];
+
+      message DefaultResourceSpec {
+        string instance_type = 1 [json_name = "instance_type"];
+
+        string lifecycle_config_arn = 2 [json_name = "lifecycle_config_arn"];
+
+        string sagemaker_image_arn = 3 [json_name = "sagemaker_image_arn"];
+
+        string sagemaker_image_version_arn = 4 [json_name = "sagemaker_image_version_arn"];
+      }
+    }
+  }
+}
+
+// AwsSagemakerWorkforce version is 0
+message AwsSagemakerWorkforce {
+  string arn = 1;
+
+  string id = 2;
+
+  string subdomain = 3;
+
+  string workforce_name = 4 [json_name = "workforce_name"];
+
+  CognitoConfig cognito_config = 5 [json_name = "cognito_config"];
+
+  OidcConfig oidc_config = 6 [json_name = "oidc_config"];
+
+  SourceIpConfig source_ip_config = 7 [json_name = "source_ip_config"];
+
+  WorkforceVpcConfig workforce_vpc_config = 8 [json_name = "workforce_vpc_config"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message CognitoConfig {
+    string client_id = 1 [json_name = "client_id"];
+
+    string user_pool = 2 [json_name = "user_pool"];
+  }
+
+  message OidcConfig {
+    string authorization_endpoint = 1 [json_name = "authorization_endpoint"];
+
+    string client_id = 2 [json_name = "client_id"];
+
+    string client_secret = 3 [json_name = "client_secret"];
+
+    string issuer = 4;
+
+    string jwks_uri = 5 [json_name = "jwks_uri"];
+
+    string logout_endpoint = 6 [json_name = "logout_endpoint"];
+
+    string token_endpoint = 7 [json_name = "token_endpoint"];
+
+    string user_info_endpoint = 8 [json_name = "user_info_endpoint"];
+  }
+
+  message SourceIpConfig {
+    repeated string cidrs = 1;
+  }
+
+  message WorkforceVpcConfig {
+    repeated string security_group_ids = 1 [json_name = "security_group_ids"];
+
+    repeated string subnets = 2;
+
+    string vpc_endpoint_id = 3 [json_name = "vpc_endpoint_id"];
+
+    string vpc_id = 4 [json_name = "vpc_id"];
+  }
+}
+
+// AwsSagemakerWorkteam version is 0
+message AwsSagemakerWorkteam {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  string subdomain = 4;
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  string workforce_name = 7 [json_name = "workforce_name"];
+
+  string workteam_name = 8 [json_name = "workteam_name"];
+
+  repeated MemberDefinition member_definition = 9 [json_name = "member_definition"];
+
+  NotificationConfiguration notification_configuration = 10 [json_name = "notification_configuration"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message MemberDefinition {
+    CognitoMemberDefinition cognito_member_definition = 1 [json_name = "cognito_member_definition"];
+
+    OidcMemberDefinition oidc_member_definition = 2 [json_name = "oidc_member_definition"];
+
+    message CognitoMemberDefinition {
+      string client_id = 1 [json_name = "client_id"];
+
+      string user_group = 2 [json_name = "user_group"];
+
+      string user_pool = 3 [json_name = "user_pool"];
+    }
+
+    message OidcMemberDefinition {
+      repeated string groups = 1;
+    }
+  }
+
+  message NotificationConfiguration {
+    string notification_topic_arn = 1 [json_name = "notification_topic_arn"];
+  }
+}

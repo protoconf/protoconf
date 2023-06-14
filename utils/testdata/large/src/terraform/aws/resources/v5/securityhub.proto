@@ -1,0 +1,1071 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsSecurityhubAccount version is 1
+message AwsSecurityhubAccount {
+  string arn = 1;
+
+  bool auto_enable_controls = 2 [json_name = "auto_enable_controls"];
+
+  string control_finding_generator = 3 [json_name = "control_finding_generator"];
+
+  bool enable_default_standards = 4 [json_name = "enable_default_standards"];
+
+  string id = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsSecurityhubActionTarget version is 0
+message AwsSecurityhubActionTarget {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  string identifier = 4;
+
+  string name = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsSecurityhubFindingAggregator version is 0
+message AwsSecurityhubFindingAggregator {
+  string id = 1;
+
+  string linking_mode = 2 [json_name = "linking_mode"];
+
+  repeated string specified_regions = 3 [json_name = "specified_regions"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsSecurityhubInsight version is 0
+message AwsSecurityhubInsight {
+  string arn = 1;
+
+  string group_by_attribute = 2 [json_name = "group_by_attribute"];
+
+  string id = 3;
+
+  string name = 4;
+
+  Filters filters = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message Filters {
+    repeated AwsAccountId aws_account_id = 1 [json_name = "aws_account_id"];
+
+    repeated CompanyName company_name = 2 [json_name = "company_name"];
+
+    repeated ComplianceStatus compliance_status = 3 [json_name = "compliance_status"];
+
+    repeated Confidence confidence = 4;
+
+    repeated CreatedAt created_at = 5 [json_name = "created_at"];
+
+    repeated Criticality criticality = 6;
+
+    repeated Description description = 7;
+
+    repeated FindingProviderFieldsConfidence finding_provider_fields_confidence = 8 [json_name = "finding_provider_fields_confidence"];
+
+    repeated FindingProviderFieldsCriticality finding_provider_fields_criticality = 9 [json_name = "finding_provider_fields_criticality"];
+
+    repeated FindingProviderFieldsRelatedFindingsId finding_provider_fields_related_findings_id = 10 [
+      json_name = "finding_provider_fields_related_findings_id"
+    ];
+
+    repeated FindingProviderFieldsRelatedFindingsProductArn finding_provider_fields_related_findings_product_arn = 11 [
+      json_name = "finding_provider_fields_related_findings_product_arn"
+    ];
+
+    repeated FindingProviderFieldsSeverityLabel finding_provider_fields_severity_label = 12 [
+      json_name = "finding_provider_fields_severity_label"
+    ];
+
+    repeated FindingProviderFieldsSeverityOriginal finding_provider_fields_severity_original = 13 [
+      json_name = "finding_provider_fields_severity_original"
+    ];
+
+    repeated FindingProviderFieldsTypes finding_provider_fields_types = 14 [json_name = "finding_provider_fields_types"];
+
+    repeated FirstObservedAt first_observed_at = 15 [json_name = "first_observed_at"];
+
+    repeated GeneratorId generator_id = 16 [json_name = "generator_id"];
+
+    repeated Id id = 17;
+
+    repeated Keyword keyword = 18;
+
+    repeated LastObservedAt last_observed_at = 19 [json_name = "last_observed_at"];
+
+    repeated MalwareName malware_name = 20 [json_name = "malware_name"];
+
+    repeated MalwarePath malware_path = 21 [json_name = "malware_path"];
+
+    repeated MalwareState malware_state = 22 [json_name = "malware_state"];
+
+    repeated MalwareType malware_type = 23 [json_name = "malware_type"];
+
+    repeated NetworkDestinationDomain network_destination_domain = 24 [json_name = "network_destination_domain"];
+
+    repeated NetworkDestinationIpv4 network_destination_ipv4 = 25 [json_name = "network_destination_ipv4"];
+
+    repeated NetworkDestinationIpv6 network_destination_ipv6 = 26 [json_name = "network_destination_ipv6"];
+
+    repeated NetworkDestinationPort network_destination_port = 27 [json_name = "network_destination_port"];
+
+    repeated NetworkDirection network_direction = 28 [json_name = "network_direction"];
+
+    repeated NetworkProtocol network_protocol = 29 [json_name = "network_protocol"];
+
+    repeated NetworkSourceDomain network_source_domain = 30 [json_name = "network_source_domain"];
+
+    repeated NetworkSourceIpv4 network_source_ipv4 = 31 [json_name = "network_source_ipv4"];
+
+    repeated NetworkSourceIpv6 network_source_ipv6 = 32 [json_name = "network_source_ipv6"];
+
+    repeated NetworkSourceMac network_source_mac = 33 [json_name = "network_source_mac"];
+
+    repeated NetworkSourcePort network_source_port = 34 [json_name = "network_source_port"];
+
+    repeated NoteText note_text = 35 [json_name = "note_text"];
+
+    repeated NoteUpdatedAt note_updated_at = 36 [json_name = "note_updated_at"];
+
+    repeated NoteUpdatedBy note_updated_by = 37 [json_name = "note_updated_by"];
+
+    repeated ProcessLaunchedAt process_launched_at = 38 [json_name = "process_launched_at"];
+
+    repeated ProcessName process_name = 39 [json_name = "process_name"];
+
+    repeated ProcessParentPid process_parent_pid = 40 [json_name = "process_parent_pid"];
+
+    repeated ProcessPath process_path = 41 [json_name = "process_path"];
+
+    repeated ProcessPid process_pid = 42 [json_name = "process_pid"];
+
+    repeated ProcessTerminatedAt process_terminated_at = 43 [json_name = "process_terminated_at"];
+
+    repeated ProductArn product_arn = 44 [json_name = "product_arn"];
+
+    repeated ProductFields product_fields = 45 [json_name = "product_fields"];
+
+    repeated ProductName product_name = 46 [json_name = "product_name"];
+
+    repeated RecommendationText recommendation_text = 47 [json_name = "recommendation_text"];
+
+    repeated RecordState record_state = 48 [json_name = "record_state"];
+
+    repeated RelatedFindingsId related_findings_id = 49 [json_name = "related_findings_id"];
+
+    repeated RelatedFindingsProductArn related_findings_product_arn = 50 [json_name = "related_findings_product_arn"];
+
+    repeated ResourceAwsEc2InstanceIamInstanceProfileArn resource_aws_ec2_instance_iam_instance_profile_arn = 51 [
+      json_name = "resource_aws_ec2_instance_iam_instance_profile_arn"
+    ];
+
+    repeated ResourceAwsEc2InstanceImageId resource_aws_ec2_instance_image_id = 52 [json_name = "resource_aws_ec2_instance_image_id"];
+
+    repeated ResourceAwsEc2InstanceIpv4Addresses resource_aws_ec2_instance_ipv4_addresses = 53 [
+      json_name = "resource_aws_ec2_instance_ipv4_addresses"
+    ];
+
+    repeated ResourceAwsEc2InstanceIpv6Addresses resource_aws_ec2_instance_ipv6_addresses = 54 [
+      json_name = "resource_aws_ec2_instance_ipv6_addresses"
+    ];
+
+    repeated ResourceAwsEc2InstanceKeyName resource_aws_ec2_instance_key_name = 55 [json_name = "resource_aws_ec2_instance_key_name"];
+
+    repeated ResourceAwsEc2InstanceLaunchedAt resource_aws_ec2_instance_launched_at = 56 [
+      json_name = "resource_aws_ec2_instance_launched_at"
+    ];
+
+    repeated ResourceAwsEc2InstanceSubnetId resource_aws_ec2_instance_subnet_id = 57 [json_name = "resource_aws_ec2_instance_subnet_id"];
+
+    repeated ResourceAwsEc2InstanceType resource_aws_ec2_instance_type = 58 [json_name = "resource_aws_ec2_instance_type"];
+
+    repeated ResourceAwsEc2InstanceVpcId resource_aws_ec2_instance_vpc_id = 59 [json_name = "resource_aws_ec2_instance_vpc_id"];
+
+    repeated ResourceAwsIamAccessKeyCreatedAt resource_aws_iam_access_key_created_at = 60 [
+      json_name = "resource_aws_iam_access_key_created_at"
+    ];
+
+    repeated ResourceAwsIamAccessKeyStatus resource_aws_iam_access_key_status = 61 [json_name = "resource_aws_iam_access_key_status"];
+
+    repeated ResourceAwsIamAccessKeyUserName resource_aws_iam_access_key_user_name = 62 [
+      json_name = "resource_aws_iam_access_key_user_name"
+    ];
+
+    repeated ResourceAwsS3BucketOwnerId resource_aws_s3_bucket_owner_id = 63 [json_name = "resource_aws_s3_bucket_owner_id"];
+
+    repeated ResourceAwsS3BucketOwnerName resource_aws_s3_bucket_owner_name = 64 [json_name = "resource_aws_s3_bucket_owner_name"];
+
+    repeated ResourceContainerImageId resource_container_image_id = 65 [json_name = "resource_container_image_id"];
+
+    repeated ResourceContainerImageName resource_container_image_name = 66 [json_name = "resource_container_image_name"];
+
+    repeated ResourceContainerLaunchedAt resource_container_launched_at = 67 [json_name = "resource_container_launched_at"];
+
+    repeated ResourceContainerName resource_container_name = 68 [json_name = "resource_container_name"];
+
+    repeated ResourceDetailsOther resource_details_other = 69 [json_name = "resource_details_other"];
+
+    repeated ResourceId resource_id = 70 [json_name = "resource_id"];
+
+    repeated ResourcePartition resource_partition = 71 [json_name = "resource_partition"];
+
+    repeated ResourceRegion resource_region = 72 [json_name = "resource_region"];
+
+    repeated ResourceTags resource_tags = 73 [json_name = "resource_tags"];
+
+    repeated ResourceType resource_type = 74 [json_name = "resource_type"];
+
+    repeated SeverityLabel severity_label = 75 [json_name = "severity_label"];
+
+    repeated SourceUrl source_url = 76 [json_name = "source_url"];
+
+    repeated ThreatIntelIndicatorCategory threat_intel_indicator_category = 77 [json_name = "threat_intel_indicator_category"];
+
+    repeated ThreatIntelIndicatorLastObservedAt threat_intel_indicator_last_observed_at = 78 [
+      json_name = "threat_intel_indicator_last_observed_at"
+    ];
+
+    repeated ThreatIntelIndicatorSource threat_intel_indicator_source = 79 [json_name = "threat_intel_indicator_source"];
+
+    repeated ThreatIntelIndicatorSourceUrl threat_intel_indicator_source_url = 80 [json_name = "threat_intel_indicator_source_url"];
+
+    repeated ThreatIntelIndicatorType threat_intel_indicator_type = 81 [json_name = "threat_intel_indicator_type"];
+
+    repeated ThreatIntelIndicatorValue threat_intel_indicator_value = 82 [json_name = "threat_intel_indicator_value"];
+
+    repeated Title title = 83;
+
+    repeated Type type = 84;
+
+    repeated UpdatedAt updated_at = 85 [json_name = "updated_at"];
+
+    repeated UserDefinedValues user_defined_values = 86 [json_name = "user_defined_values"];
+
+    repeated VerificationState verification_state = 87 [json_name = "verification_state"];
+
+    repeated WorkflowStatus workflow_status = 88 [json_name = "workflow_status"];
+
+    message AwsAccountId {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message CompanyName {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message ComplianceStatus {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message Confidence {
+      string eq = 1;
+
+      string gte = 2;
+
+      string lte = 3;
+    }
+
+    message CreatedAt {
+      string end = 1;
+
+      string start = 2;
+
+      DateRange date_range = 3 [json_name = "date_range"];
+
+      message DateRange {
+        string unit = 1;
+
+        int64 value = 2;
+      }
+    }
+
+    message Criticality {
+      string eq = 1;
+
+      string gte = 2;
+
+      string lte = 3;
+    }
+
+    message Description {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message FindingProviderFieldsConfidence {
+      string eq = 1;
+
+      string gte = 2;
+
+      string lte = 3;
+    }
+
+    message FindingProviderFieldsCriticality {
+      string eq = 1;
+
+      string gte = 2;
+
+      string lte = 3;
+    }
+
+    message FindingProviderFieldsRelatedFindingsId {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message FindingProviderFieldsRelatedFindingsProductArn {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message FindingProviderFieldsSeverityLabel {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message FindingProviderFieldsSeverityOriginal {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message FindingProviderFieldsTypes {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message FirstObservedAt {
+      string end = 1;
+
+      string start = 2;
+
+      DateRange date_range = 3 [json_name = "date_range"];
+
+      message DateRange {
+        string unit = 1;
+
+        int64 value = 2;
+      }
+    }
+
+    message GeneratorId {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message Id {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message Keyword {
+      string value = 1;
+    }
+
+    message LastObservedAt {
+      string end = 1;
+
+      string start = 2;
+
+      DateRange date_range = 3 [json_name = "date_range"];
+
+      message DateRange {
+        string unit = 1;
+
+        int64 value = 2;
+      }
+    }
+
+    message MalwareName {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message MalwarePath {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message MalwareState {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message MalwareType {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message NetworkDestinationDomain {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message NetworkDestinationIpv4 {
+      string cidr = 1;
+    }
+
+    message NetworkDestinationIpv6 {
+      string cidr = 1;
+    }
+
+    message NetworkDestinationPort {
+      string eq = 1;
+
+      string gte = 2;
+
+      string lte = 3;
+    }
+
+    message NetworkDirection {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message NetworkProtocol {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message NetworkSourceDomain {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message NetworkSourceIpv4 {
+      string cidr = 1;
+    }
+
+    message NetworkSourceIpv6 {
+      string cidr = 1;
+    }
+
+    message NetworkSourceMac {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message NetworkSourcePort {
+      string eq = 1;
+
+      string gte = 2;
+
+      string lte = 3;
+    }
+
+    message NoteText {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message NoteUpdatedAt {
+      string end = 1;
+
+      string start = 2;
+
+      DateRange date_range = 3 [json_name = "date_range"];
+
+      message DateRange {
+        string unit = 1;
+
+        int64 value = 2;
+      }
+    }
+
+    message NoteUpdatedBy {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message ProcessLaunchedAt {
+      string end = 1;
+
+      string start = 2;
+
+      DateRange date_range = 3 [json_name = "date_range"];
+
+      message DateRange {
+        string unit = 1;
+
+        int64 value = 2;
+      }
+    }
+
+    message ProcessName {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message ProcessParentPid {
+      string eq = 1;
+
+      string gte = 2;
+
+      string lte = 3;
+    }
+
+    message ProcessPath {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message ProcessPid {
+      string eq = 1;
+
+      string gte = 2;
+
+      string lte = 3;
+    }
+
+    message ProcessTerminatedAt {
+      string end = 1;
+
+      string start = 2;
+
+      DateRange date_range = 3 [json_name = "date_range"];
+
+      message DateRange {
+        string unit = 1;
+
+        int64 value = 2;
+      }
+    }
+
+    message ProductArn {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message ProductFields {
+      string comparison = 1;
+
+      string key = 2;
+
+      string value = 3;
+    }
+
+    message ProductName {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message RecommendationText {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message RecordState {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message RelatedFindingsId {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message RelatedFindingsProductArn {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message ResourceAwsEc2InstanceIamInstanceProfileArn {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message ResourceAwsEc2InstanceImageId {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message ResourceAwsEc2InstanceIpv4Addresses {
+      string cidr = 1;
+    }
+
+    message ResourceAwsEc2InstanceIpv6Addresses {
+      string cidr = 1;
+    }
+
+    message ResourceAwsEc2InstanceKeyName {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message ResourceAwsEc2InstanceLaunchedAt {
+      string end = 1;
+
+      string start = 2;
+
+      DateRange date_range = 3 [json_name = "date_range"];
+
+      message DateRange {
+        string unit = 1;
+
+        int64 value = 2;
+      }
+    }
+
+    message ResourceAwsEc2InstanceSubnetId {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message ResourceAwsEc2InstanceType {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message ResourceAwsEc2InstanceVpcId {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message ResourceAwsIamAccessKeyCreatedAt {
+      string end = 1;
+
+      string start = 2;
+
+      DateRange date_range = 3 [json_name = "date_range"];
+
+      message DateRange {
+        string unit = 1;
+
+        int64 value = 2;
+      }
+    }
+
+    message ResourceAwsIamAccessKeyStatus {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message ResourceAwsIamAccessKeyUserName {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message ResourceAwsS3BucketOwnerId {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message ResourceAwsS3BucketOwnerName {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message ResourceContainerImageId {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message ResourceContainerImageName {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message ResourceContainerLaunchedAt {
+      string end = 1;
+
+      string start = 2;
+
+      DateRange date_range = 3 [json_name = "date_range"];
+
+      message DateRange {
+        string unit = 1;
+
+        int64 value = 2;
+      }
+    }
+
+    message ResourceContainerName {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message ResourceDetailsOther {
+      string comparison = 1;
+
+      string key = 2;
+
+      string value = 3;
+    }
+
+    message ResourceId {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message ResourcePartition {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message ResourceRegion {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message ResourceTags {
+      string comparison = 1;
+
+      string key = 2;
+
+      string value = 3;
+    }
+
+    message ResourceType {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message SeverityLabel {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message SourceUrl {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message ThreatIntelIndicatorCategory {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message ThreatIntelIndicatorLastObservedAt {
+      string end = 1;
+
+      string start = 2;
+
+      DateRange date_range = 3 [json_name = "date_range"];
+
+      message DateRange {
+        string unit = 1;
+
+        int64 value = 2;
+      }
+    }
+
+    message ThreatIntelIndicatorSource {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message ThreatIntelIndicatorSourceUrl {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message ThreatIntelIndicatorType {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message ThreatIntelIndicatorValue {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message Title {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message Type {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message UpdatedAt {
+      string end = 1;
+
+      string start = 2;
+
+      DateRange date_range = 3 [json_name = "date_range"];
+
+      message DateRange {
+        string unit = 1;
+
+        int64 value = 2;
+      }
+    }
+
+    message UserDefinedValues {
+      string comparison = 1;
+
+      string key = 2;
+
+      string value = 3;
+    }
+
+    message VerificationState {
+      string comparison = 1;
+
+      string value = 2;
+    }
+
+    message WorkflowStatus {
+      string comparison = 1;
+
+      string value = 2;
+    }
+  }
+}
+
+// AwsSecurityhubInviteAccepter version is 0
+message AwsSecurityhubInviteAccepter {
+  string id = 1;
+
+  string invitation_id = 2 [json_name = "invitation_id"];
+
+  string master_id = 3 [json_name = "master_id"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsSecurityhubMember version is 0
+message AwsSecurityhubMember {
+  string account_id = 1 [json_name = "account_id"];
+
+  string email = 2;
+
+  string id = 3;
+
+  bool invite = 4;
+
+  string master_id = 5 [json_name = "master_id"];
+
+  string member_status = 6 [json_name = "member_status"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsSecurityhubOrganizationAdminAccount version is 0
+message AwsSecurityhubOrganizationAdminAccount {
+  string admin_account_id = 1 [json_name = "admin_account_id"];
+
+  string id = 2;
+
+  map<string, string> for_each = 3 [json_name = "for_each"];
+
+  repeated string depends_on = 4 [json_name = "depends_on"];
+
+  int32 count = 5;
+
+  string provider = 6;
+
+  terraform.v1.Lifecycle lifecycle = 7;
+}
+
+// AwsSecurityhubOrganizationConfiguration version is 0
+message AwsSecurityhubOrganizationConfiguration {
+  bool auto_enable = 1 [json_name = "auto_enable"];
+
+  string auto_enable_standards = 2 [json_name = "auto_enable_standards"];
+
+  string id = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsSecurityhubProductSubscription version is 0
+message AwsSecurityhubProductSubscription {
+  string arn = 1;
+
+  string id = 2;
+
+  string product_arn = 3 [json_name = "product_arn"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsSecurityhubStandardsControl version is 0
+message AwsSecurityhubStandardsControl {
+  string control_id = 1 [json_name = "control_id"];
+
+  string control_status = 2 [json_name = "control_status"];
+
+  string control_status_updated_at = 3 [json_name = "control_status_updated_at"];
+
+  string description = 4;
+
+  string disabled_reason = 5 [json_name = "disabled_reason"];
+
+  string id = 6;
+
+  repeated string related_requirements = 7 [json_name = "related_requirements"];
+
+  string remediation_url = 8 [json_name = "remediation_url"];
+
+  string severity_rating = 9 [json_name = "severity_rating"];
+
+  string standards_control_arn = 10 [json_name = "standards_control_arn"];
+
+  string title = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+}
+
+// AwsSecurityhubStandardsSubscription version is 0
+message AwsSecurityhubStandardsSubscription {
+  string id = 1;
+
+  string standards_arn = 2 [json_name = "standards_arn"];
+
+  map<string, string> for_each = 3 [json_name = "for_each"];
+
+  repeated string depends_on = 4 [json_name = "depends_on"];
+
+  int32 count = 5;
+
+  string provider = 6;
+
+  terraform.v1.Lifecycle lifecycle = 7;
+}

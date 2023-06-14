@@ -1,0 +1,106 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.datasources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleLoggingProjectCmekSettings version is 0
+message GoogleLoggingProjectCmekSettings {
+  string id = 1;
+
+  // The resource name for the configured Cloud KMS key.
+  // 				KMS key name format:
+  // 				"projects/[PROJECT_ID]/locations/[LOCATION]/keyRings/[KEYRING]/cryptoKeys/[KEY]"
+  // 				To enable CMEK for the bucket, set this field to a valid kmsKeyName for which the associated service account has the required cloudkms.cryptoKeyEncrypterDecrypter roles assigned for the key.
+  // 				The Cloud KMS key used by the bucket can be updated by changing the kmsKeyName to a new valid key name. Encryption operations that are in progress will be completed with the key that was in use when they started. Decryption operations will be completed using the key that was used at the time of encryption unless access to that key has been revoked.
+  // 				See [Enabling CMEK for Logging Buckets](https://cloud.google.com/logging/docs/routing/managed-encryption-storage) for more information.
+  string kms_key_name = 2 [json_name = "kms_key_name"];
+
+  // The CryptoKeyVersion resource name for the configured Cloud KMS key.
+  // 				KMS key name format:
+  // 				"projects/[PROJECT_ID]/locations/[LOCATION]/keyRings/[KEYRING]/cryptoKeys/[KEY]/cryptoKeyVersions/[VERSION]"
+  // 				For example:
+  // 				"projects/my-project/locations/us-central1/keyRings/my-ring/cryptoKeys/my-key/cryptoKeyVersions/1"
+  // 				This is a read-only field used to convey the specific configured CryptoKeyVersion of kms_key that has been configured. It will be populated in cases where the CMEK settings are bound to a single key version.
+  string kms_key_version_name = 3 [json_name = "kms_key_version_name"];
+
+  // The resource name of the CMEK settings.
+  string name = 4;
+
+  string project = 5;
+
+  // The service account associated with a project for which CMEK will apply.
+  // 				Before enabling CMEK for a logging bucket, you must first assign the cloudkms.cryptoKeyEncrypterDecrypter role to the service account associated with the project for which CMEK will apply. Use [v2.getCmekSettings](https://cloud.google.com/logging/docs/reference/v2/rest/v2/TopLevel/getCmekSettings#google.logging.v2.ConfigServiceV2.GetCmekSettings) to obtain the service account ID.
+  // 				See [Enabling CMEK for Logging Buckets](https://cloud.google.com/logging/docs/routing/managed-encryption-storage) for more information.
+  string service_account_id = 6 [json_name = "service_account_id"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleLoggingSink version is 0
+message GoogleLoggingSink {
+  // Options that affect sinks exporting data to BigQuery.
+  repeated BigqueryOptions bigquery_options = 1 [json_name = "bigquery_options"];
+
+  // A description of this sink. The maximum length of the description is 8000 characters.
+  string description = 2;
+
+  // The destination of the sink (or, in other words, where logs are written to). Can be a Cloud Storage bucket, a PubSub topic, or a BigQuery dataset. Examples: "storage.googleapis.com/[GCS_BUCKET]" "bigquery.googleapis.com/projects/[PROJECT_ID]/datasets/[DATASET]" "pubsub.googleapis.com/projects/[PROJECT_ID]/topics/[TOPIC_ID]" The writer associated with the sink must have access to write to the above resource.
+  string destination = 3;
+
+  // If set to True, then this sink is disabled and it does not export any log entries.
+  bool disabled = 4;
+
+  // Log entries that match any of the exclusion filters will not be exported. If a log entry is matched by both filter and one of exclusion's filters, it will not be exported.
+  repeated Exclusions exclusions = 5;
+
+  // The filter to apply when exporting logs. Only log entries that match the filter are exported.
+  string filter = 6;
+
+  // Required. An identifier for the resource in format: "projects/[PROJECT_ID]/sinks/[SINK_NAME]", "organizations/[ORGANIZATION_ID]/sinks/[SINK_NAME]", "billingAccounts/[BILLING_ACCOUNT_ID]/sinks/[SINK_NAME]", "folders/[FOLDER_ID]/sinks/[SINK_NAME]"
+  string id = 7;
+
+  // The name of the logging sink.
+  string name = 8;
+
+  // The identity associated with this sink. This identity must be granted write access to the configured destination.
+  string writer_identity = 9 [json_name = "writer_identity"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message BigqueryOptions {
+    // use_partitioned_tables: bool
+    bool use_partitioned_tables = 1 [json_name = "use_partitioned_tables"];
+  }
+
+  message Exclusions {
+    // description: string
+    string description = 1;
+
+    // disabled: bool
+    bool disabled = 2;
+
+    // filter: string
+    string filter = 3;
+
+    // name: string
+    string name = 4;
+  }
+}

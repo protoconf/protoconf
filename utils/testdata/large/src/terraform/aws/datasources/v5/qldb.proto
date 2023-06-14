@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsQldbLedger version is 0
+message AwsQldbLedger {
+  string arn = 1;
+
+  bool deletion_protection = 2 [json_name = "deletion_protection"];
+
+  string id = 3;
+
+  string kms_key = 4 [json_name = "kms_key"];
+
+  string name = 5;
+
+  string permissions_mode = 6 [json_name = "permissions_mode"];
+
+  map<string, string> tags = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}

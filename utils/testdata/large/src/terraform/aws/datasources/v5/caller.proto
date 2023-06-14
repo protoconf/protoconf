@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsCallerIdentity version is 0
+message AwsCallerIdentity {
+  string account_id = 1 [json_name = "account_id"];
+
+  string arn = 2;
+
+  string id = 3;
+
+  string user_id = 4 [json_name = "user_id"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}

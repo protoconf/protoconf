@@ -1,0 +1,114 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsSsmcontactsContact version is 0
+message AwsSsmcontactsContact {
+  string alias = 1;
+
+  string arn = 2;
+
+  string display_name = 3 [json_name = "display_name"];
+
+  string id = 4;
+
+  map<string, string> tags = 5;
+
+  string type = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsSsmcontactsContactChannel version is 0
+message AwsSsmcontactsContactChannel {
+  string activation_status = 1 [json_name = "activation_status"];
+
+  string arn = 2;
+
+  string contact_id = 3 [json_name = "contact_id"];
+
+  repeated DeliveryAddress delivery_address = 4 [json_name = "delivery_address"];
+
+  string id = 5;
+
+  string name = 6;
+
+  string type = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message DeliveryAddress {
+    // simple_address: string
+    string simple_address = 1 [json_name = "simple_address"];
+  }
+}
+
+// AwsSsmcontactsPlan version is 0
+message AwsSsmcontactsPlan {
+  string contact_id = 1 [json_name = "contact_id"];
+
+  string id = 2;
+
+  repeated Stage stage = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+
+  message Stage {
+    // duration_in_minutes: number
+    int64 duration_in_minutes = 1 [json_name = "duration_in_minutes"];
+
+    // target: list of object
+    repeated Target target = 2;
+
+    message Target {
+      // channel_target_info: list of object
+      repeated ChannelTargetInfo channel_target_info = 1 [json_name = "channel_target_info"];
+
+      // contact_target_info: list of object
+      repeated ContactTargetInfo contact_target_info = 2 [json_name = "contact_target_info"];
+
+      message ChannelTargetInfo {
+        // contact_channel_id: string
+        string contact_channel_id = 1 [json_name = "contact_channel_id"];
+
+        // retry_interval_in_minutes: number
+        int64 retry_interval_in_minutes = 2 [json_name = "retry_interval_in_minutes"];
+      }
+
+      message ContactTargetInfo {
+        // contact_id: string
+        string contact_id = 1 [json_name = "contact_id"];
+
+        // is_essential: bool
+        bool is_essential = 2 [json_name = "is_essential"];
+      }
+    }
+  }
+}

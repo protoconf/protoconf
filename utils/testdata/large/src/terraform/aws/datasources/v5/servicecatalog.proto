@@ -1,0 +1,275 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsServicecatalogConstraint version is 0
+message AwsServicecatalogConstraint {
+  string accept_language = 1 [json_name = "accept_language"];
+
+  string description = 2;
+
+  string id = 3;
+
+  string owner = 4;
+
+  string parameters = 5;
+
+  string portfolio_id = 6 [json_name = "portfolio_id"];
+
+  string product_id = 7 [json_name = "product_id"];
+
+  string status = 8;
+
+  string type = 9;
+
+  repeated Timeouts timeouts = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Timeouts {
+    string read = 1;
+  }
+}
+
+// AwsServicecatalogLaunchPaths version is 0
+message AwsServicecatalogLaunchPaths {
+  string accept_language = 1 [json_name = "accept_language"];
+
+  string id = 2;
+
+  string product_id = 3 [json_name = "product_id"];
+
+  repeated Summaries summaries = 4;
+
+  repeated Timeouts timeouts = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message Summaries {
+    // constraint_summaries: list of object
+    repeated ConstraintSummaries constraint_summaries = 1 [json_name = "constraint_summaries"];
+
+    // name: string
+    string name = 2;
+
+    // path_id: string
+    string path_id = 3 [json_name = "path_id"];
+
+    // tags: map of string
+    map<string, string> tags = 4;
+
+    message ConstraintSummaries {
+      // description: string
+      string description = 1;
+
+      // type: string
+      string type = 2;
+    }
+  }
+
+  message Timeouts {
+    string read = 1;
+  }
+}
+
+// AwsServicecatalogPortfolio version is 0
+message AwsServicecatalogPortfolio {
+  string accept_language = 1 [json_name = "accept_language"];
+
+  string arn = 2;
+
+  string created_time = 3 [json_name = "created_time"];
+
+  string description = 4;
+
+  string id = 5;
+
+  string name = 6;
+
+  string provider_name = 7 [json_name = "provider_name"];
+
+  map<string, string> tags = 8;
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Timeouts {
+    string read = 1;
+  }
+}
+
+// AwsServicecatalogPortfolioConstraints version is 0
+message AwsServicecatalogPortfolioConstraints {
+  string accept_language = 1 [json_name = "accept_language"];
+
+  repeated Details details = 2;
+
+  string id = 3;
+
+  string portfolio_id = 4 [json_name = "portfolio_id"];
+
+  string product_id = 5 [json_name = "product_id"];
+
+  repeated Timeouts timeouts = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Details {
+    // constraint_id: string
+    string constraint_id = 1 [json_name = "constraint_id"];
+
+    // description: string
+    string description = 2;
+
+    // owner: string
+    string owner = 3;
+
+    // portfolio_id: string
+    string portfolio_id = 4 [json_name = "portfolio_id"];
+
+    // product_id: string
+    string product_id = 5 [json_name = "product_id"];
+
+    // type: string
+    string type = 6;
+  }
+
+  message Timeouts {
+    string read = 1;
+  }
+}
+
+// AwsServicecatalogProduct version is 0
+message AwsServicecatalogProduct {
+  string accept_language = 1 [json_name = "accept_language"];
+
+  string arn = 2;
+
+  string created_time = 3 [json_name = "created_time"];
+
+  string description = 4;
+
+  string distributor = 5;
+
+  bool has_default_path = 6 [json_name = "has_default_path"];
+
+  string id = 7;
+
+  string name = 8;
+
+  string owner = 9;
+
+  string status = 10;
+
+  string support_description = 11 [json_name = "support_description"];
+
+  string support_email = 12 [json_name = "support_email"];
+
+  string support_url = 13 [json_name = "support_url"];
+
+  map<string, string> tags = 14;
+
+  string type = 15;
+
+  repeated Timeouts timeouts = 16;
+
+  map<string, string> for_each = 17 [json_name = "for_each"];
+
+  repeated string depends_on = 18 [json_name = "depends_on"];
+
+  int32 count = 19;
+
+  string provider = 20;
+
+  terraform.v1.Lifecycle lifecycle = 21;
+
+  message Timeouts {
+    string read = 1;
+  }
+}
+
+// AwsServicecatalogProvisioningArtifacts version is 0
+message AwsServicecatalogProvisioningArtifacts {
+  string accept_language = 1 [json_name = "accept_language"];
+
+  string id = 2;
+
+  string product_id = 3 [json_name = "product_id"];
+
+  repeated ProvisioningArtifactDetails provisioning_artifact_details = 4 [json_name = "provisioning_artifact_details"];
+
+  repeated Timeouts timeouts = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message ProvisioningArtifactDetails {
+    // active: bool
+    bool active = 1;
+
+    // created_time: string
+    string created_time = 2 [json_name = "created_time"];
+
+    // description: string
+    string description = 3;
+
+    // guidance: string
+    string guidance = 4;
+
+    // id: string
+    string id = 5;
+
+    // name: string
+    string name = 6;
+
+    // type: string
+    string type = 7;
+  }
+
+  message Timeouts {
+    string read = 1;
+  }
+}

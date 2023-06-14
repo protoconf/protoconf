@@ -1,0 +1,336 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.datasources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleComposerEnvironment version is 0
+message GoogleComposerEnvironment {
+  // Configuration parameters for this environment.
+  repeated Config config = 1;
+
+  string id = 2;
+
+  // User-defined labels for this environment. The labels map can contain no more than 64 entries. Entries of the labels map are UTF8 strings that comply with the following restrictions: Label keys must be between 1 and 63 characters long and must conform to the following regular expression: [a-z]([-a-z0-9]*[a-z0-9])?. Label values must be between 0 and 63 characters long and must conform to the regular expression ([a-z]([-a-z0-9]*[a-z0-9])?)?. No more than 64 labels can be associated with a given environment. Both keys and values must be <= 128 bytes in size.
+  map<string, string> labels = 3;
+
+  // Name of the environment.
+  string name = 4;
+
+  // The ID of the project in which the resource belongs. If it is not provided, the provider project is used.
+  string project = 5;
+
+  // The location or Compute Engine region for the environment.
+  string region = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Config {
+    // airflow_uri: string
+    string airflow_uri = 1 [json_name = "airflow_uri"];
+
+    // dag_gcs_prefix: string
+    string dag_gcs_prefix = 2 [json_name = "dag_gcs_prefix"];
+
+    // database_config: list of object
+    repeated DatabaseConfig database_config = 3 [json_name = "database_config"];
+
+    // encryption_config: list of object
+    repeated EncryptionConfig encryption_config = 4 [json_name = "encryption_config"];
+
+    // environment_size: string
+    string environment_size = 5 [json_name = "environment_size"];
+
+    // gke_cluster: string
+    string gke_cluster = 6 [json_name = "gke_cluster"];
+
+    // maintenance_window: list of object
+    repeated MaintenanceWindow maintenance_window = 7 [json_name = "maintenance_window"];
+
+    // master_authorized_networks_config: list of object
+    repeated MasterAuthorizedNetworksConfig master_authorized_networks_config = 8 [json_name = "master_authorized_networks_config"];
+
+    // node_config: list of object
+    repeated NodeConfig node_config = 9 [json_name = "node_config"];
+
+    // node_count: number
+    int64 node_count = 10 [json_name = "node_count"];
+
+    // private_environment_config: list of object
+    repeated PrivateEnvironmentConfig private_environment_config = 11 [json_name = "private_environment_config"];
+
+    // recovery_config: list of object
+    repeated RecoveryConfig recovery_config = 12 [json_name = "recovery_config"];
+
+    // software_config: list of object
+    repeated SoftwareConfig software_config = 13 [json_name = "software_config"];
+
+    // web_server_config: list of object
+    repeated WebServerConfig web_server_config = 14 [json_name = "web_server_config"];
+
+    // web_server_network_access_control: list of object
+    repeated WebServerNetworkAccessControl web_server_network_access_control = 15 [json_name = "web_server_network_access_control"];
+
+    // workloads_config: list of object
+    repeated WorkloadsConfig workloads_config = 16 [json_name = "workloads_config"];
+
+    message DatabaseConfig {
+      // machine_type: string
+      string machine_type = 1 [json_name = "machine_type"];
+    }
+
+    message EncryptionConfig {
+      // kms_key_name: string
+      string kms_key_name = 1 [json_name = "kms_key_name"];
+    }
+
+    message MaintenanceWindow {
+      // end_time: string
+      string end_time = 1 [json_name = "end_time"];
+
+      // recurrence: string
+      string recurrence = 2;
+
+      // start_time: string
+      string start_time = 3 [json_name = "start_time"];
+    }
+
+    message MasterAuthorizedNetworksConfig {
+      // cidr_blocks: set of object
+      repeated CidrBlocks cidr_blocks = 1 [json_name = "cidr_blocks"];
+
+      // enabled: bool
+      bool enabled = 2;
+
+      message CidrBlocks {
+        // cidr_block: string
+        string cidr_block = 1 [json_name = "cidr_block"];
+
+        // display_name: string
+        string display_name = 2 [json_name = "display_name"];
+      }
+    }
+
+    message NodeConfig {
+      // disk_size_gb: number
+      int64 disk_size_gb = 1 [json_name = "disk_size_gb"];
+
+      // enable_ip_masq_agent: bool
+      bool enable_ip_masq_agent = 2 [json_name = "enable_ip_masq_agent"];
+
+      // ip_allocation_policy: list of object
+      repeated IpAllocationPolicy ip_allocation_policy = 3 [json_name = "ip_allocation_policy"];
+
+      // machine_type: string
+      string machine_type = 4 [json_name = "machine_type"];
+
+      // network: string
+      string network = 5;
+
+      // oauth_scopes: set of string
+      repeated string oauth_scopes = 6 [json_name = "oauth_scopes"];
+
+      // service_account: string
+      string service_account = 7 [json_name = "service_account"];
+
+      // subnetwork: string
+      string subnetwork = 8;
+
+      // tags: set of string
+      repeated string tags = 9;
+
+      // zone: string
+      string zone = 10;
+
+      message IpAllocationPolicy {
+        // cluster_ipv4_cidr_block: string
+        string cluster_ipv4_cidr_block = 1 [json_name = "cluster_ipv4_cidr_block"];
+
+        // cluster_secondary_range_name: string
+        string cluster_secondary_range_name = 2 [json_name = "cluster_secondary_range_name"];
+
+        // services_ipv4_cidr_block: string
+        string services_ipv4_cidr_block = 3 [json_name = "services_ipv4_cidr_block"];
+
+        // services_secondary_range_name: string
+        string services_secondary_range_name = 4 [json_name = "services_secondary_range_name"];
+
+        // use_ip_aliases: bool
+        bool use_ip_aliases = 5 [json_name = "use_ip_aliases"];
+      }
+    }
+
+    message PrivateEnvironmentConfig {
+      // cloud_composer_connection_subnetwork: string
+      string cloud_composer_connection_subnetwork = 1 [json_name = "cloud_composer_connection_subnetwork"];
+
+      // cloud_composer_network_ipv4_cidr_block: string
+      string cloud_composer_network_ipv4_cidr_block = 2 [
+        json_name = "cloud_composer_network_ipv4_cidr_block"
+      ];
+
+      // cloud_sql_ipv4_cidr_block: string
+      string cloud_sql_ipv4_cidr_block = 3 [json_name = "cloud_sql_ipv4_cidr_block"];
+
+      // enable_private_endpoint: bool
+      bool enable_private_endpoint = 4 [json_name = "enable_private_endpoint"];
+
+      // enable_privately_used_public_ips: bool
+      bool enable_privately_used_public_ips = 5 [json_name = "enable_privately_used_public_ips"];
+
+      // master_ipv4_cidr_block: string
+      string master_ipv4_cidr_block = 6 [json_name = "master_ipv4_cidr_block"];
+
+      // web_server_ipv4_cidr_block: string
+      string web_server_ipv4_cidr_block = 7 [json_name = "web_server_ipv4_cidr_block"];
+    }
+
+    message RecoveryConfig {
+      // scheduled_snapshots_config: list of object
+      repeated ScheduledSnapshotsConfig scheduled_snapshots_config = 1 [json_name = "scheduled_snapshots_config"];
+
+      message ScheduledSnapshotsConfig {
+        // enabled: bool
+        bool enabled = 1;
+
+        // snapshot_creation_schedule: string
+        string snapshot_creation_schedule = 2 [json_name = "snapshot_creation_schedule"];
+
+        // snapshot_location: string
+        string snapshot_location = 3 [json_name = "snapshot_location"];
+
+        // time_zone: string
+        string time_zone = 4 [json_name = "time_zone"];
+      }
+    }
+
+    message SoftwareConfig {
+      // airflow_config_overrides: map of string
+      map<string, string> airflow_config_overrides = 1 [json_name = "airflow_config_overrides"];
+
+      // env_variables: map of string
+      map<string, string> env_variables = 2 [json_name = "env_variables"];
+
+      // image_version: string
+      string image_version = 3 [json_name = "image_version"];
+
+      // pypi_packages: map of string
+      map<string, string> pypi_packages = 4 [json_name = "pypi_packages"];
+
+      // python_version: string
+      string python_version = 5 [json_name = "python_version"];
+
+      // scheduler_count: number
+      int64 scheduler_count = 6 [json_name = "scheduler_count"];
+    }
+
+    message WebServerConfig {
+      // machine_type: string
+      string machine_type = 1 [json_name = "machine_type"];
+    }
+
+    message WebServerNetworkAccessControl {
+      // allowed_ip_range: set of object
+      repeated AllowedIpRange allowed_ip_range = 1 [json_name = "allowed_ip_range"];
+
+      message AllowedIpRange {
+        // description: string
+        string description = 1;
+
+        // value: string
+        string value = 2;
+      }
+    }
+
+    message WorkloadsConfig {
+      // scheduler: list of object
+      repeated Scheduler scheduler = 1;
+
+      // web_server: list of object
+      repeated WebServer web_server = 2 [json_name = "web_server"];
+
+      // worker: list of object
+      repeated Worker worker = 3;
+
+      message Scheduler {
+        // count: number
+        int64 count = 1;
+
+        // cpu: number
+        int64 cpu = 2;
+
+        // memory_gb: number
+        int64 memory_gb = 3 [json_name = "memory_gb"];
+
+        // storage_gb: number
+        int64 storage_gb = 4 [json_name = "storage_gb"];
+      }
+
+      message WebServer {
+        // cpu: number
+        int64 cpu = 1;
+
+        // memory_gb: number
+        int64 memory_gb = 2 [json_name = "memory_gb"];
+
+        // storage_gb: number
+        int64 storage_gb = 3 [json_name = "storage_gb"];
+      }
+
+      message Worker {
+        // cpu: number
+        int64 cpu = 1;
+
+        // max_count: number
+        int64 max_count = 2 [json_name = "max_count"];
+
+        // memory_gb: number
+        int64 memory_gb = 3 [json_name = "memory_gb"];
+
+        // min_count: number
+        int64 min_count = 4 [json_name = "min_count"];
+
+        // storage_gb: number
+        int64 storage_gb = 5 [json_name = "storage_gb"];
+      }
+    }
+  }
+}
+
+// GoogleComposerImageVersions version is 0
+message GoogleComposerImageVersions {
+  string id = 1;
+
+  repeated ImageVersions image_versions = 2 [json_name = "image_versions"];
+
+  string project = 3;
+
+  string region = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message ImageVersions {
+    // image_version_id: string
+    string image_version_id = 1 [json_name = "image_version_id"];
+
+    // supported_python_versions: list of string
+    repeated string supported_python_versions = 2 [json_name = "supported_python_versions"];
+  }
+}

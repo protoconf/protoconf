@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleDatastoreIndex version is 0
+message GoogleDatastoreIndex {
+  // Policy for including ancestors in the index. Default value: "NONE" Possible values: ["NONE", "ALL_ANCESTORS"]
+  string ancestor = 1;
+
+  string id = 2;
+
+  // The index id.
+  string index_id = 3 [json_name = "index_id"];
+
+  // The entity kind which the index applies to.
+  string kind = 4;
+
+  string project = 5;
+
+  repeated Properties properties = 6;
+
+  repeated Timeouts timeouts = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Properties {
+    // The direction the index should optimize for sorting. Possible values: ["ASCENDING", "DESCENDING"]
+    string direction = 1;
+
+    // The property name to index.
+    string name = 2;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}

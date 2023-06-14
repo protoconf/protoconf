@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsServerlessapplicationrepositoryApplication version is 0
+message AwsServerlessapplicationrepositoryApplication {
+  string application_id = 1 [json_name = "application_id"];
+
+  string id = 2;
+
+  string name = 3;
+
+  repeated string required_capabilities = 4 [json_name = "required_capabilities"];
+
+  string semantic_version = 5 [json_name = "semantic_version"];
+
+  string source_code_url = 6 [json_name = "source_code_url"];
+
+  string template_url = 7 [json_name = "template_url"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}

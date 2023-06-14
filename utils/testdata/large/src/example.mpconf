@@ -1,0 +1,25 @@
+load("//terraform/v1/util.pinc", "util")
+load("//terraform/aws/resources/v5/instance.proto", "AwsInstance")
+
+
+def instance_with_name(name):
+    return util.Terraform(
+        util.Resource(
+            name,
+            AwsInstance(
+                ami="ami-830c94e3",
+                instance_type="t2.micro",
+                tags={"Name": "ExampleAppServerInstance"},
+            ),
+        ),
+    )
+
+
+output = {}
+for number in range(0, 1000):
+    name = "instance_%d" % number
+    output[name] = instance_with_name(name)
+
+
+def main():
+    return output

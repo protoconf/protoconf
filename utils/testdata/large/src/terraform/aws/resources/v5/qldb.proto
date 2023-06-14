@@ -1,0 +1,82 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsQldbLedger version is 0
+message AwsQldbLedger {
+  string arn = 1;
+
+  bool deletion_protection = 2 [json_name = "deletion_protection"];
+
+  string id = 3;
+
+  string kms_key = 4 [json_name = "kms_key"];
+
+  string name = 5;
+
+  string permissions_mode = 6 [json_name = "permissions_mode"];
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsQldbStream version is 0
+message AwsQldbStream {
+  string arn = 1;
+
+  string exclusive_end_time = 2 [json_name = "exclusive_end_time"];
+
+  string id = 3;
+
+  string inclusive_start_time = 4 [json_name = "inclusive_start_time"];
+
+  string ledger_name = 5 [json_name = "ledger_name"];
+
+  string role_arn = 6 [json_name = "role_arn"];
+
+  string stream_name = 7 [json_name = "stream_name"];
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  KinesisConfiguration kinesis_configuration = 10 [json_name = "kinesis_configuration"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message KinesisConfiguration {
+    bool aggregation_enabled = 1 [json_name = "aggregation_enabled"];
+
+    string stream_arn = 2 [json_name = "stream_arn"];
+  }
+}

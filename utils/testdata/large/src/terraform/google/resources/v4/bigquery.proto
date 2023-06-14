@@ -1,0 +1,2356 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleBigqueryAnalyticsHubDataExchange version is 0
+message GoogleBigqueryAnalyticsHubDataExchange {
+  // The ID of the data exchange. Must contain only Unicode letters, numbers (0-9), underscores (_). Should not use characters that require URL-escaping, or characters outside of ASCII, spaces.
+  string data_exchange_id = 1 [json_name = "data_exchange_id"];
+
+  // Description of the data exchange.
+  string description = 2;
+
+  // Human-readable display name of the data exchange. The display name must contain only Unicode letters, numbers (0-9), underscores (_), dashes (-), spaces ( ), and must not start or end with spaces.
+  string display_name = 3 [json_name = "display_name"];
+
+  // Documentation describing the data exchange.
+  string documentation = 4;
+
+  // Base64 encoded image representing the data exchange.
+  string icon = 5;
+
+  string id = 6;
+
+  // Number of listings contained in the data exchange.
+  int64 listing_count = 7 [json_name = "listing_count"];
+
+  // The name of the location this data exchange.
+  string location = 8;
+
+  // The resource name of the data exchange, for example:
+  // "projects/myproject/locations/US/dataExchanges/123"
+  string name = 9;
+
+  // Email or URL of the primary point of contact of the data exchange.
+  string primary_contact = 10 [json_name = "primary_contact"];
+
+  string project = 11;
+
+  repeated Timeouts timeouts = 12;
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleBigqueryAnalyticsHubDataExchangeIamBinding version is 0
+message GoogleBigqueryAnalyticsHubDataExchangeIamBinding {
+  string data_exchange_id = 1 [json_name = "data_exchange_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string location = 4;
+
+  repeated string members = 5;
+
+  string project = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleBigqueryAnalyticsHubDataExchangeIamMember version is 0
+message GoogleBigqueryAnalyticsHubDataExchangeIamMember {
+  string data_exchange_id = 1 [json_name = "data_exchange_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string location = 4;
+
+  string member = 5;
+
+  string project = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleBigqueryAnalyticsHubDataExchangeIamPolicy version is 0
+message GoogleBigqueryAnalyticsHubDataExchangeIamPolicy {
+  string data_exchange_id = 1 [json_name = "data_exchange_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string location = 4;
+
+  string policy_data = 5 [json_name = "policy_data"];
+
+  string project = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleBigqueryAnalyticsHubListing version is 0
+message GoogleBigqueryAnalyticsHubListing {
+  // Categories of the listing. Up to two categories are allowed.
+  repeated string categories = 1;
+
+  // The ID of the data exchange. Must contain only Unicode letters, numbers (0-9), underscores (_). Should not use characters that require URL-escaping, or characters outside of ASCII, spaces.
+  string data_exchange_id = 2 [json_name = "data_exchange_id"];
+
+  // Short description of the listing. The description must not contain Unicode non-characters and C0 and C1 control codes except tabs (HT), new lines (LF), carriage returns (CR), and page breaks (FF).
+  string description = 3;
+
+  // Human-readable display name of the listing. The display name must contain only Unicode letters, numbers (0-9), underscores (_), dashes (-), spaces ( ), ampersands (&) and can't start or end with spaces.
+  string display_name = 4 [json_name = "display_name"];
+
+  // Documentation describing the listing.
+  string documentation = 5;
+
+  // Base64 encoded image representing the listing.
+  string icon = 6;
+
+  string id = 7;
+
+  // The ID of the listing. Must contain only Unicode letters, numbers (0-9), underscores (_). Should not use characters that require URL-escaping, or characters outside of ASCII, spaces.
+  string listing_id = 8 [json_name = "listing_id"];
+
+  // The name of the location this data exchange listing.
+  string location = 9;
+
+  // The resource name of the listing. e.g. "projects/myproject/locations/US/dataExchanges/123/listings/456"
+  string name = 10;
+
+  // Email or URL of the primary point of contact of the listing.
+  string primary_contact = 11 [json_name = "primary_contact"];
+
+  string project = 12;
+
+  // Email or URL of the request access of the listing. Subscribers can use this reference to request access.
+  string request_access = 13 [json_name = "request_access"];
+
+  BigqueryDataset bigquery_dataset = 14 [json_name = "bigquery_dataset"];
+
+  DataProvider data_provider = 15 [json_name = "data_provider"];
+
+  Publisher publisher = 16;
+
+  repeated Timeouts timeouts = 17;
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+
+  message BigqueryDataset {
+    // Resource name of the dataset source for this listing. e.g. projects/myproject/datasets/123
+    string dataset = 1;
+  }
+
+  message DataProvider {
+    // Name of the data provider.
+    string name = 1;
+
+    // Email or URL of the data provider.
+    string primary_contact = 2 [json_name = "primary_contact"];
+  }
+
+  message Publisher {
+    // Name of the listing publisher.
+    string name = 1;
+
+    // Email or URL of the listing publisher.
+    string primary_contact = 2 [json_name = "primary_contact"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleBigqueryAnalyticsHubListingIamBinding version is 0
+message GoogleBigqueryAnalyticsHubListingIamBinding {
+  string data_exchange_id = 1 [json_name = "data_exchange_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string listing_id = 4 [json_name = "listing_id"];
+
+  string location = 5;
+
+  repeated string members = 6;
+
+  string project = 7;
+
+  string role = 8;
+
+  Condition condition = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleBigqueryAnalyticsHubListingIamMember version is 0
+message GoogleBigqueryAnalyticsHubListingIamMember {
+  string data_exchange_id = 1 [json_name = "data_exchange_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string listing_id = 4 [json_name = "listing_id"];
+
+  string location = 5;
+
+  string member = 6;
+
+  string project = 7;
+
+  string role = 8;
+
+  Condition condition = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleBigqueryAnalyticsHubListingIamPolicy version is 0
+message GoogleBigqueryAnalyticsHubListingIamPolicy {
+  string data_exchange_id = 1 [json_name = "data_exchange_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string listing_id = 4 [json_name = "listing_id"];
+
+  string location = 5;
+
+  string policy_data = 6 [json_name = "policy_data"];
+
+  string project = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// GoogleBigqueryCapacityCommitment version is 0
+message GoogleBigqueryCapacityCommitment {
+  // The optional capacity commitment ID. Capacity commitment name will be generated automatically if this field is
+  // empty. This field must only contain lower case alphanumeric characters or dashes. The first and last character
+  // cannot be a dash. Max length is 64 characters. NOTE: this ID won't be kept if the capacity commitment is split
+  // or merged.
+  string capacity_commitment_id = 1 [json_name = "capacity_commitment_id"];
+
+  // The start of the current commitment period. It is applicable only for ACTIVE capacity commitments.
+  string commitment_end_time = 2 [json_name = "commitment_end_time"];
+
+  // The start of the current commitment period. It is applicable only for ACTIVE capacity commitments.
+  string commitment_start_time = 3 [json_name = "commitment_start_time"];
+
+  // The edition type. Valid values are STANDARD, ENTERPRISE, ENTERPRISE_PLUS
+  string edition = 4;
+
+  // If true, fail the request if another project in the organization has a capacity commitment.
+  string enforce_single_admin_project_per_org = 5 [json_name = "enforce_single_admin_project_per_org"];
+
+  string id = 6;
+
+  // The geographic location where the transfer config should reside.
+  // Examples: US, EU, asia-northeast1. The default value is US.
+  string location = 7;
+
+  // The resource name of the capacity commitment, e.g., projects/myproject/locations/US/capacityCommitments/123
+  string name = 8;
+
+  // Capacity commitment plan. Valid values are at https://cloud.google.com/bigquery/docs/reference/reservations/rpc/google.cloud.bigquery.reservation.v1#commitmentplan
+  string plan = 9;
+
+  string project = 10;
+
+  // The plan this capacity commitment is converted to after commitmentEndTime passes. Once the plan is changed, committed period is extended according to commitment plan. Only applicable some commitment plans.
+  string renewal_plan = 11 [json_name = "renewal_plan"];
+
+  // Number of slots in this commitment.
+  int64 slot_count = 12 [json_name = "slot_count"];
+
+  // State of the commitment
+  string state = 13;
+
+  repeated Timeouts timeouts = 14;
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleBigqueryConnection version is 0
+message GoogleBigqueryConnection {
+  // Optional connection id that should be assigned to the created connection.
+  string connection_id = 1 [json_name = "connection_id"];
+
+  // A descriptive description for the connection
+  string description = 2;
+
+  // A descriptive name for the connection
+  string friendly_name = 3 [json_name = "friendly_name"];
+
+  // True if the connection has credential assigned.
+  bool has_credential = 4 [json_name = "has_credential"];
+
+  string id = 5;
+
+  // The geographic location where the connection should reside.
+  // Cloud SQL instance must be in the same location as the connection
+  // with following exceptions: Cloud SQL us-central1 maps to BigQuery US, Cloud SQL europe-west1 maps to BigQuery EU.
+  // Examples: US, EU, asia-northeast1, us-central1, europe-west1.
+  // Spanner Connections same as spanner region
+  // AWS allowed regions are aws-us-east-1
+  // Azure allowed regions are azure-eastus2
+  string location = 6;
+
+  // The resource name of the connection in the form of:
+  // "projects/{project_id}/locations/{location_id}/connections/{connectionId}"
+  string name = 7;
+
+  string project = 8;
+
+  Aws aws = 9;
+
+  Azure azure = 10;
+
+  CloudResource cloud_resource = 11 [json_name = "cloud_resource"];
+
+  CloudSpanner cloud_spanner = 12 [json_name = "cloud_spanner"];
+
+  CloudSql cloud_sql = 13 [json_name = "cloud_sql"];
+
+  repeated Timeouts timeouts = 14;
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+
+  message Aws {
+    AccessRole access_role = 1 [json_name = "access_role"];
+
+    message AccessRole {
+      // The user’s AWS IAM Role that trusts the Google-owned AWS IAM user Connection.
+      string iam_role_id = 1 [json_name = "iam_role_id"];
+
+      // A unique Google-owned and Google-generated identity for the Connection. This identity will be used to access the user's AWS IAM Role.
+      string identity = 2;
+    }
+  }
+
+  message Azure {
+    // The name of the Azure Active Directory Application.
+    string application = 1;
+
+    // The client id of the Azure Active Directory Application.
+    string client_id = 2 [json_name = "client_id"];
+
+    // The id of customer's directory that host the data.
+    string customer_tenant_id = 3 [json_name = "customer_tenant_id"];
+
+    // The Azure Application (client) ID where the federated credentials will be hosted.
+    string federated_application_client_id = 4 [json_name = "federated_application_client_id"];
+
+    // A unique Google-owned and Google-generated identity for the Connection. This identity will be used to access the user's Azure Active Directory Application.
+    string identity = 5;
+
+    // The object id of the Azure Active Directory Application.
+    string object_id = 6 [json_name = "object_id"];
+
+    // The URL user will be redirected to after granting consent during connection setup.
+    string redirect_uri = 7 [json_name = "redirect_uri"];
+  }
+
+  message CloudResource {
+    // The account ID of the service created for the purpose of this connection.
+    string service_account_id = 1 [json_name = "service_account_id"];
+  }
+
+  message CloudSpanner {
+    // Cloud Spanner database in the form 'project/instance/database'
+    string database = 1;
+
+    // If parallelism should be used when reading from Cloud Spanner
+    bool use_parallelism = 2 [json_name = "use_parallelism"];
+
+    // If the serverless analytics service should be used to read data from Cloud Spanner. useParallelism must be set when using serverless analytics
+    bool use_serverless_analytics = 3 [json_name = "use_serverless_analytics"];
+  }
+
+  message CloudSql {
+    // Database name.
+    string database = 1;
+
+    // Cloud SQL instance ID in the form project:location:instance.
+    string instance_id = 2 [json_name = "instance_id"];
+
+    // When the connection is used in the context of an operation in BigQuery, this service account will serve as the identity being used for connecting to the CloudSQL instance specified in this connection.
+    string service_account_id = 3 [json_name = "service_account_id"];
+
+    // Type of the Cloud SQL database. Possible values: ["DATABASE_TYPE_UNSPECIFIED", "POSTGRES", "MYSQL"]
+    string type = 4;
+
+    Credential credential = 5;
+
+    message Credential {
+      // Password for database.
+      string password = 1;
+
+      // Username for database.
+      string username = 2;
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleBigqueryConnectionIamBinding version is 0
+message GoogleBigqueryConnectionIamBinding {
+  string connection_id = 1 [json_name = "connection_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string location = 4;
+
+  repeated string members = 5;
+
+  string project = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleBigqueryConnectionIamMember version is 0
+message GoogleBigqueryConnectionIamMember {
+  string connection_id = 1 [json_name = "connection_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string location = 4;
+
+  string member = 5;
+
+  string project = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleBigqueryConnectionIamPolicy version is 0
+message GoogleBigqueryConnectionIamPolicy {
+  string connection_id = 1 [json_name = "connection_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string location = 4;
+
+  string policy_data = 5 [json_name = "policy_data"];
+
+  string project = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleBigqueryDataTransferConfig version is 0
+message GoogleBigqueryDataTransferConfig {
+  // The number of days to look back to automatically refresh the data.
+  // For example, if dataRefreshWindowDays = 10, then every day BigQuery
+  // reingests data for [today-10, today-1], rather than ingesting data for
+  // just [today-1]. Only valid if the data source supports the feature.
+  // Set the value to 0 to use the default value.
+  int64 data_refresh_window_days = 1 [json_name = "data_refresh_window_days"];
+
+  // The data source id. Cannot be changed once the transfer config is created.
+  string data_source_id = 2 [json_name = "data_source_id"];
+
+  // The BigQuery target dataset id.
+  string destination_dataset_id = 3 [json_name = "destination_dataset_id"];
+
+  // When set to true, no runs are scheduled for a given transfer.
+  bool disabled = 4;
+
+  // The user specified display name for the transfer config.
+  string display_name = 5 [json_name = "display_name"];
+
+  string id = 6;
+
+  // The geographic location where the transfer config should reside.
+  // Examples: US, EU, asia-northeast1. The default value is US.
+  string location = 7;
+
+  // The resource name of the transfer config. Transfer config names have the
+  // form projects/{projectId}/locations/{location}/transferConfigs/{configId}.
+  // Where configId is usually a uuid, but this is not required.
+  // The name is ignored when creating a transfer config.
+  string name = 8;
+
+  // Pub/Sub topic where notifications will be sent after transfer runs
+  // associated with this transfer config finish.
+  string notification_pubsub_topic = 9 [json_name = "notification_pubsub_topic"];
+
+  // Parameters specific to each data source. For more information see the bq tab in the 'Setting up a data transfer'
+  // section for each data source. For example the parameters for Cloud Storage transfers are listed here:
+  // https://cloud.google.com/bigquery-transfer/docs/cloud-storage-transfer#bq
+  //
+  // **NOTE** : If you are attempting to update a parameter that cannot be updated (due to api limitations) [please force recreation of the resource](https://www.terraform.io/cli/state/taint#forcing-re-creation-of-resources).
+  map<string, string> params = 10;
+
+  string project = 11;
+
+  // Data transfer schedule. If the data source does not support a custom
+  // schedule, this should be empty. If it is empty, the default value for
+  // the data source will be used. The specified times are in UTC. Examples
+  // of valid format: 1st,3rd monday of month 15:30, every wed,fri of jan,
+  // jun 13:15, and first sunday of quarter 00:00. See more explanation
+  // about the format here:
+  // https://cloud.google.com/appengine/docs/flexible/python/scheduling-jobs-with-cron-yaml#the_schedule_format
+  // NOTE: the granularity should be at least 8 hours, or less frequent.
+  string schedule = 12;
+
+  // Service account email. If this field is set, transfer config will
+  // be created with this service account credentials. It requires that
+  // requesting user calling this API has permissions to act as this service account.
+  string service_account_name = 13 [json_name = "service_account_name"];
+
+  EmailPreferences email_preferences = 14 [json_name = "email_preferences"];
+
+  ScheduleOptions schedule_options = 15 [json_name = "schedule_options"];
+
+  SensitiveParams sensitive_params = 16 [json_name = "sensitive_params"];
+
+  repeated Timeouts timeouts = 17;
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+
+  message EmailPreferences {
+    // If true, email notifications will be sent on transfer run failures.
+    bool enable_failure_email = 1 [json_name = "enable_failure_email"];
+  }
+
+  message ScheduleOptions {
+    // If true, automatic scheduling of data transfer runs for this
+    // configuration will be disabled. The runs can be started on ad-hoc
+    // basis using transferConfigs.startManualRuns API. When automatic
+    // scheduling is disabled, the TransferConfig.schedule field will
+    // be ignored.
+    bool disable_auto_scheduling = 1 [json_name = "disable_auto_scheduling"];
+
+    // Defines time to stop scheduling transfer runs. A transfer run cannot be
+    // scheduled at or after the end time. The end time can be changed at any
+    // moment. The time when a data transfer can be triggered manually is not
+    // limited by this option.
+    string end_time = 2 [json_name = "end_time"];
+
+    // Specifies time to start scheduling transfer runs. The first run will be
+    // scheduled at or after the start time according to a recurrence pattern
+    // defined in the schedule string. The start time can be changed at any
+    // moment. The time when a data transfer can be triggered manually is not
+    // limited by this option.
+    string start_time = 3 [json_name = "start_time"];
+  }
+
+  message SensitiveParams {
+    // The Secret Access Key of the AWS account transferring data from.
+    string secret_access_key = 1 [json_name = "secret_access_key"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleBigqueryDatapolicyDataPolicy version is 0
+message GoogleBigqueryDatapolicyDataPolicy {
+  // User-assigned (human readable) ID of the data policy that needs to be unique within a project. Used as {dataPolicyId} in part of the resource name.
+  string data_policy_id = 1 [json_name = "data_policy_id"];
+
+  // The enrollment level of the service. Possible values: ["COLUMN_LEVEL_SECURITY_POLICY", "DATA_MASKING_POLICY"]
+  string data_policy_type = 2 [json_name = "data_policy_type"];
+
+  string id = 3;
+
+  // The name of the location of the data policy.
+  string location = 4;
+
+  // Resource name of this data policy, in the format of projects/{project_number}/locations/{locationId}/dataPolicies/{dataPolicyId}.
+  string name = 5;
+
+  // Policy tag resource name, in the format of projects/{project_number}/locations/{locationId}/taxonomies/{taxonomyId}/policyTags/{policyTag_id}.
+  string policy_tag = 6 [json_name = "policy_tag"];
+
+  string project = 7;
+
+  DataMaskingPolicy data_masking_policy = 8 [json_name = "data_masking_policy"];
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message DataMaskingPolicy {
+    // The available masking rules. Learn more here: https://cloud.google.com/bigquery/docs/column-data-masking-intro#masking_options. Possible values: ["SHA256", "ALWAYS_NULL", "DEFAULT_MASKING_VALUE", "LAST_FOUR_CHARACTERS", "FIRST_FOUR_CHARACTERS", "EMAIL_MASK", "DATE_YEAR_MASK"]
+    string predefined_expression = 1 [json_name = "predefined_expression"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleBigqueryDatapolicyDataPolicyIamBinding version is 0
+message GoogleBigqueryDatapolicyDataPolicyIamBinding {
+  string data_policy_id = 1 [json_name = "data_policy_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string location = 4;
+
+  repeated string members = 5;
+
+  string project = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleBigqueryDatapolicyDataPolicyIamMember version is 0
+message GoogleBigqueryDatapolicyDataPolicyIamMember {
+  string data_policy_id = 1 [json_name = "data_policy_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string location = 4;
+
+  string member = 5;
+
+  string project = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleBigqueryDatapolicyDataPolicyIamPolicy version is 0
+message GoogleBigqueryDatapolicyDataPolicyIamPolicy {
+  string data_policy_id = 1 [json_name = "data_policy_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string location = 4;
+
+  string policy_data = 5 [json_name = "policy_data"];
+
+  string project = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleBigqueryDataset version is 0
+message GoogleBigqueryDataset {
+  // The time when this dataset was created, in milliseconds since the
+  // epoch.
+  int64 creation_time = 1 [json_name = "creation_time"];
+
+  // A unique ID for this dataset, without the project name. The ID
+  // must contain only letters (a-z, A-Z), numbers (0-9), or
+  // underscores (_). The maximum length is 1,024 characters.
+  string dataset_id = 2 [json_name = "dataset_id"];
+
+  // Defines the default collation specification of future tables created
+  // in the dataset. If a table is created in this dataset without table-level
+  // default collation, then the table inherits the dataset default collation,
+  // which is applied to the string fields that do not have explicit collation
+  // specified. A change to this field affects only tables created afterwards,
+  // and does not alter the existing tables.
+  //
+  // The following values are supported:
+  // - 'und:ci': undetermined locale, case insensitive.
+  // - '': empty string. Default to case-sensitive behavior.
+  string default_collation = 3 [json_name = "default_collation"];
+
+  // The default partition expiration for all partitioned tables in
+  // the dataset, in milliseconds.
+  //
+  //
+  // Once this property is set, all newly-created partitioned tables in
+  // the dataset will have an 'expirationMs' property in the 'timePartitioning'
+  // settings set to this value, and changing the value will only
+  // affect new tables, not existing ones. The storage in a partition will
+  // have an expiration time of its partition time plus this value.
+  // Setting this property overrides the use of 'defaultTableExpirationMs'
+  // for partitioned tables: only one of 'defaultTableExpirationMs' and
+  // 'defaultPartitionExpirationMs' will be used for any new partitioned
+  // table. If you provide an explicit 'timePartitioning.expirationMs' when
+  // creating or updating a partitioned table, that value takes precedence
+  // over the default partition expiration time indicated by this property.
+  int64 default_partition_expiration_ms = 4 [json_name = "default_partition_expiration_ms"];
+
+  // The default lifetime of all tables in the dataset, in milliseconds.
+  // The minimum value is 3600000 milliseconds (one hour).
+  //
+  //
+  // Once this property is set, all newly-created tables in the dataset
+  // will have an 'expirationTime' property set to the creation time plus
+  // the value in this property, and changing the value will only affect
+  // new tables, not existing ones. When the 'expirationTime' for a given
+  // table is reached, that table will be deleted automatically.
+  // If a table's 'expirationTime' is modified or removed before the
+  // table expires, or if you provide an explicit 'expirationTime' when
+  // creating a table, that value takes precedence over the default
+  // expiration time indicated by this property.
+  int64 default_table_expiration_ms = 5 [json_name = "default_table_expiration_ms"];
+
+  // If set to 'true', delete all the tables in the
+  // dataset when destroying the resource; otherwise,
+  // destroying the resource will fail if tables are present.
+  bool delete_contents_on_destroy = 6 [json_name = "delete_contents_on_destroy"];
+
+  // A user-friendly description of the dataset
+  string description = 7;
+
+  // A hash of the resource.
+  string etag = 8;
+
+  // A descriptive name for the dataset
+  string friendly_name = 9 [json_name = "friendly_name"];
+
+  string id = 10;
+
+  // TRUE if the dataset and its table names are case-insensitive, otherwise FALSE.
+  // By default, this is FALSE, which means the dataset and its table names are
+  // case-sensitive. This field does not affect routine references.
+  bool is_case_insensitive = 11 [json_name = "is_case_insensitive"];
+
+  // The labels associated with this dataset. You can use these to
+  // organize and group your datasets
+  map<string, string> labels = 12;
+
+  // The date when this dataset or any of its tables was last modified, in
+  // milliseconds since the epoch.
+  int64 last_modified_time = 13 [json_name = "last_modified_time"];
+
+  // The geographic location where the dataset should reside.
+  // See [official docs](https://cloud.google.com/bigquery/docs/dataset-locations).
+  //
+  //
+  // There are two types of locations, regional or multi-regional. A regional
+  // location is a specific geographic place, such as Tokyo, and a multi-regional
+  // location is a large geographic area, such as the United States, that
+  // contains at least two geographic places.
+  //
+  //
+  // The default value is multi-regional location 'US'.
+  // Changing this forces a new resource to be created.
+  string location = 14;
+
+  // Defines the time travel window in hours. The value can be from 48 to 168 hours (2 to 7 days).
+  string max_time_travel_hours = 15 [json_name = "max_time_travel_hours"];
+
+  string project = 16;
+
+  string self_link = 17 [json_name = "self_link"];
+
+  repeated Access access = 18;
+
+  DefaultEncryptionConfiguration default_encryption_configuration = 19 [json_name = "default_encryption_configuration"];
+
+  repeated Timeouts timeouts = 20;
+
+  map<string, string> for_each = 21 [json_name = "for_each"];
+
+  repeated string depends_on = 22 [json_name = "depends_on"];
+
+  int32 count = 23;
+
+  string provider = 24;
+
+  terraform.v1.Lifecycle lifecycle = 25;
+
+  message Access {
+    // A domain to grant access to. Any users signed in with the
+    // domain specified will be granted the specified access
+    string domain = 1;
+
+    // An email address of a Google Group to grant access to.
+    string group_by_email = 2 [json_name = "group_by_email"];
+
+    // Describes the rights granted to the user specified by the other
+    // member of the access object. Basic, predefined, and custom roles
+    // are supported. Predefined roles that have equivalent basic roles
+    // are swapped by the API to their basic counterparts. See
+    // [official docs](https://cloud.google.com/bigquery/docs/access-control).
+    string role = 3;
+
+    // A special group to grant access to. Possible values include:
+    //
+    //
+    // * 'projectOwners': Owners of the enclosing project.
+    //
+    //
+    // * 'projectReaders': Readers of the enclosing project.
+    //
+    //
+    // * 'projectWriters': Writers of the enclosing project.
+    //
+    //
+    // * 'allAuthenticatedUsers': All authenticated BigQuery users.
+    string special_group = 4 [json_name = "special_group"];
+
+    // An email address of a user to grant access to. For example:
+    // fred@example.com
+    string user_by_email = 5 [json_name = "user_by_email"];
+
+    Dataset dataset = 6;
+
+    Routine routine = 7;
+
+    View view = 8;
+
+    message Dataset {
+      // Which resources in the dataset this entry applies to. Currently, only views are supported,
+      // but additional target types may be added in the future. Possible values: VIEWS
+      repeated string target_types = 1 [json_name = "target_types"];
+
+      Dataset dataset = 2;
+
+      message Dataset {
+        // The ID of the dataset containing this table.
+        string dataset_id = 1 [json_name = "dataset_id"];
+
+        // The ID of the project containing this table.
+        string project_id = 2 [json_name = "project_id"];
+      }
+    }
+
+    message Routine {
+      // The ID of the dataset containing this table.
+      string dataset_id = 1 [json_name = "dataset_id"];
+
+      // The ID of the project containing this table.
+      string project_id = 2 [json_name = "project_id"];
+
+      // The ID of the routine. The ID must contain only letters (a-z,
+      // A-Z), numbers (0-9), or underscores (_). The maximum length
+      // is 256 characters.
+      string routine_id = 3 [json_name = "routine_id"];
+    }
+
+    message View {
+      // The ID of the dataset containing this table.
+      string dataset_id = 1 [json_name = "dataset_id"];
+
+      // The ID of the project containing this table.
+      string project_id = 2 [json_name = "project_id"];
+
+      // The ID of the table. The ID must contain only letters (a-z,
+      // A-Z), numbers (0-9), or underscores (_). The maximum length
+      // is 1,024 characters.
+      string table_id = 3 [json_name = "table_id"];
+    }
+  }
+
+  message DefaultEncryptionConfiguration {
+    // Describes the Cloud KMS encryption key that will be used to protect destination
+    // BigQuery table. The BigQuery Service Account associated with your project requires
+    // access to this encryption key.
+    string kms_key_name = 1 [json_name = "kms_key_name"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleBigqueryDatasetAccess version is 0
+message GoogleBigqueryDatasetAccess {
+  // If true, represents that that the iam_member in the config was translated to a different member type by the API, and is stored in state as a different member type
+  bool api_updated_member = 1 [json_name = "api_updated_member"];
+
+  // A unique ID for this dataset, without the project name. The ID
+  // must contain only letters (a-z, A-Z), numbers (0-9), or
+  // underscores (_). The maximum length is 1,024 characters.
+  string dataset_id = 2 [json_name = "dataset_id"];
+
+  // A domain to grant access to. Any users signed in with the
+  // domain specified will be granted the specified access
+  string domain = 3;
+
+  // An email address of a Google Group to grant access to.
+  string group_by_email = 4 [json_name = "group_by_email"];
+
+  // Some other type of member that appears in the IAM Policy but isn't a user,
+  // group, domain, or special group. For example: 'allUsers'
+  string iam_member = 5 [json_name = "iam_member"];
+
+  string id = 6;
+
+  string project = 7;
+
+  // Describes the rights granted to the user specified by the other
+  // member of the access object. Basic, predefined, and custom roles are
+  // supported. Predefined roles that have equivalent basic roles are
+  // swapped by the API to their basic counterparts, and will show a diff
+  // post-create. See
+  // [official docs](https://cloud.google.com/bigquery/docs/access-control).
+  string role = 8;
+
+  // A special group to grant access to. Possible values include:
+  //
+  //
+  // * 'projectOwners': Owners of the enclosing project.
+  //
+  //
+  // * 'projectReaders': Readers of the enclosing project.
+  //
+  //
+  // * 'projectWriters': Writers of the enclosing project.
+  //
+  //
+  // * 'allAuthenticatedUsers': All authenticated BigQuery users.
+  string special_group = 9 [json_name = "special_group"];
+
+  // An email address of a user to grant access to. For example:
+  // fred@example.com
+  string user_by_email = 10 [json_name = "user_by_email"];
+
+  Dataset dataset = 11;
+
+  Routine routine = 12;
+
+  repeated Timeouts timeouts = 13;
+
+  View view = 14;
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+
+  message Dataset {
+    // Which resources in the dataset this entry applies to. Currently, only views are supported,
+    // but additional target types may be added in the future. Possible values: VIEWS
+    repeated string target_types = 1 [json_name = "target_types"];
+
+    Dataset dataset = 2;
+
+    message Dataset {
+      // The ID of the dataset containing this table.
+      string dataset_id = 1 [json_name = "dataset_id"];
+
+      // The ID of the project containing this table.
+      string project_id = 2 [json_name = "project_id"];
+    }
+  }
+
+  message Routine {
+    // The ID of the dataset containing this table.
+    string dataset_id = 1 [json_name = "dataset_id"];
+
+    // The ID of the project containing this table.
+    string project_id = 2 [json_name = "project_id"];
+
+    // The ID of the routine. The ID must contain only letters (a-z,
+    // A-Z), numbers (0-9), or underscores (_). The maximum length
+    // is 256 characters.
+    string routine_id = 3 [json_name = "routine_id"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+
+  message View {
+    // The ID of the dataset containing this table.
+    string dataset_id = 1 [json_name = "dataset_id"];
+
+    // The ID of the project containing this table.
+    string project_id = 2 [json_name = "project_id"];
+
+    // The ID of the table. The ID must contain only letters (a-z,
+    // A-Z), numbers (0-9), or underscores (_). The maximum length
+    // is 1,024 characters.
+    string table_id = 3 [json_name = "table_id"];
+  }
+}
+
+// GoogleBigqueryDatasetIamBinding version is 0
+message GoogleBigqueryDatasetIamBinding {
+  string dataset_id = 1 [json_name = "dataset_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  repeated string members = 4;
+
+  string project = 5;
+
+  string role = 6;
+
+  Condition condition = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleBigqueryDatasetIamMember version is 0
+message GoogleBigqueryDatasetIamMember {
+  string dataset_id = 1 [json_name = "dataset_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string member = 4;
+
+  string project = 5;
+
+  string role = 6;
+
+  Condition condition = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleBigqueryDatasetIamPolicy version is 0
+message GoogleBigqueryDatasetIamPolicy {
+  string dataset_id = 1 [json_name = "dataset_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// GoogleBigqueryJob version is 0
+message GoogleBigqueryJob {
+  string id = 1;
+
+  // The ID of the job. The ID must contain only letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-). The maximum length is 1,024 characters.
+  string job_id = 2 [json_name = "job_id"];
+
+  // Job timeout in milliseconds. If this time limit is exceeded, BigQuery may attempt to terminate the job.
+  string job_timeout_ms = 3 [json_name = "job_timeout_ms"];
+
+  // The type of the job.
+  string job_type = 4 [json_name = "job_type"];
+
+  // The labels associated with this job. You can use these to organize and group your jobs.
+  map<string, string> labels = 5;
+
+  // The geographic location of the job. The default value is US.
+  string location = 6;
+
+  string project = 7;
+
+  // The status of this job. Examine this value when polling an asynchronous job to see if the job is complete.
+  repeated Status status = 8;
+
+  // Email address of the user who ran the job.
+  string user_email = 9 [json_name = "user_email"];
+
+  Copy copy = 10;
+
+  Extract extract = 11;
+
+  Load load = 12;
+
+  Query query = 13;
+
+  repeated Timeouts timeouts = 14;
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+
+  message Status {
+    // error_result: list of object
+    repeated ErrorResult error_result = 1 [json_name = "error_result"];
+
+    // errors: list of object
+    repeated Errors errors = 2;
+
+    // state: string
+    string state = 3;
+
+    message ErrorResult {
+      // location: string
+      string location = 1;
+
+      // message: string
+      string message = 2;
+
+      // reason: string
+      string reason = 3;
+    }
+
+    message Errors {
+      // location: string
+      string location = 1;
+
+      // message: string
+      string message = 2;
+
+      // reason: string
+      string reason = 3;
+    }
+  }
+
+  message Copy {
+    // Specifies whether the job is allowed to create new tables. The following values are supported:
+    // CREATE_IF_NEEDED: If the table does not exist, BigQuery creates the table.
+    // CREATE_NEVER: The table must already exist. If it does not, a 'notFound' error is returned in the job result.
+    // Creation, truncation and append actions occur as one atomic update upon job completion Default value: "CREATE_IF_NEEDED" Possible values: ["CREATE_IF_NEEDED", "CREATE_NEVER"]
+    string create_disposition = 1 [json_name = "create_disposition"];
+
+    // Specifies the action that occurs if the destination table already exists. The following values are supported:
+    // WRITE_TRUNCATE: If the table already exists, BigQuery overwrites the table data and uses the schema from the query result.
+    // WRITE_APPEND: If the table already exists, BigQuery appends the data to the table.
+    // WRITE_EMPTY: If the table already exists and contains data, a 'duplicate' error is returned in the job result.
+    // Each action is atomic and only occurs if BigQuery is able to complete the job successfully.
+    // Creation, truncation and append actions occur as one atomic update upon job completion. Default value: "WRITE_EMPTY" Possible values: ["WRITE_TRUNCATE", "WRITE_APPEND", "WRITE_EMPTY"]
+    string write_disposition = 2 [json_name = "write_disposition"];
+
+    DestinationEncryptionConfiguration destination_encryption_configuration = 3 [json_name = "destination_encryption_configuration"];
+
+    DestinationTable destination_table = 4 [json_name = "destination_table"];
+
+    repeated SourceTables source_tables = 5 [json_name = "source_tables"];
+
+    message DestinationEncryptionConfiguration {
+      // Describes the Cloud KMS encryption key that will be used to protect destination BigQuery table.
+      // The BigQuery Service Account associated with your project requires access to this encryption key.
+      string kms_key_name = 1 [json_name = "kms_key_name"];
+
+      // Describes the Cloud KMS encryption key version used to protect destination BigQuery table.
+      string kms_key_version = 2 [json_name = "kms_key_version"];
+    }
+
+    message DestinationTable {
+      // The ID of the dataset containing this table.
+      string dataset_id = 1 [json_name = "dataset_id"];
+
+      // The ID of the project containing this table.
+      string project_id = 2 [json_name = "project_id"];
+
+      // The table. Can be specified '{{table_id}}' if 'project_id' and 'dataset_id' are also set,
+      // or of the form 'projects/{{project}}/datasets/{{dataset_id}}/tables/{{table_id}}' if not.
+      string table_id = 3 [json_name = "table_id"];
+    }
+
+    message SourceTables {
+      // The ID of the dataset containing this table.
+      string dataset_id = 1 [json_name = "dataset_id"];
+
+      // The ID of the project containing this table.
+      string project_id = 2 [json_name = "project_id"];
+
+      // The table. Can be specified '{{table_id}}' if 'project_id' and 'dataset_id' are also set,
+      // or of the form 'projects/{{project}}/datasets/{{dataset_id}}/tables/{{table_id}}' if not.
+      string table_id = 3 [json_name = "table_id"];
+    }
+  }
+
+  message Extract {
+    // The compression type to use for exported files. Possible values include GZIP, DEFLATE, SNAPPY, and NONE.
+    // The default value is NONE. DEFLATE and SNAPPY are only supported for Avro.
+    string compression = 1;
+
+    // The exported file format. Possible values include CSV, NEWLINE_DELIMITED_JSON and AVRO for tables and SAVED_MODEL for models.
+    // The default value for tables is CSV. Tables with nested or repeated fields cannot be exported as CSV.
+    // The default value for models is SAVED_MODEL.
+    string destination_format = 2 [json_name = "destination_format"];
+
+    // A list of fully-qualified Google Cloud Storage URIs where the extracted table should be written.
+    repeated string destination_uris = 3 [json_name = "destination_uris"];
+
+    // When extracting data in CSV format, this defines the delimiter to use between fields in the exported data.
+    // Default is ','
+    string field_delimiter = 4 [json_name = "field_delimiter"];
+
+    // Whether to print out a header row in the results. Default is true.
+    bool print_header = 5 [json_name = "print_header"];
+
+    // Whether to use logical types when extracting to AVRO format.
+    bool use_avro_logical_types = 6 [json_name = "use_avro_logical_types"];
+
+    SourceModel source_model = 7 [json_name = "source_model"];
+
+    SourceTable source_table = 8 [json_name = "source_table"];
+
+    message SourceModel {
+      // The ID of the dataset containing this model.
+      string dataset_id = 1 [json_name = "dataset_id"];
+
+      // The ID of the model.
+      string model_id = 2 [json_name = "model_id"];
+
+      // The ID of the project containing this model.
+      string project_id = 3 [json_name = "project_id"];
+    }
+
+    message SourceTable {
+      // The ID of the dataset containing this table.
+      string dataset_id = 1 [json_name = "dataset_id"];
+
+      // The ID of the project containing this table.
+      string project_id = 2 [json_name = "project_id"];
+
+      // The table. Can be specified '{{table_id}}' if 'project_id' and 'dataset_id' are also set,
+      // or of the form 'projects/{{project}}/datasets/{{dataset_id}}/tables/{{table_id}}' if not.
+      string table_id = 3 [json_name = "table_id"];
+    }
+  }
+
+  message Load {
+    // Accept rows that are missing trailing optional columns. The missing values are treated as nulls.
+    // If false, records with missing trailing columns are treated as bad records, and if there are too many bad records,
+    // an invalid error is returned in the job result. The default value is false. Only applicable to CSV, ignored for other formats.
+    bool allow_jagged_rows = 1 [json_name = "allow_jagged_rows"];
+
+    // Indicates if BigQuery should allow quoted data sections that contain newline characters in a CSV file.
+    // The default value is false.
+    bool allow_quoted_newlines = 2 [json_name = "allow_quoted_newlines"];
+
+    // Indicates if we should automatically infer the options and schema for CSV and JSON sources.
+    bool autodetect = 3;
+
+    // Specifies whether the job is allowed to create new tables. The following values are supported:
+    // CREATE_IF_NEEDED: If the table does not exist, BigQuery creates the table.
+    // CREATE_NEVER: The table must already exist. If it does not, a 'notFound' error is returned in the job result.
+    // Creation, truncation and append actions occur as one atomic update upon job completion Default value: "CREATE_IF_NEEDED" Possible values: ["CREATE_IF_NEEDED", "CREATE_NEVER"]
+    string create_disposition = 4 [json_name = "create_disposition"];
+
+    // The character encoding of the data. The supported values are UTF-8 or ISO-8859-1.
+    // The default value is UTF-8. BigQuery decodes the data after the raw, binary data
+    // has been split using the values of the quote and fieldDelimiter properties.
+    string encoding = 5;
+
+    // The separator for fields in a CSV file. The separator can be any ISO-8859-1 single-byte character.
+    // To use a character in the range 128-255, you must encode the character as UTF8. BigQuery converts
+    // the string to ISO-8859-1 encoding, and then uses the first byte of the encoded string to split the
+    // data in its raw, binary state. BigQuery also supports the escape sequence "\t" to specify a tab separator.
+    // The default value is a comma (',').
+    string field_delimiter = 6 [json_name = "field_delimiter"];
+
+    // Indicates if BigQuery should allow extra values that are not represented in the table schema.
+    // If true, the extra values are ignored. If false, records with extra columns are treated as bad records,
+    // and if there are too many bad records, an invalid error is returned in the job result.
+    // The default value is false. The sourceFormat property determines what BigQuery treats as an extra value:
+    // CSV: Trailing columns
+    // JSON: Named values that don't match any column names
+    bool ignore_unknown_values = 7 [json_name = "ignore_unknown_values"];
+
+    // If sourceFormat is set to newline-delimited JSON, indicates whether it should be processed as a JSON variant such as GeoJSON.
+    // For a sourceFormat other than JSON, omit this field. If the sourceFormat is newline-delimited JSON: - for newline-delimited
+    // GeoJSON: set to GEOJSON.
+    string json_extension = 8 [json_name = "json_extension"];
+
+    // The maximum number of bad records that BigQuery can ignore when running the job. If the number of bad records exceeds this value,
+    // an invalid error is returned in the job result. The default value is 0, which requires that all records are valid.
+    int64 max_bad_records = 9 [json_name = "max_bad_records"];
+
+    // Specifies a string that represents a null value in a CSV file. For example, if you specify "\N", BigQuery interprets "\N" as a null value
+    // when loading a CSV file. The default value is the empty string. If you set this property to a custom value, BigQuery throws an error if an
+    // empty string is present for all data types except for STRING and BYTE. For STRING and BYTE columns, BigQuery interprets the empty string as
+    // an empty value.
+    string null_marker = 10 [json_name = "null_marker"];
+
+    // If sourceFormat is set to "DATASTORE_BACKUP", indicates which entity properties to load into BigQuery from a Cloud Datastore backup.
+    // Property names are case sensitive and must be top-level properties. If no properties are specified, BigQuery loads all properties.
+    // If any named property isn't found in the Cloud Datastore backup, an invalid error is returned in the job result.
+    repeated string projection_fields = 11 [json_name = "projection_fields"];
+
+    // The value that is used to quote data sections in a CSV file. BigQuery converts the string to ISO-8859-1 encoding,
+    // and then uses the first byte of the encoded string to split the data in its raw, binary state.
+    // The default value is a double-quote ('"'). If your data does not contain quoted sections, set the property value to an empty string.
+    // If your data contains quoted newline characters, you must also set the allowQuotedNewlines property to true.
+    string quote = 12;
+
+    // Allows the schema of the destination table to be updated as a side effect of the load job if a schema is autodetected or
+    // supplied in the job configuration. Schema update options are supported in two cases: when writeDisposition is WRITE_APPEND;
+    // when writeDisposition is WRITE_TRUNCATE and the destination table is a partition of a table, specified by partition decorators.
+    // For normal tables, WRITE_TRUNCATE will always overwrite the schema. One or more of the following values are specified:
+    // ALLOW_FIELD_ADDITION: allow adding a nullable field to the schema.
+    // ALLOW_FIELD_RELAXATION: allow relaxing a required field in the original schema to nullable.
+    repeated string schema_update_options = 13 [json_name = "schema_update_options"];
+
+    // The number of rows at the top of a CSV file that BigQuery will skip when loading the data.
+    // The default value is 0. This property is useful if you have header rows in the file that should be skipped.
+    // When autodetect is on, the behavior is the following:
+    // skipLeadingRows unspecified - Autodetect tries to detect headers in the first row. If they are not detected,
+    // the row is read as data. Otherwise data is read starting from the second row.
+    // skipLeadingRows is 0 - Instructs autodetect that there are no headers and data should be read starting from the first row.
+    // skipLeadingRows = N > 0 - Autodetect skips N-1 rows and tries to detect headers in row N. If headers are not detected,
+    // row N is just skipped. Otherwise row N is used to extract column names for the detected schema.
+    int64 skip_leading_rows = 14 [json_name = "skip_leading_rows"];
+
+    // The format of the data files. For CSV files, specify "CSV". For datastore backups, specify "DATASTORE_BACKUP".
+    // For newline-delimited JSON, specify "NEWLINE_DELIMITED_JSON". For Avro, specify "AVRO". For parquet, specify "PARQUET".
+    // For orc, specify "ORC". [Beta] For Bigtable, specify "BIGTABLE".
+    // The default value is CSV.
+    string source_format = 15 [json_name = "source_format"];
+
+    // The fully-qualified URIs that point to your data in Google Cloud.
+    // For Google Cloud Storage URIs: Each URI can contain one '\*' wildcard character
+    // and it must come after the 'bucket' name. Size limits related to load jobs apply
+    // to external data sources. For Google Cloud Bigtable URIs: Exactly one URI can be
+    // specified and it has be a fully specified and valid HTTPS URL for a Google Cloud Bigtable table.
+    // For Google Cloud Datastore backups: Exactly one URI can be specified. Also, the '\*' wildcard character is not allowed.
+    repeated string source_uris = 16 [json_name = "source_uris"];
+
+    // Specifies the action that occurs if the destination table already exists. The following values are supported:
+    // WRITE_TRUNCATE: If the table already exists, BigQuery overwrites the table data and uses the schema from the query result.
+    // WRITE_APPEND: If the table already exists, BigQuery appends the data to the table.
+    // WRITE_EMPTY: If the table already exists and contains data, a 'duplicate' error is returned in the job result.
+    // Each action is atomic and only occurs if BigQuery is able to complete the job successfully.
+    // Creation, truncation and append actions occur as one atomic update upon job completion. Default value: "WRITE_EMPTY" Possible values: ["WRITE_TRUNCATE", "WRITE_APPEND", "WRITE_EMPTY"]
+    string write_disposition = 17 [json_name = "write_disposition"];
+
+    DestinationEncryptionConfiguration destination_encryption_configuration = 18 [json_name = "destination_encryption_configuration"];
+
+    DestinationTable destination_table = 19 [json_name = "destination_table"];
+
+    ParquetOptions parquet_options = 20 [json_name = "parquet_options"];
+
+    TimePartitioning time_partitioning = 21 [json_name = "time_partitioning"];
+
+    message DestinationEncryptionConfiguration {
+      // Describes the Cloud KMS encryption key that will be used to protect destination BigQuery table.
+      // The BigQuery Service Account associated with your project requires access to this encryption key.
+      string kms_key_name = 1 [json_name = "kms_key_name"];
+
+      // Describes the Cloud KMS encryption key version used to protect destination BigQuery table.
+      string kms_key_version = 2 [json_name = "kms_key_version"];
+    }
+
+    message DestinationTable {
+      // The ID of the dataset containing this table.
+      string dataset_id = 1 [json_name = "dataset_id"];
+
+      // The ID of the project containing this table.
+      string project_id = 2 [json_name = "project_id"];
+
+      // The table. Can be specified '{{table_id}}' if 'project_id' and 'dataset_id' are also set,
+      // or of the form 'projects/{{project}}/datasets/{{dataset_id}}/tables/{{table_id}}' if not.
+      string table_id = 3 [json_name = "table_id"];
+    }
+
+    message ParquetOptions {
+      // If sourceFormat is set to PARQUET, indicates whether to use schema inference specifically for Parquet LIST logical type.
+      bool enable_list_inference = 1 [json_name = "enable_list_inference"];
+
+      // If sourceFormat is set to PARQUET, indicates whether to infer Parquet ENUM logical type as STRING instead of BYTES by default.
+      bool enum_as_string = 2 [json_name = "enum_as_string"];
+    }
+
+    message TimePartitioning {
+      // Number of milliseconds for which to keep the storage for a partition. A wrapper is used here because 0 is an invalid value.
+      string expiration_ms = 1 [json_name = "expiration_ms"];
+
+      // If not set, the table is partitioned by pseudo column '_PARTITIONTIME'; if set, the table is partitioned by this field.
+      // The field must be a top-level TIMESTAMP or DATE field. Its mode must be NULLABLE or REQUIRED.
+      // A wrapper is used here because an empty string is an invalid value.
+      string field = 2;
+
+      // The only type supported is DAY, which will generate one partition per day. Providing an empty string used to cause an error,
+      // but in OnePlatform the field will be treated as unset.
+      string type = 3;
+    }
+  }
+
+  message Query {
+    // If true and query uses legacy SQL dialect, allows the query to produce arbitrarily large result tables at a slight cost in performance.
+    // Requires destinationTable to be set. For standard SQL queries, this flag is ignored and large results are always allowed.
+    // However, you must still set destinationTable when result size exceeds the allowed maximum response size.
+    bool allow_large_results = 1 [json_name = "allow_large_results"];
+
+    // Specifies whether the job is allowed to create new tables. The following values are supported:
+    // CREATE_IF_NEEDED: If the table does not exist, BigQuery creates the table.
+    // CREATE_NEVER: The table must already exist. If it does not, a 'notFound' error is returned in the job result.
+    // Creation, truncation and append actions occur as one atomic update upon job completion Default value: "CREATE_IF_NEEDED" Possible values: ["CREATE_IF_NEEDED", "CREATE_NEVER"]
+    string create_disposition = 2 [json_name = "create_disposition"];
+
+    // If true and query uses legacy SQL dialect, flattens all nested and repeated fields in the query results.
+    // allowLargeResults must be true if this is set to false. For standard SQL queries, this flag is ignored and results are never flattened.
+    bool flatten_results = 3 [json_name = "flatten_results"];
+
+    // Limits the billing tier for this job. Queries that have resource usage beyond this tier will fail (without incurring a charge).
+    // If unspecified, this will be set to your project default.
+    int64 maximum_billing_tier = 4 [json_name = "maximum_billing_tier"];
+
+    // Limits the bytes billed for this job. Queries that will have bytes billed beyond this limit will fail (without incurring a charge).
+    // If unspecified, this will be set to your project default.
+    string maximum_bytes_billed = 5 [json_name = "maximum_bytes_billed"];
+
+    // Standard SQL only. Set to POSITIONAL to use positional (?) query parameters or to NAMED to use named (@myparam) query parameters in this query.
+    string parameter_mode = 6 [json_name = "parameter_mode"];
+
+    // Specifies a priority for the query. Default value: "INTERACTIVE" Possible values: ["INTERACTIVE", "BATCH"]
+    string priority = 7;
+
+    // SQL query text to execute. The useLegacySql field can be used to indicate whether the query uses legacy SQL or standard SQL.
+    // *NOTE*: queries containing [DML language](https://cloud.google.com/bigquery/docs/reference/standard-sql/data-manipulation-language)
+    // ('DELETE', 'UPDATE', 'MERGE', 'INSERT') must specify 'create_disposition = ""' and 'write_disposition = ""'.
+    string query = 8;
+
+    // Allows the schema of the destination table to be updated as a side effect of the query job.
+    // Schema update options are supported in two cases: when writeDisposition is WRITE_APPEND;
+    // when writeDisposition is WRITE_TRUNCATE and the destination table is a partition of a table,
+    // specified by partition decorators. For normal tables, WRITE_TRUNCATE will always overwrite the schema.
+    // One or more of the following values are specified:
+    // ALLOW_FIELD_ADDITION: allow adding a nullable field to the schema.
+    // ALLOW_FIELD_RELAXATION: allow relaxing a required field in the original schema to nullable.
+    repeated string schema_update_options = 9 [json_name = "schema_update_options"];
+
+    // Specifies whether to use BigQuery's legacy SQL dialect for this query. The default value is true.
+    // If set to false, the query will use BigQuery's standard SQL.
+    bool use_legacy_sql = 10 [json_name = "use_legacy_sql"];
+
+    // Whether to look for the result in the query cache. The query cache is a best-effort cache that will be flushed whenever
+    // tables in the query are modified. Moreover, the query cache is only available when a query does not have a destination table specified.
+    // The default value is true.
+    bool use_query_cache = 11 [json_name = "use_query_cache"];
+
+    // Specifies the action that occurs if the destination table already exists. The following values are supported:
+    // WRITE_TRUNCATE: If the table already exists, BigQuery overwrites the table data and uses the schema from the query result.
+    // WRITE_APPEND: If the table already exists, BigQuery appends the data to the table.
+    // WRITE_EMPTY: If the table already exists and contains data, a 'duplicate' error is returned in the job result.
+    // Each action is atomic and only occurs if BigQuery is able to complete the job successfully.
+    // Creation, truncation and append actions occur as one atomic update upon job completion. Default value: "WRITE_EMPTY" Possible values: ["WRITE_TRUNCATE", "WRITE_APPEND", "WRITE_EMPTY"]
+    string write_disposition = 12 [json_name = "write_disposition"];
+
+    DefaultDataset default_dataset = 13 [json_name = "default_dataset"];
+
+    DestinationEncryptionConfiguration destination_encryption_configuration = 14 [json_name = "destination_encryption_configuration"];
+
+    DestinationTable destination_table = 15 [json_name = "destination_table"];
+
+    ScriptOptions script_options = 16 [json_name = "script_options"];
+
+    repeated UserDefinedFunctionResources user_defined_function_resources = 17 [json_name = "user_defined_function_resources"];
+
+    message DefaultDataset {
+      // The dataset. Can be specified '{{dataset_id}}' if 'project_id' is also set,
+      // or of the form 'projects/{{project}}/datasets/{{dataset_id}}' if not.
+      string dataset_id = 1 [json_name = "dataset_id"];
+
+      // The ID of the project containing this table.
+      string project_id = 2 [json_name = "project_id"];
+    }
+
+    message DestinationEncryptionConfiguration {
+      // Describes the Cloud KMS encryption key that will be used to protect destination BigQuery table.
+      // The BigQuery Service Account associated with your project requires access to this encryption key.
+      string kms_key_name = 1 [json_name = "kms_key_name"];
+
+      // Describes the Cloud KMS encryption key version used to protect destination BigQuery table.
+      string kms_key_version = 2 [json_name = "kms_key_version"];
+    }
+
+    message DestinationTable {
+      // The ID of the dataset containing this table.
+      string dataset_id = 1 [json_name = "dataset_id"];
+
+      // The ID of the project containing this table.
+      string project_id = 2 [json_name = "project_id"];
+
+      // The table. Can be specified '{{table_id}}' if 'project_id' and 'dataset_id' are also set,
+      // or of the form 'projects/{{project}}/datasets/{{dataset_id}}/tables/{{table_id}}' if not.
+      string table_id = 3 [json_name = "table_id"];
+    }
+
+    message ScriptOptions {
+      // Determines which statement in the script represents the "key result",
+      // used to populate the schema and query results of the script job. Possible values: ["LAST", "FIRST_SELECT"]
+      string key_result_statement = 1 [json_name = "key_result_statement"];
+
+      // Limit on the number of bytes billed per statement. Exceeding this budget results in an error.
+      string statement_byte_budget = 2 [json_name = "statement_byte_budget"];
+
+      // Timeout period for each statement in a script.
+      string statement_timeout_ms = 3 [json_name = "statement_timeout_ms"];
+    }
+
+    message UserDefinedFunctionResources {
+      // An inline resource that contains code for a user-defined function (UDF).
+      // Providing a inline code resource is equivalent to providing a URI for a file containing the same code.
+      string inline_code = 1 [json_name = "inline_code"];
+
+      // A code resource to load from a Google Cloud Storage URI (gs://bucket/path).
+      string resource_uri = 2 [json_name = "resource_uri"];
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// GoogleBigqueryReservation version is 0
+message GoogleBigqueryReservation {
+  // Maximum number of queries that are allowed to run concurrently in this reservation. This is a soft limit due to asynchronous nature of the system and various optimizations for small queries. Default value is 0 which means that concurrency will be automatically set based on the reservation size.
+  int64 concurrency = 1;
+
+  // The edition type. Valid values are STANDARD, ENTERPRISE, ENTERPRISE_PLUS
+  string edition = 2;
+
+  string id = 3;
+
+  // If false, any query using this reservation will use idle slots from other reservations within
+  // the same admin project. If true, a query using this reservation will execute with the slot
+  // capacity specified above at most.
+  bool ignore_idle_slots = 4 [json_name = "ignore_idle_slots"];
+
+  // The geographic location where the transfer config should reside.
+  // Examples: US, EU, asia-northeast1. The default value is US.
+  string location = 5;
+
+  // Applicable only for reservations located within one of the BigQuery multi-regions (US or EU).
+  // If set to true, this reservation is placed in the organization's secondary region which is designated for disaster recovery purposes. If false, this reservation is placed in the organization's default region.
+  bool multi_region_auxiliary = 6 [json_name = "multi_region_auxiliary"];
+
+  // The name of the reservation. This field must only contain alphanumeric characters or dash.
+  string name = 7;
+
+  string project = 8;
+
+  // Minimum slots available to this reservation. A slot is a unit of computational power in BigQuery, and serves as the
+  // unit of parallelism. Queries using this reservation might use more slots during runtime if ignoreIdleSlots is set to false.
+  int64 slot_capacity = 9 [json_name = "slot_capacity"];
+
+  Autoscale autoscale = 10;
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message Autoscale {
+    // The slot capacity added to this reservation when autoscale happens. Will be between [0, max_slots].
+    int64 current_slots = 1 [json_name = "current_slots"];
+
+    // Number of slots to be scaled when needed.
+    int64 max_slots = 2 [json_name = "max_slots"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleBigqueryReservationAssignment version is 0
+message GoogleBigqueryReservationAssignment {
+  // The resource which will use the reservation. E.g. projects/myproject, folders/123, organizations/456.
+  string assignee = 1;
+
+  string id = 2;
+
+  // Types of job, which could be specified when using the reservation. Possible values: JOB_TYPE_UNSPECIFIED, PIPELINE, QUERY
+  string job_type = 3 [json_name = "job_type"];
+
+  // The location for the resource
+  string location = 4;
+
+  // Output only. The resource name of the assignment.
+  string name = 5;
+
+  // The project for the resource
+  string project = 6;
+
+  // The reservation for the resource
+  string reservation = 7;
+
+  // Assignment will remain in PENDING state if no active capacity commitment is present. It will become ACTIVE when some capacity commitment becomes active. Possible values: STATE_UNSPECIFIED, PENDING, ACTIVE
+  string state = 8;
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// GoogleBigqueryRoutine version is 0
+message GoogleBigqueryRoutine {
+  // The time when this routine was created, in milliseconds since the
+  // epoch.
+  int64 creation_time = 1 [json_name = "creation_time"];
+
+  // The ID of the dataset containing this routine
+  string dataset_id = 2 [json_name = "dataset_id"];
+
+  // The body of the routine. For functions, this is the expression in the AS clause.
+  // If language=SQL, it is the substring inside (but excluding) the parentheses.
+  string definition_body = 3 [json_name = "definition_body"];
+
+  // The description of the routine if defined.
+  string description = 4;
+
+  // The determinism level of the JavaScript UDF if defined. Possible values: ["DETERMINISM_LEVEL_UNSPECIFIED", "DETERMINISTIC", "NOT_DETERMINISTIC"]
+  string determinism_level = 5 [json_name = "determinism_level"];
+
+  string id = 6;
+
+  // Optional. If language = "JAVASCRIPT", this field stores the path of the
+  // imported JAVASCRIPT libraries.
+  repeated string imported_libraries = 7 [json_name = "imported_libraries"];
+
+  // The language of the routine. Possible values: ["SQL", "JAVASCRIPT"]
+  string language = 8;
+
+  // The time when this routine was modified, in milliseconds since the
+  // epoch.
+  int64 last_modified_time = 9 [json_name = "last_modified_time"];
+
+  string project = 10;
+
+  // Optional. Can be set only if routineType = "TABLE_VALUED_FUNCTION".
+  //
+  // If absent, the return table type is inferred from definitionBody at query time in each query
+  // that references this routine. If present, then the columns in the evaluated table result will
+  // be cast to match the column types specificed in return table type, at query time.
+  string return_table_type = 11 [json_name = "return_table_type"];
+
+  // A JSON schema for the return type. Optional if language = "SQL"; required otherwise.
+  // If absent, the return type is inferred from definitionBody at query time in each query
+  // that references this routine. If present, then the evaluated result will be cast to
+  // the specified returned type at query time. ~>**NOTE**: Because this field expects a JSON
+  // string, any changes to the string will create a diff, even if the JSON itself hasn't
+  // changed. If the API returns a different value for the same schema, e.g. it switche
+  // d the order of values or replaced STRUCT field type with RECORD field type, we currently
+  // cannot suppress the recurring diff this causes. As a workaround, we recommend using
+  // the schema as returned by the API.
+  string return_type = 12 [json_name = "return_type"];
+
+  // The ID of the the routine. The ID must contain only letters (a-z, A-Z), numbers (0-9), or underscores (_). The maximum length is 256 characters.
+  string routine_id = 13 [json_name = "routine_id"];
+
+  // The type of routine. Possible values: ["SCALAR_FUNCTION", "PROCEDURE", "TABLE_VALUED_FUNCTION"]
+  string routine_type = 14 [json_name = "routine_type"];
+
+  repeated Arguments arguments = 15;
+
+  repeated Timeouts timeouts = 16;
+
+  map<string, string> for_each = 17 [json_name = "for_each"];
+
+  repeated string depends_on = 18 [json_name = "depends_on"];
+
+  int32 count = 19;
+
+  string provider = 20;
+
+  terraform.v1.Lifecycle lifecycle = 21;
+
+  message Arguments {
+    // Defaults to FIXED_TYPE. Default value: "FIXED_TYPE" Possible values: ["FIXED_TYPE", "ANY_TYPE"]
+    string argument_kind = 1 [json_name = "argument_kind"];
+
+    // A JSON schema for the data type. Required unless argumentKind = ANY_TYPE.
+    // ~>**NOTE**: Because this field expects a JSON string, any changes to the string
+    // will create a diff, even if the JSON itself hasn't changed. If the API returns
+    // a different value for the same schema, e.g. it switched the order of values
+    // or replaced STRUCT field type with RECORD field type, we currently cannot
+    // suppress the recurring diff this causes. As a workaround, we recommend using
+    // the schema as returned by the API.
+    string data_type = 2 [json_name = "data_type"];
+
+    // Specifies whether the argument is input or output. Can be set for procedures only. Possible values: ["IN", "OUT", "INOUT"]
+    string mode = 3;
+
+    // The name of this argument. Can be absent for function return argument.
+    string name = 4;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleBigqueryTable version is 0
+message GoogleBigqueryTable {
+  // Specifies column names to use for data clustering. Up to four top-level columns are allowed, and should be specified in descending priority order.
+  repeated string clustering = 1;
+
+  // The time when this table was created, in milliseconds since the epoch.
+  int64 creation_time = 2 [json_name = "creation_time"];
+
+  // The dataset ID to create the table in. Changing this forces a new resource to be created.
+  string dataset_id = 3 [json_name = "dataset_id"];
+
+  // Whether or not to allow Terraform to destroy the instance. Unless this field is set to false in Terraform state, a terraform destroy or terraform apply that would delete the instance will fail.
+  bool deletion_protection = 4 [json_name = "deletion_protection"];
+
+  // The field description.
+  string description = 5;
+
+  // A hash of the resource.
+  string etag = 6;
+
+  // The time when this table expires, in milliseconds since the epoch. If not present, the table will persist indefinitely. Expired tables will be deleted and their storage reclaimed.
+  int64 expiration_time = 7 [json_name = "expiration_time"];
+
+  // A descriptive name for the table.
+  string friendly_name = 8 [json_name = "friendly_name"];
+
+  string id = 9;
+
+  // A mapping of labels to assign to the resource.
+  map<string, string> labels = 10;
+
+  // The time when this table was last modified, in milliseconds since the epoch.
+  int64 last_modified_time = 11 [json_name = "last_modified_time"];
+
+  // The geographic location where the table resides. This value is inherited from the dataset.
+  string location = 12;
+
+  // The geographic location where the table resides. This value is inherited from the dataset.
+  int64 num_bytes = 13 [json_name = "num_bytes"];
+
+  // The number of bytes in the table that are considered "long-term storage".
+  int64 num_long_term_bytes = 14 [json_name = "num_long_term_bytes"];
+
+  // The number of rows of data in this table, excluding any data in the streaming buffer.
+  int64 num_rows = 15 [json_name = "num_rows"];
+
+  // The ID of the project in which the resource belongs.
+  string project = 16;
+
+  // A JSON schema for the table.
+  string schema = 17;
+
+  // The URI of the created resource.
+  string self_link = 18 [json_name = "self_link"];
+
+  // A unique ID for the resource. Changing this forces a new resource to be created.
+  string table_id = 19 [json_name = "table_id"];
+
+  // Describes the table type.
+  string type = 20;
+
+  EncryptionConfiguration encryption_configuration = 21 [json_name = "encryption_configuration"];
+
+  ExternalDataConfiguration external_data_configuration = 22 [json_name = "external_data_configuration"];
+
+  MaterializedView materialized_view = 23 [json_name = "materialized_view"];
+
+  RangePartitioning range_partitioning = 24 [json_name = "range_partitioning"];
+
+  TimePartitioning time_partitioning = 25 [json_name = "time_partitioning"];
+
+  View view = 26;
+
+  map<string, string> for_each = 27 [json_name = "for_each"];
+
+  repeated string depends_on = 28 [json_name = "depends_on"];
+
+  int32 count = 29;
+
+  string provider = 30;
+
+  terraform.v1.Lifecycle lifecycle = 31;
+
+  message EncryptionConfiguration {
+    // The self link or full name of a key which should be used to encrypt this table. Note that the default bigquery service account will need to have encrypt/decrypt permissions on this key - you may want to see the google_bigquery_default_service_account datasource and the google_kms_crypto_key_iam_binding resource.
+    string kms_key_name = 1 [json_name = "kms_key_name"];
+
+    // The self link or full name of the kms key version used to encrypt this table.
+    string kms_key_version = 2 [json_name = "kms_key_version"];
+  }
+
+  message ExternalDataConfiguration {
+    // Let BigQuery try to autodetect the schema and format of the table.
+    bool autodetect = 1;
+
+    // The compression type of the data source. Valid values are "NONE" or "GZIP".
+    string compression = 2;
+
+    // The connection specifying the credentials to be used to read external storage, such as Azure Blob, Cloud Storage, or S3. The connectionId can have the form "{{project}}.{{location}}.{{connection_id}}" or "projects/{{project}}/locations/{{location}}/connections/{{connection_id}}".
+    string connection_id = 3 [json_name = "connection_id"];
+
+    // Indicates if BigQuery should allow extra values that are not represented in the table schema. If true, the extra values are ignored. If false, records with extra columns are treated as bad records, and if there are too many bad records, an invalid error is returned in the job result. The default value is false.
+    bool ignore_unknown_values = 4 [json_name = "ignore_unknown_values"];
+
+    // The maximum number of bad records that BigQuery can ignore when reading data.
+    int64 max_bad_records = 5 [json_name = "max_bad_records"];
+
+    // When creating an external table, the user can provide a reference file with the table schema. This is enabled for the following formats: AVRO, PARQUET, ORC.
+    string reference_file_schema_uri = 6 [json_name = "reference_file_schema_uri"];
+
+    // A JSON schema for the external table. Schema is required for CSV and JSON formats and is disallowed for Google Cloud Bigtable, Cloud Datastore backups, and Avro formats when using external tables.
+    string schema = 7;
+
+    // Please see sourceFormat under ExternalDataConfiguration in Bigquery's public API documentation (https://cloud.google.com/bigquery/docs/reference/rest/v2/tables#externaldataconfiguration) for supported formats. To use "GOOGLE_SHEETS" the scopes must include "googleapis.com/auth/drive.readonly".
+    string source_format = 8 [json_name = "source_format"];
+
+    // A list of the fully-qualified URIs that point to your data in Google Cloud.
+    repeated string source_uris = 9 [json_name = "source_uris"];
+
+    AvroOptions avro_options = 10 [json_name = "avro_options"];
+
+    CsvOptions csv_options = 11 [json_name = "csv_options"];
+
+    GoogleSheetsOptions google_sheets_options = 12 [json_name = "google_sheets_options"];
+
+    HivePartitioningOptions hive_partitioning_options = 13 [json_name = "hive_partitioning_options"];
+
+    message AvroOptions {
+      // If sourceFormat is set to "AVRO", indicates whether to interpret logical types as the corresponding BigQuery data type (for example, TIMESTAMP), instead of using the raw type (for example, INTEGER).
+      bool use_avro_logical_types = 1 [json_name = "use_avro_logical_types"];
+    }
+
+    message CsvOptions {
+      // Indicates if BigQuery should accept rows that are missing trailing optional columns.
+      bool allow_jagged_rows = 1 [json_name = "allow_jagged_rows"];
+
+      // Indicates if BigQuery should allow quoted data sections that contain newline characters in a CSV file. The default value is false.
+      bool allow_quoted_newlines = 2 [json_name = "allow_quoted_newlines"];
+
+      // The character encoding of the data. The supported values are UTF-8 or ISO-8859-1.
+      string encoding = 3;
+
+      // The separator for fields in a CSV file.
+      string field_delimiter = 4 [json_name = "field_delimiter"];
+
+      // The value that is used to quote data sections in a CSV file. If your data does not contain quoted sections, set the property value to an empty string. If your data contains quoted newline characters, you must also set the allow_quoted_newlines property to true. The API-side default is ", specified in Terraform escaped as \". Due to limitations with Terraform default values, this value is required to be explicitly set.
+      string quote = 5;
+
+      // The number of rows at the top of a CSV file that BigQuery will skip when reading the data.
+      int64 skip_leading_rows = 6 [json_name = "skip_leading_rows"];
+    }
+
+    message GoogleSheetsOptions {
+      // Range of a sheet to query from. Only used when non-empty. At least one of range or skip_leading_rows must be set. Typical format: "sheet_name!top_left_cell_id:bottom_right_cell_id" For example: "sheet1!A1:B20"
+      string range = 1;
+
+      // The number of rows at the top of the sheet that BigQuery will skip when reading the data. At least one of range or skip_leading_rows must be set.
+      int64 skip_leading_rows = 2 [json_name = "skip_leading_rows"];
+    }
+
+    message HivePartitioningOptions {
+      // When set, what mode of hive partitioning to use when reading data.
+      string mode = 1;
+
+      // If set to true, queries over this table require a partition filter that can be used for partition elimination to be specified.
+      bool require_partition_filter = 2 [json_name = "require_partition_filter"];
+
+      // When hive partition detection is requested, a common for all source uris must be required. The prefix must end immediately before the partition key encoding begins.
+      string source_uri_prefix = 3 [json_name = "source_uri_prefix"];
+    }
+  }
+
+  message MaterializedView {
+    // Specifies if BigQuery should automatically refresh materialized view when the base table is updated. The default is true.
+    bool enable_refresh = 1 [json_name = "enable_refresh"];
+
+    // A query whose result is persisted.
+    string query = 2;
+
+    // Specifies maximum frequency at which this materialized view will be refreshed. The default is 1800000
+    int64 refresh_interval_ms = 3 [json_name = "refresh_interval_ms"];
+  }
+
+  message RangePartitioning {
+    // The field used to determine how to create a range-based partition.
+    string field = 1;
+
+    Range range = 2;
+
+    message Range {
+      // End of the range partitioning, exclusive.
+      int64 end = 1;
+
+      // The width of each range within the partition.
+      int64 interval = 2;
+
+      // Start of the range partitioning, inclusive.
+      int64 start = 3;
+    }
+  }
+
+  message TimePartitioning {
+    // Number of milliseconds for which to keep the storage for a partition.
+    int64 expiration_ms = 1 [json_name = "expiration_ms"];
+
+    // The field used to determine how to create a time-based partition. If time-based partitioning is enabled without this value, the table is partitioned based on the load time.
+    string field = 2;
+
+    // If set to true, queries over this table require a partition filter that can be used for partition elimination to be specified.
+    bool require_partition_filter = 3 [json_name = "require_partition_filter"];
+
+    // The supported types are DAY, HOUR, MONTH, and YEAR, which will generate one partition per day, hour, month, and year, respectively.
+    string type = 4;
+  }
+
+  message View {
+    // A query that BigQuery executes when the view is referenced.
+    string query = 1;
+
+    // Specifies whether to use BigQuery's legacy SQL for this view. The default value is true. If set to false, the view will use BigQuery's standard SQL
+    bool use_legacy_sql = 2 [json_name = "use_legacy_sql"];
+  }
+}
+
+// GoogleBigqueryTableIamBinding version is 0
+message GoogleBigqueryTableIamBinding {
+  string dataset_id = 1 [json_name = "dataset_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  repeated string members = 4;
+
+  string project = 5;
+
+  string role = 6;
+
+  string table_id = 7 [json_name = "table_id"];
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleBigqueryTableIamMember version is 0
+message GoogleBigqueryTableIamMember {
+  string dataset_id = 1 [json_name = "dataset_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string member = 4;
+
+  string project = 5;
+
+  string role = 6;
+
+  string table_id = 7 [json_name = "table_id"];
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleBigqueryTableIamPolicy version is 0
+message GoogleBigqueryTableIamPolicy {
+  string dataset_id = 1 [json_name = "dataset_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  string table_id = 6 [json_name = "table_id"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}

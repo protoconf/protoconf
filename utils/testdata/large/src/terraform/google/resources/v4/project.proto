@@ -1,0 +1,487 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleProject version is 1
+message GoogleProject {
+  // Create the 'default' network automatically.  Default true. If set to false, the default network will be deleted.  Note that, for quota purposes, you will still need to have 1 network slot available to create the project successfully, even if you set auto_create_network to false, since the network will exist momentarily.
+  bool auto_create_network = 1 [json_name = "auto_create_network"];
+
+  // The alphanumeric ID of the billing account this project belongs to. The user or service account performing this operation with Terraform must have Billing Account Administrator privileges (roles/billing.admin) in the organization. See Google Cloud Billing API Access Control for more details.
+  string billing_account = 2 [json_name = "billing_account"];
+
+  // The numeric ID of the folder this project should be created under. Only one of org_id or folder_id may be specified. If the folder_id is specified, then the project is created under the specified folder. Changing this forces the project to be migrated to the newly specified folder.
+  string folder_id = 3 [json_name = "folder_id"];
+
+  string id = 4;
+
+  // A set of key/value label pairs to assign to the project.
+  map<string, string> labels = 5;
+
+  // The display name of the project.
+  string name = 6;
+
+  // The numeric identifier of the project.
+  string number = 7;
+
+  // The numeric ID of the organization this project belongs to. Changing this forces a new project to be created.  Only one of org_id or folder_id may be specified. If the org_id is specified then the project is created at the top level. Changing this forces the project to be migrated to the newly specified organization.
+  string org_id = 8 [json_name = "org_id"];
+
+  // The project ID. Changing this forces a new project to be created.
+  string project_id = 9 [json_name = "project_id"];
+
+  // If true, the Terraform resource can be deleted without deleting the Project via the Google API.
+  bool skip_delete = 10 [json_name = "skip_delete"];
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string read = 3;
+
+    string update = 4;
+  }
+}
+
+// GoogleProjectAccessApprovalSettings version is 0
+message GoogleProjectAccessApprovalSettings {
+  // The asymmetric crypto key version to use for signing approval requests.
+  // Empty active_key_version indicates that a Google-managed key should be used for signing.
+  // This property will be ignored if set by an ancestor of the resource, and new non-empty values may not be set.
+  string active_key_version = 1 [json_name = "active_key_version"];
+
+  // If the field is true, that indicates that an ancestor of this Project has set active_key_version.
+  bool ancestor_has_active_key_version = 2 [json_name = "ancestor_has_active_key_version"];
+
+  // If the field is true, that indicates that at least one service is enrolled for Access Approval in one or more ancestors of the Project.
+  bool enrolled_ancestor = 3 [json_name = "enrolled_ancestor"];
+
+  string id = 4;
+
+  // If the field is true, that indicates that there is some configuration issue with the active_key_version
+  // configured on this Project (e.g. it doesn't exist or the Access Approval service account doesn't have the
+  // correct permissions on it, etc.) This key version is not necessarily the effective key version at this level,
+  // as key versions are inherited top-down.
+  bool invalid_key_version = 5 [json_name = "invalid_key_version"];
+
+  // The resource name of the settings. Format is "projects/{project_id}/accessApprovalSettings"
+  string name = 6;
+
+  // A list of email addresses to which notifications relating to approval requests should be sent.
+  // Notifications relating to a resource will be sent to all emails in the settings of ancestor
+  // resources of that resource. A maximum of 50 email addresses are allowed.
+  repeated string notification_emails = 7 [json_name = "notification_emails"];
+
+  // Deprecated in favor of 'project_id'
+  string project = 8;
+
+  // ID of the project of the access approval settings.
+  string project_id = 9 [json_name = "project_id"];
+
+  repeated EnrolledServices enrolled_services = 10 [json_name = "enrolled_services"];
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message EnrolledServices {
+    // The product for which Access Approval will be enrolled. Allowed values are listed (case-sensitive):
+    //  all
+    //  appengine.googleapis.com
+    //  bigquery.googleapis.com
+    //  bigtable.googleapis.com
+    //  cloudkms.googleapis.com
+    //  compute.googleapis.com
+    //  dataflow.googleapis.com
+    //  iam.googleapis.com
+    //  pubsub.googleapis.com
+    //  storage.googleapis.com
+    string cloud_product = 1 [json_name = "cloud_product"];
+
+    // The enrollment level of the service. Default value: "BLOCK_ALL" Possible values: ["BLOCK_ALL"]
+    string enrollment_level = 2 [json_name = "enrollment_level"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleProjectDefaultServiceAccounts version is 0
+message GoogleProjectDefaultServiceAccounts {
+  // The action to be performed in the default service accounts. Valid values are: DEPRIVILEGE, DELETE, DISABLE.
+  // 				Note that DEPRIVILEGE action will ignore the REVERT configuration in the restore_policy.
+  string action = 1;
+
+  string id = 2;
+
+  // The project ID where service accounts are created.
+  string project = 3;
+
+  // The action to be performed in the default service accounts on the resource destroy.
+  // 				Valid values are NONE, REVERT and REVERT_AND_IGNORE_FAILURE. It is applied for any action but in the DEPRIVILEGE.
+  string restore_policy = 4 [json_name = "restore_policy"];
+
+  // The Service Accounts changed by this resource. It is used for revert the action on the destroy.
+  map<string, string> service_accounts = 5 [json_name = "service_accounts"];
+
+  repeated Timeouts timeouts = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string read = 3;
+  }
+}
+
+// GoogleProjectIamAuditConfig version is 0
+message GoogleProjectIamAuditConfig {
+  // The etag of iam policy
+  string etag = 1;
+
+  string id = 2;
+
+  string project = 3;
+
+  // Service which will be enabled for audit logging. The special value allServices covers all services.
+  string service = 4;
+
+  repeated AuditLogConfig audit_log_config = 5 [json_name = "audit_log_config"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message AuditLogConfig {
+    // Identities that do not cause logging for this type of permission. Each entry can have one of the following values:user:{emailid}: An email address that represents a specific Google account. For example, alice@gmail.com or joe@example.com. serviceAccount:{emailid}: An email address that represents a service account. For example, my-other-app@appspot.gserviceaccount.com. group:{emailid}: An email address that represents a Google group. For example, admins@example.com. domain:{domain}: A G Suite domain (primary, instead of alias) name that represents all the users of that domain. For example, google.com or example.com.
+    repeated string exempted_members = 1 [json_name = "exempted_members"];
+
+    // Permission type for which logging is to be configured. Must be one of DATA_READ, DATA_WRITE, or ADMIN_READ.
+    string log_type = 2 [json_name = "log_type"];
+  }
+}
+
+// GoogleProjectIamBinding version is 0
+message GoogleProjectIamBinding {
+  string etag = 1;
+
+  string id = 2;
+
+  repeated string members = 3;
+
+  string project = 4;
+
+  string role = 5;
+
+  Condition condition = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleProjectIamCustomRole version is 0
+message GoogleProjectIamCustomRole {
+  // The current deleted state of the role.
+  bool deleted = 1;
+
+  // A human-readable description for the role.
+  string description = 2;
+
+  string id = 3;
+
+  // The name of the role in the format projects/{{project}}/roles/{{role_id}}. Like id, this field can be used as a reference in other resources such as IAM role bindings.
+  string name = 4;
+
+  // The names of the permissions this role grants when bound in an IAM policy. At least one permission must be specified.
+  repeated string permissions = 5;
+
+  // The project that the service account will be created in. Defaults to the provider project configuration.
+  string project = 6;
+
+  // The camel case role id to use for this role. Cannot contain - characters.
+  string role_id = 7 [json_name = "role_id"];
+
+  // The current launch stage of the role. Defaults to GA.
+  string stage = 8;
+
+  // A human-readable title for the role.
+  string title = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+}
+
+// GoogleProjectIamMember version is 0
+message GoogleProjectIamMember {
+  string etag = 1;
+
+  string id = 2;
+
+  string member = 3;
+
+  string project = 4;
+
+  string role = 5;
+
+  Condition condition = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleProjectIamPolicy version is 0
+message GoogleProjectIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string policy_data = 3 [json_name = "policy_data"];
+
+  string project = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// GoogleProjectOrganizationPolicy version is 0
+message GoogleProjectOrganizationPolicy {
+  // The name of the Constraint the Policy is configuring, for example, serviceuser.services.
+  string constraint = 1;
+
+  // The etag of the organization policy. etag is used for optimistic concurrency control as a way to help prevent simultaneous updates of a policy from overwriting each other.
+  string etag = 2;
+
+  string id = 3;
+
+  // The project ID.
+  string project = 4;
+
+  // The timestamp in RFC3339 UTC "Zulu" format, accurate to nanoseconds, representing when the variable was last updated. Example: "2016-10-09T12:33:37.578138407Z".
+  string update_time = 5 [json_name = "update_time"];
+
+  // Version of the Policy. Default version is 0.
+  int64 version = 6;
+
+  BooleanPolicy boolean_policy = 7 [json_name = "boolean_policy"];
+
+  ListPolicy list_policy = 8 [json_name = "list_policy"];
+
+  RestorePolicy restore_policy = 9 [json_name = "restore_policy"];
+
+  repeated Timeouts timeouts = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message BooleanPolicy {
+    // If true, then the Policy is enforced. If false, then any configuration is acceptable.
+    bool enforced = 1;
+  }
+
+  message ListPolicy {
+    // If set to true, the values from the effective Policy of the parent resource are inherited, meaning the values set in this Policy are added to the values inherited up the hierarchy.
+    bool inherit_from_parent = 1 [json_name = "inherit_from_parent"];
+
+    // The Google Cloud Console will try to default to a configuration that matches the value specified in this field.
+    string suggested_value = 2 [json_name = "suggested_value"];
+
+    Allow allow = 3;
+
+    Deny deny = 4;
+
+    message Allow {
+      // The policy allows or denies all values.
+      bool all = 1;
+
+      // The policy can define specific values that are allowed or denied.
+      repeated string values = 2;
+    }
+
+    message Deny {
+      // The policy allows or denies all values.
+      bool all = 1;
+
+      // The policy can define specific values that are allowed or denied.
+      repeated string values = 2;
+    }
+  }
+
+  message RestorePolicy {
+    // May only be set to true. If set, then the default Policy is restored.
+    bool default = 1;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string read = 3;
+
+    string update = 4;
+  }
+}
+
+// GoogleProjectService version is 0
+message GoogleProjectService {
+  bool disable_dependent_services = 1 [json_name = "disable_dependent_services"];
+
+  bool disable_on_destroy = 2 [json_name = "disable_on_destroy"];
+
+  string id = 3;
+
+  string project = 4;
+
+  string service = 5;
+
+  repeated Timeouts timeouts = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string read = 3;
+
+    string update = 4;
+  }
+}
+
+// GoogleProjectUsageExportBucket version is 0
+message GoogleProjectUsageExportBucket {
+  // The bucket to store reports in.
+  string bucket_name = 1 [json_name = "bucket_name"];
+
+  string id = 2;
+
+  // A prefix for the reports, for instance, the project name.
+  string prefix = 3;
+
+  // The project to set the export bucket on. If it is not provided, the provider project is used.
+  string project = 4;
+
+  repeated Timeouts timeouts = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}

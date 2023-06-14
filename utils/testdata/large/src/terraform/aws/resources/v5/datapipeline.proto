@@ -1,0 +1,86 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsDatapipelinePipeline version is 0
+message AwsDatapipelinePipeline {
+  string description = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  map<string, string> tags = 4;
+
+  map<string, string> tags_all = 5 [json_name = "tags_all"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsDatapipelinePipelineDefinition version is 0
+message AwsDatapipelinePipelineDefinition {
+  string id = 1;
+
+  string pipeline_id = 2 [json_name = "pipeline_id"];
+
+  repeated ParameterObject parameter_object = 3 [json_name = "parameter_object"];
+
+  repeated ParameterValue parameter_value = 4 [json_name = "parameter_value"];
+
+  repeated PipelineObject pipeline_object = 5 [json_name = "pipeline_object"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message ParameterObject {
+    string id = 1;
+
+    repeated Attribute attribute = 2;
+
+    message Attribute {
+      string key = 1;
+
+      string string_value = 2 [json_name = "string_value"];
+    }
+  }
+
+  message ParameterValue {
+    string id = 1;
+
+    string string_value = 2 [json_name = "string_value"];
+  }
+
+  message PipelineObject {
+    string id = 1;
+
+    string name = 2;
+
+    repeated Field field = 3;
+
+    message Field {
+      string key = 1;
+
+      string ref_value = 2 [json_name = "ref_value"];
+
+      string string_value = 3 [json_name = "string_value"];
+    }
+  }
+}

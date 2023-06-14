@@ -1,0 +1,198 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsRoute version is 0
+message AwsRoute {
+  string carrier_gateway_id = 1 [json_name = "carrier_gateway_id"];
+
+  string core_network_arn = 2 [json_name = "core_network_arn"];
+
+  string destination_cidr_block = 3 [json_name = "destination_cidr_block"];
+
+  string destination_ipv6_cidr_block = 4 [json_name = "destination_ipv6_cidr_block"];
+
+  string destination_prefix_list_id = 5 [json_name = "destination_prefix_list_id"];
+
+  string egress_only_gateway_id = 6 [json_name = "egress_only_gateway_id"];
+
+  string gateway_id = 7 [json_name = "gateway_id"];
+
+  string id = 8;
+
+  string instance_id = 9 [json_name = "instance_id"];
+
+  string local_gateway_id = 10 [json_name = "local_gateway_id"];
+
+  string nat_gateway_id = 11 [json_name = "nat_gateway_id"];
+
+  string network_interface_id = 12 [json_name = "network_interface_id"];
+
+  string route_table_id = 13 [json_name = "route_table_id"];
+
+  string transit_gateway_id = 14 [json_name = "transit_gateway_id"];
+
+  string vpc_peering_connection_id = 15 [json_name = "vpc_peering_connection_id"];
+
+  repeated Timeouts timeouts = 16;
+
+  map<string, string> for_each = 17 [json_name = "for_each"];
+
+  repeated string depends_on = 18 [json_name = "depends_on"];
+
+  int32 count = 19;
+
+  string provider = 20;
+
+  terraform.v1.Lifecycle lifecycle = 21;
+
+  message Timeouts {
+    string read = 1;
+  }
+}
+
+// AwsRouteTable version is 0
+message AwsRouteTable {
+  string arn = 1;
+
+  repeated Associations associations = 2;
+
+  string gateway_id = 3 [json_name = "gateway_id"];
+
+  string id = 4;
+
+  string owner_id = 5 [json_name = "owner_id"];
+
+  string route_table_id = 6 [json_name = "route_table_id"];
+
+  repeated Routes routes = 7;
+
+  string subnet_id = 8 [json_name = "subnet_id"];
+
+  map<string, string> tags = 9;
+
+  string vpc_id = 10 [json_name = "vpc_id"];
+
+  repeated Filter filter = 11;
+
+  repeated Timeouts timeouts = 12;
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message Associations {
+    // gateway_id: string
+    string gateway_id = 1 [json_name = "gateway_id"];
+
+    // main: bool
+    bool main = 2;
+
+    // route_table_association_id: string
+    string route_table_association_id = 3 [json_name = "route_table_association_id"];
+
+    // route_table_id: string
+    string route_table_id = 4 [json_name = "route_table_id"];
+
+    // subnet_id: string
+    string subnet_id = 5 [json_name = "subnet_id"];
+  }
+
+  message Routes {
+    // carrier_gateway_id: string
+    string carrier_gateway_id = 1 [json_name = "carrier_gateway_id"];
+
+    // cidr_block: string
+    string cidr_block = 2 [json_name = "cidr_block"];
+
+    // core_network_arn: string
+    string core_network_arn = 3 [json_name = "core_network_arn"];
+
+    // destination_prefix_list_id: string
+    string destination_prefix_list_id = 4 [json_name = "destination_prefix_list_id"];
+
+    // egress_only_gateway_id: string
+    string egress_only_gateway_id = 5 [json_name = "egress_only_gateway_id"];
+
+    // gateway_id: string
+    string gateway_id = 6 [json_name = "gateway_id"];
+
+    // instance_id: string
+    string instance_id = 7 [json_name = "instance_id"];
+
+    // ipv6_cidr_block: string
+    string ipv6_cidr_block = 8 [json_name = "ipv6_cidr_block"];
+
+    // local_gateway_id: string
+    string local_gateway_id = 9 [json_name = "local_gateway_id"];
+
+    // nat_gateway_id: string
+    string nat_gateway_id = 10 [json_name = "nat_gateway_id"];
+
+    // network_interface_id: string
+    string network_interface_id = 11 [json_name = "network_interface_id"];
+
+    // transit_gateway_id: string
+    string transit_gateway_id = 12 [json_name = "transit_gateway_id"];
+
+    // vpc_endpoint_id: string
+    string vpc_endpoint_id = 13 [json_name = "vpc_endpoint_id"];
+
+    // vpc_peering_connection_id: string
+    string vpc_peering_connection_id = 14 [json_name = "vpc_peering_connection_id"];
+  }
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+
+  message Timeouts {
+    string read = 1;
+  }
+}
+
+// AwsRouteTables version is 0
+message AwsRouteTables {
+  string id = 1;
+
+  repeated string ids = 2;
+
+  map<string, string> tags = 3;
+
+  string vpc_id = 4 [json_name = "vpc_id"];
+
+  repeated Filter filter = 5;
+
+  repeated Timeouts timeouts = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+
+  message Timeouts {
+    string read = 1;
+  }
+}

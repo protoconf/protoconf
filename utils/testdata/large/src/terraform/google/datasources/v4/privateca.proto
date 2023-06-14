@@ -1,0 +1,405 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.datasources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GooglePrivatecaCaPoolIamPolicy version is 0
+message GooglePrivatecaCaPoolIamPolicy {
+  string ca_pool = 1 [json_name = "ca_pool"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string location = 4;
+
+  string policy_data = 5 [json_name = "policy_data"];
+
+  string project = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GooglePrivatecaCertificateAuthority version is 0
+message GooglePrivatecaCertificateAuthority {
+  // URLs for accessing content published by this CA, such as the CA certificate and CRLs.
+  repeated AccessUrls access_urls = 1 [json_name = "access_urls"];
+
+  // The user provided Resource ID for this Certificate Authority.
+  string certificate_authority_id = 2 [json_name = "certificate_authority_id"];
+
+  // The config used to create a self-signed X.509 certificate or CSR.
+  repeated Config config = 3;
+
+  // The time at which this CertificateAuthority was created.
+  //
+  // A timestamp in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine
+  // fractional digits. Examples: "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z".
+  string create_time = 4 [json_name = "create_time"];
+
+  // Whether or not to allow Terraform to destroy the CertificateAuthority. Unless this field is set to false
+  // in Terraform state, a 'terraform destroy' or 'terraform apply' that would delete the instance will fail.
+  bool deletion_protection = 5 [json_name = "deletion_protection"];
+
+  // Desired state of the CertificateAuthority. Set this field to 'STAGED' to create a 'STAGED' root CA.
+  string desired_state = 6 [json_name = "desired_state"];
+
+  // The name of a Cloud Storage bucket where this CertificateAuthority will publish content,
+  // such as the CA certificate and CRLs. This must be a bucket name, without any prefixes
+  // (such as 'gs://') or suffixes (such as '.googleapis.com'). For example, to use a bucket named
+  // my-bucket, you would simply specify 'my-bucket'. If not specified, a managed bucket will be
+  // created.
+  string gcs_bucket = 7 [json_name = "gcs_bucket"];
+
+  string id = 8;
+
+  // This field allows the CA to be deleted even if the CA has active certs. Active certs include both unrevoked and unexpired certs.
+  // Use with care. Defaults to 'false'.
+  bool ignore_active_certificates_on_deletion = 9 [
+    json_name = "ignore_active_certificates_on_deletion"
+  ];
+
+  // Used when issuing certificates for this CertificateAuthority. If this CertificateAuthority
+  // is a self-signed CertificateAuthority, this key is also used to sign the self-signed CA
+  // certificate. Otherwise, it is used to sign a CSR.
+  repeated KeySpec key_spec = 10 [json_name = "key_spec"];
+
+  // Labels with user-defined metadata.
+  //
+  // An object containing a list of "key": value pairs. Example: { "name": "wrench", "mass":
+  // "1.3kg", "count": "3" }.
+  map<string, string> labels = 11;
+
+  // The desired lifetime of the CA certificate. Used to create the "notBeforeTime" and
+  // "notAfterTime" fields inside an X.509 certificate. A duration in seconds with up to nine
+  // fractional digits, terminated by 's'. Example: "3.5s".
+  string lifetime = 12;
+
+  // Location of the CertificateAuthority. A full list of valid locations can be found by
+  // running 'gcloud privateca locations list'.
+  string location = 13;
+
+  // The resource name for this CertificateAuthority in the format
+  // projects/*/locations/*/certificateAuthorities/*.
+  string name = 14;
+
+  // The signed CA certificate issued from the subordinated CA's CSR. This is needed when activating the subordiante CA with a third party issuer.
+  string pem_ca_certificate = 15 [json_name = "pem_ca_certificate"];
+
+  // This CertificateAuthority's certificate chain, including the current
+  // CertificateAuthority's certificate. Ordered such that the root issuer is the final
+  // element (consistent with RFC 5246). For a self-signed CA, this will only list the current
+  // CertificateAuthority's certificate.
+  repeated string pem_ca_certificates = 16 [json_name = "pem_ca_certificates"];
+
+  string pem_csr = 17 [json_name = "pem_csr"];
+
+  // The name of the CaPool this Certificate Authority belongs to.
+  string pool = 18;
+
+  string project = 19;
+
+  // If this flag is set, the Certificate Authority will be deleted as soon as
+  // possible without a 30-day grace period where undeletion would have been
+  // allowed. If you proceed, there will be no way to recover this CA.
+  // Use with care. Defaults to 'false'.
+  bool skip_grace_period = 20 [json_name = "skip_grace_period"];
+
+  // The State for this CertificateAuthority.
+  string state = 21;
+
+  // If this is a subordinate CertificateAuthority, this field will be set
+  // with the subordinate configuration, which describes its issuers.
+  repeated SubordinateConfig subordinate_config = 22 [json_name = "subordinate_config"];
+
+  // The Type of this CertificateAuthority.
+  //
+  // ~> **Note:** For 'SUBORDINATE' Certificate Authorities, they need to
+  // be activated before they can issue certificates. Default value: "SELF_SIGNED" Possible values: ["SELF_SIGNED", "SUBORDINATE"]
+  string type = 23;
+
+  // The time at which this CertificateAuthority was updated.
+  //
+  // A timestamp in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine
+  // fractional digits. Examples: "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z".
+  string update_time = 24 [json_name = "update_time"];
+
+  map<string, string> for_each = 25 [json_name = "for_each"];
+
+  repeated string depends_on = 26 [json_name = "depends_on"];
+
+  int32 count = 27;
+
+  string provider = 28;
+
+  terraform.v1.Lifecycle lifecycle = 29;
+
+  message AccessUrls {
+    // ca_certificate_access_url: string
+    string ca_certificate_access_url = 1 [json_name = "ca_certificate_access_url"];
+
+    // crl_access_urls: list of string
+    repeated string crl_access_urls = 2 [json_name = "crl_access_urls"];
+  }
+
+  message Config {
+    // subject_config: list of object
+    repeated SubjectConfig subject_config = 1 [json_name = "subject_config"];
+
+    // x509_config: list of object
+    repeated X509Config x509_config = 2 [json_name = "x509_config"];
+
+    message SubjectConfig {
+      // subject: list of object
+      repeated Subject subject = 1;
+
+      // subject_alt_name: list of object
+      repeated SubjectAltName subject_alt_name = 2 [json_name = "subject_alt_name"];
+
+      message Subject {
+        // common_name: string
+        string common_name = 1 [json_name = "common_name"];
+
+        // country_code: string
+        string country_code = 2 [json_name = "country_code"];
+
+        // locality: string
+        string locality = 3;
+
+        // organization: string
+        string organization = 4;
+
+        // organizational_unit: string
+        string organizational_unit = 5 [json_name = "organizational_unit"];
+
+        // postal_code: string
+        string postal_code = 6 [json_name = "postal_code"];
+
+        // province: string
+        string province = 7;
+
+        // street_address: string
+        string street_address = 8 [json_name = "street_address"];
+      }
+
+      message SubjectAltName {
+        // dns_names: list of string
+        repeated string dns_names = 1 [json_name = "dns_names"];
+
+        // email_addresses: list of string
+        repeated string email_addresses = 2 [json_name = "email_addresses"];
+
+        // ip_addresses: list of string
+        repeated string ip_addresses = 3 [json_name = "ip_addresses"];
+
+        // uris: list of string
+        repeated string uris = 4;
+      }
+    }
+
+    message X509Config {
+      // additional_extensions: list of object
+      repeated AdditionalExtensions additional_extensions = 1 [json_name = "additional_extensions"];
+
+      // aia_ocsp_servers: list of string
+      repeated string aia_ocsp_servers = 2 [json_name = "aia_ocsp_servers"];
+
+      // ca_options: list of object
+      repeated CaOptions ca_options = 3 [json_name = "ca_options"];
+
+      // key_usage: list of object
+      repeated KeyUsage key_usage = 4 [json_name = "key_usage"];
+
+      // name_constraints: list of object
+      repeated NameConstraints name_constraints = 5 [json_name = "name_constraints"];
+
+      // policy_ids: list of object
+      repeated PolicyIds policy_ids = 6 [json_name = "policy_ids"];
+
+      message AdditionalExtensions {
+        // critical: bool
+        bool critical = 1;
+
+        // object_id: list of object
+        repeated ObjectId object_id = 2 [json_name = "object_id"];
+
+        // value: string
+        string value = 3;
+
+        message ObjectId {
+          // object_id_path: list of number
+          repeated int64 object_id_path = 1 [json_name = "object_id_path"];
+        }
+      }
+
+      message CaOptions {
+        // is_ca: bool
+        bool is_ca = 1 [json_name = "is_ca"];
+
+        // max_issuer_path_length: number
+        int64 max_issuer_path_length = 2 [json_name = "max_issuer_path_length"];
+
+        // non_ca: bool
+        bool non_ca = 3 [json_name = "non_ca"];
+
+        // zero_max_issuer_path_length: bool
+        bool zero_max_issuer_path_length = 4 [json_name = "zero_max_issuer_path_length"];
+      }
+
+      message KeyUsage {
+        // base_key_usage: list of object
+        repeated BaseKeyUsage base_key_usage = 1 [json_name = "base_key_usage"];
+
+        // extended_key_usage: list of object
+        repeated ExtendedKeyUsage extended_key_usage = 2 [json_name = "extended_key_usage"];
+
+        // unknown_extended_key_usages: list of object
+        repeated UnknownExtendedKeyUsages unknown_extended_key_usages = 3 [json_name = "unknown_extended_key_usages"];
+
+        message BaseKeyUsage {
+          // cert_sign: bool
+          bool cert_sign = 1 [json_name = "cert_sign"];
+
+          // content_commitment: bool
+          bool content_commitment = 2 [json_name = "content_commitment"];
+
+          // crl_sign: bool
+          bool crl_sign = 3 [json_name = "crl_sign"];
+
+          // data_encipherment: bool
+          bool data_encipherment = 4 [json_name = "data_encipherment"];
+
+          // decipher_only: bool
+          bool decipher_only = 5 [json_name = "decipher_only"];
+
+          // digital_signature: bool
+          bool digital_signature = 6 [json_name = "digital_signature"];
+
+          // encipher_only: bool
+          bool encipher_only = 7 [json_name = "encipher_only"];
+
+          // key_agreement: bool
+          bool key_agreement = 8 [json_name = "key_agreement"];
+
+          // key_encipherment: bool
+          bool key_encipherment = 9 [json_name = "key_encipherment"];
+        }
+
+        message ExtendedKeyUsage {
+          // client_auth: bool
+          bool client_auth = 1 [json_name = "client_auth"];
+
+          // code_signing: bool
+          bool code_signing = 2 [json_name = "code_signing"];
+
+          // email_protection: bool
+          bool email_protection = 3 [json_name = "email_protection"];
+
+          // ocsp_signing: bool
+          bool ocsp_signing = 4 [json_name = "ocsp_signing"];
+
+          // server_auth: bool
+          bool server_auth = 5 [json_name = "server_auth"];
+
+          // time_stamping: bool
+          bool time_stamping = 6 [json_name = "time_stamping"];
+        }
+
+        message UnknownExtendedKeyUsages {
+          // object_id_path: list of number
+          repeated int64 object_id_path = 1 [json_name = "object_id_path"];
+        }
+      }
+
+      message NameConstraints {
+        // critical: bool
+        bool critical = 1;
+
+        // excluded_dns_names: list of string
+        repeated string excluded_dns_names = 2 [json_name = "excluded_dns_names"];
+
+        // excluded_email_addresses: list of string
+        repeated string excluded_email_addresses = 3 [json_name = "excluded_email_addresses"];
+
+        // excluded_ip_ranges: list of string
+        repeated string excluded_ip_ranges = 4 [json_name = "excluded_ip_ranges"];
+
+        // excluded_uris: list of string
+        repeated string excluded_uris = 5 [json_name = "excluded_uris"];
+
+        // permitted_dns_names: list of string
+        repeated string permitted_dns_names = 6 [json_name = "permitted_dns_names"];
+
+        // permitted_email_addresses: list of string
+        repeated string permitted_email_addresses = 7 [json_name = "permitted_email_addresses"];
+
+        // permitted_ip_ranges: list of string
+        repeated string permitted_ip_ranges = 8 [json_name = "permitted_ip_ranges"];
+
+        // permitted_uris: list of string
+        repeated string permitted_uris = 9 [json_name = "permitted_uris"];
+      }
+
+      message PolicyIds {
+        // object_id_path: list of number
+        repeated int64 object_id_path = 1 [json_name = "object_id_path"];
+      }
+    }
+  }
+
+  message KeySpec {
+    // algorithm: string
+    string algorithm = 1;
+
+    // cloud_kms_key_version: string
+    string cloud_kms_key_version = 2 [json_name = "cloud_kms_key_version"];
+  }
+
+  message SubordinateConfig {
+    // certificate_authority: string
+    string certificate_authority = 1 [json_name = "certificate_authority"];
+
+    // pem_issuer_chain: list of object
+    repeated PemIssuerChain pem_issuer_chain = 2 [json_name = "pem_issuer_chain"];
+
+    message PemIssuerChain {
+      // pem_certificates: list of string
+      repeated string pem_certificates = 1 [json_name = "pem_certificates"];
+    }
+  }
+}
+
+// GooglePrivatecaCertificateTemplateIamPolicy version is 0
+message GooglePrivatecaCertificateTemplateIamPolicy {
+  string certificate_template = 1 [json_name = "certificate_template"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string location = 4;
+
+  string policy_data = 5 [json_name = "policy_data"];
+
+  string project = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}

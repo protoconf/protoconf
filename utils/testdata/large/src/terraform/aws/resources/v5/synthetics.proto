@@ -1,0 +1,165 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsSyntheticsCanary version is 0
+message AwsSyntheticsCanary {
+  string arn = 1;
+
+  string artifact_s3_location = 2 [json_name = "artifact_s3_location"];
+
+  bool delete_lambda = 3 [json_name = "delete_lambda"];
+
+  string engine_arn = 4 [json_name = "engine_arn"];
+
+  string execution_role_arn = 5 [json_name = "execution_role_arn"];
+
+  int64 failure_retention_period = 6 [json_name = "failure_retention_period"];
+
+  string handler = 7;
+
+  string id = 8;
+
+  string name = 9;
+
+  string runtime_version = 10 [json_name = "runtime_version"];
+
+  string s3_bucket = 11 [json_name = "s3_bucket"];
+
+  string s3_key = 12 [json_name = "s3_key"];
+
+  string s3_version = 13 [json_name = "s3_version"];
+
+  string source_location_arn = 14 [json_name = "source_location_arn"];
+
+  bool start_canary = 15 [json_name = "start_canary"];
+
+  string status = 16;
+
+  int64 success_retention_period = 17 [json_name = "success_retention_period"];
+
+  map<string, string> tags = 18;
+
+  map<string, string> tags_all = 19 [json_name = "tags_all"];
+
+  repeated Timeline timeline = 20;
+
+  string zip_file = 21 [json_name = "zip_file"];
+
+  ArtifactConfig artifact_config = 22 [json_name = "artifact_config"];
+
+  RunConfig run_config = 23 [json_name = "run_config"];
+
+  Schedule schedule = 24;
+
+  VpcConfig vpc_config = 25 [json_name = "vpc_config"];
+
+  map<string, string> for_each = 26 [json_name = "for_each"];
+
+  repeated string depends_on = 27 [json_name = "depends_on"];
+
+  int32 count = 28;
+
+  string provider = 29;
+
+  terraform.v1.Lifecycle lifecycle = 30;
+
+  message Timeline {
+    // created: string
+    string created = 1;
+
+    // last_modified: string
+    string last_modified = 2 [json_name = "last_modified"];
+
+    // last_started: string
+    string last_started = 3 [json_name = "last_started"];
+
+    // last_stopped: string
+    string last_stopped = 4 [json_name = "last_stopped"];
+  }
+
+  message ArtifactConfig {
+    S3Encryption s3_encryption = 1 [json_name = "s3_encryption"];
+
+    message S3Encryption {
+      string encryption_mode = 1 [json_name = "encryption_mode"];
+
+      string kms_key_arn = 2 [json_name = "kms_key_arn"];
+    }
+  }
+
+  message RunConfig {
+    bool active_tracing = 1 [json_name = "active_tracing"];
+
+    map<string, string> environment_variables = 2 [json_name = "environment_variables"];
+
+    int64 memory_in_mb = 3 [json_name = "memory_in_mb"];
+
+    int64 timeout_in_seconds = 4 [json_name = "timeout_in_seconds"];
+  }
+
+  message Schedule {
+    int64 duration_in_seconds = 1 [json_name = "duration_in_seconds"];
+
+    string expression = 2;
+  }
+
+  message VpcConfig {
+    repeated string security_group_ids = 1 [json_name = "security_group_ids"];
+
+    repeated string subnet_ids = 2 [json_name = "subnet_ids"];
+
+    string vpc_id = 3 [json_name = "vpc_id"];
+  }
+}
+
+// AwsSyntheticsGroup version is 0
+message AwsSyntheticsGroup {
+  string arn = 1;
+
+  string group_id = 2 [json_name = "group_id"];
+
+  string id = 3;
+
+  string name = 4;
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsSyntheticsGroupAssociation version is 0
+message AwsSyntheticsGroupAssociation {
+  string canary_arn = 1 [json_name = "canary_arn"];
+
+  string group_arn = 2 [json_name = "group_arn"];
+
+  string group_id = 3 [json_name = "group_id"];
+
+  string group_name = 4 [json_name = "group_name"];
+
+  string id = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}

@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsInternetmonitorMonitor version is 0
+message AwsInternetmonitorMonitor {
+  string arn = 1;
+
+  string id = 2;
+
+  int64 max_city_networks_to_monitor = 3 [json_name = "max_city_networks_to_monitor"];
+
+  string monitor_name = 4 [json_name = "monitor_name"];
+
+  repeated string resources = 5;
+
+  string status = 6;
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  int64 traffic_percentage_to_monitor = 9 [json_name = "traffic_percentage_to_monitor"];
+
+  InternetMeasurementsLogDelivery internet_measurements_log_delivery = 10 [json_name = "internet_measurements_log_delivery"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message InternetMeasurementsLogDelivery {
+    S3Config s3_config = 1 [json_name = "s3_config"];
+
+    message S3Config {
+      string bucket_name = 1 [json_name = "bucket_name"];
+
+      string bucket_prefix = 2 [json_name = "bucket_prefix"];
+
+      string log_delivery_status = 3 [json_name = "log_delivery_status"];
+    }
+  }
+}

@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsCurReportDefinition version is 0
+message AwsCurReportDefinition {
+  repeated string additional_artifacts = 1 [json_name = "additional_artifacts"];
+
+  repeated string additional_schema_elements = 2 [json_name = "additional_schema_elements"];
+
+  string arn = 3;
+
+  string compression = 4;
+
+  string format = 5;
+
+  string id = 6;
+
+  bool refresh_closed_reports = 7 [json_name = "refresh_closed_reports"];
+
+  string report_name = 8 [json_name = "report_name"];
+
+  string report_versioning = 9 [json_name = "report_versioning"];
+
+  string s3_bucket = 10 [json_name = "s3_bucket"];
+
+  string s3_prefix = 11 [json_name = "s3_prefix"];
+
+  string s3_region = 12 [json_name = "s3_region"];
+
+  string time_unit = 13 [json_name = "time_unit"];
+
+  map<string, string> for_each = 14 [json_name = "for_each"];
+
+  repeated string depends_on = 15 [json_name = "depends_on"];
+
+  int32 count = 16;
+
+  string provider = 17;
+
+  terraform.v1.Lifecycle lifecycle = 18;
+}

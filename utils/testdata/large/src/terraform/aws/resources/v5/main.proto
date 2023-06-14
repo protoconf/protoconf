@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsMainRouteTableAssociation version is 0
+message AwsMainRouteTableAssociation {
+  string id = 1;
+
+  string original_route_table_id = 2 [json_name = "original_route_table_id"];
+
+  string route_table_id = 3 [json_name = "route_table_id"];
+
+  string vpc_id = 4 [json_name = "vpc_id"];
+
+  repeated Timeouts timeouts = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

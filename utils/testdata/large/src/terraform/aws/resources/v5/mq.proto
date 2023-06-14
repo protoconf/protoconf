@@ -1,0 +1,181 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsMqBroker version is 0
+message AwsMqBroker {
+  bool apply_immediately = 1 [json_name = "apply_immediately"];
+
+  string arn = 2;
+
+  string authentication_strategy = 3 [json_name = "authentication_strategy"];
+
+  bool auto_minor_version_upgrade = 4 [json_name = "auto_minor_version_upgrade"];
+
+  string broker_name = 5 [json_name = "broker_name"];
+
+  string deployment_mode = 6 [json_name = "deployment_mode"];
+
+  string engine_type = 7 [json_name = "engine_type"];
+
+  string engine_version = 8 [json_name = "engine_version"];
+
+  string host_instance_type = 9 [json_name = "host_instance_type"];
+
+  string id = 10;
+
+  repeated Instances instances = 11;
+
+  bool publicly_accessible = 12 [json_name = "publicly_accessible"];
+
+  repeated string security_groups = 13 [json_name = "security_groups"];
+
+  string storage_type = 14 [json_name = "storage_type"];
+
+  repeated string subnet_ids = 15 [json_name = "subnet_ids"];
+
+  map<string, string> tags = 16;
+
+  map<string, string> tags_all = 17 [json_name = "tags_all"];
+
+  Configuration configuration = 18;
+
+  EncryptionOptions encryption_options = 19 [json_name = "encryption_options"];
+
+  LdapServerMetadata ldap_server_metadata = 20 [json_name = "ldap_server_metadata"];
+
+  Logs logs = 21;
+
+  MaintenanceWindowStartTime maintenance_window_start_time = 22 [json_name = "maintenance_window_start_time"];
+
+  repeated Timeouts timeouts = 23;
+
+  repeated User user = 24;
+
+  map<string, string> for_each = 25 [json_name = "for_each"];
+
+  repeated string depends_on = 26 [json_name = "depends_on"];
+
+  int32 count = 27;
+
+  string provider = 28;
+
+  terraform.v1.Lifecycle lifecycle = 29;
+
+  message Instances {
+    // console_url: string
+    string console_url = 1 [json_name = "console_url"];
+
+    // endpoints: list of string
+    repeated string endpoints = 2;
+
+    // ip_address: string
+    string ip_address = 3 [json_name = "ip_address"];
+  }
+
+  message Configuration {
+    string id = 1;
+
+    int64 revision = 2;
+  }
+
+  message EncryptionOptions {
+    string kms_key_id = 1 [json_name = "kms_key_id"];
+
+    bool use_aws_owned_key = 2 [json_name = "use_aws_owned_key"];
+  }
+
+  message LdapServerMetadata {
+    repeated string hosts = 1;
+
+    string role_base = 2 [json_name = "role_base"];
+
+    string role_name = 3 [json_name = "role_name"];
+
+    string role_search_matching = 4 [json_name = "role_search_matching"];
+
+    bool role_search_subtree = 5 [json_name = "role_search_subtree"];
+
+    string service_account_password = 6 [json_name = "service_account_password"];
+
+    string service_account_username = 7 [json_name = "service_account_username"];
+
+    string user_base = 8 [json_name = "user_base"];
+
+    string user_role_name = 9 [json_name = "user_role_name"];
+
+    string user_search_matching = 10 [json_name = "user_search_matching"];
+
+    bool user_search_subtree = 11 [json_name = "user_search_subtree"];
+  }
+
+  message Logs {
+    string audit = 1;
+
+    bool general = 2;
+  }
+
+  message MaintenanceWindowStartTime {
+    string day_of_week = 1 [json_name = "day_of_week"];
+
+    string time_of_day = 2 [json_name = "time_of_day"];
+
+    string time_zone = 3 [json_name = "time_zone"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+
+  message User {
+    bool console_access = 1 [json_name = "console_access"];
+
+    repeated string groups = 2;
+
+    string password = 3;
+
+    string username = 4;
+  }
+}
+
+// AwsMqConfiguration version is 0
+message AwsMqConfiguration {
+  string arn = 1;
+
+  string authentication_strategy = 2 [json_name = "authentication_strategy"];
+
+  string data = 3;
+
+  string description = 4;
+
+  string engine_type = 5 [json_name = "engine_type"];
+
+  string engine_version = 6 [json_name = "engine_version"];
+
+  string id = 7;
+
+  int64 latest_revision = 8 [json_name = "latest_revision"];
+
+  string name = 9;
+
+  map<string, string> tags = 10;
+
+  map<string, string> tags_all = 11 [json_name = "tags_all"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+}

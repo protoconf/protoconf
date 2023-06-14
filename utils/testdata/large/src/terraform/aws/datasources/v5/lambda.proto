@@ -1,0 +1,328 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsLambdaAlias version is 0
+message AwsLambdaAlias {
+  string arn = 1;
+
+  string description = 2;
+
+  string function_name = 3 [json_name = "function_name"];
+
+  string function_version = 4 [json_name = "function_version"];
+
+  string id = 5;
+
+  string invoke_arn = 6 [json_name = "invoke_arn"];
+
+  string name = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsLambdaCodeSigningConfig version is 0
+message AwsLambdaCodeSigningConfig {
+  repeated AllowedPublishers allowed_publishers = 1 [json_name = "allowed_publishers"];
+
+  string arn = 2;
+
+  string config_id = 3 [json_name = "config_id"];
+
+  string description = 4;
+
+  string id = 5;
+
+  string last_modified = 6 [json_name = "last_modified"];
+
+  repeated Policies policies = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message AllowedPublishers {
+    // signing_profile_version_arns: set of string
+    repeated string signing_profile_version_arns = 1 [json_name = "signing_profile_version_arns"];
+  }
+
+  message Policies {
+    // untrusted_artifact_on_deployment: string
+    string untrusted_artifact_on_deployment = 1 [json_name = "untrusted_artifact_on_deployment"];
+  }
+}
+
+// AwsLambdaFunction version is 0
+message AwsLambdaFunction {
+  repeated string architectures = 1;
+
+  string arn = 2;
+
+  string code_signing_config_arn = 3 [json_name = "code_signing_config_arn"];
+
+  repeated DeadLetterConfig dead_letter_config = 4 [json_name = "dead_letter_config"];
+
+  string description = 5;
+
+  repeated Environment environment = 6;
+
+  repeated EphemeralStorage ephemeral_storage = 7 [json_name = "ephemeral_storage"];
+
+  repeated FileSystemConfig file_system_config = 8 [json_name = "file_system_config"];
+
+  string function_name = 9 [json_name = "function_name"];
+
+  string handler = 10;
+
+  string id = 11;
+
+  string image_uri = 12 [json_name = "image_uri"];
+
+  string invoke_arn = 13 [json_name = "invoke_arn"];
+
+  string kms_key_arn = 14 [json_name = "kms_key_arn"];
+
+  string last_modified = 15 [json_name = "last_modified"];
+
+  repeated string layers = 16;
+
+  int64 memory_size = 17 [json_name = "memory_size"];
+
+  string qualified_arn = 18 [json_name = "qualified_arn"];
+
+  string qualified_invoke_arn = 19 [json_name = "qualified_invoke_arn"];
+
+  string qualifier = 20;
+
+  int64 reserved_concurrent_executions = 21 [json_name = "reserved_concurrent_executions"];
+
+  string role = 22;
+
+  string runtime = 23;
+
+  string signing_job_arn = 24 [json_name = "signing_job_arn"];
+
+  string signing_profile_version_arn = 25 [json_name = "signing_profile_version_arn"];
+
+  string source_code_hash = 26 [json_name = "source_code_hash"];
+
+  int64 source_code_size = 27 [json_name = "source_code_size"];
+
+  map<string, string> tags = 28;
+
+  int64 timeout = 29;
+
+  repeated TracingConfig tracing_config = 30 [json_name = "tracing_config"];
+
+  string version = 31;
+
+  repeated VpcConfig vpc_config = 32 [json_name = "vpc_config"];
+
+  map<string, string> for_each = 33 [json_name = "for_each"];
+
+  repeated string depends_on = 34 [json_name = "depends_on"];
+
+  int32 count = 35;
+
+  string provider = 36;
+
+  terraform.v1.Lifecycle lifecycle = 37;
+
+  message DeadLetterConfig {
+    // target_arn: string
+    string target_arn = 1 [json_name = "target_arn"];
+  }
+
+  message Environment {
+    // variables: map of string
+    map<string, string> variables = 1;
+  }
+
+  message EphemeralStorage {
+    // size: number
+    int64 size = 1;
+  }
+
+  message FileSystemConfig {
+    // arn: string
+    string arn = 1;
+
+    // local_mount_path: string
+    string local_mount_path = 2 [json_name = "local_mount_path"];
+  }
+
+  message TracingConfig {
+    // mode: string
+    string mode = 1;
+  }
+
+  message VpcConfig {
+    // security_group_ids: set of string
+    repeated string security_group_ids = 1 [json_name = "security_group_ids"];
+
+    // subnet_ids: set of string
+    repeated string subnet_ids = 2 [json_name = "subnet_ids"];
+
+    // vpc_id: string
+    string vpc_id = 3 [json_name = "vpc_id"];
+  }
+}
+
+// AwsLambdaFunctionUrl version is 0
+message AwsLambdaFunctionUrl {
+  string authorization_type = 1 [json_name = "authorization_type"];
+
+  repeated Cors cors = 2;
+
+  string creation_time = 3 [json_name = "creation_time"];
+
+  string function_arn = 4 [json_name = "function_arn"];
+
+  string function_name = 5 [json_name = "function_name"];
+
+  string function_url = 6 [json_name = "function_url"];
+
+  string id = 7;
+
+  string invoke_mode = 8 [json_name = "invoke_mode"];
+
+  string last_modified_time = 9 [json_name = "last_modified_time"];
+
+  string qualifier = 10;
+
+  string url_id = 11 [json_name = "url_id"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message Cors {
+    // allow_credentials: bool
+    bool allow_credentials = 1 [json_name = "allow_credentials"];
+
+    // allow_headers: list of string
+    repeated string allow_headers = 2 [json_name = "allow_headers"];
+
+    // allow_methods: list of string
+    repeated string allow_methods = 3 [json_name = "allow_methods"];
+
+    // allow_origins: list of string
+    repeated string allow_origins = 4 [json_name = "allow_origins"];
+
+    // expose_headers: list of string
+    repeated string expose_headers = 5 [json_name = "expose_headers"];
+
+    // max_age: number
+    int64 max_age = 6 [json_name = "max_age"];
+  }
+}
+
+// AwsLambdaFunctions version is 0
+message AwsLambdaFunctions {
+  repeated string function_arns = 1 [json_name = "function_arns"];
+
+  repeated string function_names = 2 [json_name = "function_names"];
+
+  string id = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsLambdaInvocation version is 0
+message AwsLambdaInvocation {
+  string function_name = 1 [json_name = "function_name"];
+
+  string id = 2;
+
+  string input = 3;
+
+  string qualifier = 4;
+
+  string result = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsLambdaLayerVersion version is 0
+message AwsLambdaLayerVersion {
+  string arn = 1;
+
+  string compatible_architecture = 2 [json_name = "compatible_architecture"];
+
+  repeated string compatible_architectures = 3 [json_name = "compatible_architectures"];
+
+  string compatible_runtime = 4 [json_name = "compatible_runtime"];
+
+  repeated string compatible_runtimes = 5 [json_name = "compatible_runtimes"];
+
+  string created_date = 6 [json_name = "created_date"];
+
+  string description = 7;
+
+  string id = 8;
+
+  string layer_arn = 9 [json_name = "layer_arn"];
+
+  string layer_name = 10 [json_name = "layer_name"];
+
+  string license_info = 11 [json_name = "license_info"];
+
+  string signing_job_arn = 12 [json_name = "signing_job_arn"];
+
+  string signing_profile_version_arn = 13 [json_name = "signing_profile_version_arn"];
+
+  string source_code_hash = 14 [json_name = "source_code_hash"];
+
+  int64 source_code_size = 15 [json_name = "source_code_size"];
+
+  int64 version = 16;
+
+  map<string, string> for_each = 17 [json_name = "for_each"];
+
+  repeated string depends_on = 18 [json_name = "depends_on"];
+
+  int32 count = 19;
+
+  string provider = 20;
+
+  terraform.v1.Lifecycle lifecycle = 21;
+}

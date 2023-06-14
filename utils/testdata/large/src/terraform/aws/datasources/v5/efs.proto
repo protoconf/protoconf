@@ -1,0 +1,180 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsEfsAccessPoint version is 0
+message AwsEfsAccessPoint {
+  string access_point_id = 1 [json_name = "access_point_id"];
+
+  string arn = 2;
+
+  string file_system_arn = 3 [json_name = "file_system_arn"];
+
+  string file_system_id = 4 [json_name = "file_system_id"];
+
+  string id = 5;
+
+  string owner_id = 6 [json_name = "owner_id"];
+
+  repeated PosixUser posix_user = 7 [json_name = "posix_user"];
+
+  repeated RootDirectory root_directory = 8 [json_name = "root_directory"];
+
+  map<string, string> tags = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message PosixUser {
+    // gid: number
+    int64 gid = 1;
+
+    // secondary_gids: set of number
+    repeated int64 secondary_gids = 2 [json_name = "secondary_gids"];
+
+    // uid: number
+    int64 uid = 3;
+  }
+
+  message RootDirectory {
+    // creation_info: list of object
+    repeated CreationInfo creation_info = 1 [json_name = "creation_info"];
+
+    // path: string
+    string path = 2;
+
+    message CreationInfo {
+      // owner_gid: number
+      int64 owner_gid = 1 [json_name = "owner_gid"];
+
+      // owner_uid: number
+      int64 owner_uid = 2 [json_name = "owner_uid"];
+
+      // permissions: string
+      string permissions = 3;
+    }
+  }
+}
+
+// AwsEfsAccessPoints version is 0
+message AwsEfsAccessPoints {
+  repeated string arns = 1;
+
+  string file_system_id = 2 [json_name = "file_system_id"];
+
+  string id = 3;
+
+  repeated string ids = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsEfsFileSystem version is 0
+message AwsEfsFileSystem {
+  string arn = 1;
+
+  string availability_zone_id = 2 [json_name = "availability_zone_id"];
+
+  string availability_zone_name = 3 [json_name = "availability_zone_name"];
+
+  string creation_token = 4 [json_name = "creation_token"];
+
+  string dns_name = 5 [json_name = "dns_name"];
+
+  bool encrypted = 6;
+
+  string file_system_id = 7 [json_name = "file_system_id"];
+
+  string id = 8;
+
+  string kms_key_id = 9 [json_name = "kms_key_id"];
+
+  repeated LifecyclePolicy lifecycle_policy = 10 [json_name = "lifecycle_policy"];
+
+  string performance_mode = 11 [json_name = "performance_mode"];
+
+  int64 provisioned_throughput_in_mibps = 12 [json_name = "provisioned_throughput_in_mibps"];
+
+  int64 size_in_bytes = 13 [json_name = "size_in_bytes"];
+
+  map<string, string> tags = 14;
+
+  string throughput_mode = 15 [json_name = "throughput_mode"];
+
+  map<string, string> for_each = 16 [json_name = "for_each"];
+
+  repeated string depends_on = 17 [json_name = "depends_on"];
+
+  int32 count = 18;
+
+  string provider = 19;
+
+  terraform.v1.Lifecycle lifecycle = 20;
+
+  message LifecyclePolicy {
+    // transition_to_ia: string
+    string transition_to_ia = 1 [json_name = "transition_to_ia"];
+
+    // transition_to_primary_storage_class: string
+    string transition_to_primary_storage_class = 2 [json_name = "transition_to_primary_storage_class"];
+  }
+}
+
+// AwsEfsMountTarget version is 0
+message AwsEfsMountTarget {
+  string access_point_id = 1 [json_name = "access_point_id"];
+
+  string availability_zone_id = 2 [json_name = "availability_zone_id"];
+
+  string availability_zone_name = 3 [json_name = "availability_zone_name"];
+
+  string dns_name = 4 [json_name = "dns_name"];
+
+  string file_system_arn = 5 [json_name = "file_system_arn"];
+
+  string file_system_id = 6 [json_name = "file_system_id"];
+
+  string id = 7;
+
+  string ip_address = 8 [json_name = "ip_address"];
+
+  string mount_target_dns_name = 9 [json_name = "mount_target_dns_name"];
+
+  string mount_target_id = 10 [json_name = "mount_target_id"];
+
+  string network_interface_id = 11 [json_name = "network_interface_id"];
+
+  string owner_id = 12 [json_name = "owner_id"];
+
+  repeated string security_groups = 13 [json_name = "security_groups"];
+
+  string subnet_id = 14 [json_name = "subnet_id"];
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+}

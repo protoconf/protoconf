@@ -1,0 +1,458 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsS3controlAccessPointPolicy version is 0
+message AwsS3controlAccessPointPolicy {
+  string access_point_arn = 1 [json_name = "access_point_arn"];
+
+  bool has_public_access_policy = 2 [json_name = "has_public_access_policy"];
+
+  string id = 3;
+
+  string policy = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsS3controlBucket version is 0
+message AwsS3controlBucket {
+  string arn = 1;
+
+  string bucket = 2;
+
+  string creation_date = 3 [json_name = "creation_date"];
+
+  string id = 4;
+
+  string outpost_id = 5 [json_name = "outpost_id"];
+
+  bool public_access_block_enabled = 6 [json_name = "public_access_block_enabled"];
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+}
+
+// AwsS3controlBucketLifecycleConfiguration version is 0
+message AwsS3controlBucketLifecycleConfiguration {
+  string bucket = 1;
+
+  string id = 2;
+
+  repeated Rule rule = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+
+  message Rule {
+    string id = 1;
+
+    string status = 2;
+
+    AbortIncompleteMultipartUpload abort_incomplete_multipart_upload = 3 [json_name = "abort_incomplete_multipart_upload"];
+
+    Expiration expiration = 4;
+
+    Filter filter = 5;
+
+    message AbortIncompleteMultipartUpload {
+      int64 days_after_initiation = 1 [json_name = "days_after_initiation"];
+    }
+
+    message Expiration {
+      string date = 1;
+
+      int64 days = 2;
+
+      bool expired_object_delete_marker = 3 [json_name = "expired_object_delete_marker"];
+    }
+
+    message Filter {
+      string prefix = 1;
+
+      map<string, string> tags = 2;
+    }
+  }
+}
+
+// AwsS3controlBucketPolicy version is 0
+message AwsS3controlBucketPolicy {
+  string bucket = 1;
+
+  string id = 2;
+
+  string policy = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsS3controlMultiRegionAccessPoint version is 0
+message AwsS3controlMultiRegionAccessPoint {
+  string account_id = 1 [json_name = "account_id"];
+
+  string alias = 2;
+
+  string arn = 3;
+
+  string domain_name = 4 [json_name = "domain_name"];
+
+  string id = 5;
+
+  string status = 6;
+
+  Details details = 7;
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Details {
+    string name = 1;
+
+    PublicAccessBlock public_access_block = 2 [json_name = "public_access_block"];
+
+    repeated Region region = 3;
+
+    message PublicAccessBlock {
+      bool block_public_acls = 1 [json_name = "block_public_acls"];
+
+      bool block_public_policy = 2 [json_name = "block_public_policy"];
+
+      bool ignore_public_acls = 3 [json_name = "ignore_public_acls"];
+
+      bool restrict_public_buckets = 4 [json_name = "restrict_public_buckets"];
+    }
+
+    message Region {
+      string bucket = 1;
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsS3controlMultiRegionAccessPointPolicy version is 0
+message AwsS3controlMultiRegionAccessPointPolicy {
+  string account_id = 1 [json_name = "account_id"];
+
+  string established = 2;
+
+  string id = 3;
+
+  string proposed = 4;
+
+  Details details = 5;
+
+  repeated Timeouts timeouts = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Details {
+    string name = 1;
+
+    string policy = 2;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string update = 2;
+  }
+}
+
+// AwsS3controlObjectLambdaAccessPoint version is 0
+message AwsS3controlObjectLambdaAccessPoint {
+  string account_id = 1 [json_name = "account_id"];
+
+  string arn = 2;
+
+  string id = 3;
+
+  string name = 4;
+
+  Configuration configuration = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message Configuration {
+    repeated string allowed_features = 1 [json_name = "allowed_features"];
+
+    bool cloud_watch_metrics_enabled = 2 [json_name = "cloud_watch_metrics_enabled"];
+
+    string supporting_access_point = 3 [json_name = "supporting_access_point"];
+
+    repeated TransformationConfiguration transformation_configuration = 4 [json_name = "transformation_configuration"];
+
+    message TransformationConfiguration {
+      repeated string actions = 1;
+
+      ContentTransformation content_transformation = 2 [json_name = "content_transformation"];
+
+      message ContentTransformation {
+        AwsLambda aws_lambda = 1 [json_name = "aws_lambda"];
+
+        message AwsLambda {
+          string function_arn = 1 [json_name = "function_arn"];
+
+          string function_payload = 2 [json_name = "function_payload"];
+        }
+      }
+    }
+  }
+}
+
+// AwsS3controlObjectLambdaAccessPointPolicy version is 0
+message AwsS3controlObjectLambdaAccessPointPolicy {
+  string account_id = 1 [json_name = "account_id"];
+
+  bool has_public_access_policy = 2 [json_name = "has_public_access_policy"];
+
+  string id = 3;
+
+  string name = 4;
+
+  string policy = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsS3controlStorageLensConfiguration version is 0
+message AwsS3controlStorageLensConfiguration {
+  string account_id = 1 [json_name = "account_id"];
+
+  string arn = 2;
+
+  string config_id = 3 [json_name = "config_id"];
+
+  string id = 4;
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  StorageLensConfiguration storage_lens_configuration = 7 [json_name = "storage_lens_configuration"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message StorageLensConfiguration {
+    bool enabled = 1;
+
+    AccountLevel account_level = 2 [json_name = "account_level"];
+
+    AwsOrg aws_org = 3 [json_name = "aws_org"];
+
+    DataExport data_export = 4 [json_name = "data_export"];
+
+    Exclude exclude = 5;
+
+    Include include = 6;
+
+    message AccountLevel {
+      ActivityMetrics activity_metrics = 1 [json_name = "activity_metrics"];
+
+      AdvancedCostOptimizationMetrics advanced_cost_optimization_metrics = 2 [json_name = "advanced_cost_optimization_metrics"];
+
+      AdvancedDataProtectionMetrics advanced_data_protection_metrics = 3 [json_name = "advanced_data_protection_metrics"];
+
+      BucketLevel bucket_level = 4 [json_name = "bucket_level"];
+
+      DetailedStatusCodeMetrics detailed_status_code_metrics = 5 [json_name = "detailed_status_code_metrics"];
+
+      message ActivityMetrics {
+        bool enabled = 1;
+      }
+
+      message AdvancedCostOptimizationMetrics {
+        bool enabled = 1;
+      }
+
+      message AdvancedDataProtectionMetrics {
+        bool enabled = 1;
+      }
+
+      message BucketLevel {
+        ActivityMetrics activity_metrics = 1 [json_name = "activity_metrics"];
+
+        AdvancedCostOptimizationMetrics advanced_cost_optimization_metrics = 2 [json_name = "advanced_cost_optimization_metrics"];
+
+        AdvancedDataProtectionMetrics advanced_data_protection_metrics = 3 [json_name = "advanced_data_protection_metrics"];
+
+        DetailedStatusCodeMetrics detailed_status_code_metrics = 4 [json_name = "detailed_status_code_metrics"];
+
+        PrefixLevel prefix_level = 5 [json_name = "prefix_level"];
+
+        message ActivityMetrics {
+          bool enabled = 1;
+        }
+
+        message AdvancedCostOptimizationMetrics {
+          bool enabled = 1;
+        }
+
+        message AdvancedDataProtectionMetrics {
+          bool enabled = 1;
+        }
+
+        message DetailedStatusCodeMetrics {
+          bool enabled = 1;
+        }
+
+        message PrefixLevel {
+          StorageMetrics storage_metrics = 1 [json_name = "storage_metrics"];
+
+          message StorageMetrics {
+            bool enabled = 1;
+
+            SelectionCriteria selection_criteria = 2 [json_name = "selection_criteria"];
+
+            message SelectionCriteria {
+              string delimiter = 1;
+
+              int64 max_depth = 2 [json_name = "max_depth"];
+
+              int64 min_storage_bytes_percentage = 3 [json_name = "min_storage_bytes_percentage"];
+            }
+          }
+        }
+      }
+
+      message DetailedStatusCodeMetrics {
+        bool enabled = 1;
+      }
+    }
+
+    message AwsOrg {
+      string arn = 1;
+    }
+
+    message DataExport {
+      CloudWatchMetrics cloud_watch_metrics = 1 [json_name = "cloud_watch_metrics"];
+
+      S3BucketDestination s3_bucket_destination = 2 [json_name = "s3_bucket_destination"];
+
+      message CloudWatchMetrics {
+        bool enabled = 1;
+      }
+
+      message S3BucketDestination {
+        string account_id = 1 [json_name = "account_id"];
+
+        string arn = 2;
+
+        string format = 3;
+
+        string output_schema_version = 4 [json_name = "output_schema_version"];
+
+        string prefix = 5;
+
+        Encryption encryption = 6;
+
+        message Encryption {
+          SseKms sse_kms = 1 [json_name = "sse_kms"];
+
+          repeated SseS3 sse_s3 = 2 [json_name = "sse_s3"];
+
+          message SseKms {
+            string key_id = 1 [json_name = "key_id"];
+          }
+
+          message SseS3 {
+          }
+        }
+      }
+    }
+
+    message Exclude {
+      repeated string buckets = 1;
+
+      repeated string regions = 2;
+    }
+
+    message Include {
+      repeated string buckets = 1;
+
+      repeated string regions = 2;
+    }
+  }
+}

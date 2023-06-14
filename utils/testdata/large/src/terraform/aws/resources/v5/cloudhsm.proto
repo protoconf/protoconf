@@ -1,0 +1,105 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsCloudhsmV2Cluster version is 0
+message AwsCloudhsmV2Cluster {
+  repeated ClusterCertificates cluster_certificates = 1 [json_name = "cluster_certificates"];
+
+  string cluster_id = 2 [json_name = "cluster_id"];
+
+  string cluster_state = 3 [json_name = "cluster_state"];
+
+  string hsm_type = 4 [json_name = "hsm_type"];
+
+  string id = 5;
+
+  string security_group_id = 6 [json_name = "security_group_id"];
+
+  string source_backup_identifier = 7 [json_name = "source_backup_identifier"];
+
+  repeated string subnet_ids = 8 [json_name = "subnet_ids"];
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  string vpc_id = 11 [json_name = "vpc_id"];
+
+  repeated Timeouts timeouts = 12;
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message ClusterCertificates {
+    // aws_hardware_certificate: string
+    string aws_hardware_certificate = 1 [json_name = "aws_hardware_certificate"];
+
+    // cluster_certificate: string
+    string cluster_certificate = 2 [json_name = "cluster_certificate"];
+
+    // cluster_csr: string
+    string cluster_csr = 3 [json_name = "cluster_csr"];
+
+    // hsm_certificate: string
+    string hsm_certificate = 4 [json_name = "hsm_certificate"];
+
+    // manufacturer_hardware_certificate: string
+    string manufacturer_hardware_certificate = 5 [json_name = "manufacturer_hardware_certificate"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsCloudhsmV2Hsm version is 0
+message AwsCloudhsmV2Hsm {
+  string availability_zone = 1 [json_name = "availability_zone"];
+
+  string cluster_id = 2 [json_name = "cluster_id"];
+
+  string hsm_eni_id = 3 [json_name = "hsm_eni_id"];
+
+  string hsm_id = 4 [json_name = "hsm_id"];
+
+  string hsm_state = 5 [json_name = "hsm_state"];
+
+  string id = 6;
+
+  string ip_address = 7 [json_name = "ip_address"];
+
+  string subnet_id = 8 [json_name = "subnet_id"];
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}

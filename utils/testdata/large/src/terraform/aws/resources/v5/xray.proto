@@ -1,0 +1,103 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsXrayEncryptionConfig version is 0
+message AwsXrayEncryptionConfig {
+  string id = 1;
+
+  string key_id = 2 [json_name = "key_id"];
+
+  string type = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsXrayGroup version is 0
+message AwsXrayGroup {
+  string arn = 1;
+
+  string filter_expression = 2 [json_name = "filter_expression"];
+
+  string group_name = 3 [json_name = "group_name"];
+
+  string id = 4;
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  InsightsConfiguration insights_configuration = 7 [json_name = "insights_configuration"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message InsightsConfiguration {
+    bool insights_enabled = 1 [json_name = "insights_enabled"];
+
+    bool notifications_enabled = 2 [json_name = "notifications_enabled"];
+  }
+}
+
+// AwsXraySamplingRule version is 0
+message AwsXraySamplingRule {
+  string arn = 1;
+
+  map<string, string> attributes = 2;
+
+  int64 fixed_rate = 3 [json_name = "fixed_rate"];
+
+  string host = 4;
+
+  string http_method = 5 [json_name = "http_method"];
+
+  string id = 6;
+
+  int64 priority = 7;
+
+  int64 reservoir_size = 8 [json_name = "reservoir_size"];
+
+  string resource_arn = 9 [json_name = "resource_arn"];
+
+  string rule_name = 10 [json_name = "rule_name"];
+
+  string service_name = 11 [json_name = "service_name"];
+
+  string service_type = 12 [json_name = "service_type"];
+
+  map<string, string> tags = 13;
+
+  map<string, string> tags_all = 14 [json_name = "tags_all"];
+
+  string url_path = 15 [json_name = "url_path"];
+
+  int64 version = 16;
+
+  map<string, string> for_each = 17 [json_name = "for_each"];
+
+  repeated string depends_on = 18 [json_name = "depends_on"];
+
+  int32 count = 19;
+
+  string provider = 20;
+
+  terraform.v1.Lifecycle lifecycle = 21;
+}

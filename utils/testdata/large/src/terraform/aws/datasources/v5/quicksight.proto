@@ -1,0 +1,452 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsQuicksightDataSet version is 0
+message AwsQuicksightDataSet {
+  string arn = 1;
+
+  string aws_account_id = 2 [json_name = "aws_account_id"];
+
+  repeated ColumnGroups column_groups = 3 [json_name = "column_groups"];
+
+  string data_set_id = 4 [json_name = "data_set_id"];
+
+  repeated DataSetUsageConfiguration data_set_usage_configuration = 5 [json_name = "data_set_usage_configuration"];
+
+  repeated FieldFolders field_folders = 6 [json_name = "field_folders"];
+
+  string id = 7;
+
+  string import_mode = 8 [json_name = "import_mode"];
+
+  repeated LogicalTableMap logical_table_map = 9 [json_name = "logical_table_map"];
+
+  string name = 10;
+
+  repeated Permissions permissions = 11;
+
+  repeated PhysicalTableMap physical_table_map = 12 [json_name = "physical_table_map"];
+
+  repeated RowLevelPermissionDataSet row_level_permission_data_set = 13 [json_name = "row_level_permission_data_set"];
+
+  repeated RowLevelPermissionTagConfiguration row_level_permission_tag_configuration = 14 [
+    json_name = "row_level_permission_tag_configuration"
+  ];
+
+  map<string, string> tags = 15;
+
+  map<string, string> tags_all = 16 [json_name = "tags_all"];
+
+  repeated ColumnLevelPermissionRules column_level_permission_rules = 17 [json_name = "column_level_permission_rules"];
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+
+  message ColumnGroups {
+    // geo_spatial_column_group: list of object
+    repeated GeoSpatialColumnGroup geo_spatial_column_group = 1 [json_name = "geo_spatial_column_group"];
+
+    message GeoSpatialColumnGroup {
+      // columns: list of string
+      repeated string columns = 1;
+
+      // country_code: string
+      string country_code = 2 [json_name = "country_code"];
+
+      // name: string
+      string name = 3;
+    }
+  }
+
+  message DataSetUsageConfiguration {
+    // disable_use_as_direct_query_source: bool
+    bool disable_use_as_direct_query_source = 1 [json_name = "disable_use_as_direct_query_source"];
+
+    // disable_use_as_imported_source: bool
+    bool disable_use_as_imported_source = 2 [json_name = "disable_use_as_imported_source"];
+  }
+
+  message FieldFolders {
+    // columns: list of string
+    repeated string columns = 1;
+
+    // description: string
+    string description = 2;
+
+    // field_folders_id: string
+    string field_folders_id = 3 [json_name = "field_folders_id"];
+  }
+
+  message LogicalTableMap {
+    // alias: string
+    string alias = 1;
+
+    // data_transforms: list of object
+    repeated DataTransforms data_transforms = 2 [json_name = "data_transforms"];
+
+    // logical_table_map_id: string
+    string logical_table_map_id = 3 [json_name = "logical_table_map_id"];
+
+    // source: list of object
+    repeated Source source = 4;
+
+    message DataTransforms {
+      // cast_column_type_operation: list of object
+      repeated CastColumnTypeOperation cast_column_type_operation = 1 [json_name = "cast_column_type_operation"];
+
+      // create_columns_operation: list of object
+      repeated CreateColumnsOperation create_columns_operation = 2 [json_name = "create_columns_operation"];
+
+      // filter_operation: list of object
+      repeated FilterOperation filter_operation = 3 [json_name = "filter_operation"];
+
+      // project_operation: list of object
+      repeated ProjectOperation project_operation = 4 [json_name = "project_operation"];
+
+      // rename_column_operation: list of object
+      repeated RenameColumnOperation rename_column_operation = 5 [json_name = "rename_column_operation"];
+
+      // tag_column_operation: list of object
+      repeated TagColumnOperation tag_column_operation = 6 [json_name = "tag_column_operation"];
+
+      // untag_column_operation: list of object
+      repeated UntagColumnOperation untag_column_operation = 7 [json_name = "untag_column_operation"];
+
+      message CastColumnTypeOperation {
+        // column_name: string
+        string column_name = 1 [json_name = "column_name"];
+
+        // format: string
+        string format = 2;
+
+        // new_column_type: string
+        string new_column_type = 3 [json_name = "new_column_type"];
+      }
+
+      message CreateColumnsOperation {
+        // columns: list of object
+        repeated Columns columns = 1;
+
+        message Columns {
+          // column_id: string
+          string column_id = 1 [json_name = "column_id"];
+
+          // column_name: string
+          string column_name = 2 [json_name = "column_name"];
+
+          // expression: string
+          string expression = 3;
+        }
+      }
+
+      message FilterOperation {
+        // condition_expression: string
+        string condition_expression = 1 [json_name = "condition_expression"];
+      }
+
+      message ProjectOperation {
+        // projected_columns: list of string
+        repeated string projected_columns = 1 [json_name = "projected_columns"];
+      }
+
+      message RenameColumnOperation {
+        // column_name: string
+        string column_name = 1 [json_name = "column_name"];
+
+        // new_column_name: string
+        string new_column_name = 2 [json_name = "new_column_name"];
+      }
+
+      message TagColumnOperation {
+        // column_name: string
+        string column_name = 1 [json_name = "column_name"];
+
+        // tags: list of object
+        repeated Tags tags = 2;
+
+        message Tags {
+          // column_description: list of object
+          repeated ColumnDescription column_description = 1 [json_name = "column_description"];
+
+          // column_geographic_role: string
+          string column_geographic_role = 2 [json_name = "column_geographic_role"];
+
+          message ColumnDescription {
+            // text: string
+            string text = 1;
+          }
+        }
+      }
+
+      message UntagColumnOperation {
+        // column_name: string
+        string column_name = 1 [json_name = "column_name"];
+
+        // tag_names: list of string
+        repeated string tag_names = 2 [json_name = "tag_names"];
+      }
+    }
+
+    message Source {
+      // data_set_arn: string
+      string data_set_arn = 1 [json_name = "data_set_arn"];
+
+      // join_instruction: list of object
+      repeated JoinInstruction join_instruction = 2 [json_name = "join_instruction"];
+
+      // physical_table_id: string
+      string physical_table_id = 3 [json_name = "physical_table_id"];
+
+      message JoinInstruction {
+        // left_join_key_properties: list of object
+        repeated LeftJoinKeyProperties left_join_key_properties = 1 [json_name = "left_join_key_properties"];
+
+        // left_operand: string
+        string left_operand = 2 [json_name = "left_operand"];
+
+        // on_clause: string
+        string on_clause = 3 [json_name = "on_clause"];
+
+        // right_join_key_properties: list of object
+        repeated RightJoinKeyProperties right_join_key_properties = 4 [json_name = "right_join_key_properties"];
+
+        // right_operand: string
+        string right_operand = 5 [json_name = "right_operand"];
+
+        // type: string
+        string type = 6;
+
+        message LeftJoinKeyProperties {
+          // unique_key: bool
+          bool unique_key = 1 [json_name = "unique_key"];
+        }
+
+        message RightJoinKeyProperties {
+          // unique_key: bool
+          bool unique_key = 1 [json_name = "unique_key"];
+        }
+      }
+    }
+  }
+
+  message Permissions {
+    // actions: set of string
+    repeated string actions = 1;
+
+    // principal: string
+    string principal = 2;
+  }
+
+  message PhysicalTableMap {
+    // custom_sql: list of object
+    repeated CustomSql custom_sql = 1 [json_name = "custom_sql"];
+
+    // physical_table_map_id: string
+    string physical_table_map_id = 2 [json_name = "physical_table_map_id"];
+
+    // relational_table: list of object
+    repeated RelationalTable relational_table = 3 [json_name = "relational_table"];
+
+    // s3_source: list of object
+    repeated S3Source s3_source = 4 [json_name = "s3_source"];
+
+    message CustomSql {
+      // columns: list of object
+      repeated Columns columns = 1;
+
+      // data_source_arn: string
+      string data_source_arn = 2 [json_name = "data_source_arn"];
+
+      // name: string
+      string name = 3;
+
+      // sql_query: string
+      string sql_query = 4 [json_name = "sql_query"];
+
+      message Columns {
+        // name: string
+        string name = 1;
+
+        // type: string
+        string type = 2;
+      }
+    }
+
+    message RelationalTable {
+      // catalog: string
+      string catalog = 1;
+
+      // data_source_arn: string
+      string data_source_arn = 2 [json_name = "data_source_arn"];
+
+      // input_columns: list of object
+      repeated InputColumns input_columns = 3 [json_name = "input_columns"];
+
+      // name: string
+      string name = 4;
+
+      // schema: string
+      string schema = 5;
+
+      message InputColumns {
+        // name: string
+        string name = 1;
+
+        // type: string
+        string type = 2;
+      }
+    }
+
+    message S3Source {
+      // data_source_arn: string
+      string data_source_arn = 1 [json_name = "data_source_arn"];
+
+      // input_columns: list of object
+      repeated InputColumns input_columns = 2 [json_name = "input_columns"];
+
+      // upload_settings: list of object
+      repeated UploadSettings upload_settings = 3 [json_name = "upload_settings"];
+
+      message InputColumns {
+        // name: string
+        string name = 1;
+
+        // type: string
+        string type = 2;
+      }
+
+      message UploadSettings {
+        // contains_header: bool
+        bool contains_header = 1 [json_name = "contains_header"];
+
+        // delimiter: string
+        string delimiter = 2;
+
+        // format: string
+        string format = 3;
+
+        // start_from_row: number
+        int64 start_from_row = 4 [json_name = "start_from_row"];
+
+        // text_qualifier: string
+        string text_qualifier = 5 [json_name = "text_qualifier"];
+      }
+    }
+  }
+
+  message RowLevelPermissionDataSet {
+    // arn: string
+    string arn = 1;
+
+    // format_version: string
+    string format_version = 2 [json_name = "format_version"];
+
+    // namespace: string
+    string namespace = 3;
+
+    // permission_policy: string
+    string permission_policy = 4 [json_name = "permission_policy"];
+
+    // status: string
+    string status = 5;
+  }
+
+  message RowLevelPermissionTagConfiguration {
+    // status: string
+    string status = 1;
+
+    // tag_rules: list of object
+    repeated TagRules tag_rules = 2 [json_name = "tag_rules"];
+
+    message TagRules {
+      // column_name: string
+      string column_name = 1 [json_name = "column_name"];
+
+      // match_all_value: string
+      string match_all_value = 2 [json_name = "match_all_value"];
+
+      // tag_key: string
+      string tag_key = 3 [json_name = "tag_key"];
+
+      // tag_multi_value_delimiter: string
+      string tag_multi_value_delimiter = 4 [json_name = "tag_multi_value_delimiter"];
+    }
+  }
+
+  message ColumnLevelPermissionRules {
+    repeated string column_names = 1 [json_name = "column_names"];
+
+    repeated string principals = 2;
+  }
+}
+
+// AwsQuicksightGroup version is 0
+message AwsQuicksightGroup {
+  string arn = 1;
+
+  string aws_account_id = 2 [json_name = "aws_account_id"];
+
+  string description = 3;
+
+  string group_name = 4 [json_name = "group_name"];
+
+  string id = 5;
+
+  string namespace = 6;
+
+  string principal_id = 7 [json_name = "principal_id"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsQuicksightUser version is 0
+message AwsQuicksightUser {
+  bool active = 1;
+
+  string arn = 2;
+
+  string aws_account_id = 3 [json_name = "aws_account_id"];
+
+  string email = 4;
+
+  string id = 5;
+
+  string identity_type = 6 [json_name = "identity_type"];
+
+  string namespace = 7;
+
+  string principal_id = 8 [json_name = "principal_id"];
+
+  string user_name = 9 [json_name = "user_name"];
+
+  string user_role = 10 [json_name = "user_role"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+}

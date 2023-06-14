@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsRamResourceShare version is 0
+message AwsRamResourceShare {
+  string arn = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  string owning_account_id = 4 [json_name = "owning_account_id"];
+
+  string resource_owner = 5 [json_name = "resource_owner"];
+
+  string resource_share_status = 6 [json_name = "resource_share_status"];
+
+  string status = 7;
+
+  map<string, string> tags = 8;
+
+  repeated Filter filter = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+}

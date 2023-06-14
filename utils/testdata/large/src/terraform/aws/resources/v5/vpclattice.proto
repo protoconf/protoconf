@@ -1,0 +1,537 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsVpclatticeAccessLogSubscription version is 0
+message AwsVpclatticeAccessLogSubscription {
+  string arn = 1;
+
+  string destination_arn = 2 [json_name = "destination_arn"];
+
+  string id = 3;
+
+  string resource_arn = 4 [json_name = "resource_arn"];
+
+  string resource_identifier = 5 [json_name = "resource_identifier"];
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsVpclatticeAuthPolicy version is 0
+message AwsVpclatticeAuthPolicy {
+  string id = 1;
+
+  string policy = 2;
+
+  string resource_identifier = 3 [json_name = "resource_identifier"];
+
+  string state = 4;
+
+  repeated Timeouts timeouts = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsVpclatticeListener version is 0
+message AwsVpclatticeListener {
+  string arn = 1;
+
+  string created_at = 2 [json_name = "created_at"];
+
+  string id = 3;
+
+  string last_updated_at = 4 [json_name = "last_updated_at"];
+
+  string listener_id = 5 [json_name = "listener_id"];
+
+  string name = 6;
+
+  int64 port = 7;
+
+  string protocol = 8;
+
+  string service_arn = 9 [json_name = "service_arn"];
+
+  string service_identifier = 10 [json_name = "service_identifier"];
+
+  map<string, string> tags = 11;
+
+  map<string, string> tags_all = 12 [json_name = "tags_all"];
+
+  DefaultAction default_action = 13 [json_name = "default_action"];
+
+  repeated Timeouts timeouts = 14;
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+
+  message DefaultAction {
+    FixedResponse fixed_response = 1 [json_name = "fixed_response"];
+
+    repeated Forward forward = 2;
+
+    message FixedResponse {
+      int64 status_code = 1 [json_name = "status_code"];
+    }
+
+    message Forward {
+      repeated TargetGroups target_groups = 1 [json_name = "target_groups"];
+
+      message TargetGroups {
+        string target_group_identifier = 1 [json_name = "target_group_identifier"];
+
+        int64 weight = 2;
+      }
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsVpclatticeListenerRule version is 0
+message AwsVpclatticeListenerRule {
+  string arn = 1;
+
+  string id = 2;
+
+  string listener_identifier = 3 [json_name = "listener_identifier"];
+
+  string name = 4;
+
+  int64 priority = 5;
+
+  string rule_id = 6 [json_name = "rule_id"];
+
+  string service_identifier = 7 [json_name = "service_identifier"];
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  Action action = 10;
+
+  Match match = 11;
+
+  repeated Timeouts timeouts = 12;
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message Action {
+    FixedResponse fixed_response = 1 [json_name = "fixed_response"];
+
+    Forward forward = 2;
+
+    message FixedResponse {
+      int64 status_code = 1 [json_name = "status_code"];
+    }
+
+    message Forward {
+      repeated TargetGroups target_groups = 1 [json_name = "target_groups"];
+
+      message TargetGroups {
+        string target_group_identifier = 1 [json_name = "target_group_identifier"];
+
+        int64 weight = 2;
+      }
+    }
+  }
+
+  message Match {
+    HttpMatch http_match = 1 [json_name = "http_match"];
+
+    message HttpMatch {
+      string method = 1;
+
+      repeated HeaderMatches header_matches = 2 [json_name = "header_matches"];
+
+      PathMatch path_match = 3 [json_name = "path_match"];
+
+      message HeaderMatches {
+        bool case_sensitive = 1 [json_name = "case_sensitive"];
+
+        string name = 2;
+
+        Match match = 3;
+
+        message Match {
+          string contains = 1;
+
+          string exact = 2;
+
+          string prefix = 3;
+        }
+      }
+
+      message PathMatch {
+        bool case_sensitive = 1 [json_name = "case_sensitive"];
+
+        Match match = 2;
+
+        message Match {
+          string exact = 1;
+
+          string prefix = 2;
+        }
+      }
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsVpclatticeResourcePolicy version is 0
+message AwsVpclatticeResourcePolicy {
+  string id = 1;
+
+  string policy = 2;
+
+  string resource_arn = 3 [json_name = "resource_arn"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsVpclatticeService version is 0
+message AwsVpclatticeService {
+  string arn = 1;
+
+  string auth_type = 2 [json_name = "auth_type"];
+
+  string certificate_arn = 3 [json_name = "certificate_arn"];
+
+  string custom_domain_name = 4 [json_name = "custom_domain_name"];
+
+  repeated DnsEntry dns_entry = 5 [json_name = "dns_entry"];
+
+  string id = 6;
+
+  string name = 7;
+
+  string status = 8;
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message DnsEntry {
+    // domain_name: string
+    string domain_name = 1 [json_name = "domain_name"];
+
+    // hosted_zone_id: string
+    string hosted_zone_id = 2 [json_name = "hosted_zone_id"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsVpclatticeServiceNetwork version is 0
+message AwsVpclatticeServiceNetwork {
+  string arn = 1;
+
+  string auth_type = 2 [json_name = "auth_type"];
+
+  string id = 3;
+
+  string name = 4;
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsVpclatticeServiceNetworkServiceAssociation version is 0
+message AwsVpclatticeServiceNetworkServiceAssociation {
+  string arn = 1;
+
+  string created_by = 2 [json_name = "created_by"];
+
+  string custom_domain_name = 3 [json_name = "custom_domain_name"];
+
+  repeated DnsEntry dns_entry = 4 [json_name = "dns_entry"];
+
+  string id = 5;
+
+  string service_identifier = 6 [json_name = "service_identifier"];
+
+  string service_network_identifier = 7 [json_name = "service_network_identifier"];
+
+  string status = 8;
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message DnsEntry {
+    // domain_name: string
+    string domain_name = 1 [json_name = "domain_name"];
+
+    // hosted_zone_id: string
+    string hosted_zone_id = 2 [json_name = "hosted_zone_id"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsVpclatticeServiceNetworkVpcAssociation version is 0
+message AwsVpclatticeServiceNetworkVpcAssociation {
+  string arn = 1;
+
+  string created_by = 2 [json_name = "created_by"];
+
+  string id = 3;
+
+  repeated string security_group_ids = 4 [json_name = "security_group_ids"];
+
+  string service_network_identifier = 5 [json_name = "service_network_identifier"];
+
+  string status = 6;
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  string vpc_identifier = 9 [json_name = "vpc_identifier"];
+
+  repeated Timeouts timeouts = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsVpclatticeTargetGroup version is 0
+message AwsVpclatticeTargetGroup {
+  string arn = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  string status = 4;
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  string type = 7;
+
+  Config config = 8;
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Config {
+    string ip_address_type = 1 [json_name = "ip_address_type"];
+
+    int64 port = 2;
+
+    string protocol = 3;
+
+    string protocol_version = 4 [json_name = "protocol_version"];
+
+    string vpc_identifier = 5 [json_name = "vpc_identifier"];
+
+    HealthCheck health_check = 6 [json_name = "health_check"];
+
+    message HealthCheck {
+      bool enabled = 1;
+
+      int64 health_check_interval_seconds = 2 [json_name = "health_check_interval_seconds"];
+
+      int64 health_check_timeout_seconds = 3 [json_name = "health_check_timeout_seconds"];
+
+      int64 healthy_threshold_count = 4 [json_name = "healthy_threshold_count"];
+
+      string path = 5;
+
+      int64 port = 6;
+
+      string protocol = 7;
+
+      string protocol_version = 8 [json_name = "protocol_version"];
+
+      int64 unhealthy_threshold_count = 9 [json_name = "unhealthy_threshold_count"];
+
+      Matcher matcher = 10;
+
+      message Matcher {
+        string value = 1;
+      }
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsVpclatticeTargetGroupAttachment version is 0
+message AwsVpclatticeTargetGroupAttachment {
+  string id = 1;
+
+  string target_group_identifier = 2 [json_name = "target_group_identifier"];
+
+  Target target = 3;
+
+  repeated Timeouts timeouts = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message Target {
+    string id = 1;
+
+    int64 port = 2;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}

@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsDocdbEngineVersion version is 0
+message AwsDocdbEngineVersion {
+  string engine = 1;
+
+  string engine_description = 2 [json_name = "engine_description"];
+
+  repeated string exportable_log_types = 3 [json_name = "exportable_log_types"];
+
+  string id = 4;
+
+  string parameter_group_family = 5 [json_name = "parameter_group_family"];
+
+  repeated string preferred_versions = 6 [json_name = "preferred_versions"];
+
+  bool supports_log_exports_to_cloudwatch = 7 [json_name = "supports_log_exports_to_cloudwatch"];
+
+  repeated string valid_upgrade_targets = 8 [json_name = "valid_upgrade_targets"];
+
+  string version = 9;
+
+  string version_description = 10 [json_name = "version_description"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+}
+
+// AwsDocdbOrderableDbInstance version is 0
+message AwsDocdbOrderableDbInstance {
+  repeated string availability_zones = 1 [json_name = "availability_zones"];
+
+  string engine = 2;
+
+  string engine_version = 3 [json_name = "engine_version"];
+
+  string id = 4;
+
+  string instance_class = 5 [json_name = "instance_class"];
+
+  string license_model = 6 [json_name = "license_model"];
+
+  repeated string preferred_instance_classes = 7 [json_name = "preferred_instance_classes"];
+
+  bool vpc = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+}

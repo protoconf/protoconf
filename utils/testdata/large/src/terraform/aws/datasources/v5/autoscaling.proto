@@ -1,0 +1,378 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsAutoscalingGroup version is 0
+message AwsAutoscalingGroup {
+  string arn = 1;
+
+  repeated string availability_zones = 2 [json_name = "availability_zones"];
+
+  int64 default_cooldown = 3 [json_name = "default_cooldown"];
+
+  int64 desired_capacity = 4 [json_name = "desired_capacity"];
+
+  string desired_capacity_type = 5 [json_name = "desired_capacity_type"];
+
+  repeated string enabled_metrics = 6 [json_name = "enabled_metrics"];
+
+  int64 health_check_grace_period = 7 [json_name = "health_check_grace_period"];
+
+  string health_check_type = 8 [json_name = "health_check_type"];
+
+  string id = 9;
+
+  string launch_configuration = 10 [json_name = "launch_configuration"];
+
+  repeated LaunchTemplate launch_template = 11 [json_name = "launch_template"];
+
+  repeated string load_balancers = 12 [json_name = "load_balancers"];
+
+  int64 max_instance_lifetime = 13 [json_name = "max_instance_lifetime"];
+
+  int64 max_size = 14 [json_name = "max_size"];
+
+  int64 min_size = 15 [json_name = "min_size"];
+
+  repeated MixedInstancesPolicy mixed_instances_policy = 16 [json_name = "mixed_instances_policy"];
+
+  string name = 17;
+
+  bool new_instances_protected_from_scale_in = 18 [
+    json_name = "new_instances_protected_from_scale_in"
+  ];
+
+  string placement_group = 19 [json_name = "placement_group"];
+
+  int64 predicted_capacity = 20 [json_name = "predicted_capacity"];
+
+  string service_linked_role_arn = 21 [json_name = "service_linked_role_arn"];
+
+  string status = 22;
+
+  repeated string suspended_processes = 23 [json_name = "suspended_processes"];
+
+  repeated Tag tag = 24;
+
+  repeated string target_group_arns = 25 [json_name = "target_group_arns"];
+
+  repeated string termination_policies = 26 [json_name = "termination_policies"];
+
+  repeated TrafficSource traffic_source = 27 [json_name = "traffic_source"];
+
+  string vpc_zone_identifier = 28 [json_name = "vpc_zone_identifier"];
+
+  repeated WarmPool warm_pool = 29 [json_name = "warm_pool"];
+
+  int64 warm_pool_size = 30 [json_name = "warm_pool_size"];
+
+  map<string, string> for_each = 31 [json_name = "for_each"];
+
+  repeated string depends_on = 32 [json_name = "depends_on"];
+
+  int32 count = 33;
+
+  string provider = 34;
+
+  terraform.v1.Lifecycle lifecycle = 35;
+
+  message LaunchTemplate {
+    // id: string
+    string id = 1;
+
+    // name: string
+    string name = 2;
+
+    // version: string
+    string version = 3;
+  }
+
+  message MixedInstancesPolicy {
+    // instances_distribution: list of object
+    repeated InstancesDistribution instances_distribution = 1 [json_name = "instances_distribution"];
+
+    // launch_template: list of object
+    repeated LaunchTemplate launch_template = 2 [json_name = "launch_template"];
+
+    message InstancesDistribution {
+      // on_demand_allocation_strategy: string
+      string on_demand_allocation_strategy = 1 [json_name = "on_demand_allocation_strategy"];
+
+      // on_demand_base_capacity: number
+      int64 on_demand_base_capacity = 2 [json_name = "on_demand_base_capacity"];
+
+      // on_demand_percentage_above_base_capacity: number
+      int64 on_demand_percentage_above_base_capacity = 3 [
+        json_name = "on_demand_percentage_above_base_capacity"
+      ];
+
+      // spot_allocation_strategy: string
+      string spot_allocation_strategy = 4 [json_name = "spot_allocation_strategy"];
+
+      // spot_instance_pools: number
+      int64 spot_instance_pools = 5 [json_name = "spot_instance_pools"];
+
+      // spot_max_price: string
+      string spot_max_price = 6 [json_name = "spot_max_price"];
+    }
+
+    message LaunchTemplate {
+      // launch_template_specification: list of object
+      repeated LaunchTemplateSpecification launch_template_specification = 1 [json_name = "launch_template_specification"];
+
+      // override: list of object
+      repeated Override override = 2;
+
+      message LaunchTemplateSpecification {
+        // launch_template_id: string
+        string launch_template_id = 1 [json_name = "launch_template_id"];
+
+        // launch_template_name: string
+        string launch_template_name = 2 [json_name = "launch_template_name"];
+
+        // version: string
+        string version = 3;
+      }
+
+      message Override {
+        // instance_requirements: list of object
+        repeated InstanceRequirements instance_requirements = 1 [json_name = "instance_requirements"];
+
+        // instance_type: string
+        string instance_type = 2 [json_name = "instance_type"];
+
+        // launch_template_specification: list of object
+        repeated LaunchTemplateSpecification launch_template_specification = 3 [json_name = "launch_template_specification"];
+
+        // weighted_capacity: string
+        string weighted_capacity = 4 [json_name = "weighted_capacity"];
+
+        message InstanceRequirements {
+          // accelerator_count: list of object
+          repeated AcceleratorCount accelerator_count = 1 [json_name = "accelerator_count"];
+
+          // accelerator_manufacturers: set of string
+          repeated string accelerator_manufacturers = 2 [json_name = "accelerator_manufacturers"];
+
+          // accelerator_names: set of string
+          repeated string accelerator_names = 3 [json_name = "accelerator_names"];
+
+          // accelerator_total_memory_mib: list of object
+          repeated AcceleratorTotalMemoryMib accelerator_total_memory_mib = 4 [json_name = "accelerator_total_memory_mib"];
+
+          // accelerator_types: set of string
+          repeated string accelerator_types = 5 [json_name = "accelerator_types"];
+
+          // allowed_instance_types: set of string
+          repeated string allowed_instance_types = 6 [json_name = "allowed_instance_types"];
+
+          // bare_metal: string
+          string bare_metal = 7 [json_name = "bare_metal"];
+
+          // baseline_ebs_bandwidth_mbps: list of object
+          repeated BaselineEbsBandwidthMbps baseline_ebs_bandwidth_mbps = 8 [json_name = "baseline_ebs_bandwidth_mbps"];
+
+          // burstable_performance: string
+          string burstable_performance = 9 [json_name = "burstable_performance"];
+
+          // cpu_manufacturers: set of string
+          repeated string cpu_manufacturers = 10 [json_name = "cpu_manufacturers"];
+
+          // excluded_instance_types: set of string
+          repeated string excluded_instance_types = 11 [json_name = "excluded_instance_types"];
+
+          // instance_generations: set of string
+          repeated string instance_generations = 12 [json_name = "instance_generations"];
+
+          // local_storage: string
+          string local_storage = 13 [json_name = "local_storage"];
+
+          // local_storage_types: set of string
+          repeated string local_storage_types = 14 [json_name = "local_storage_types"];
+
+          // memory_gib_per_vcpu: list of object
+          repeated MemoryGibPerVcpu memory_gib_per_vcpu = 15 [json_name = "memory_gib_per_vcpu"];
+
+          // memory_mib: list of object
+          repeated MemoryMib memory_mib = 16 [json_name = "memory_mib"];
+
+          // network_bandwidth_gbps: list of object
+          repeated NetworkBandwidthGbps network_bandwidth_gbps = 17 [json_name = "network_bandwidth_gbps"];
+
+          // network_interface_count: list of object
+          repeated NetworkInterfaceCount network_interface_count = 18 [json_name = "network_interface_count"];
+
+          // on_demand_max_price_percentage_over_lowest_price: number
+          int64 on_demand_max_price_percentage_over_lowest_price = 19 [
+            json_name = "on_demand_max_price_percentage_over_lowest_price"
+          ];
+
+          // require_hibernate_support: bool
+          bool require_hibernate_support = 20 [json_name = "require_hibernate_support"];
+
+          // spot_max_price_percentage_over_lowest_price: number
+          int64 spot_max_price_percentage_over_lowest_price = 21 [
+            json_name = "spot_max_price_percentage_over_lowest_price"
+          ];
+
+          // total_local_storage_gb: list of object
+          repeated TotalLocalStorageGb total_local_storage_gb = 22 [json_name = "total_local_storage_gb"];
+
+          // vcpu_count: list of object
+          repeated VcpuCount vcpu_count = 23 [json_name = "vcpu_count"];
+
+          message AcceleratorCount {
+            // max: number
+            int64 max = 1;
+
+            // min: number
+            int64 min = 2;
+          }
+
+          message AcceleratorTotalMemoryMib {
+            // max: number
+            int64 max = 1;
+
+            // min: number
+            int64 min = 2;
+          }
+
+          message BaselineEbsBandwidthMbps {
+            // max: number
+            int64 max = 1;
+
+            // min: number
+            int64 min = 2;
+          }
+
+          message MemoryGibPerVcpu {
+            // max: number
+            int64 max = 1;
+
+            // min: number
+            int64 min = 2;
+          }
+
+          message MemoryMib {
+            // max: number
+            int64 max = 1;
+
+            // min: number
+            int64 min = 2;
+          }
+
+          message NetworkBandwidthGbps {
+            // max: number
+            int64 max = 1;
+
+            // min: number
+            int64 min = 2;
+          }
+
+          message NetworkInterfaceCount {
+            // max: number
+            int64 max = 1;
+
+            // min: number
+            int64 min = 2;
+          }
+
+          message TotalLocalStorageGb {
+            // max: number
+            int64 max = 1;
+
+            // min: number
+            int64 min = 2;
+          }
+
+          message VcpuCount {
+            // max: number
+            int64 max = 1;
+
+            // min: number
+            int64 min = 2;
+          }
+        }
+
+        message LaunchTemplateSpecification {
+          // launch_template_id: string
+          string launch_template_id = 1 [json_name = "launch_template_id"];
+
+          // launch_template_name: string
+          string launch_template_name = 2 [json_name = "launch_template_name"];
+
+          // version: string
+          string version = 3;
+        }
+      }
+    }
+  }
+
+  message Tag {
+    // key: string
+    string key = 1;
+
+    // propagate_at_launch: bool
+    bool propagate_at_launch = 2 [json_name = "propagate_at_launch"];
+
+    // value: string
+    string value = 3;
+  }
+
+  message TrafficSource {
+    // identifier: string
+    string identifier = 1;
+
+    // type: string
+    string type = 2;
+  }
+
+  message WarmPool {
+    // instance_reuse_policy: list of object
+    repeated InstanceReusePolicy instance_reuse_policy = 1 [json_name = "instance_reuse_policy"];
+
+    // max_group_prepared_capacity: number
+    int64 max_group_prepared_capacity = 2 [json_name = "max_group_prepared_capacity"];
+
+    // min_size: number
+    int64 min_size = 3 [json_name = "min_size"];
+
+    // pool_state: string
+    string pool_state = 4 [json_name = "pool_state"];
+
+    message InstanceReusePolicy {
+      // reuse_on_scale_in: bool
+      bool reuse_on_scale_in = 1 [json_name = "reuse_on_scale_in"];
+    }
+  }
+}
+
+// AwsAutoscalingGroups version is 0
+message AwsAutoscalingGroups {
+  repeated string arns = 1;
+
+  string id = 2;
+
+  repeated string names = 3;
+
+  repeated Filter filter = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+}

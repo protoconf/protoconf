@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package protoconf_terraform.config.v1;
+
+option go_package = "github.com/protoconf/protoconf-terraform/proto/protoconf_terraform/config/v1;config";
+
+message TerraformInitCommand {
+    string output_path = 1;
+}
+
+message TerraformPluginConfig {
+    string agent_address = 1 [json_name = "agent-address"];
+    string config_path = 2 [json_name = "config-path"];
+    string terraform_root = 3;
+    LogLevel log_level = 4;
+    bool log_as_json = 5;
+
+    enum LogLevel {
+        // NoLevel is a special level used to indicate that no level has been
+        // set and allow for a default to be used.
+        LOG_LEVEL_UNSPECIFIED = 0;
+
+        // Trace is the most verbose level. Intended to be used for the tracing
+        // of actions in code, such as function enters/exits, etc.
+        LOG_LEVEL_TRACE = 1;
+
+        // Debug information for programmer low-level analysis.
+        LOG_LEVEL_DEBUG = 2;
+
+        // Info information about steady state operations.
+        LOG_LEVEL_INFO = 3;
+
+        // Warn information about rare but handled events.
+        LOG_LEVEL_WARN = 4;
+
+        // Error information about unrecoverable events.
+        LOG_LEVEL_ERROR = 5;
+
+        // Off disables all logging output.
+        LOG_LEVEL_OFF = 6;
+
+    }
+}
+
+message SubscriptionConfig {
+    repeated string keys = 1;
+}

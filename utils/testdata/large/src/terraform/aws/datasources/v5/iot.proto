@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsIotEndpoint version is 0
+message AwsIotEndpoint {
+  string endpoint_address = 1 [json_name = "endpoint_address"];
+
+  string endpoint_type = 2 [json_name = "endpoint_type"];
+
+  string id = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}

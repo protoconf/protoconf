@@ -1,0 +1,849 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsNetworkmanagerAttachmentAccepter version is 0
+message AwsNetworkmanagerAttachmentAccepter {
+  string attachment_id = 1 [json_name = "attachment_id"];
+
+  int64 attachment_policy_rule_number = 2 [json_name = "attachment_policy_rule_number"];
+
+  string attachment_type = 3 [json_name = "attachment_type"];
+
+  string core_network_arn = 4 [json_name = "core_network_arn"];
+
+  string core_network_id = 5 [json_name = "core_network_id"];
+
+  string edge_location = 6 [json_name = "edge_location"];
+
+  string id = 7;
+
+  string owner_account_id = 8 [json_name = "owner_account_id"];
+
+  string resource_arn = 9 [json_name = "resource_arn"];
+
+  string segment_name = 10 [json_name = "segment_name"];
+
+  string state = 11;
+
+  repeated Timeouts timeouts = 12;
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message Timeouts {
+    string create = 1;
+  }
+}
+
+// AwsNetworkmanagerConnectAttachment version is 0
+message AwsNetworkmanagerConnectAttachment {
+  string arn = 1;
+
+  string attachment_id = 2 [json_name = "attachment_id"];
+
+  int64 attachment_policy_rule_number = 3 [json_name = "attachment_policy_rule_number"];
+
+  string attachment_type = 4 [json_name = "attachment_type"];
+
+  string core_network_arn = 5 [json_name = "core_network_arn"];
+
+  string core_network_id = 6 [json_name = "core_network_id"];
+
+  string edge_location = 7 [json_name = "edge_location"];
+
+  string id = 8;
+
+  string owner_account_id = 9 [json_name = "owner_account_id"];
+
+  string resource_arn = 10 [json_name = "resource_arn"];
+
+  string segment_name = 11 [json_name = "segment_name"];
+
+  string state = 12;
+
+  map<string, string> tags = 13;
+
+  map<string, string> tags_all = 14 [json_name = "tags_all"];
+
+  string transport_attachment_id = 15 [json_name = "transport_attachment_id"];
+
+  Options options = 16;
+
+  repeated Timeouts timeouts = 17;
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+
+  message Options {
+    string protocol = 1;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsNetworkmanagerConnectPeer version is 0
+message AwsNetworkmanagerConnectPeer {
+  string arn = 1;
+
+  repeated Configuration configuration = 2;
+
+  string connect_attachment_id = 3 [json_name = "connect_attachment_id"];
+
+  string connect_peer_id = 4 [json_name = "connect_peer_id"];
+
+  string core_network_address = 5 [json_name = "core_network_address"];
+
+  string core_network_id = 6 [json_name = "core_network_id"];
+
+  string created_at = 7 [json_name = "created_at"];
+
+  string edge_location = 8 [json_name = "edge_location"];
+
+  string id = 9;
+
+  repeated string inside_cidr_blocks = 10 [json_name = "inside_cidr_blocks"];
+
+  string peer_address = 11 [json_name = "peer_address"];
+
+  string state = 12;
+
+  map<string, string> tags = 13;
+
+  map<string, string> tags_all = 14 [json_name = "tags_all"];
+
+  BgpOptions bgp_options = 15 [json_name = "bgp_options"];
+
+  repeated Timeouts timeouts = 16;
+
+  map<string, string> for_each = 17 [json_name = "for_each"];
+
+  repeated string depends_on = 18 [json_name = "depends_on"];
+
+  int32 count = 19;
+
+  string provider = 20;
+
+  terraform.v1.Lifecycle lifecycle = 21;
+
+  message Configuration {
+    // bgp_configurations: list of object
+    repeated BgpConfigurations bgp_configurations = 1 [json_name = "bgp_configurations"];
+
+    // core_network_address: string
+    string core_network_address = 2 [json_name = "core_network_address"];
+
+    // inside_cidr_blocks: set of string
+    repeated string inside_cidr_blocks = 3 [json_name = "inside_cidr_blocks"];
+
+    // peer_address: string
+    string peer_address = 4 [json_name = "peer_address"];
+
+    // protocol: string
+    string protocol = 5;
+
+    message BgpConfigurations {
+      // core_network_address: string
+      string core_network_address = 1 [json_name = "core_network_address"];
+
+      // core_network_asn: number
+      int64 core_network_asn = 2 [json_name = "core_network_asn"];
+
+      // peer_address: string
+      string peer_address = 3 [json_name = "peer_address"];
+
+      // peer_asn: number
+      int64 peer_asn = 4 [json_name = "peer_asn"];
+    }
+  }
+
+  message BgpOptions {
+    int64 peer_asn = 1 [json_name = "peer_asn"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsNetworkmanagerConnection version is 0
+message AwsNetworkmanagerConnection {
+  string arn = 1;
+
+  string connected_device_id = 2 [json_name = "connected_device_id"];
+
+  string connected_link_id = 3 [json_name = "connected_link_id"];
+
+  string description = 4;
+
+  string device_id = 5 [json_name = "device_id"];
+
+  string global_network_id = 6 [json_name = "global_network_id"];
+
+  string id = 7;
+
+  string link_id = 8 [json_name = "link_id"];
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsNetworkmanagerCoreNetwork version is 0
+message AwsNetworkmanagerCoreNetwork {
+  string arn = 1;
+
+  string base_policy_region = 2 [json_name = "base_policy_region"];
+
+  repeated string base_policy_regions = 3 [json_name = "base_policy_regions"];
+
+  bool create_base_policy = 4 [json_name = "create_base_policy"];
+
+  string created_at = 5 [json_name = "created_at"];
+
+  string description = 6;
+
+  repeated Edges edges = 7;
+
+  string global_network_id = 8 [json_name = "global_network_id"];
+
+  string id = 9;
+
+  repeated Segments segments = 10;
+
+  string state = 11;
+
+  map<string, string> tags = 12;
+
+  map<string, string> tags_all = 13 [json_name = "tags_all"];
+
+  repeated Timeouts timeouts = 14;
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+
+  message Edges {
+    // asn: number
+    int64 asn = 1;
+
+    // edge_location: string
+    string edge_location = 2 [json_name = "edge_location"];
+
+    // inside_cidr_blocks: list of string
+    repeated string inside_cidr_blocks = 3 [json_name = "inside_cidr_blocks"];
+  }
+
+  message Segments {
+    // edge_locations: list of string
+    repeated string edge_locations = 1 [json_name = "edge_locations"];
+
+    // name: string
+    string name = 2;
+
+    // shared_segments: list of string
+    repeated string shared_segments = 3 [json_name = "shared_segments"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsNetworkmanagerCoreNetworkPolicyAttachment version is 0
+message AwsNetworkmanagerCoreNetworkPolicyAttachment {
+  string core_network_id = 1 [json_name = "core_network_id"];
+
+  string id = 2;
+
+  string policy_document = 3 [json_name = "policy_document"];
+
+  string state = 4;
+
+  repeated Timeouts timeouts = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message Timeouts {
+    string update = 1;
+  }
+}
+
+// AwsNetworkmanagerCustomerGatewayAssociation version is 0
+message AwsNetworkmanagerCustomerGatewayAssociation {
+  string customer_gateway_arn = 1 [json_name = "customer_gateway_arn"];
+
+  string device_id = 2 [json_name = "device_id"];
+
+  string global_network_id = 3 [json_name = "global_network_id"];
+
+  string id = 4;
+
+  string link_id = 5 [json_name = "link_id"];
+
+  repeated Timeouts timeouts = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsNetworkmanagerDevice version is 0
+message AwsNetworkmanagerDevice {
+  string arn = 1;
+
+  string description = 2;
+
+  string global_network_id = 3 [json_name = "global_network_id"];
+
+  string id = 4;
+
+  string model = 5;
+
+  string serial_number = 6 [json_name = "serial_number"];
+
+  string site_id = 7 [json_name = "site_id"];
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  string type = 10;
+
+  string vendor = 11;
+
+  AwsLocation aws_location = 12 [json_name = "aws_location"];
+
+  Location location = 13;
+
+  repeated Timeouts timeouts = 14;
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+
+  message AwsLocation {
+    string subnet_arn = 1 [json_name = "subnet_arn"];
+
+    string zone = 2;
+  }
+
+  message Location {
+    string address = 1;
+
+    string latitude = 2;
+
+    string longitude = 3;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsNetworkmanagerGlobalNetwork version is 0
+message AwsNetworkmanagerGlobalNetwork {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  map<string, string> tags = 4;
+
+  map<string, string> tags_all = 5 [json_name = "tags_all"];
+
+  repeated Timeouts timeouts = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsNetworkmanagerLink version is 0
+message AwsNetworkmanagerLink {
+  string arn = 1;
+
+  string description = 2;
+
+  string global_network_id = 3 [json_name = "global_network_id"];
+
+  string id = 4;
+
+  string provider_name = 5 [json_name = "provider_name"];
+
+  string site_id = 6 [json_name = "site_id"];
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  string type = 9;
+
+  Bandwidth bandwidth = 10;
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message Bandwidth {
+    int64 download_speed = 1 [json_name = "download_speed"];
+
+    int64 upload_speed = 2 [json_name = "upload_speed"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsNetworkmanagerLinkAssociation version is 0
+message AwsNetworkmanagerLinkAssociation {
+  string device_id = 1 [json_name = "device_id"];
+
+  string global_network_id = 2 [json_name = "global_network_id"];
+
+  string id = 3;
+
+  string link_id = 4 [json_name = "link_id"];
+
+  repeated Timeouts timeouts = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsNetworkmanagerSite version is 0
+message AwsNetworkmanagerSite {
+  string arn = 1;
+
+  string description = 2;
+
+  string global_network_id = 3 [json_name = "global_network_id"];
+
+  string id = 4;
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  Location location = 7;
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Location {
+    string address = 1;
+
+    string latitude = 2;
+
+    string longitude = 3;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsNetworkmanagerSiteToSiteVpnAttachment version is 0
+message AwsNetworkmanagerSiteToSiteVpnAttachment {
+  string arn = 1;
+
+  int64 attachment_policy_rule_number = 2 [json_name = "attachment_policy_rule_number"];
+
+  string attachment_type = 3 [json_name = "attachment_type"];
+
+  string core_network_arn = 4 [json_name = "core_network_arn"];
+
+  string core_network_id = 5 [json_name = "core_network_id"];
+
+  string edge_location = 6 [json_name = "edge_location"];
+
+  string id = 7;
+
+  string owner_account_id = 8 [json_name = "owner_account_id"];
+
+  string resource_arn = 9 [json_name = "resource_arn"];
+
+  string segment_name = 10 [json_name = "segment_name"];
+
+  string state = 11;
+
+  map<string, string> tags = 12;
+
+  map<string, string> tags_all = 13 [json_name = "tags_all"];
+
+  string vpn_connection_arn = 14 [json_name = "vpn_connection_arn"];
+
+  repeated Timeouts timeouts = 15;
+
+  map<string, string> for_each = 16 [json_name = "for_each"];
+
+  repeated string depends_on = 17 [json_name = "depends_on"];
+
+  int32 count = 18;
+
+  string provider = 19;
+
+  terraform.v1.Lifecycle lifecycle = 20;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsNetworkmanagerTransitGatewayConnectPeerAssociation version is 0
+message AwsNetworkmanagerTransitGatewayConnectPeerAssociation {
+  string device_id = 1 [json_name = "device_id"];
+
+  string global_network_id = 2 [json_name = "global_network_id"];
+
+  string id = 3;
+
+  string link_id = 4 [json_name = "link_id"];
+
+  string transit_gateway_connect_peer_arn = 5 [json_name = "transit_gateway_connect_peer_arn"];
+
+  repeated Timeouts timeouts = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsNetworkmanagerTransitGatewayPeering version is 0
+message AwsNetworkmanagerTransitGatewayPeering {
+  string arn = 1;
+
+  string core_network_arn = 2 [json_name = "core_network_arn"];
+
+  string core_network_id = 3 [json_name = "core_network_id"];
+
+  string edge_location = 4 [json_name = "edge_location"];
+
+  string id = 5;
+
+  string owner_account_id = 6 [json_name = "owner_account_id"];
+
+  string peering_type = 7 [json_name = "peering_type"];
+
+  string resource_arn = 8 [json_name = "resource_arn"];
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  string transit_gateway_arn = 11 [json_name = "transit_gateway_arn"];
+
+  string transit_gateway_peering_attachment_id = 12 [
+    json_name = "transit_gateway_peering_attachment_id"
+  ];
+
+  repeated Timeouts timeouts = 13;
+
+  map<string, string> for_each = 14 [json_name = "for_each"];
+
+  repeated string depends_on = 15 [json_name = "depends_on"];
+
+  int32 count = 16;
+
+  string provider = 17;
+
+  terraform.v1.Lifecycle lifecycle = 18;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsNetworkmanagerTransitGatewayRegistration version is 0
+message AwsNetworkmanagerTransitGatewayRegistration {
+  string global_network_id = 1 [json_name = "global_network_id"];
+
+  string id = 2;
+
+  string transit_gateway_arn = 3 [json_name = "transit_gateway_arn"];
+
+  repeated Timeouts timeouts = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsNetworkmanagerTransitGatewayRouteTableAttachment version is 0
+message AwsNetworkmanagerTransitGatewayRouteTableAttachment {
+  string arn = 1;
+
+  int64 attachment_policy_rule_number = 2 [json_name = "attachment_policy_rule_number"];
+
+  string attachment_type = 3 [json_name = "attachment_type"];
+
+  string core_network_arn = 4 [json_name = "core_network_arn"];
+
+  string core_network_id = 5 [json_name = "core_network_id"];
+
+  string edge_location = 6 [json_name = "edge_location"];
+
+  string id = 7;
+
+  string owner_account_id = 8 [json_name = "owner_account_id"];
+
+  string peering_id = 9 [json_name = "peering_id"];
+
+  string resource_arn = 10 [json_name = "resource_arn"];
+
+  string segment_name = 11 [json_name = "segment_name"];
+
+  string state = 12;
+
+  map<string, string> tags = 13;
+
+  map<string, string> tags_all = 14 [json_name = "tags_all"];
+
+  string transit_gateway_route_table_arn = 15 [json_name = "transit_gateway_route_table_arn"];
+
+  repeated Timeouts timeouts = 16;
+
+  map<string, string> for_each = 17 [json_name = "for_each"];
+
+  repeated string depends_on = 18 [json_name = "depends_on"];
+
+  int32 count = 19;
+
+  string provider = 20;
+
+  terraform.v1.Lifecycle lifecycle = 21;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsNetworkmanagerVpcAttachment version is 0
+message AwsNetworkmanagerVpcAttachment {
+  string arn = 1;
+
+  int64 attachment_policy_rule_number = 2 [json_name = "attachment_policy_rule_number"];
+
+  string attachment_type = 3 [json_name = "attachment_type"];
+
+  string core_network_arn = 4 [json_name = "core_network_arn"];
+
+  string core_network_id = 5 [json_name = "core_network_id"];
+
+  string edge_location = 6 [json_name = "edge_location"];
+
+  string id = 7;
+
+  string owner_account_id = 8 [json_name = "owner_account_id"];
+
+  string resource_arn = 9 [json_name = "resource_arn"];
+
+  string segment_name = 10 [json_name = "segment_name"];
+
+  string state = 11;
+
+  repeated string subnet_arns = 12 [json_name = "subnet_arns"];
+
+  map<string, string> tags = 13;
+
+  map<string, string> tags_all = 14 [json_name = "tags_all"];
+
+  string vpc_arn = 15 [json_name = "vpc_arn"];
+
+  Options options = 16;
+
+  repeated Timeouts timeouts = 17;
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+
+  message Options {
+    bool appliance_mode_support = 1 [json_name = "appliance_mode_support"];
+
+    bool ipv6_support = 2 [json_name = "ipv6_support"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

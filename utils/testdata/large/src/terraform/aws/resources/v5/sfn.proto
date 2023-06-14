@@ -1,0 +1,90 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsSfnActivity version is 0
+message AwsSfnActivity {
+  string creation_date = 1 [json_name = "creation_date"];
+
+  string id = 2;
+
+  string name = 3;
+
+  map<string, string> tags = 4;
+
+  map<string, string> tags_all = 5 [json_name = "tags_all"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsSfnStateMachine version is 0
+message AwsSfnStateMachine {
+  string arn = 1;
+
+  string creation_date = 2 [json_name = "creation_date"];
+
+  string definition = 3;
+
+  string id = 4;
+
+  string name = 5;
+
+  string name_prefix = 6 [json_name = "name_prefix"];
+
+  string role_arn = 7 [json_name = "role_arn"];
+
+  string status = 8;
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  string type = 11;
+
+  LoggingConfiguration logging_configuration = 12 [json_name = "logging_configuration"];
+
+  repeated Timeouts timeouts = 13;
+
+  TracingConfiguration tracing_configuration = 14 [json_name = "tracing_configuration"];
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+
+  message LoggingConfiguration {
+    bool include_execution_data = 1 [json_name = "include_execution_data"];
+
+    string level = 2;
+
+    string log_destination = 3 [json_name = "log_destination"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+
+  message TracingConfiguration {
+    bool enabled = 1;
+  }
+}

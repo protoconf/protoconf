@@ -1,0 +1,174 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsAthenaDataCatalog version is 0
+message AwsAthenaDataCatalog {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  string name = 4;
+
+  map<string, string> parameters = 5;
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  string type = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+}
+
+// AwsAthenaDatabase version is 0
+message AwsAthenaDatabase {
+  string bucket = 1;
+
+  string comment = 2;
+
+  string expected_bucket_owner = 3 [json_name = "expected_bucket_owner"];
+
+  bool force_destroy = 4 [json_name = "force_destroy"];
+
+  string id = 5;
+
+  string name = 6;
+
+  map<string, string> properties = 7;
+
+  AclConfiguration acl_configuration = 8 [json_name = "acl_configuration"];
+
+  EncryptionConfiguration encryption_configuration = 9 [json_name = "encryption_configuration"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message AclConfiguration {
+    string s3_acl_option = 1 [json_name = "s3_acl_option"];
+  }
+
+  message EncryptionConfiguration {
+    string encryption_option = 1 [json_name = "encryption_option"];
+
+    string kms_key = 2 [json_name = "kms_key"];
+  }
+}
+
+// AwsAthenaNamedQuery version is 0
+message AwsAthenaNamedQuery {
+  string database = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  string name = 4;
+
+  string query = 5;
+
+  string workgroup = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsAthenaWorkgroup version is 0
+message AwsAthenaWorkgroup {
+  string arn = 1;
+
+  string description = 2;
+
+  bool force_destroy = 3 [json_name = "force_destroy"];
+
+  string id = 4;
+
+  string name = 5;
+
+  string state = 6;
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  Configuration configuration = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Configuration {
+    int64 bytes_scanned_cutoff_per_query = 1 [json_name = "bytes_scanned_cutoff_per_query"];
+
+    bool enforce_workgroup_configuration = 2 [json_name = "enforce_workgroup_configuration"];
+
+    string execution_role = 3 [json_name = "execution_role"];
+
+    bool publish_cloudwatch_metrics_enabled = 4 [json_name = "publish_cloudwatch_metrics_enabled"];
+
+    bool requester_pays_enabled = 5 [json_name = "requester_pays_enabled"];
+
+    EngineVersion engine_version = 6 [json_name = "engine_version"];
+
+    ResultConfiguration result_configuration = 7 [json_name = "result_configuration"];
+
+    message EngineVersion {
+      string effective_engine_version = 1 [json_name = "effective_engine_version"];
+
+      string selected_engine_version = 2 [json_name = "selected_engine_version"];
+    }
+
+    message ResultConfiguration {
+      string expected_bucket_owner = 1 [json_name = "expected_bucket_owner"];
+
+      string output_location = 2 [json_name = "output_location"];
+
+      AclConfiguration acl_configuration = 3 [json_name = "acl_configuration"];
+
+      EncryptionConfiguration encryption_configuration = 4 [json_name = "encryption_configuration"];
+
+      message AclConfiguration {
+        string s3_acl_option = 1 [json_name = "s3_acl_option"];
+      }
+
+      message EncryptionConfiguration {
+        string encryption_option = 1 [json_name = "encryption_option"];
+
+        string kms_key_arn = 2 [json_name = "kms_key_arn"];
+      }
+    }
+  }
+}
