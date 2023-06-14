@@ -19,6 +19,7 @@ require (
 	github.com/kvtools/zookeeper v1.0.2
 	github.com/mitchellh/cli v1.1.5
 	github.com/pelletier/go-toml v1.9.5
+	github.com/pelletier/go-toml/v2 v2.0.8
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.15.1
 	github.com/qri-io/starlib v0.5.0
