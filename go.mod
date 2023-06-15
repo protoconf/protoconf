@@ -21,7 +21,7 @@ require (
 	github.com/pelletier/go-toml v1.9.5
 	github.com/pelletier/go-toml/v2 v2.0.8
 	github.com/pkg/errors v0.9.1
-	github.com/prometheus/client_golang v1.15.1
+	github.com/prometheus/client_golang v1.16.0
 	github.com/qri-io/starlib v0.5.0
 	github.com/sajari/fuzzy v1.0.0
 	github.com/smintz/starlarkobject v0.0.0-20221130044148-40067250eba0
