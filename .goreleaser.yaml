@@ -33,6 +33,7 @@ changelog:
     exclude:
       - "^docs:"
       - "^test:"
+      - "^fix(deps):"
 brews:
   - # Name template of the recipe
     # Default to project name
