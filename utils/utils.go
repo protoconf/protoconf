@@ -57,7 +57,7 @@ func ReadConfig(protoconfRoot string, configName string) (*protoconfvalue.Protoc
 
 func LocalResolver(protoconfRoot string) *protoregistry.Types {
 	localTypes := new(protoregistry.Types)
-	localFiles, err := LoadLocalProtoFilesFast(protoconfRoot)
+	localFiles, err := LoadLocalProtoFiles(protoconfRoot)
 	if err != nil {
 		log.Fatal("LocalResolver:", err)
 	}
@@ -193,25 +193,6 @@ func find(root, ext string) []string {
 }
 
 func LoadLocalProtoFiles(root string) (*protoregistry.Files, error) {
-	rootPath := filepath.Join(root, consts.SrcPath)
-	files := find(rootPath, ".proto")
-	parser := &protoparse.Parser{ImportPaths: []string{rootPath}}
-	descriptors, err := parser.ParseFiles(files...)
-	if err != nil {
-		return nil, fmt.Errorf("parser: %v", err)
-	}
-	protoFiles := new(protoregistry.Files)
-	for _, fd := range descriptors {
-		err = protoFiles.RegisterFile(fd.UnwrapFile())
-		if err != nil {
-			return nil, fmt.Errorf("new files: %v", err)
-		}
-	}
-	return protoFiles, err
-
-}
-
-func LoadLocalProtoFilesFast(root string) (*protoregistry.Files, error) {
 	rootPath := filepath.Join(root, consts.SrcPath)
 	files := find(rootPath, ".proto")
 	parser := &protoparse.Parser{
