@@ -1,0 +1,306 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleBillingAccountIamBinding version is 0
+message GoogleBillingAccountIamBinding {
+  string billing_account_id = 1 [json_name = "billing_account_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  repeated string members = 4;
+
+  string role = 5;
+
+  Condition condition = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleBillingAccountIamMember version is 0
+message GoogleBillingAccountIamMember {
+  string billing_account_id = 1 [json_name = "billing_account_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string member = 4;
+
+  string role = 5;
+
+  Condition condition = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleBillingAccountIamPolicy version is 0
+message GoogleBillingAccountIamPolicy {
+  string billing_account_id = 1 [json_name = "billing_account_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// GoogleBillingBudget version is 1
+message GoogleBillingBudget {
+  // ID of the billing account to set a budget on.
+  string billing_account = 1 [json_name = "billing_account"];
+
+  // User data for display name in UI. Must be <= 60 chars.
+  string display_name = 2 [json_name = "display_name"];
+
+  string id = 3;
+
+  // Resource name of the budget. The resource name
+  // implies the scope of a budget. Values are of the form
+  // billingAccounts/{billingAccountId}/budgets/{budgetId}.
+  string name = 4;
+
+  AllUpdatesRule all_updates_rule = 5 [json_name = "all_updates_rule"];
+
+  Amount amount = 6;
+
+  BudgetFilter budget_filter = 7 [json_name = "budget_filter"];
+
+  repeated ThresholdRules threshold_rules = 8 [json_name = "threshold_rules"];
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message AllUpdatesRule {
+    // Boolean. When set to true, disables default notifications sent
+    // when a threshold is exceeded. Default recipients are
+    // those with Billing Account Administrators and Billing
+    // Account Users IAM roles for the target account.
+    bool disable_default_iam_recipients = 1 [json_name = "disable_default_iam_recipients"];
+
+    // The full resource name of a monitoring notification
+    // channel in the form
+    // projects/{project_id}/notificationChannels/{channel_id}.
+    // A maximum of 5 channels are allowed.
+    repeated string monitoring_notification_channels = 2 [json_name = "monitoring_notification_channels"];
+
+    // The name of the Cloud Pub/Sub topic where budget related
+    // messages will be published, in the form
+    // projects/{project_id}/topics/{topic_id}. Updates are sent
+    // at regular intervals to the topic.
+    string pubsub_topic = 3 [json_name = "pubsub_topic"];
+
+    // The schema version of the notification. Only "1.0" is
+    // accepted. It represents the JSON schema as defined in
+    // https://cloud.google.com/billing/docs/how-to/budgets#notification_format.
+    string schema_version = 4 [json_name = "schema_version"];
+  }
+
+  message Amount {
+    // Configures a budget amount that is automatically set to 100% of
+    // last period's spend.
+    // Boolean. Set value to true to use. Do not set to false, instead
+    // use the 'specified_amount' block.
+    bool last_period_amount = 1 [json_name = "last_period_amount"];
+
+    SpecifiedAmount specified_amount = 2 [json_name = "specified_amount"];
+
+    message SpecifiedAmount {
+      // The 3-letter currency code defined in ISO 4217.
+      string currency_code = 1 [json_name = "currency_code"];
+
+      // Number of nano (10^-9) units of the amount.
+      // The value must be between -999,999,999 and +999,999,999
+      // inclusive. If units is positive, nanos must be positive or
+      // zero. If units is zero, nanos can be positive, zero, or
+      // negative. If units is negative, nanos must be negative or
+      // zero. For example $-1.75 is represented as units=-1 and
+      // nanos=-750,000,000.
+      int64 nanos = 2;
+
+      // The whole units of the amount. For example if currencyCode
+      // is "USD", then 1 unit is one US dollar.
+      string units = 3;
+    }
+  }
+
+  message BudgetFilter {
+    // A CalendarPeriod represents the abstract concept of a recurring time period that has a
+    // canonical start. Grammatically, "the start of the current CalendarPeriod".
+    // All calendar times begin at 12 AM US and Canadian Pacific Time (UTC-8).
+    //
+    // Exactly one of 'calendar_period', 'custom_period' must be provided. Possible values: ["MONTH", "QUARTER", "YEAR", "CALENDAR_PERIOD_UNSPECIFIED"]
+    string calendar_period = 1 [json_name = "calendar_period"];
+
+    // Optional. If creditTypesTreatment is INCLUDE_SPECIFIED_CREDITS,
+    // this is a list of credit types to be subtracted from gross cost to determine the spend for threshold calculations. See a list of acceptable credit type values.
+    // If creditTypesTreatment is not INCLUDE_SPECIFIED_CREDITS, this field must be empty.
+    //
+    // **Note:** If the field has a value in the config and needs to be removed, the field has to be an emtpy array in the config.
+    repeated string credit_types = 2 [json_name = "credit_types"];
+
+    // Specifies how credits should be treated when determining spend
+    // for threshold calculations. Default value: "INCLUDE_ALL_CREDITS" Possible values: ["INCLUDE_ALL_CREDITS", "EXCLUDE_ALL_CREDITS", "INCLUDE_SPECIFIED_CREDITS"]
+    string credit_types_treatment = 3 [json_name = "credit_types_treatment"];
+
+    // A single label and value pair specifying that usage from only
+    // this set of labeled resources should be included in the budget.
+    map<string, string> labels = 4;
+
+    // A set of projects of the form projects/{project_number},
+    // specifying that usage from only this set of projects should be
+    // included in the budget. If omitted, the report will include
+    // all usage for the billing account, regardless of which project
+    // the usage occurred on.
+    repeated string projects = 5;
+
+    // A set of services of the form services/{service_id},
+    // specifying that usage from only this set of services should be
+    // included in the budget. If omitted, the report will include
+    // usage for all the services. The service names are available
+    // through the Catalog API:
+    // https://cloud.google.com/billing/v1/how-tos/catalog-api.
+    repeated string services = 6;
+
+    // A set of subaccounts of the form billingAccounts/{account_id},
+    // specifying that usage from only this set of subaccounts should
+    // be included in the budget. If a subaccount is set to the name of
+    // the parent account, usage from the parent account will be included.
+    // If the field is omitted, the report will include usage from the parent
+    // account and all subaccounts, if they exist.
+    //
+    // **Note:** If the field has a value in the config and needs to be removed, the field has to be an emtpy array in the config.
+    repeated string subaccounts = 7;
+
+    CustomPeriod custom_period = 8 [json_name = "custom_period"];
+
+    message CustomPeriod {
+      EndDate end_date = 1 [json_name = "end_date"];
+
+      StartDate start_date = 2 [json_name = "start_date"];
+
+      message EndDate {
+        // Day of a month. Must be from 1 to 31 and valid for the year and month.
+        int64 day = 1;
+
+        // Month of a year. Must be from 1 to 12.
+        int64 month = 2;
+
+        // Year of the date. Must be from 1 to 9999.
+        int64 year = 3;
+      }
+
+      message StartDate {
+        // Day of a month. Must be from 1 to 31 and valid for the year and month.
+        int64 day = 1;
+
+        // Month of a year. Must be from 1 to 12.
+        int64 month = 2;
+
+        // Year of the date. Must be from 1 to 9999.
+        int64 year = 3;
+      }
+    }
+  }
+
+  message ThresholdRules {
+    // The type of basis used to determine if spend has passed
+    // the threshold. Default value: "CURRENT_SPEND" Possible values: ["CURRENT_SPEND", "FORECASTED_SPEND"]
+    string spend_basis = 1 [json_name = "spend_basis"];
+
+    // Send an alert when this threshold is exceeded. This is a
+    // 1.0-based percentage, so 0.5 = 50%. Must be >= 0.
+    int64 threshold_percent = 2 [json_name = "threshold_percent"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleBillingSubaccount version is 0
+message GoogleBillingSubaccount {
+  string billing_account_id = 1 [json_name = "billing_account_id"];
+
+  string deletion_policy = 2 [json_name = "deletion_policy"];
+
+  string display_name = 3 [json_name = "display_name"];
+
+  string id = 4;
+
+  string master_billing_account = 5 [json_name = "master_billing_account"];
+
+  string name = 6;
+
+  bool open = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}

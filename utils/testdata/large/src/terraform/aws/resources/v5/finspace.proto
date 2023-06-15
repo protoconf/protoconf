@@ -1,0 +1,284 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsFinspaceKxCluster version is 0
+message AwsFinspaceKxCluster {
+  string arn = 1;
+
+  string availability_zone_id = 2 [json_name = "availability_zone_id"];
+
+  string az_mode = 3 [json_name = "az_mode"];
+
+  map<string, string> command_line_arguments = 4 [json_name = "command_line_arguments"];
+
+  string created_timestamp = 5 [json_name = "created_timestamp"];
+
+  string description = 6;
+
+  string environment_id = 7 [json_name = "environment_id"];
+
+  string execution_role = 8 [json_name = "execution_role"];
+
+  string id = 9;
+
+  string initialization_script = 10 [json_name = "initialization_script"];
+
+  string last_modified_timestamp = 11 [json_name = "last_modified_timestamp"];
+
+  string name = 12;
+
+  string release_label = 13 [json_name = "release_label"];
+
+  string status = 14;
+
+  string status_reason = 15 [json_name = "status_reason"];
+
+  map<string, string> tags = 16;
+
+  map<string, string> tags_all = 17 [json_name = "tags_all"];
+
+  string type = 18;
+
+  AutoScalingConfiguration auto_scaling_configuration = 19 [json_name = "auto_scaling_configuration"];
+
+  repeated CacheStorageConfigurations cache_storage_configurations = 20 [json_name = "cache_storage_configurations"];
+
+  CapacityConfiguration capacity_configuration = 21 [json_name = "capacity_configuration"];
+
+  Code code = 22;
+
+  repeated Database database = 23;
+
+  SavedownStorageConfiguration savedown_storage_configuration = 24 [json_name = "savedown_storage_configuration"];
+
+  repeated Timeouts timeouts = 25;
+
+  VpcConfiguration vpc_configuration = 26 [json_name = "vpc_configuration"];
+
+  map<string, string> for_each = 27 [json_name = "for_each"];
+
+  repeated string depends_on = 28 [json_name = "depends_on"];
+
+  int32 count = 29;
+
+  string provider = 30;
+
+  terraform.v1.Lifecycle lifecycle = 31;
+
+  message AutoScalingConfiguration {
+    string auto_scaling_metric = 1 [json_name = "auto_scaling_metric"];
+
+    int64 max_node_count = 2 [json_name = "max_node_count"];
+
+    int64 metric_target = 3 [json_name = "metric_target"];
+
+    int64 min_node_count = 4 [json_name = "min_node_count"];
+
+    int64 scale_in_cooldown_seconds = 5 [json_name = "scale_in_cooldown_seconds"];
+
+    int64 scale_out_cooldown_seconds = 6 [json_name = "scale_out_cooldown_seconds"];
+  }
+
+  message CacheStorageConfigurations {
+    int64 size = 1;
+
+    string type = 2;
+  }
+
+  message CapacityConfiguration {
+    int64 node_count = 1 [json_name = "node_count"];
+
+    string node_type = 2 [json_name = "node_type"];
+  }
+
+  message Code {
+    string s3_bucket = 1 [json_name = "s3_bucket"];
+
+    string s3_key = 2 [json_name = "s3_key"];
+
+    string s3_object_version = 3 [json_name = "s3_object_version"];
+  }
+
+  message Database {
+    string changeset_id = 1 [json_name = "changeset_id"];
+
+    string database_name = 2 [json_name = "database_name"];
+
+    repeated CacheConfigurations cache_configurations = 3 [json_name = "cache_configurations"];
+
+    message CacheConfigurations {
+      string cache_type = 1 [json_name = "cache_type"];
+
+      repeated string db_paths = 2 [json_name = "db_paths"];
+    }
+  }
+
+  message SavedownStorageConfiguration {
+    int64 size = 1;
+
+    string type = 2;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+
+  message VpcConfiguration {
+    string ip_address_type = 1 [json_name = "ip_address_type"];
+
+    repeated string security_group_ids = 2 [json_name = "security_group_ids"];
+
+    repeated string subnet_ids = 3 [json_name = "subnet_ids"];
+
+    string vpc_id = 4 [json_name = "vpc_id"];
+  }
+}
+
+// AwsFinspaceKxDatabase version is 0
+message AwsFinspaceKxDatabase {
+  string arn = 1;
+
+  string created_timestamp = 2 [json_name = "created_timestamp"];
+
+  string description = 3;
+
+  string environment_id = 4 [json_name = "environment_id"];
+
+  string id = 5;
+
+  string last_modified_timestamp = 6 [json_name = "last_modified_timestamp"];
+
+  string name = 7;
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  repeated Timeouts timeouts = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsFinspaceKxEnvironment version is 0
+message AwsFinspaceKxEnvironment {
+  string arn = 1;
+
+  repeated string availability_zones = 2 [json_name = "availability_zones"];
+
+  string created_timestamp = 3 [json_name = "created_timestamp"];
+
+  string description = 4;
+
+  string id = 5;
+
+  string infrastructure_account_id = 6 [json_name = "infrastructure_account_id"];
+
+  string kms_key_id = 7 [json_name = "kms_key_id"];
+
+  string last_modified_timestamp = 8 [json_name = "last_modified_timestamp"];
+
+  string name = 9;
+
+  string status = 10;
+
+  map<string, string> tags = 11;
+
+  map<string, string> tags_all = 12 [json_name = "tags_all"];
+
+  repeated CustomDnsConfiguration custom_dns_configuration = 13 [json_name = "custom_dns_configuration"];
+
+  repeated Timeouts timeouts = 14;
+
+  TransitGatewayConfiguration transit_gateway_configuration = 15 [json_name = "transit_gateway_configuration"];
+
+  map<string, string> for_each = 16 [json_name = "for_each"];
+
+  repeated string depends_on = 17 [json_name = "depends_on"];
+
+  int32 count = 18;
+
+  string provider = 19;
+
+  terraform.v1.Lifecycle lifecycle = 20;
+
+  message CustomDnsConfiguration {
+    string custom_dns_server_ip = 1 [json_name = "custom_dns_server_ip"];
+
+    string custom_dns_server_name = 2 [json_name = "custom_dns_server_name"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+
+  message TransitGatewayConfiguration {
+    string routable_cidr_space = 1 [json_name = "routable_cidr_space"];
+
+    string transit_gateway_id = 2 [json_name = "transit_gateway_id"];
+  }
+}
+
+// AwsFinspaceKxUser version is 0
+message AwsFinspaceKxUser {
+  string arn = 1;
+
+  string environment_id = 2 [json_name = "environment_id"];
+
+  string iam_role = 3 [json_name = "iam_role"];
+
+  string id = 4;
+
+  string name = 5;
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

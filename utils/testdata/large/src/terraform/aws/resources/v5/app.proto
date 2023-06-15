@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsAppCookieStickinessPolicy version is 0
+message AwsAppCookieStickinessPolicy {
+  string cookie_name = 1 [json_name = "cookie_name"];
+
+  string id = 2;
+
+  int64 lb_port = 3 [json_name = "lb_port"];
+
+  string load_balancer = 4 [json_name = "load_balancer"];
+
+  string name = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}

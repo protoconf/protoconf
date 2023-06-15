@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsIpRanges version is 0
+message AwsIpRanges {
+  repeated string cidr_blocks = 1 [json_name = "cidr_blocks"];
+
+  string create_date = 2 [json_name = "create_date"];
+
+  string id = 3;
+
+  repeated string ipv6_cidr_blocks = 4 [json_name = "ipv6_cidr_blocks"];
+
+  repeated string regions = 5;
+
+  repeated string services = 6;
+
+  int64 sync_token = 7 [json_name = "sync_token"];
+
+  string url = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+}

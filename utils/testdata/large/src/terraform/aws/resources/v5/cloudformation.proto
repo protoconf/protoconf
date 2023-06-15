@@ -1,0 +1,258 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsCloudformationStack version is 0
+message AwsCloudformationStack {
+  repeated string capabilities = 1;
+
+  bool disable_rollback = 2 [json_name = "disable_rollback"];
+
+  string iam_role_arn = 3 [json_name = "iam_role_arn"];
+
+  string id = 4;
+
+  string name = 5;
+
+  repeated string notification_arns = 6 [json_name = "notification_arns"];
+
+  string on_failure = 7 [json_name = "on_failure"];
+
+  map<string, string> outputs = 8;
+
+  map<string, string> parameters = 9;
+
+  string policy_body = 10 [json_name = "policy_body"];
+
+  string policy_url = 11 [json_name = "policy_url"];
+
+  map<string, string> tags = 12;
+
+  map<string, string> tags_all = 13 [json_name = "tags_all"];
+
+  string template_body = 14 [json_name = "template_body"];
+
+  string template_url = 15 [json_name = "template_url"];
+
+  int64 timeout_in_minutes = 16 [json_name = "timeout_in_minutes"];
+
+  repeated Timeouts timeouts = 17;
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsCloudformationStackSet version is 0
+message AwsCloudformationStackSet {
+  string administration_role_arn = 1 [json_name = "administration_role_arn"];
+
+  string arn = 2;
+
+  string call_as = 3 [json_name = "call_as"];
+
+  repeated string capabilities = 4;
+
+  string description = 5;
+
+  string execution_role_name = 6 [json_name = "execution_role_name"];
+
+  string id = 7;
+
+  string name = 8;
+
+  map<string, string> parameters = 9;
+
+  string permission_model = 10 [json_name = "permission_model"];
+
+  string stack_set_id = 11 [json_name = "stack_set_id"];
+
+  map<string, string> tags = 12;
+
+  map<string, string> tags_all = 13 [json_name = "tags_all"];
+
+  string template_body = 14 [json_name = "template_body"];
+
+  string template_url = 15 [json_name = "template_url"];
+
+  AutoDeployment auto_deployment = 16 [json_name = "auto_deployment"];
+
+  ManagedExecution managed_execution = 17 [json_name = "managed_execution"];
+
+  OperationPreferences operation_preferences = 18 [json_name = "operation_preferences"];
+
+  repeated Timeouts timeouts = 19;
+
+  map<string, string> for_each = 20 [json_name = "for_each"];
+
+  repeated string depends_on = 21 [json_name = "depends_on"];
+
+  int32 count = 22;
+
+  string provider = 23;
+
+  terraform.v1.Lifecycle lifecycle = 24;
+
+  message AutoDeployment {
+    bool enabled = 1;
+
+    bool retain_stacks_on_account_removal = 2 [json_name = "retain_stacks_on_account_removal"];
+  }
+
+  message ManagedExecution {
+    bool active = 1;
+  }
+
+  message OperationPreferences {
+    int64 failure_tolerance_count = 1 [json_name = "failure_tolerance_count"];
+
+    int64 failure_tolerance_percentage = 2 [json_name = "failure_tolerance_percentage"];
+
+    int64 max_concurrent_count = 3 [json_name = "max_concurrent_count"];
+
+    int64 max_concurrent_percentage = 4 [json_name = "max_concurrent_percentage"];
+
+    string region_concurrency_type = 5 [json_name = "region_concurrency_type"];
+
+    repeated string region_order = 6 [json_name = "region_order"];
+  }
+
+  message Timeouts {
+    string update = 1;
+  }
+}
+
+// AwsCloudformationStackSetInstance version is 0
+message AwsCloudformationStackSetInstance {
+  string account_id = 1 [json_name = "account_id"];
+
+  string call_as = 2 [json_name = "call_as"];
+
+  string id = 3;
+
+  string organizational_unit_id = 4 [json_name = "organizational_unit_id"];
+
+  map<string, string> parameter_overrides = 5 [json_name = "parameter_overrides"];
+
+  string region = 6;
+
+  bool retain_stack = 7 [json_name = "retain_stack"];
+
+  string stack_id = 8 [json_name = "stack_id"];
+
+  string stack_set_name = 9 [json_name = "stack_set_name"];
+
+  DeploymentTargets deployment_targets = 10 [json_name = "deployment_targets"];
+
+  OperationPreferences operation_preferences = 11 [json_name = "operation_preferences"];
+
+  repeated Timeouts timeouts = 12;
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message DeploymentTargets {
+    repeated string organizational_unit_ids = 1 [json_name = "organizational_unit_ids"];
+  }
+
+  message OperationPreferences {
+    int64 failure_tolerance_count = 1 [json_name = "failure_tolerance_count"];
+
+    int64 failure_tolerance_percentage = 2 [json_name = "failure_tolerance_percentage"];
+
+    int64 max_concurrent_count = 3 [json_name = "max_concurrent_count"];
+
+    int64 max_concurrent_percentage = 4 [json_name = "max_concurrent_percentage"];
+
+    string region_concurrency_type = 5 [json_name = "region_concurrency_type"];
+
+    repeated string region_order = 6 [json_name = "region_order"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsCloudformationType version is 0
+message AwsCloudformationType {
+  string arn = 1;
+
+  string default_version_id = 2 [json_name = "default_version_id"];
+
+  string deprecated_status = 3 [json_name = "deprecated_status"];
+
+  string description = 4;
+
+  string documentation_url = 5 [json_name = "documentation_url"];
+
+  string execution_role_arn = 6 [json_name = "execution_role_arn"];
+
+  string id = 7;
+
+  bool is_default_version = 8 [json_name = "is_default_version"];
+
+  string provisioning_type = 9 [json_name = "provisioning_type"];
+
+  string schema = 10;
+
+  string schema_handler_package = 11 [json_name = "schema_handler_package"];
+
+  string source_url = 12 [json_name = "source_url"];
+
+  string type = 13;
+
+  string type_arn = 14 [json_name = "type_arn"];
+
+  string type_name = 15 [json_name = "type_name"];
+
+  string version_id = 16 [json_name = "version_id"];
+
+  string visibility = 17;
+
+  LoggingConfig logging_config = 18 [json_name = "logging_config"];
+
+  map<string, string> for_each = 19 [json_name = "for_each"];
+
+  repeated string depends_on = 20 [json_name = "depends_on"];
+
+  int32 count = 21;
+
+  string provider = 22;
+
+  terraform.v1.Lifecycle lifecycle = 23;
+
+  message LoggingConfig {
+    string log_group_name = 1 [json_name = "log_group_name"];
+
+    string log_role_arn = 2 [json_name = "log_role_arn"];
+  }
+}

@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsCloud9EnvironmentEc2 version is 0
+message AwsCloud9EnvironmentEc2 {
+  string arn = 1;
+
+  int64 automatic_stop_time_minutes = 2 [json_name = "automatic_stop_time_minutes"];
+
+  string connection_type = 3 [json_name = "connection_type"];
+
+  string description = 4;
+
+  string id = 5;
+
+  string image_id = 6 [json_name = "image_id"];
+
+  string instance_type = 7 [json_name = "instance_type"];
+
+  string name = 8;
+
+  string owner_arn = 9 [json_name = "owner_arn"];
+
+  string subnet_id = 10 [json_name = "subnet_id"];
+
+  map<string, string> tags = 11;
+
+  map<string, string> tags_all = 12 [json_name = "tags_all"];
+
+  string type = 13;
+
+  map<string, string> for_each = 14 [json_name = "for_each"];
+
+  repeated string depends_on = 15 [json_name = "depends_on"];
+
+  int32 count = 16;
+
+  string provider = 17;
+
+  terraform.v1.Lifecycle lifecycle = 18;
+}
+
+// AwsCloud9EnvironmentMembership version is 0
+message AwsCloud9EnvironmentMembership {
+  string environment_id = 1 [json_name = "environment_id"];
+
+  string id = 2;
+
+  string permissions = 3;
+
+  string user_arn = 4 [json_name = "user_arn"];
+
+  string user_id = 5 [json_name = "user_id"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}

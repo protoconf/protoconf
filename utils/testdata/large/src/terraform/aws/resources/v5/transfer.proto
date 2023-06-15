@@ -1,0 +1,482 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsTransferAccess version is 0
+message AwsTransferAccess {
+  string external_id = 1 [json_name = "external_id"];
+
+  string home_directory = 2 [json_name = "home_directory"];
+
+  string home_directory_type = 3 [json_name = "home_directory_type"];
+
+  string id = 4;
+
+  string policy = 5;
+
+  string role = 6;
+
+  string server_id = 7 [json_name = "server_id"];
+
+  repeated HomeDirectoryMappings home_directory_mappings = 8 [json_name = "home_directory_mappings"];
+
+  PosixProfile posix_profile = 9 [json_name = "posix_profile"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message HomeDirectoryMappings {
+    string entry = 1;
+
+    string target = 2;
+  }
+
+  message PosixProfile {
+    int64 gid = 1;
+
+    repeated int64 secondary_gids = 2 [json_name = "secondary_gids"];
+
+    int64 uid = 3;
+  }
+}
+
+// AwsTransferServer version is 0
+message AwsTransferServer {
+  string arn = 1;
+
+  string certificate = 2;
+
+  string directory_id = 3 [json_name = "directory_id"];
+
+  string domain = 4;
+
+  string endpoint = 5;
+
+  string endpoint_type = 6 [json_name = "endpoint_type"];
+
+  bool force_destroy = 7 [json_name = "force_destroy"];
+
+  string function = 8;
+
+  string host_key = 9 [json_name = "host_key"];
+
+  string host_key_fingerprint = 10 [json_name = "host_key_fingerprint"];
+
+  string id = 11;
+
+  string identity_provider_type = 12 [json_name = "identity_provider_type"];
+
+  string invocation_role = 13 [json_name = "invocation_role"];
+
+  string logging_role = 14 [json_name = "logging_role"];
+
+  string post_authentication_login_banner = 15 [json_name = "post_authentication_login_banner"];
+
+  string pre_authentication_login_banner = 16 [json_name = "pre_authentication_login_banner"];
+
+  repeated string protocols = 17;
+
+  string security_policy_name = 18 [json_name = "security_policy_name"];
+
+  map<string, string> tags = 19;
+
+  map<string, string> tags_all = 20 [json_name = "tags_all"];
+
+  string url = 21;
+
+  EndpointDetails endpoint_details = 22 [json_name = "endpoint_details"];
+
+  ProtocolDetails protocol_details = 23 [json_name = "protocol_details"];
+
+  WorkflowDetails workflow_details = 24 [json_name = "workflow_details"];
+
+  map<string, string> for_each = 25 [json_name = "for_each"];
+
+  repeated string depends_on = 26 [json_name = "depends_on"];
+
+  int32 count = 27;
+
+  string provider = 28;
+
+  terraform.v1.Lifecycle lifecycle = 29;
+
+  message EndpointDetails {
+    repeated string address_allocation_ids = 1 [json_name = "address_allocation_ids"];
+
+    repeated string security_group_ids = 2 [json_name = "security_group_ids"];
+
+    repeated string subnet_ids = 3 [json_name = "subnet_ids"];
+
+    string vpc_endpoint_id = 4 [json_name = "vpc_endpoint_id"];
+
+    string vpc_id = 5 [json_name = "vpc_id"];
+  }
+
+  message ProtocolDetails {
+    repeated string as2_transports = 1 [json_name = "as2_transports"];
+
+    string passive_ip = 2 [json_name = "passive_ip"];
+
+    string set_stat_option = 3 [json_name = "set_stat_option"];
+
+    string tls_session_resumption_mode = 4 [json_name = "tls_session_resumption_mode"];
+  }
+
+  message WorkflowDetails {
+    OnPartialUpload on_partial_upload = 1 [json_name = "on_partial_upload"];
+
+    OnUpload on_upload = 2 [json_name = "on_upload"];
+
+    message OnPartialUpload {
+      string execution_role = 1 [json_name = "execution_role"];
+
+      string workflow_id = 2 [json_name = "workflow_id"];
+    }
+
+    message OnUpload {
+      string execution_role = 1 [json_name = "execution_role"];
+
+      string workflow_id = 2 [json_name = "workflow_id"];
+    }
+  }
+}
+
+// AwsTransferSshKey version is 0
+message AwsTransferSshKey {
+  string body = 1;
+
+  string id = 2;
+
+  string server_id = 3 [json_name = "server_id"];
+
+  string user_name = 4 [json_name = "user_name"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsTransferTag version is 0
+message AwsTransferTag {
+  string id = 1;
+
+  string key = 2;
+
+  string resource_arn = 3 [json_name = "resource_arn"];
+
+  string value = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsTransferUser version is 0
+message AwsTransferUser {
+  string arn = 1;
+
+  string home_directory = 2 [json_name = "home_directory"];
+
+  string home_directory_type = 3 [json_name = "home_directory_type"];
+
+  string id = 4;
+
+  string policy = 5;
+
+  string role = 6;
+
+  string server_id = 7 [json_name = "server_id"];
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  string user_name = 10 [json_name = "user_name"];
+
+  repeated HomeDirectoryMappings home_directory_mappings = 11 [json_name = "home_directory_mappings"];
+
+  PosixProfile posix_profile = 12 [json_name = "posix_profile"];
+
+  repeated Timeouts timeouts = 13;
+
+  map<string, string> for_each = 14 [json_name = "for_each"];
+
+  repeated string depends_on = 15 [json_name = "depends_on"];
+
+  int32 count = 16;
+
+  string provider = 17;
+
+  terraform.v1.Lifecycle lifecycle = 18;
+
+  message HomeDirectoryMappings {
+    string entry = 1;
+
+    string target = 2;
+  }
+
+  message PosixProfile {
+    int64 gid = 1;
+
+    repeated int64 secondary_gids = 2 [json_name = "secondary_gids"];
+
+    int64 uid = 3;
+  }
+
+  message Timeouts {
+    string delete = 1;
+  }
+}
+
+// AwsTransferWorkflow version is 0
+message AwsTransferWorkflow {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  map<string, string> tags = 4;
+
+  map<string, string> tags_all = 5 [json_name = "tags_all"];
+
+  repeated OnExceptionSteps on_exception_steps = 6 [json_name = "on_exception_steps"];
+
+  repeated Steps steps = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message OnExceptionSteps {
+    string type = 1;
+
+    CopyStepDetails copy_step_details = 2 [json_name = "copy_step_details"];
+
+    CustomStepDetails custom_step_details = 3 [json_name = "custom_step_details"];
+
+    DecryptStepDetails decrypt_step_details = 4 [json_name = "decrypt_step_details"];
+
+    DeleteStepDetails delete_step_details = 5 [json_name = "delete_step_details"];
+
+    TagStepDetails tag_step_details = 6 [json_name = "tag_step_details"];
+
+    message CopyStepDetails {
+      string name = 1;
+
+      string overwrite_existing = 2 [json_name = "overwrite_existing"];
+
+      string source_file_location = 3 [json_name = "source_file_location"];
+
+      DestinationFileLocation destination_file_location = 4 [json_name = "destination_file_location"];
+
+      message DestinationFileLocation {
+        EfsFileLocation efs_file_location = 1 [json_name = "efs_file_location"];
+
+        S3FileLocation s3_file_location = 2 [json_name = "s3_file_location"];
+
+        message EfsFileLocation {
+          string file_system_id = 1 [json_name = "file_system_id"];
+
+          string path = 2;
+        }
+
+        message S3FileLocation {
+          string bucket = 1;
+
+          string key = 2;
+        }
+      }
+    }
+
+    message CustomStepDetails {
+      string name = 1;
+
+      string source_file_location = 2 [json_name = "source_file_location"];
+
+      string target = 3;
+
+      int64 timeout_seconds = 4 [json_name = "timeout_seconds"];
+    }
+
+    message DecryptStepDetails {
+      string name = 1;
+
+      string overwrite_existing = 2 [json_name = "overwrite_existing"];
+
+      string source_file_location = 3 [json_name = "source_file_location"];
+
+      string type = 4;
+
+      DestinationFileLocation destination_file_location = 5 [json_name = "destination_file_location"];
+
+      message DestinationFileLocation {
+        EfsFileLocation efs_file_location = 1 [json_name = "efs_file_location"];
+
+        S3FileLocation s3_file_location = 2 [json_name = "s3_file_location"];
+
+        message EfsFileLocation {
+          string file_system_id = 1 [json_name = "file_system_id"];
+
+          string path = 2;
+        }
+
+        message S3FileLocation {
+          string bucket = 1;
+
+          string key = 2;
+        }
+      }
+    }
+
+    message DeleteStepDetails {
+      string name = 1;
+
+      string source_file_location = 2 [json_name = "source_file_location"];
+    }
+
+    message TagStepDetails {
+      string name = 1;
+
+      string source_file_location = 2 [json_name = "source_file_location"];
+
+      repeated Tags tags = 3;
+
+      message Tags {
+        string key = 1;
+
+        string value = 2;
+      }
+    }
+  }
+
+  message Steps {
+    string type = 1;
+
+    CopyStepDetails copy_step_details = 2 [json_name = "copy_step_details"];
+
+    CustomStepDetails custom_step_details = 3 [json_name = "custom_step_details"];
+
+    DecryptStepDetails decrypt_step_details = 4 [json_name = "decrypt_step_details"];
+
+    DeleteStepDetails delete_step_details = 5 [json_name = "delete_step_details"];
+
+    TagStepDetails tag_step_details = 6 [json_name = "tag_step_details"];
+
+    message CopyStepDetails {
+      string name = 1;
+
+      string overwrite_existing = 2 [json_name = "overwrite_existing"];
+
+      string source_file_location = 3 [json_name = "source_file_location"];
+
+      DestinationFileLocation destination_file_location = 4 [json_name = "destination_file_location"];
+
+      message DestinationFileLocation {
+        EfsFileLocation efs_file_location = 1 [json_name = "efs_file_location"];
+
+        S3FileLocation s3_file_location = 2 [json_name = "s3_file_location"];
+
+        message EfsFileLocation {
+          string file_system_id = 1 [json_name = "file_system_id"];
+
+          string path = 2;
+        }
+
+        message S3FileLocation {
+          string bucket = 1;
+
+          string key = 2;
+        }
+      }
+    }
+
+    message CustomStepDetails {
+      string name = 1;
+
+      string source_file_location = 2 [json_name = "source_file_location"];
+
+      string target = 3;
+
+      int64 timeout_seconds = 4 [json_name = "timeout_seconds"];
+    }
+
+    message DecryptStepDetails {
+      string name = 1;
+
+      string overwrite_existing = 2 [json_name = "overwrite_existing"];
+
+      string source_file_location = 3 [json_name = "source_file_location"];
+
+      string type = 4;
+
+      DestinationFileLocation destination_file_location = 5 [json_name = "destination_file_location"];
+
+      message DestinationFileLocation {
+        EfsFileLocation efs_file_location = 1 [json_name = "efs_file_location"];
+
+        S3FileLocation s3_file_location = 2 [json_name = "s3_file_location"];
+
+        message EfsFileLocation {
+          string file_system_id = 1 [json_name = "file_system_id"];
+
+          string path = 2;
+        }
+
+        message S3FileLocation {
+          string bucket = 1;
+
+          string key = 2;
+        }
+      }
+    }
+
+    message DeleteStepDetails {
+      string name = 1;
+
+      string source_file_location = 2 [json_name = "source_file_location"];
+    }
+
+    message TagStepDetails {
+      string name = 1;
+
+      string source_file_location = 2 [json_name = "source_file_location"];
+
+      repeated Tags tags = 3;
+
+      message Tags {
+        string key = 1;
+
+        string value = 2;
+      }
+    }
+  }
+}

@@ -1,0 +1,243 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsInstance version is 0
+message AwsInstance {
+  string ami = 1;
+
+  string arn = 2;
+
+  bool associate_public_ip_address = 3 [json_name = "associate_public_ip_address"];
+
+  string availability_zone = 4 [json_name = "availability_zone"];
+
+  repeated CreditSpecification credit_specification = 5 [json_name = "credit_specification"];
+
+  bool disable_api_stop = 6 [json_name = "disable_api_stop"];
+
+  bool disable_api_termination = 7 [json_name = "disable_api_termination"];
+
+  repeated EbsBlockDevice ebs_block_device = 8 [json_name = "ebs_block_device"];
+
+  bool ebs_optimized = 9 [json_name = "ebs_optimized"];
+
+  repeated EnclaveOptions enclave_options = 10 [json_name = "enclave_options"];
+
+  repeated EphemeralBlockDevice ephemeral_block_device = 11 [json_name = "ephemeral_block_device"];
+
+  bool get_password_data = 12 [json_name = "get_password_data"];
+
+  bool get_user_data = 13 [json_name = "get_user_data"];
+
+  string host_id = 14 [json_name = "host_id"];
+
+  string host_resource_group_arn = 15 [json_name = "host_resource_group_arn"];
+
+  string iam_instance_profile = 16 [json_name = "iam_instance_profile"];
+
+  string id = 17;
+
+  string instance_id = 18 [json_name = "instance_id"];
+
+  string instance_state = 19 [json_name = "instance_state"];
+
+  map<string, string> instance_tags = 20 [json_name = "instance_tags"];
+
+  string instance_type = 21 [json_name = "instance_type"];
+
+  repeated string ipv6_addresses = 22 [json_name = "ipv6_addresses"];
+
+  string key_name = 23 [json_name = "key_name"];
+
+  repeated MaintenanceOptions maintenance_options = 24 [json_name = "maintenance_options"];
+
+  repeated MetadataOptions metadata_options = 25 [json_name = "metadata_options"];
+
+  bool monitoring = 26;
+
+  string network_interface_id = 27 [json_name = "network_interface_id"];
+
+  string outpost_arn = 28 [json_name = "outpost_arn"];
+
+  string password_data = 29 [json_name = "password_data"];
+
+  string placement_group = 30 [json_name = "placement_group"];
+
+  int64 placement_partition_number = 31 [json_name = "placement_partition_number"];
+
+  string private_dns = 32 [json_name = "private_dns"];
+
+  repeated PrivateDnsNameOptions private_dns_name_options = 33 [json_name = "private_dns_name_options"];
+
+  string private_ip = 34 [json_name = "private_ip"];
+
+  string public_dns = 35 [json_name = "public_dns"];
+
+  string public_ip = 36 [json_name = "public_ip"];
+
+  repeated RootBlockDevice root_block_device = 37 [json_name = "root_block_device"];
+
+  repeated string secondary_private_ips = 38 [json_name = "secondary_private_ips"];
+
+  repeated string security_groups = 39 [json_name = "security_groups"];
+
+  bool source_dest_check = 40 [json_name = "source_dest_check"];
+
+  string subnet_id = 41 [json_name = "subnet_id"];
+
+  map<string, string> tags = 42;
+
+  string tenancy = 43;
+
+  string user_data = 44 [json_name = "user_data"];
+
+  string user_data_base64 = 45 [json_name = "user_data_base64"];
+
+  repeated string vpc_security_group_ids = 46 [json_name = "vpc_security_group_ids"];
+
+  repeated Filter filter = 47;
+
+  repeated Timeouts timeouts = 48;
+
+  map<string, string> for_each = 49 [json_name = "for_each"];
+
+  repeated string depends_on = 50 [json_name = "depends_on"];
+
+  int32 count = 51;
+
+  string provider = 52;
+
+  terraform.v1.Lifecycle lifecycle = 53;
+
+  message CreditSpecification {
+    // cpu_credits: string
+    string cpu_credits = 1 [json_name = "cpu_credits"];
+  }
+
+  message EbsBlockDevice {
+    // delete_on_termination: bool
+    bool delete_on_termination = 1 [json_name = "delete_on_termination"];
+
+    // device_name: string
+    string device_name = 2 [json_name = "device_name"];
+
+    // encrypted: bool
+    bool encrypted = 3;
+
+    // iops: number
+    int64 iops = 4;
+
+    // kms_key_id: string
+    string kms_key_id = 5 [json_name = "kms_key_id"];
+
+    // snapshot_id: string
+    string snapshot_id = 6 [json_name = "snapshot_id"];
+
+    // tags: map of string
+    map<string, string> tags = 7;
+
+    // throughput: number
+    int64 throughput = 8;
+
+    // volume_id: string
+    string volume_id = 9 [json_name = "volume_id"];
+
+    // volume_size: number
+    int64 volume_size = 10 [json_name = "volume_size"];
+
+    // volume_type: string
+    string volume_type = 11 [json_name = "volume_type"];
+  }
+
+  message EnclaveOptions {
+    // enabled: bool
+    bool enabled = 1;
+  }
+
+  message EphemeralBlockDevice {
+    // device_name: string
+    string device_name = 1 [json_name = "device_name"];
+
+    // no_device: bool
+    bool no_device = 2 [json_name = "no_device"];
+
+    // virtual_name: string
+    string virtual_name = 3 [json_name = "virtual_name"];
+  }
+
+  message MaintenanceOptions {
+    // auto_recovery: string
+    string auto_recovery = 1 [json_name = "auto_recovery"];
+  }
+
+  message MetadataOptions {
+    // http_endpoint: string
+    string http_endpoint = 1 [json_name = "http_endpoint"];
+
+    // http_put_response_hop_limit: number
+    int64 http_put_response_hop_limit = 2 [json_name = "http_put_response_hop_limit"];
+
+    // http_tokens: string
+    string http_tokens = 3 [json_name = "http_tokens"];
+
+    // instance_metadata_tags: string
+    string instance_metadata_tags = 4 [json_name = "instance_metadata_tags"];
+  }
+
+  message PrivateDnsNameOptions {
+    // enable_resource_name_dns_a_record: bool
+    bool enable_resource_name_dns_a_record = 1 [json_name = "enable_resource_name_dns_a_record"];
+
+    // enable_resource_name_dns_aaaa_record: bool
+    bool enable_resource_name_dns_aaaa_record = 2 [json_name = "enable_resource_name_dns_aaaa_record"];
+
+    // hostname_type: string
+    string hostname_type = 3 [json_name = "hostname_type"];
+  }
+
+  message RootBlockDevice {
+    // delete_on_termination: bool
+    bool delete_on_termination = 1 [json_name = "delete_on_termination"];
+
+    // device_name: string
+    string device_name = 2 [json_name = "device_name"];
+
+    // encrypted: bool
+    bool encrypted = 3;
+
+    // iops: number
+    int64 iops = 4;
+
+    // kms_key_id: string
+    string kms_key_id = 5 [json_name = "kms_key_id"];
+
+    // tags: map of string
+    map<string, string> tags = 6;
+
+    // throughput: number
+    int64 throughput = 7;
+
+    // volume_id: string
+    string volume_id = 8 [json_name = "volume_id"];
+
+    // volume_size: number
+    int64 volume_size = 9 [json_name = "volume_size"];
+
+    // volume_type: string
+    string volume_type = 10 [json_name = "volume_type"];
+  }
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+
+  message Timeouts {
+    string read = 1;
+  }
+}

@@ -1,0 +1,185 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.datasources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleServiceAccount version is 0
+message GoogleServiceAccount {
+  string account_id = 1 [json_name = "account_id"];
+
+  string display_name = 2 [json_name = "display_name"];
+
+  string email = 3;
+
+  string id = 4;
+
+  string member = 5;
+
+  string name = 6;
+
+  string project = 7;
+
+  string unique_id = 8 [json_name = "unique_id"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+}
+
+// GoogleServiceAccountAccessToken version is 0
+message GoogleServiceAccountAccessToken {
+  string access_token = 1 [json_name = "access_token"];
+
+  repeated string delegates = 2;
+
+  string id = 3;
+
+  string lifetime = 4;
+
+  repeated string scopes = 5;
+
+  string target_service_account = 6 [json_name = "target_service_account"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleServiceAccountIamPolicy version is 0
+message GoogleServiceAccountIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string policy_data = 3 [json_name = "policy_data"];
+
+  string service_account_id = 4 [json_name = "service_account_id"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// GoogleServiceAccountIdToken version is 0
+message GoogleServiceAccountIdToken {
+  repeated string delegates = 1;
+
+  string id = 2;
+
+  string id_token = 3 [json_name = "id_token"];
+
+  bool include_email = 4 [json_name = "include_email"];
+
+  string target_audience = 5 [json_name = "target_audience"];
+
+  string target_service_account = 6 [json_name = "target_service_account"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleServiceAccountJwt version is 0
+message GoogleServiceAccountJwt {
+  repeated string delegates = 1;
+
+  // Number of seconds until the JWT expires. If set and non-zero an `exp` claim will be added to the payload derived from the current timestamp plus expires_in seconds.
+  int64 expires_in = 2 [json_name = "expires_in"];
+
+  string id = 3;
+
+  string jwt = 4;
+
+  // A JSON-encoded JWT claims set that will be included in the signed JWT.
+  string payload = 5;
+
+  string target_service_account = 6 [json_name = "target_service_account"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleServiceAccountKey version is 0
+message GoogleServiceAccountKey {
+  string id = 1;
+
+  string key_algorithm = 2 [json_name = "key_algorithm"];
+
+  string name = 3;
+
+  string project = 4;
+
+  string public_key = 5 [json_name = "public_key"];
+
+  string public_key_type = 6 [json_name = "public_key_type"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleServiceNetworkingPeeredDnsDomain version is 0
+message GoogleServiceNetworkingPeeredDnsDomain {
+  string dns_suffix = 1 [json_name = "dns_suffix"];
+
+  string id = 2;
+
+  string name = 3;
+
+  string network = 4;
+
+  string parent = 5;
+
+  string project = 6;
+
+  string service = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}

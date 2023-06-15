@@ -1,0 +1,339 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsPinpointAdmChannel version is 0
+message AwsPinpointAdmChannel {
+  string application_id = 1 [json_name = "application_id"];
+
+  string client_id = 2 [json_name = "client_id"];
+
+  string client_secret = 3 [json_name = "client_secret"];
+
+  bool enabled = 4;
+
+  string id = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsPinpointApnsChannel version is 0
+message AwsPinpointApnsChannel {
+  string application_id = 1 [json_name = "application_id"];
+
+  string bundle_id = 2 [json_name = "bundle_id"];
+
+  string certificate = 3;
+
+  string default_authentication_method = 4 [json_name = "default_authentication_method"];
+
+  bool enabled = 5;
+
+  string id = 6;
+
+  string private_key = 7 [json_name = "private_key"];
+
+  string team_id = 8 [json_name = "team_id"];
+
+  string token_key = 9 [json_name = "token_key"];
+
+  string token_key_id = 10 [json_name = "token_key_id"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+}
+
+// AwsPinpointApnsSandboxChannel version is 0
+message AwsPinpointApnsSandboxChannel {
+  string application_id = 1 [json_name = "application_id"];
+
+  string bundle_id = 2 [json_name = "bundle_id"];
+
+  string certificate = 3;
+
+  string default_authentication_method = 4 [json_name = "default_authentication_method"];
+
+  bool enabled = 5;
+
+  string id = 6;
+
+  string private_key = 7 [json_name = "private_key"];
+
+  string team_id = 8 [json_name = "team_id"];
+
+  string token_key = 9 [json_name = "token_key"];
+
+  string token_key_id = 10 [json_name = "token_key_id"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+}
+
+// AwsPinpointApnsVoipChannel version is 0
+message AwsPinpointApnsVoipChannel {
+  string application_id = 1 [json_name = "application_id"];
+
+  string bundle_id = 2 [json_name = "bundle_id"];
+
+  string certificate = 3;
+
+  string default_authentication_method = 4 [json_name = "default_authentication_method"];
+
+  bool enabled = 5;
+
+  string id = 6;
+
+  string private_key = 7 [json_name = "private_key"];
+
+  string team_id = 8 [json_name = "team_id"];
+
+  string token_key = 9 [json_name = "token_key"];
+
+  string token_key_id = 10 [json_name = "token_key_id"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+}
+
+// AwsPinpointApnsVoipSandboxChannel version is 0
+message AwsPinpointApnsVoipSandboxChannel {
+  string application_id = 1 [json_name = "application_id"];
+
+  string bundle_id = 2 [json_name = "bundle_id"];
+
+  string certificate = 3;
+
+  string default_authentication_method = 4 [json_name = "default_authentication_method"];
+
+  bool enabled = 5;
+
+  string id = 6;
+
+  string private_key = 7 [json_name = "private_key"];
+
+  string team_id = 8 [json_name = "team_id"];
+
+  string token_key = 9 [json_name = "token_key"];
+
+  string token_key_id = 10 [json_name = "token_key_id"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+}
+
+// AwsPinpointApp version is 0
+message AwsPinpointApp {
+  string application_id = 1 [json_name = "application_id"];
+
+  string arn = 2;
+
+  string id = 3;
+
+  string name = 4;
+
+  string name_prefix = 5 [json_name = "name_prefix"];
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  CampaignHook campaign_hook = 8 [json_name = "campaign_hook"];
+
+  Limits limits = 9;
+
+  QuietTime quiet_time = 10 [json_name = "quiet_time"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message CampaignHook {
+    string lambda_function_name = 1 [json_name = "lambda_function_name"];
+
+    string mode = 2;
+
+    string web_url = 3 [json_name = "web_url"];
+  }
+
+  message Limits {
+    int64 daily = 1;
+
+    int64 maximum_duration = 2 [json_name = "maximum_duration"];
+
+    int64 messages_per_second = 3 [json_name = "messages_per_second"];
+
+    int64 total = 4;
+  }
+
+  message QuietTime {
+    string end = 1;
+
+    string start = 2;
+  }
+}
+
+// AwsPinpointBaiduChannel version is 0
+message AwsPinpointBaiduChannel {
+  string api_key = 1 [json_name = "api_key"];
+
+  string application_id = 2 [json_name = "application_id"];
+
+  bool enabled = 3;
+
+  string id = 4;
+
+  string secret_key = 5 [json_name = "secret_key"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsPinpointEmailChannel version is 0
+message AwsPinpointEmailChannel {
+  string application_id = 1 [json_name = "application_id"];
+
+  string configuration_set = 2 [json_name = "configuration_set"];
+
+  bool enabled = 3;
+
+  string from_address = 4 [json_name = "from_address"];
+
+  string id = 5;
+
+  string identity = 6;
+
+  int64 messages_per_second = 7 [json_name = "messages_per_second"];
+
+  string role_arn = 8 [json_name = "role_arn"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+}
+
+// AwsPinpointEventStream version is 0
+message AwsPinpointEventStream {
+  string application_id = 1 [json_name = "application_id"];
+
+  string destination_stream_arn = 2 [json_name = "destination_stream_arn"];
+
+  string id = 3;
+
+  string role_arn = 4 [json_name = "role_arn"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsPinpointGcmChannel version is 0
+message AwsPinpointGcmChannel {
+  string api_key = 1 [json_name = "api_key"];
+
+  string application_id = 2 [json_name = "application_id"];
+
+  bool enabled = 3;
+
+  string id = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsPinpointSmsChannel version is 0
+message AwsPinpointSmsChannel {
+  string application_id = 1 [json_name = "application_id"];
+
+  bool enabled = 2;
+
+  string id = 3;
+
+  int64 promotional_messages_per_second = 4 [json_name = "promotional_messages_per_second"];
+
+  string sender_id = 5 [json_name = "sender_id"];
+
+  string short_code = 6 [json_name = "short_code"];
+
+  int64 transactional_messages_per_second = 7 [json_name = "transactional_messages_per_second"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}

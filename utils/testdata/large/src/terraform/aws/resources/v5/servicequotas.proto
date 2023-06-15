@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsServicequotasServiceQuota version is 0
+message AwsServicequotasServiceQuota {
+  bool adjustable = 1;
+
+  string arn = 2;
+
+  int64 default_value = 3 [json_name = "default_value"];
+
+  string id = 4;
+
+  string quota_code = 5 [json_name = "quota_code"];
+
+  string quota_name = 6 [json_name = "quota_name"];
+
+  string request_id = 7 [json_name = "request_id"];
+
+  string request_status = 8 [json_name = "request_status"];
+
+  string service_code = 9 [json_name = "service_code"];
+
+  string service_name = 10 [json_name = "service_name"];
+
+  repeated UsageMetric usage_metric = 11 [json_name = "usage_metric"];
+
+  int64 value = 12;
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message UsageMetric {
+    // metric_dimensions: list of object
+    repeated MetricDimensions metric_dimensions = 1 [json_name = "metric_dimensions"];
+
+    // metric_name: string
+    string metric_name = 2 [json_name = "metric_name"];
+
+    // metric_namespace: string
+    string metric_namespace = 3 [json_name = "metric_namespace"];
+
+    // metric_statistic_recommendation: string
+    string metric_statistic_recommendation = 4 [json_name = "metric_statistic_recommendation"];
+
+    message MetricDimensions {
+      // class: string
+      string class = 1;
+
+      // resource: string
+      string resource = 2;
+
+      // service: string
+      string service = 3;
+
+      // type: string
+      string type = 4;
+    }
+  }
+}

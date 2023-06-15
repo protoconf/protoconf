@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.datasources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleDatastreamStaticIps version is 0
+message GoogleDatastreamStaticIps {
+  string id = 1;
+
+  string location = 2;
+
+  string project = 3;
+
+  repeated string static_ips = 4 [json_name = "static_ips"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}

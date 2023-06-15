@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsAcmCertificate version is 0
+message AwsAcmCertificate {
+  string arn = 1;
+
+  string certificate = 2;
+
+  string certificate_chain = 3 [json_name = "certificate_chain"];
+
+  string domain = 4;
+
+  string id = 5;
+
+  repeated string key_types = 6 [json_name = "key_types"];
+
+  bool most_recent = 7 [json_name = "most_recent"];
+
+  string status = 8;
+
+  repeated string statuses = 9;
+
+  map<string, string> tags = 10;
+
+  repeated string types = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+}

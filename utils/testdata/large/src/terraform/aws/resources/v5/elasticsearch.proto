@@ -1,0 +1,285 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsElasticsearchDomain version is 0
+message AwsElasticsearchDomain {
+  string access_policies = 1 [json_name = "access_policies"];
+
+  map<string, string> advanced_options = 2 [json_name = "advanced_options"];
+
+  string arn = 3;
+
+  string domain_id = 4 [json_name = "domain_id"];
+
+  string domain_name = 5 [json_name = "domain_name"];
+
+  string elasticsearch_version = 6 [json_name = "elasticsearch_version"];
+
+  string endpoint = 7;
+
+  string id = 8;
+
+  string kibana_endpoint = 9 [json_name = "kibana_endpoint"];
+
+  map<string, string> tags = 10;
+
+  map<string, string> tags_all = 11 [json_name = "tags_all"];
+
+  AdvancedSecurityOptions advanced_security_options = 12 [json_name = "advanced_security_options"];
+
+  AutoTuneOptions auto_tune_options = 13 [json_name = "auto_tune_options"];
+
+  ClusterConfig cluster_config = 14 [json_name = "cluster_config"];
+
+  CognitoOptions cognito_options = 15 [json_name = "cognito_options"];
+
+  DomainEndpointOptions domain_endpoint_options = 16 [json_name = "domain_endpoint_options"];
+
+  EbsOptions ebs_options = 17 [json_name = "ebs_options"];
+
+  EncryptAtRest encrypt_at_rest = 18 [json_name = "encrypt_at_rest"];
+
+  repeated LogPublishingOptions log_publishing_options = 19 [json_name = "log_publishing_options"];
+
+  NodeToNodeEncryption node_to_node_encryption = 20 [json_name = "node_to_node_encryption"];
+
+  SnapshotOptions snapshot_options = 21 [json_name = "snapshot_options"];
+
+  repeated Timeouts timeouts = 22;
+
+  VpcOptions vpc_options = 23 [json_name = "vpc_options"];
+
+  map<string, string> for_each = 24 [json_name = "for_each"];
+
+  repeated string depends_on = 25 [json_name = "depends_on"];
+
+  int32 count = 26;
+
+  string provider = 27;
+
+  terraform.v1.Lifecycle lifecycle = 28;
+
+  message AdvancedSecurityOptions {
+    bool enabled = 1;
+
+    bool internal_user_database_enabled = 2 [json_name = "internal_user_database_enabled"];
+
+    MasterUserOptions master_user_options = 3 [json_name = "master_user_options"];
+
+    message MasterUserOptions {
+      string master_user_arn = 1 [json_name = "master_user_arn"];
+
+      string master_user_name = 2 [json_name = "master_user_name"];
+
+      string master_user_password = 3 [json_name = "master_user_password"];
+    }
+  }
+
+  message AutoTuneOptions {
+    string desired_state = 1 [json_name = "desired_state"];
+
+    string rollback_on_disable = 2 [json_name = "rollback_on_disable"];
+
+    repeated MaintenanceSchedule maintenance_schedule = 3 [json_name = "maintenance_schedule"];
+
+    message MaintenanceSchedule {
+      string cron_expression_for_recurrence = 1 [json_name = "cron_expression_for_recurrence"];
+
+      string start_at = 2 [json_name = "start_at"];
+
+      Duration duration = 3;
+
+      message Duration {
+        string unit = 1;
+
+        int64 value = 2;
+      }
+    }
+  }
+
+  message ClusterConfig {
+    int64 dedicated_master_count = 1 [json_name = "dedicated_master_count"];
+
+    bool dedicated_master_enabled = 2 [json_name = "dedicated_master_enabled"];
+
+    string dedicated_master_type = 3 [json_name = "dedicated_master_type"];
+
+    int64 instance_count = 4 [json_name = "instance_count"];
+
+    string instance_type = 5 [json_name = "instance_type"];
+
+    int64 warm_count = 6 [json_name = "warm_count"];
+
+    bool warm_enabled = 7 [json_name = "warm_enabled"];
+
+    string warm_type = 8 [json_name = "warm_type"];
+
+    bool zone_awareness_enabled = 9 [json_name = "zone_awareness_enabled"];
+
+    ColdStorageOptions cold_storage_options = 10 [json_name = "cold_storage_options"];
+
+    ZoneAwarenessConfig zone_awareness_config = 11 [json_name = "zone_awareness_config"];
+
+    message ColdStorageOptions {
+      bool enabled = 1;
+    }
+
+    message ZoneAwarenessConfig {
+      int64 availability_zone_count = 1 [json_name = "availability_zone_count"];
+    }
+  }
+
+  message CognitoOptions {
+    bool enabled = 1;
+
+    string identity_pool_id = 2 [json_name = "identity_pool_id"];
+
+    string role_arn = 3 [json_name = "role_arn"];
+
+    string user_pool_id = 4 [json_name = "user_pool_id"];
+  }
+
+  message DomainEndpointOptions {
+    string custom_endpoint = 1 [json_name = "custom_endpoint"];
+
+    string custom_endpoint_certificate_arn = 2 [json_name = "custom_endpoint_certificate_arn"];
+
+    bool custom_endpoint_enabled = 3 [json_name = "custom_endpoint_enabled"];
+
+    bool enforce_https = 4 [json_name = "enforce_https"];
+
+    string tls_security_policy = 5 [json_name = "tls_security_policy"];
+  }
+
+  message EbsOptions {
+    bool ebs_enabled = 1 [json_name = "ebs_enabled"];
+
+    int64 iops = 2;
+
+    int64 throughput = 3;
+
+    int64 volume_size = 4 [json_name = "volume_size"];
+
+    string volume_type = 5 [json_name = "volume_type"];
+  }
+
+  message EncryptAtRest {
+    bool enabled = 1;
+
+    string kms_key_id = 2 [json_name = "kms_key_id"];
+  }
+
+  message LogPublishingOptions {
+    string cloudwatch_log_group_arn = 1 [json_name = "cloudwatch_log_group_arn"];
+
+    bool enabled = 2;
+
+    string log_type = 3 [json_name = "log_type"];
+  }
+
+  message NodeToNodeEncryption {
+    bool enabled = 1;
+  }
+
+  message SnapshotOptions {
+    int64 automated_snapshot_start_hour = 1 [json_name = "automated_snapshot_start_hour"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+
+  message VpcOptions {
+    repeated string availability_zones = 1 [json_name = "availability_zones"];
+
+    repeated string security_group_ids = 2 [json_name = "security_group_ids"];
+
+    repeated string subnet_ids = 3 [json_name = "subnet_ids"];
+
+    string vpc_id = 4 [json_name = "vpc_id"];
+  }
+}
+
+// AwsElasticsearchDomainPolicy version is 0
+message AwsElasticsearchDomainPolicy {
+  string access_policies = 1 [json_name = "access_policies"];
+
+  string domain_name = 2 [json_name = "domain_name"];
+
+  string id = 3;
+
+  repeated Timeouts timeouts = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message Timeouts {
+    string delete = 1;
+
+    string update = 2;
+  }
+}
+
+// AwsElasticsearchDomainSamlOptions version is 0
+message AwsElasticsearchDomainSamlOptions {
+  string domain_name = 1 [json_name = "domain_name"];
+
+  string id = 2;
+
+  SamlOptions saml_options = 3 [json_name = "saml_options"];
+
+  repeated Timeouts timeouts = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message SamlOptions {
+    bool enabled = 1;
+
+    string master_backend_role = 2 [json_name = "master_backend_role"];
+
+    string master_user_name = 3 [json_name = "master_user_name"];
+
+    string roles_key = 4 [json_name = "roles_key"];
+
+    int64 session_timeout_minutes = 5 [json_name = "session_timeout_minutes"];
+
+    string subject_key = 6 [json_name = "subject_key"];
+
+    Idp idp = 7;
+
+    message Idp {
+      string entity_id = 1 [json_name = "entity_id"];
+
+      string metadata_content = 2 [json_name = "metadata_content"];
+    }
+  }
+
+  message Timeouts {
+    string delete = 1;
+
+    string update = 2;
+  }
+}

@@ -1,0 +1,84 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsAccountAlternateContact version is 0
+message AwsAccountAlternateContact {
+  string account_id = 1 [json_name = "account_id"];
+
+  string alternate_contact_type = 2 [json_name = "alternate_contact_type"];
+
+  string email_address = 3 [json_name = "email_address"];
+
+  string id = 4;
+
+  string name = 5;
+
+  string phone_number = 6 [json_name = "phone_number"];
+
+  string title = 7;
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsAccountPrimaryContact version is 0
+message AwsAccountPrimaryContact {
+  string account_id = 1 [json_name = "account_id"];
+
+  string address_line_1 = 2 [json_name = "address_line_1"];
+
+  string address_line_2 = 3 [json_name = "address_line_2"];
+
+  string address_line_3 = 4 [json_name = "address_line_3"];
+
+  string city = 5;
+
+  string company_name = 6 [json_name = "company_name"];
+
+  string country_code = 7 [json_name = "country_code"];
+
+  string district_or_county = 8 [json_name = "district_or_county"];
+
+  string full_name = 9 [json_name = "full_name"];
+
+  string id = 10;
+
+  string phone_number = 11 [json_name = "phone_number"];
+
+  string postal_code = 12 [json_name = "postal_code"];
+
+  string state_or_region = 13 [json_name = "state_or_region"];
+
+  string website_url = 14 [json_name = "website_url"];
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+}

@@ -1,0 +1,466 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleKmsCryptoKey version is 1
+message GoogleKmsCryptoKey {
+  // The period of time that versions of this key spend in the DESTROY_SCHEDULED state before transitioning to DESTROYED.
+  // If not specified at creation time, the default duration is 24 hours.
+  string destroy_scheduled_duration = 1 [json_name = "destroy_scheduled_duration"];
+
+  string id = 2;
+
+  // Whether this key may contain imported versions only.
+  bool import_only = 3 [json_name = "import_only"];
+
+  // The KeyRing that this key belongs to.
+  // Format: ''projects/{{project}}/locations/{{location}}/keyRings/{{keyRing}}''.
+  string key_ring = 4 [json_name = "key_ring"];
+
+  // Labels with user-defined metadata to apply to this resource.
+  map<string, string> labels = 5;
+
+  // The resource name for the CryptoKey.
+  string name = 6;
+
+  // The immutable purpose of this CryptoKey. See the
+  // [purpose reference](https://cloud.google.com/kms/docs/reference/rest/v1/projects.locations.keyRings.cryptoKeys#CryptoKeyPurpose)
+  // for possible inputs.
+  // Default value is "ENCRYPT_DECRYPT".
+  string purpose = 7;
+
+  // Every time this period passes, generate a new CryptoKeyVersion and set it as the primary.
+  // The first rotation will take place after the specified period. The rotation period has
+  // the format of a decimal number with up to 9 fractional digits, followed by the
+  // letter 's' (seconds). It must be greater than a day (ie, 86400).
+  string rotation_period = 8 [json_name = "rotation_period"];
+
+  // If set to true, the request will create a CryptoKey without any CryptoKeyVersions.
+  // You must use the 'google_kms_key_ring_import_job' resource to import the CryptoKeyVersion.
+  bool skip_initial_version_creation = 9 [json_name = "skip_initial_version_creation"];
+
+  repeated Timeouts timeouts = 10;
+
+  VersionTemplate version_template = 11 [json_name = "version_template"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+
+  message VersionTemplate {
+    // The algorithm to use when creating a version based on this template.
+    // See the [algorithm reference](https://cloud.google.com/kms/docs/reference/rest/v1/CryptoKeyVersionAlgorithm) for possible inputs.
+    string algorithm = 1;
+
+    // The protection level to use when creating a version based on this template. Possible values include "SOFTWARE", "HSM", "EXTERNAL", "EXTERNAL_VPC". Defaults to "SOFTWARE".
+    string protection_level = 2 [json_name = "protection_level"];
+  }
+}
+
+// GoogleKmsCryptoKeyIamBinding version is 0
+message GoogleKmsCryptoKeyIamBinding {
+  string crypto_key_id = 1 [json_name = "crypto_key_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  repeated string members = 4;
+
+  string role = 5;
+
+  Condition condition = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleKmsCryptoKeyIamMember version is 0
+message GoogleKmsCryptoKeyIamMember {
+  string crypto_key_id = 1 [json_name = "crypto_key_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string member = 4;
+
+  string role = 5;
+
+  Condition condition = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleKmsCryptoKeyIamPolicy version is 0
+message GoogleKmsCryptoKeyIamPolicy {
+  string crypto_key_id = 1 [json_name = "crypto_key_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// GoogleKmsCryptoKeyVersion version is 0
+message GoogleKmsCryptoKeyVersion {
+  // The CryptoKeyVersionAlgorithm that this CryptoKeyVersion supports.
+  string algorithm = 1;
+
+  // Statement that was generated and signed by the HSM at key creation time. Use this statement to verify attributes of the key as stored on the HSM, independently of Google.
+  // Only provided for key versions with protectionLevel HSM.
+  repeated Attestation attestation = 2;
+
+  // The name of the cryptoKey associated with the CryptoKeyVersions.
+  // Format: ''projects/{{project}}/locations/{{location}}/keyRings/{{keyring}}/cryptoKeys/{{cryptoKey}}''
+  string crypto_key = 3 [json_name = "crypto_key"];
+
+  // The time this CryptoKeyVersion key material was generated
+  string generate_time = 4 [json_name = "generate_time"];
+
+  string id = 5;
+
+  // The resource name for this CryptoKeyVersion.
+  string name = 6;
+
+  // The ProtectionLevel describing how crypto operations are performed with this CryptoKeyVersion.
+  string protection_level = 7 [json_name = "protection_level"];
+
+  // The current state of the CryptoKeyVersion. Possible values: ["PENDING_GENERATION", "ENABLED", "DISABLED", "DESTROYED", "DESTROY_SCHEDULED", "PENDING_IMPORT", "IMPORT_FAILED"]
+  string state = 8;
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Attestation {
+    // cert_chains: list of object
+    repeated CertChains cert_chains = 1 [json_name = "cert_chains"];
+
+    // content: string
+    string content = 2;
+
+    // external_protection_level_options: list of object
+    repeated ExternalProtectionLevelOptions external_protection_level_options = 3 [json_name = "external_protection_level_options"];
+
+    // format: string
+    string format = 4;
+
+    message CertChains {
+      // cavium_certs: string
+      string cavium_certs = 1 [json_name = "cavium_certs"];
+
+      // google_card_certs: string
+      string google_card_certs = 2 [json_name = "google_card_certs"];
+
+      // google_partition_certs: string
+      string google_partition_certs = 3 [json_name = "google_partition_certs"];
+    }
+
+    message ExternalProtectionLevelOptions {
+      // ekm_connection_key_path: string
+      string ekm_connection_key_path = 1 [json_name = "ekm_connection_key_path"];
+
+      // external_key_uri: string
+      string external_key_uri = 2 [json_name = "external_key_uri"];
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleKmsKeyRing version is 0
+message GoogleKmsKeyRing {
+  string id = 1;
+
+  // The location for the KeyRing.
+  // A full list of valid locations can be found by running 'gcloud kms locations list'.
+  string location = 2;
+
+  // The resource name for the KeyRing.
+  string name = 3;
+
+  string project = 4;
+
+  repeated Timeouts timeouts = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// GoogleKmsKeyRingIamBinding version is 0
+message GoogleKmsKeyRingIamBinding {
+  string etag = 1;
+
+  string id = 2;
+
+  string key_ring_id = 3 [json_name = "key_ring_id"];
+
+  repeated string members = 4;
+
+  string role = 5;
+
+  Condition condition = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleKmsKeyRingIamMember version is 0
+message GoogleKmsKeyRingIamMember {
+  string etag = 1;
+
+  string id = 2;
+
+  string key_ring_id = 3 [json_name = "key_ring_id"];
+
+  string member = 4;
+
+  string role = 5;
+
+  Condition condition = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleKmsKeyRingIamPolicy version is 0
+message GoogleKmsKeyRingIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string key_ring_id = 3 [json_name = "key_ring_id"];
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// GoogleKmsKeyRingImportJob version is 0
+message GoogleKmsKeyRingImportJob {
+  // Statement that was generated and signed by the key creator (for example, an HSM) at key creation time.
+  // Use this statement to verify attributes of the key as stored on the HSM, independently of Google.
+  // Only present if the chosen ImportMethod is one with a protection level of HSM.
+  repeated Attestation attestation = 1;
+
+  // The time at which this resource is scheduled for expiration and can no longer be used.
+  // This is in RFC3339 text format.
+  string expire_time = 2 [json_name = "expire_time"];
+
+  string id = 3;
+
+  // It must be unique within a KeyRing and match the regular expression [a-zA-Z0-9_-]{1,63}
+  string import_job_id = 4 [json_name = "import_job_id"];
+
+  // The wrapping method to be used for incoming key material. Possible values: ["RSA_OAEP_3072_SHA1_AES_256", "RSA_OAEP_4096_SHA1_AES_256"]
+  string import_method = 5 [json_name = "import_method"];
+
+  // The KeyRing that this import job belongs to.
+  // Format: ''projects/{{project}}/locations/{{location}}/keyRings/{{keyRing}}''.
+  string key_ring = 6 [json_name = "key_ring"];
+
+  // The resource name for this ImportJob in the format projects/*/locations/*/keyRings/*/importJobs/*.
+  string name = 7;
+
+  // The protection level of the ImportJob. This must match the protectionLevel of the
+  // versionTemplate on the CryptoKey you attempt to import into. Possible values: ["SOFTWARE", "HSM", "EXTERNAL"]
+  string protection_level = 8 [json_name = "protection_level"];
+
+  // The public key with which to wrap key material prior to import. Only returned if state is 'ACTIVE'.
+  repeated PublicKey public_key = 9 [json_name = "public_key"];
+
+  // The current state of the ImportJob, indicating if it can be used.
+  string state = 10;
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message Attestation {
+    // content: string
+    string content = 1;
+
+    // format: string
+    string format = 2;
+  }
+
+  message PublicKey {
+    // pem: string
+    string pem = 1;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// GoogleKmsSecretCiphertext version is 0
+message GoogleKmsSecretCiphertext {
+  // The additional authenticated data used for integrity checks during encryption and decryption.
+  string additional_authenticated_data = 1 [json_name = "additional_authenticated_data"];
+
+  // Contains the result of encrypting the provided plaintext, encoded in base64.
+  string ciphertext = 2;
+
+  // The full name of the CryptoKey that will be used to encrypt the provided plaintext.
+  // Format: ''projects/{{project}}/locations/{{location}}/keyRings/{{keyRing}}/cryptoKeys/{{cryptoKey}}''
+  string crypto_key = 3 [json_name = "crypto_key"];
+
+  string id = 4;
+
+  // The plaintext to be encrypted.
+  string plaintext = 5;
+
+  repeated Timeouts timeouts = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}

@@ -1,0 +1,288 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsEbsDefaultKmsKey version is 0
+message AwsEbsDefaultKmsKey {
+  string id = 1;
+
+  string key_arn = 2 [json_name = "key_arn"];
+
+  map<string, string> for_each = 3 [json_name = "for_each"];
+
+  repeated string depends_on = 4 [json_name = "depends_on"];
+
+  int32 count = 5;
+
+  string provider = 6;
+
+  terraform.v1.Lifecycle lifecycle = 7;
+}
+
+// AwsEbsEncryptionByDefault version is 0
+message AwsEbsEncryptionByDefault {
+  bool enabled = 1;
+
+  string id = 2;
+
+  map<string, string> for_each = 3 [json_name = "for_each"];
+
+  repeated string depends_on = 4 [json_name = "depends_on"];
+
+  int32 count = 5;
+
+  string provider = 6;
+
+  terraform.v1.Lifecycle lifecycle = 7;
+}
+
+// AwsEbsSnapshot version is 0
+message AwsEbsSnapshot {
+  string arn = 1;
+
+  string data_encryption_key_id = 2 [json_name = "data_encryption_key_id"];
+
+  string description = 3;
+
+  bool encrypted = 4;
+
+  string id = 5;
+
+  string kms_key_id = 6 [json_name = "kms_key_id"];
+
+  string outpost_arn = 7 [json_name = "outpost_arn"];
+
+  string owner_alias = 8 [json_name = "owner_alias"];
+
+  string owner_id = 9 [json_name = "owner_id"];
+
+  bool permanent_restore = 10 [json_name = "permanent_restore"];
+
+  string storage_tier = 11 [json_name = "storage_tier"];
+
+  map<string, string> tags = 12;
+
+  map<string, string> tags_all = 13 [json_name = "tags_all"];
+
+  int64 temporary_restore_days = 14 [json_name = "temporary_restore_days"];
+
+  string volume_id = 15 [json_name = "volume_id"];
+
+  int64 volume_size = 16 [json_name = "volume_size"];
+
+  repeated Timeouts timeouts = 17;
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsEbsSnapshotCopy version is 0
+message AwsEbsSnapshotCopy {
+  string arn = 1;
+
+  string data_encryption_key_id = 2 [json_name = "data_encryption_key_id"];
+
+  string description = 3;
+
+  bool encrypted = 4;
+
+  string id = 5;
+
+  string kms_key_id = 6 [json_name = "kms_key_id"];
+
+  string outpost_arn = 7 [json_name = "outpost_arn"];
+
+  string owner_alias = 8 [json_name = "owner_alias"];
+
+  string owner_id = 9 [json_name = "owner_id"];
+
+  bool permanent_restore = 10 [json_name = "permanent_restore"];
+
+  string source_region = 11 [json_name = "source_region"];
+
+  string source_snapshot_id = 12 [json_name = "source_snapshot_id"];
+
+  string storage_tier = 13 [json_name = "storage_tier"];
+
+  map<string, string> tags = 14;
+
+  map<string, string> tags_all = 15 [json_name = "tags_all"];
+
+  int64 temporary_restore_days = 16 [json_name = "temporary_restore_days"];
+
+  string volume_id = 17 [json_name = "volume_id"];
+
+  int64 volume_size = 18 [json_name = "volume_size"];
+
+  repeated Timeouts timeouts = 19;
+
+  map<string, string> for_each = 20 [json_name = "for_each"];
+
+  repeated string depends_on = 21 [json_name = "depends_on"];
+
+  int32 count = 22;
+
+  string provider = 23;
+
+  terraform.v1.Lifecycle lifecycle = 24;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsEbsSnapshotImport version is 0
+message AwsEbsSnapshotImport {
+  string arn = 1;
+
+  string data_encryption_key_id = 2 [json_name = "data_encryption_key_id"];
+
+  string description = 3;
+
+  bool encrypted = 4;
+
+  string id = 5;
+
+  string kms_key_id = 6 [json_name = "kms_key_id"];
+
+  string outpost_arn = 7 [json_name = "outpost_arn"];
+
+  string owner_alias = 8 [json_name = "owner_alias"];
+
+  string owner_id = 9 [json_name = "owner_id"];
+
+  bool permanent_restore = 10 [json_name = "permanent_restore"];
+
+  string role_name = 11 [json_name = "role_name"];
+
+  string storage_tier = 12 [json_name = "storage_tier"];
+
+  map<string, string> tags = 13;
+
+  map<string, string> tags_all = 14 [json_name = "tags_all"];
+
+  int64 temporary_restore_days = 15 [json_name = "temporary_restore_days"];
+
+  string volume_id = 16 [json_name = "volume_id"];
+
+  int64 volume_size = 17 [json_name = "volume_size"];
+
+  ClientData client_data = 18 [json_name = "client_data"];
+
+  DiskContainer disk_container = 19 [json_name = "disk_container"];
+
+  repeated Timeouts timeouts = 20;
+
+  map<string, string> for_each = 21 [json_name = "for_each"];
+
+  repeated string depends_on = 22 [json_name = "depends_on"];
+
+  int32 count = 23;
+
+  string provider = 24;
+
+  terraform.v1.Lifecycle lifecycle = 25;
+
+  message ClientData {
+    string comment = 1;
+
+    string upload_end = 2 [json_name = "upload_end"];
+
+    int64 upload_size = 3 [json_name = "upload_size"];
+
+    string upload_start = 4 [json_name = "upload_start"];
+  }
+
+  message DiskContainer {
+    string description = 1;
+
+    string format = 2;
+
+    string url = 3;
+
+    UserBucket user_bucket = 4 [json_name = "user_bucket"];
+
+    message UserBucket {
+      string s3_bucket = 1 [json_name = "s3_bucket"];
+
+      string s3_key = 2 [json_name = "s3_key"];
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsEbsVolume version is 0
+message AwsEbsVolume {
+  string arn = 1;
+
+  string availability_zone = 2 [json_name = "availability_zone"];
+
+  bool encrypted = 3;
+
+  bool final_snapshot = 4 [json_name = "final_snapshot"];
+
+  string id = 5;
+
+  int64 iops = 6;
+
+  string kms_key_id = 7 [json_name = "kms_key_id"];
+
+  bool multi_attach_enabled = 8 [json_name = "multi_attach_enabled"];
+
+  string outpost_arn = 9 [json_name = "outpost_arn"];
+
+  int64 size = 10;
+
+  string snapshot_id = 11 [json_name = "snapshot_id"];
+
+  map<string, string> tags = 12;
+
+  map<string, string> tags_all = 13 [json_name = "tags_all"];
+
+  int64 throughput = 14;
+
+  string type = 15;
+
+  repeated Timeouts timeouts = 16;
+
+  map<string, string> for_each = 17 [json_name = "for_each"];
+
+  repeated string depends_on = 18 [json_name = "depends_on"];
+
+  int32 count = 19;
+
+  string provider = 20;
+
+  terraform.v1.Lifecycle lifecycle = 21;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

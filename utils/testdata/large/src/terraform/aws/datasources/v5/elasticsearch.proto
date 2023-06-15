@@ -1,0 +1,222 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsElasticsearchDomain version is 0
+message AwsElasticsearchDomain {
+  string access_policies = 1 [json_name = "access_policies"];
+
+  map<string, string> advanced_options = 2 [json_name = "advanced_options"];
+
+  repeated AdvancedSecurityOptions advanced_security_options = 3 [json_name = "advanced_security_options"];
+
+  string arn = 4;
+
+  repeated AutoTuneOptions auto_tune_options = 5 [json_name = "auto_tune_options"];
+
+  repeated ClusterConfig cluster_config = 6 [json_name = "cluster_config"];
+
+  repeated CognitoOptions cognito_options = 7 [json_name = "cognito_options"];
+
+  bool created = 8;
+
+  bool deleted = 9;
+
+  string domain_id = 10 [json_name = "domain_id"];
+
+  string domain_name = 11 [json_name = "domain_name"];
+
+  repeated EbsOptions ebs_options = 12 [json_name = "ebs_options"];
+
+  string elasticsearch_version = 13 [json_name = "elasticsearch_version"];
+
+  repeated EncryptionAtRest encryption_at_rest = 14 [json_name = "encryption_at_rest"];
+
+  string endpoint = 15;
+
+  string id = 16;
+
+  string kibana_endpoint = 17 [json_name = "kibana_endpoint"];
+
+  repeated LogPublishingOptions log_publishing_options = 18 [json_name = "log_publishing_options"];
+
+  repeated NodeToNodeEncryption node_to_node_encryption = 19 [json_name = "node_to_node_encryption"];
+
+  bool processing = 20;
+
+  repeated SnapshotOptions snapshot_options = 21 [json_name = "snapshot_options"];
+
+  map<string, string> tags = 22;
+
+  repeated VpcOptions vpc_options = 23 [json_name = "vpc_options"];
+
+  map<string, string> for_each = 24 [json_name = "for_each"];
+
+  repeated string depends_on = 25 [json_name = "depends_on"];
+
+  int32 count = 26;
+
+  string provider = 27;
+
+  terraform.v1.Lifecycle lifecycle = 28;
+
+  message AdvancedSecurityOptions {
+    // enabled: bool
+    bool enabled = 1;
+
+    // internal_user_database_enabled: bool
+    bool internal_user_database_enabled = 2 [json_name = "internal_user_database_enabled"];
+  }
+
+  message AutoTuneOptions {
+    // desired_state: string
+    string desired_state = 1 [json_name = "desired_state"];
+
+    // maintenance_schedule: set of object
+    repeated MaintenanceSchedule maintenance_schedule = 2 [json_name = "maintenance_schedule"];
+
+    // rollback_on_disable: string
+    string rollback_on_disable = 3 [json_name = "rollback_on_disable"];
+
+    message MaintenanceSchedule {
+      // cron_expression_for_recurrence: string
+      string cron_expression_for_recurrence = 1 [json_name = "cron_expression_for_recurrence"];
+
+      // duration: list of object
+      repeated Duration duration = 2;
+
+      // start_at: string
+      string start_at = 3 [json_name = "start_at"];
+
+      message Duration {
+        // unit: string
+        string unit = 1;
+
+        // value: number
+        int64 value = 2;
+      }
+    }
+  }
+
+  message ClusterConfig {
+    // cold_storage_options: list of object
+    repeated ColdStorageOptions cold_storage_options = 1 [json_name = "cold_storage_options"];
+
+    // dedicated_master_count: number
+    int64 dedicated_master_count = 2 [json_name = "dedicated_master_count"];
+
+    // dedicated_master_enabled: bool
+    bool dedicated_master_enabled = 3 [json_name = "dedicated_master_enabled"];
+
+    // dedicated_master_type: string
+    string dedicated_master_type = 4 [json_name = "dedicated_master_type"];
+
+    // instance_count: number
+    int64 instance_count = 5 [json_name = "instance_count"];
+
+    // instance_type: string
+    string instance_type = 6 [json_name = "instance_type"];
+
+    // warm_count: number
+    int64 warm_count = 7 [json_name = "warm_count"];
+
+    // warm_enabled: bool
+    bool warm_enabled = 8 [json_name = "warm_enabled"];
+
+    // warm_type: string
+    string warm_type = 9 [json_name = "warm_type"];
+
+    // zone_awareness_config: list of object
+    repeated ZoneAwarenessConfig zone_awareness_config = 10 [json_name = "zone_awareness_config"];
+
+    // zone_awareness_enabled: bool
+    bool zone_awareness_enabled = 11 [json_name = "zone_awareness_enabled"];
+
+    message ColdStorageOptions {
+      // enabled: bool
+      bool enabled = 1;
+    }
+
+    message ZoneAwarenessConfig {
+      // availability_zone_count: number
+      int64 availability_zone_count = 1 [json_name = "availability_zone_count"];
+    }
+  }
+
+  message CognitoOptions {
+    // enabled: bool
+    bool enabled = 1;
+
+    // identity_pool_id: string
+    string identity_pool_id = 2 [json_name = "identity_pool_id"];
+
+    // role_arn: string
+    string role_arn = 3 [json_name = "role_arn"];
+
+    // user_pool_id: string
+    string user_pool_id = 4 [json_name = "user_pool_id"];
+  }
+
+  message EbsOptions {
+    // ebs_enabled: bool
+    bool ebs_enabled = 1 [json_name = "ebs_enabled"];
+
+    // iops: number
+    int64 iops = 2;
+
+    // throughput: number
+    int64 throughput = 3;
+
+    // volume_size: number
+    int64 volume_size = 4 [json_name = "volume_size"];
+
+    // volume_type: string
+    string volume_type = 5 [json_name = "volume_type"];
+  }
+
+  message EncryptionAtRest {
+    // enabled: bool
+    bool enabled = 1;
+
+    // kms_key_id: string
+    string kms_key_id = 2 [json_name = "kms_key_id"];
+  }
+
+  message LogPublishingOptions {
+    // cloudwatch_log_group_arn: string
+    string cloudwatch_log_group_arn = 1 [json_name = "cloudwatch_log_group_arn"];
+
+    // enabled: bool
+    bool enabled = 2;
+
+    // log_type: string
+    string log_type = 3 [json_name = "log_type"];
+  }
+
+  message NodeToNodeEncryption {
+    // enabled: bool
+    bool enabled = 1;
+  }
+
+  message SnapshotOptions {
+    // automated_snapshot_start_hour: number
+    int64 automated_snapshot_start_hour = 1 [json_name = "automated_snapshot_start_hour"];
+  }
+
+  message VpcOptions {
+    // availability_zones: set of string
+    repeated string availability_zones = 1 [json_name = "availability_zones"];
+
+    // security_group_ids: set of string
+    repeated string security_group_ids = 2 [json_name = "security_group_ids"];
+
+    // subnet_ids: set of string
+    repeated string subnet_ids = 3 [json_name = "subnet_ids"];
+
+    // vpc_id: string
+    string vpc_id = 4 [json_name = "vpc_id"];
+  }
+}

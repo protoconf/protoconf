@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsDataexchangeDataSet version is 0
+message AwsDataexchangeDataSet {
+  string arn = 1;
+
+  string asset_type = 2 [json_name = "asset_type"];
+
+  string description = 3;
+
+  string id = 4;
+
+  string name = 5;
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsDataexchangeRevision version is 0
+message AwsDataexchangeRevision {
+  string arn = 1;
+
+  string comment = 2;
+
+  string data_set_id = 3 [json_name = "data_set_id"];
+
+  string id = 4;
+
+  string revision_id = 5 [json_name = "revision_id"];
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}

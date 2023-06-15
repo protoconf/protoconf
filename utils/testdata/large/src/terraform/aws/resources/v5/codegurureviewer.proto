@@ -1,0 +1,115 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsCodegurureviewerRepositoryAssociation version is 0
+message AwsCodegurureviewerRepositoryAssociation {
+  string arn = 1;
+
+  string association_id = 2 [json_name = "association_id"];
+
+  string connection_arn = 3 [json_name = "connection_arn"];
+
+  string id = 4;
+
+  string name = 5;
+
+  string owner = 6;
+
+  string provider_type = 7 [json_name = "provider_type"];
+
+  repeated S3RepositoryDetails s3_repository_details = 8 [json_name = "s3_repository_details"];
+
+  string state = 9;
+
+  string state_reason = 10 [json_name = "state_reason"];
+
+  map<string, string> tags = 11;
+
+  map<string, string> tags_all = 12 [json_name = "tags_all"];
+
+  KmsKeyDetails kms_key_details = 13 [json_name = "kms_key_details"];
+
+  Repository repository = 14;
+
+  repeated Timeouts timeouts = 15;
+
+  map<string, string> for_each = 16 [json_name = "for_each"];
+
+  repeated string depends_on = 17 [json_name = "depends_on"];
+
+  int32 count = 18;
+
+  string provider = 19;
+
+  terraform.v1.Lifecycle lifecycle = 20;
+
+  message S3RepositoryDetails {
+    // bucket_name: string
+    string bucket_name = 1 [json_name = "bucket_name"];
+
+    // code_artifacts: list of object
+    repeated CodeArtifacts code_artifacts = 2 [json_name = "code_artifacts"];
+
+    message CodeArtifacts {
+      // build_artifacts_object_key: string
+      string build_artifacts_object_key = 1 [json_name = "build_artifacts_object_key"];
+
+      // source_code_artifacts_object_key: string
+      string source_code_artifacts_object_key = 2 [json_name = "source_code_artifacts_object_key"];
+    }
+  }
+
+  message KmsKeyDetails {
+    string encryption_option = 1 [json_name = "encryption_option"];
+
+    string kms_key_id = 2 [json_name = "kms_key_id"];
+  }
+
+  message Repository {
+    Bitbucket bitbucket = 1;
+
+    Codecommit codecommit = 2;
+
+    GithubEnterpriseServer github_enterprise_server = 3 [json_name = "github_enterprise_server"];
+
+    S3Bucket s3_bucket = 4 [json_name = "s3_bucket"];
+
+    message Bitbucket {
+      string connection_arn = 1 [json_name = "connection_arn"];
+
+      string name = 2;
+
+      string owner = 3;
+    }
+
+    message Codecommit {
+      string name = 1;
+    }
+
+    message GithubEnterpriseServer {
+      string connection_arn = 1 [json_name = "connection_arn"];
+
+      string name = 2;
+
+      string owner = 3;
+    }
+
+    message S3Bucket {
+      string bucket_name = 1 [json_name = "bucket_name"];
+
+      string name = 2;
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

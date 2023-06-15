@@ -1,0 +1,392 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleCertificateManagerCertificate version is 1
+message GoogleCertificateManagerCertificate {
+  // A human-readable description of the resource.
+  string description = 1;
+
+  string id = 2;
+
+  // Set of label tags associated with the Certificate resource.
+  map<string, string> labels = 3;
+
+  // The Certificate Manager location. If not specified, "global" is used.
+  string location = 4;
+
+  // A user-defined name of the certificate. Certificate names must be unique
+  // The name must be 1-64 characters long, and match the regular expression [a-zA-Z][a-zA-Z0-9_-]* which means the first character must be a letter,
+  // and all following characters must be a dash, underscore, letter or digit.
+  string name = 5;
+
+  string project = 6;
+
+  // The scope of the certificate.
+  //
+  // DEFAULT: Certificates with default scope are served from core Google data centers.
+  // If unsure, choose this option.
+  //
+  // EDGE_CACHE: Certificates with scope EDGE_CACHE are special-purposed certificates,
+  // served from non-core Google data centers.
+  // Currently allowed only for managed certificates.
+  string scope = 7;
+
+  Managed managed = 8;
+
+  SelfManaged self_managed = 9 [json_name = "self_managed"];
+
+  repeated Timeouts timeouts = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Managed {
+    // Detailed state of the latest authorization attempt for each domain
+    // specified for this Managed Certificate.
+    repeated AuthorizationAttemptInfo authorization_attempt_info = 1 [json_name = "authorization_attempt_info"];
+
+    // Authorizations that will be used for performing domain authorization
+    repeated string dns_authorizations = 2 [json_name = "dns_authorizations"];
+
+    // The domains for which a managed SSL certificate will be generated.
+    // Wildcard domains are only supported with DNS challenge resolution
+    repeated string domains = 3;
+
+    // Information about issues with provisioning this Managed Certificate.
+    repeated ProvisioningIssue provisioning_issue = 4 [json_name = "provisioning_issue"];
+
+    // A state of this Managed Certificate.
+    string state = 5;
+
+    message AuthorizationAttemptInfo {
+      // details: string
+      string details = 1;
+
+      // domain: string
+      string domain = 2;
+
+      // failure_reason: string
+      string failure_reason = 3 [json_name = "failure_reason"];
+
+      // state: string
+      string state = 4;
+    }
+
+    message ProvisioningIssue {
+      // details: string
+      string details = 1;
+
+      // reason: string
+      string reason = 2;
+    }
+  }
+
+  message SelfManaged {
+    // **Deprecated** The certificate chain in PEM-encoded form.
+    //
+    // Leaf certificate comes first, followed by intermediate ones if any.
+    string certificate_pem = 1 [json_name = "certificate_pem"];
+
+    // The certificate chain in PEM-encoded form.
+    //
+    // Leaf certificate comes first, followed by intermediate ones if any.
+    string pem_certificate = 2 [json_name = "pem_certificate"];
+
+    // The private key of the leaf certificate in PEM-encoded form.
+    string pem_private_key = 3 [json_name = "pem_private_key"];
+
+    // **Deprecated** The private key of the leaf certificate in PEM-encoded form.
+    string private_key_pem = 4 [json_name = "private_key_pem"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleCertificateManagerCertificateIssuanceConfig version is 0
+message GoogleCertificateManagerCertificateIssuanceConfig {
+  // The creation timestamp of a CertificateIssuanceConfig. Timestamp is in RFC3339 UTC "Zulu" format,
+  // accurate to nanoseconds with up to nine fractional digits.
+  // Examples: "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z".
+  string create_time = 1 [json_name = "create_time"];
+
+  // One or more paragraphs of text description of a CertificateIssuanceConfig.
+  string description = 2;
+
+  string id = 3;
+
+  // Key algorithm to use when generating the private key. Possible values: ["RSA_2048", "ECDSA_P256"]
+  string key_algorithm = 4 [json_name = "key_algorithm"];
+
+  // 'Set of label tags associated with the CertificateIssuanceConfig resource.
+  // An object containing a list of "key": value pairs. Example: { "name": "wrench", "count": "3" }.
+  map<string, string> labels = 5;
+
+  // Lifetime of issued certificates. A duration in seconds with up to nine fractional digits, ending with 's'.
+  // Example: "1814400s". Valid values are from 21 days (1814400s) to 30 days (2592000s)
+  string lifetime = 6;
+
+  // The Certificate Manager location. If not specified, "global" is used.
+  string location = 7;
+
+  // A user-defined name of the certificate issuance config.
+  // CertificateIssuanceConfig names must be unique globally.
+  string name = 8;
+
+  string project = 9;
+
+  // It specifies the percentage of elapsed time of the certificate lifetime to wait before renewing the certificate.
+  // Must be a number between 1-99, inclusive.
+  // You must set the rotation window percentage in relation to the certificate lifetime so that certificate renewal occurs at least 7 days after
+  // the certificate has been issued and at least 7 days before it expires.
+  int64 rotation_window_percentage = 10 [json_name = "rotation_window_percentage"];
+
+  // The last update timestamp of a CertificateIssuanceConfig. Timestamp is in RFC3339 UTC "Zulu" format,
+  // accurate to nanoseconds with up to nine fractional digits.
+  // Examples: "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z".
+  string update_time = 11 [json_name = "update_time"];
+
+  CertificateAuthorityConfig certificate_authority_config = 12 [json_name = "certificate_authority_config"];
+
+  repeated Timeouts timeouts = 13;
+
+  map<string, string> for_each = 14 [json_name = "for_each"];
+
+  repeated string depends_on = 15 [json_name = "depends_on"];
+
+  int32 count = 16;
+
+  string provider = 17;
+
+  terraform.v1.Lifecycle lifecycle = 18;
+
+  message CertificateAuthorityConfig {
+    CertificateAuthorityServiceConfig certificate_authority_service_config = 1 [json_name = "certificate_authority_service_config"];
+
+    message CertificateAuthorityServiceConfig {
+      // A CA pool resource used to issue a certificate.
+      // The CA pool string has a relative resource path following the form
+      // "projects/{project}/locations/{location}/caPools/{caPool}".
+      string ca_pool = 1 [json_name = "ca_pool"];
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// GoogleCertificateManagerCertificateMap version is 0
+message GoogleCertificateManagerCertificateMap {
+  // Creation timestamp of a Certificate Map. Timestamp is in RFC3339 UTC "Zulu" format,
+  // accurate to nanoseconds with up to nine fractional digits.
+  // Examples: "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z".
+  string create_time = 1 [json_name = "create_time"];
+
+  // A human-readable description of the resource.
+  string description = 2;
+
+  // A list of target proxies that use this Certificate Map
+  repeated GclbTargets gclb_targets = 3 [json_name = "gclb_targets"];
+
+  string id = 4;
+
+  // Set of labels associated with a Certificate Map resource.
+  map<string, string> labels = 5;
+
+  // A user-defined name of the Certificate Map. Certificate Map names must be unique
+  // globally and match the pattern 'projects/*/locations/*/certificateMaps/*'.
+  string name = 6;
+
+  string project = 7;
+
+  // Update timestamp of a Certificate Map. Timestamp is in RFC3339 UTC "Zulu" format,
+  // accurate to nanoseconds with up to nine fractional digits.
+  // Examples: "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z".
+  string update_time = 8 [json_name = "update_time"];
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message GclbTargets {
+    // ip_configs: list of object
+    repeated IpConfigs ip_configs = 1 [json_name = "ip_configs"];
+
+    // target_https_proxy: string
+    string target_https_proxy = 2 [json_name = "target_https_proxy"];
+
+    // target_ssl_proxy: string
+    string target_ssl_proxy = 3 [json_name = "target_ssl_proxy"];
+
+    message IpConfigs {
+      // ip_address: string
+      string ip_address = 1 [json_name = "ip_address"];
+
+      // ports: list of number
+      repeated int64 ports = 2;
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleCertificateManagerCertificateMapEntry version is 0
+message GoogleCertificateManagerCertificateMapEntry {
+  // A set of Certificates defines for the given hostname.
+  // There can be defined up to fifteen certificates in each Certificate Map Entry.
+  // Each certificate must match pattern projects/*/locations/*/certificates/*.
+  repeated string certificates = 1;
+
+  // Creation timestamp of a Certificate Map Entry. Timestamp in RFC3339 UTC "Zulu" format,
+  // with nanosecond resolution and up to nine fractional digits.
+  // Examples: "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z".
+  string create_time = 2 [json_name = "create_time"];
+
+  // A human-readable description of the resource.
+  string description = 3;
+
+  // A Hostname (FQDN, e.g. example.com) or a wildcard hostname expression (*.example.com)
+  // for a set of hostnames with common suffix. Used as Server Name Indication (SNI) for
+  // selecting a proper certificate.
+  string hostname = 4;
+
+  string id = 5;
+
+  // Set of labels associated with a Certificate Map Entry.
+  // An object containing a list of "key": value pairs.
+  // Example: { "name": "wrench", "mass": "1.3kg", "count": "3" }.
+  map<string, string> labels = 6;
+
+  // A map entry that is inputted into the cetrificate map
+  string map = 7;
+
+  // A predefined matcher for particular cases, other than SNI selection
+  string matcher = 8;
+
+  // A user-defined name of the Certificate Map Entry. Certificate Map Entry
+  // names must be unique globally and match pattern
+  // 'projects/*/locations/*/certificateMaps/*/certificateMapEntries/*'
+  string name = 9;
+
+  string project = 10;
+
+  // A serving state of this Certificate Map Entry.
+  string state = 11;
+
+  // Update timestamp of a Certificate Map Entry. Timestamp in RFC3339 UTC "Zulu" format,
+  // with nanosecond resolution and up to nine fractional digits.
+  // Examples: "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z".
+  string update_time = 12 [json_name = "update_time"];
+
+  repeated Timeouts timeouts = 13;
+
+  map<string, string> for_each = 14 [json_name = "for_each"];
+
+  repeated string depends_on = 15 [json_name = "depends_on"];
+
+  int32 count = 16;
+
+  string provider = 17;
+
+  terraform.v1.Lifecycle lifecycle = 18;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleCertificateManagerDnsAuthorization version is 0
+message GoogleCertificateManagerDnsAuthorization {
+  // A human-readable description of the resource.
+  string description = 1;
+
+  // The structure describing the DNS Resource Record that needs to be added
+  // to DNS configuration for the authorization to be usable by
+  // certificate.
+  repeated DnsResourceRecord dns_resource_record = 2 [json_name = "dns_resource_record"];
+
+  // A domain which is being authorized. A DnsAuthorization resource covers a
+  // single domain and its wildcard, e.g. authorization for "example.com" can
+  // be used to issue certificates for "example.com" and "*.example.com".
+  string domain = 3;
+
+  string id = 4;
+
+  // Set of label tags associated with the DNS Authorization resource.
+  map<string, string> labels = 5;
+
+  // Name of the resource; provided by the client when the resource is created.
+  // The name must be 1-64 characters long, and match the regular expression [a-zA-Z][a-zA-Z0-9_-]* which means the first character must be a letter,
+  // and all following characters must be a dash, underscore, letter or digit.
+  string name = 6;
+
+  string project = 7;
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message DnsResourceRecord {
+    // data: string
+    string data = 1;
+
+    // name: string
+    string name = 2;
+
+    // type: string
+    string type = 3;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

@@ -1,0 +1,489 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsAppsyncApiCache version is 0
+message AwsAppsyncApiCache {
+  string api_caching_behavior = 1 [json_name = "api_caching_behavior"];
+
+  string api_id = 2 [json_name = "api_id"];
+
+  bool at_rest_encryption_enabled = 3 [json_name = "at_rest_encryption_enabled"];
+
+  string id = 4;
+
+  bool transit_encryption_enabled = 5 [json_name = "transit_encryption_enabled"];
+
+  int64 ttl = 6;
+
+  string type = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsAppsyncApiKey version is 0
+message AwsAppsyncApiKey {
+  string api_id = 1 [json_name = "api_id"];
+
+  string description = 2;
+
+  string expires = 3;
+
+  string id = 4;
+
+  string key = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsAppsyncDatasource version is 0
+message AwsAppsyncDatasource {
+  string api_id = 1 [json_name = "api_id"];
+
+  string arn = 2;
+
+  string description = 3;
+
+  string id = 4;
+
+  string name = 5;
+
+  string service_role_arn = 6 [json_name = "service_role_arn"];
+
+  string type = 7;
+
+  DynamodbConfig dynamodb_config = 8 [json_name = "dynamodb_config"];
+
+  ElasticsearchConfig elasticsearch_config = 9 [json_name = "elasticsearch_config"];
+
+  EventBridgeConfig event_bridge_config = 10 [json_name = "event_bridge_config"];
+
+  HttpConfig http_config = 11 [json_name = "http_config"];
+
+  LambdaConfig lambda_config = 12 [json_name = "lambda_config"];
+
+  OpensearchserviceConfig opensearchservice_config = 13 [json_name = "opensearchservice_config"];
+
+  RelationalDatabaseConfig relational_database_config = 14 [json_name = "relational_database_config"];
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+
+  message DynamodbConfig {
+    string region = 1;
+
+    string table_name = 2 [json_name = "table_name"];
+
+    bool use_caller_credentials = 3 [json_name = "use_caller_credentials"];
+
+    bool versioned = 4;
+
+    DeltaSyncConfig delta_sync_config = 5 [json_name = "delta_sync_config"];
+
+    message DeltaSyncConfig {
+      int64 base_table_ttl = 1 [json_name = "base_table_ttl"];
+
+      string delta_sync_table_name = 2 [json_name = "delta_sync_table_name"];
+
+      int64 delta_sync_table_ttl = 3 [json_name = "delta_sync_table_ttl"];
+    }
+  }
+
+  message ElasticsearchConfig {
+    string endpoint = 1;
+
+    string region = 2;
+  }
+
+  message EventBridgeConfig {
+    string event_bus_arn = 1 [json_name = "event_bus_arn"];
+  }
+
+  message HttpConfig {
+    string endpoint = 1;
+
+    AuthorizationConfig authorization_config = 2 [json_name = "authorization_config"];
+
+    message AuthorizationConfig {
+      string authorization_type = 1 [json_name = "authorization_type"];
+
+      AwsIamConfig aws_iam_config = 2 [json_name = "aws_iam_config"];
+
+      message AwsIamConfig {
+        string signing_region = 1 [json_name = "signing_region"];
+
+        string signing_service_name = 2 [json_name = "signing_service_name"];
+      }
+    }
+  }
+
+  message LambdaConfig {
+    string function_arn = 1 [json_name = "function_arn"];
+  }
+
+  message OpensearchserviceConfig {
+    string endpoint = 1;
+
+    string region = 2;
+  }
+
+  message RelationalDatabaseConfig {
+    string source_type = 1 [json_name = "source_type"];
+
+    HttpEndpointConfig http_endpoint_config = 2 [json_name = "http_endpoint_config"];
+
+    message HttpEndpointConfig {
+      string aws_secret_store_arn = 1 [json_name = "aws_secret_store_arn"];
+
+      string database_name = 2 [json_name = "database_name"];
+
+      string db_cluster_identifier = 3 [json_name = "db_cluster_identifier"];
+
+      string region = 4;
+
+      string schema = 5;
+    }
+  }
+}
+
+// AwsAppsyncDomainName version is 0
+message AwsAppsyncDomainName {
+  string appsync_domain_name = 1 [json_name = "appsync_domain_name"];
+
+  string certificate_arn = 2 [json_name = "certificate_arn"];
+
+  string description = 3;
+
+  string domain_name = 4 [json_name = "domain_name"];
+
+  string hosted_zone_id = 5 [json_name = "hosted_zone_id"];
+
+  string id = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsAppsyncDomainNameApiAssociation version is 0
+message AwsAppsyncDomainNameApiAssociation {
+  string api_id = 1 [json_name = "api_id"];
+
+  string domain_name = 2 [json_name = "domain_name"];
+
+  string id = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsAppsyncFunction version is 0
+message AwsAppsyncFunction {
+  string api_id = 1 [json_name = "api_id"];
+
+  string arn = 2;
+
+  string code = 3;
+
+  string data_source = 4 [json_name = "data_source"];
+
+  string description = 5;
+
+  string function_id = 6 [json_name = "function_id"];
+
+  string function_version = 7 [json_name = "function_version"];
+
+  string id = 8;
+
+  int64 max_batch_size = 9 [json_name = "max_batch_size"];
+
+  string name = 10;
+
+  string request_mapping_template = 11 [json_name = "request_mapping_template"];
+
+  string response_mapping_template = 12 [json_name = "response_mapping_template"];
+
+  Runtime runtime = 13;
+
+  SyncConfig sync_config = 14 [json_name = "sync_config"];
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+
+  message Runtime {
+    string name = 1;
+
+    string runtime_version = 2 [json_name = "runtime_version"];
+  }
+
+  message SyncConfig {
+    string conflict_detection = 1 [json_name = "conflict_detection"];
+
+    string conflict_handler = 2 [json_name = "conflict_handler"];
+
+    LambdaConflictHandlerConfig lambda_conflict_handler_config = 3 [json_name = "lambda_conflict_handler_config"];
+
+    message LambdaConflictHandlerConfig {
+      string lambda_conflict_handler_arn = 1 [json_name = "lambda_conflict_handler_arn"];
+    }
+  }
+}
+
+// AwsAppsyncGraphqlApi version is 0
+message AwsAppsyncGraphqlApi {
+  string arn = 1;
+
+  string authentication_type = 2 [json_name = "authentication_type"];
+
+  string id = 3;
+
+  string name = 4;
+
+  string schema = 5;
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  map<string, string> uris = 8;
+
+  string visibility = 9;
+
+  bool xray_enabled = 10 [json_name = "xray_enabled"];
+
+  repeated AdditionalAuthenticationProvider additional_authentication_provider = 11 [json_name = "additional_authentication_provider"];
+
+  LambdaAuthorizerConfig lambda_authorizer_config = 12 [json_name = "lambda_authorizer_config"];
+
+  LogConfig log_config = 13 [json_name = "log_config"];
+
+  OpenidConnectConfig openid_connect_config = 14 [json_name = "openid_connect_config"];
+
+  UserPoolConfig user_pool_config = 15 [json_name = "user_pool_config"];
+
+  map<string, string> for_each = 16 [json_name = "for_each"];
+
+  repeated string depends_on = 17 [json_name = "depends_on"];
+
+  int32 count = 18;
+
+  string provider = 19;
+
+  terraform.v1.Lifecycle lifecycle = 20;
+
+  message AdditionalAuthenticationProvider {
+    string authentication_type = 1 [json_name = "authentication_type"];
+
+    LambdaAuthorizerConfig lambda_authorizer_config = 2 [json_name = "lambda_authorizer_config"];
+
+    OpenidConnectConfig openid_connect_config = 3 [json_name = "openid_connect_config"];
+
+    UserPoolConfig user_pool_config = 4 [json_name = "user_pool_config"];
+
+    message LambdaAuthorizerConfig {
+      int64 authorizer_result_ttl_in_seconds = 1 [json_name = "authorizer_result_ttl_in_seconds"];
+
+      string authorizer_uri = 2 [json_name = "authorizer_uri"];
+
+      string identity_validation_expression = 3 [json_name = "identity_validation_expression"];
+    }
+
+    message OpenidConnectConfig {
+      int64 auth_ttl = 1 [json_name = "auth_ttl"];
+
+      string client_id = 2 [json_name = "client_id"];
+
+      int64 iat_ttl = 3 [json_name = "iat_ttl"];
+
+      string issuer = 4;
+    }
+
+    message UserPoolConfig {
+      string app_id_client_regex = 1 [json_name = "app_id_client_regex"];
+
+      string aws_region = 2 [json_name = "aws_region"];
+
+      string user_pool_id = 3 [json_name = "user_pool_id"];
+    }
+  }
+
+  message LambdaAuthorizerConfig {
+    int64 authorizer_result_ttl_in_seconds = 1 [json_name = "authorizer_result_ttl_in_seconds"];
+
+    string authorizer_uri = 2 [json_name = "authorizer_uri"];
+
+    string identity_validation_expression = 3 [json_name = "identity_validation_expression"];
+  }
+
+  message LogConfig {
+    string cloudwatch_logs_role_arn = 1 [json_name = "cloudwatch_logs_role_arn"];
+
+    bool exclude_verbose_content = 2 [json_name = "exclude_verbose_content"];
+
+    string field_log_level = 3 [json_name = "field_log_level"];
+  }
+
+  message OpenidConnectConfig {
+    int64 auth_ttl = 1 [json_name = "auth_ttl"];
+
+    string client_id = 2 [json_name = "client_id"];
+
+    int64 iat_ttl = 3 [json_name = "iat_ttl"];
+
+    string issuer = 4;
+  }
+
+  message UserPoolConfig {
+    string app_id_client_regex = 1 [json_name = "app_id_client_regex"];
+
+    string aws_region = 2 [json_name = "aws_region"];
+
+    string default_action = 3 [json_name = "default_action"];
+
+    string user_pool_id = 4 [json_name = "user_pool_id"];
+  }
+}
+
+// AwsAppsyncResolver version is 0
+message AwsAppsyncResolver {
+  string api_id = 1 [json_name = "api_id"];
+
+  string arn = 2;
+
+  string code = 3;
+
+  string data_source = 4 [json_name = "data_source"];
+
+  string field = 5;
+
+  string id = 6;
+
+  string kind = 7;
+
+  int64 max_batch_size = 8 [json_name = "max_batch_size"];
+
+  string request_template = 9 [json_name = "request_template"];
+
+  string response_template = 10 [json_name = "response_template"];
+
+  string type = 11;
+
+  CachingConfig caching_config = 12 [json_name = "caching_config"];
+
+  PipelineConfig pipeline_config = 13 [json_name = "pipeline_config"];
+
+  Runtime runtime = 14;
+
+  SyncConfig sync_config = 15 [json_name = "sync_config"];
+
+  map<string, string> for_each = 16 [json_name = "for_each"];
+
+  repeated string depends_on = 17 [json_name = "depends_on"];
+
+  int32 count = 18;
+
+  string provider = 19;
+
+  terraform.v1.Lifecycle lifecycle = 20;
+
+  message CachingConfig {
+    repeated string caching_keys = 1 [json_name = "caching_keys"];
+
+    int64 ttl = 2;
+  }
+
+  message PipelineConfig {
+    repeated string functions = 1;
+  }
+
+  message Runtime {
+    string name = 1;
+
+    string runtime_version = 2 [json_name = "runtime_version"];
+  }
+
+  message SyncConfig {
+    string conflict_detection = 1 [json_name = "conflict_detection"];
+
+    string conflict_handler = 2 [json_name = "conflict_handler"];
+
+    LambdaConflictHandlerConfig lambda_conflict_handler_config = 3 [json_name = "lambda_conflict_handler_config"];
+
+    message LambdaConflictHandlerConfig {
+      string lambda_conflict_handler_arn = 1 [json_name = "lambda_conflict_handler_arn"];
+    }
+  }
+}
+
+// AwsAppsyncType version is 0
+message AwsAppsyncType {
+  string api_id = 1 [json_name = "api_id"];
+
+  string arn = 2;
+
+  string definition = 3;
+
+  string description = 4;
+
+  string format = 5;
+
+  string id = 6;
+
+  string name = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}

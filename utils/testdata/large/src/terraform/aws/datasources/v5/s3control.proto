@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsS3controlMultiRegionAccessPoint version is 0
+message AwsS3controlMultiRegionAccessPoint {
+  string account_id = 1 [json_name = "account_id"];
+
+  string alias = 2;
+
+  string arn = 3;
+
+  string created_at = 4 [json_name = "created_at"];
+
+  string domain_name = 5 [json_name = "domain_name"];
+
+  string id = 6;
+
+  string name = 7;
+
+  repeated PublicAccessBlock public_access_block = 8 [json_name = "public_access_block"];
+
+  repeated Regions regions = 9;
+
+  string status = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message PublicAccessBlock {
+    // block_public_acls: bool
+    bool block_public_acls = 1 [json_name = "block_public_acls"];
+
+    // block_public_policy: bool
+    bool block_public_policy = 2 [json_name = "block_public_policy"];
+
+    // ignore_public_acls: bool
+    bool ignore_public_acls = 3 [json_name = "ignore_public_acls"];
+
+    // restrict_public_buckets: bool
+    bool restrict_public_buckets = 4 [json_name = "restrict_public_buckets"];
+  }
+
+  message Regions {
+    // bucket: string
+    string bucket = 1;
+
+    // region: string
+    string region = 2;
+  }
+}

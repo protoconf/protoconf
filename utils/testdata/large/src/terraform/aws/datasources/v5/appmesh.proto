@@ -1,0 +1,1958 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsAppmeshGatewayRoute version is 0
+message AwsAppmeshGatewayRoute {
+  string arn = 1;
+
+  string created_date = 2 [json_name = "created_date"];
+
+  string id = 3;
+
+  string last_updated_date = 4 [json_name = "last_updated_date"];
+
+  string mesh_name = 5 [json_name = "mesh_name"];
+
+  string mesh_owner = 6 [json_name = "mesh_owner"];
+
+  string name = 7;
+
+  string resource_owner = 8 [json_name = "resource_owner"];
+
+  repeated Spec spec = 9;
+
+  map<string, string> tags = 10;
+
+  string virtual_gateway_name = 11 [json_name = "virtual_gateway_name"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message Spec {
+    // grpc_route: list of object
+    repeated GrpcRoute grpc_route = 1 [json_name = "grpc_route"];
+
+    // http2_route: list of object
+    repeated Http2Route http2_route = 2 [json_name = "http2_route"];
+
+    // http_route: list of object
+    repeated HttpRoute http_route = 3 [json_name = "http_route"];
+
+    // priority: number
+    int64 priority = 4;
+
+    message GrpcRoute {
+      // action: list of object
+      repeated Action action = 1;
+
+      // match: list of object
+      repeated Match match = 2;
+
+      message Action {
+        // target: list of object
+        repeated Target target = 1;
+
+        message Target {
+          // port: number
+          int64 port = 1;
+
+          // virtual_service: list of object
+          repeated VirtualService virtual_service = 2 [json_name = "virtual_service"];
+
+          message VirtualService {
+            // virtual_service_name: string
+            string virtual_service_name = 1 [json_name = "virtual_service_name"];
+          }
+        }
+      }
+
+      message Match {
+        // port: number
+        int64 port = 1;
+
+        // service_name: string
+        string service_name = 2 [json_name = "service_name"];
+      }
+    }
+
+    message Http2Route {
+      // action: list of object
+      repeated Action action = 1;
+
+      // match: list of object
+      repeated Match match = 2;
+
+      message Action {
+        // rewrite: list of object
+        repeated Rewrite rewrite = 1;
+
+        // target: list of object
+        repeated Target target = 2;
+
+        message Rewrite {
+          // hostname: list of object
+          repeated Hostname hostname = 1;
+
+          // prefix: list of object
+          repeated Prefix prefix = 2;
+
+          message Hostname {
+            // default_target_hostname: string
+            string default_target_hostname = 1 [json_name = "default_target_hostname"];
+          }
+
+          message Prefix {
+            // default_prefix: string
+            string default_prefix = 1 [json_name = "default_prefix"];
+
+            // value: string
+            string value = 2;
+          }
+        }
+
+        message Target {
+          // port: number
+          int64 port = 1;
+
+          // virtual_service: list of object
+          repeated VirtualService virtual_service = 2 [json_name = "virtual_service"];
+
+          message VirtualService {
+            // virtual_service_name: string
+            string virtual_service_name = 1 [json_name = "virtual_service_name"];
+          }
+        }
+      }
+
+      message Match {
+        // header: set of object
+        repeated Header header = 1;
+
+        // hostname: list of object
+        repeated Hostname hostname = 2;
+
+        // path: list of object
+        repeated Path path = 3;
+
+        // port: number
+        int64 port = 4;
+
+        // prefix: string
+        string prefix = 5;
+
+        // query_parameter: set of object
+        repeated QueryParameter query_parameter = 6 [json_name = "query_parameter"];
+
+        message Header {
+          // invert: bool
+          bool invert = 1;
+
+          // match: list of object
+          repeated Match match = 2;
+
+          // name: string
+          string name = 3;
+
+          message Match {
+            // exact: string
+            string exact = 1;
+
+            // prefix: string
+            string prefix = 2;
+
+            // range: list of object
+            repeated Range range = 3;
+
+            // regex: string
+            string regex = 4;
+
+            // suffix: string
+            string suffix = 5;
+
+            message Range {
+              // end: number
+              int64 end = 1;
+
+              // start: number
+              int64 start = 2;
+            }
+          }
+        }
+
+        message Hostname {
+          // exact: string
+          string exact = 1;
+
+          // suffix: string
+          string suffix = 2;
+        }
+
+        message Path {
+          // exact: string
+          string exact = 1;
+
+          // regex: string
+          string regex = 2;
+        }
+
+        message QueryParameter {
+          // match: list of object
+          repeated Match match = 1;
+
+          // name: string
+          string name = 2;
+
+          message Match {
+            // exact: string
+            string exact = 1;
+          }
+        }
+      }
+    }
+
+    message HttpRoute {
+      // action: list of object
+      repeated Action action = 1;
+
+      // match: list of object
+      repeated Match match = 2;
+
+      message Action {
+        // rewrite: list of object
+        repeated Rewrite rewrite = 1;
+
+        // target: list of object
+        repeated Target target = 2;
+
+        message Rewrite {
+          // hostname: list of object
+          repeated Hostname hostname = 1;
+
+          // prefix: list of object
+          repeated Prefix prefix = 2;
+
+          message Hostname {
+            // default_target_hostname: string
+            string default_target_hostname = 1 [json_name = "default_target_hostname"];
+          }
+
+          message Prefix {
+            // default_prefix: string
+            string default_prefix = 1 [json_name = "default_prefix"];
+
+            // value: string
+            string value = 2;
+          }
+        }
+
+        message Target {
+          // port: number
+          int64 port = 1;
+
+          // virtual_service: list of object
+          repeated VirtualService virtual_service = 2 [json_name = "virtual_service"];
+
+          message VirtualService {
+            // virtual_service_name: string
+            string virtual_service_name = 1 [json_name = "virtual_service_name"];
+          }
+        }
+      }
+
+      message Match {
+        // header: set of object
+        repeated Header header = 1;
+
+        // hostname: list of object
+        repeated Hostname hostname = 2;
+
+        // path: list of object
+        repeated Path path = 3;
+
+        // port: number
+        int64 port = 4;
+
+        // prefix: string
+        string prefix = 5;
+
+        // query_parameter: set of object
+        repeated QueryParameter query_parameter = 6 [json_name = "query_parameter"];
+
+        message Header {
+          // invert: bool
+          bool invert = 1;
+
+          // match: list of object
+          repeated Match match = 2;
+
+          // name: string
+          string name = 3;
+
+          message Match {
+            // exact: string
+            string exact = 1;
+
+            // prefix: string
+            string prefix = 2;
+
+            // range: list of object
+            repeated Range range = 3;
+
+            // regex: string
+            string regex = 4;
+
+            // suffix: string
+            string suffix = 5;
+
+            message Range {
+              // end: number
+              int64 end = 1;
+
+              // start: number
+              int64 start = 2;
+            }
+          }
+        }
+
+        message Hostname {
+          // exact: string
+          string exact = 1;
+
+          // suffix: string
+          string suffix = 2;
+        }
+
+        message Path {
+          // exact: string
+          string exact = 1;
+
+          // regex: string
+          string regex = 2;
+        }
+
+        message QueryParameter {
+          // match: list of object
+          repeated Match match = 1;
+
+          // name: string
+          string name = 2;
+
+          message Match {
+            // exact: string
+            string exact = 1;
+          }
+        }
+      }
+    }
+  }
+}
+
+// AwsAppmeshMesh version is 0
+message AwsAppmeshMesh {
+  string arn = 1;
+
+  string created_date = 2 [json_name = "created_date"];
+
+  string id = 3;
+
+  string last_updated_date = 4 [json_name = "last_updated_date"];
+
+  string mesh_owner = 5 [json_name = "mesh_owner"];
+
+  string name = 6;
+
+  string resource_owner = 7 [json_name = "resource_owner"];
+
+  repeated Spec spec = 8;
+
+  map<string, string> tags = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Spec {
+    // egress_filter: list of object
+    repeated EgressFilter egress_filter = 1 [json_name = "egress_filter"];
+
+    message EgressFilter {
+      // type: string
+      string type = 1;
+    }
+  }
+}
+
+// AwsAppmeshRoute version is 0
+message AwsAppmeshRoute {
+  string arn = 1;
+
+  string created_date = 2 [json_name = "created_date"];
+
+  string id = 3;
+
+  string last_updated_date = 4 [json_name = "last_updated_date"];
+
+  string mesh_name = 5 [json_name = "mesh_name"];
+
+  string mesh_owner = 6 [json_name = "mesh_owner"];
+
+  string name = 7;
+
+  string resource_owner = 8 [json_name = "resource_owner"];
+
+  repeated Spec spec = 9;
+
+  map<string, string> tags = 10;
+
+  string virtual_router_name = 11 [json_name = "virtual_router_name"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message Spec {
+    // grpc_route: list of object
+    repeated GrpcRoute grpc_route = 1 [json_name = "grpc_route"];
+
+    // http2_route: list of object
+    repeated Http2Route http2_route = 2 [json_name = "http2_route"];
+
+    // http_route: list of object
+    repeated HttpRoute http_route = 3 [json_name = "http_route"];
+
+    // priority: number
+    int64 priority = 4;
+
+    // tcp_route: list of object
+    repeated TcpRoute tcp_route = 5 [json_name = "tcp_route"];
+
+    message GrpcRoute {
+      // action: list of object
+      repeated Action action = 1;
+
+      // match: list of object
+      repeated Match match = 2;
+
+      // retry_policy: list of object
+      repeated RetryPolicy retry_policy = 3 [json_name = "retry_policy"];
+
+      // timeout: list of object
+      repeated Timeout timeout = 4;
+
+      message Action {
+        // weighted_target: set of object
+        repeated WeightedTarget weighted_target = 1 [json_name = "weighted_target"];
+
+        message WeightedTarget {
+          // port: number
+          int64 port = 1;
+
+          // virtual_node: string
+          string virtual_node = 2 [json_name = "virtual_node"];
+
+          // weight: number
+          int64 weight = 3;
+        }
+      }
+
+      message Match {
+        // metadata: set of object
+        repeated Metadata metadata = 1;
+
+        // method_name: string
+        string method_name = 2 [json_name = "method_name"];
+
+        // port: number
+        int64 port = 3;
+
+        // prefix: string
+        string prefix = 4;
+
+        // service_name: string
+        string service_name = 5 [json_name = "service_name"];
+
+        message Metadata {
+          // invert: bool
+          bool invert = 1;
+
+          // match: list of object
+          repeated Match match = 2;
+
+          // name: string
+          string name = 3;
+
+          message Match {
+            // exact: string
+            string exact = 1;
+
+            // prefix: string
+            string prefix = 2;
+
+            // range: list of object
+            repeated Range range = 3;
+
+            // regex: string
+            string regex = 4;
+
+            // suffix: string
+            string suffix = 5;
+
+            message Range {
+              // end: number
+              int64 end = 1;
+
+              // start: number
+              int64 start = 2;
+            }
+          }
+        }
+      }
+
+      message RetryPolicy {
+        // grpc_retry_events: set of string
+        repeated string grpc_retry_events = 1 [json_name = "grpc_retry_events"];
+
+        // http_retry_events: set of string
+        repeated string http_retry_events = 2 [json_name = "http_retry_events"];
+
+        // max_retries: number
+        int64 max_retries = 3 [json_name = "max_retries"];
+
+        // per_retry_timeout: list of object
+        repeated PerRetryTimeout per_retry_timeout = 4 [json_name = "per_retry_timeout"];
+
+        // tcp_retry_events: set of string
+        repeated string tcp_retry_events = 5 [json_name = "tcp_retry_events"];
+
+        message PerRetryTimeout {
+          // unit: string
+          string unit = 1;
+
+          // value: number
+          int64 value = 2;
+        }
+      }
+
+      message Timeout {
+        // idle: list of object
+        repeated Idle idle = 1;
+
+        // per_request: list of object
+        repeated PerRequest per_request = 2 [json_name = "per_request"];
+
+        message Idle {
+          // unit: string
+          string unit = 1;
+
+          // value: number
+          int64 value = 2;
+        }
+
+        message PerRequest {
+          // unit: string
+          string unit = 1;
+
+          // value: number
+          int64 value = 2;
+        }
+      }
+    }
+
+    message Http2Route {
+      // action: list of object
+      repeated Action action = 1;
+
+      // match: list of object
+      repeated Match match = 2;
+
+      // retry_policy: list of object
+      repeated RetryPolicy retry_policy = 3 [json_name = "retry_policy"];
+
+      // timeout: list of object
+      repeated Timeout timeout = 4;
+
+      message Action {
+        // weighted_target: set of object
+        repeated WeightedTarget weighted_target = 1 [json_name = "weighted_target"];
+
+        message WeightedTarget {
+          // port: number
+          int64 port = 1;
+
+          // virtual_node: string
+          string virtual_node = 2 [json_name = "virtual_node"];
+
+          // weight: number
+          int64 weight = 3;
+        }
+      }
+
+      message Match {
+        // header: set of object
+        repeated Header header = 1;
+
+        // method: string
+        string method = 2;
+
+        // path: list of object
+        repeated Path path = 3;
+
+        // port: number
+        int64 port = 4;
+
+        // prefix: string
+        string prefix = 5;
+
+        // query_parameter: set of object
+        repeated QueryParameter query_parameter = 6 [json_name = "query_parameter"];
+
+        // scheme: string
+        string scheme = 7;
+
+        message Header {
+          // invert: bool
+          bool invert = 1;
+
+          // match: list of object
+          repeated Match match = 2;
+
+          // name: string
+          string name = 3;
+
+          message Match {
+            // exact: string
+            string exact = 1;
+
+            // prefix: string
+            string prefix = 2;
+
+            // range: list of object
+            repeated Range range = 3;
+
+            // regex: string
+            string regex = 4;
+
+            // suffix: string
+            string suffix = 5;
+
+            message Range {
+              // end: number
+              int64 end = 1;
+
+              // start: number
+              int64 start = 2;
+            }
+          }
+        }
+
+        message Path {
+          // exact: string
+          string exact = 1;
+
+          // regex: string
+          string regex = 2;
+        }
+
+        message QueryParameter {
+          // match: list of object
+          repeated Match match = 1;
+
+          // name: string
+          string name = 2;
+
+          message Match {
+            // exact: string
+            string exact = 1;
+          }
+        }
+      }
+
+      message RetryPolicy {
+        // http_retry_events: set of string
+        repeated string http_retry_events = 1 [json_name = "http_retry_events"];
+
+        // max_retries: number
+        int64 max_retries = 2 [json_name = "max_retries"];
+
+        // per_retry_timeout: list of object
+        repeated PerRetryTimeout per_retry_timeout = 3 [json_name = "per_retry_timeout"];
+
+        // tcp_retry_events: set of string
+        repeated string tcp_retry_events = 4 [json_name = "tcp_retry_events"];
+
+        message PerRetryTimeout {
+          // unit: string
+          string unit = 1;
+
+          // value: number
+          int64 value = 2;
+        }
+      }
+
+      message Timeout {
+        // idle: list of object
+        repeated Idle idle = 1;
+
+        // per_request: list of object
+        repeated PerRequest per_request = 2 [json_name = "per_request"];
+
+        message Idle {
+          // unit: string
+          string unit = 1;
+
+          // value: number
+          int64 value = 2;
+        }
+
+        message PerRequest {
+          // unit: string
+          string unit = 1;
+
+          // value: number
+          int64 value = 2;
+        }
+      }
+    }
+
+    message HttpRoute {
+      // action: list of object
+      repeated Action action = 1;
+
+      // match: list of object
+      repeated Match match = 2;
+
+      // retry_policy: list of object
+      repeated RetryPolicy retry_policy = 3 [json_name = "retry_policy"];
+
+      // timeout: list of object
+      repeated Timeout timeout = 4;
+
+      message Action {
+        // weighted_target: set of object
+        repeated WeightedTarget weighted_target = 1 [json_name = "weighted_target"];
+
+        message WeightedTarget {
+          // port: number
+          int64 port = 1;
+
+          // virtual_node: string
+          string virtual_node = 2 [json_name = "virtual_node"];
+
+          // weight: number
+          int64 weight = 3;
+        }
+      }
+
+      message Match {
+        // header: set of object
+        repeated Header header = 1;
+
+        // method: string
+        string method = 2;
+
+        // path: list of object
+        repeated Path path = 3;
+
+        // port: number
+        int64 port = 4;
+
+        // prefix: string
+        string prefix = 5;
+
+        // query_parameter: set of object
+        repeated QueryParameter query_parameter = 6 [json_name = "query_parameter"];
+
+        // scheme: string
+        string scheme = 7;
+
+        message Header {
+          // invert: bool
+          bool invert = 1;
+
+          // match: list of object
+          repeated Match match = 2;
+
+          // name: string
+          string name = 3;
+
+          message Match {
+            // exact: string
+            string exact = 1;
+
+            // prefix: string
+            string prefix = 2;
+
+            // range: list of object
+            repeated Range range = 3;
+
+            // regex: string
+            string regex = 4;
+
+            // suffix: string
+            string suffix = 5;
+
+            message Range {
+              // end: number
+              int64 end = 1;
+
+              // start: number
+              int64 start = 2;
+            }
+          }
+        }
+
+        message Path {
+          // exact: string
+          string exact = 1;
+
+          // regex: string
+          string regex = 2;
+        }
+
+        message QueryParameter {
+          // match: list of object
+          repeated Match match = 1;
+
+          // name: string
+          string name = 2;
+
+          message Match {
+            // exact: string
+            string exact = 1;
+          }
+        }
+      }
+
+      message RetryPolicy {
+        // http_retry_events: set of string
+        repeated string http_retry_events = 1 [json_name = "http_retry_events"];
+
+        // max_retries: number
+        int64 max_retries = 2 [json_name = "max_retries"];
+
+        // per_retry_timeout: list of object
+        repeated PerRetryTimeout per_retry_timeout = 3 [json_name = "per_retry_timeout"];
+
+        // tcp_retry_events: set of string
+        repeated string tcp_retry_events = 4 [json_name = "tcp_retry_events"];
+
+        message PerRetryTimeout {
+          // unit: string
+          string unit = 1;
+
+          // value: number
+          int64 value = 2;
+        }
+      }
+
+      message Timeout {
+        // idle: list of object
+        repeated Idle idle = 1;
+
+        // per_request: list of object
+        repeated PerRequest per_request = 2 [json_name = "per_request"];
+
+        message Idle {
+          // unit: string
+          string unit = 1;
+
+          // value: number
+          int64 value = 2;
+        }
+
+        message PerRequest {
+          // unit: string
+          string unit = 1;
+
+          // value: number
+          int64 value = 2;
+        }
+      }
+    }
+
+    message TcpRoute {
+      // action: list of object
+      repeated Action action = 1;
+
+      // match: list of object
+      repeated Match match = 2;
+
+      // timeout: list of object
+      repeated Timeout timeout = 3;
+
+      message Action {
+        // weighted_target: set of object
+        repeated WeightedTarget weighted_target = 1 [json_name = "weighted_target"];
+
+        message WeightedTarget {
+          // port: number
+          int64 port = 1;
+
+          // virtual_node: string
+          string virtual_node = 2 [json_name = "virtual_node"];
+
+          // weight: number
+          int64 weight = 3;
+        }
+      }
+
+      message Match {
+        // port: number
+        int64 port = 1;
+      }
+
+      message Timeout {
+        // idle: list of object
+        repeated Idle idle = 1;
+
+        message Idle {
+          // unit: string
+          string unit = 1;
+
+          // value: number
+          int64 value = 2;
+        }
+      }
+    }
+  }
+}
+
+// AwsAppmeshVirtualGateway version is 0
+message AwsAppmeshVirtualGateway {
+  string arn = 1;
+
+  string created_date = 2 [json_name = "created_date"];
+
+  string id = 3;
+
+  string last_updated_date = 4 [json_name = "last_updated_date"];
+
+  string mesh_name = 5 [json_name = "mesh_name"];
+
+  string mesh_owner = 6 [json_name = "mesh_owner"];
+
+  string name = 7;
+
+  string resource_owner = 8 [json_name = "resource_owner"];
+
+  repeated Spec spec = 9;
+
+  map<string, string> tags = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Spec {
+    // backend_defaults: list of object
+    repeated BackendDefaults backend_defaults = 1 [json_name = "backend_defaults"];
+
+    // listener: list of object
+    repeated Listener listener = 2;
+
+    // logging: list of object
+    repeated Logging logging = 3;
+
+    message BackendDefaults {
+      // client_policy: list of object
+      repeated ClientPolicy client_policy = 1 [json_name = "client_policy"];
+
+      message ClientPolicy {
+        // tls: list of object
+        repeated Tls tls = 1;
+
+        message Tls {
+          // certificate: list of object
+          repeated Certificate certificate = 1;
+
+          // enforce: bool
+          bool enforce = 2;
+
+          // ports: set of number
+          repeated int64 ports = 3;
+
+          // validation: list of object
+          repeated Validation validation = 4;
+
+          message Certificate {
+            // file: list of object
+            repeated File file = 1;
+
+            // sds: list of object
+            repeated Sds sds = 2;
+
+            message File {
+              // certificate_chain: string
+              string certificate_chain = 1 [json_name = "certificate_chain"];
+
+              // private_key: string
+              string private_key = 2 [json_name = "private_key"];
+            }
+
+            message Sds {
+              // secret_name: string
+              string secret_name = 1 [json_name = "secret_name"];
+            }
+          }
+
+          message Validation {
+            // subject_alternative_names: list of object
+            repeated SubjectAlternativeNames subject_alternative_names = 1 [json_name = "subject_alternative_names"];
+
+            // trust: list of object
+            repeated Trust trust = 2;
+
+            message SubjectAlternativeNames {
+              // match: list of object
+              repeated Match match = 1;
+
+              message Match {
+                // exact: set of string
+                repeated string exact = 1;
+              }
+            }
+
+            message Trust {
+              // acm: list of object
+              repeated Acm acm = 1;
+
+              // file: list of object
+              repeated File file = 2;
+
+              // sds: list of object
+              repeated Sds sds = 3;
+
+              message Acm {
+                // certificate_authority_arns: set of string
+                repeated string certificate_authority_arns = 1 [json_name = "certificate_authority_arns"];
+              }
+
+              message File {
+                // certificate_chain: string
+                string certificate_chain = 1 [json_name = "certificate_chain"];
+              }
+
+              message Sds {
+                // secret_name: string
+                string secret_name = 1 [json_name = "secret_name"];
+              }
+            }
+          }
+        }
+      }
+    }
+
+    message Listener {
+      // connection_pool: list of object
+      repeated ConnectionPool connection_pool = 1 [json_name = "connection_pool"];
+
+      // health_check: list of object
+      repeated HealthCheck health_check = 2 [json_name = "health_check"];
+
+      // port_mapping: list of object
+      repeated PortMapping port_mapping = 3 [json_name = "port_mapping"];
+
+      // tls: list of object
+      repeated Tls tls = 4;
+
+      message ConnectionPool {
+        // grpc: list of object
+        repeated Grpc grpc = 1;
+
+        // http: list of object
+        repeated Http http = 2;
+
+        // http2: list of object
+        repeated Http2 http2 = 3;
+
+        message Grpc {
+          // max_requests: number
+          int64 max_requests = 1 [json_name = "max_requests"];
+        }
+
+        message Http {
+          // max_connections: number
+          int64 max_connections = 1 [json_name = "max_connections"];
+
+          // max_pending_requests: number
+          int64 max_pending_requests = 2 [json_name = "max_pending_requests"];
+        }
+
+        message Http2 {
+          // max_requests: number
+          int64 max_requests = 1 [json_name = "max_requests"];
+        }
+      }
+
+      message HealthCheck {
+        // healthy_threshold: number
+        int64 healthy_threshold = 1 [json_name = "healthy_threshold"];
+
+        // interval_millis: number
+        int64 interval_millis = 2 [json_name = "interval_millis"];
+
+        // path: string
+        string path = 3;
+
+        // port: number
+        int64 port = 4;
+
+        // protocol: string
+        string protocol = 5;
+
+        // timeout_millis: number
+        int64 timeout_millis = 6 [json_name = "timeout_millis"];
+
+        // unhealthy_threshold: number
+        int64 unhealthy_threshold = 7 [json_name = "unhealthy_threshold"];
+      }
+
+      message PortMapping {
+        // port: number
+        int64 port = 1;
+
+        // protocol: string
+        string protocol = 2;
+      }
+
+      message Tls {
+        // certificate: list of object
+        repeated Certificate certificate = 1;
+
+        // mode: string
+        string mode = 2;
+
+        // validation: list of object
+        repeated Validation validation = 3;
+
+        message Certificate {
+          // acm: list of object
+          repeated Acm acm = 1;
+
+          // file: list of object
+          repeated File file = 2;
+
+          // sds: list of object
+          repeated Sds sds = 3;
+
+          message Acm {
+            // certificate_arn: string
+            string certificate_arn = 1 [json_name = "certificate_arn"];
+          }
+
+          message File {
+            // certificate_chain: string
+            string certificate_chain = 1 [json_name = "certificate_chain"];
+
+            // private_key: string
+            string private_key = 2 [json_name = "private_key"];
+          }
+
+          message Sds {
+            // secret_name: string
+            string secret_name = 1 [json_name = "secret_name"];
+          }
+        }
+
+        message Validation {
+          // subject_alternative_names: list of object
+          repeated SubjectAlternativeNames subject_alternative_names = 1 [json_name = "subject_alternative_names"];
+
+          // trust: list of object
+          repeated Trust trust = 2;
+
+          message SubjectAlternativeNames {
+            // match: list of object
+            repeated Match match = 1;
+
+            message Match {
+              // exact: set of string
+              repeated string exact = 1;
+            }
+          }
+
+          message Trust {
+            // file: list of object
+            repeated File file = 1;
+
+            // sds: list of object
+            repeated Sds sds = 2;
+
+            message File {
+              // certificate_chain: string
+              string certificate_chain = 1 [json_name = "certificate_chain"];
+            }
+
+            message Sds {
+              // secret_name: string
+              string secret_name = 1 [json_name = "secret_name"];
+            }
+          }
+        }
+      }
+    }
+
+    message Logging {
+      // access_log: list of object
+      repeated AccessLog access_log = 1 [json_name = "access_log"];
+
+      message AccessLog {
+        // file: list of object
+        repeated File file = 1;
+
+        message File {
+          // format: list of object
+          repeated Format format = 1;
+
+          // path: string
+          string path = 2;
+
+          message Format {
+            // json: list of object
+            repeated Json json = 1;
+
+            // text: string
+            string text = 2;
+
+            message Json {
+              // key: string
+              string key = 1;
+
+              // value: string
+              string value = 2;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// AwsAppmeshVirtualNode version is 0
+message AwsAppmeshVirtualNode {
+  string arn = 1;
+
+  string created_date = 2 [json_name = "created_date"];
+
+  string id = 3;
+
+  string last_updated_date = 4 [json_name = "last_updated_date"];
+
+  string mesh_name = 5 [json_name = "mesh_name"];
+
+  string mesh_owner = 6 [json_name = "mesh_owner"];
+
+  string name = 7;
+
+  string resource_owner = 8 [json_name = "resource_owner"];
+
+  repeated Spec spec = 9;
+
+  map<string, string> tags = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Spec {
+    // backend: set of object
+    repeated Backend backend = 1;
+
+    // backend_defaults: list of object
+    repeated BackendDefaults backend_defaults = 2 [json_name = "backend_defaults"];
+
+    // listener: list of object
+    repeated Listener listener = 3;
+
+    // logging: list of object
+    repeated Logging logging = 4;
+
+    // service_discovery: list of object
+    repeated ServiceDiscovery service_discovery = 5 [json_name = "service_discovery"];
+
+    message Backend {
+      // virtual_service: list of object
+      repeated VirtualService virtual_service = 1 [json_name = "virtual_service"];
+
+      message VirtualService {
+        // client_policy: list of object
+        repeated ClientPolicy client_policy = 1 [json_name = "client_policy"];
+
+        // virtual_service_name: string
+        string virtual_service_name = 2 [json_name = "virtual_service_name"];
+
+        message ClientPolicy {
+          // tls: list of object
+          repeated Tls tls = 1;
+
+          message Tls {
+            // certificate: list of object
+            repeated Certificate certificate = 1;
+
+            // enforce: bool
+            bool enforce = 2;
+
+            // ports: set of number
+            repeated int64 ports = 3;
+
+            // validation: list of object
+            repeated Validation validation = 4;
+
+            message Certificate {
+              // file: list of object
+              repeated File file = 1;
+
+              // sds: list of object
+              repeated Sds sds = 2;
+
+              message File {
+                // certificate_chain: string
+                string certificate_chain = 1 [json_name = "certificate_chain"];
+
+                // private_key: string
+                string private_key = 2 [json_name = "private_key"];
+              }
+
+              message Sds {
+                // secret_name: string
+                string secret_name = 1 [json_name = "secret_name"];
+              }
+            }
+
+            message Validation {
+              // subject_alternative_names: list of object
+              repeated SubjectAlternativeNames subject_alternative_names = 1 [json_name = "subject_alternative_names"];
+
+              // trust: list of object
+              repeated Trust trust = 2;
+
+              message SubjectAlternativeNames {
+                // match: list of object
+                repeated Match match = 1;
+
+                message Match {
+                  // exact: set of string
+                  repeated string exact = 1;
+                }
+              }
+
+              message Trust {
+                // acm: list of object
+                repeated Acm acm = 1;
+
+                // file: list of object
+                repeated File file = 2;
+
+                // sds: list of object
+                repeated Sds sds = 3;
+
+                message Acm {
+                  // certificate_authority_arns: set of string
+                  repeated string certificate_authority_arns = 1 [json_name = "certificate_authority_arns"];
+                }
+
+                message File {
+                  // certificate_chain: string
+                  string certificate_chain = 1 [json_name = "certificate_chain"];
+                }
+
+                message Sds {
+                  // secret_name: string
+                  string secret_name = 1 [json_name = "secret_name"];
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    message BackendDefaults {
+      // client_policy: list of object
+      repeated ClientPolicy client_policy = 1 [json_name = "client_policy"];
+
+      message ClientPolicy {
+        // tls: list of object
+        repeated Tls tls = 1;
+
+        message Tls {
+          // certificate: list of object
+          repeated Certificate certificate = 1;
+
+          // enforce: bool
+          bool enforce = 2;
+
+          // ports: set of number
+          repeated int64 ports = 3;
+
+          // validation: list of object
+          repeated Validation validation = 4;
+
+          message Certificate {
+            // file: list of object
+            repeated File file = 1;
+
+            // sds: list of object
+            repeated Sds sds = 2;
+
+            message File {
+              // certificate_chain: string
+              string certificate_chain = 1 [json_name = "certificate_chain"];
+
+              // private_key: string
+              string private_key = 2 [json_name = "private_key"];
+            }
+
+            message Sds {
+              // secret_name: string
+              string secret_name = 1 [json_name = "secret_name"];
+            }
+          }
+
+          message Validation {
+            // subject_alternative_names: list of object
+            repeated SubjectAlternativeNames subject_alternative_names = 1 [json_name = "subject_alternative_names"];
+
+            // trust: list of object
+            repeated Trust trust = 2;
+
+            message SubjectAlternativeNames {
+              // match: list of object
+              repeated Match match = 1;
+
+              message Match {
+                // exact: set of string
+                repeated string exact = 1;
+              }
+            }
+
+            message Trust {
+              // acm: list of object
+              repeated Acm acm = 1;
+
+              // file: list of object
+              repeated File file = 2;
+
+              // sds: list of object
+              repeated Sds sds = 3;
+
+              message Acm {
+                // certificate_authority_arns: set of string
+                repeated string certificate_authority_arns = 1 [json_name = "certificate_authority_arns"];
+              }
+
+              message File {
+                // certificate_chain: string
+                string certificate_chain = 1 [json_name = "certificate_chain"];
+              }
+
+              message Sds {
+                // secret_name: string
+                string secret_name = 1 [json_name = "secret_name"];
+              }
+            }
+          }
+        }
+      }
+    }
+
+    message Listener {
+      // connection_pool: list of object
+      repeated ConnectionPool connection_pool = 1 [json_name = "connection_pool"];
+
+      // health_check: list of object
+      repeated HealthCheck health_check = 2 [json_name = "health_check"];
+
+      // outlier_detection: list of object
+      repeated OutlierDetection outlier_detection = 3 [json_name = "outlier_detection"];
+
+      // port_mapping: list of object
+      repeated PortMapping port_mapping = 4 [json_name = "port_mapping"];
+
+      // timeout: list of object
+      repeated Timeout timeout = 5;
+
+      // tls: list of object
+      repeated Tls tls = 6;
+
+      message ConnectionPool {
+        // grpc: list of object
+        repeated Grpc grpc = 1;
+
+        // http: list of object
+        repeated Http http = 2;
+
+        // http2: list of object
+        repeated Http2 http2 = 3;
+
+        // tcp: list of object
+        repeated Tcp tcp = 4;
+
+        message Grpc {
+          // max_requests: number
+          int64 max_requests = 1 [json_name = "max_requests"];
+        }
+
+        message Http {
+          // max_connections: number
+          int64 max_connections = 1 [json_name = "max_connections"];
+
+          // max_pending_requests: number
+          int64 max_pending_requests = 2 [json_name = "max_pending_requests"];
+        }
+
+        message Http2 {
+          // max_requests: number
+          int64 max_requests = 1 [json_name = "max_requests"];
+        }
+
+        message Tcp {
+          // max_connections: number
+          int64 max_connections = 1 [json_name = "max_connections"];
+        }
+      }
+
+      message HealthCheck {
+        // healthy_threshold: number
+        int64 healthy_threshold = 1 [json_name = "healthy_threshold"];
+
+        // interval_millis: number
+        int64 interval_millis = 2 [json_name = "interval_millis"];
+
+        // path: string
+        string path = 3;
+
+        // port: number
+        int64 port = 4;
+
+        // protocol: string
+        string protocol = 5;
+
+        // timeout_millis: number
+        int64 timeout_millis = 6 [json_name = "timeout_millis"];
+
+        // unhealthy_threshold: number
+        int64 unhealthy_threshold = 7 [json_name = "unhealthy_threshold"];
+      }
+
+      message OutlierDetection {
+        // base_ejection_duration: list of object
+        repeated BaseEjectionDuration base_ejection_duration = 1 [json_name = "base_ejection_duration"];
+
+        // interval: list of object
+        repeated Interval interval = 2;
+
+        // max_ejection_percent: number
+        int64 max_ejection_percent = 3 [json_name = "max_ejection_percent"];
+
+        // max_server_errors: number
+        int64 max_server_errors = 4 [json_name = "max_server_errors"];
+
+        message BaseEjectionDuration {
+          // unit: string
+          string unit = 1;
+
+          // value: number
+          int64 value = 2;
+        }
+
+        message Interval {
+          // unit: string
+          string unit = 1;
+
+          // value: number
+          int64 value = 2;
+        }
+      }
+
+      message PortMapping {
+        // port: number
+        int64 port = 1;
+
+        // protocol: string
+        string protocol = 2;
+      }
+
+      message Timeout {
+        // grpc: list of object
+        repeated Grpc grpc = 1;
+
+        // http: list of object
+        repeated Http http = 2;
+
+        // http2: list of object
+        repeated Http2 http2 = 3;
+
+        // tcp: list of object
+        repeated Tcp tcp = 4;
+
+        message Grpc {
+          // idle: list of object
+          repeated Idle idle = 1;
+
+          // per_request: list of object
+          repeated PerRequest per_request = 2 [json_name = "per_request"];
+
+          message Idle {
+            // unit: string
+            string unit = 1;
+
+            // value: number
+            int64 value = 2;
+          }
+
+          message PerRequest {
+            // unit: string
+            string unit = 1;
+
+            // value: number
+            int64 value = 2;
+          }
+        }
+
+        message Http {
+          // idle: list of object
+          repeated Idle idle = 1;
+
+          // per_request: list of object
+          repeated PerRequest per_request = 2 [json_name = "per_request"];
+
+          message Idle {
+            // unit: string
+            string unit = 1;
+
+            // value: number
+            int64 value = 2;
+          }
+
+          message PerRequest {
+            // unit: string
+            string unit = 1;
+
+            // value: number
+            int64 value = 2;
+          }
+        }
+
+        message Http2 {
+          // idle: list of object
+          repeated Idle idle = 1;
+
+          // per_request: list of object
+          repeated PerRequest per_request = 2 [json_name = "per_request"];
+
+          message Idle {
+            // unit: string
+            string unit = 1;
+
+            // value: number
+            int64 value = 2;
+          }
+
+          message PerRequest {
+            // unit: string
+            string unit = 1;
+
+            // value: number
+            int64 value = 2;
+          }
+        }
+
+        message Tcp {
+          // idle: list of object
+          repeated Idle idle = 1;
+
+          message Idle {
+            // unit: string
+            string unit = 1;
+
+            // value: number
+            int64 value = 2;
+          }
+        }
+      }
+
+      message Tls {
+        // certificate: list of object
+        repeated Certificate certificate = 1;
+
+        // mode: string
+        string mode = 2;
+
+        // validation: list of object
+        repeated Validation validation = 3;
+
+        message Certificate {
+          // acm: list of object
+          repeated Acm acm = 1;
+
+          // file: list of object
+          repeated File file = 2;
+
+          // sds: list of object
+          repeated Sds sds = 3;
+
+          message Acm {
+            // certificate_arn: string
+            string certificate_arn = 1 [json_name = "certificate_arn"];
+          }
+
+          message File {
+            // certificate_chain: string
+            string certificate_chain = 1 [json_name = "certificate_chain"];
+
+            // private_key: string
+            string private_key = 2 [json_name = "private_key"];
+          }
+
+          message Sds {
+            // secret_name: string
+            string secret_name = 1 [json_name = "secret_name"];
+          }
+        }
+
+        message Validation {
+          // subject_alternative_names: list of object
+          repeated SubjectAlternativeNames subject_alternative_names = 1 [json_name = "subject_alternative_names"];
+
+          // trust: list of object
+          repeated Trust trust = 2;
+
+          message SubjectAlternativeNames {
+            // match: list of object
+            repeated Match match = 1;
+
+            message Match {
+              // exact: set of string
+              repeated string exact = 1;
+            }
+          }
+
+          message Trust {
+            // file: list of object
+            repeated File file = 1;
+
+            // sds: list of object
+            repeated Sds sds = 2;
+
+            message File {
+              // certificate_chain: string
+              string certificate_chain = 1 [json_name = "certificate_chain"];
+            }
+
+            message Sds {
+              // secret_name: string
+              string secret_name = 1 [json_name = "secret_name"];
+            }
+          }
+        }
+      }
+    }
+
+    message Logging {
+      // access_log: list of object
+      repeated AccessLog access_log = 1 [json_name = "access_log"];
+
+      message AccessLog {
+        // file: list of object
+        repeated File file = 1;
+
+        message File {
+          // format: list of object
+          repeated Format format = 1;
+
+          // path: string
+          string path = 2;
+
+          message Format {
+            // json: list of object
+            repeated Json json = 1;
+
+            // text: string
+            string text = 2;
+
+            message Json {
+              // key: string
+              string key = 1;
+
+              // value: string
+              string value = 2;
+            }
+          }
+        }
+      }
+    }
+
+    message ServiceDiscovery {
+      // aws_cloud_map: list of object
+      repeated AwsCloudMap aws_cloud_map = 1 [json_name = "aws_cloud_map"];
+
+      // dns: list of object
+      repeated Dns dns = 2;
+
+      message AwsCloudMap {
+        // attributes: map of string
+        map<string, string> attributes = 1;
+
+        // namespace_name: string
+        string namespace_name = 2 [json_name = "namespace_name"];
+
+        // service_name: string
+        string service_name = 3 [json_name = "service_name"];
+      }
+
+      message Dns {
+        // hostname: string
+        string hostname = 1;
+
+        // ip_preference: string
+        string ip_preference = 2 [json_name = "ip_preference"];
+
+        // response_type: string
+        string response_type = 3 [json_name = "response_type"];
+      }
+    }
+  }
+}
+
+// AwsAppmeshVirtualRouter version is 0
+message AwsAppmeshVirtualRouter {
+  string arn = 1;
+
+  string created_date = 2 [json_name = "created_date"];
+
+  string id = 3;
+
+  string last_updated_date = 4 [json_name = "last_updated_date"];
+
+  string mesh_name = 5 [json_name = "mesh_name"];
+
+  string mesh_owner = 6 [json_name = "mesh_owner"];
+
+  string name = 7;
+
+  string resource_owner = 8 [json_name = "resource_owner"];
+
+  repeated Spec spec = 9;
+
+  map<string, string> tags = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Spec {
+    // listener: list of object
+    repeated Listener listener = 1;
+
+    message Listener {
+      // port_mapping: list of object
+      repeated PortMapping port_mapping = 1 [json_name = "port_mapping"];
+
+      message PortMapping {
+        // port: number
+        int64 port = 1;
+
+        // protocol: string
+        string protocol = 2;
+      }
+    }
+  }
+}
+
+// AwsAppmeshVirtualService version is 0
+message AwsAppmeshVirtualService {
+  string arn = 1;
+
+  string created_date = 2 [json_name = "created_date"];
+
+  string id = 3;
+
+  string last_updated_date = 4 [json_name = "last_updated_date"];
+
+  string mesh_name = 5 [json_name = "mesh_name"];
+
+  string mesh_owner = 6 [json_name = "mesh_owner"];
+
+  string name = 7;
+
+  string resource_owner = 8 [json_name = "resource_owner"];
+
+  repeated Spec spec = 9;
+
+  map<string, string> tags = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Spec {
+    // provider: list of object
+    repeated Provider provider = 1;
+
+    message Provider {
+      // virtual_node: list of object
+      repeated VirtualNode virtual_node = 1 [json_name = "virtual_node"];
+
+      // virtual_router: list of object
+      repeated VirtualRouter virtual_router = 2 [json_name = "virtual_router"];
+
+      message VirtualNode {
+        // virtual_node_name: string
+        string virtual_node_name = 1 [json_name = "virtual_node_name"];
+      }
+
+      message VirtualRouter {
+        // virtual_router_name: string
+        string virtual_router_name = 1 [json_name = "virtual_router_name"];
+      }
+    }
+  }
+}

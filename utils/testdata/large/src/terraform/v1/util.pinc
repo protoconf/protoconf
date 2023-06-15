@@ -1,0 +1,258 @@
+load("re.star", "re")
+load("any.star", "any")
+load("terraform.proto", TerraformProto="Terraform")
+load("//protoconf_terraform/config/v1/config.proto", "SubscriptionConfig")
+load("//google/protobuf/struct.proto", "Struct", "Value", "ListValue")
+
+# Last is the last hook, which returns the component without calling next()
+def Last(c, _):
+    return c
+
+
+def Chain(msg, *hooks):
+    queue = list(hooks)
+
+    def run_next(c):
+        next = queue.pop(0)
+        return next(c, run_next)
+
+    first = queue.pop(0)
+    return first(msg, run_next)
+
+
+def ChainWithLast(msg, *hooks):
+    return Chain(msg, *hooks + (Last,))
+
+
+def Terraform(*hooks):
+    tf = TerraformProto()
+
+    return ChainWithLast(tf, *hooks)
+
+
+def From(tf):
+    def do(_, next):
+        return next(tf)
+
+    return do
+
+
+def Provider(provider):
+    def do(tf, next):
+        if not tf.provider:
+            tf.provider = TerraformProto.Providers()
+
+        provider_name = str(provider).split(".")[1]
+        providerlist = getattr(tf.provider, provider_name)
+        providerlist.append(provider)
+        return next(tf)
+
+    return do
+
+
+matchFirstCap = re.compile("(.)([A-Z][a-z]+)")
+matchAllCap = re.compile("([a-z0-9])([A-Z])")
+
+
+def toSnakeCase(snake):
+    snake = matchFirstCap.sub("${1}_${2}", snake)
+    snake = matchAllCap.sub("${1}_${2}", snake)
+    return snake.lower()
+
+
+def resource_type(resource):
+    return toSnakeCase(str(resource).split()[0].split(".")[-1])
+
+
+def link(name, resource, var=False, is_data=False):
+    prefix = ".".join([resource_type(resource), name])
+    if is_data:
+        prefix = ".".join(["data", prefix])
+    return module(
+        prefix,
+        self=prefix,
+        **dict(
+            [
+                (
+                    field,
+                    ".".join([prefix, field])
+                    if not var
+                    else "${%s}" % ".".join([prefix, field]),
+                )
+                for field in dir(resource)
+            ]
+        )
+    )
+
+
+def flatten(x):
+    result = []
+    for el in x:
+        if type(el) == "list":
+            result.extend(flatten(el))
+        else:
+            result.append(el)
+    return result
+
+
+def Resource(name, resource, *hooks):
+    def do(tf, next):
+        if not tf.resource:
+            tf.resource = TerraformProto.Resources()
+        resource_dict = getattr(tf.resource, resource_type(resource))
+        resource_dict[name] = resource
+        l = link(name, resource, True)
+
+        subresources = [hook(l) for hook in hooks]
+        tf = Terraform(From(tf), *flatten(subresources))
+
+        return next(tf)
+
+    return do
+
+
+def Group(*hooks):
+    def do(tf, next):
+        tf = Terraform(From(tf), *hooks)
+        return next(tf)
+
+    return do
+
+
+def Data(name, datasource, *hooks):
+    def do(tf, next):
+        if not tf.data:
+            tf.data = TerraformProto.Datasources()
+
+        resource_dict = getattr(tf.data, resource_type(datasource))
+        resource_dict[name] = datasource
+        l = link(name, datasource, True, True)
+
+        subresources = [hook(l) for hook in hooks]
+        tf = Terraform(From(tf), *flatten(subresources))
+        return next(tf)
+
+    return do
+
+
+def Link(*hooks, **resources):
+    def do(tf, next):
+        tf = Terraform(
+            From(tf),
+            *[Resource(name, resource) for name, resource in resources.items()]
+        )
+        inputs = struct(
+            resource=module("resources", **resources),
+            link=module(
+                "links",
+                **dict(
+                    [
+                        (name, link(name, resource))
+                        for name, resource in resources.items()
+                    ]
+                )
+            ),
+            var=module(
+                "links",
+                **dict(
+                    [
+                        (name, link(name, resource, True))
+                        for name, resource in resources.items()
+                    ]
+                )
+            ),
+        )
+        ChainWithLast(inputs, *hooks)
+
+        return next(tf)
+
+    return do
+
+
+def Walk(component, func):
+    func(component)
+    for dep in component.upstreams:
+        Walk(dep, func)
+
+
+def GenerateTerraformConfigs(
+    prefix, state, outputs, subscription_config_key_name="watch"
+):
+    subscription_config = SubscriptionConfig(keys=[])
+
+    def extract_config(component):
+        for config_name, config in component.configs.items():
+            if config.type_url == "type.googleapis.com/terraform.v1.Terraform":
+                unpackedConfig = any.unpack(config, TerraformProto())
+
+                # fixes a bug in any.pack which duplicates entries in repeated providers
+                for providerType in dir(unpackedConfig.provider):
+                    p = getattr(unpackedConfig.provider, providerType)
+                    if p:
+                        unpackedConfig.provider[providerType] = list(set(p))
+
+                key = "/".join([prefix, component.domain, component.name, config_name])
+                outputs[key] = unpackedConfig
+                subscription_config.keys.append(key)
+
+    for domain in state.domains.values():
+        Walk(domain.head, extract_config)
+
+    outputs[subscription_config_key_name] = subscription_config
+    return outputs
+
+
+def Output(k, v):
+    def do(tf, next):
+        tf.output[k] = TerraformProto.Output(value=v)
+        return next(tf)
+
+    return do
+
+
+def value(v):
+    """
+    value gets a variable and returns is as a wkt `Value`
+
+    Args:
+        v: a variable
+    Returns:
+        Value()
+    """
+    if type(v) == "string":
+        return Value(string_value=v)
+    if type(v) == "int":
+        return Value(number_value=float(v))
+    if type(v) == "double":
+        return Value(number_value=v)
+    if type(v) == "bool":
+        return Value(bool_value=v)
+    if type(v) == "list":
+        return Value(list_value=ListValue(values=[value(i) for i in v]))
+    if type(v) == "dict":
+        return Struct(fields=dict([(k, value(vv)) for k, vv in v.items()]))
+    return None
+
+
+def Module(name, source, then=(), **kwargs):
+    def do(tf, next):
+        kwargs["source"] = source
+        tf.module[name] = value(kwargs)
+        outputs = lambda key: "${module.%s.%s}" % (name, key)
+        tf = Terraform(From(tf), *[child(outputs) for child in then])
+        return next(tf)
+
+    return do
+
+
+util = module(
+    "Terraform",
+    Terraform=Terraform,
+    Provider=Provider,
+    Resource=Resource,
+    Data=Data,
+    Link=Link,
+    Output=Output,
+    Group=Group,
+    Module=Module,
+)

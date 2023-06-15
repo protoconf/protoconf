@@ -1,0 +1,213 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsEcrLifecyclePolicy version is 0
+message AwsEcrLifecyclePolicy {
+  string id = 1;
+
+  string policy = 2;
+
+  string registry_id = 3 [json_name = "registry_id"];
+
+  string repository = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsEcrPullThroughCacheRule version is 0
+message AwsEcrPullThroughCacheRule {
+  string ecr_repository_prefix = 1 [json_name = "ecr_repository_prefix"];
+
+  string id = 2;
+
+  string registry_id = 3 [json_name = "registry_id"];
+
+  string upstream_registry_url = 4 [json_name = "upstream_registry_url"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsEcrRegistryPolicy version is 0
+message AwsEcrRegistryPolicy {
+  string id = 1;
+
+  string policy = 2;
+
+  string registry_id = 3 [json_name = "registry_id"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsEcrRegistryScanningConfiguration version is 0
+message AwsEcrRegistryScanningConfiguration {
+  string id = 1;
+
+  string registry_id = 2 [json_name = "registry_id"];
+
+  string scan_type = 3 [json_name = "scan_type"];
+
+  repeated Rule rule = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message Rule {
+    string scan_frequency = 1 [json_name = "scan_frequency"];
+
+    repeated RepositoryFilter repository_filter = 2 [json_name = "repository_filter"];
+
+    message RepositoryFilter {
+      string filter = 1;
+
+      string filter_type = 2 [json_name = "filter_type"];
+    }
+  }
+}
+
+// AwsEcrReplicationConfiguration version is 0
+message AwsEcrReplicationConfiguration {
+  string id = 1;
+
+  string registry_id = 2 [json_name = "registry_id"];
+
+  ReplicationConfiguration replication_configuration = 3 [json_name = "replication_configuration"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+
+  message ReplicationConfiguration {
+    repeated Rule rule = 1;
+
+    message Rule {
+      repeated Destination destination = 1;
+
+      repeated RepositoryFilter repository_filter = 2 [json_name = "repository_filter"];
+
+      message Destination {
+        string region = 1;
+
+        string registry_id = 2 [json_name = "registry_id"];
+      }
+
+      message RepositoryFilter {
+        string filter = 1;
+
+        string filter_type = 2 [json_name = "filter_type"];
+      }
+    }
+  }
+}
+
+// AwsEcrRepository version is 0
+message AwsEcrRepository {
+  string arn = 1;
+
+  bool force_delete = 2 [json_name = "force_delete"];
+
+  string id = 3;
+
+  string image_tag_mutability = 4 [json_name = "image_tag_mutability"];
+
+  string name = 5;
+
+  string registry_id = 6 [json_name = "registry_id"];
+
+  string repository_url = 7 [json_name = "repository_url"];
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  repeated EncryptionConfiguration encryption_configuration = 10 [json_name = "encryption_configuration"];
+
+  ImageScanningConfiguration image_scanning_configuration = 11 [json_name = "image_scanning_configuration"];
+
+  repeated Timeouts timeouts = 12;
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message EncryptionConfiguration {
+    string encryption_type = 1 [json_name = "encryption_type"];
+
+    string kms_key = 2 [json_name = "kms_key"];
+  }
+
+  message ImageScanningConfiguration {
+    bool scan_on_push = 1 [json_name = "scan_on_push"];
+  }
+
+  message Timeouts {
+    string delete = 1;
+  }
+}
+
+// AwsEcrRepositoryPolicy version is 0
+message AwsEcrRepositoryPolicy {
+  string id = 1;
+
+  string policy = 2;
+
+  string registry_id = 3 [json_name = "registry_id"];
+
+  string repository = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}

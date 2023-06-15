@@ -1,0 +1,331 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.datasources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleMonitoringAppEngineService version is 0
+message GoogleMonitoringAppEngineService {
+  // Name used for UI elements listing this Service.
+  string display_name = 1 [json_name = "display_name"];
+
+  string id = 2;
+
+  // The ID of the App Engine module underlying this service.
+  // Corresponds to the 'moduleId' resource label for a 'gae_app'
+  // monitored resource(see https://cloud.google.com/monitoring/api/resources#tag_gae_app)
+  string module_id = 3 [json_name = "module_id"];
+
+  // The full resource name for this service. The syntax is:
+  // projects/[PROJECT_ID]/services/[SERVICE_ID].
+  string name = 4;
+
+  string project = 5;
+
+  // An optional service ID to use. If not given, the server will generate a
+  // service ID.
+  string service_id = 6 [json_name = "service_id"];
+
+  // Configuration for how to query telemetry on a Service.
+  repeated Telemetry telemetry = 7;
+
+  // Labels which have been used to annotate the service. Label keys must start
+  // with a letter. Label keys and values may contain lowercase letters,
+  // numbers, underscores, and dashes. Label keys and values have a maximum
+  // length of 63 characters, and must be less than 128 bytes in size. Up to 64
+  // label entries may be stored. For labels which do not have a semantic value,
+  // the empty string may be supplied for the label value.
+  map<string, string> user_labels = 8 [json_name = "user_labels"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Telemetry {
+    // resource_name: string
+    string resource_name = 1 [json_name = "resource_name"];
+  }
+}
+
+// GoogleMonitoringClusterIstioService version is 0
+message GoogleMonitoringClusterIstioService {
+  // The name of the Kubernetes cluster in which this Istio service is defined.
+  //                        Corresponds to the clusterName resource label in k8s_cluster resources.
+  string cluster_name = 1 [json_name = "cluster_name"];
+
+  // Name used for UI elements listing this Service.
+  string display_name = 2 [json_name = "display_name"];
+
+  string id = 3;
+
+  // The location of the Kubernetes cluster in which this Istio service is defined.
+  //                        Corresponds to the location resource label in k8s_cluster resources.
+  string location = 4;
+
+  // The full resource name for this service. The syntax is:
+  // projects/[PROJECT_ID]/services/[SERVICE_ID].
+  string name = 5;
+
+  string project = 6;
+
+  // An optional service ID to use. If not given, the server will generate a
+  // service ID.
+  string service_id = 7 [json_name = "service_id"];
+
+  // The name of the Istio service underlying this service.
+  //                        Corresponds to the destination_service_name metric label in Istio metrics.
+  string service_name = 8 [json_name = "service_name"];
+
+  // The namespace of the Istio service underlying this service.
+  //                        Corresponds to the destination_service_namespace metric label in Istio metrics.
+  string service_namespace = 9 [json_name = "service_namespace"];
+
+  // Configuration for how to query telemetry on a Service.
+  repeated Telemetry telemetry = 10;
+
+  // Labels which have been used to annotate the service. Label keys must start
+  // with a letter. Label keys and values may contain lowercase letters,
+  // numbers, underscores, and dashes. Label keys and values have a maximum
+  // length of 63 characters, and must be less than 128 bytes in size. Up to 64
+  // label entries may be stored. For labels which do not have a semantic value,
+  // the empty string may be supplied for the label value.
+  map<string, string> user_labels = 11 [json_name = "user_labels"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message Telemetry {
+    // resource_name: string
+    string resource_name = 1 [json_name = "resource_name"];
+  }
+}
+
+// GoogleMonitoringIstioCanonicalService version is 0
+message GoogleMonitoringIstioCanonicalService {
+  // The name of the canonical service underlying this service..
+  //                        Corresponds to the destination_service_name metric label in Istio metrics.
+  string canonical_service = 1 [json_name = "canonical_service"];
+
+  // The namespace of the canonical service underlying this service.
+  //                        Corresponds to the destination_service_namespace metric label in Istio metrics.
+  string canonical_service_namespace = 2 [json_name = "canonical_service_namespace"];
+
+  // Name used for UI elements listing this Service.
+  string display_name = 3 [json_name = "display_name"];
+
+  string id = 4;
+
+  // Identifier for the Istio mesh in which this canonical service is defined.
+  //                        Corresponds to the meshUid metric label in Istio metrics.
+  string mesh_uid = 5 [json_name = "mesh_uid"];
+
+  // The full resource name for this service. The syntax is:
+  // projects/[PROJECT_ID]/services/[SERVICE_ID].
+  string name = 6;
+
+  string project = 7;
+
+  // An optional service ID to use. If not given, the server will generate a
+  // service ID.
+  string service_id = 8 [json_name = "service_id"];
+
+  // Configuration for how to query telemetry on a Service.
+  repeated Telemetry telemetry = 9;
+
+  // Labels which have been used to annotate the service. Label keys must start
+  // with a letter. Label keys and values may contain lowercase letters,
+  // numbers, underscores, and dashes. Label keys and values have a maximum
+  // length of 63 characters, and must be less than 128 bytes in size. Up to 64
+  // label entries may be stored. For labels which do not have a semantic value,
+  // the empty string may be supplied for the label value.
+  map<string, string> user_labels = 10 [json_name = "user_labels"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Telemetry {
+    // resource_name: string
+    string resource_name = 1 [json_name = "resource_name"];
+  }
+}
+
+// GoogleMonitoringMeshIstioService version is 0
+message GoogleMonitoringMeshIstioService {
+  // Name used for UI elements listing this Service.
+  string display_name = 1 [json_name = "display_name"];
+
+  string id = 2;
+
+  // Identifier for the mesh in which this Istio service is defined.
+  //                        Corresponds to the meshUid metric label in Istio metrics.
+  string mesh_uid = 3 [json_name = "mesh_uid"];
+
+  // The full resource name for this service. The syntax is:
+  // projects/[PROJECT_ID]/services/[SERVICE_ID].
+  string name = 4;
+
+  string project = 5;
+
+  // An optional service ID to use. If not given, the server will generate a
+  // service ID.
+  string service_id = 6 [json_name = "service_id"];
+
+  // The name of the Istio service underlying this service.
+  //                        Corresponds to the destination_service_name metric label in Istio metrics.
+  string service_name = 7 [json_name = "service_name"];
+
+  // The namespace of the Istio service underlying this service.
+  //                        Corresponds to the destination_service_namespace metric label in Istio metrics.
+  string service_namespace = 8 [json_name = "service_namespace"];
+
+  // Configuration for how to query telemetry on a Service.
+  repeated Telemetry telemetry = 9;
+
+  // Labels which have been used to annotate the service. Label keys must start
+  // with a letter. Label keys and values may contain lowercase letters,
+  // numbers, underscores, and dashes. Label keys and values have a maximum
+  // length of 63 characters, and must be less than 128 bytes in size. Up to 64
+  // label entries may be stored. For labels which do not have a semantic value,
+  // the empty string may be supplied for the label value.
+  map<string, string> user_labels = 10 [json_name = "user_labels"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Telemetry {
+    // resource_name: string
+    string resource_name = 1 [json_name = "resource_name"];
+  }
+}
+
+// GoogleMonitoringNotificationChannel version is 0
+message GoogleMonitoringNotificationChannel {
+  // An optional human-readable description of this notification channel. This description may provide additional details, beyond the display name, for the channel. This may not exceed 1024 Unicode characters.
+  string description = 1;
+
+  // An optional human-readable name for this notification channel. It is recommended that you specify a non-empty and unique name in order to make it easier to identify the channels in your project, though this is not enforced. The display name is limited to 512 Unicode characters.
+  string display_name = 2 [json_name = "display_name"];
+
+  // Whether notifications are forwarded to the described channel. This makes it possible to disable delivery of notifications to a particular channel without removing the channel from all alerting policies that reference the channel. This is a more convenient approach when the change is temporary and you want to receive notifications from the same set of alerting policies on the channel at some point in the future.
+  bool enabled = 3;
+
+  // If true, the notification channel will be deleted regardless
+  // of its use in alert policies (the policies will be updated
+  // to remove the channel). If false, channels that are still
+  // referenced by an existing alerting policy will fail to be
+  // deleted in a delete operation.
+  bool force_delete = 4 [json_name = "force_delete"];
+
+  string id = 5;
+
+  // Configuration fields that define the channel and its behavior. The
+  // permissible and required labels are specified in the
+  // NotificationChannelDescriptor corresponding to the type field.
+  //
+  // Labels with sensitive data are obfuscated by the API and therefore Terraform cannot
+  // determine if there are upstream changes to these fields. They can also be configured via
+  // the sensitive_labels block, but cannot be configured in both places.
+  map<string, string> labels = 6;
+
+  // The full REST resource name for this channel. The syntax is:
+  // projects/[PROJECT_ID]/notificationChannels/[CHANNEL_ID]
+  // The [CHANNEL_ID] is automatically assigned by the server on creation.
+  string name = 7;
+
+  string project = 8;
+
+  // Different notification type behaviors are configured primarily using the the 'labels' field on this
+  // resource. This block contains the labels which contain secrets or passwords so that they can be marked
+  // sensitive and hidden from plan output. The name of the field, eg: password, will be the key
+  // in the 'labels' map in the api request.
+  //
+  // Credentials may not be specified in both locations and will cause an error. Changing from one location
+  // to a different credential configuration in the config will require an apply to update state.
+  repeated SensitiveLabels sensitive_labels = 9 [json_name = "sensitive_labels"];
+
+  // The type of the notification channel. This field matches the value of the NotificationChannelDescriptor.type field. See https://cloud.google.com/monitoring/api/ref_v3/rest/v3/projects.notificationChannelDescriptors/list to get the list of valid values such as "email", "slack", etc...
+  string type = 10;
+
+  // User-supplied key/value data that does not need to conform to the corresponding NotificationChannelDescriptor's schema, unlike the labels field. This field is intended to be used for organizing and identifying the NotificationChannel objects.The field can contain up to 64 entries. Each key and value is limited to 63 Unicode characters or 128 bytes, whichever is smaller. Labels and values can contain only lowercase letters, numerals, underscores, and dashes. Keys must begin with a letter.
+  map<string, string> user_labels = 11 [json_name = "user_labels"];
+
+  // Indicates whether this channel has been verified or not. On a ListNotificationChannels or GetNotificationChannel operation, this field is expected to be populated.If the value is UNVERIFIED, then it indicates that the channel is non-functioning (it both requires verification and lacks verification); otherwise, it is assumed that the channel works.If the channel is neither VERIFIED nor UNVERIFIED, it implies that the channel is of a type that does not require verification or that this specific channel has been exempted from verification because it was created prior to verification being required for channels of this type.This field cannot be modified using a standard UpdateNotificationChannel operation. To change the value of this field, you must call VerifyNotificationChannel.
+  string verification_status = 12 [json_name = "verification_status"];
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message SensitiveLabels {
+    // auth_token: string
+    string auth_token = 1 [json_name = "auth_token"];
+
+    // password: string
+    string password = 2;
+
+    // service_key: string
+    string service_key = 3 [json_name = "service_key"];
+  }
+}
+
+// GoogleMonitoringUptimeCheckIps version is 0
+message GoogleMonitoringUptimeCheckIps {
+  string id = 1;
+
+  repeated UptimeCheckIps uptime_check_ips = 2 [json_name = "uptime_check_ips"];
+
+  map<string, string> for_each = 3 [json_name = "for_each"];
+
+  repeated string depends_on = 4 [json_name = "depends_on"];
+
+  int32 count = 5;
+
+  string provider = 6;
+
+  terraform.v1.Lifecycle lifecycle = 7;
+
+  message UptimeCheckIps {
+    // ip_address: string
+    string ip_address = 1 [json_name = "ip_address"];
+
+    // location: string
+    string location = 2;
+
+    // region: string
+    string region = 3;
+  }
+}

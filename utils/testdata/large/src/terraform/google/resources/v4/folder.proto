@@ -1,0 +1,343 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleFolder version is 0
+message GoogleFolder {
+  // Timestamp when the Folder was created. Assigned by the server. A timestamp in RFC3339 UTC "Zulu" format, accurate to nanoseconds. Example: "2014-10-02T15:01:23.045123456Z".
+  string create_time = 1 [json_name = "create_time"];
+
+  // The folder's display name. A folder's display name must be unique amongst its siblings, e.g. no two folders with the same parent can share the same display name. The display name must start and end with a letter or digit, may contain letters, digits, spaces, hyphens and underscores and can be no longer than 30 characters.
+  string display_name = 2 [json_name = "display_name"];
+
+  // The folder id from the name "folders/{folder_id}"
+  string folder_id = 3 [json_name = "folder_id"];
+
+  string id = 4;
+
+  // The lifecycle state of the folder such as ACTIVE or DELETE_REQUESTED.
+  string lifecycle_state = 5 [json_name = "lifecycle_state"];
+
+  // The resource name of the Folder. Its format is folders/{folder_id}.
+  string name = 6;
+
+  // The resource name of the parent Folder or Organization. Must be of the form folders/{folder_id} or organizations/{org_id}.
+  string parent = 7;
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string read = 3;
+
+    string update = 4;
+  }
+}
+
+// GoogleFolderAccessApprovalSettings version is 0
+message GoogleFolderAccessApprovalSettings {
+  // The asymmetric crypto key version to use for signing approval requests.
+  // Empty active_key_version indicates that a Google-managed key should be used for signing.
+  // This property will be ignored if set by an ancestor of the resource, and new non-empty values may not be set.
+  string active_key_version = 1 [json_name = "active_key_version"];
+
+  // If the field is true, that indicates that an ancestor of this Folder has set active_key_version.
+  bool ancestor_has_active_key_version = 2 [json_name = "ancestor_has_active_key_version"];
+
+  // If the field is true, that indicates that at least one service is enrolled for Access Approval in one or more ancestors of the Folder.
+  bool enrolled_ancestor = 3 [json_name = "enrolled_ancestor"];
+
+  // ID of the folder of the access approval settings.
+  string folder_id = 4 [json_name = "folder_id"];
+
+  string id = 5;
+
+  // If the field is true, that indicates that there is some configuration issue with the active_key_version
+  // configured on this Folder (e.g. it doesn't exist or the Access Approval service account doesn't have the
+  // correct permissions on it, etc.) This key version is not necessarily the effective key version at this level,
+  // as key versions are inherited top-down.
+  bool invalid_key_version = 6 [json_name = "invalid_key_version"];
+
+  // The resource name of the settings. Format is "folders/{folder_id}/accessApprovalSettings"
+  string name = 7;
+
+  // A list of email addresses to which notifications relating to approval requests should be sent.
+  // Notifications relating to a resource will be sent to all emails in the settings of ancestor
+  // resources of that resource. A maximum of 50 email addresses are allowed.
+  repeated string notification_emails = 8 [json_name = "notification_emails"];
+
+  repeated EnrolledServices enrolled_services = 9 [json_name = "enrolled_services"];
+
+  repeated Timeouts timeouts = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message EnrolledServices {
+    // The product for which Access Approval will be enrolled. Allowed values are listed (case-sensitive):
+    //  * all
+    //  * App Engine
+    //  * BigQuery
+    //  * Cloud Bigtable
+    //  * Cloud Key Management Service
+    //  * Compute Engine
+    //  * Cloud Dataflow
+    //  * Cloud Identity and Access Management
+    //  * Cloud Pub/Sub
+    //  * Cloud Storage
+    //  * Persistent Disk
+    //
+    // Note: These values are supported as input, but considered a legacy format:
+    //  * all
+    //  * appengine.googleapis.com
+    //  * bigquery.googleapis.com
+    //  * bigtable.googleapis.com
+    //  * cloudkms.googleapis.com
+    //  * compute.googleapis.com
+    //  * dataflow.googleapis.com
+    //  * iam.googleapis.com
+    //  * pubsub.googleapis.com
+    //  * storage.googleapis.com
+    string cloud_product = 1 [json_name = "cloud_product"];
+
+    // The enrollment level of the service. Default value: "BLOCK_ALL" Possible values: ["BLOCK_ALL"]
+    string enrollment_level = 2 [json_name = "enrollment_level"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleFolderIamAuditConfig version is 0
+message GoogleFolderIamAuditConfig {
+  // The etag of iam policy
+  string etag = 1;
+
+  string folder = 2;
+
+  string id = 3;
+
+  // Service which will be enabled for audit logging. The special value allServices covers all services.
+  string service = 4;
+
+  repeated AuditLogConfig audit_log_config = 5 [json_name = "audit_log_config"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message AuditLogConfig {
+    // Identities that do not cause logging for this type of permission. Each entry can have one of the following values:user:{emailid}: An email address that represents a specific Google account. For example, alice@gmail.com or joe@example.com. serviceAccount:{emailid}: An email address that represents a service account. For example, my-other-app@appspot.gserviceaccount.com. group:{emailid}: An email address that represents a Google group. For example, admins@example.com. domain:{domain}: A G Suite domain (primary, instead of alias) name that represents all the users of that domain. For example, google.com or example.com.
+    repeated string exempted_members = 1 [json_name = "exempted_members"];
+
+    // Permission type for which logging is to be configured. Must be one of DATA_READ, DATA_WRITE, or ADMIN_READ.
+    string log_type = 2 [json_name = "log_type"];
+  }
+}
+
+// GoogleFolderIamBinding version is 0
+message GoogleFolderIamBinding {
+  string etag = 1;
+
+  string folder = 2;
+
+  string id = 3;
+
+  repeated string members = 4;
+
+  string role = 5;
+
+  Condition condition = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleFolderIamMember version is 0
+message GoogleFolderIamMember {
+  string etag = 1;
+
+  string folder = 2;
+
+  string id = 3;
+
+  string member = 4;
+
+  string role = 5;
+
+  Condition condition = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleFolderIamPolicy version is 0
+message GoogleFolderIamPolicy {
+  string etag = 1;
+
+  string folder = 2;
+
+  string id = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// GoogleFolderOrganizationPolicy version is 0
+message GoogleFolderOrganizationPolicy {
+  // The name of the Constraint the Policy is configuring, for example, serviceuser.services.
+  string constraint = 1;
+
+  // The etag of the organization policy. etag is used for optimistic concurrency control as a way to help prevent simultaneous updates of a policy from overwriting each other.
+  string etag = 2;
+
+  // The resource name of the folder to set the policy for. Its format is folders/{folder_id}.
+  string folder = 3;
+
+  string id = 4;
+
+  // The timestamp in RFC3339 UTC "Zulu" format, accurate to nanoseconds, representing when the variable was last updated. Example: "2016-10-09T12:33:37.578138407Z".
+  string update_time = 5 [json_name = "update_time"];
+
+  // Version of the Policy. Default version is 0.
+  int64 version = 6;
+
+  BooleanPolicy boolean_policy = 7 [json_name = "boolean_policy"];
+
+  ListPolicy list_policy = 8 [json_name = "list_policy"];
+
+  RestorePolicy restore_policy = 9 [json_name = "restore_policy"];
+
+  repeated Timeouts timeouts = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message BooleanPolicy {
+    // If true, then the Policy is enforced. If false, then any configuration is acceptable.
+    bool enforced = 1;
+  }
+
+  message ListPolicy {
+    // If set to true, the values from the effective Policy of the parent resource are inherited, meaning the values set in this Policy are added to the values inherited up the hierarchy.
+    bool inherit_from_parent = 1 [json_name = "inherit_from_parent"];
+
+    // The Google Cloud Console will try to default to a configuration that matches the value specified in this field.
+    string suggested_value = 2 [json_name = "suggested_value"];
+
+    Allow allow = 3;
+
+    Deny deny = 4;
+
+    message Allow {
+      // The policy allows or denies all values.
+      bool all = 1;
+
+      // The policy can define specific values that are allowed or denied.
+      repeated string values = 2;
+    }
+
+    message Deny {
+      // The policy allows or denies all values.
+      bool all = 1;
+
+      // The policy can define specific values that are allowed or denied.
+      repeated string values = 2;
+    }
+  }
+
+  message RestorePolicy {
+    // May only be set to true. If set, then the default Policy is restored.
+    bool default = 1;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string read = 3;
+
+    string update = 4;
+  }
+}

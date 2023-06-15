@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+import "google/protobuf/any.proto";
+
+message TestMessage {
+    string stringValue = 1;
+    google.protobuf.Any any_field = 3;
+    repeated google.protobuf.Any any_repeated = 4;
+    map<string,google.protobuf.Any> any_map = 5;
+}
+
+message AnotherMessageWithEnum {
+    enum AnotherTestEnum {
+        ZERO = 0;
+        ONE = 1;
+        TWO = 2;
+    }
+    AnotherTestEnum e = 1;
+}
+
+message MessageWithEnum {
+    enum TestEnum {
+        ZERO = 0;
+        ONE = 1;
+        TWO = 2;
+    }
+    TestEnum e = 1;
+}
+
+enum TopLevelEnum {
+    ZERO = 0;
+    ONE = 1;
+    TWO = 2;
+}
+
+message MessageWithExternalEnum {
+    TopLevelEnum e = 1;
+}
+
+message ValidateMe {
+    string notempty = 1;
+    map<string, string> validate_map = 2;
+    TestMessage nested = 3;
+    repeated string repeated_string = 4;
+}
+
+message MessageWithSubMessage {
+    message SubMessage {
+        string value = 1;
+    }
+
+    SubMessage sub = 1;
+}

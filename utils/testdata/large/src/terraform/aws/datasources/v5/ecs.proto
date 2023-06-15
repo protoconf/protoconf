@@ -1,0 +1,278 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsEcsCluster version is 0
+message AwsEcsCluster {
+  string arn = 1;
+
+  string cluster_name = 2 [json_name = "cluster_name"];
+
+  string id = 3;
+
+  int64 pending_tasks_count = 4 [json_name = "pending_tasks_count"];
+
+  int64 registered_container_instances_count = 5 [json_name = "registered_container_instances_count"];
+
+  int64 running_tasks_count = 6 [json_name = "running_tasks_count"];
+
+  repeated ServiceConnectDefaults service_connect_defaults = 7 [json_name = "service_connect_defaults"];
+
+  repeated Setting setting = 8;
+
+  string status = 9;
+
+  map<string, string> tags = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message ServiceConnectDefaults {
+    // namespace: string
+    string namespace = 1;
+  }
+
+  message Setting {
+    // name: string
+    string name = 1;
+
+    // value: string
+    string value = 2;
+  }
+}
+
+// AwsEcsContainerDefinition version is 0
+message AwsEcsContainerDefinition {
+  string container_name = 1 [json_name = "container_name"];
+
+  int64 cpu = 2;
+
+  bool disable_networking = 3 [json_name = "disable_networking"];
+
+  map<string, string> docker_labels = 4 [json_name = "docker_labels"];
+
+  map<string, string> environment = 5;
+
+  string id = 6;
+
+  string image = 7;
+
+  string image_digest = 8 [json_name = "image_digest"];
+
+  int64 memory = 9;
+
+  int64 memory_reservation = 10 [json_name = "memory_reservation"];
+
+  string task_definition = 11 [json_name = "task_definition"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+}
+
+// AwsEcsService version is 0
+message AwsEcsService {
+  string arn = 1;
+
+  string cluster_arn = 2 [json_name = "cluster_arn"];
+
+  int64 desired_count = 3 [json_name = "desired_count"];
+
+  string id = 4;
+
+  string launch_type = 5 [json_name = "launch_type"];
+
+  string scheduling_strategy = 6 [json_name = "scheduling_strategy"];
+
+  string service_name = 7 [json_name = "service_name"];
+
+  map<string, string> tags = 8;
+
+  string task_definition = 9 [json_name = "task_definition"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+}
+
+// AwsEcsTaskDefinition version is 0
+message AwsEcsTaskDefinition {
+  string arn = 1;
+
+  string arn_without_revision = 2 [json_name = "arn_without_revision"];
+
+  string execution_role_arn = 3 [json_name = "execution_role_arn"];
+
+  string family = 4;
+
+  string id = 5;
+
+  string network_mode = 6 [json_name = "network_mode"];
+
+  int64 revision = 7;
+
+  string status = 8;
+
+  string task_definition = 9 [json_name = "task_definition"];
+
+  string task_role_arn = 10 [json_name = "task_role_arn"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+}
+
+// AwsEcsTaskExecution version is 0
+message AwsEcsTaskExecution {
+  string cluster = 1;
+
+  int64 desired_count = 2 [json_name = "desired_count"];
+
+  bool enable_ecs_managed_tags = 3 [json_name = "enable_ecs_managed_tags"];
+
+  bool enable_execute_command = 4 [json_name = "enable_execute_command"];
+
+  string group = 5;
+
+  string id = 6;
+
+  string launch_type = 7 [json_name = "launch_type"];
+
+  string platform_version = 8 [json_name = "platform_version"];
+
+  string propagate_tags = 9 [json_name = "propagate_tags"];
+
+  string reference_id = 10 [json_name = "reference_id"];
+
+  string started_by = 11 [json_name = "started_by"];
+
+  map<string, string> tags = 12;
+
+  repeated string task_arns = 13 [json_name = "task_arns"];
+
+  string task_definition = 14 [json_name = "task_definition"];
+
+  repeated CapacityProviderStrategy capacity_provider_strategy = 15 [json_name = "capacity_provider_strategy"];
+
+  NetworkConfiguration network_configuration = 16 [json_name = "network_configuration"];
+
+  Overrides overrides = 17;
+
+  repeated PlacementConstraints placement_constraints = 18 [json_name = "placement_constraints"];
+
+  repeated PlacementStrategy placement_strategy = 19 [json_name = "placement_strategy"];
+
+  map<string, string> for_each = 20 [json_name = "for_each"];
+
+  repeated string depends_on = 21 [json_name = "depends_on"];
+
+  int32 count = 22;
+
+  string provider = 23;
+
+  terraform.v1.Lifecycle lifecycle = 24;
+
+  message CapacityProviderStrategy {
+    int64 base = 1;
+
+    string capacity_provider = 2 [json_name = "capacity_provider"];
+
+    int64 weight = 3;
+  }
+
+  message NetworkConfiguration {
+    bool assign_public_ip = 1 [json_name = "assign_public_ip"];
+
+    repeated string security_groups = 2 [json_name = "security_groups"];
+
+    repeated string subnets = 3;
+  }
+
+  message Overrides {
+    string cpu = 1;
+
+    string execution_role_arn = 2 [json_name = "execution_role_arn"];
+
+    string memory = 3;
+
+    string task_role_arn = 4 [json_name = "task_role_arn"];
+
+    repeated ContainerOverrides container_overrides = 5 [json_name = "container_overrides"];
+
+    repeated InferenceAcceleratorOverrides inference_accelerator_overrides = 6 [json_name = "inference_accelerator_overrides"];
+
+    message ContainerOverrides {
+      repeated string command = 1;
+
+      int64 cpu = 2;
+
+      int64 memory = 3;
+
+      int64 memory_reservation = 4 [json_name = "memory_reservation"];
+
+      string name = 5;
+
+      repeated Environment environment = 6;
+
+      repeated ResourceRequirements resource_requirements = 7 [json_name = "resource_requirements"];
+
+      message Environment {
+        string key = 1;
+
+        string value = 2;
+      }
+
+      message ResourceRequirements {
+        string type = 1;
+
+        string value = 2;
+      }
+    }
+
+    message InferenceAcceleratorOverrides {
+      string device_name = 1 [json_name = "device_name"];
+
+      string device_type = 2 [json_name = "device_type"];
+    }
+  }
+
+  message PlacementConstraints {
+    string expression = 1;
+
+    string type = 2;
+  }
+
+  message PlacementStrategy {
+    string field = 1;
+
+    string type = 2;
+  }
+}

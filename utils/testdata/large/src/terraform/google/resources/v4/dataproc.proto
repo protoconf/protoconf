@@ -1,0 +1,2180 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleDataprocAutoscalingPolicy version is 0
+message GoogleDataprocAutoscalingPolicy {
+  string id = 1;
+
+  // The  location where the autoscaling policy should reside.
+  // The default value is 'global'.
+  string location = 2;
+
+  // The "resource name" of the autoscaling policy.
+  string name = 3;
+
+  // The policy id. The id must contain only letters (a-z, A-Z), numbers (0-9), underscores (_),
+  // and hyphens (-). Cannot begin or end with underscore or hyphen. Must consist of between
+  // 3 and 50 characters.
+  string policy_id = 4 [json_name = "policy_id"];
+
+  string project = 5;
+
+  BasicAlgorithm basic_algorithm = 6 [json_name = "basic_algorithm"];
+
+  SecondaryWorkerConfig secondary_worker_config = 7 [json_name = "secondary_worker_config"];
+
+  repeated Timeouts timeouts = 8;
+
+  WorkerConfig worker_config = 9 [json_name = "worker_config"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message BasicAlgorithm {
+    // Duration between scaling events. A scaling period starts after the
+    // update operation from the previous event has completed.
+    //
+    // Bounds: [2m, 1d]. Default: 2m.
+    string cooldown_period = 1 [json_name = "cooldown_period"];
+
+    YarnConfig yarn_config = 2 [json_name = "yarn_config"];
+
+    message YarnConfig {
+      // Timeout for YARN graceful decommissioning of Node Managers. Specifies the
+      // duration to wait for jobs to complete before forcefully removing workers
+      // (and potentially interrupting jobs). Only applicable to downscaling operations.
+      //
+      // Bounds: [0s, 1d].
+      string graceful_decommission_timeout = 1 [json_name = "graceful_decommission_timeout"];
+
+      // Fraction of average pending memory in the last cooldown period for which to
+      // remove workers. A scale-down factor of 1 will result in scaling down so that there
+      // is no available memory remaining after the update (more aggressive scaling).
+      // A scale-down factor of 0 disables removing workers, which can be beneficial for
+      // autoscaling a single job.
+      //
+      // Bounds: [0.0, 1.0].
+      int64 scale_down_factor = 2 [json_name = "scale_down_factor"];
+
+      // Minimum scale-down threshold as a fraction of total cluster size before scaling occurs.
+      // For example, in a 20-worker cluster, a threshold of 0.1 means the autoscaler must
+      // recommend at least a 2 worker scale-down for the cluster to scale. A threshold of 0
+      // means the autoscaler will scale down on any recommended change.
+      //
+      // Bounds: [0.0, 1.0]. Default: 0.0.
+      int64 scale_down_min_worker_fraction = 3 [json_name = "scale_down_min_worker_fraction"];
+
+      // Fraction of average pending memory in the last cooldown period for which to
+      // add workers. A scale-up factor of 1.0 will result in scaling up so that there
+      // is no pending memory remaining after the update (more aggressive scaling).
+      // A scale-up factor closer to 0 will result in a smaller magnitude of scaling up
+      // (less aggressive scaling).
+      //
+      // Bounds: [0.0, 1.0].
+      int64 scale_up_factor = 4 [json_name = "scale_up_factor"];
+
+      // Minimum scale-up threshold as a fraction of total cluster size before scaling
+      // occurs. For example, in a 20-worker cluster, a threshold of 0.1 means the autoscaler
+      // must recommend at least a 2-worker scale-up for the cluster to scale. A threshold of
+      // 0 means the autoscaler will scale up on any recommended change.
+      //
+      // Bounds: [0.0, 1.0]. Default: 0.0.
+      int64 scale_up_min_worker_fraction = 5 [json_name = "scale_up_min_worker_fraction"];
+    }
+  }
+
+  message SecondaryWorkerConfig {
+    // Maximum number of instances for this group. Note that by default, clusters will not use
+    // secondary workers. Required for secondary workers if the minimum secondary instances is set.
+    // Bounds: [minInstances, ). Defaults to 0.
+    int64 max_instances = 1 [json_name = "max_instances"];
+
+    // Minimum number of instances for this group. Bounds: [0, maxInstances]. Defaults to 0.
+    int64 min_instances = 2 [json_name = "min_instances"];
+
+    // Weight for the instance group, which is used to determine the fraction of total workers
+    // in the cluster from this instance group. For example, if primary workers have weight 2,
+    // and secondary workers have weight 1, the cluster will have approximately 2 primary workers
+    // for each secondary worker.
+    //
+    // The cluster may not reach the specified balance if constrained by min/max bounds or other
+    // autoscaling settings. For example, if maxInstances for secondary workers is 0, then only
+    // primary workers will be added. The cluster can also be out of balance when created.
+    //
+    // If weight is not set on any instance group, the cluster will default to equal weight for
+    // all groups: the cluster will attempt to maintain an equal number of workers in each group
+    // within the configured size bounds for each group. If weight is set for one group only,
+    // the cluster will default to zero weight on the unset group. For example if weight is set
+    // only on primary workers, the cluster will use primary workers only and no secondary workers.
+    int64 weight = 3;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+
+  message WorkerConfig {
+    // Maximum number of instances for this group.
+    int64 max_instances = 1 [json_name = "max_instances"];
+
+    // Minimum number of instances for this group. Bounds: [2, maxInstances]. Defaults to 2.
+    int64 min_instances = 2 [json_name = "min_instances"];
+
+    // Weight for the instance group, which is used to determine the fraction of total workers
+    // in the cluster from this instance group. For example, if primary workers have weight 2,
+    // and secondary workers have weight 1, the cluster will have approximately 2 primary workers
+    // for each secondary worker.
+    //
+    // The cluster may not reach the specified balance if constrained by min/max bounds or other
+    // autoscaling settings. For example, if maxInstances for secondary workers is 0, then only
+    // primary workers will be added. The cluster can also be out of balance when created.
+    //
+    // If weight is not set on any instance group, the cluster will default to equal weight for
+    // all groups: the cluster will attempt to maintain an equal number of workers in each group
+    // within the configured size bounds for each group. If weight is set for one group only,
+    // the cluster will default to zero weight on the unset group. For example if weight is set
+    // only on primary workers, the cluster will use primary workers only and no secondary workers.
+    int64 weight = 3;
+  }
+}
+
+// GoogleDataprocAutoscalingPolicyIamBinding version is 0
+message GoogleDataprocAutoscalingPolicyIamBinding {
+  string etag = 1;
+
+  string id = 2;
+
+  string location = 3;
+
+  repeated string members = 4;
+
+  string policy_id = 5 [json_name = "policy_id"];
+
+  string project = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleDataprocAutoscalingPolicyIamMember version is 0
+message GoogleDataprocAutoscalingPolicyIamMember {
+  string etag = 1;
+
+  string id = 2;
+
+  string location = 3;
+
+  string member = 4;
+
+  string policy_id = 5 [json_name = "policy_id"];
+
+  string project = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleDataprocAutoscalingPolicyIamPolicy version is 0
+message GoogleDataprocAutoscalingPolicyIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string location = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string policy_id = 5 [json_name = "policy_id"];
+
+  string project = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleDataprocCluster version is 0
+message GoogleDataprocCluster {
+  // The timeout duration which allows graceful decomissioning when you change the number of worker nodes directly through a terraform apply
+  string graceful_decommission_timeout = 1 [json_name = "graceful_decommission_timeout"];
+
+  string id = 2;
+
+  // The list of labels (key/value pairs) to be applied to instances in the cluster. GCP generates some itself including goog-dataproc-cluster-name which is the name of the cluster.
+  map<string, string> labels = 3;
+
+  // The name of the cluster, unique within the project and zone.
+  string name = 4;
+
+  // The ID of the project in which the cluster will exist. If it is not provided, the provider project is used.
+  string project = 5;
+
+  // The region in which the cluster and associated nodes will be created in. Defaults to global.
+  string region = 6;
+
+  ClusterConfig cluster_config = 7 [json_name = "cluster_config"];
+
+  repeated Timeouts timeouts = 8;
+
+  VirtualClusterConfig virtual_cluster_config = 9 [json_name = "virtual_cluster_config"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message ClusterConfig {
+    // The name of the cloud storage bucket ultimately used to house the staging data for the cluster. If staging_bucket is specified, it will contain this value, otherwise it will be the auto generated name.
+    string bucket = 1;
+
+    // The Cloud Storage staging bucket used to stage files, such as Hadoop jars, between client machines and the cluster. Note: If you don't explicitly specify a staging_bucket then GCP will auto create / assign one for you. However, you are not guaranteed an auto generated bucket which is solely dedicated to your cluster; it may be shared with other clusters in the same region/zone also choosing to use the auto generation option.
+    string staging_bucket = 2 [json_name = "staging_bucket"];
+
+    // The Cloud Storage temp bucket used to store ephemeral cluster and jobs data, such as Spark and MapReduce history files. Note: If you don't explicitly specify a temp_bucket then GCP will auto create / assign one for you.
+    string temp_bucket = 3 [json_name = "temp_bucket"];
+
+    AutoscalingConfig autoscaling_config = 4 [json_name = "autoscaling_config"];
+
+    DataprocMetricConfig dataproc_metric_config = 5 [json_name = "dataproc_metric_config"];
+
+    EncryptionConfig encryption_config = 6 [json_name = "encryption_config"];
+
+    EndpointConfig endpoint_config = 7 [json_name = "endpoint_config"];
+
+    GceClusterConfig gce_cluster_config = 8 [json_name = "gce_cluster_config"];
+
+    repeated InitializationAction initialization_action = 9 [json_name = "initialization_action"];
+
+    LifecycleConfig lifecycle_config = 10 [json_name = "lifecycle_config"];
+
+    MasterConfig master_config = 11 [json_name = "master_config"];
+
+    MetastoreConfig metastore_config = 12 [json_name = "metastore_config"];
+
+    PreemptibleWorkerConfig preemptible_worker_config = 13 [json_name = "preemptible_worker_config"];
+
+    SecurityConfig security_config = 14 [json_name = "security_config"];
+
+    SoftwareConfig software_config = 15 [json_name = "software_config"];
+
+    WorkerConfig worker_config = 16 [json_name = "worker_config"];
+
+    message AutoscalingConfig {
+      // The autoscaling policy used by the cluster.
+      string policy_uri = 1 [json_name = "policy_uri"];
+    }
+
+    message DataprocMetricConfig {
+      repeated Metrics metrics = 1;
+
+      message Metrics {
+        // Specify one or more [available OSS metrics] (https://cloud.google.com/dataproc/docs/guides/monitoring#available_oss_metrics) to collect.
+        repeated string metric_overrides = 1 [json_name = "metric_overrides"];
+
+        // A source for the collection of Dataproc OSS metrics (see [available OSS metrics] (https://cloud.google.com//dataproc/docs/guides/monitoring#available_oss_metrics)).
+        string metric_source = 2 [json_name = "metric_source"];
+      }
+    }
+
+    message EncryptionConfig {
+      // The Cloud KMS key name to use for PD disk encryption for all instances in the cluster.
+      string kms_key_name = 1 [json_name = "kms_key_name"];
+    }
+
+    message EndpointConfig {
+      // The flag to enable http access to specific ports on the cluster from external sources (aka Component Gateway). Defaults to false.
+      bool enable_http_port_access = 1 [json_name = "enable_http_port_access"];
+
+      // The map of port descriptions to URLs. Will only be populated if enable_http_port_access is true.
+      map<string, string> http_ports = 2 [json_name = "http_ports"];
+    }
+
+    message GceClusterConfig {
+      // By default, clusters are not restricted to internal IP addresses, and will have ephemeral external IP addresses assigned to each instance. If set to true, all instances in the cluster will only have internal IP addresses. Note: Private Google Access (also known as privateIpGoogleAccess) must be enabled on the subnetwork that the cluster will be launched in.
+      bool internal_ip_only = 1 [json_name = "internal_ip_only"];
+
+      // A map of the Compute Engine metadata entries to add to all instances
+      map<string, string> metadata = 2;
+
+      // The name or self_link of the Google Compute Engine network to the cluster will be part of. Conflicts with subnetwork. If neither is specified, this defaults to the "default" network.
+      string network = 3;
+
+      // The service account to be used by the Node VMs. If not specified, the "default" service account is used.
+      string service_account = 4 [json_name = "service_account"];
+
+      // The set of Google API scopes to be made available on all of the node VMs under the service_account specified. These can be either FQDNs, or scope aliases.
+      repeated string service_account_scopes = 5 [json_name = "service_account_scopes"];
+
+      // The name or self_link of the Google Compute Engine subnetwork the cluster will be part of. Conflicts with network.
+      string subnetwork = 6;
+
+      // The list of instance tags applied to instances in the cluster. Tags are used to identify valid sources or targets for network firewalls.
+      repeated string tags = 7;
+
+      // The GCP zone where your data is stored and used (i.e. where the master and the worker nodes will be created in). If region is set to 'global' (default) then zone is mandatory, otherwise GCP is able to make use of Auto Zone Placement to determine this automatically for you. Note: This setting additionally determines and restricts which computing resources are available for use with other configs such as cluster_config.master_config.machine_type and cluster_config.worker_config.machine_type.
+      string zone = 8;
+
+      NodeGroupAffinity node_group_affinity = 9 [json_name = "node_group_affinity"];
+
+      ReservationAffinity reservation_affinity = 10 [json_name = "reservation_affinity"];
+
+      ShieldedInstanceConfig shielded_instance_config = 11 [json_name = "shielded_instance_config"];
+
+      message NodeGroupAffinity {
+        // The URI of a sole-tenant that the cluster will be created on.
+        string node_group_uri = 1 [json_name = "node_group_uri"];
+      }
+
+      message ReservationAffinity {
+        // Type of reservation to consume.
+        string consume_reservation_type = 1 [json_name = "consume_reservation_type"];
+
+        // Corresponds to the label key of reservation resource.
+        string key = 2;
+
+        // Corresponds to the label values of reservation resource.
+        repeated string values = 3;
+      }
+
+      message ShieldedInstanceConfig {
+        // Defines whether instances have integrity monitoring enabled.
+        bool enable_integrity_monitoring = 1 [json_name = "enable_integrity_monitoring"];
+
+        // Defines whether instances have Secure Boot enabled.
+        bool enable_secure_boot = 2 [json_name = "enable_secure_boot"];
+
+        // Defines whether instances have the vTPM enabled.
+        bool enable_vtpm = 3 [json_name = "enable_vtpm"];
+      }
+    }
+
+    message InitializationAction {
+      // The script to be executed during initialization of the cluster. The script must be a GCS file with a gs:// prefix.
+      string script = 1;
+
+      // The maximum duration (in seconds) which script is allowed to take to execute its action. GCP will default to a predetermined computed value if not set (currently 300).
+      int64 timeout_sec = 2 [json_name = "timeout_sec"];
+    }
+
+    message LifecycleConfig {
+      // The time when cluster will be auto-deleted. A timestamp in RFC3339 UTC "Zulu" format, accurate to nanoseconds. Example: "2014-10-02T15:01:23.045123456Z".
+      string auto_delete_time = 1 [json_name = "auto_delete_time"];
+
+      // The duration to keep the cluster alive while idling (no jobs running). After this TTL, the cluster will be deleted. Valid range: [10m, 14d].
+      string idle_delete_ttl = 2 [json_name = "idle_delete_ttl"];
+
+      // Time when the cluster became idle (most recent job finished) and became eligible for deletion due to idleness.
+      string idle_start_time = 3 [json_name = "idle_start_time"];
+    }
+
+    message MasterConfig {
+      // The URI for the image to use for this master/worker
+      string image_uri = 1 [json_name = "image_uri"];
+
+      // List of master/worker instance names which have been assigned to the cluster.
+      repeated string instance_names = 2 [json_name = "instance_names"];
+
+      // The name of a Google Compute Engine machine type to create for the master/worker
+      string machine_type = 3 [json_name = "machine_type"];
+
+      // The name of a minimum generation of CPU family for the master/worker. If not specified, GCP will default to a predetermined computed value for each zone.
+      string min_cpu_platform = 4 [json_name = "min_cpu_platform"];
+
+      // Specifies the number of master/worker nodes to create. If not specified, GCP will default to a predetermined computed value.
+      int64 num_instances = 5 [json_name = "num_instances"];
+
+      repeated Accelerators accelerators = 6;
+
+      DiskConfig disk_config = 7 [json_name = "disk_config"];
+
+      message Accelerators {
+        // The number of the accelerator cards of this type exposed to this instance. Often restricted to one of 1, 2, 4, or 8.
+        int64 accelerator_count = 1 [json_name = "accelerator_count"];
+
+        // The short name of the accelerator type to expose to this instance. For example, nvidia-tesla-k80.
+        string accelerator_type = 2 [json_name = "accelerator_type"];
+      }
+
+      message DiskConfig {
+        // Size of the primary disk attached to each node, specified in GB. The primary disk contains the boot volume and system libraries, and the smallest allowed disk size is 10GB. GCP will default to a predetermined computed value if not set (currently 500GB). Note: If SSDs are not attached, it also contains the HDFS data blocks and Hadoop working directories.
+        int64 boot_disk_size_gb = 1 [json_name = "boot_disk_size_gb"];
+
+        // The disk type of the primary disk attached to each node. Such as "pd-ssd" or "pd-standard". Defaults to "pd-standard".
+        string boot_disk_type = 2 [json_name = "boot_disk_type"];
+
+        // The amount of local SSD disks that will be attached to each master cluster node. Defaults to 0.
+        int64 num_local_ssds = 3 [json_name = "num_local_ssds"];
+      }
+    }
+
+    message MetastoreConfig {
+      // Resource name of an existing Dataproc Metastore service.
+      string dataproc_metastore_service = 1 [json_name = "dataproc_metastore_service"];
+    }
+
+    message PreemptibleWorkerConfig {
+      // List of preemptible instance names which have been assigned to the cluster.
+      repeated string instance_names = 1 [json_name = "instance_names"];
+
+      // Specifies the number of preemptible nodes to create. Defaults to 0.
+      int64 num_instances = 2 [json_name = "num_instances"];
+
+      // Specifies the preemptibility of the secondary nodes. Defaults to PREEMPTIBLE.
+      string preemptibility = 3;
+
+      DiskConfig disk_config = 4 [json_name = "disk_config"];
+
+      message DiskConfig {
+        // Size of the primary disk attached to each preemptible worker node, specified in GB. The smallest allowed disk size is 10GB. GCP will default to a predetermined computed value if not set (currently 500GB). Note: If SSDs are not attached, it also contains the HDFS data blocks and Hadoop working directories.
+        int64 boot_disk_size_gb = 1 [json_name = "boot_disk_size_gb"];
+
+        // The disk type of the primary disk attached to each preemptible worker node. Such as "pd-ssd" or "pd-standard". Defaults to "pd-standard".
+        string boot_disk_type = 2 [json_name = "boot_disk_type"];
+
+        // The amount of local SSD disks that will be attached to each preemptible worker node. Defaults to 0.
+        int64 num_local_ssds = 3 [json_name = "num_local_ssds"];
+      }
+    }
+
+    message SecurityConfig {
+      KerberosConfig kerberos_config = 1 [json_name = "kerberos_config"];
+
+      message KerberosConfig {
+        // The admin server (IP or hostname) for the remote trusted realm in a cross realm trust relationship.
+        string cross_realm_trust_admin_server = 1 [json_name = "cross_realm_trust_admin_server"];
+
+        // The KDC (IP or hostname) for the remote trusted realm in a cross realm trust relationship.
+        string cross_realm_trust_kdc = 2 [json_name = "cross_realm_trust_kdc"];
+
+        // The remote realm the Dataproc on-cluster KDC will trust, should the user enable cross realm trust.
+        string cross_realm_trust_realm = 3 [json_name = "cross_realm_trust_realm"];
+
+        // The Cloud Storage URI of a KMS encrypted file containing the shared password between the on-cluster
+        // Kerberos realm and the remote trusted realm, in a cross realm trust relationship.
+        string cross_realm_trust_shared_password_uri = 4 [
+          json_name = "cross_realm_trust_shared_password_uri"
+        ];
+
+        // Flag to indicate whether to Kerberize the cluster.
+        bool enable_kerberos = 5 [json_name = "enable_kerberos"];
+
+        // The Cloud Storage URI of a KMS encrypted file containing the master key of the KDC database.
+        string kdc_db_key_uri = 6 [json_name = "kdc_db_key_uri"];
+
+        // The Cloud Storage URI of a KMS encrypted file containing the password to the user provided key. For the self-signed certificate, this password is generated by Dataproc.
+        string key_password_uri = 7 [json_name = "key_password_uri"];
+
+        // The Cloud Storage URI of a KMS encrypted file containing
+        // the password to the user provided keystore. For the self-signed certificate, this password is generated
+        // by Dataproc
+        string keystore_password_uri = 8 [json_name = "keystore_password_uri"];
+
+        // The Cloud Storage URI of the keystore file used for SSL encryption. If not provided, Dataproc will provide a self-signed certificate.
+        string keystore_uri = 9 [json_name = "keystore_uri"];
+
+        // The uri of the KMS key used to encrypt various sensitive files.
+        string kms_key_uri = 10 [json_name = "kms_key_uri"];
+
+        // The name of the on-cluster Kerberos realm. If not specified, the uppercased domain of hostnames will be the realm.
+        string realm = 11;
+
+        // The cloud Storage URI of a KMS encrypted file containing the root principal password.
+        string root_principal_password_uri = 12 [json_name = "root_principal_password_uri"];
+
+        // The lifetime of the ticket granting ticket, in hours.
+        int64 tgt_lifetime_hours = 13 [json_name = "tgt_lifetime_hours"];
+
+        // The Cloud Storage URI of a KMS encrypted file containing the password to the user provided truststore. For the self-signed certificate, this password is generated by Dataproc.
+        string truststore_password_uri = 14 [json_name = "truststore_password_uri"];
+
+        // The Cloud Storage URI of the truststore file used for SSL encryption. If not provided, Dataproc will provide a self-signed certificate.
+        string truststore_uri = 15 [json_name = "truststore_uri"];
+      }
+    }
+
+    message SoftwareConfig {
+      // The Cloud Dataproc image version to use for the cluster - this controls the sets of software versions installed onto the nodes when you create clusters. If not specified, defaults to the latest version.
+      string image_version = 1 [json_name = "image_version"];
+
+      // The set of optional components to activate on the cluster.
+      repeated string optional_components = 2 [json_name = "optional_components"];
+
+      // A list of override and additional properties (key/value pairs) used to modify various aspects of the common configuration files used when creating a cluster.
+      map<string, string> override_properties = 3 [json_name = "override_properties"];
+
+      // A list of the properties used to set the daemon config files. This will include any values supplied by the user via cluster_config.software_config.override_properties
+      map<string, string> properties = 4;
+    }
+
+    message WorkerConfig {
+      // The URI for the image to use for this master/worker
+      string image_uri = 1 [json_name = "image_uri"];
+
+      // List of master/worker instance names which have been assigned to the cluster.
+      repeated string instance_names = 2 [json_name = "instance_names"];
+
+      // The name of a Google Compute Engine machine type to create for the master/worker
+      string machine_type = 3 [json_name = "machine_type"];
+
+      // The name of a minimum generation of CPU family for the master/worker. If not specified, GCP will default to a predetermined computed value for each zone.
+      string min_cpu_platform = 4 [json_name = "min_cpu_platform"];
+
+      // Specifies the number of master/worker nodes to create. If not specified, GCP will default to a predetermined computed value.
+      int64 num_instances = 5 [json_name = "num_instances"];
+
+      repeated Accelerators accelerators = 6;
+
+      DiskConfig disk_config = 7 [json_name = "disk_config"];
+
+      message Accelerators {
+        // The number of the accelerator cards of this type exposed to this instance. Often restricted to one of 1, 2, 4, or 8.
+        int64 accelerator_count = 1 [json_name = "accelerator_count"];
+
+        // The short name of the accelerator type to expose to this instance. For example, nvidia-tesla-k80.
+        string accelerator_type = 2 [json_name = "accelerator_type"];
+      }
+
+      message DiskConfig {
+        // Size of the primary disk attached to each node, specified in GB. The primary disk contains the boot volume and system libraries, and the smallest allowed disk size is 10GB. GCP will default to a predetermined computed value if not set (currently 500GB). Note: If SSDs are not attached, it also contains the HDFS data blocks and Hadoop working directories.
+        int64 boot_disk_size_gb = 1 [json_name = "boot_disk_size_gb"];
+
+        // The disk type of the primary disk attached to each node. Such as "pd-ssd" or "pd-standard". Defaults to "pd-standard".
+        string boot_disk_type = 2 [json_name = "boot_disk_type"];
+
+        // The amount of local SSD disks that will be attached to each master cluster node. Defaults to 0.
+        int64 num_local_ssds = 3 [json_name = "num_local_ssds"];
+      }
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+
+  message VirtualClusterConfig {
+    // A Cloud Storage bucket used to stage job dependencies, config files, and job driver console output. If you do not specify a staging bucket, Cloud Dataproc will determine a Cloud Storage location (US, ASIA, or EU) for your cluster's staging bucket according to the Compute Engine zone where your cluster is deployed, and then create and manage this project-level, per-location bucket.
+    string staging_bucket = 1 [json_name = "staging_bucket"];
+
+    AuxiliaryServicesConfig auxiliary_services_config = 2 [json_name = "auxiliary_services_config"];
+
+    KubernetesClusterConfig kubernetes_cluster_config = 3 [json_name = "kubernetes_cluster_config"];
+
+    message AuxiliaryServicesConfig {
+      MetastoreConfig metastore_config = 1 [json_name = "metastore_config"];
+
+      SparkHistoryServerConfig spark_history_server_config = 2 [json_name = "spark_history_server_config"];
+
+      message MetastoreConfig {
+        // The Hive Metastore configuration for this workload.
+        string dataproc_metastore_service = 1 [json_name = "dataproc_metastore_service"];
+      }
+
+      message SparkHistoryServerConfig {
+        // Resource name of an existing Dataproc Cluster to act as a Spark History Server for the workload.
+        string dataproc_cluster = 1 [json_name = "dataproc_cluster"];
+      }
+    }
+
+    message KubernetesClusterConfig {
+      // A namespace within the Kubernetes cluster to deploy into. If this namespace does not exist, it is created. If it exists, Dataproc verifies that another Dataproc VirtualCluster is not installed into it. If not specified, the name of the Dataproc Cluster is used.
+      string kubernetes_namespace = 1 [json_name = "kubernetes_namespace"];
+
+      GkeClusterConfig gke_cluster_config = 2 [json_name = "gke_cluster_config"];
+
+      KubernetesSoftwareConfig kubernetes_software_config = 3 [json_name = "kubernetes_software_config"];
+
+      message GkeClusterConfig {
+        // A target GKE cluster to deploy to. It must be in the same project and region as the Dataproc cluster (the GKE cluster can be zonal or regional). Format: 'projects/{project}/locations/{location}/clusters/{cluster_id}'
+        string gke_cluster_target = 1 [json_name = "gke_cluster_target"];
+
+        repeated NodePoolTarget node_pool_target = 2 [json_name = "node_pool_target"];
+
+        message NodePoolTarget {
+          // The target GKE node pool. Format: 'projects/{project}/locations/{location}/clusters/{cluster}/nodePools/{nodePool}'
+          string node_pool = 1 [json_name = "node_pool"];
+
+          // The roles associated with the GKE node pool.
+          repeated string roles = 2;
+
+          NodePoolConfig node_pool_config = 3 [json_name = "node_pool_config"];
+
+          message NodePoolConfig {
+            // The list of Compute Engine zones where node pool nodes associated with a Dataproc on GKE virtual cluster will be located.
+            repeated string locations = 1;
+
+            Autoscaling autoscaling = 2;
+
+            Config config = 3;
+
+            message Autoscaling {
+              // The maximum number of nodes in the node pool. Must be >= minNodeCount, and must be > 0.
+              int64 max_node_count = 1 [json_name = "max_node_count"];
+
+              // The minimum number of nodes in the node pool. Must be >= 0 and <= maxNodeCount.
+              int64 min_node_count = 2 [json_name = "min_node_count"];
+            }
+
+            message Config {
+              // The minimum number of nodes in the node pool. Must be >= 0 and <= maxNodeCount.
+              int64 local_ssd_count = 1 [json_name = "local_ssd_count"];
+
+              // The name of a Compute Engine machine type.
+              string machine_type = 2 [json_name = "machine_type"];
+
+              // Minimum CPU platform to be used by this instance. The instance may be scheduled on the specified or a newer CPU platform. Specify the friendly names of CPU platforms, such as "Intel Haswell" or "Intel Sandy Bridge".
+              string min_cpu_platform = 3 [json_name = "min_cpu_platform"];
+
+              // Whether the nodes are created as preemptible VM instances. Preemptible nodes cannot be used in a node pool with the CONTROLLER role or in the DEFAULT node pool if the CONTROLLER role is not assigned (the DEFAULT node pool will assume the CONTROLLER role).
+              bool preemptible = 4;
+
+              // Spot flag for enabling Spot VM, which is a rebrand of the existing preemptible flag.
+              bool spot = 5;
+            }
+          }
+        }
+      }
+
+      message KubernetesSoftwareConfig {
+        // The components that should be installed in this Dataproc cluster. The key must be a string from the KubernetesComponent enumeration. The value is the version of the software to be installed.
+        map<string, string> component_version = 1 [json_name = "component_version"];
+
+        // The properties to set on daemon config files. Property keys are specified in prefix:property format, for example spark:spark.kubernetes.container.image.
+        map<string, string> properties = 2;
+      }
+    }
+  }
+}
+
+// GoogleDataprocClusterIamBinding version is 0
+message GoogleDataprocClusterIamBinding {
+  string cluster = 1;
+
+  string etag = 2;
+
+  string id = 3;
+
+  repeated string members = 4;
+
+  string project = 5;
+
+  string region = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleDataprocClusterIamMember version is 0
+message GoogleDataprocClusterIamMember {
+  string cluster = 1;
+
+  string etag = 2;
+
+  string id = 3;
+
+  string member = 4;
+
+  string project = 5;
+
+  string region = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleDataprocClusterIamPolicy version is 0
+message GoogleDataprocClusterIamPolicy {
+  string cluster = 1;
+
+  string etag = 2;
+
+  string id = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  string region = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleDataprocJob version is 0
+message GoogleDataprocJob {
+  // Output-only. If present, the location of miscellaneous control files which may be used as part of job setup and handling. If not present, control files may be placed in the same location as driver_output_uri.
+  string driver_controls_files_uri = 1 [json_name = "driver_controls_files_uri"];
+
+  // Output-only. A URI pointing to the location of the stdout of the job's driver program
+  string driver_output_resource_uri = 2 [json_name = "driver_output_resource_uri"];
+
+  // By default, you can only delete inactive jobs within Dataproc. Setting this to true, and calling destroy, will ensure that the job is first cancelled before issuing the delete.
+  bool force_delete = 3 [json_name = "force_delete"];
+
+  string id = 4;
+
+  // Optional. The labels to associate with this job.
+  map<string, string> labels = 5;
+
+  // The project in which the cluster can be found and jobs subsequently run against. If it is not provided, the provider project is used.
+  string project = 6;
+
+  // The Cloud Dataproc region. This essentially determines which clusters are available for this job to be submitted to. If not specified, defaults to global.
+  string region = 7;
+
+  // The status of the job.
+  repeated Status status = 8;
+
+  HadoopConfig hadoop_config = 9 [json_name = "hadoop_config"];
+
+  HiveConfig hive_config = 10 [json_name = "hive_config"];
+
+  PigConfig pig_config = 11 [json_name = "pig_config"];
+
+  Placement placement = 12;
+
+  PrestoConfig presto_config = 13 [json_name = "presto_config"];
+
+  PysparkConfig pyspark_config = 14 [json_name = "pyspark_config"];
+
+  Reference reference = 15;
+
+  Scheduling scheduling = 16;
+
+  SparkConfig spark_config = 17 [json_name = "spark_config"];
+
+  SparksqlConfig sparksql_config = 18 [json_name = "sparksql_config"];
+
+  repeated Timeouts timeouts = 19;
+
+  map<string, string> for_each = 20 [json_name = "for_each"];
+
+  repeated string depends_on = 21 [json_name = "depends_on"];
+
+  int32 count = 22;
+
+  string provider = 23;
+
+  terraform.v1.Lifecycle lifecycle = 24;
+
+  message Status {
+    // details: string
+    string details = 1;
+
+    // state: string
+    string state = 2;
+
+    // state_start_time: string
+    string state_start_time = 3 [json_name = "state_start_time"];
+
+    // substate: string
+    string substate = 4;
+  }
+
+  message HadoopConfig {
+    // HCFS URIs of archives to be extracted in the working directory of .jar, .tar, .tar.gz, .tgz, and .zip.
+    repeated string archive_uris = 1 [json_name = "archive_uris"];
+
+    // The arguments to pass to the driver.
+    repeated string args = 2;
+
+    // HCFS URIs of files to be copied to the working directory of Spark drivers and distributed tasks. Useful for naively parallel tasks.
+    repeated string file_uris = 3 [json_name = "file_uris"];
+
+    // HCFS URIs of jar files to add to the CLASSPATHs of the Spark driver and tasks.
+    repeated string jar_file_uris = 4 [json_name = "jar_file_uris"];
+
+    // The class containing the main method of the driver. Must be in a provided jar or jar that is already on the classpath. Conflicts with main_jar_file_uri
+    string main_class = 5 [json_name = "main_class"];
+
+    // The HCFS URI of jar file containing the driver jar. Conflicts with main_class
+    string main_jar_file_uri = 6 [json_name = "main_jar_file_uri"];
+
+    // A mapping of property names to values, used to configure Spark. Properties that conflict with values set by the Cloud Dataproc API may be overwritten. Can include properties set in /etc/spark/conf/spark-defaults.conf and classes in user code.
+    map<string, string> properties = 7;
+
+    LoggingConfig logging_config = 8 [json_name = "logging_config"];
+
+    message LoggingConfig {
+      // Optional. The per-package log levels for the driver. This may include 'root' package name to configure rootLogger. Examples: 'com.google = FATAL', 'root = INFO', 'org.apache = DEBUG'.
+      map<string, string> driver_log_levels = 1 [json_name = "driver_log_levels"];
+    }
+  }
+
+  message HiveConfig {
+    // Whether to continue executing queries if a query fails. The default value is false. Setting to true can be useful when executing independent parallel queries. Defaults to false.
+    bool continue_on_failure = 1 [json_name = "continue_on_failure"];
+
+    // HCFS URIs of jar files to add to the CLASSPATH of the Hive server and Hadoop MapReduce (MR) tasks. Can contain Hive SerDes and UDFs.
+    repeated string jar_file_uris = 2 [json_name = "jar_file_uris"];
+
+    // A mapping of property names and values, used to configure Hive. Properties that conflict with values set by the Cloud Dataproc API may be overwritten. Can include properties set in /etc/hadoop/conf/*-site.xml, /etc/hive/conf/hive-site.xml, and classes in user code.
+    map<string, string> properties = 3;
+
+    // HCFS URI of file containing Hive script to execute as the job. Conflicts with query_list
+    string query_file_uri = 4 [json_name = "query_file_uri"];
+
+    // The list of Hive queries or statements to execute as part of the job. Conflicts with query_file_uri
+    repeated string query_list = 5 [json_name = "query_list"];
+
+    // Mapping of query variable names to values (equivalent to the Hive command: SET name="value";).
+    map<string, string> script_variables = 6 [json_name = "script_variables"];
+  }
+
+  message PigConfig {
+    // Whether to continue executing queries if a query fails. The default value is false. Setting to true can be useful when executing independent parallel queries. Defaults to false.
+    bool continue_on_failure = 1 [json_name = "continue_on_failure"];
+
+    // HCFS URIs of jar files to add to the CLASSPATH of the Pig Client and Hadoop MapReduce (MR) tasks. Can contain Pig UDFs.
+    repeated string jar_file_uris = 2 [json_name = "jar_file_uris"];
+
+    // A mapping of property names to values, used to configure Pig. Properties that conflict with values set by the Cloud Dataproc API may be overwritten. Can include properties set in /etc/hadoop/conf/*-site.xml, /etc/pig/conf/pig.properties, and classes in user code.
+    map<string, string> properties = 3;
+
+    // HCFS URI of file containing Hive script to execute as the job. Conflicts with query_list
+    string query_file_uri = 4 [json_name = "query_file_uri"];
+
+    // The list of Hive queries or statements to execute as part of the job. Conflicts with query_file_uri
+    repeated string query_list = 5 [json_name = "query_list"];
+
+    // Mapping of query variable names to values (equivalent to the Pig command: name=[value]).
+    map<string, string> script_variables = 6 [json_name = "script_variables"];
+
+    LoggingConfig logging_config = 7 [json_name = "logging_config"];
+
+    message LoggingConfig {
+      // Optional. The per-package log levels for the driver. This may include 'root' package name to configure rootLogger. Examples: 'com.google = FATAL', 'root = INFO', 'org.apache = DEBUG'.
+      map<string, string> driver_log_levels = 1 [json_name = "driver_log_levels"];
+    }
+  }
+
+  message Placement {
+    // The name of the cluster where the job will be submitted
+    string cluster_name = 1 [json_name = "cluster_name"];
+
+    // Output-only. A cluster UUID generated by the Cloud Dataproc service when the job is submitted
+    string cluster_uuid = 2 [json_name = "cluster_uuid"];
+  }
+
+  message PrestoConfig {
+    // Presto client tags to attach to this query.
+    repeated string client_tags = 1 [json_name = "client_tags"];
+
+    // Whether to continue executing queries if a query fails. Setting to true can be useful when executing independent parallel queries. Defaults to false.
+    bool continue_on_failure = 2 [json_name = "continue_on_failure"];
+
+    // The format in which query output will be displayed. See the Presto documentation for supported output formats.
+    string output_format = 3 [json_name = "output_format"];
+
+    // A mapping of property names to values. Used to set Presto session properties Equivalent to using the --session flag in the Presto CLI.
+    map<string, string> properties = 4;
+
+    // The HCFS URI of the script that contains SQL queries. Conflicts with query_list
+    string query_file_uri = 5 [json_name = "query_file_uri"];
+
+    // The list of SQL queries or statements to execute as part of the job. Conflicts with query_file_uri
+    repeated string query_list = 6 [json_name = "query_list"];
+
+    LoggingConfig logging_config = 7 [json_name = "logging_config"];
+
+    message LoggingConfig {
+      // Optional. The per-package log levels for the driver. This may include 'root' package name to configure rootLogger. Examples: 'com.google = FATAL', 'root = INFO', 'org.apache = DEBUG'.
+      map<string, string> driver_log_levels = 1 [json_name = "driver_log_levels"];
+    }
+  }
+
+  message PysparkConfig {
+    // Optional. HCFS URIs of archives to be extracted in the working directory of .jar, .tar, .tar.gz, .tgz, and .zip
+    repeated string archive_uris = 1 [json_name = "archive_uris"];
+
+    // Optional. The arguments to pass to the driver. Do not include arguments, such as --conf, that can be set as job properties, since a collision may occur that causes an incorrect job submission
+    repeated string args = 2;
+
+    // Optional. HCFS URIs of files to be copied to the working directory of Python drivers and distributed tasks. Useful for naively parallel tasks
+    repeated string file_uris = 3 [json_name = "file_uris"];
+
+    // Optional. HCFS URIs of jar files to add to the CLASSPATHs of the Python driver and tasks
+    repeated string jar_file_uris = 4 [json_name = "jar_file_uris"];
+
+    // Required. The HCFS URI of the main Python file to use as the driver. Must be a .py file
+    string main_python_file_uri = 5 [json_name = "main_python_file_uri"];
+
+    // Optional. A mapping of property names to values, used to configure PySpark. Properties that conflict with values set by the Cloud Dataproc API may be overwritten. Can include properties set in /etc/spark/conf/spark-defaults.conf and classes in user code
+    map<string, string> properties = 6;
+
+    // Optional. HCFS file URIs of Python files to pass to the PySpark framework. Supported file types: .py, .egg, and .zip
+    repeated string python_file_uris = 7 [json_name = "python_file_uris"];
+
+    LoggingConfig logging_config = 8 [json_name = "logging_config"];
+
+    message LoggingConfig {
+      // Optional. The per-package log levels for the driver. This may include 'root' package name to configure rootLogger. Examples: 'com.google = FATAL', 'root = INFO', 'org.apache = DEBUG'.
+      map<string, string> driver_log_levels = 1 [json_name = "driver_log_levels"];
+    }
+  }
+
+  message Reference {
+    // The job ID, which must be unique within the project. The job ID is generated by the server upon job submission or provided by the user as a means to perform retries without creating duplicate jobs
+    string job_id = 1 [json_name = "job_id"];
+  }
+
+  message Scheduling {
+    // Maximum number of times per hour a driver may be restarted as a result of driver exiting with non-zero code before job is reported failed.
+    int64 max_failures_per_hour = 1 [json_name = "max_failures_per_hour"];
+
+    // Maximum number of times in total a driver may be restarted as a result of driver exiting with non-zero code before job is reported failed.
+    int64 max_failures_total = 2 [json_name = "max_failures_total"];
+  }
+
+  message SparkConfig {
+    // HCFS URIs of archives to be extracted in the working directory of .jar, .tar, .tar.gz, .tgz, and .zip.
+    repeated string archive_uris = 1 [json_name = "archive_uris"];
+
+    // The arguments to pass to the driver.
+    repeated string args = 2;
+
+    // HCFS URIs of files to be copied to the working directory of Spark drivers and distributed tasks. Useful for naively parallel tasks.
+    repeated string file_uris = 3 [json_name = "file_uris"];
+
+    // HCFS URIs of jar files to add to the CLASSPATHs of the Spark driver and tasks.
+    repeated string jar_file_uris = 4 [json_name = "jar_file_uris"];
+
+    // The class containing the main method of the driver. Must be in a provided jar or jar that is already on the classpath. Conflicts with main_jar_file_uri
+    string main_class = 5 [json_name = "main_class"];
+
+    // The HCFS URI of jar file containing the driver jar. Conflicts with main_class
+    string main_jar_file_uri = 6 [json_name = "main_jar_file_uri"];
+
+    // A mapping of property names to values, used to configure Spark. Properties that conflict with values set by the Cloud Dataproc API may be overwritten. Can include properties set in /etc/spark/conf/spark-defaults.conf and classes in user code.
+    map<string, string> properties = 7;
+
+    LoggingConfig logging_config = 8 [json_name = "logging_config"];
+
+    message LoggingConfig {
+      // Optional. The per-package log levels for the driver. This may include 'root' package name to configure rootLogger. Examples: 'com.google = FATAL', 'root = INFO', 'org.apache = DEBUG'.
+      map<string, string> driver_log_levels = 1 [json_name = "driver_log_levels"];
+    }
+  }
+
+  message SparksqlConfig {
+    // HCFS URIs of jar files to be added to the Spark CLASSPATH.
+    repeated string jar_file_uris = 1 [json_name = "jar_file_uris"];
+
+    // A mapping of property names to values, used to configure Spark SQL's SparkConf. Properties that conflict with values set by the Cloud Dataproc API may be overwritten.
+    map<string, string> properties = 2;
+
+    // The HCFS URI of the script that contains SQL queries. Conflicts with query_list
+    string query_file_uri = 3 [json_name = "query_file_uri"];
+
+    // The list of SQL queries or statements to execute as part of the job. Conflicts with query_file_uri
+    repeated string query_list = 4 [json_name = "query_list"];
+
+    // Mapping of query variable names to values (equivalent to the Spark SQL command: SET name="value";).
+    map<string, string> script_variables = 5 [json_name = "script_variables"];
+
+    LoggingConfig logging_config = 6 [json_name = "logging_config"];
+
+    message LoggingConfig {
+      // Optional. The per-package log levels for the driver. This may include 'root' package name to configure rootLogger. Examples: 'com.google = FATAL', 'root = INFO', 'org.apache = DEBUG'.
+      map<string, string> driver_log_levels = 1 [json_name = "driver_log_levels"];
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// GoogleDataprocJobIamBinding version is 0
+message GoogleDataprocJobIamBinding {
+  string etag = 1;
+
+  string id = 2;
+
+  string job_id = 3 [json_name = "job_id"];
+
+  repeated string members = 4;
+
+  string project = 5;
+
+  string region = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleDataprocJobIamMember version is 0
+message GoogleDataprocJobIamMember {
+  string etag = 1;
+
+  string id = 2;
+
+  string job_id = 3 [json_name = "job_id"];
+
+  string member = 4;
+
+  string project = 5;
+
+  string region = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleDataprocJobIamPolicy version is 0
+message GoogleDataprocJobIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string job_id = 3 [json_name = "job_id"];
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  string region = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleDataprocMetastoreService version is 0
+message GoogleDataprocMetastoreService {
+  // A Cloud Storage URI (starting with gs://) that specifies where artifacts related to the metastore service are stored.
+  string artifact_gcs_uri = 1 [json_name = "artifact_gcs_uri"];
+
+  // The database type that the Metastore service stores its data. Default value: "MYSQL" Possible values: ["MYSQL", "SPANNER"]
+  string database_type = 2 [json_name = "database_type"];
+
+  // The URI of the endpoint used to access the metastore service.
+  string endpoint_uri = 3 [json_name = "endpoint_uri"];
+
+  string id = 4;
+
+  // User-defined labels for the metastore service.
+  map<string, string> labels = 5;
+
+  // The location where the metastore service should reside.
+  // The default value is 'global'.
+  string location = 6;
+
+  // The relative resource name of the metastore service.
+  string name = 7;
+
+  // The relative resource name of the VPC network on which the instance can be accessed. It is specified in the following form:
+  //
+  // "projects/{projectNumber}/global/networks/{network_id}".
+  string network = 8;
+
+  // The TCP port at which the metastore service is reached. Default: 9083.
+  int64 port = 9;
+
+  string project = 10;
+
+  // The release channel of the service. If unspecified, defaults to 'STABLE'. Default value: "STABLE" Possible values: ["CANARY", "STABLE"]
+  string release_channel = 11 [json_name = "release_channel"];
+
+  // The ID of the metastore service. The id must contain only letters (a-z, A-Z), numbers (0-9), underscores (_),
+  // and hyphens (-). Cannot begin or end with underscore or hyphen. Must consist of between
+  // 3 and 63 characters.
+  string service_id = 12 [json_name = "service_id"];
+
+  // The current state of the metastore service.
+  string state = 13;
+
+  // Additional information about the current state of the metastore service, if available.
+  string state_message = 14 [json_name = "state_message"];
+
+  // The tier of the service. Possible values: ["DEVELOPER", "ENTERPRISE"]
+  string tier = 15;
+
+  // The globally unique resource identifier of the metastore service.
+  string uid = 16;
+
+  EncryptionConfig encryption_config = 17 [json_name = "encryption_config"];
+
+  HiveMetastoreConfig hive_metastore_config = 18 [json_name = "hive_metastore_config"];
+
+  MaintenanceWindow maintenance_window = 19 [json_name = "maintenance_window"];
+
+  NetworkConfig network_config = 20 [json_name = "network_config"];
+
+  TelemetryConfig telemetry_config = 21 [json_name = "telemetry_config"];
+
+  repeated Timeouts timeouts = 22;
+
+  map<string, string> for_each = 23 [json_name = "for_each"];
+
+  repeated string depends_on = 24 [json_name = "depends_on"];
+
+  int32 count = 25;
+
+  string provider = 26;
+
+  terraform.v1.Lifecycle lifecycle = 27;
+
+  message EncryptionConfig {
+    // The fully qualified customer provided Cloud KMS key name to use for customer data encryption.
+    // Use the following format: 'projects/([^/]+)/locations/([^/]+)/keyRings/([^/]+)/cryptoKeys/([^/]+)'
+    string kms_key = 1 [json_name = "kms_key"];
+  }
+
+  message HiveMetastoreConfig {
+    // A mapping of Hive metastore configuration key-value pairs to apply to the Hive metastore (configured in hive-site.xml).
+    // The mappings override system defaults (some keys cannot be overridden)
+    map<string, string> config_overrides = 1 [json_name = "config_overrides"];
+
+    // The Hive metastore schema version.
+    string version = 2;
+
+    KerberosConfig kerberos_config = 3 [json_name = "kerberos_config"];
+
+    message KerberosConfig {
+      // A Cloud Storage URI that specifies the path to a krb5.conf file. It is of the form gs://{bucket_name}/path/to/krb5.conf, although the file does not need to be named krb5.conf explicitly.
+      string krb5_config_gcs_uri = 1 [json_name = "krb5_config_gcs_uri"];
+
+      // A Kerberos principal that exists in the both the keytab the KDC to authenticate as. A typical principal is of the form "primary/instance@REALM", but there is no exact format.
+      string principal = 2;
+
+      Keytab keytab = 3;
+
+      message Keytab {
+        // The relative resource name of a Secret Manager secret version, in the following form:
+        //
+        // "projects/{projectNumber}/secrets/{secret_id}/versions/{version_id}".
+        string cloud_secret = 1 [json_name = "cloud_secret"];
+      }
+    }
+  }
+
+  message MaintenanceWindow {
+    // The day of week, when the window starts. Possible values: ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"]
+    string day_of_week = 1 [json_name = "day_of_week"];
+
+    // The hour of day (0-23) when the window starts.
+    int64 hour_of_day = 2 [json_name = "hour_of_day"];
+  }
+
+  message NetworkConfig {
+    repeated Consumers consumers = 1;
+
+    message Consumers {
+      // The URI of the endpoint used to access the metastore service.
+      string endpoint_uri = 1 [json_name = "endpoint_uri"];
+
+      // The subnetwork of the customer project from which an IP address is reserved and used as the Dataproc Metastore service's endpoint.
+      // It is accessible to hosts in the subnet and to all hosts in a subnet in the same region and same network.
+      // There must be at least one IP address available in the subnet's primary range. The subnet is specified in the following form:
+      // 'projects/{projectNumber}/regions/{region_id}/subnetworks/{subnetwork_id}
+      string subnetwork = 2;
+    }
+  }
+
+  message TelemetryConfig {
+    // The output format of the Dataproc Metastore service's logs. Default value: "JSON" Possible values: ["LEGACY", "JSON"]
+    string log_format = 1 [json_name = "log_format"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleDataprocMetastoreServiceIamBinding version is 0
+message GoogleDataprocMetastoreServiceIamBinding {
+  string etag = 1;
+
+  string id = 2;
+
+  string location = 3;
+
+  repeated string members = 4;
+
+  string project = 5;
+
+  string role = 6;
+
+  string service_id = 7 [json_name = "service_id"];
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleDataprocMetastoreServiceIamMember version is 0
+message GoogleDataprocMetastoreServiceIamMember {
+  string etag = 1;
+
+  string id = 2;
+
+  string location = 3;
+
+  string member = 4;
+
+  string project = 5;
+
+  string role = 6;
+
+  string service_id = 7 [json_name = "service_id"];
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleDataprocMetastoreServiceIamPolicy version is 0
+message GoogleDataprocMetastoreServiceIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string location = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  string service_id = 6 [json_name = "service_id"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleDataprocWorkflowTemplate version is 0
+message GoogleDataprocWorkflowTemplate {
+  // Output only. The time template was created.
+  string create_time = 1 [json_name = "create_time"];
+
+  // Optional. Timeout duration for the DAG of jobs, expressed in seconds (see [JSON representation of duration](https://developers.google.com/protocol-buffers/docs/proto3#json)). The timeout duration must be from 10 minutes ("600s") to 24 hours ("86400s"). The timer begins when the first job is submitted. If the workflow is running at the end of the timeout period, any remaining jobs are cancelled, the workflow is ended, and if the workflow was running on a [managed cluster](/dataproc/docs/concepts/workflows/using-workflows#configuring_or_selecting_a_cluster), the cluster is deleted.
+  string dag_timeout = 2 [json_name = "dag_timeout"];
+
+  string id = 3;
+
+  // Optional. The labels to associate with this template. These labels will be propagated to all jobs and clusters created by the workflow instance. Label **keys** must contain 1 to 63 characters, and must conform to [RFC 1035](https://www.ietf.org/rfc/rfc1035.txt). Label **values** may be empty, but, if present, must contain 1 to 63 characters, and must conform to [RFC 1035](https://www.ietf.org/rfc/rfc1035.txt). No more than 32 labels can be associated with a template.
+  map<string, string> labels = 4;
+
+  // The location for the resource
+  string location = 5;
+
+  // Output only. The resource name of the workflow template, as described in https://cloud.google.com/apis/design/resource_names. * For `projects.regions.workflowTemplates`, the resource name of the template has the following format: `projects/{project_id}/regions/{region}/workflowTemplates/{template_id}` * For `projects.locations.workflowTemplates`, the resource name of the template has the following format: `projects/{project_id}/locations/{location}/workflowTemplates/{template_id}`
+  string name = 6;
+
+  // The project for the resource
+  string project = 7;
+
+  // Output only. The time template was last updated.
+  string update_time = 8 [json_name = "update_time"];
+
+  // Output only. The current version of this workflow template.
+  int64 version = 9;
+
+  repeated Jobs jobs = 10;
+
+  repeated Parameters parameters = 11;
+
+  Placement placement = 12;
+
+  repeated Timeouts timeouts = 13;
+
+  map<string, string> for_each = 14 [json_name = "for_each"];
+
+  repeated string depends_on = 15 [json_name = "depends_on"];
+
+  int32 count = 16;
+
+  string provider = 17;
+
+  terraform.v1.Lifecycle lifecycle = 18;
+
+  message Jobs {
+    // Optional. The labels to associate with this job. Label keys must be between 1 and 63 characters long, and must conform to the following regular expression: p{Ll}p{Lo}{0,62} Label values must be between 1 and 63 characters long, and must conform to the following regular expression: [p{Ll}p{Lo}p{N}_-]{0,63} No more than 32 labels can be associated with a given job.
+    map<string, string> labels = 1;
+
+    // Optional. The optional list of prerequisite job step_ids. If not specified, the job will start at the beginning of workflow.
+    repeated string prerequisite_step_ids = 2 [json_name = "prerequisite_step_ids"];
+
+    // Required. The step id. The id must be unique among all jobs within the template. The step id is used as prefix for job id, as job `goog-dataproc-workflow-step-id` label, and in prerequisiteStepIds field from other steps. The id must contain only letters (a-z, A-Z), numbers (0-9), underscores (_), and hyphens (-). Cannot begin or end with underscore or hyphen. Must consist of between 3 and 50 characters.
+    string step_id = 3 [json_name = "step_id"];
+
+    HadoopJob hadoop_job = 4 [json_name = "hadoop_job"];
+
+    HiveJob hive_job = 5 [json_name = "hive_job"];
+
+    PigJob pig_job = 6 [json_name = "pig_job"];
+
+    PrestoJob presto_job = 7 [json_name = "presto_job"];
+
+    PysparkJob pyspark_job = 8 [json_name = "pyspark_job"];
+
+    Scheduling scheduling = 9;
+
+    SparkJob spark_job = 10 [json_name = "spark_job"];
+
+    SparkRJob spark_r_job = 11 [json_name = "spark_r_job"];
+
+    SparkSqlJob spark_sql_job = 12 [json_name = "spark_sql_job"];
+
+    message HadoopJob {
+      // Optional. HCFS URIs of archives to be extracted in the working directory of Hadoop drivers and tasks. Supported file types: .jar, .tar, .tar.gz, .tgz, or .zip.
+      repeated string archive_uris = 1 [json_name = "archive_uris"];
+
+      // Optional. The arguments to pass to the driver. Do not include arguments, such as `-libjars` or `-Dfoo=bar`, that can be set as job properties, since a collision may occur that causes an incorrect job submission.
+      repeated string args = 2;
+
+      // Optional. HCFS (Hadoop Compatible Filesystem) URIs of files to be copied to the working directory of Hadoop drivers and distributed tasks. Useful for naively parallel tasks.
+      repeated string file_uris = 3 [json_name = "file_uris"];
+
+      // Optional. Jar file URIs to add to the CLASSPATHs of the Hadoop driver and tasks.
+      repeated string jar_file_uris = 4 [json_name = "jar_file_uris"];
+
+      // The name of the driver's main class. The jar file containing the class must be in the default CLASSPATH or specified in `jar_file_uris`.
+      string main_class = 5 [json_name = "main_class"];
+
+      // The HCFS URI of the jar file containing the main class. Examples: 'gs://foo-bucket/analytics-binaries/extract-useful-metrics-mr.jar' 'hdfs:/tmp/test-samples/custom-wordcount.jar' 'file:///home/usr/lib/hadoop-mapreduce/hadoop-mapreduce-examples.jar'
+      string main_jar_file_uri = 6 [json_name = "main_jar_file_uri"];
+
+      // Optional. A mapping of property names to values, used to configure Hadoop. Properties that conflict with values set by the Dataproc API may be overwritten. Can include properties set in /etc/hadoop/conf/*-site and classes in user code.
+      map<string, string> properties = 7;
+
+      LoggingConfig logging_config = 8 [json_name = "logging_config"];
+
+      message LoggingConfig {
+        // The per-package log levels for the driver. This may include "root" package name to configure rootLogger. Examples: 'com.google = FATAL', 'root = INFO', 'org.apache = DEBUG'
+        map<string, string> driver_log_levels = 1 [json_name = "driver_log_levels"];
+      }
+    }
+
+    message HiveJob {
+      // Optional. Whether to continue executing queries if a query fails. The default value is `false`. Setting to `true` can be useful when executing independent parallel queries.
+      bool continue_on_failure = 1 [json_name = "continue_on_failure"];
+
+      // Optional. HCFS URIs of jar files to add to the CLASSPATH of the Hive server and Hadoop MapReduce (MR) tasks. Can contain Hive SerDes and UDFs.
+      repeated string jar_file_uris = 2 [json_name = "jar_file_uris"];
+
+      // Optional. A mapping of property names and values, used to configure Hive. Properties that conflict with values set by the Dataproc API may be overwritten. Can include properties set in /etc/hadoop/conf/*-site.xml, /etc/hive/conf/hive-site.xml, and classes in user code.
+      map<string, string> properties = 3;
+
+      // The HCFS URI of the script that contains Hive queries.
+      string query_file_uri = 4 [json_name = "query_file_uri"];
+
+      // Optional. Mapping of query variable names to values (equivalent to the Hive command: `SET name="value";`).
+      map<string, string> script_variables = 5 [json_name = "script_variables"];
+
+      QueryList query_list = 6 [json_name = "query_list"];
+
+      message QueryList {
+        // Required. The queries to execute. You do not need to end a query expression with a semicolon. Multiple queries can be specified in one string by separating each with a semicolon. Here is an example of a Dataproc API snippet that uses a QueryList to specify a HiveJob: "hiveJob": { "queryList": { "queries": [ "query1", "query2", "query3;query4", ] } }
+        repeated string queries = 1;
+      }
+    }
+
+    message PigJob {
+      // Optional. Whether to continue executing queries if a query fails. The default value is `false`. Setting to `true` can be useful when executing independent parallel queries.
+      bool continue_on_failure = 1 [json_name = "continue_on_failure"];
+
+      // Optional. HCFS URIs of jar files to add to the CLASSPATH of the Pig Client and Hadoop MapReduce (MR) tasks. Can contain Pig UDFs.
+      repeated string jar_file_uris = 2 [json_name = "jar_file_uris"];
+
+      // Optional. A mapping of property names to values, used to configure Pig. Properties that conflict with values set by the Dataproc API may be overwritten. Can include properties set in /etc/hadoop/conf/*-site.xml, /etc/pig/conf/pig.properties, and classes in user code.
+      map<string, string> properties = 3;
+
+      // The HCFS URI of the script that contains the Pig queries.
+      string query_file_uri = 4 [json_name = "query_file_uri"];
+
+      // Optional. Mapping of query variable names to values (equivalent to the Pig command: `name=[value]`).
+      map<string, string> script_variables = 5 [json_name = "script_variables"];
+
+      LoggingConfig logging_config = 6 [json_name = "logging_config"];
+
+      QueryList query_list = 7 [json_name = "query_list"];
+
+      message LoggingConfig {
+        // The per-package log levels for the driver. This may include "root" package name to configure rootLogger. Examples: 'com.google = FATAL', 'root = INFO', 'org.apache = DEBUG'
+        map<string, string> driver_log_levels = 1 [json_name = "driver_log_levels"];
+      }
+
+      message QueryList {
+        // Required. The queries to execute. You do not need to end a query expression with a semicolon. Multiple queries can be specified in one string by separating each with a semicolon. Here is an example of a Dataproc API snippet that uses a QueryList to specify a HiveJob: "hiveJob": { "queryList": { "queries": [ "query1", "query2", "query3;query4", ] } }
+        repeated string queries = 1;
+      }
+    }
+
+    message PrestoJob {
+      // Optional. Presto client tags to attach to this query
+      repeated string client_tags = 1 [json_name = "client_tags"];
+
+      // Optional. Whether to continue executing queries if a query fails. The default value is `false`. Setting to `true` can be useful when executing independent parallel queries.
+      bool continue_on_failure = 2 [json_name = "continue_on_failure"];
+
+      // Optional. The format in which query output will be displayed. See the Presto documentation for supported output formats
+      string output_format = 3 [json_name = "output_format"];
+
+      // Optional. A mapping of property names to values. Used to set Presto [session properties](https://prestodb.io/docs/current/sql/set-session.html) Equivalent to using the --session flag in the Presto CLI
+      map<string, string> properties = 4;
+
+      // The HCFS URI of the script that contains SQL queries.
+      string query_file_uri = 5 [json_name = "query_file_uri"];
+
+      LoggingConfig logging_config = 6 [json_name = "logging_config"];
+
+      QueryList query_list = 7 [json_name = "query_list"];
+
+      message LoggingConfig {
+        // The per-package log levels for the driver. This may include "root" package name to configure rootLogger. Examples: 'com.google = FATAL', 'root = INFO', 'org.apache = DEBUG'
+        map<string, string> driver_log_levels = 1 [json_name = "driver_log_levels"];
+      }
+
+      message QueryList {
+        // Required. The queries to execute. You do not need to end a query expression with a semicolon. Multiple queries can be specified in one string by separating each with a semicolon. Here is an example of a Dataproc API snippet that uses a QueryList to specify a HiveJob: "hiveJob": { "queryList": { "queries": [ "query1", "query2", "query3;query4", ] } }
+        repeated string queries = 1;
+      }
+    }
+
+    message PysparkJob {
+      // Optional. HCFS URIs of archives to be extracted into the working directory of each executor. Supported file types: .jar, .tar, .tar.gz, .tgz, and .zip.
+      repeated string archive_uris = 1 [json_name = "archive_uris"];
+
+      // Optional. The arguments to pass to the driver. Do not include arguments, such as `--conf`, that can be set as job properties, since a collision may occur that causes an incorrect job submission.
+      repeated string args = 2;
+
+      // Optional. HCFS URIs of files to be placed in the working directory of each executor. Useful for naively parallel tasks.
+      repeated string file_uris = 3 [json_name = "file_uris"];
+
+      // Optional. HCFS URIs of jar files to add to the CLASSPATHs of the Python driver and tasks.
+      repeated string jar_file_uris = 4 [json_name = "jar_file_uris"];
+
+      // Required. The HCFS URI of the main Python file to use as the driver. Must be a .py file.
+      string main_python_file_uri = 5 [json_name = "main_python_file_uri"];
+
+      // Optional. A mapping of property names to values, used to configure PySpark. Properties that conflict with values set by the Dataproc API may be overwritten. Can include properties set in /etc/spark/conf/spark-defaults.conf and classes in user code.
+      map<string, string> properties = 6;
+
+      // Optional. HCFS file URIs of Python files to pass to the PySpark framework. Supported file types: .py, .egg, and .zip.
+      repeated string python_file_uris = 7 [json_name = "python_file_uris"];
+
+      LoggingConfig logging_config = 8 [json_name = "logging_config"];
+
+      message LoggingConfig {
+        // The per-package log levels for the driver. This may include "root" package name to configure rootLogger. Examples: 'com.google = FATAL', 'root = INFO', 'org.apache = DEBUG'
+        map<string, string> driver_log_levels = 1 [json_name = "driver_log_levels"];
+      }
+    }
+
+    message Scheduling {
+      // Optional. Maximum number of times per hour a driver may be restarted as a result of driver exiting with non-zero code before job is reported failed. A job may be reported as thrashing if driver exits with non-zero code 4 times within 10 minute window. Maximum value is 10.
+      int64 max_failures_per_hour = 1 [json_name = "max_failures_per_hour"];
+
+      // Optional. Maximum number of times in total a driver may be restarted as a result of driver exiting with non-zero code before job is reported failed. Maximum value is 240.
+      int64 max_failures_total = 2 [json_name = "max_failures_total"];
+    }
+
+    message SparkJob {
+      // Optional. HCFS URIs of archives to be extracted into the working directory of each executor. Supported file types: .jar, .tar, .tar.gz, .tgz, and .zip.
+      repeated string archive_uris = 1 [json_name = "archive_uris"];
+
+      // Optional. The arguments to pass to the driver. Do not include arguments, such as `--conf`, that can be set as job properties, since a collision may occur that causes an incorrect job submission.
+      repeated string args = 2;
+
+      // Optional. HCFS URIs of files to be placed in the working directory of each executor. Useful for naively parallel tasks.
+      repeated string file_uris = 3 [json_name = "file_uris"];
+
+      // Optional. HCFS URIs of jar files to add to the CLASSPATHs of the Spark driver and tasks.
+      repeated string jar_file_uris = 4 [json_name = "jar_file_uris"];
+
+      // The name of the driver's main class. The jar file that contains the class must be in the default CLASSPATH or specified in `jar_file_uris`.
+      string main_class = 5 [json_name = "main_class"];
+
+      // The HCFS URI of the jar file that contains the main class.
+      string main_jar_file_uri = 6 [json_name = "main_jar_file_uri"];
+
+      // Optional. A mapping of property names to values, used to configure Spark. Properties that conflict with values set by the Dataproc API may be overwritten. Can include properties set in /etc/spark/conf/spark-defaults.conf and classes in user code.
+      map<string, string> properties = 7;
+
+      LoggingConfig logging_config = 8 [json_name = "logging_config"];
+
+      message LoggingConfig {
+        // The per-package log levels for the driver. This may include "root" package name to configure rootLogger. Examples: 'com.google = FATAL', 'root = INFO', 'org.apache = DEBUG'
+        map<string, string> driver_log_levels = 1 [json_name = "driver_log_levels"];
+      }
+    }
+
+    message SparkRJob {
+      // Optional. HCFS URIs of archives to be extracted into the working directory of each executor. Supported file types: .jar, .tar, .tar.gz, .tgz, and .zip.
+      repeated string archive_uris = 1 [json_name = "archive_uris"];
+
+      // Optional. The arguments to pass to the driver. Do not include arguments, such as `--conf`, that can be set as job properties, since a collision may occur that causes an incorrect job submission.
+      repeated string args = 2;
+
+      // Optional. HCFS URIs of files to be placed in the working directory of each executor. Useful for naively parallel tasks.
+      repeated string file_uris = 3 [json_name = "file_uris"];
+
+      // Required. The HCFS URI of the main R file to use as the driver. Must be a .R file.
+      string main_r_file_uri = 4 [json_name = "main_r_file_uri"];
+
+      // Optional. A mapping of property names to values, used to configure SparkR. Properties that conflict with values set by the Dataproc API may be overwritten. Can include properties set in /etc/spark/conf/spark-defaults.conf and classes in user code.
+      map<string, string> properties = 5;
+
+      LoggingConfig logging_config = 6 [json_name = "logging_config"];
+
+      message LoggingConfig {
+        // The per-package log levels for the driver. This may include "root" package name to configure rootLogger. Examples: 'com.google = FATAL', 'root = INFO', 'org.apache = DEBUG'
+        map<string, string> driver_log_levels = 1 [json_name = "driver_log_levels"];
+      }
+    }
+
+    message SparkSqlJob {
+      // Optional. HCFS URIs of jar files to be added to the Spark CLASSPATH.
+      repeated string jar_file_uris = 1 [json_name = "jar_file_uris"];
+
+      // Optional. A mapping of property names to values, used to configure Spark SQL's SparkConf. Properties that conflict with values set by the Dataproc API may be overwritten.
+      map<string, string> properties = 2;
+
+      // The HCFS URI of the script that contains SQL queries.
+      string query_file_uri = 3 [json_name = "query_file_uri"];
+
+      // Optional. Mapping of query variable names to values (equivalent to the Spark SQL command: SET `name="value";`).
+      map<string, string> script_variables = 4 [json_name = "script_variables"];
+
+      LoggingConfig logging_config = 5 [json_name = "logging_config"];
+
+      QueryList query_list = 6 [json_name = "query_list"];
+
+      message LoggingConfig {
+        // The per-package log levels for the driver. This may include "root" package name to configure rootLogger. Examples: 'com.google = FATAL', 'root = INFO', 'org.apache = DEBUG'
+        map<string, string> driver_log_levels = 1 [json_name = "driver_log_levels"];
+      }
+
+      message QueryList {
+        // Required. The queries to execute. You do not need to end a query expression with a semicolon. Multiple queries can be specified in one string by separating each with a semicolon. Here is an example of a Dataproc API snippet that uses a QueryList to specify a HiveJob: "hiveJob": { "queryList": { "queries": [ "query1", "query2", "query3;query4", ] } }
+        repeated string queries = 1;
+      }
+    }
+  }
+
+  message Parameters {
+    // Optional. Brief description of the parameter. Must not exceed 1024 characters.
+    string description = 1;
+
+    // Required. Paths to all fields that the parameter replaces. A field is allowed to appear in at most one parameter's list of field paths. A field path is similar in syntax to a google.protobuf.FieldMask. For example, a field path that references the zone field of a workflow template's cluster selector would be specified as `placement.clusterSelector.zone`. Also, field paths can reference fields using the following syntax: * Values in maps can be referenced by key: * labels['key'] * placement.clusterSelector.clusterLabels['key'] * placement.managedCluster.labels['key'] * placement.clusterSelector.clusterLabels['key'] * jobs['step-id'].labels['key'] * Jobs in the jobs list can be referenced by step-id: * jobs['step-id'].hadoopJob.mainJarFileUri * jobs['step-id'].hiveJob.queryFileUri * jobs['step-id'].pySparkJob.mainPythonFileUri * jobs['step-id'].hadoopJob.jarFileUris[0] * jobs['step-id'].hadoopJob.archiveUris[0] * jobs['step-id'].hadoopJob.fileUris[0] * jobs['step-id'].pySparkJob.pythonFileUris[0] * Items in repeated fields can be referenced by a zero-based index: * jobs['step-id'].sparkJob.args[0] * Other examples: * jobs['step-id'].hadoopJob.properties['key'] * jobs['step-id'].hadoopJob.args[0] * jobs['step-id'].hiveJob.scriptVariables['key'] * jobs['step-id'].hadoopJob.mainJarFileUri * placement.clusterSelector.zone It may not be possible to parameterize maps and repeated fields in their entirety since only individual map values and individual items in repeated fields can be referenced. For example, the following field paths are invalid: - placement.clusterSelector.clusterLabels - jobs['step-id'].sparkJob.args
+    repeated string fields = 2;
+
+    // Required. Parameter name. The parameter name is used as the key, and paired with the parameter value, which are passed to the template when the template is instantiated. The name must contain only capital letters (A-Z), numbers (0-9), and underscores (_), and must not start with a number. The maximum length is 40 characters.
+    string name = 3;
+
+    Validation validation = 4;
+
+    message Validation {
+      Regex regex = 1;
+
+      Values values = 2;
+
+      message Regex {
+        // Required. RE2 regular expressions used to validate the parameter's value. The value must match the regex in its entirety (substring matches are not sufficient).
+        repeated string regexes = 1;
+      }
+
+      message Values {
+        // Required. List of allowed values for the parameter.
+        repeated string values = 1;
+      }
+    }
+  }
+
+  message Placement {
+    ClusterSelector cluster_selector = 1 [json_name = "cluster_selector"];
+
+    ManagedCluster managed_cluster = 2 [json_name = "managed_cluster"];
+
+    message ClusterSelector {
+      // Required. The cluster labels. Cluster must have all labels to match.
+      map<string, string> cluster_labels = 1 [json_name = "cluster_labels"];
+
+      // Optional. The zone where workflow process executes. This parameter does not affect the selection of the cluster. If unspecified, the zone of the first cluster matching the selector is used.
+      string zone = 2;
+    }
+
+    message ManagedCluster {
+      // Required. The cluster name prefix. A unique cluster name will be formed by appending a random suffix. The name must contain only lower-case letters (a-z), numbers (0-9), and hyphens (-). Must begin with a letter. Cannot begin or end with hyphen. Must consist of between 2 and 35 characters.
+      string cluster_name = 1 [json_name = "cluster_name"];
+
+      // Optional. The labels to associate with this cluster. Label keys must be between 1 and 63 characters long, and must conform to the following PCRE regular expression: p{Ll}p{Lo}{0,62} Label values must be between 1 and 63 characters long, and must conform to the following PCRE regular expression: [p{Ll}p{Lo}p{N}_-]{0,63} No more than 32 labels can be associated with a given cluster.
+      map<string, string> labels = 2;
+
+      Config config = 3;
+
+      message Config {
+        // Optional. A Cloud Storage bucket used to stage job dependencies, config files, and job driver console output. If you do not specify a staging bucket, Cloud Dataproc will determine a Cloud Storage location (US, ASIA, or EU) for your cluster's staging bucket according to the Compute Engine zone where your cluster is deployed, and then create and manage this project-level, per-location bucket (see [Dataproc staging bucket](https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/staging-bucket)). **This field requires a Cloud Storage bucket name, not a URI to a Cloud Storage bucket.**
+        string staging_bucket = 1 [json_name = "staging_bucket"];
+
+        // Optional. A Cloud Storage bucket used to store ephemeral cluster and jobs data, such as Spark and MapReduce history files. If you do not specify a temp bucket, Dataproc will determine a Cloud Storage location (US, ASIA, or EU) for your cluster's temp bucket according to the Compute Engine zone where your cluster is deployed, and then create and manage this project-level, per-location bucket. The default bucket has a TTL of 90 days, but you can use any TTL (or none) if you specify a bucket. **This field requires a Cloud Storage bucket name, not a URI to a Cloud Storage bucket.**
+        string temp_bucket = 2 [json_name = "temp_bucket"];
+
+        AutoscalingConfig autoscaling_config = 3 [json_name = "autoscaling_config"];
+
+        EncryptionConfig encryption_config = 4 [json_name = "encryption_config"];
+
+        EndpointConfig endpoint_config = 5 [json_name = "endpoint_config"];
+
+        GceClusterConfig gce_cluster_config = 6 [json_name = "gce_cluster_config"];
+
+        repeated InitializationActions initialization_actions = 7 [json_name = "initialization_actions"];
+
+        LifecycleConfig lifecycle_config = 8 [json_name = "lifecycle_config"];
+
+        MasterConfig master_config = 9 [json_name = "master_config"];
+
+        SecondaryWorkerConfig secondary_worker_config = 10 [json_name = "secondary_worker_config"];
+
+        SecurityConfig security_config = 11 [json_name = "security_config"];
+
+        SoftwareConfig software_config = 12 [json_name = "software_config"];
+
+        WorkerConfig worker_config = 13 [json_name = "worker_config"];
+
+        message AutoscalingConfig {
+          // Optional. The autoscaling policy used by the cluster. Only resource names including projectid and location (region) are valid. Examples: * `https://www.googleapis.com/compute/v1/projects/[project_id]/locations/[dataproc_region]/autoscalingPolicies/[policy_id]` * `projects/[project_id]/locations/[dataproc_region]/autoscalingPolicies/[policy_id]` Note that the policy must be in the same project and Dataproc region.
+          string policy = 1;
+        }
+
+        message EncryptionConfig {
+          // Optional. The Cloud KMS key name to use for PD disk encryption for all instances in the cluster.
+          string gce_pd_kms_key_name = 1 [json_name = "gce_pd_kms_key_name"];
+        }
+
+        message EndpointConfig {
+          // Optional. If true, enable http access to specific ports on the cluster from external sources. Defaults to false.
+          bool enable_http_port_access = 1 [json_name = "enable_http_port_access"];
+
+          // Output only. The map of port descriptions to URLs. Will only be populated if enable_http_port_access is true.
+          map<string, string> http_ports = 2 [json_name = "http_ports"];
+        }
+
+        message GceClusterConfig {
+          // Optional. If true, all instances in the cluster will only have internal IP addresses. By default, clusters are not restricted to internal IP addresses, and will have ephemeral external IP addresses assigned to each instance. This `internal_ip_only` restriction can only be enabled for subnetwork enabled networks, and all off-cluster dependencies must be configured to be accessible without external IP addresses.
+          bool internal_ip_only = 1 [json_name = "internal_ip_only"];
+
+          // The Compute Engine metadata entries to add to all instances (see [Project and instance metadata](https://cloud.google.com/compute/docs/storing-retrieving-metadata#project_and_instance_metadata)).
+          map<string, string> metadata = 2;
+
+          // Optional. The Compute Engine network to be used for machine communications. Cannot be specified with subnetwork_uri. If neither `network_uri` nor `subnetwork_uri` is specified, the "default" network of the project is used, if it exists. Cannot be a "Custom Subnet Network" (see [Using Subnetworks](https://cloud.google.com/compute/docs/subnetworks) for more information). A full URL, partial URI, or short name are valid. Examples: * `https://www.googleapis.com/compute/v1/projects/[project_id]/regions/global/default` * `projects/[project_id]/regions/global/default` * `default`
+          string network = 3;
+
+          // Optional. The type of IPv6 access for a cluster. Possible values: PRIVATE_IPV6_GOOGLE_ACCESS_UNSPECIFIED, INHERIT_FROM_SUBNETWORK, OUTBOUND, BIDIRECTIONAL
+          string private_ipv6_google_access = 4 [json_name = "private_ipv6_google_access"];
+
+          // Optional. The [Dataproc service account](https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/service-accounts#service_accounts_in_dataproc) (also see [VM Data Plane identity](https://cloud.google.com/dataproc/docs/concepts/iam/dataproc-principals#vm_service_account_data_plane_identity)) used by Dataproc cluster VM instances to access Google Cloud Platform services. If not specified, the [Compute Engine default service account](https://cloud.google.com/compute/docs/access/service-accounts#default_service_account) is used.
+          string service_account = 5 [json_name = "service_account"];
+
+          // Optional. The URIs of service account scopes to be included in Compute Engine instances. The following base set of scopes is always included: * https://www.googleapis.com/auth/cloud.useraccounts.readonly * https://www.googleapis.com/auth/devstorage.read_write * https://www.googleapis.com/auth/logging.write If no scopes are specified, the following defaults are also provided: * https://www.googleapis.com/auth/bigquery * https://www.googleapis.com/auth/bigtable.admin.table * https://www.googleapis.com/auth/bigtable.data * https://www.googleapis.com/auth/devstorage.full_control
+          repeated string service_account_scopes = 6 [json_name = "service_account_scopes"];
+
+          // Optional. The Compute Engine subnetwork to be used for machine communications. Cannot be specified with network_uri. A full URL, partial URI, or short name are valid. Examples: * `https://www.googleapis.com/compute/v1/projects/[project_id]/regions/us-east1/subnetworks/sub0` * `projects/[project_id]/regions/us-east1/subnetworks/sub0` * `sub0`
+          string subnetwork = 7;
+
+          // The Compute Engine tags to add to all instances (see [Tagging instances](https://cloud.google.com/compute/docs/label-or-tag-resources#tags)).
+          repeated string tags = 8;
+
+          // Optional. The zone where the Compute Engine cluster will be located. On a create request, it is required in the "global" region. If omitted in a non-global Dataproc region, the service will pick a zone in the corresponding Compute Engine region. On a get request, zone will always be present. A full URL, partial URI, or short name are valid. Examples: * `https://www.googleapis.com/compute/v1/projects/[project_id]/zones/[zone]` * `projects/[project_id]/zones/[zone]` * `us-central1-f`
+          string zone = 9;
+
+          NodeGroupAffinity node_group_affinity = 10 [json_name = "node_group_affinity"];
+
+          ReservationAffinity reservation_affinity = 11 [json_name = "reservation_affinity"];
+
+          ShieldedInstanceConfig shielded_instance_config = 12 [json_name = "shielded_instance_config"];
+
+          message NodeGroupAffinity {
+            // Required. The URI of a sole-tenant [node group resource](https://cloud.google.com/compute/docs/reference/rest/v1/nodeGroups) that the cluster will be created on. A full URL, partial URI, or node group name are valid. Examples: * `https://www.googleapis.com/compute/v1/projects/[project_id]/zones/us-central1-a/nodeGroups/node-group-1` * `projects/[project_id]/zones/us-central1-a/nodeGroups/node-group-1` * `node-group-1`
+            string node_group = 1 [json_name = "node_group"];
+          }
+
+          message ReservationAffinity {
+            // Optional. Type of reservation to consume Possible values: TYPE_UNSPECIFIED, NO_RESERVATION, ANY_RESERVATION, SPECIFIC_RESERVATION
+            string consume_reservation_type = 1 [json_name = "consume_reservation_type"];
+
+            // Optional. Corresponds to the label key of reservation resource.
+            string key = 2;
+
+            // Optional. Corresponds to the label values of reservation resource.
+            repeated string values = 3;
+          }
+
+          message ShieldedInstanceConfig {
+            // Optional. Defines whether instances have integrity monitoring enabled. Integrity monitoring compares the most recent boot measurements to the integrity policy baseline and returns a pair of pass/fail results depending on whether they match or not.
+            bool enable_integrity_monitoring = 1 [json_name = "enable_integrity_monitoring"];
+
+            // Optional. Defines whether the instances have Secure Boot enabled. Secure Boot helps ensure that the system only runs authentic software by verifying the digital signature of all boot components, and halting the boot process if signature verification fails.
+            bool enable_secure_boot = 2 [json_name = "enable_secure_boot"];
+
+            // Optional. Defines whether the instance have the vTPM enabled. Virtual Trusted Platform Module protects objects like keys, certificates and enables Measured Boot by performing the measurements needed to create a known good boot baseline, called the integrity policy baseline.
+            bool enable_vtpm = 3 [json_name = "enable_vtpm"];
+          }
+        }
+
+        message InitializationActions {
+          // Required. Cloud Storage URI of executable file.
+          string executable_file = 1 [json_name = "executable_file"];
+
+          // Optional. Amount of time executable has to complete. Default is 10 minutes (see JSON representation of [Duration](https://developers.google.com/protocol-buffers/docs/proto3#json)). Cluster creation fails with an explanatory error message (the name of the executable that caused the error and the exceeded timeout period) if the executable is not completed at end of the timeout period.
+          string execution_timeout = 2 [json_name = "execution_timeout"];
+        }
+
+        message LifecycleConfig {
+          // Optional. The time when cluster will be auto-deleted (see JSON representation of [Timestamp](https://developers.google.com/protocol-buffers/docs/proto3#json)).
+          string auto_delete_time = 1 [json_name = "auto_delete_time"];
+
+          // Optional. The lifetime duration of cluster. The cluster will be auto-deleted at the end of this period. Minimum value is 10 minutes; maximum value is 14 days (see JSON representation of [Duration](https://developers.google.com/protocol-buffers/docs/proto3#json)).
+          string auto_delete_ttl = 2 [json_name = "auto_delete_ttl"];
+
+          // Optional. The duration to keep the cluster alive while idling (when no jobs are running). Passing this threshold will cause the cluster to be deleted. Minimum value is 5 minutes; maximum value is 14 days (see JSON representation of [Duration](https://developers.google.com/protocol-buffers/docs/proto3#json)).
+          string idle_delete_ttl = 3 [json_name = "idle_delete_ttl"];
+
+          // Output only. The time when cluster became idle (most recent job finished) and became eligible for deletion due to idleness (see JSON representation of [Timestamp](https://developers.google.com/protocol-buffers/docs/proto3#json)).
+          string idle_start_time = 4 [json_name = "idle_start_time"];
+        }
+
+        message MasterConfig {
+          // Optional. The Compute Engine image resource used for cluster instances. The URI can represent an image or image family. Image examples: * `https://www.googleapis.com/compute/beta/projects/[project_id]/global/images/[image-id]` * `projects/[project_id]/global/images/[image-id]` * `image-id` Image family examples. Dataproc will use the most recent image from the family: * `https://www.googleapis.com/compute/beta/projects/[project_id]/global/images/family/[custom-image-family-name]` * `projects/[project_id]/global/images/family/[custom-image-family-name]` If the URI is unspecified, it will be inferred from `SoftwareConfig.image_version` or the system default.
+          string image = 1;
+
+          // Output only. The list of instance names. Dataproc derives the names from `cluster_name`, `num_instances`, and the instance group.
+          repeated string instance_names = 2 [json_name = "instance_names"];
+
+          // Output only. Specifies that this instance group contains preemptible instances.
+          bool is_preemptible = 3 [json_name = "is_preemptible"];
+
+          // Optional. The Compute Engine machine type used for cluster instances. A full URL, partial URI, or short name are valid. Examples: * `https://www.googleapis.com/compute/v1/projects/[project_id]/zones/us-east1-a/machineTypes/n1-standard-2` * `projects/[project_id]/zones/us-east1-a/machineTypes/n1-standard-2` * `n1-standard-2` **Auto Zone Exception**: If you are using the Dataproc [Auto Zone Placement](https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/auto-zone#using_auto_zone_placement) feature, you must use the short name of the machine type resource, for example, `n1-standard-2`.
+          string machine_type = 4 [json_name = "machine_type"];
+
+          // Output only. The config for Compute Engine Instance Group Manager that manages this group. This is only used for preemptible instance groups.
+          repeated ManagedGroupConfig managed_group_config = 5 [json_name = "managed_group_config"];
+
+          // Optional. Specifies the minimum cpu platform for the Instance Group. See [Dataproc -> Minimum CPU Platform](https://cloud.google.com/dataproc/docs/concepts/compute/dataproc-min-cpu).
+          string min_cpu_platform = 6 [json_name = "min_cpu_platform"];
+
+          // Optional. The number of VM instances in the instance group. For [HA cluster](/dataproc/docs/concepts/configuring-clusters/high-availability) [master_config](#FIELDS.master_config) groups, **must be set to 3**. For standard cluster [master_config](#FIELDS.master_config) groups, **must be set to 1**.
+          int64 num_instances = 7 [json_name = "num_instances"];
+
+          // Optional. Specifies the preemptibility of the instance group. The default value for master and worker groups is `NON_PREEMPTIBLE`. This default cannot be changed. The default value for secondary instances is `PREEMPTIBLE`. Possible values: PREEMPTIBILITY_UNSPECIFIED, NON_PREEMPTIBLE, PREEMPTIBLE
+          string preemptibility = 8;
+
+          repeated Accelerators accelerators = 9;
+
+          DiskConfig disk_config = 10 [json_name = "disk_config"];
+
+          message ManagedGroupConfig {
+            // instance_group_manager_name: string
+            string instance_group_manager_name = 1 [json_name = "instance_group_manager_name"];
+
+            // instance_template_name: string
+            string instance_template_name = 2 [json_name = "instance_template_name"];
+          }
+
+          message Accelerators {
+            // The number of the accelerator cards of this type exposed to this instance.
+            int64 accelerator_count = 1 [json_name = "accelerator_count"];
+
+            // Full URL, partial URI, or short name of the accelerator type resource to expose to this instance. See [Compute Engine AcceleratorTypes](https://cloud.google.com/compute/docs/reference/beta/acceleratorTypes). Examples: * `https://www.googleapis.com/compute/beta/projects/[project_id]/zones/us-east1-a/acceleratorTypes/nvidia-tesla-k80` * `projects/[project_id]/zones/us-east1-a/acceleratorTypes/nvidia-tesla-k80` * `nvidia-tesla-k80` **Auto Zone Exception**: If you are using the Dataproc [Auto Zone Placement](https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/auto-zone#using_auto_zone_placement) feature, you must use the short name of the accelerator type resource, for example, `nvidia-tesla-k80`.
+            string accelerator_type = 2 [json_name = "accelerator_type"];
+          }
+
+          message DiskConfig {
+            // Optional. Size in GB of the boot disk (default is 500GB).
+            int64 boot_disk_size_gb = 1 [json_name = "boot_disk_size_gb"];
+
+            // Optional. Type of the boot disk (default is "pd-standard"). Valid values: "pd-balanced" (Persistent Disk Balanced Solid State Drive), "pd-ssd" (Persistent Disk Solid State Drive), or "pd-standard" (Persistent Disk Hard Disk Drive). See [Disk types](https://cloud.google.com/compute/docs/disks#disk-types).
+            string boot_disk_type = 2 [json_name = "boot_disk_type"];
+
+            // Optional. Number of attached SSDs, from 0 to 4 (default is 0). If SSDs are not attached, the boot disk is used to store runtime logs and [HDFS](https://hadoop.apache.org/docs/r1.2.1/hdfs_user_guide.html) data. If one or more SSDs are attached, this runtime bulk data is spread across them, and the boot disk contains only basic config and installed binaries.
+            int64 num_local_ssds = 3 [json_name = "num_local_ssds"];
+          }
+        }
+
+        message SecondaryWorkerConfig {
+          // Optional. The Compute Engine image resource used for cluster instances. The URI can represent an image or image family. Image examples: * `https://www.googleapis.com/compute/beta/projects/[project_id]/global/images/[image-id]` * `projects/[project_id]/global/images/[image-id]` * `image-id` Image family examples. Dataproc will use the most recent image from the family: * `https://www.googleapis.com/compute/beta/projects/[project_id]/global/images/family/[custom-image-family-name]` * `projects/[project_id]/global/images/family/[custom-image-family-name]` If the URI is unspecified, it will be inferred from `SoftwareConfig.image_version` or the system default.
+          string image = 1;
+
+          // Output only. The list of instance names. Dataproc derives the names from `cluster_name`, `num_instances`, and the instance group.
+          repeated string instance_names = 2 [json_name = "instance_names"];
+
+          // Output only. Specifies that this instance group contains preemptible instances.
+          bool is_preemptible = 3 [json_name = "is_preemptible"];
+
+          // Optional. The Compute Engine machine type used for cluster instances. A full URL, partial URI, or short name are valid. Examples: * `https://www.googleapis.com/compute/v1/projects/[project_id]/zones/us-east1-a/machineTypes/n1-standard-2` * `projects/[project_id]/zones/us-east1-a/machineTypes/n1-standard-2` * `n1-standard-2` **Auto Zone Exception**: If you are using the Dataproc [Auto Zone Placement](https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/auto-zone#using_auto_zone_placement) feature, you must use the short name of the machine type resource, for example, `n1-standard-2`.
+          string machine_type = 4 [json_name = "machine_type"];
+
+          // Output only. The config for Compute Engine Instance Group Manager that manages this group. This is only used for preemptible instance groups.
+          repeated ManagedGroupConfig managed_group_config = 5 [json_name = "managed_group_config"];
+
+          // Optional. Specifies the minimum cpu platform for the Instance Group. See [Dataproc -> Minimum CPU Platform](https://cloud.google.com/dataproc/docs/concepts/compute/dataproc-min-cpu).
+          string min_cpu_platform = 6 [json_name = "min_cpu_platform"];
+
+          // Optional. The number of VM instances in the instance group. For [HA cluster](/dataproc/docs/concepts/configuring-clusters/high-availability) [master_config](#FIELDS.master_config) groups, **must be set to 3**. For standard cluster [master_config](#FIELDS.master_config) groups, **must be set to 1**.
+          int64 num_instances = 7 [json_name = "num_instances"];
+
+          // Optional. Specifies the preemptibility of the instance group. The default value for master and worker groups is `NON_PREEMPTIBLE`. This default cannot be changed. The default value for secondary instances is `PREEMPTIBLE`. Possible values: PREEMPTIBILITY_UNSPECIFIED, NON_PREEMPTIBLE, PREEMPTIBLE
+          string preemptibility = 8;
+
+          repeated Accelerators accelerators = 9;
+
+          DiskConfig disk_config = 10 [json_name = "disk_config"];
+
+          message ManagedGroupConfig {
+            // instance_group_manager_name: string
+            string instance_group_manager_name = 1 [json_name = "instance_group_manager_name"];
+
+            // instance_template_name: string
+            string instance_template_name = 2 [json_name = "instance_template_name"];
+          }
+
+          message Accelerators {
+            // The number of the accelerator cards of this type exposed to this instance.
+            int64 accelerator_count = 1 [json_name = "accelerator_count"];
+
+            // Full URL, partial URI, or short name of the accelerator type resource to expose to this instance. See [Compute Engine AcceleratorTypes](https://cloud.google.com/compute/docs/reference/beta/acceleratorTypes). Examples: * `https://www.googleapis.com/compute/beta/projects/[project_id]/zones/us-east1-a/acceleratorTypes/nvidia-tesla-k80` * `projects/[project_id]/zones/us-east1-a/acceleratorTypes/nvidia-tesla-k80` * `nvidia-tesla-k80` **Auto Zone Exception**: If you are using the Dataproc [Auto Zone Placement](https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/auto-zone#using_auto_zone_placement) feature, you must use the short name of the accelerator type resource, for example, `nvidia-tesla-k80`.
+            string accelerator_type = 2 [json_name = "accelerator_type"];
+          }
+
+          message DiskConfig {
+            // Optional. Size in GB of the boot disk (default is 500GB).
+            int64 boot_disk_size_gb = 1 [json_name = "boot_disk_size_gb"];
+
+            // Optional. Type of the boot disk (default is "pd-standard"). Valid values: "pd-balanced" (Persistent Disk Balanced Solid State Drive), "pd-ssd" (Persistent Disk Solid State Drive), or "pd-standard" (Persistent Disk Hard Disk Drive). See [Disk types](https://cloud.google.com/compute/docs/disks#disk-types).
+            string boot_disk_type = 2 [json_name = "boot_disk_type"];
+
+            // Optional. Number of attached SSDs, from 0 to 4 (default is 0). If SSDs are not attached, the boot disk is used to store runtime logs and [HDFS](https://hadoop.apache.org/docs/r1.2.1/hdfs_user_guide.html) data. If one or more SSDs are attached, this runtime bulk data is spread across them, and the boot disk contains only basic config and installed binaries.
+            int64 num_local_ssds = 3 [json_name = "num_local_ssds"];
+          }
+        }
+
+        message SecurityConfig {
+          KerberosConfig kerberos_config = 1 [json_name = "kerberos_config"];
+
+          message KerberosConfig {
+            // Optional. The admin server (IP or hostname) for the remote trusted realm in a cross realm trust relationship.
+            string cross_realm_trust_admin_server = 1 [json_name = "cross_realm_trust_admin_server"];
+
+            // Optional. The KDC (IP or hostname) for the remote trusted realm in a cross realm trust relationship.
+            string cross_realm_trust_kdc = 2 [json_name = "cross_realm_trust_kdc"];
+
+            // Optional. The remote realm the Dataproc on-cluster KDC will trust, should the user enable cross realm trust.
+            string cross_realm_trust_realm = 3 [json_name = "cross_realm_trust_realm"];
+
+            // Optional. The Cloud Storage URI of a KMS encrypted file containing the shared password between the on-cluster Kerberos realm and the remote trusted realm, in a cross realm trust relationship.
+            string cross_realm_trust_shared_password = 4 [json_name = "cross_realm_trust_shared_password"];
+
+            // Optional. Flag to indicate whether to Kerberize the cluster (default: false). Set this field to true to enable Kerberos on a cluster.
+            bool enable_kerberos = 5 [json_name = "enable_kerberos"];
+
+            // Optional. The Cloud Storage URI of a KMS encrypted file containing the master key of the KDC database.
+            string kdc_db_key = 6 [json_name = "kdc_db_key"];
+
+            // Optional. The Cloud Storage URI of a KMS encrypted file containing the password to the user provided key. For the self-signed certificate, this password is generated by Dataproc.
+            string key_password = 7 [json_name = "key_password"];
+
+            // Optional. The Cloud Storage URI of the keystore file used for SSL encryption. If not provided, Dataproc will provide a self-signed certificate.
+            string keystore = 8;
+
+            // Optional. The Cloud Storage URI of a KMS encrypted file containing the password to the user provided keystore. For the self-signed certificate, this password is generated by Dataproc.
+            string keystore_password = 9 [json_name = "keystore_password"];
+
+            // Optional. The uri of the KMS key used to encrypt various sensitive files.
+            string kms_key = 10 [json_name = "kms_key"];
+
+            // Optional. The name of the on-cluster Kerberos realm. If not specified, the uppercased domain of hostnames will be the realm.
+            string realm = 11;
+
+            // Optional. The Cloud Storage URI of a KMS encrypted file containing the root principal password.
+            string root_principal_password = 12 [json_name = "root_principal_password"];
+
+            // Optional. The lifetime of the ticket granting ticket, in hours. If not specified, or user specifies 0, then default value 10 will be used.
+            int64 tgt_lifetime_hours = 13 [json_name = "tgt_lifetime_hours"];
+
+            // Optional. The Cloud Storage URI of the truststore file used for SSL encryption. If not provided, Dataproc will provide a self-signed certificate.
+            string truststore = 14;
+
+            // Optional. The Cloud Storage URI of a KMS encrypted file containing the password to the user provided truststore. For the self-signed certificate, this password is generated by Dataproc.
+            string truststore_password = 15 [json_name = "truststore_password"];
+          }
+        }
+
+        message SoftwareConfig {
+          // Optional. The version of software inside the cluster. It must be one of the supported [Dataproc Versions](https://cloud.google.com/dataproc/docs/concepts/versioning/dataproc-versions#supported_dataproc_versions), such as "1.2" (including a subminor version, such as "1.2.29"), or the ["preview" version](https://cloud.google.com/dataproc/docs/concepts/versioning/dataproc-versions#other_versions). If unspecified, it defaults to the latest Debian version.
+          string image_version = 1 [json_name = "image_version"];
+
+          // Optional. The set of components to activate on the cluster.
+          repeated string optional_components = 2 [json_name = "optional_components"];
+
+          // Optional. The properties to set on daemon config files. Property keys are specified in `prefix:property` format, for example `core:hadoop.tmp.dir`. The following are supported prefixes and their mappings: * capacity-scheduler: `capacity-scheduler.xml` * core: `core-site.xml` * distcp: `distcp-default.xml` * hdfs: `hdfs-site.xml` * hive: `hive-site.xml` * mapred: `mapred-site.xml` * pig: `pig.properties` * spark: `spark-defaults.conf` * yarn: `yarn-site.xml` For more information, see [Cluster properties](https://cloud.google.com/dataproc/docs/concepts/cluster-properties).
+          map<string, string> properties = 3;
+        }
+
+        message WorkerConfig {
+          // Optional. The Compute Engine image resource used for cluster instances. The URI can represent an image or image family. Image examples: * `https://www.googleapis.com/compute/beta/projects/[project_id]/global/images/[image-id]` * `projects/[project_id]/global/images/[image-id]` * `image-id` Image family examples. Dataproc will use the most recent image from the family: * `https://www.googleapis.com/compute/beta/projects/[project_id]/global/images/family/[custom-image-family-name]` * `projects/[project_id]/global/images/family/[custom-image-family-name]` If the URI is unspecified, it will be inferred from `SoftwareConfig.image_version` or the system default.
+          string image = 1;
+
+          // Output only. The list of instance names. Dataproc derives the names from `cluster_name`, `num_instances`, and the instance group.
+          repeated string instance_names = 2 [json_name = "instance_names"];
+
+          // Output only. Specifies that this instance group contains preemptible instances.
+          bool is_preemptible = 3 [json_name = "is_preemptible"];
+
+          // Optional. The Compute Engine machine type used for cluster instances. A full URL, partial URI, or short name are valid. Examples: * `https://www.googleapis.com/compute/v1/projects/[project_id]/zones/us-east1-a/machineTypes/n1-standard-2` * `projects/[project_id]/zones/us-east1-a/machineTypes/n1-standard-2` * `n1-standard-2` **Auto Zone Exception**: If you are using the Dataproc [Auto Zone Placement](https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/auto-zone#using_auto_zone_placement) feature, you must use the short name of the machine type resource, for example, `n1-standard-2`.
+          string machine_type = 4 [json_name = "machine_type"];
+
+          // Output only. The config for Compute Engine Instance Group Manager that manages this group. This is only used for preemptible instance groups.
+          repeated ManagedGroupConfig managed_group_config = 5 [json_name = "managed_group_config"];
+
+          // Optional. Specifies the minimum cpu platform for the Instance Group. See [Dataproc -> Minimum CPU Platform](https://cloud.google.com/dataproc/docs/concepts/compute/dataproc-min-cpu).
+          string min_cpu_platform = 6 [json_name = "min_cpu_platform"];
+
+          // Optional. The number of VM instances in the instance group. For [HA cluster](/dataproc/docs/concepts/configuring-clusters/high-availability) [master_config](#FIELDS.master_config) groups, **must be set to 3**. For standard cluster [master_config](#FIELDS.master_config) groups, **must be set to 1**.
+          int64 num_instances = 7 [json_name = "num_instances"];
+
+          // Optional. Specifies the preemptibility of the instance group. The default value for master and worker groups is `NON_PREEMPTIBLE`. This default cannot be changed. The default value for secondary instances is `PREEMPTIBLE`. Possible values: PREEMPTIBILITY_UNSPECIFIED, NON_PREEMPTIBLE, PREEMPTIBLE
+          string preemptibility = 8;
+
+          repeated Accelerators accelerators = 9;
+
+          DiskConfig disk_config = 10 [json_name = "disk_config"];
+
+          message ManagedGroupConfig {
+            // instance_group_manager_name: string
+            string instance_group_manager_name = 1 [json_name = "instance_group_manager_name"];
+
+            // instance_template_name: string
+            string instance_template_name = 2 [json_name = "instance_template_name"];
+          }
+
+          message Accelerators {
+            // The number of the accelerator cards of this type exposed to this instance.
+            int64 accelerator_count = 1 [json_name = "accelerator_count"];
+
+            // Full URL, partial URI, or short name of the accelerator type resource to expose to this instance. See [Compute Engine AcceleratorTypes](https://cloud.google.com/compute/docs/reference/beta/acceleratorTypes). Examples: * `https://www.googleapis.com/compute/beta/projects/[project_id]/zones/us-east1-a/acceleratorTypes/nvidia-tesla-k80` * `projects/[project_id]/zones/us-east1-a/acceleratorTypes/nvidia-tesla-k80` * `nvidia-tesla-k80` **Auto Zone Exception**: If you are using the Dataproc [Auto Zone Placement](https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/auto-zone#using_auto_zone_placement) feature, you must use the short name of the accelerator type resource, for example, `nvidia-tesla-k80`.
+            string accelerator_type = 2 [json_name = "accelerator_type"];
+          }
+
+          message DiskConfig {
+            // Optional. Size in GB of the boot disk (default is 500GB).
+            int64 boot_disk_size_gb = 1 [json_name = "boot_disk_size_gb"];
+
+            // Optional. Type of the boot disk (default is "pd-standard"). Valid values: "pd-balanced" (Persistent Disk Balanced Solid State Drive), "pd-ssd" (Persistent Disk Solid State Drive), or "pd-standard" (Persistent Disk Hard Disk Drive). See [Disk types](https://cloud.google.com/compute/docs/disks#disk-types).
+            string boot_disk_type = 2 [json_name = "boot_disk_type"];
+
+            // Optional. Number of attached SSDs, from 0 to 4 (default is 0). If SSDs are not attached, the boot disk is used to store runtime logs and [HDFS](https://hadoop.apache.org/docs/r1.2.1/hdfs_user_guide.html) data. If one or more SSDs are attached, this runtime bulk data is spread across them, and the boot disk contains only basic config and installed binaries.
+            int64 num_local_ssds = 3 [json_name = "num_local_ssds"];
+          }
+        }
+      }
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}

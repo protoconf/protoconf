@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsEcrpublicAuthorizationToken version is 0
+message AwsEcrpublicAuthorizationToken {
+  string authorization_token = 1 [json_name = "authorization_token"];
+
+  string expires_at = 2 [json_name = "expires_at"];
+
+  string id = 3;
+
+  string password = 4;
+
+  string user_name = 5 [json_name = "user_name"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}

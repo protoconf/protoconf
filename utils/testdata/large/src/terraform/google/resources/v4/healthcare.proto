@@ -1,0 +1,850 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleHealthcareConsentStore version is 0
+message GoogleHealthcareConsentStore {
+  // Identifies the dataset addressed by this request. Must be in the format
+  // 'projects/{project}/locations/{location}/datasets/{dataset}'
+  string dataset = 1;
+
+  // Default time to live for consents in this store. Must be at least 24 hours. Updating this field will not affect the expiration time of existing consents.
+  //
+  // A duration in seconds with up to nine fractional digits, terminated by 's'. Example: "3.5s".
+  string default_consent_ttl = 2 [json_name = "default_consent_ttl"];
+
+  // If true, [consents.patch] [google.cloud.healthcare.v1.consent.UpdateConsent] creates the consent if it does not already exist.
+  bool enable_consent_create_on_update = 3 [json_name = "enable_consent_create_on_update"];
+
+  string id = 4;
+
+  // User-supplied key-value pairs used to organize Consent stores.
+  //
+  // Label keys must be between 1 and 63 characters long, have a UTF-8 encoding of maximum 128 bytes, and must
+  // conform to the following PCRE regular expression: '[\p{Ll}\p{Lo}][\p{Ll}\p{Lo}\p{N}_-]{0,62}'
+  //
+  // Label values are optional, must be between 1 and 63 characters long, have a UTF-8 encoding of maximum 128
+  // bytes, and must conform to the following PCRE regular expression: '[\p{Ll}\p{Lo}\p{N}_-]{0,63}'
+  //
+  // No more than 64 labels can be associated with a given store.
+  //
+  // An object containing a list of "key": value pairs.
+  // Example: { "name": "wrench", "mass": "1.3kg", "count": "3" }.
+  map<string, string> labels = 5;
+
+  // The name of this ConsentStore, for example:
+  // "consent1"
+  string name = 6;
+
+  repeated Timeouts timeouts = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleHealthcareConsentStoreIamBinding version is 0
+message GoogleHealthcareConsentStoreIamBinding {
+  string consent_store_id = 1 [json_name = "consent_store_id"];
+
+  string dataset = 2;
+
+  string etag = 3;
+
+  string id = 4;
+
+  repeated string members = 5;
+
+  string role = 6;
+
+  Condition condition = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleHealthcareConsentStoreIamMember version is 0
+message GoogleHealthcareConsentStoreIamMember {
+  string consent_store_id = 1 [json_name = "consent_store_id"];
+
+  string dataset = 2;
+
+  string etag = 3;
+
+  string id = 4;
+
+  string member = 5;
+
+  string role = 6;
+
+  Condition condition = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleHealthcareConsentStoreIamPolicy version is 0
+message GoogleHealthcareConsentStoreIamPolicy {
+  string consent_store_id = 1 [json_name = "consent_store_id"];
+
+  string dataset = 2;
+
+  string etag = 3;
+
+  string id = 4;
+
+  string policy_data = 5 [json_name = "policy_data"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// GoogleHealthcareDataset version is 0
+message GoogleHealthcareDataset {
+  string id = 1;
+
+  // The location for the Dataset.
+  string location = 2;
+
+  // The resource name for the Dataset.
+  string name = 3;
+
+  string project = 4;
+
+  // The fully qualified name of this dataset
+  string self_link = 5 [json_name = "self_link"];
+
+  // The default timezone used by this dataset. Must be a either a valid IANA time zone name such as
+  // "America/New_York" or empty, which defaults to UTC. This is used for parsing times in resources
+  // (e.g., HL7 messages) where no explicit timezone is specified.
+  string time_zone = 6 [json_name = "time_zone"];
+
+  repeated Timeouts timeouts = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleHealthcareDatasetIamBinding version is 0
+message GoogleHealthcareDatasetIamBinding {
+  string dataset_id = 1 [json_name = "dataset_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  repeated string members = 4;
+
+  string role = 5;
+
+  Condition condition = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleHealthcareDatasetIamMember version is 0
+message GoogleHealthcareDatasetIamMember {
+  string dataset_id = 1 [json_name = "dataset_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string member = 4;
+
+  string role = 5;
+
+  Condition condition = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleHealthcareDatasetIamPolicy version is 0
+message GoogleHealthcareDatasetIamPolicy {
+  string dataset_id = 1 [json_name = "dataset_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// GoogleHealthcareDicomStore version is 0
+message GoogleHealthcareDicomStore {
+  // Identifies the dataset addressed by this request. Must be in the format
+  // 'projects/{project}/locations/{location}/datasets/{dataset}'
+  string dataset = 1;
+
+  string id = 2;
+
+  // User-supplied key-value pairs used to organize DICOM stores.
+  //
+  // Label keys must be between 1 and 63 characters long, have a UTF-8 encoding of maximum 128 bytes, and must
+  // conform to the following PCRE regular expression: [\p{Ll}\p{Lo}][\p{Ll}\p{Lo}\p{N}_-]{0,62}
+  //
+  // Label values are optional, must be between 1 and 63 characters long, have a UTF-8 encoding of maximum 128
+  // bytes, and must conform to the following PCRE regular expression: [\p{Ll}\p{Lo}\p{N}_-]{0,63}
+  //
+  // No more than 64 labels can be associated with a given store.
+  //
+  // An object containing a list of "key": value pairs.
+  // Example: { "name": "wrench", "mass": "1.3kg", "count": "3" }.
+  map<string, string> labels = 3;
+
+  // The resource name for the DicomStore.
+  //
+  // ** Changing this property may recreate the Dicom store (removing all data) **
+  string name = 4;
+
+  // The fully qualified name of this dataset
+  string self_link = 5 [json_name = "self_link"];
+
+  NotificationConfig notification_config = 6 [json_name = "notification_config"];
+
+  repeated Timeouts timeouts = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message NotificationConfig {
+    // The Cloud Pub/Sub topic that notifications of changes are published on. Supplied by the client.
+    // PubsubMessage.Data will contain the resource name. PubsubMessage.MessageId is the ID of this message.
+    // It is guaranteed to be unique within the topic. PubsubMessage.PublishTime is the time at which the message
+    // was published. Notifications are only sent if the topic is non-empty. Topic names must be scoped to a
+    // project. service-PROJECT_NUMBER@gcp-sa-healthcare.iam.gserviceaccount.com must have publisher permissions on the given
+    // Cloud Pub/Sub topic. Not having adequate permissions will cause the calls that send notifications to fail.
+    string pubsub_topic = 1 [json_name = "pubsub_topic"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleHealthcareDicomStoreIamBinding version is 0
+message GoogleHealthcareDicomStoreIamBinding {
+  string dicom_store_id = 1 [json_name = "dicom_store_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  repeated string members = 4;
+
+  string role = 5;
+
+  Condition condition = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleHealthcareDicomStoreIamMember version is 0
+message GoogleHealthcareDicomStoreIamMember {
+  string dicom_store_id = 1 [json_name = "dicom_store_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string member = 4;
+
+  string role = 5;
+
+  Condition condition = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleHealthcareDicomStoreIamPolicy version is 0
+message GoogleHealthcareDicomStoreIamPolicy {
+  string dicom_store_id = 1 [json_name = "dicom_store_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// GoogleHealthcareFhirStore version is 0
+message GoogleHealthcareFhirStore {
+  // Identifies the dataset addressed by this request. Must be in the format
+  // 'projects/{project}/locations/{location}/datasets/{dataset}'
+  string dataset = 1;
+
+  // Whether to disable referential integrity in this FHIR store. This field is immutable after FHIR store
+  // creation. The default value is false, meaning that the API will enforce referential integrity and fail the
+  // requests that will result in inconsistent state in the FHIR store. When this field is set to true, the API
+  // will skip referential integrity check. Consequently, operations that rely on references, such as
+  // Patient.get$everything, will not return all the results if broken references exist.
+  //
+  // ** Changing this property may recreate the FHIR store (removing all data) **
+  bool disable_referential_integrity = 2 [json_name = "disable_referential_integrity"];
+
+  // Whether to disable resource versioning for this FHIR store. This field can not be changed after the creation
+  // of FHIR store. If set to false, which is the default behavior, all write operations will cause historical
+  // versions to be recorded automatically. The historical versions can be fetched through the history APIs, but
+  // cannot be updated. If set to true, no historical versions will be kept. The server will send back errors for
+  // attempts to read the historical versions.
+  //
+  // ** Changing this property may recreate the FHIR store (removing all data) **
+  bool disable_resource_versioning = 3 [json_name = "disable_resource_versioning"];
+
+  // Whether to allow the bulk import API to accept history bundles and directly insert historical resource
+  // versions into the FHIR store. Importing resource histories creates resource interactions that appear to have
+  // occurred in the past, which clients may not want to allow. If set to false, history bundles within an import
+  // will fail with an error.
+  //
+  // ** Changing this property may recreate the FHIR store (removing all data) **
+  //
+  // ** This property can be changed manually in the Google Cloud Healthcare admin console without recreating the FHIR store **
+  bool enable_history_import = 4 [json_name = "enable_history_import"];
+
+  // Whether this FHIR store has the updateCreate capability. This determines if the client can use an Update
+  // operation to create a new resource with a client-specified ID. If false, all IDs are server-assigned through
+  // the Create operation and attempts to Update a non-existent resource will return errors. Please treat the audit
+  // logs with appropriate levels of care if client-specified resource IDs contain sensitive data such as patient
+  // identifiers, those IDs will be part of the FHIR resource path recorded in Cloud audit logs and Cloud Pub/Sub
+  // notifications.
+  bool enable_update_create = 5 [json_name = "enable_update_create"];
+
+  string id = 6;
+
+  // User-supplied key-value pairs used to organize FHIR stores.
+  //
+  // Label keys must be between 1 and 63 characters long, have a UTF-8 encoding of maximum 128 bytes, and must
+  // conform to the following PCRE regular expression: [\p{Ll}\p{Lo}][\p{Ll}\p{Lo}\p{N}_-]{0,62}
+  //
+  // Label values are optional, must be between 1 and 63 characters long, have a UTF-8 encoding of maximum 128
+  // bytes, and must conform to the following PCRE regular expression: [\p{Ll}\p{Lo}\p{N}_-]{0,63}
+  //
+  // No more than 64 labels can be associated with a given store.
+  //
+  // An object containing a list of "key": value pairs.
+  // Example: { "name": "wrench", "mass": "1.3kg", "count": "3" }.
+  map<string, string> labels = 7;
+
+  // The resource name for the FhirStore.
+  //
+  // ** Changing this property may recreate the FHIR store (removing all data) **
+  string name = 8;
+
+  // The fully qualified name of this dataset
+  string self_link = 9 [json_name = "self_link"];
+
+  // The FHIR specification version. Possible values: ["DSTU2", "STU3", "R4"]
+  string version = 10;
+
+  NotificationConfig notification_config = 11 [json_name = "notification_config"];
+
+  repeated StreamConfigs stream_configs = 12 [json_name = "stream_configs"];
+
+  repeated Timeouts timeouts = 13;
+
+  map<string, string> for_each = 14 [json_name = "for_each"];
+
+  repeated string depends_on = 15 [json_name = "depends_on"];
+
+  int32 count = 16;
+
+  string provider = 17;
+
+  terraform.v1.Lifecycle lifecycle = 18;
+
+  message NotificationConfig {
+    // The Cloud Pub/Sub topic that notifications of changes are published on. Supplied by the client.
+    // PubsubMessage.Data will contain the resource name. PubsubMessage.MessageId is the ID of this message.
+    // It is guaranteed to be unique within the topic. PubsubMessage.PublishTime is the time at which the message
+    // was published. Notifications are only sent if the topic is non-empty. Topic names must be scoped to a
+    // project. service-PROJECT_NUMBER@gcp-sa-healthcare.iam.gserviceaccount.com must have publisher permissions on the given
+    // Cloud Pub/Sub topic. Not having adequate permissions will cause the calls that send notifications to fail.
+    string pubsub_topic = 1 [json_name = "pubsub_topic"];
+  }
+
+  message StreamConfigs {
+    // Supply a FHIR resource type (such as "Patient" or "Observation"). See
+    // https://www.hl7.org/fhir/valueset-resource-types.html for a list of all FHIR resource types. The server treats
+    // an empty list as an intent to stream all the supported resource types in this FHIR store.
+    repeated string resource_types = 1 [json_name = "resource_types"];
+
+    BigqueryDestination bigquery_destination = 2 [json_name = "bigquery_destination"];
+
+    message BigqueryDestination {
+      // BigQuery URI to a dataset, up to 2000 characters long, in the format bq://projectId.bqDatasetId
+      string dataset_uri = 1 [json_name = "dataset_uri"];
+
+      SchemaConfig schema_config = 2 [json_name = "schema_config"];
+
+      message SchemaConfig {
+        // The depth for all recursive structures in the output analytics schema. For example, concept in the CodeSystem
+        // resource is a recursive structure; when the depth is 2, the CodeSystem table will have a column called
+        // concept.concept but not concept.concept.concept. If not specified or set to 0, the server will use the default
+        // value 2. The maximum depth allowed is 5.
+        int64 recursive_structure_depth = 1 [json_name = "recursive_structure_depth"];
+
+        // Specifies the output schema type.
+        // * ANALYTICS: Analytics schema defined by the FHIR community.
+        //  See https://github.com/FHIR/sql-on-fhir/blob/master/sql-on-fhir.md.
+        // * ANALYTICS_V2: Analytics V2, similar to schema defined by the FHIR community, with added support for extensions with one or more occurrences and contained resources in stringified JSON.
+        // * LOSSLESS: A data-driven schema generated from the fields present in the FHIR data being exported, with no additional simplification. Default value: "ANALYTICS" Possible values: ["ANALYTICS", "ANALYTICS_V2", "LOSSLESS"]
+        string schema_type = 2 [json_name = "schema_type"];
+      }
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleHealthcareFhirStoreIamBinding version is 0
+message GoogleHealthcareFhirStoreIamBinding {
+  string etag = 1;
+
+  string fhir_store_id = 2 [json_name = "fhir_store_id"];
+
+  string id = 3;
+
+  repeated string members = 4;
+
+  string role = 5;
+
+  Condition condition = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleHealthcareFhirStoreIamMember version is 0
+message GoogleHealthcareFhirStoreIamMember {
+  string etag = 1;
+
+  string fhir_store_id = 2 [json_name = "fhir_store_id"];
+
+  string id = 3;
+
+  string member = 4;
+
+  string role = 5;
+
+  Condition condition = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleHealthcareFhirStoreIamPolicy version is 0
+message GoogleHealthcareFhirStoreIamPolicy {
+  string etag = 1;
+
+  string fhir_store_id = 2 [json_name = "fhir_store_id"];
+
+  string id = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// GoogleHealthcareHl7V2Store version is 0
+message GoogleHealthcareHl7V2Store {
+  // Identifies the dataset addressed by this request. Must be in the format
+  // 'projects/{project}/locations/{location}/datasets/{dataset}'
+  string dataset = 1;
+
+  string id = 2;
+
+  // User-supplied key-value pairs used to organize HL7v2 stores.
+  //
+  // Label keys must be between 1 and 63 characters long, have a UTF-8 encoding of maximum 128 bytes, and must
+  // conform to the following PCRE regular expression: [\p{Ll}\p{Lo}][\p{Ll}\p{Lo}\p{N}_-]{0,62}
+  //
+  // Label values are optional, must be between 1 and 63 characters long, have a UTF-8 encoding of maximum 128
+  // bytes, and must conform to the following PCRE regular expression: [\p{Ll}\p{Lo}\p{N}_-]{0,63}
+  //
+  // No more than 64 labels can be associated with a given store.
+  //
+  // An object containing a list of "key": value pairs.
+  // Example: { "name": "wrench", "mass": "1.3kg", "count": "3" }.
+  map<string, string> labels = 3;
+
+  // The resource name for the Hl7V2Store.
+  //
+  // ** Changing this property may recreate the Hl7v2 store (removing all data) **
+  string name = 4;
+
+  // The fully qualified name of this dataset
+  string self_link = 5 [json_name = "self_link"];
+
+  NotificationConfig notification_config = 6 [json_name = "notification_config"];
+
+  repeated NotificationConfigs notification_configs = 7 [json_name = "notification_configs"];
+
+  ParserConfig parser_config = 8 [json_name = "parser_config"];
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message NotificationConfig {
+    // The Cloud Pub/Sub topic that notifications of changes are published on. Supplied by the client.
+    // PubsubMessage.Data will contain the resource name. PubsubMessage.MessageId is the ID of this message.
+    // It is guaranteed to be unique within the topic. PubsubMessage.PublishTime is the time at which the message
+    // was published. Notifications are only sent if the topic is non-empty. Topic names must be scoped to a
+    // project. service-PROJECT_NUMBER@gcp-sa-healthcare.iam.gserviceaccount.com must have publisher permissions on the given
+    // Cloud Pub/Sub topic. Not having adequate permissions will cause the calls that send notifications to fail.
+    string pubsub_topic = 1 [json_name = "pubsub_topic"];
+  }
+
+  message NotificationConfigs {
+    // Restricts notifications sent for messages matching a filter. If this is empty, all messages
+    // are matched. Syntax: https://cloud.google.com/appengine/docs/standard/python/search/query_strings
+    //
+    // Fields/functions available for filtering are:
+    //
+    // * messageType, from the MSH-9.1 field. For example, NOT messageType = "ADT".
+    // * send_date or sendDate, the YYYY-MM-DD date the message was sent in the dataset's timeZone, from the MSH-7 segment. For example, send_date < "2017-01-02".
+    // * sendTime, the timestamp when the message was sent, using the RFC3339 time format for comparisons, from the MSH-7 segment. For example, sendTime < "2017-01-02T00:00:00-05:00".
+    // * sendFacility, the care center that the message came from, from the MSH-4 segment. For example, sendFacility = "ABC".
+    // * PatientId(value, type), which matches if the message lists a patient having an ID of the given value and type in the PID-2, PID-3, or PID-4 segments. For example, PatientId("123456", "MRN").
+    // * labels.x, a string value of the label with key x as set using the Message.labels map. For example, labels."priority"="high". The operator :* can be used to assert the existence of a label. For example, labels."priority":*.
+    string filter = 1;
+
+    // The Cloud Pub/Sub topic that notifications of changes are published on. Supplied by the client.
+    // PubsubMessage.Data will contain the resource name. PubsubMessage.MessageId is the ID of this message.
+    // It is guaranteed to be unique within the topic. PubsubMessage.PublishTime is the time at which the message
+    // was published. Notifications are only sent if the topic is non-empty. Topic names must be scoped to a
+    // project. service-PROJECT_NUMBER@gcp-sa-healthcare.iam.gserviceaccount.com must have publisher permissions on the given
+    // Cloud Pub/Sub topic. Not having adequate permissions will cause the calls that send notifications to fail.
+    //
+    // If a notification cannot be published to Cloud Pub/Sub, errors will be logged to Stackdriver
+    string pubsub_topic = 2 [json_name = "pubsub_topic"];
+  }
+
+  message ParserConfig {
+    // Determines whether messages with no header are allowed.
+    bool allow_null_header = 1 [json_name = "allow_null_header"];
+
+    // JSON encoded string for schemas used to parse messages in this
+    // store if schematized parsing is desired.
+    string schema = 2;
+
+    // Byte(s) to be used as the segment terminator. If this is unset, '\r' will be used as segment terminator.
+    //
+    // A base64-encoded string.
+    string segment_terminator = 3 [json_name = "segment_terminator"];
+
+    // The version of the unschematized parser to be used when a custom 'schema' is not set. Default value: "V1" Possible values: ["V1", "V2", "V3"]
+    string version = 4;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleHealthcareHl7V2StoreIamBinding version is 0
+message GoogleHealthcareHl7V2StoreIamBinding {
+  string etag = 1;
+
+  string hl7_v2_store_id = 2 [json_name = "hl7_v2_store_id"];
+
+  string id = 3;
+
+  repeated string members = 4;
+
+  string role = 5;
+
+  Condition condition = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleHealthcareHl7V2StoreIamMember version is 0
+message GoogleHealthcareHl7V2StoreIamMember {
+  string etag = 1;
+
+  string hl7_v2_store_id = 2 [json_name = "hl7_v2_store_id"];
+
+  string id = 3;
+
+  string member = 4;
+
+  string role = 5;
+
+  Condition condition = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleHealthcareHl7V2StoreIamPolicy version is 0
+message GoogleHealthcareHl7V2StoreIamPolicy {
+  string etag = 1;
+
+  string hl7_v2_store_id = 2 [json_name = "hl7_v2_store_id"];
+
+  string id = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}

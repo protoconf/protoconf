@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsS3outpostsEndpoint version is 0
+message AwsS3outpostsEndpoint {
+  string access_type = 1 [json_name = "access_type"];
+
+  string arn = 2;
+
+  string cidr_block = 3 [json_name = "cidr_block"];
+
+  string creation_time = 4 [json_name = "creation_time"];
+
+  string customer_owned_ipv4_pool = 5 [json_name = "customer_owned_ipv4_pool"];
+
+  string id = 6;
+
+  repeated NetworkInterfaces network_interfaces = 7 [json_name = "network_interfaces"];
+
+  string outpost_id = 8 [json_name = "outpost_id"];
+
+  string security_group_id = 9 [json_name = "security_group_id"];
+
+  string subnet_id = 10 [json_name = "subnet_id"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message NetworkInterfaces {
+    // network_interface_id: string
+    string network_interface_id = 1 [json_name = "network_interface_id"];
+  }
+}

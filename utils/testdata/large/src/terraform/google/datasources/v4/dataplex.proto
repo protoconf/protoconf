@@ -1,0 +1,112 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.datasources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleDataplexAssetIamPolicy version is 0
+message GoogleDataplexAssetIamPolicy {
+  string asset = 1;
+
+  string dataplex_zone = 2 [json_name = "dataplex_zone"];
+
+  string etag = 3;
+
+  string id = 4;
+
+  string lake = 5;
+
+  string location = 6;
+
+  string policy_data = 7 [json_name = "policy_data"];
+
+  string project = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+}
+
+// GoogleDataplexDatascanIamPolicy version is 0
+message GoogleDataplexDatascanIamPolicy {
+  string data_scan_id = 1 [json_name = "data_scan_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string location = 4;
+
+  string policy_data = 5 [json_name = "policy_data"];
+
+  string project = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleDataplexLakeIamPolicy version is 0
+message GoogleDataplexLakeIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string lake = 3;
+
+  string location = 4;
+
+  string policy_data = 5 [json_name = "policy_data"];
+
+  string project = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleDataplexZoneIamPolicy version is 0
+message GoogleDataplexZoneIamPolicy {
+  string dataplex_zone = 1 [json_name = "dataplex_zone"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string lake = 4;
+
+  string location = 5;
+
+  string policy_data = 6 [json_name = "policy_data"];
+
+  string project = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}

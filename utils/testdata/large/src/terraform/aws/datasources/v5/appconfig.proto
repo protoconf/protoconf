@@ -1,0 +1,126 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsAppconfigConfigurationProfile version is 0
+message AwsAppconfigConfigurationProfile {
+  string application_id = 1 [json_name = "application_id"];
+
+  string arn = 2;
+
+  string configuration_profile_id = 3 [json_name = "configuration_profile_id"];
+
+  string description = 4;
+
+  string id = 5;
+
+  string location_uri = 6 [json_name = "location_uri"];
+
+  string name = 7;
+
+  string retrieval_role_arn = 8 [json_name = "retrieval_role_arn"];
+
+  map<string, string> tags = 9;
+
+  string type = 10;
+
+  repeated Validator validator = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message Validator {
+    // content: string
+    string content = 1;
+
+    // type: string
+    string type = 2;
+  }
+}
+
+// AwsAppconfigConfigurationProfiles version is 0
+message AwsAppconfigConfigurationProfiles {
+  string application_id = 1 [json_name = "application_id"];
+
+  repeated string configuration_profile_ids = 2 [json_name = "configuration_profile_ids"];
+
+  string id = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsAppconfigEnvironment version is 0
+message AwsAppconfigEnvironment {
+  string application_id = 1 [json_name = "application_id"];
+
+  string arn = 2;
+
+  string description = 3;
+
+  string environment_id = 4 [json_name = "environment_id"];
+
+  string id = 5;
+
+  repeated Monitor monitor = 6;
+
+  string name = 7;
+
+  string state = 8;
+
+  map<string, string> tags = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Monitor {
+    // alarm_arn: string
+    string alarm_arn = 1 [json_name = "alarm_arn"];
+
+    // alarm_role_arn: string
+    string alarm_role_arn = 2 [json_name = "alarm_role_arn"];
+  }
+}
+
+// AwsAppconfigEnvironments version is 0
+message AwsAppconfigEnvironments {
+  string application_id = 1 [json_name = "application_id"];
+
+  repeated string environment_ids = 2 [json_name = "environment_ids"];
+
+  string id = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}

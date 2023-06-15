@@ -1,0 +1,194 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleBeyondcorpAppConnection version is 0
+message GoogleBeyondcorpAppConnection {
+  // List of AppConnectors that are authorised to be associated with this AppConnection
+  repeated string connectors = 1;
+
+  // An arbitrary user-provided name for the AppConnection.
+  string display_name = 2 [json_name = "display_name"];
+
+  string id = 3;
+
+  // Resource labels to represent user provided metadata.
+  map<string, string> labels = 4;
+
+  // ID of the AppConnection.
+  string name = 5;
+
+  string project = 6;
+
+  // The region of the AppConnection.
+  string region = 7;
+
+  // The type of network connectivity used by the AppConnection. Refer to
+  // https://cloud.google.com/beyondcorp/docs/reference/rest/v1/projects.locations.appConnections#type
+  // for a list of possible values.
+  string type = 8;
+
+  ApplicationEndpoint application_endpoint = 9 [json_name = "application_endpoint"];
+
+  Gateway gateway = 10;
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message ApplicationEndpoint {
+    // Hostname or IP address of the remote application endpoint.
+    string host = 1;
+
+    // Port of the remote application endpoint.
+    int64 port = 2;
+  }
+
+  message Gateway {
+    // AppGateway name in following format: projects/{project_id}/locations/{locationId}/appgateways/{gateway_id}.
+    string app_gateway = 1 [json_name = "app_gateway"];
+
+    // Ingress port reserved on the gateways for this AppConnection, if not specified or zero, the default port is 19443.
+    int64 ingress_port = 2 [json_name = "ingress_port"];
+
+    // The type of hosting used by the gateway. Refer to
+    // https://cloud.google.com/beyondcorp/docs/reference/rest/v1/projects.locations.appConnections#Type_1
+    // for a list of possible values.
+    string type = 3;
+
+    // Server-defined URI for this resource.
+    string uri = 4;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleBeyondcorpAppConnector version is 0
+message GoogleBeyondcorpAppConnector {
+  // An arbitrary user-provided name for the AppConnector.
+  string display_name = 1 [json_name = "display_name"];
+
+  string id = 2;
+
+  // Resource labels to represent user provided metadata.
+  map<string, string> labels = 3;
+
+  // ID of the AppConnector.
+  string name = 4;
+
+  string project = 5;
+
+  // The region of the AppConnector.
+  string region = 6;
+
+  // Represents the different states of a AppConnector.
+  string state = 7;
+
+  PrincipalInfo principal_info = 8 [json_name = "principal_info"];
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message PrincipalInfo {
+    ServiceAccount service_account = 1 [json_name = "service_account"];
+
+    message ServiceAccount {
+      // Email address of the service account.
+      string email = 1;
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleBeyondcorpAppGateway version is 0
+message GoogleBeyondcorpAppGateway {
+  // A list of connections allocated for the Gateway.
+  repeated AllocatedConnections allocated_connections = 1 [json_name = "allocated_connections"];
+
+  // An arbitrary user-provided name for the AppGateway.
+  string display_name = 2 [json_name = "display_name"];
+
+  // The type of hosting used by the AppGateway. Default value: "HOST_TYPE_UNSPECIFIED" Possible values: ["HOST_TYPE_UNSPECIFIED", "GCP_REGIONAL_MIG"]
+  string host_type = 3 [json_name = "host_type"];
+
+  string id = 4;
+
+  // Resource labels to represent user provided metadata.
+  map<string, string> labels = 5;
+
+  // ID of the AppGateway.
+  string name = 6;
+
+  string project = 7;
+
+  // The region of the AppGateway.
+  string region = 8;
+
+  // Represents the different states of a AppGateway.
+  string state = 9;
+
+  // The type of network connectivity used by the AppGateway. Default value: "TYPE_UNSPECIFIED" Possible values: ["TYPE_UNSPECIFIED", "TCP_PROXY"]
+  string type = 10;
+
+  // Server-defined URI for this resource.
+  string uri = 11;
+
+  repeated Timeouts timeouts = 12;
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message AllocatedConnections {
+    // ingress_port: number
+    int64 ingress_port = 1 [json_name = "ingress_port"];
+
+    // psc_uri: string
+    string psc_uri = 2 [json_name = "psc_uri"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}

@@ -1,0 +1,154 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsLexBot version is 0
+message AwsLexBot {
+  string arn = 1;
+
+  string checksum = 2;
+
+  bool child_directed = 3 [json_name = "child_directed"];
+
+  string created_date = 4 [json_name = "created_date"];
+
+  string description = 5;
+
+  bool detect_sentiment = 6 [json_name = "detect_sentiment"];
+
+  bool enable_model_improvements = 7 [json_name = "enable_model_improvements"];
+
+  string failure_reason = 8 [json_name = "failure_reason"];
+
+  string id = 9;
+
+  int64 idle_session_ttl_in_seconds = 10 [json_name = "idle_session_ttl_in_seconds"];
+
+  string last_updated_date = 11 [json_name = "last_updated_date"];
+
+  string locale = 12;
+
+  string name = 13;
+
+  int64 nlu_intent_confidence_threshold = 14 [json_name = "nlu_intent_confidence_threshold"];
+
+  string status = 15;
+
+  string version = 16;
+
+  string voice_id = 17 [json_name = "voice_id"];
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+}
+
+// AwsLexBotAlias version is 0
+message AwsLexBotAlias {
+  string arn = 1;
+
+  string bot_name = 2 [json_name = "bot_name"];
+
+  string bot_version = 3 [json_name = "bot_version"];
+
+  string checksum = 4;
+
+  string created_date = 5 [json_name = "created_date"];
+
+  string description = 6;
+
+  string id = 7;
+
+  string last_updated_date = 8 [json_name = "last_updated_date"];
+
+  string name = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+}
+
+// AwsLexIntent version is 0
+message AwsLexIntent {
+  string arn = 1;
+
+  string checksum = 2;
+
+  string created_date = 3 [json_name = "created_date"];
+
+  string description = 4;
+
+  string id = 5;
+
+  string last_updated_date = 6 [json_name = "last_updated_date"];
+
+  string name = 7;
+
+  string parent_intent_signature = 8 [json_name = "parent_intent_signature"];
+
+  string version = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+}
+
+// AwsLexSlotType version is 0
+message AwsLexSlotType {
+  string checksum = 1;
+
+  string created_date = 2 [json_name = "created_date"];
+
+  string description = 3;
+
+  repeated EnumerationValue enumeration_value = 4 [json_name = "enumeration_value"];
+
+  string id = 5;
+
+  string last_updated_date = 6 [json_name = "last_updated_date"];
+
+  string name = 7;
+
+  string value_selection_strategy = 8 [json_name = "value_selection_strategy"];
+
+  string version = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message EnumerationValue {
+    // synonyms: list of string
+    repeated string synonyms = 1;
+
+    // value: string
+    string value = 2;
+  }
+}

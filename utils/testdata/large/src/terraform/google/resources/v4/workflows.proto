@@ -1,0 +1,76 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleWorkflowsWorkflow version is 1
+message GoogleWorkflowsWorkflow {
+  // The timestamp of when the workflow was created in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits.
+  string create_time = 1 [json_name = "create_time"];
+
+  // The KMS key used to encrypt workflow and execution data.
+  //
+  // Format: projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{cryptoKey}
+  string crypto_key_name = 2 [json_name = "crypto_key_name"];
+
+  // Description of the workflow provided by the user. Must be at most 1000 unicode characters long.
+  string description = 3;
+
+  string id = 4;
+
+  // A set of key/value label pairs to assign to this Workflow.
+  map<string, string> labels = 5;
+
+  // Name of the Workflow.
+  string name = 6;
+
+  string name_prefix = 7 [json_name = "name_prefix"];
+
+  string project = 8;
+
+  // The region of the workflow.
+  string region = 9;
+
+  // The revision of the workflow. A new one is generated if the service account or source contents is changed.
+  string revision_id = 10 [json_name = "revision_id"];
+
+  // Name of the service account associated with the latest workflow version. This service
+  // account represents the identity of the workflow and determines what permissions the workflow has.
+  // Format: projects/{project}/serviceAccounts/{account} or {account}.
+  // Using - as a wildcard for the {project} or not providing one at all will infer the project from the account.
+  // The {account} value can be the email address or the unique_id of the service account.
+  // If not provided, workflow will use the project's default service account.
+  // Modifying this field for an existing workflow results in a new workflow revision.
+  string service_account = 11 [json_name = "service_account"];
+
+  // Workflow code to be executed. The size limit is 32KB.
+  string source_contents = 12 [json_name = "source_contents"];
+
+  // State of the workflow deployment.
+  string state = 13;
+
+  // The timestamp of when the workflow was last updated in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits.
+  string update_time = 14 [json_name = "update_time"];
+
+  repeated Timeouts timeouts = 15;
+
+  map<string, string> for_each = 16 [json_name = "for_each"];
+
+  repeated string depends_on = 17 [json_name = "depends_on"];
+
+  int32 count = 18;
+
+  string provider = 19;
+
+  terraform.v1.Lifecycle lifecycle = 20;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

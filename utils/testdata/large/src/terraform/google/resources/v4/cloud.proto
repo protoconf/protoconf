@@ -1,0 +1,2756 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleCloudAssetFolderFeed version is 0
+message GoogleCloudAssetFolderFeed {
+  // A list of the full names of the assets to receive updates. You must specify either or both of
+  // assetNames and assetTypes. Only asset updates matching specified assetNames and assetTypes are
+  // exported to the feed. For example: //compute.googleapis.com/projects/my_project_123/zones/zone1/instances/instance1.
+  // See https://cloud.google.com/apis/design/resourceNames#fullResourceName for more info.
+  repeated string asset_names = 1 [json_name = "asset_names"];
+
+  // A list of types of the assets to receive updates. You must specify either or both of assetNames
+  // and assetTypes. Only asset updates matching specified assetNames and assetTypes are exported to
+  // the feed. For example: "compute.googleapis.com/Disk"
+  // See https://cloud.google.com/asset-inventory/docs/supported-asset-types for a list of all
+  // supported asset types.
+  repeated string asset_types = 2 [json_name = "asset_types"];
+
+  // The project whose identity will be used when sending messages to the
+  // destination pubsub topic. It also specifies the project for API
+  // enablement check, quota, and billing.
+  string billing_project = 3 [json_name = "billing_project"];
+
+  // Asset content type. If not specified, no content but the asset name and type will be returned. Possible values: ["CONTENT_TYPE_UNSPECIFIED", "RESOURCE", "IAM_POLICY", "ORG_POLICY", "OS_INVENTORY", "ACCESS_POLICY"]
+  string content_type = 4 [json_name = "content_type"];
+
+  // This is the client-assigned asset feed identifier and it needs to be unique under a specific parent.
+  string feed_id = 5 [json_name = "feed_id"];
+
+  // The folder this feed should be created in.
+  string folder = 6;
+
+  // The ID of the folder where this feed has been created. Both [FOLDER_NUMBER]
+  // and folders/[FOLDER_NUMBER] are accepted.
+  string folder_id = 7 [json_name = "folder_id"];
+
+  string id = 8;
+
+  // The format will be folders/{folder_number}/feeds/{client-assigned_feed_identifier}.
+  string name = 9;
+
+  Condition condition = 10;
+
+  FeedOutputConfig feed_output_config = 11 [json_name = "feed_output_config"];
+
+  repeated Timeouts timeouts = 12;
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message Condition {
+    // Description of the expression. This is a longer text which describes the expression,
+    // e.g. when hovered over it in a UI.
+    string description = 1;
+
+    // Textual representation of an expression in Common Expression Language syntax.
+    string expression = 2;
+
+    // String indicating the location of the expression for error reporting, e.g. a file
+    // name and a position in the file.
+    string location = 3;
+
+    // Title for the expression, i.e. a short string describing its purpose.
+    // This can be used e.g. in UIs which allow to enter the expression.
+    string title = 4;
+  }
+
+  message FeedOutputConfig {
+    PubsubDestination pubsub_destination = 1 [json_name = "pubsub_destination"];
+
+    message PubsubDestination {
+      // Destination on Cloud Pubsub topic.
+      string topic = 1;
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleCloudAssetOrganizationFeed version is 0
+message GoogleCloudAssetOrganizationFeed {
+  // A list of the full names of the assets to receive updates. You must specify either or both of
+  // assetNames and assetTypes. Only asset updates matching specified assetNames and assetTypes are
+  // exported to the feed. For example: //compute.googleapis.com/projects/my_project_123/zones/zone1/instances/instance1.
+  // See https://cloud.google.com/apis/design/resourceNames#fullResourceName for more info.
+  repeated string asset_names = 1 [json_name = "asset_names"];
+
+  // A list of types of the assets to receive updates. You must specify either or both of assetNames
+  // and assetTypes. Only asset updates matching specified assetNames and assetTypes are exported to
+  // the feed. For example: "compute.googleapis.com/Disk"
+  // See https://cloud.google.com/asset-inventory/docs/supported-asset-types for a list of all
+  // supported asset types.
+  repeated string asset_types = 2 [json_name = "asset_types"];
+
+  // The project whose identity will be used when sending messages to the
+  // destination pubsub topic. It also specifies the project for API
+  // enablement check, quota, and billing.
+  string billing_project = 3 [json_name = "billing_project"];
+
+  // Asset content type. If not specified, no content but the asset name and type will be returned. Possible values: ["CONTENT_TYPE_UNSPECIFIED", "RESOURCE", "IAM_POLICY", "ORG_POLICY", "OS_INVENTORY", "ACCESS_POLICY"]
+  string content_type = 4 [json_name = "content_type"];
+
+  // This is the client-assigned asset feed identifier and it needs to be unique under a specific parent.
+  string feed_id = 5 [json_name = "feed_id"];
+
+  string id = 6;
+
+  // The format will be organizations/{organization_number}/feeds/{client-assigned_feed_identifier}.
+  string name = 7;
+
+  // The organization this feed should be created in.
+  string org_id = 8 [json_name = "org_id"];
+
+  Condition condition = 9;
+
+  FeedOutputConfig feed_output_config = 10 [json_name = "feed_output_config"];
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message Condition {
+    // Description of the expression. This is a longer text which describes the expression,
+    // e.g. when hovered over it in a UI.
+    string description = 1;
+
+    // Textual representation of an expression in Common Expression Language syntax.
+    string expression = 2;
+
+    // String indicating the location of the expression for error reporting, e.g. a file
+    // name and a position in the file.
+    string location = 3;
+
+    // Title for the expression, i.e. a short string describing its purpose.
+    // This can be used e.g. in UIs which allow to enter the expression.
+    string title = 4;
+  }
+
+  message FeedOutputConfig {
+    PubsubDestination pubsub_destination = 1 [json_name = "pubsub_destination"];
+
+    message PubsubDestination {
+      // Destination on Cloud Pubsub topic.
+      string topic = 1;
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleCloudAssetProjectFeed version is 0
+message GoogleCloudAssetProjectFeed {
+  // A list of the full names of the assets to receive updates. You must specify either or both of
+  // assetNames and assetTypes. Only asset updates matching specified assetNames and assetTypes are
+  // exported to the feed. For example: //compute.googleapis.com/projects/my_project_123/zones/zone1/instances/instance1.
+  // See https://cloud.google.com/apis/design/resourceNames#fullResourceName for more info.
+  repeated string asset_names = 1 [json_name = "asset_names"];
+
+  // A list of types of the assets to receive updates. You must specify either or both of assetNames
+  // and assetTypes. Only asset updates matching specified assetNames and assetTypes are exported to
+  // the feed. For example: "compute.googleapis.com/Disk"
+  // See https://cloud.google.com/asset-inventory/docs/supported-asset-types for a list of all
+  // supported asset types.
+  repeated string asset_types = 2 [json_name = "asset_types"];
+
+  // The project whose identity will be used when sending messages to the
+  // destination pubsub topic. It also specifies the project for API
+  // enablement check, quota, and billing. If not specified, the resource's
+  // project will be used.
+  string billing_project = 3 [json_name = "billing_project"];
+
+  // Asset content type. If not specified, no content but the asset name and type will be returned. Possible values: ["CONTENT_TYPE_UNSPECIFIED", "RESOURCE", "IAM_POLICY", "ORG_POLICY", "OS_INVENTORY", "ACCESS_POLICY"]
+  string content_type = 4 [json_name = "content_type"];
+
+  // This is the client-assigned asset feed identifier and it needs to be unique under a specific parent.
+  string feed_id = 5 [json_name = "feed_id"];
+
+  string id = 6;
+
+  // The format will be projects/{projectNumber}/feeds/{client-assigned_feed_identifier}.
+  string name = 7;
+
+  string project = 8;
+
+  Condition condition = 9;
+
+  FeedOutputConfig feed_output_config = 10 [json_name = "feed_output_config"];
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message Condition {
+    // Description of the expression. This is a longer text which describes the expression,
+    // e.g. when hovered over it in a UI.
+    string description = 1;
+
+    // Textual representation of an expression in Common Expression Language syntax.
+    string expression = 2;
+
+    // String indicating the location of the expression for error reporting, e.g. a file
+    // name and a position in the file.
+    string location = 3;
+
+    // Title for the expression, i.e. a short string describing its purpose.
+    // This can be used e.g. in UIs which allow to enter the expression.
+    string title = 4;
+  }
+
+  message FeedOutputConfig {
+    PubsubDestination pubsub_destination = 1 [json_name = "pubsub_destination"];
+
+    message PubsubDestination {
+      // Destination on Cloud Pubsub topic.
+      string topic = 1;
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleCloudIdentityGroup version is 0
+message GoogleCloudIdentityGroup {
+  // The time when the Group was created.
+  string create_time = 1 [json_name = "create_time"];
+
+  // An extended description to help users determine the purpose of a Group.
+  // Must not be longer than 4,096 characters.
+  string description = 2;
+
+  // The display name of the Group.
+  string display_name = 3 [json_name = "display_name"];
+
+  string id = 4;
+
+  // The initial configuration options for creating a Group.
+  //
+  // See the
+  // [API reference](https://cloud.google.com/identity/docs/reference/rest/v1beta1/groups/create#initialgroupconfig)
+  // for possible values. Default value: "EMPTY" Possible values: ["INITIAL_GROUP_CONFIG_UNSPECIFIED", "WITH_INITIAL_OWNER", "EMPTY"]
+  string initial_group_config = 5 [json_name = "initial_group_config"];
+
+  // One or more label entries that apply to the Group. Currently supported labels contain a key with an empty value.
+  //
+  // Google Groups are the default type of group and have a label with a key of cloudidentity.googleapis.com/groups.discussion_forum and an empty value.
+  //
+  // Existing Google Groups can have an additional label with a key of cloudidentity.googleapis.com/groups.security and an empty value added to them. This is an immutable change and the security label cannot be removed once added.
+  //
+  // Dynamic groups have a label with a key of cloudidentity.googleapis.com/groups.dynamic.
+  //
+  // Identity-mapped groups for Cloud Search have a label with a key of system/groups/external and an empty value.
+  map<string, string> labels = 6;
+
+  // Resource name of the Group in the format: groups/{group_id}, where group_id
+  // is the unique ID assigned to the Group.
+  string name = 7;
+
+  // The resource name of the entity under which this Group resides in the
+  // Cloud Identity resource hierarchy.
+  //
+  // Must be of the form identitysources/{identity_source_id} for external-identity-mapped
+  // groups or customers/{customer_id} for Google Groups.
+  string parent = 8;
+
+  // The time when the Group was last updated.
+  string update_time = 9 [json_name = "update_time"];
+
+  GroupKey group_key = 10 [json_name = "group_key"];
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message GroupKey {
+    // The ID of the entity.
+    //
+    // For Google-managed entities, the id must be the email address of an existing
+    // group or user.
+    //
+    // For external-identity-mapped entities, the id must be a string conforming
+    // to the Identity Source's requirements.
+    //
+    // Must be unique within a namespace.
+    string id = 1;
+
+    // The namespace in which the entity exists.
+    //
+    // If not specified, the EntityKey represents a Google-managed entity
+    // such as a Google user or a Google Group.
+    //
+    // If specified, the EntityKey represents an external-identity-mapped group.
+    // The namespace must correspond to an identity source created in Admin Console
+    // and must be in the form of 'identitysources/{identity_source_id}'.
+    string namespace = 2;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleCloudIdentityGroupMembership version is 0
+message GoogleCloudIdentityGroupMembership {
+  // The time when the Membership was created.
+  string create_time = 1 [json_name = "create_time"];
+
+  // The name of the Group to create this membership in.
+  string group = 2;
+
+  string id = 3;
+
+  // The resource name of the Membership, of the form groups/{group_id}/memberships/{membership_id}.
+  string name = 4;
+
+  // The type of the membership.
+  string type = 5;
+
+  // The time when the Membership was last updated.
+  string update_time = 6 [json_name = "update_time"];
+
+  PreferredMemberKey preferred_member_key = 7 [json_name = "preferred_member_key"];
+
+  repeated Roles roles = 8;
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message PreferredMemberKey {
+    // The ID of the entity.
+    //
+    // For Google-managed entities, the id must be the email address of an existing
+    // group or user.
+    //
+    // For external-identity-mapped entities, the id must be a string conforming
+    // to the Identity Source's requirements.
+    //
+    // Must be unique within a namespace.
+    string id = 1;
+
+    // The namespace in which the entity exists.
+    //
+    // If not specified, the EntityKey represents a Google-managed entity
+    // such as a Google user or a Google Group.
+    //
+    // If specified, the EntityKey represents an external-identity-mapped group.
+    // The namespace must correspond to an identity source created in Admin Console
+    // and must be in the form of 'identitysources/{identity_source_id}'.
+    string namespace = 2;
+  }
+
+  message Roles {
+    // The name of the MembershipRole. Must be one of OWNER, MANAGER, MEMBER. Possible values: ["OWNER", "MANAGER", "MEMBER"]
+    string name = 1;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleCloudIdsEndpoint version is 0
+message GoogleCloudIdsEndpoint {
+  // Creation timestamp in RFC 3339 text format.
+  string create_time = 1 [json_name = "create_time"];
+
+  // An optional description of the endpoint.
+  string description = 2;
+
+  // URL of the endpoint's network address to which traffic is to be sent by Packet Mirroring.
+  string endpoint_forwarding_rule = 3 [json_name = "endpoint_forwarding_rule"];
+
+  // Internal IP address of the endpoint's network entry point.
+  string endpoint_ip = 4 [json_name = "endpoint_ip"];
+
+  string id = 5;
+
+  // The location for the endpoint.
+  string location = 6;
+
+  // Name of the endpoint in the format projects/{project_id}/locations/{locationId}/endpoints/{endpointId}.
+  string name = 7;
+
+  // Name of the VPC network that is connected to the IDS endpoint. This can either contain the VPC network name itself (like "src-net") or the full URL to the network (like "projects/{project_id}/global/networks/src-net").
+  string network = 8;
+
+  string project = 9;
+
+  // The minimum alert severity level that is reported by the endpoint. Possible values: ["INFORMATIONAL", "LOW", "MEDIUM", "HIGH", "CRITICAL"]
+  string severity = 10;
+
+  // Configuration for threat IDs excluded from generating alerts. Limit: 99 IDs.
+  repeated string threat_exceptions = 11 [json_name = "threat_exceptions"];
+
+  // Last update timestamp in RFC 3339 text format.
+  string update_time = 12 [json_name = "update_time"];
+
+  repeated Timeouts timeouts = 13;
+
+  map<string, string> for_each = 14 [json_name = "for_each"];
+
+  repeated string depends_on = 15 [json_name = "depends_on"];
+
+  int32 count = 16;
+
+  string provider = 17;
+
+  terraform.v1.Lifecycle lifecycle = 18;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleCloudRunDomainMapping version is 0
+message GoogleCloudRunDomainMapping {
+  string id = 1;
+
+  // The location of the cloud run instance. eg us-central1
+  string location = 2;
+
+  // Name should be a [verified](https://support.google.com/webmasters/answer/9008080) domain
+  string name = 3;
+
+  string project = 4;
+
+  // The current status of the DomainMapping.
+  repeated Status status = 5;
+
+  Metadata metadata = 6;
+
+  Spec spec = 7;
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Status {
+    // conditions: list of object
+    repeated Conditions conditions = 1;
+
+    // mapped_route_name: string
+    string mapped_route_name = 2 [json_name = "mapped_route_name"];
+
+    // observed_generation: number
+    int64 observed_generation = 3 [json_name = "observed_generation"];
+
+    // resource_records: list of object
+    repeated ResourceRecords resource_records = 4 [json_name = "resource_records"];
+
+    message Conditions {
+      // message: string
+      string message = 1;
+
+      // reason: string
+      string reason = 2;
+
+      // status: string
+      string status = 3;
+
+      // type: string
+      string type = 4;
+    }
+
+    message ResourceRecords {
+      // name: string
+      string name = 1;
+
+      // rrdata: string
+      string rrdata = 2;
+
+      // type: string
+      string type = 3;
+    }
+  }
+
+  message Metadata {
+    // Annotations is a key value map stored with a resource that
+    // may be set by external tools to store and retrieve arbitrary metadata. More
+    // info: http://kubernetes.io/docs/user-guide/annotations
+    //
+    // **Note**: The Cloud Run API may add additional annotations that were not provided in your config.
+    // If terraform plan shows a diff where a server-side annotation is added, you can add it to your config
+    // or apply the lifecycle.ignore_changes rule to the metadata.0.annotations field.
+    map<string, string> annotations = 1;
+
+    // A sequence number representing a specific generation of the desired state.
+    int64 generation = 2;
+
+    // Map of string keys and values that can be used to organize and categorize
+    // (scope and select) objects. May match selectors of replication controllers
+    // and routes.
+    // More info: http://kubernetes.io/docs/user-guide/labels
+    map<string, string> labels = 3;
+
+    // In Cloud Run the namespace must be equal to either the
+    // project ID or project number.
+    string namespace = 4;
+
+    // An opaque value that represents the internal version of this object that
+    // can be used by clients to determine when objects have changed. May be used
+    // for optimistic concurrency, change detection, and the watch operation on a
+    // resource or set of resources. They may only be valid for a
+    // particular resource or set of resources.
+    //
+    // More info:
+    // https://git.k8s.io/community/contributors/devel/api-conventions.md#concurrency-control-and-consistency
+    string resource_version = 5 [json_name = "resource_version"];
+
+    // SelfLink is a URL representing this object.
+    string self_link = 6 [json_name = "self_link"];
+
+    // UID is a unique id generated by the server on successful creation of a resource and is not
+    // allowed to change on PUT operations.
+    //
+    // More info: http://kubernetes.io/docs/user-guide/identifiers#uids
+    string uid = 7;
+  }
+
+  message Spec {
+    // The mode of the certificate. Default value: "AUTOMATIC" Possible values: ["NONE", "AUTOMATIC"]
+    string certificate_mode = 1 [json_name = "certificate_mode"];
+
+    // If set, the mapping will override any mapping set before this spec was set.
+    // It is recommended that the user leaves this empty to receive an error
+    // warning about a potential conflict and only set it once the respective UI
+    // has given such a warning.
+    bool force_override = 2 [json_name = "force_override"];
+
+    // The name of the Cloud Run Service that this DomainMapping applies to.
+    // The route must exist.
+    string route_name = 3 [json_name = "route_name"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// GoogleCloudRunService version is 1
+message GoogleCloudRunService {
+  // If set to 'true', the revision name (template.metadata.name) will be omitted and
+  // autogenerated by Cloud Run. This cannot be set to 'true' while 'template.metadata.name'
+  // is also set.
+  // (For legacy support, if 'template.metadata.name' is unset in state while
+  // this field is set to false, the revision name will still autogenerate.)
+  bool autogenerate_revision_name = 1 [json_name = "autogenerate_revision_name"];
+
+  string id = 2;
+
+  // The location of the cloud run instance. eg us-central1
+  string location = 3;
+
+  // Name must be unique within a Google Cloud project and region.
+  // Is required when creating resources. Name is primarily intended
+  // for creation idempotence and configuration definition. Cannot be updated.
+  // More info: http://kubernetes.io/docs/user-guide/identifiers#names
+  string name = 4;
+
+  string project = 5;
+
+  // The current status of the Service.
+  repeated Status status = 6;
+
+  Metadata metadata = 7;
+
+  Template template = 8;
+
+  repeated Timeouts timeouts = 9;
+
+  repeated Traffic traffic = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Status {
+    // conditions: list of object
+    repeated Conditions conditions = 1;
+
+    // latest_created_revision_name: string
+    string latest_created_revision_name = 2 [json_name = "latest_created_revision_name"];
+
+    // latest_ready_revision_name: string
+    string latest_ready_revision_name = 3 [json_name = "latest_ready_revision_name"];
+
+    // observed_generation: number
+    int64 observed_generation = 4 [json_name = "observed_generation"];
+
+    // url: string
+    string url = 5;
+
+    message Conditions {
+      // message: string
+      string message = 1;
+
+      // reason: string
+      string reason = 2;
+
+      // status: string
+      string status = 3;
+
+      // type: string
+      string type = 4;
+    }
+  }
+
+  message Metadata {
+    // Annotations is a key value map stored with a resource that
+    // may be set by external tools to store and retrieve arbitrary metadata. More
+    // info: http://kubernetes.io/docs/user-guide/annotations
+    //
+    // **Note**: The Cloud Run API may add additional annotations that were not provided in your config.
+    // If terraform plan shows a diff where a server-side annotation is added, you can add it to your config
+    // or apply the lifecycle.ignore_changes rule to the metadata.0.annotations field.
+    //
+    // Annotations with 'run.googleapis.com/' and 'autoscaling.knative.dev' are restricted. Use the following annotation
+    // keys to configure features on a Service:
+    //
+    // - 'run.googleapis.com/binary-authorization-breakglass' sets the [Binary Authorization breakglass](https://cloud.google.com/sdk/gcloud/reference/run/deploy#--breakglass).
+    // - 'run.googleapis.com/binary-authorization' sets the [Binary Authorization](https://cloud.google.com/sdk/gcloud/reference/run/deploy#--binary-authorization).
+    // - 'run.googleapis.com/client-name' sets the client name calling the Cloud Run API.
+    // - 'run.googleapis.com/custom-audiences' sets the [custom audiences](https://cloud.google.com/sdk/gcloud/reference/alpha/run/deploy#--add-custom-audiences)
+    //  that can be used in the audience field of ID token for authenticated requests.
+    // - 'run.googleapis.com/description' sets a user defined description for the Service.
+    // - 'run.googleapis.com/ingress' sets the [ingress settings](https://cloud.google.com/sdk/gcloud/reference/run/deploy#--ingress)
+    //  for the Service. For example, '"run.googleapis.com/ingress" = "all"'.
+    // - 'run.googleapis.com/launch-stage' sets the [launch stage](https://cloud.google.com/run/docs/troubleshooting#launch-stage-validation)
+    //  when a preview feature is used. For example, '"run.googleapis.com/launch-stage": "BETA"'
+    map<string, string> annotations = 1;
+
+    // A sequence number representing a specific generation of the desired state.
+    int64 generation = 2;
+
+    // Map of string keys and values that can be used to organize and categorize
+    // (scope and select) objects. May match selectors of replication controllers
+    // and routes.
+    map<string, string> labels = 3;
+
+    // In Cloud Run the namespace must be equal to either the
+    // project ID or project number.
+    string namespace = 4;
+
+    // An opaque value that represents the internal version of this object that
+    // can be used by clients to determine when objects have changed. May be used
+    // for optimistic concurrency, change detection, and the watch operation on a
+    // resource or set of resources. They may only be valid for a
+    // particular resource or set of resources.
+    string resource_version = 5 [json_name = "resource_version"];
+
+    // SelfLink is a URL representing this object.
+    string self_link = 6 [json_name = "self_link"];
+
+    // UID is a unique id generated by the server on successful creation of a resource and is not
+    // allowed to change on PUT operations.
+    string uid = 7;
+  }
+
+  message Template {
+    Metadata metadata = 1;
+
+    Spec spec = 2;
+
+    message Metadata {
+      // Annotations is a key value map stored with a resource that
+      // may be set by external tools to store and retrieve arbitrary metadata. More
+      // info: http://kubernetes.io/docs/user-guide/annotations
+      //
+      // **Note**: The Cloud Run API may add additional annotations that were not provided in your config.
+      // If terraform plan shows a diff where a server-side annotation is added, you can add it to your config
+      // or apply the lifecycle.ignore_changes rule to the metadata.0.annotations field.
+      //
+      // Annotations with 'run.googleapis.com/' and 'autoscaling.knative.dev' are restricted. Use the following annotation
+      // keys to configure features on a Revision template:
+      //
+      // - 'autoscaling.knative.dev/maxScale' sets the [maximum number of container
+      //  instances](https://cloud.google.com/sdk/gcloud/reference/run/deploy#--max-instances) of the Revision to run.
+      // - 'autoscaling.knative.dev/minScale' sets the [minimum number of container
+      //  instances](https://cloud.google.com/sdk/gcloud/reference/run/deploy#--min-instances) of the Revision to run.
+      // - 'run.googleapis.com/client-name' sets the client name calling the Cloud Run API.
+      // - 'run.googleapis.com/cloudsql-instances' sets the [Cloud SQL
+      //  instances](https://cloud.google.com/sdk/gcloud/reference/run/deploy#--add-cloudsql-instances) the Revision connects to.
+      // - 'run.googleapis.com/cpu-throttling' sets whether to throttle the CPU when the container is not actively serving
+      //  requests. See https://cloud.google.com/sdk/gcloud/reference/run/deploy#--[no-]cpu-throttling.
+      // - 'run.googleapis.com/encryption-key-shutdown-hours' sets the number of hours to wait before an automatic shutdown
+      //  server after CMEK key revocation is detected.
+      // - 'run.googleapis.com/encryption-key' sets the [CMEK key](https://cloud.google.com/run/docs/securing/using-cmek)
+      //  reference to encrypt the container with.
+      // - 'run.googleapis.com/execution-environment' sets the [execution
+      //  environment](https://cloud.google.com/sdk/gcloud/reference/run/deploy#--execution-environment)
+      //  where the application will run.
+      // - 'run.googleapis.com/post-key-revocation-action-type' sets the
+      //  [action type](https://cloud.google.com/sdk/gcloud/reference/run/deploy#--post-key-revocation-action-type)
+      //  after CMEK key revocation.
+      // - 'run.googleapis.com/secrets' sets a list of key-value pairs to set as
+      //  [secrets](https://cloud.google.com/run/docs/configuring/secrets#yaml).
+      // - 'run.googleapis.com/sessionAffinity' sets whether to enable
+      //  [session affinity](https://cloud.google.com/sdk/gcloud/reference/beta/run/deploy#--[no-]session-affinity)
+      //  for connections to the Revision.
+      // - 'run.googleapis.com/startup-cpu-boost' sets whether to allocate extra CPU to containers on startup.
+      //  See https://cloud.google.com/sdk/gcloud/reference/run/deploy#--[no-]cpu-boost.
+      // - 'run.googleapis.com/vpc-access-connector' sets a [VPC connector](https://cloud.google.com/run/docs/configuring/connecting-vpc#terraform_1)
+      //  for the Revision.
+      // - 'run.googleapis.com/vpc-access-egress' sets the outbound traffic to send through the VPC connector for this resource.
+      //  See https://cloud.google.com/sdk/gcloud/reference/run/deploy#--vpc-egress.
+      map<string, string> annotations = 1;
+
+      // A sequence number representing a specific generation of the desired state.
+      int64 generation = 2;
+
+      // Map of string keys and values that can be used to organize and categorize
+      // (scope and select) objects.
+      map<string, string> labels = 3;
+
+      // Name must be unique within a Google Cloud project and region.
+      // Is required when creating resources. Name is primarily intended
+      // for creation idempotence and configuration definition. Cannot be updated.
+      string name = 4;
+
+      // In Cloud Run the namespace must be equal to either the
+      // project ID or project number. It will default to the resource's project.
+      string namespace = 5;
+
+      // An opaque value that represents the internal version of this object that
+      // can be used by clients to determine when objects have changed. May be used
+      // for optimistic concurrency, change detection, and the watch operation on a
+      // resource or set of resources. They may only be valid for a
+      // particular resource or set of resources.
+      string resource_version = 6 [json_name = "resource_version"];
+
+      // SelfLink is a URL representing this object.
+      string self_link = 7 [json_name = "self_link"];
+
+      // UID is a unique id generated by the server on successful creation of a resource and is not
+      // allowed to change on PUT operations.
+      string uid = 8;
+    }
+
+    message Spec {
+      // ContainerConcurrency specifies the maximum allowed in-flight (concurrent)
+      // requests per container of the Revision. Values are:
+      // - '0' thread-safe, the system should manage the max concurrency. This is
+      //    the default value.
+      // - '1' not-thread-safe. Single concurrency
+      // - '2-N' thread-safe, max concurrency of N
+      int64 container_concurrency = 1 [json_name = "container_concurrency"];
+
+      // Email address of the IAM service account associated with the revision of the
+      // service. The service account represents the identity of the running revision,
+      // and determines what permissions the revision has. If not provided, the revision
+      // will use the project's default service account.
+      string service_account_name = 2 [json_name = "service_account_name"];
+
+      // ServingState holds a value describing the state the resources
+      // are in for this Revision.
+      // It is expected
+      // that the system will manipulate this based on routability and load.
+      string serving_state = 3 [json_name = "serving_state"];
+
+      // TimeoutSeconds holds the max duration the instance is allowed for responding to a request.
+      int64 timeout_seconds = 4 [json_name = "timeout_seconds"];
+
+      repeated Containers containers = 5;
+
+      repeated Volumes volumes = 6;
+
+      message Containers {
+        // Arguments to the entrypoint.
+        // The docker image's CMD is used if this is not provided.
+        repeated string args = 1;
+
+        // Entrypoint array. Not executed within a shell.
+        // The docker image's ENTRYPOINT is used if this is not provided.
+        repeated string command = 2;
+
+        // Docker image name. This is most often a reference to a container located
+        // in the container registry, such as gcr.io/cloudrun/hello
+        string image = 3;
+
+        // Name of the container
+        string name = 4;
+
+        // Container's working directory.
+        // If not specified, the container runtime's default will be used, which
+        // might be configured in the container image.
+        string working_dir = 5 [json_name = "working_dir"];
+
+        repeated Env env = 6;
+
+        repeated EnvFrom env_from = 7 [json_name = "env_from"];
+
+        LivenessProbe liveness_probe = 8 [json_name = "liveness_probe"];
+
+        repeated Ports ports = 9;
+
+        Resources resources = 10;
+
+        StartupProbe startup_probe = 11 [json_name = "startup_probe"];
+
+        repeated VolumeMounts volume_mounts = 12 [json_name = "volume_mounts"];
+
+        message Env {
+          // Name of the environment variable.
+          string name = 1;
+
+          // Defaults to "".
+          string value = 2;
+
+          ValueFrom value_from = 3 [json_name = "value_from"];
+
+          message ValueFrom {
+            SecretKeyRef secret_key_ref = 1 [json_name = "secret_key_ref"];
+
+            message SecretKeyRef {
+              // A Cloud Secret Manager secret version. Must be 'latest' for the latest
+              // version or an integer for a specific version.
+              string key = 1;
+
+              // The name of the secret in Cloud Secret Manager. By default, the secret is assumed to be in the same project.
+              // If the secret is in another project, you must define an alias.
+              // An alias definition has the form: :projects/{project-id|project-number}/secrets/.
+              // If multiple alias definitions are needed, they must be separated by commas.
+              // The alias definitions must be set on the run.googleapis.com/secrets annotation.
+              string name = 2;
+            }
+          }
+        }
+
+        message EnvFrom {
+          // An optional identifier to prepend to each key in the ConfigMap.
+          string prefix = 1;
+
+          ConfigMapRef config_map_ref = 2 [json_name = "config_map_ref"];
+
+          SecretRef secret_ref = 3 [json_name = "secret_ref"];
+
+          message ConfigMapRef {
+            // Specify whether the ConfigMap must be defined
+            bool optional = 1;
+
+            LocalObjectReference local_object_reference = 2 [json_name = "local_object_reference"];
+
+            message LocalObjectReference {
+              // Name of the referent.
+              string name = 1;
+            }
+          }
+
+          message SecretRef {
+            // Specify whether the Secret must be defined
+            bool optional = 1;
+
+            LocalObjectReference local_object_reference = 2 [json_name = "local_object_reference"];
+
+            message LocalObjectReference {
+              // Name of the referent.
+              string name = 1;
+            }
+          }
+        }
+
+        message LivenessProbe {
+          // Minimum consecutive failures for the probe to be considered failed after
+          // having succeeded. Defaults to 3. Minimum value is 1.
+          int64 failure_threshold = 1 [json_name = "failure_threshold"];
+
+          // Number of seconds after the container has started before the probe is
+          // initiated.
+          // Defaults to 0 seconds. Minimum value is 0. Maximum value is 3600.
+          int64 initial_delay_seconds = 2 [json_name = "initial_delay_seconds"];
+
+          // How often (in seconds) to perform the probe.
+          // Default to 10 seconds. Minimum value is 1. Maximum value is 3600.
+          int64 period_seconds = 3 [json_name = "period_seconds"];
+
+          // Number of seconds after which the probe times out.
+          // Defaults to 1 second. Minimum value is 1. Maximum value is 3600.
+          // Must be smaller than period_seconds.
+          int64 timeout_seconds = 4 [json_name = "timeout_seconds"];
+
+          Grpc grpc = 5;
+
+          HttpGet http_get = 6 [json_name = "http_get"];
+
+          message Grpc {
+            // Port number to access on the container. Number must be in the range 1 to 65535.
+            // If not specified, defaults to the same value as container.ports[0].containerPort.
+            int64 port = 1;
+
+            // The name of the service to place in the gRPC HealthCheckRequest
+            // (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+            // If this is not specified, the default behavior is defined by gRPC.
+            string service = 2;
+          }
+
+          message HttpGet {
+            // Path to access on the HTTP server. If set, it should not be empty string.
+            string path = 1;
+
+            // Port number to access on the container. Number must be in the range 1 to 65535.
+            // If not specified, defaults to the same value as container.ports[0].containerPort.
+            int64 port = 2;
+
+            repeated HttpHeaders http_headers = 3 [json_name = "http_headers"];
+
+            message HttpHeaders {
+              // The header field name.
+              string name = 1;
+
+              // The header field value.
+              string value = 2;
+            }
+          }
+        }
+
+        message Ports {
+          // Port number the container listens on. This must be a valid port number (between 1 and 65535). Defaults to "8080".
+          int64 container_port = 1 [json_name = "container_port"];
+
+          // If specified, used to specify which protocol to use. Allowed values are "http1" (HTTP/1) and "h2c" (HTTP/2 end-to-end). Defaults to "http1".
+          string name = 2;
+
+          // Protocol for port. Must be "TCP". Defaults to "TCP".
+          string protocol = 3;
+        }
+
+        message Resources {
+          // Limits describes the maximum amount of compute resources allowed.
+          // The values of the map is string form of the 'quantity' k8s type:
+          // https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/apimachinery/pkg/api/resource/quantity.go
+          map<string, string> limits = 1;
+
+          // Requests describes the minimum amount of compute resources required.
+          // If Requests is omitted for a container, it defaults to Limits if that is
+          // explicitly specified, otherwise to an implementation-defined value.
+          // The values of the map is string form of the 'quantity' k8s type:
+          // https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/apimachinery/pkg/api/resource/quantity.go
+          map<string, string> requests = 2;
+        }
+
+        message StartupProbe {
+          // Minimum consecutive failures for the probe to be considered failed after
+          // having succeeded. Defaults to 3. Minimum value is 1.
+          int64 failure_threshold = 1 [json_name = "failure_threshold"];
+
+          // Number of seconds after the container has started before the probe is
+          // initiated.
+          // Defaults to 0 seconds. Minimum value is 0. Maximum value is 240.
+          int64 initial_delay_seconds = 2 [json_name = "initial_delay_seconds"];
+
+          // How often (in seconds) to perform the probe.
+          // Default to 10 seconds. Minimum value is 1. Maximum value is 240.
+          int64 period_seconds = 3 [json_name = "period_seconds"];
+
+          // Number of seconds after which the probe times out.
+          // Defaults to 1 second. Minimum value is 1. Maximum value is 3600.
+          // Must be smaller than periodSeconds.
+          int64 timeout_seconds = 4 [json_name = "timeout_seconds"];
+
+          Grpc grpc = 5;
+
+          HttpGet http_get = 6 [json_name = "http_get"];
+
+          TcpSocket tcp_socket = 7 [json_name = "tcp_socket"];
+
+          message Grpc {
+            // Port number to access on the container. Number must be in the range 1 to 65535.
+            // If not specified, defaults to the same value as container.ports[0].containerPort.
+            int64 port = 1;
+
+            // The name of the service to place in the gRPC HealthCheckRequest
+            // (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+            // If this is not specified, the default behavior is defined by gRPC.
+            string service = 2;
+          }
+
+          message HttpGet {
+            // Path to access on the HTTP server. If set, it should not be empty string.
+            string path = 1;
+
+            // Port number to access on the container. Number must be in the range 1 to 65535.
+            // If not specified, defaults to the same value as container.ports[0].containerPort.
+            int64 port = 2;
+
+            repeated HttpHeaders http_headers = 3 [json_name = "http_headers"];
+
+            message HttpHeaders {
+              // The header field name.
+              string name = 1;
+
+              // The header field value.
+              string value = 2;
+            }
+          }
+
+          message TcpSocket {
+            // Port number to access on the container. Number must be in the range 1 to 65535.
+            // If not specified, defaults to the same value as container.ports[0].containerPort.
+            int64 port = 1;
+          }
+        }
+
+        message VolumeMounts {
+          // Path within the container at which the volume should be mounted.  Must
+          // not contain ':'.
+          string mount_path = 1 [json_name = "mount_path"];
+
+          // This must match the Name of a Volume.
+          string name = 2;
+        }
+      }
+
+      message Volumes {
+        // Volume's name.
+        string name = 1;
+
+        Secret secret = 2;
+
+        message Secret {
+          // Mode bits to use on created files by default. Must be a value between 0000
+          // and 0777. Defaults to 0644. Directories within the path are not affected by
+          // this setting. This might be in conflict with other options that affect the
+          // file mode, like fsGroup, and the result can be other mode bits set.
+          int64 default_mode = 1 [json_name = "default_mode"];
+
+          // The name of the secret in Cloud Secret Manager. By default, the secret
+          // is assumed to be in the same project.
+          // If the secret is in another project, you must define an alias.
+          // An alias definition has the form:
+          // {alias}:projects/{project-id|project-number}/secrets/{secret-name}.
+          // If multiple alias definitions are needed, they must be separated by
+          // commas.
+          // The alias definitions must be set on the run.googleapis.com/secrets
+          // annotation.
+          string secret_name = 2 [json_name = "secret_name"];
+
+          repeated Items items = 3;
+
+          message Items {
+            // The Cloud Secret Manager secret version.
+            // Can be 'latest' for the latest value or an integer for a specific version.
+            string key = 1;
+
+            // Mode bits to use on this file, must be a value between 0000 and 0777. If
+            // not specified, the volume defaultMode will be used. This might be in
+            // conflict with other options that affect the file mode, like fsGroup, and
+            // the result can be other mode bits set.
+            int64 mode = 2;
+
+            // The relative path of the file to map the key to.
+            // May not be an absolute path.
+            // May not contain the path element '..'.
+            // May not start with the string '..'.
+            string path = 3;
+          }
+        }
+      }
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+
+  message Traffic {
+    // LatestRevision may be optionally provided to indicate that the latest ready
+    // Revision of the Configuration should be used for this traffic target. When
+    // provided LatestRevision must be true if RevisionName is empty; it must be
+    // false when RevisionName is non-empty.
+    bool latest_revision = 1 [json_name = "latest_revision"];
+
+    // Percent specifies percent of the traffic to this Revision or Configuration.
+    int64 percent = 2;
+
+    // RevisionName of a specific revision to which to send this portion of traffic.
+    string revision_name = 3 [json_name = "revision_name"];
+
+    // Tag is optionally used to expose a dedicated url for referencing this target exclusively.
+    string tag = 4;
+
+    // URL displays the URL for accessing tagged traffic targets. URL is displayed in status,
+    // and is disallowed on spec. URL must contain a scheme (e.g. http://) and a hostname,
+    // but may not contain anything else (e.g. basic auth, url path, etc.)
+    string url = 5;
+  }
+}
+
+// GoogleCloudRunServiceIamBinding version is 0
+message GoogleCloudRunServiceIamBinding {
+  string etag = 1;
+
+  string id = 2;
+
+  string location = 3;
+
+  repeated string members = 4;
+
+  string project = 5;
+
+  string role = 6;
+
+  string service = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleCloudRunServiceIamMember version is 0
+message GoogleCloudRunServiceIamMember {
+  string etag = 1;
+
+  string id = 2;
+
+  string location = 3;
+
+  string member = 4;
+
+  string project = 5;
+
+  string role = 6;
+
+  string service = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleCloudRunServiceIamPolicy version is 0
+message GoogleCloudRunServiceIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string location = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  string service = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleCloudRunV2Job version is 0
+message GoogleCloudRunV2Job {
+  // Arbitrary identifier for the API client.
+  string client = 1;
+
+  // Arbitrary version identifier for the API client.
+  string client_version = 2 [json_name = "client_version"];
+
+  // The Conditions of all other associated sub-resources. They contain additional diagnostics information in case the Job does not reach its desired state. See comments in reconciling for additional information on 'reconciliation' process in Cloud Run.
+  repeated Conditions conditions = 3;
+
+  // A system-generated fingerprint for this version of the resource. May be used to detect modification conflict during updates.
+  string etag = 4;
+
+  // Number of executions created for this job.
+  int64 execution_count = 5 [json_name = "execution_count"];
+
+  // A number that monotonically increases every time the user modifies the desired state.
+  string generation = 6;
+
+  string id = 7;
+
+  // KRM-style labels for the resource. User-provided labels are shared with Google's billing system, so they can be used to filter, or break down billing charges by team, component, environment, state, etc. For more information, visit https://cloud.google.com/resource-manager/docs/creating-managing-labels or https://cloud.google.com/run/docs/configuring/labels Cloud Run will populate some labels with 'run.googleapis.com' or 'serving.knative.dev' namespaces. Those labels are read-only, and user changes will not be preserved.
+  map<string, string> labels = 8;
+
+  // Name of the last created execution.
+  repeated LatestCreatedExecution latest_created_execution = 9 [json_name = "latest_created_execution"];
+
+  // The launch stage as defined by [Google Cloud Platform Launch Stages](https://cloud.google.com/products#product-launch-stages). Cloud Run supports ALPHA, BETA, and GA.
+  // If no value is specified, GA is assumed. Set the launch stage to a preview stage on input to allow use of preview features in that stage. On read (or output), describes whether the resource uses preview features.
+  //
+  // For example, if ALPHA is provided as input, but only BETA and GA-level features are used, this field will be BETA on output. Possible values: ["UNIMPLEMENTED", "PRELAUNCH", "EARLY_ACCESS", "ALPHA", "BETA", "GA", "DEPRECATED"]
+  string launch_stage = 10 [json_name = "launch_stage"];
+
+  // The location of the cloud run job
+  string location = 11;
+
+  // Name of the Job.
+  string name = 12;
+
+  // The generation of this Job. See comments in reconciling for additional information on reconciliation process in Cloud Run.
+  string observed_generation = 13 [json_name = "observed_generation"];
+
+  string project = 14;
+
+  // Returns true if the Job is currently being acted upon by the system to bring it into the desired state.
+  //
+  // When a new Job is created, or an existing one is updated, Cloud Run will asynchronously perform all necessary steps to bring the Job to the desired state. This process is called reconciliation. While reconciliation is in process, observedGeneration and latest_succeeded_execution, will have transient values that might mismatch the intended state: Once reconciliation is over (and this field is false), there are two possible outcomes: reconciliation succeeded and the state matches the Job, or there was an error, and reconciliation failed. This state can be found in terminalCondition.state.
+  //
+  // If reconciliation succeeded, the following fields will match: observedGeneration and generation, latest_succeeded_execution and latestCreatedExecution.
+  //
+  // If reconciliation failed, observedGeneration and latest_succeeded_execution will have the state of the last succeeded execution or empty for newly created Job. Additional information on the failure can be found in terminalCondition and conditions
+  bool reconciling = 15;
+
+  // The Condition of this Job, containing its readiness status, and detailed error information in case it did not reach the desired state
+  repeated TerminalCondition terminal_condition = 16 [json_name = "terminal_condition"];
+
+  // Server assigned unique identifier for the Execution. The value is a UUID4 string and guaranteed to remain unchanged until the resource is deleted.
+  string uid = 17;
+
+  BinaryAuthorization binary_authorization = 18 [json_name = "binary_authorization"];
+
+  Template template = 19;
+
+  repeated Timeouts timeouts = 20;
+
+  map<string, string> for_each = 21 [json_name = "for_each"];
+
+  repeated string depends_on = 22 [json_name = "depends_on"];
+
+  int32 count = 23;
+
+  string provider = 24;
+
+  terraform.v1.Lifecycle lifecycle = 25;
+
+  message Conditions {
+    // execution_reason: string
+    string execution_reason = 1 [json_name = "execution_reason"];
+
+    // last_transition_time: string
+    string last_transition_time = 2 [json_name = "last_transition_time"];
+
+    // message: string
+    string message = 3;
+
+    // reason: string
+    string reason = 4;
+
+    // revision_reason: string
+    string revision_reason = 5 [json_name = "revision_reason"];
+
+    // severity: string
+    string severity = 6;
+
+    // state: string
+    string state = 7;
+
+    // type: string
+    string type = 8;
+  }
+
+  message LatestCreatedExecution {
+    // completion_time: string
+    string completion_time = 1 [json_name = "completion_time"];
+
+    // create_time: string
+    string create_time = 2 [json_name = "create_time"];
+
+    // name: string
+    string name = 3;
+  }
+
+  message TerminalCondition {
+    // execution_reason: string
+    string execution_reason = 1 [json_name = "execution_reason"];
+
+    // last_transition_time: string
+    string last_transition_time = 2 [json_name = "last_transition_time"];
+
+    // message: string
+    string message = 3;
+
+    // reason: string
+    string reason = 4;
+
+    // revision_reason: string
+    string revision_reason = 5 [json_name = "revision_reason"];
+
+    // severity: string
+    string severity = 6;
+
+    // state: string
+    string state = 7;
+
+    // type: string
+    string type = 8;
+  }
+
+  message BinaryAuthorization {
+    // If present, indicates to use Breakglass using this justification. If useDefault is False, then it must be empty. For more information on breakglass, see https://cloud.google.com/binary-authorization/docs/using-breakglass
+    string breakglass_justification = 1 [json_name = "breakglass_justification"];
+
+    // If True, indicates to use the default project's binary authorization policy. If False, binary authorization will be disabled.
+    bool use_default = 2 [json_name = "use_default"];
+  }
+
+  message Template {
+    // KRM-style labels for the resource.
+    map<string, string> labels = 1;
+
+    // Specifies the maximum desired number of tasks the execution should run at given time. Must be <= taskCount. When the job is run, if this field is 0 or unset, the maximum possible value will be used for that execution. The actual number of tasks running in steady state will be less than this number when there are fewer tasks waiting to be completed remaining, i.e. when the work left to do is less than max parallelism.
+    int64 parallelism = 2;
+
+    // Specifies the desired number of tasks the execution should run. Setting to 1 means that parallelism is limited to 1 and the success of that task signals the success of the execution. More info: https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/
+    int64 task_count = 3 [json_name = "task_count"];
+
+    Template template = 4;
+
+    message Template {
+      // A reference to a customer managed encryption key (CMEK) to use to encrypt this container image. For more information, go to https://cloud.google.com/run/docs/securing/using-cmek
+      string encryption_key = 1 [json_name = "encryption_key"];
+
+      // The execution environment being used to host this Task. Possible values: ["EXECUTION_ENVIRONMENT_GEN1", "EXECUTION_ENVIRONMENT_GEN2"]
+      string execution_environment = 2 [json_name = "execution_environment"];
+
+      // Number of retries allowed per Task, before marking this Task failed.
+      int64 max_retries = 3 [json_name = "max_retries"];
+
+      // Email address of the IAM service account associated with the Task of a Job. The service account represents the identity of the running task, and determines what permissions the task has. If not provided, the task will use the project's default service account.
+      string service_account = 4 [json_name = "service_account"];
+
+      // Max allowed time duration the Task may be active before the system will actively try to mark it failed and kill associated containers. This applies per attempt of a task, meaning each retry can run for the full timeout.
+      //
+      // A duration in seconds with up to nine fractional digits, ending with 's'. Example: "3.5s".
+      string timeout = 5;
+
+      repeated Containers containers = 6;
+
+      repeated Volumes volumes = 7;
+
+      VpcAccess vpc_access = 8 [json_name = "vpc_access"];
+
+      message Containers {
+        // Arguments to the entrypoint. The docker image's CMD is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container's environment. If a variable cannot be resolved, the reference in the input string will be unchanged. The $(VAR_NAME) syntax can be escaped with a double $$, ie: $$(VAR_NAME). Escaped references will never be expanded, regardless of whether the variable exists or not. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
+        repeated string args = 1;
+
+        // Entrypoint array. Not executed within a shell. The docker image's ENTRYPOINT is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container's environment. If a variable cannot be resolved, the reference in the input string will be unchanged. The $(VAR_NAME) syntax can be escaped with a double $$, ie: $$(VAR_NAME). Escaped references will never be expanded, regardless of whether the variable exists or not. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
+        repeated string command = 2;
+
+        // URL of the Container image in Google Container Registry or Google Artifact Registry. More info: https://kubernetes.io/docs/concepts/containers/images
+        string image = 3;
+
+        // Name of the container specified as a DNS_LABEL.
+        string name = 4;
+
+        // Container's working directory. If not specified, the container runtime's default will be used, which might be configured in the container image.
+        string working_dir = 5 [json_name = "working_dir"];
+
+        repeated Env env = 6;
+
+        LivenessProbe liveness_probe = 7 [json_name = "liveness_probe"];
+
+        repeated Ports ports = 8;
+
+        Resources resources = 9;
+
+        StartupProbe startup_probe = 10 [json_name = "startup_probe"];
+
+        repeated VolumeMounts volume_mounts = 11 [json_name = "volume_mounts"];
+
+        message Env {
+          // Name of the environment variable. Must be a C_IDENTIFIER, and mnay not exceed 32768 characters.
+          string name = 1;
+
+          // Variable references $(VAR_NAME) are expanded using the previous defined environment variables in the container and any route environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. The $(VAR_NAME) syntax can be escaped with a double $$, ie: $$(VAR_NAME). Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "", and the maximum length is 32768 bytes
+          string value = 2;
+
+          ValueSource value_source = 3 [json_name = "value_source"];
+
+          message ValueSource {
+            SecretKeyRef secret_key_ref = 1 [json_name = "secret_key_ref"];
+
+            message SecretKeyRef {
+              // The name of the secret in Cloud Secret Manager. Format: {secretName} if the secret is in the same project. projects/{project}/secrets/{secretName} if the secret is in a different project.
+              string secret = 1;
+
+              // The Cloud Secret Manager secret version. Can be 'latest' for the latest value or an integer for a specific version.
+              string version = 2;
+            }
+          }
+        }
+
+        message LivenessProbe {
+          // Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
+          int64 failure_threshold = 1 [json_name = "failure_threshold"];
+
+          // Number of seconds after the container has started before the probe is initiated. Defaults to 0 seconds. Minimum value is 0. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+          int64 initial_delay_seconds = 2 [json_name = "initial_delay_seconds"];
+
+          // How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. Must be greater or equal than timeoutSeconds
+          int64 period_seconds = 3 [json_name = "period_seconds"];
+
+          // Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. Maximum value is 3600. Must be smaller than periodSeconds. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+          int64 timeout_seconds = 4 [json_name = "timeout_seconds"];
+
+          HttpGet http_get = 5 [json_name = "http_get"];
+
+          TcpSocket tcp_socket = 6 [json_name = "tcp_socket"];
+
+          message HttpGet {
+            // Path to access on the HTTP server. Defaults to '/'.
+            string path = 1;
+
+            repeated HttpHeaders http_headers = 2 [json_name = "http_headers"];
+
+            message HttpHeaders {
+              // The header field name
+              string name = 1;
+
+              // The header field value
+              string value = 2;
+            }
+          }
+
+          message TcpSocket {
+            // Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to 8080.
+            int64 port = 1;
+          }
+        }
+
+        message Ports {
+          // Port number the container listens on. This must be a valid TCP port number, 0 < containerPort < 65536.
+          int64 container_port = 1 [json_name = "container_port"];
+
+          // If specified, used to specify which protocol to use. Allowed values are "http1" and "h2c".
+          string name = 2;
+        }
+
+        message Resources {
+          // Only memory and CPU are supported. Note: The only supported values for CPU are '1', '2', '4', and '8'. Setting 4 CPU requires at least 2Gi of memory. The values of the map is string form of the 'quantity' k8s type: https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/apimachinery/pkg/api/resource/quantity.go
+          map<string, string> limits = 1;
+        }
+
+        message StartupProbe {
+          // Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
+          int64 failure_threshold = 1 [json_name = "failure_threshold"];
+
+          // Number of seconds after the container has started before the probe is initiated. Defaults to 0 seconds. Minimum value is 0. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+          int64 initial_delay_seconds = 2 [json_name = "initial_delay_seconds"];
+
+          // How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. Must be greater or equal than timeoutSeconds
+          int64 period_seconds = 3 [json_name = "period_seconds"];
+
+          // Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. Maximum value is 3600. Must be smaller than periodSeconds. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+          int64 timeout_seconds = 4 [json_name = "timeout_seconds"];
+
+          HttpGet http_get = 5 [json_name = "http_get"];
+
+          TcpSocket tcp_socket = 6 [json_name = "tcp_socket"];
+
+          message HttpGet {
+            // Path to access on the HTTP server. Defaults to '/'.
+            string path = 1;
+
+            repeated HttpHeaders http_headers = 2 [json_name = "http_headers"];
+
+            message HttpHeaders {
+              // The header field name
+              string name = 1;
+
+              // The header field value
+              string value = 2;
+            }
+          }
+
+          message TcpSocket {
+            // Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to 8080.
+            int64 port = 1;
+          }
+        }
+
+        message VolumeMounts {
+          // Path within the container at which the volume should be mounted. Must not contain ':'. For Cloud SQL volumes, it can be left empty, or must otherwise be /cloudsql. All instances defined in the Volume will be available as /cloudsql/[instance]. For more information on Cloud SQL volumes, visit https://cloud.google.com/sql/docs/mysql/connect-run
+          string mount_path = 1 [json_name = "mount_path"];
+
+          // This must match the Name of a Volume.
+          string name = 2;
+        }
+      }
+
+      message Volumes {
+        // Volume's name.
+        string name = 1;
+
+        CloudSqlInstance cloud_sql_instance = 2 [json_name = "cloud_sql_instance"];
+
+        Secret secret = 3;
+
+        message CloudSqlInstance {
+          // The Cloud SQL instance connection names, as can be found in https://console.cloud.google.com/sql/instances. Visit https://cloud.google.com/sql/docs/mysql/connect-run for more information on how to connect Cloud SQL and Cloud Run. Format: {project}:{location}:{instance}
+          repeated string instances = 1;
+        }
+
+        message Secret {
+          // Integer representation of mode bits to use on created files by default. Must be a value between 0000 and 0777 (octal), defaulting to 0444. Directories within the path are not affected by this setting.
+          int64 default_mode = 1 [json_name = "default_mode"];
+
+          // The name of the secret in Cloud Secret Manager. Format: {secret} if the secret is in the same project. projects/{project}/secrets/{secret} if the secret is in a different project.
+          string secret = 2;
+
+          repeated Items items = 3;
+
+          message Items {
+            // Integer octal mode bits to use on this file, must be a value between 01 and 0777 (octal). If 0 or not set, the Volume's default mode will be used.
+            int64 mode = 1;
+
+            // The relative path of the secret in the container.
+            string path = 2;
+
+            // The Cloud Secret Manager secret version. Can be 'latest' for the latest value or an integer for a specific version
+            string version = 3;
+          }
+        }
+      }
+
+      message VpcAccess {
+        // VPC Access connector name. Format: projects/{project}/locations/{location}/connectors/{connector}, where {project} can be project id or number.
+        string connector = 1;
+
+        // Traffic VPC egress settings. Possible values: ["ALL_TRAFFIC", "PRIVATE_RANGES_ONLY"]
+        string egress = 2;
+      }
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleCloudRunV2JobIamBinding version is 0
+message GoogleCloudRunV2JobIamBinding {
+  string etag = 1;
+
+  string id = 2;
+
+  string location = 3;
+
+  repeated string members = 4;
+
+  string name = 5;
+
+  string project = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleCloudRunV2JobIamMember version is 0
+message GoogleCloudRunV2JobIamMember {
+  string etag = 1;
+
+  string id = 2;
+
+  string location = 3;
+
+  string member = 4;
+
+  string name = 5;
+
+  string project = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleCloudRunV2JobIamPolicy version is 0
+message GoogleCloudRunV2JobIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string location = 3;
+
+  string name = 4;
+
+  string policy_data = 5 [json_name = "policy_data"];
+
+  string project = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleCloudRunV2Service version is 0
+message GoogleCloudRunV2Service {
+  // Unstructured key value map that may be set by external tools to store and arbitrary metadata. They are not queryable and should be preserved when modifying objects. Cloud Run will populate some annotations using 'run.googleapis.com' or 'serving.knative.dev' namespaces. This field follows Kubernetes annotations' namespacing, limits, and rules. More info: https://kubernetes.io/docs/user-guide/annotations
+  map<string, string> annotations = 1;
+
+  // Arbitrary identifier for the API client.
+  string client = 2;
+
+  // Arbitrary version identifier for the API client.
+  string client_version = 3 [json_name = "client_version"];
+
+  // The Conditions of all other associated sub-resources. They contain additional diagnostics information in case the Service does not reach its Serving state. See comments in reconciling for additional information on reconciliation process in Cloud Run.
+  repeated Conditions conditions = 4;
+
+  // User-provided description of the Service. This field currently has a 512-character limit.
+  string description = 5;
+
+  // A system-generated fingerprint for this version of the resource. May be used to detect modification conflict during updates.
+  string etag = 6;
+
+  // A number that monotonically increases every time the user modifies the desired state. Please note that unlike v1, this is an int64 value. As with most Google APIs, its JSON representation will be a string instead of an integer.
+  string generation = 7;
+
+  string id = 8;
+
+  // Provides the ingress settings for this Service. On output, returns the currently observed ingress settings, or INGRESS_TRAFFIC_UNSPECIFIED if no revision is active. Possible values: ["INGRESS_TRAFFIC_ALL", "INGRESS_TRAFFIC_INTERNAL_ONLY", "INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER"]
+  string ingress = 9;
+
+  // Map of string keys and values that can be used to organize and categorize objects. User-provided labels are shared with Google's billing system, so they can be used to filter, or break down billing charges by team, component, environment, state, etc. For more information, visit https://cloud.google.com/resource-manager/docs/creating-managing-labels or https://cloud.google.com/run/docs/configuring/labels Cloud Run will populate some labels with 'run.googleapis.com' or 'serving.knative.dev' namespaces. Those labels are read-only, and user changes will not be preserved.
+  map<string, string> labels = 10;
+
+  // Name of the last created revision. See comments in reconciling for additional information on reconciliation process in Cloud Run.
+  string latest_created_revision = 11 [json_name = "latest_created_revision"];
+
+  // Name of the latest revision that is serving traffic. See comments in reconciling for additional information on reconciliation process in Cloud Run.
+  string latest_ready_revision = 12 [json_name = "latest_ready_revision"];
+
+  // The launch stage as defined by [Google Cloud Platform Launch Stages](https://cloud.google.com/products#product-launch-stages). Cloud Run supports ALPHA, BETA, and GA.
+  // If no value is specified, GA is assumed. Set the launch stage to a preview stage on input to allow use of preview features in that stage. On read (or output), describes whether the resource uses preview features.
+  //
+  // For example, if ALPHA is provided as input, but only BETA and GA-level features are used, this field will be BETA on output. Possible values: ["UNIMPLEMENTED", "PRELAUNCH", "EARLY_ACCESS", "ALPHA", "BETA", "GA", "DEPRECATED"]
+  string launch_stage = 13 [json_name = "launch_stage"];
+
+  // The location of the cloud run service
+  string location = 14;
+
+  // Name of the Service.
+  string name = 15;
+
+  // The generation of this Service currently serving traffic. See comments in reconciling for additional information on reconciliation process in Cloud Run. Please note that unlike v1, this is an int64 value. As with most Google APIs, its JSON representation will be a string instead of an integer.
+  string observed_generation = 16 [json_name = "observed_generation"];
+
+  string project = 17;
+
+  // Returns true if the Service is currently being acted upon by the system to bring it into the desired state.
+  //
+  // When a new Service is created, or an existing one is updated, Cloud Run will asynchronously perform all necessary steps to bring the Service to the desired serving state. This process is called reconciliation. While reconciliation is in process, observedGeneration, latest_ready_revison, trafficStatuses, and uri will have transient values that might mismatch the intended state: Once reconciliation is over (and this field is false), there are two possible outcomes: reconciliation succeeded and the serving state matches the Service, or there was an error, and reconciliation failed. This state can be found in terminalCondition.state.
+  //
+  // If reconciliation succeeded, the following fields will match: traffic and trafficStatuses, observedGeneration and generation, latestReadyRevision and latestCreatedRevision.
+  //
+  // If reconciliation failed, trafficStatuses, observedGeneration, and latestReadyRevision will have the state of the last serving revision, or empty for newly created Services. Additional information on the failure can be found in terminalCondition and conditions.
+  bool reconciling = 18;
+
+  // The Condition of this Service, containing its readiness status, and detailed error information in case it did not reach a serving state. See comments in reconciling for additional information on reconciliation process in Cloud Run.
+  repeated TerminalCondition terminal_condition = 19 [json_name = "terminal_condition"];
+
+  // Detailed status information for corresponding traffic targets. See comments in reconciling for additional information on reconciliation process in Cloud Run.
+  repeated TrafficStatuses traffic_statuses = 20 [json_name = "traffic_statuses"];
+
+  // Server assigned unique identifier for the trigger. The value is a UUID4 string and guaranteed to remain unchanged until the resource is deleted.
+  string uid = 21;
+
+  // The main URI in which this Service is serving traffic.
+  string uri = 22;
+
+  BinaryAuthorization binary_authorization = 23 [json_name = "binary_authorization"];
+
+  Template template = 24;
+
+  repeated Timeouts timeouts = 25;
+
+  repeated Traffic traffic = 26;
+
+  map<string, string> for_each = 27 [json_name = "for_each"];
+
+  repeated string depends_on = 28 [json_name = "depends_on"];
+
+  int32 count = 29;
+
+  string provider = 30;
+
+  terraform.v1.Lifecycle lifecycle = 31;
+
+  message Conditions {
+    // execution_reason: string
+    string execution_reason = 1 [json_name = "execution_reason"];
+
+    // last_transition_time: string
+    string last_transition_time = 2 [json_name = "last_transition_time"];
+
+    // message: string
+    string message = 3;
+
+    // reason: string
+    string reason = 4;
+
+    // revision_reason: string
+    string revision_reason = 5 [json_name = "revision_reason"];
+
+    // severity: string
+    string severity = 6;
+
+    // state: string
+    string state = 7;
+
+    // type: string
+    string type = 8;
+  }
+
+  message TerminalCondition {
+    // execution_reason: string
+    string execution_reason = 1 [json_name = "execution_reason"];
+
+    // last_transition_time: string
+    string last_transition_time = 2 [json_name = "last_transition_time"];
+
+    // message: string
+    string message = 3;
+
+    // reason: string
+    string reason = 4;
+
+    // revision_reason: string
+    string revision_reason = 5 [json_name = "revision_reason"];
+
+    // severity: string
+    string severity = 6;
+
+    // state: string
+    string state = 7;
+
+    // type: string
+    string type = 8;
+  }
+
+  message TrafficStatuses {
+    // percent: number
+    int64 percent = 1;
+
+    // revision: string
+    string revision = 2;
+
+    // tag: string
+    string tag = 3;
+
+    // type: string
+    string type = 4;
+
+    // uri: string
+    string uri = 5;
+  }
+
+  message BinaryAuthorization {
+    // If present, indicates to use Breakglass using this justification. If useDefault is False, then it must be empty. For more information on breakglass, see https://cloud.google.com/binary-authorization/docs/using-breakglass
+    string breakglass_justification = 1 [json_name = "breakglass_justification"];
+
+    // If True, indicates to use the default project's binary authorization policy. If False, binary authorization will be disabled.
+    bool use_default = 2 [json_name = "use_default"];
+  }
+
+  message Template {
+    // KRM-style annotations for the resource.
+    map<string, string> annotations = 1;
+
+    // A reference to a customer managed encryption key (CMEK) to use to encrypt this container image. For more information, go to https://cloud.google.com/run/docs/securing/using-cmek
+    string encryption_key = 2 [json_name = "encryption_key"];
+
+    // The sandbox environment to host this Revision. Possible values: ["EXECUTION_ENVIRONMENT_GEN1", "EXECUTION_ENVIRONMENT_GEN2"]
+    string execution_environment = 3 [json_name = "execution_environment"];
+
+    // KRM-style labels for the resource.
+    map<string, string> labels = 4;
+
+    // Sets the maximum number of requests that each serving instance can receive.
+    int64 max_instance_request_concurrency = 5 [json_name = "max_instance_request_concurrency"];
+
+    // The unique name for the revision. If this field is omitted, it will be automatically generated based on the Service name.
+    string revision = 6;
+
+    // Email address of the IAM service account associated with the revision of the service. The service account represents the identity of the running revision, and determines what permissions the revision has. If not provided, the revision will use the project's default service account.
+    string service_account = 7 [json_name = "service_account"];
+
+    // Enables session affinity. For more information, go to https://cloud.google.com/run/docs/configuring/session-affinity
+    bool session_affinity = 8 [json_name = "session_affinity"];
+
+    // Max allowed time for an instance to respond to a request.
+    //
+    // A duration in seconds with up to nine fractional digits, ending with 's'. Example: "3.5s".
+    string timeout = 9;
+
+    repeated Containers containers = 10;
+
+    Scaling scaling = 11;
+
+    repeated Volumes volumes = 12;
+
+    VpcAccess vpc_access = 13 [json_name = "vpc_access"];
+
+    message Containers {
+      // Arguments to the entrypoint. The docker image's CMD is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container's environment. If a variable cannot be resolved, the reference in the input string will be unchanged. The $(VAR_NAME) syntax can be escaped with a double $$, ie: $$(VAR_NAME). Escaped references will never be expanded, regardless of whether the variable exists or not. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
+      repeated string args = 1;
+
+      // Entrypoint array. Not executed within a shell. The docker image's ENTRYPOINT is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container's environment. If a variable cannot be resolved, the reference in the input string will be unchanged. The $(VAR_NAME) syntax can be escaped with a double $$, ie: $$(VAR_NAME). Escaped references will never be expanded, regardless of whether the variable exists or not. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
+      repeated string command = 2;
+
+      // URL of the Container image in Google Container Registry or Google Artifact Registry. More info: https://kubernetes.io/docs/concepts/containers/images
+      string image = 3;
+
+      // Name of the container specified as a DNS_LABEL.
+      string name = 4;
+
+      // Container's working directory. If not specified, the container runtime's default will be used, which might be configured in the container image.
+      string working_dir = 5 [json_name = "working_dir"];
+
+      repeated Env env = 6;
+
+      LivenessProbe liveness_probe = 7 [json_name = "liveness_probe"];
+
+      repeated Ports ports = 8;
+
+      Resources resources = 9;
+
+      StartupProbe startup_probe = 10 [json_name = "startup_probe"];
+
+      repeated VolumeMounts volume_mounts = 11 [json_name = "volume_mounts"];
+
+      message Env {
+        // Name of the environment variable. Must be a C_IDENTIFIER, and mnay not exceed 32768 characters.
+        string name = 1;
+
+        // Variable references $(VAR_NAME) are expanded using the previous defined environment variables in the container and any route environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. The $(VAR_NAME) syntax can be escaped with a double $$, ie: $$(VAR_NAME). Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "", and the maximum length is 32768 bytes
+        string value = 2;
+
+        ValueSource value_source = 3 [json_name = "value_source"];
+
+        message ValueSource {
+          SecretKeyRef secret_key_ref = 1 [json_name = "secret_key_ref"];
+
+          message SecretKeyRef {
+            // The name of the secret in Cloud Secret Manager. Format: {secretName} if the secret is in the same project. projects/{project}/secrets/{secretName} if the secret is in a different project.
+            string secret = 1;
+
+            // The Cloud Secret Manager secret version. Can be 'latest' for the latest value or an integer for a specific version.
+            string version = 2;
+          }
+        }
+      }
+
+      message LivenessProbe {
+        // Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
+        int64 failure_threshold = 1 [json_name = "failure_threshold"];
+
+        // Number of seconds after the container has started before the probe is initiated. Defaults to 0 seconds. Minimum value is 0. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+        int64 initial_delay_seconds = 2 [json_name = "initial_delay_seconds"];
+
+        // How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. Must be greater or equal than timeoutSeconds
+        int64 period_seconds = 3 [json_name = "period_seconds"];
+
+        // Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. Maximum value is 3600. Must be smaller than periodSeconds. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+        int64 timeout_seconds = 4 [json_name = "timeout_seconds"];
+
+        Grpc grpc = 5;
+
+        HttpGet http_get = 6 [json_name = "http_get"];
+
+        TcpSocket tcp_socket = 7 [json_name = "tcp_socket"];
+
+        message Grpc {
+          // Port number to access on the container. Number must be in the range 1 to 65535.
+          // If not specified, defaults to the same value as container.ports[0].containerPort.
+          int64 port = 1;
+
+          // The name of the service to place in the gRPC HealthCheckRequest
+          // (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+          // If this is not specified, the default behavior is defined by gRPC.
+          string service = 2;
+        }
+
+        message HttpGet {
+          // Path to access on the HTTP server. Defaults to '/'.
+          string path = 1;
+
+          // Port number to access on the container. Number must be in the range 1 to 65535.
+          // If not specified, defaults to the same value as container.ports[0].containerPort.
+          int64 port = 2;
+
+          repeated HttpHeaders http_headers = 3 [json_name = "http_headers"];
+
+          message HttpHeaders {
+            // The header field name
+            string name = 1;
+
+            // The header field value
+            string value = 2;
+          }
+        }
+
+        message TcpSocket {
+          // Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to 8080.
+          int64 port = 1;
+        }
+      }
+
+      message Ports {
+        // Port number the container listens on. This must be a valid TCP port number, 0 < containerPort < 65536.
+        int64 container_port = 1 [json_name = "container_port"];
+
+        // If specified, used to specify which protocol to use. Allowed values are "http1" and "h2c".
+        string name = 2;
+      }
+
+      message Resources {
+        // Determines whether CPU should be throttled or not outside of requests.
+        bool cpu_idle = 1 [json_name = "cpu_idle"];
+
+        // Only memory and CPU are supported. Note: The only supported values for CPU are '1', '2', '4', and '8'. Setting 4 CPU requires at least 2Gi of memory. The values of the map is string form of the 'quantity' k8s type: https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/apimachinery/pkg/api/resource/quantity.go
+        map<string, string> limits = 2;
+
+        // Determines whether CPU should be boosted on startup of a new container instance above the requested CPU threshold, this can help reduce cold-start latency.
+        bool startup_cpu_boost = 3 [json_name = "startup_cpu_boost"];
+      }
+
+      message StartupProbe {
+        // Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
+        int64 failure_threshold = 1 [json_name = "failure_threshold"];
+
+        // Number of seconds after the container has started before the probe is initiated. Defaults to 0 seconds. Minimum value is 0. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+        int64 initial_delay_seconds = 2 [json_name = "initial_delay_seconds"];
+
+        // How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. Must be greater or equal than timeoutSeconds
+        int64 period_seconds = 3 [json_name = "period_seconds"];
+
+        // Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. Maximum value is 3600. Must be smaller than periodSeconds. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+        int64 timeout_seconds = 4 [json_name = "timeout_seconds"];
+
+        Grpc grpc = 5;
+
+        HttpGet http_get = 6 [json_name = "http_get"];
+
+        TcpSocket tcp_socket = 7 [json_name = "tcp_socket"];
+
+        message Grpc {
+          // Port number to access on the container. Number must be in the range 1 to 65535.
+          // If not specified, defaults to the same value as container.ports[0].containerPort.
+          int64 port = 1;
+
+          // The name of the service to place in the gRPC HealthCheckRequest
+          // (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+          // If this is not specified, the default behavior is defined by gRPC.
+          string service = 2;
+        }
+
+        message HttpGet {
+          // Path to access on the HTTP server. Defaults to '/'.
+          string path = 1;
+
+          // Port number to access on the container. Must be in the range 1 to 65535.
+          // If not specified, defaults to the same value as container.ports[0].containerPort.
+          int64 port = 2;
+
+          repeated HttpHeaders http_headers = 3 [json_name = "http_headers"];
+
+          message HttpHeaders {
+            // The header field name
+            string name = 1;
+
+            // The header field value
+            string value = 2;
+          }
+        }
+
+        message TcpSocket {
+          // Port number to access on the container. Must be in the range 1 to 65535.
+          // If not specified, defaults to the same value as container.ports[0].containerPort.
+          int64 port = 1;
+        }
+      }
+
+      message VolumeMounts {
+        // Path within the container at which the volume should be mounted. Must not contain ':'. For Cloud SQL volumes, it can be left empty, or must otherwise be /cloudsql. All instances defined in the Volume will be available as /cloudsql/[instance]. For more information on Cloud SQL volumes, visit https://cloud.google.com/sql/docs/mysql/connect-run
+        string mount_path = 1 [json_name = "mount_path"];
+
+        // This must match the Name of a Volume.
+        string name = 2;
+      }
+    }
+
+    message Scaling {
+      // Maximum number of serving instances that this resource should have.
+      int64 max_instance_count = 1 [json_name = "max_instance_count"];
+
+      // Minimum number of serving instances that this resource should have.
+      int64 min_instance_count = 2 [json_name = "min_instance_count"];
+    }
+
+    message Volumes {
+      // Volume's name.
+      string name = 1;
+
+      CloudSqlInstance cloud_sql_instance = 2 [json_name = "cloud_sql_instance"];
+
+      Secret secret = 3;
+
+      message CloudSqlInstance {
+        // The Cloud SQL instance connection names, as can be found in https://console.cloud.google.com/sql/instances. Visit https://cloud.google.com/sql/docs/mysql/connect-run for more information on how to connect Cloud SQL and Cloud Run. Format: {project}:{location}:{instance}
+        repeated string instances = 1;
+      }
+
+      message Secret {
+        // Integer representation of mode bits to use on created files by default. Must be a value between 0000 and 0777 (octal), defaulting to 0444. Directories within the path are not affected by this setting.
+        int64 default_mode = 1 [json_name = "default_mode"];
+
+        // The name of the secret in Cloud Secret Manager. Format: {secret} if the secret is in the same project. projects/{project}/secrets/{secret} if the secret is in a different project.
+        string secret = 2;
+
+        repeated Items items = 3;
+
+        message Items {
+          // Integer octal mode bits to use on this file, must be a value between 01 and 0777 (octal). If 0 or not set, the Volume's default mode will be used.
+          int64 mode = 1;
+
+          // The relative path of the secret in the container.
+          string path = 2;
+
+          // The Cloud Secret Manager secret version. Can be 'latest' for the latest value or an integer for a specific version
+          string version = 3;
+        }
+      }
+    }
+
+    message VpcAccess {
+      // VPC Access connector name. Format: projects/{project}/locations/{location}/connectors/{connector}, where {project} can be project id or number.
+      string connector = 1;
+
+      // Traffic VPC egress settings. Possible values: ["ALL_TRAFFIC", "PRIVATE_RANGES_ONLY"]
+      string egress = 2;
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+
+  message Traffic {
+    // Specifies percent of the traffic to this Revision. This defaults to zero if unspecified.
+    int64 percent = 1;
+
+    // Revision to which to send this portion of traffic, if traffic allocation is by revision.
+    string revision = 2;
+
+    // Indicates a string to be part of the URI to exclusively reference this target.
+    string tag = 3;
+
+    // The allocation type for this traffic target. Possible values: ["TRAFFIC_TARGET_ALLOCATION_TYPE_LATEST", "TRAFFIC_TARGET_ALLOCATION_TYPE_REVISION"]
+    string type = 4;
+  }
+}
+
+// GoogleCloudRunV2ServiceIamBinding version is 0
+message GoogleCloudRunV2ServiceIamBinding {
+  string etag = 1;
+
+  string id = 2;
+
+  string location = 3;
+
+  repeated string members = 4;
+
+  string name = 5;
+
+  string project = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleCloudRunV2ServiceIamMember version is 0
+message GoogleCloudRunV2ServiceIamMember {
+  string etag = 1;
+
+  string id = 2;
+
+  string location = 3;
+
+  string member = 4;
+
+  string name = 5;
+
+  string project = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleCloudRunV2ServiceIamPolicy version is 0
+message GoogleCloudRunV2ServiceIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string location = 3;
+
+  string name = 4;
+
+  string policy_data = 5 [json_name = "policy_data"];
+
+  string project = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleCloudSchedulerJob version is 0
+message GoogleCloudSchedulerJob {
+  // The deadline for job attempts. If the request handler does not respond by this deadline then the request is
+  // cancelled and the attempt is marked as a DEADLINE_EXCEEDED failure. The failed attempt can be viewed in
+  // execution logs. Cloud Scheduler will retry the job according to the RetryConfig.
+  // The allowed duration for this deadline is:
+  // * For HTTP targets, between 15 seconds and 30 minutes.
+  // * For App Engine HTTP targets, between 15 seconds and 24 hours.
+  // * **Note**: For PubSub targets, this field is ignored - setting it will introduce an unresolvable diff.
+  // A duration in seconds with up to nine fractional digits, terminated by 's'. Example: "3.5s"
+  string attempt_deadline = 1 [json_name = "attempt_deadline"];
+
+  // A human-readable description for the job.
+  // This string must not contain more than 500 characters.
+  string description = 2;
+
+  string id = 3;
+
+  // The name of the job.
+  string name = 4;
+
+  // Sets the job to a paused state. Jobs default to being enabled when this property is not set.
+  bool paused = 5;
+
+  string project = 6;
+
+  // Region where the scheduler job resides. If it is not provided, Terraform will use the provider default.
+  string region = 7;
+
+  // Describes the schedule on which the job will be executed.
+  string schedule = 8;
+
+  // State of the job.
+  string state = 9;
+
+  // Specifies the time zone to be used in interpreting schedule.
+  // The value of this field must be a time zone name from the tz database.
+  string time_zone = 10 [json_name = "time_zone"];
+
+  AppEngineHttpTarget app_engine_http_target = 11 [json_name = "app_engine_http_target"];
+
+  HttpTarget http_target = 12 [json_name = "http_target"];
+
+  PubsubTarget pubsub_target = 13 [json_name = "pubsub_target"];
+
+  RetryConfig retry_config = 14 [json_name = "retry_config"];
+
+  repeated Timeouts timeouts = 15;
+
+  map<string, string> for_each = 16 [json_name = "for_each"];
+
+  repeated string depends_on = 17 [json_name = "depends_on"];
+
+  int32 count = 18;
+
+  string provider = 19;
+
+  terraform.v1.Lifecycle lifecycle = 20;
+
+  message AppEngineHttpTarget {
+    // HTTP request body.
+    // A request body is allowed only if the HTTP method is POST or PUT.
+    // It will result in invalid argument error to set a body on a job with an incompatible HttpMethod.
+    //
+    // A base64-encoded string.
+    string body = 1;
+
+    // HTTP request headers.
+    // This map contains the header field names and values.
+    // Headers can be set when the job is created.
+    map<string, string> headers = 2;
+
+    // Which HTTP method to use for the request.
+    string http_method = 3 [json_name = "http_method"];
+
+    // The relative URI.
+    // The relative URL must begin with "/" and must be a valid HTTP relative URL.
+    // It can contain a path, query string arguments, and \# fragments.
+    // If the relative URL is empty, then the root path "/" will be used.
+    // No spaces are allowed, and the maximum length allowed is 2083 characters
+    string relative_uri = 4 [json_name = "relative_uri"];
+
+    AppEngineRouting app_engine_routing = 5 [json_name = "app_engine_routing"];
+
+    message AppEngineRouting {
+      // App instance.
+      // By default, the job is sent to an instance which is available when the job is attempted.
+      string instance = 1;
+
+      // App service.
+      // By default, the job is sent to the service which is the default service when the job is attempted.
+      string service = 2;
+
+      // App version.
+      // By default, the job is sent to the version which is the default version when the job is attempted.
+      string version = 3;
+    }
+  }
+
+  message HttpTarget {
+    // HTTP request body.
+    // A request body is allowed only if the HTTP method is POST, PUT, or PATCH.
+    // It is an error to set body on a job with an incompatible HttpMethod.
+    //
+    // A base64-encoded string.
+    string body = 1;
+
+    // This map contains the header field names and values.
+    // Repeated headers are not supported, but a header value can contain commas.
+    map<string, string> headers = 2;
+
+    // Which HTTP method to use for the request.
+    string http_method = 3 [json_name = "http_method"];
+
+    // The full URI path that the request will be sent to.
+    string uri = 4;
+
+    OauthToken oauth_token = 5 [json_name = "oauth_token"];
+
+    OidcToken oidc_token = 6 [json_name = "oidc_token"];
+
+    message OauthToken {
+      // OAuth scope to be used for generating OAuth access token. If not specified,
+      // "https://www.googleapis.com/auth/cloud-platform" will be used.
+      string scope = 1;
+
+      // Service account email to be used for generating OAuth token.
+      // The service account must be within the same project as the job.
+      string service_account_email = 2 [json_name = "service_account_email"];
+    }
+
+    message OidcToken {
+      // Audience to be used when generating OIDC token. If not specified,
+      // the URI specified in target will be used.
+      string audience = 1;
+
+      // Service account email to be used for generating OAuth token.
+      // The service account must be within the same project as the job.
+      string service_account_email = 2 [json_name = "service_account_email"];
+    }
+  }
+
+  message PubsubTarget {
+    // Attributes for PubsubMessage.
+    // Pubsub message must contain either non-empty data, or at least one attribute.
+    map<string, string> attributes = 1;
+
+    // The message payload for PubsubMessage.
+    // Pubsub message must contain either non-empty data, or at least one attribute.
+    //
+    // A base64-encoded string.
+    string data = 2;
+
+    // The full resource name for the Cloud Pub/Sub topic to which
+    // messages will be published when a job is delivered. ~>**NOTE:**
+    // The topic name must be in the same format as required by PubSub's
+    // PublishRequest.name, e.g. 'projects/my-project/topics/my-topic'.
+    string topic_name = 3 [json_name = "topic_name"];
+  }
+
+  message RetryConfig {
+    // The maximum amount of time to wait before retrying a job after it fails.
+    // A duration in seconds with up to nine fractional digits, terminated by 's'.
+    string max_backoff_duration = 1 [json_name = "max_backoff_duration"];
+
+    // The time between retries will double maxDoublings times.
+    // A job's retry interval starts at minBackoffDuration,
+    // then doubles maxDoublings times, then increases linearly,
+    // and finally retries retries at intervals of maxBackoffDuration up to retryCount times.
+    int64 max_doublings = 2 [json_name = "max_doublings"];
+
+    // The time limit for retrying a failed job, measured from time when an execution was first attempted.
+    // If specified with retryCount, the job will be retried until both limits are reached.
+    // A duration in seconds with up to nine fractional digits, terminated by 's'.
+    string max_retry_duration = 3 [json_name = "max_retry_duration"];
+
+    // The minimum amount of time to wait before retrying a job after it fails.
+    // A duration in seconds with up to nine fractional digits, terminated by 's'.
+    string min_backoff_duration = 4 [json_name = "min_backoff_duration"];
+
+    // The number of attempts that the system will make to run a
+    // job using the exponential backoff procedure described by maxDoublings.
+    // Values greater than 5 and negative values are not allowed.
+    int64 retry_count = 5 [json_name = "retry_count"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleCloudTasksQueue version is 0
+message GoogleCloudTasksQueue {
+  string id = 1;
+
+  // The location of the queue
+  string location = 2;
+
+  // The queue name.
+  string name = 3;
+
+  string project = 4;
+
+  AppEngineRoutingOverride app_engine_routing_override = 5 [json_name = "app_engine_routing_override"];
+
+  RateLimits rate_limits = 6 [json_name = "rate_limits"];
+
+  RetryConfig retry_config = 7 [json_name = "retry_config"];
+
+  StackdriverLoggingConfig stackdriver_logging_config = 8 [json_name = "stackdriver_logging_config"];
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message AppEngineRoutingOverride {
+    // The host that the task is sent to.
+    string host = 1;
+
+    // App instance.
+    //
+    // By default, the task is sent to an instance which is available when the task is attempted.
+    string instance = 2;
+
+    // App service.
+    //
+    // By default, the task is sent to the service which is the default service when the task is attempted.
+    string service = 3;
+
+    // App version.
+    //
+    // By default, the task is sent to the version which is the default version when the task is attempted.
+    string version = 4;
+  }
+
+  message RateLimits {
+    // The max burst size.
+    //
+    // Max burst size limits how fast tasks in queue are processed when many tasks are
+    // in the queue and the rate is high. This field allows the queue to have a high
+    // rate so processing starts shortly after a task is enqueued, but still limits
+    // resource usage when many tasks are enqueued in a short period of time.
+    int64 max_burst_size = 1 [json_name = "max_burst_size"];
+
+    // The maximum number of concurrent tasks that Cloud Tasks allows to
+    // be dispatched for this queue. After this threshold has been
+    // reached, Cloud Tasks stops dispatching tasks until the number of
+    // concurrent requests decreases.
+    int64 max_concurrent_dispatches = 2 [json_name = "max_concurrent_dispatches"];
+
+    // The maximum rate at which tasks are dispatched from this queue.
+    //
+    // If unspecified when the queue is created, Cloud Tasks will pick the default.
+    int64 max_dispatches_per_second = 3 [json_name = "max_dispatches_per_second"];
+  }
+
+  message RetryConfig {
+    // Number of attempts per task.
+    //
+    // Cloud Tasks will attempt the task maxAttempts times (that is, if
+    // the first attempt fails, then there will be maxAttempts - 1
+    // retries). Must be >= -1.
+    //
+    // If unspecified when the queue is created, Cloud Tasks will pick
+    // the default.
+    //
+    // -1 indicates unlimited attempts.
+    int64 max_attempts = 1 [json_name = "max_attempts"];
+
+    // A task will be scheduled for retry between minBackoff and
+    // maxBackoff duration after it fails, if the queue's RetryConfig
+    // specifies that the task should be retried.
+    string max_backoff = 2 [json_name = "max_backoff"];
+
+    // The time between retries will double maxDoublings times.
+    //
+    // A task's retry interval starts at minBackoff, then doubles maxDoublings times,
+    // then increases linearly, and finally retries retries at intervals of maxBackoff
+    // up to maxAttempts times.
+    int64 max_doublings = 3 [json_name = "max_doublings"];
+
+    // If positive, maxRetryDuration specifies the time limit for
+    // retrying a failed task, measured from when the task was first
+    // attempted. Once maxRetryDuration time has passed and the task has
+    // been attempted maxAttempts times, no further attempts will be
+    // made and the task will be deleted.
+    //
+    // If zero, then the task age is unlimited.
+    string max_retry_duration = 4 [json_name = "max_retry_duration"];
+
+    // A task will be scheduled for retry between minBackoff and
+    // maxBackoff duration after it fails, if the queue's RetryConfig
+    // specifies that the task should be retried.
+    string min_backoff = 5 [json_name = "min_backoff"];
+  }
+
+  message StackdriverLoggingConfig {
+    // Specifies the fraction of operations to write to Stackdriver Logging.
+    // This field may contain any value between 0.0 and 1.0, inclusive. 0.0 is the
+    // default and means that no operations are logged.
+    int64 sampling_ratio = 1 [json_name = "sampling_ratio"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleCloudTasksQueueIamBinding version is 0
+message GoogleCloudTasksQueueIamBinding {
+  string etag = 1;
+
+  string id = 2;
+
+  string location = 3;
+
+  repeated string members = 4;
+
+  string name = 5;
+
+  string project = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleCloudTasksQueueIamMember version is 0
+message GoogleCloudTasksQueueIamMember {
+  string etag = 1;
+
+  string id = 2;
+
+  string location = 3;
+
+  string member = 4;
+
+  string name = 5;
+
+  string project = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleCloudTasksQueueIamPolicy version is 0
+message GoogleCloudTasksQueueIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string location = 3;
+
+  string name = 4;
+
+  string policy_data = 5 [json_name = "policy_data"];
+
+  string project = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}

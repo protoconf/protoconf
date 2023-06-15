@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsCodeartifactAuthorizationToken version is 0
+message AwsCodeartifactAuthorizationToken {
+  string authorization_token = 1 [json_name = "authorization_token"];
+
+  string domain = 2;
+
+  string domain_owner = 3 [json_name = "domain_owner"];
+
+  int64 duration_seconds = 4 [json_name = "duration_seconds"];
+
+  string expiration = 5;
+
+  string id = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsCodeartifactRepositoryEndpoint version is 0
+message AwsCodeartifactRepositoryEndpoint {
+  string domain = 1;
+
+  string domain_owner = 2 [json_name = "domain_owner"];
+
+  string format = 3;
+
+  string id = 4;
+
+  string repository = 5;
+
+  string repository_endpoint = 6 [json_name = "repository_endpoint"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}

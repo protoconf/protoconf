@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.datasources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleBillingAccount version is 0
+message GoogleBillingAccount {
+  string billing_account = 1 [json_name = "billing_account"];
+
+  string display_name = 2 [json_name = "display_name"];
+
+  string id = 3;
+
+  bool lookup_projects = 4 [json_name = "lookup_projects"];
+
+  string name = 5;
+
+  bool open = 6;
+
+  repeated string project_ids = 7 [json_name = "project_ids"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// GoogleBillingAccountIamPolicy version is 0
+message GoogleBillingAccountIamPolicy {
+  string billing_account_id = 1 [json_name = "billing_account_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}

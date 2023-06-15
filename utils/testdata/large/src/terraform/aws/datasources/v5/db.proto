@@ -1,0 +1,364 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsDbClusterSnapshot version is 0
+message AwsDbClusterSnapshot {
+  int64 allocated_storage = 1 [json_name = "allocated_storage"];
+
+  repeated string availability_zones = 2 [json_name = "availability_zones"];
+
+  string db_cluster_identifier = 3 [json_name = "db_cluster_identifier"];
+
+  string db_cluster_snapshot_arn = 4 [json_name = "db_cluster_snapshot_arn"];
+
+  string db_cluster_snapshot_identifier = 5 [json_name = "db_cluster_snapshot_identifier"];
+
+  string engine = 6;
+
+  string engine_version = 7 [json_name = "engine_version"];
+
+  string id = 8;
+
+  bool include_public = 9 [json_name = "include_public"];
+
+  bool include_shared = 10 [json_name = "include_shared"];
+
+  string kms_key_id = 11 [json_name = "kms_key_id"];
+
+  string license_model = 12 [json_name = "license_model"];
+
+  bool most_recent = 13 [json_name = "most_recent"];
+
+  int64 port = 14;
+
+  string snapshot_create_time = 15 [json_name = "snapshot_create_time"];
+
+  string snapshot_type = 16 [json_name = "snapshot_type"];
+
+  string source_db_cluster_snapshot_arn = 17 [json_name = "source_db_cluster_snapshot_arn"];
+
+  string status = 18;
+
+  bool storage_encrypted = 19 [json_name = "storage_encrypted"];
+
+  map<string, string> tags = 20;
+
+  string vpc_id = 21 [json_name = "vpc_id"];
+
+  map<string, string> for_each = 22 [json_name = "for_each"];
+
+  repeated string depends_on = 23 [json_name = "depends_on"];
+
+  int32 count = 24;
+
+  string provider = 25;
+
+  terraform.v1.Lifecycle lifecycle = 26;
+}
+
+// AwsDbEventCategories version is 0
+message AwsDbEventCategories {
+  repeated string event_categories = 1 [json_name = "event_categories"];
+
+  string id = 2;
+
+  string source_type = 3 [json_name = "source_type"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsDbInstance version is 0
+message AwsDbInstance {
+  string address = 1;
+
+  int64 allocated_storage = 2 [json_name = "allocated_storage"];
+
+  bool auto_minor_version_upgrade = 3 [json_name = "auto_minor_version_upgrade"];
+
+  string availability_zone = 4 [json_name = "availability_zone"];
+
+  int64 backup_retention_period = 5 [json_name = "backup_retention_period"];
+
+  string ca_cert_identifier = 6 [json_name = "ca_cert_identifier"];
+
+  string db_cluster_identifier = 7 [json_name = "db_cluster_identifier"];
+
+  string db_instance_arn = 8 [json_name = "db_instance_arn"];
+
+  string db_instance_class = 9 [json_name = "db_instance_class"];
+
+  string db_instance_identifier = 10 [json_name = "db_instance_identifier"];
+
+  int64 db_instance_port = 11 [json_name = "db_instance_port"];
+
+  string db_name = 12 [json_name = "db_name"];
+
+  repeated string db_parameter_groups = 13 [json_name = "db_parameter_groups"];
+
+  string db_subnet_group = 14 [json_name = "db_subnet_group"];
+
+  repeated string enabled_cloudwatch_logs_exports = 15 [json_name = "enabled_cloudwatch_logs_exports"];
+
+  string endpoint = 16;
+
+  string engine = 17;
+
+  string engine_version = 18 [json_name = "engine_version"];
+
+  string hosted_zone_id = 19 [json_name = "hosted_zone_id"];
+
+  string id = 20;
+
+  int64 iops = 21;
+
+  string kms_key_id = 22 [json_name = "kms_key_id"];
+
+  string license_model = 23 [json_name = "license_model"];
+
+  repeated MasterUserSecret master_user_secret = 24 [json_name = "master_user_secret"];
+
+  string master_username = 25 [json_name = "master_username"];
+
+  int64 monitoring_interval = 26 [json_name = "monitoring_interval"];
+
+  string monitoring_role_arn = 27 [json_name = "monitoring_role_arn"];
+
+  bool multi_az = 28 [json_name = "multi_az"];
+
+  string network_type = 29 [json_name = "network_type"];
+
+  repeated string option_group_memberships = 30 [json_name = "option_group_memberships"];
+
+  int64 port = 31;
+
+  string preferred_backup_window = 32 [json_name = "preferred_backup_window"];
+
+  string preferred_maintenance_window = 33 [json_name = "preferred_maintenance_window"];
+
+  bool publicly_accessible = 34 [json_name = "publicly_accessible"];
+
+  string replicate_source_db = 35 [json_name = "replicate_source_db"];
+
+  string resource_id = 36 [json_name = "resource_id"];
+
+  bool storage_encrypted = 37 [json_name = "storage_encrypted"];
+
+  int64 storage_throughput = 38 [json_name = "storage_throughput"];
+
+  string storage_type = 39 [json_name = "storage_type"];
+
+  map<string, string> tags = 40;
+
+  string timezone = 41;
+
+  repeated string vpc_security_groups = 42 [json_name = "vpc_security_groups"];
+
+  map<string, string> for_each = 43 [json_name = "for_each"];
+
+  repeated string depends_on = 44 [json_name = "depends_on"];
+
+  int32 count = 45;
+
+  string provider = 46;
+
+  terraform.v1.Lifecycle lifecycle = 47;
+
+  message MasterUserSecret {
+    // kms_key_id: string
+    string kms_key_id = 1 [json_name = "kms_key_id"];
+
+    // secret_arn: string
+    string secret_arn = 2 [json_name = "secret_arn"];
+
+    // secret_status: string
+    string secret_status = 3 [json_name = "secret_status"];
+  }
+}
+
+// AwsDbInstances version is 0
+message AwsDbInstances {
+  string id = 1;
+
+  repeated string instance_arns = 2 [json_name = "instance_arns"];
+
+  repeated string instance_identifiers = 3 [json_name = "instance_identifiers"];
+
+  repeated Filter filter = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+}
+
+// AwsDbProxy version is 0
+message AwsDbProxy {
+  string arn = 1;
+
+  repeated Auth auth = 2;
+
+  bool debug_logging = 3 [json_name = "debug_logging"];
+
+  string endpoint = 4;
+
+  string engine_family = 5 [json_name = "engine_family"];
+
+  string id = 6;
+
+  int64 idle_client_timeout = 7 [json_name = "idle_client_timeout"];
+
+  string name = 8;
+
+  bool require_tls = 9 [json_name = "require_tls"];
+
+  string role_arn = 10 [json_name = "role_arn"];
+
+  string vpc_id = 11 [json_name = "vpc_id"];
+
+  repeated string vpc_security_group_ids = 12 [json_name = "vpc_security_group_ids"];
+
+  repeated string vpc_subnet_ids = 13 [json_name = "vpc_subnet_ids"];
+
+  map<string, string> for_each = 14 [json_name = "for_each"];
+
+  repeated string depends_on = 15 [json_name = "depends_on"];
+
+  int32 count = 16;
+
+  string provider = 17;
+
+  terraform.v1.Lifecycle lifecycle = 18;
+
+  message Auth {
+    // auth_scheme: string
+    string auth_scheme = 1 [json_name = "auth_scheme"];
+
+    // client_password_auth_type: string
+    string client_password_auth_type = 2 [json_name = "client_password_auth_type"];
+
+    // description: string
+    string description = 3;
+
+    // iam_auth: string
+    string iam_auth = 4 [json_name = "iam_auth"];
+
+    // secret_arn: string
+    string secret_arn = 5 [json_name = "secret_arn"];
+
+    // username: string
+    string username = 6;
+  }
+}
+
+// AwsDbSnapshot version is 0
+message AwsDbSnapshot {
+  int64 allocated_storage = 1 [json_name = "allocated_storage"];
+
+  string availability_zone = 2 [json_name = "availability_zone"];
+
+  string db_instance_identifier = 3 [json_name = "db_instance_identifier"];
+
+  string db_snapshot_arn = 4 [json_name = "db_snapshot_arn"];
+
+  string db_snapshot_identifier = 5 [json_name = "db_snapshot_identifier"];
+
+  bool encrypted = 6;
+
+  string engine = 7;
+
+  string engine_version = 8 [json_name = "engine_version"];
+
+  string id = 9;
+
+  bool include_public = 10 [json_name = "include_public"];
+
+  bool include_shared = 11 [json_name = "include_shared"];
+
+  int64 iops = 12;
+
+  string kms_key_id = 13 [json_name = "kms_key_id"];
+
+  string license_model = 14 [json_name = "license_model"];
+
+  bool most_recent = 15 [json_name = "most_recent"];
+
+  string option_group_name = 16 [json_name = "option_group_name"];
+
+  int64 port = 17;
+
+  string snapshot_create_time = 18 [json_name = "snapshot_create_time"];
+
+  string snapshot_type = 19 [json_name = "snapshot_type"];
+
+  string source_db_snapshot_identifier = 20 [json_name = "source_db_snapshot_identifier"];
+
+  string source_region = 21 [json_name = "source_region"];
+
+  string status = 22;
+
+  string storage_type = 23 [json_name = "storage_type"];
+
+  string vpc_id = 24 [json_name = "vpc_id"];
+
+  map<string, string> for_each = 25 [json_name = "for_each"];
+
+  repeated string depends_on = 26 [json_name = "depends_on"];
+
+  int32 count = 27;
+
+  string provider = 28;
+
+  terraform.v1.Lifecycle lifecycle = 29;
+}
+
+// AwsDbSubnetGroup version is 0
+message AwsDbSubnetGroup {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  string name = 4;
+
+  string status = 5;
+
+  repeated string subnet_ids = 6 [json_name = "subnet_ids"];
+
+  repeated string supported_network_types = 7 [json_name = "supported_network_types"];
+
+  string vpc_id = 8 [json_name = "vpc_id"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+}

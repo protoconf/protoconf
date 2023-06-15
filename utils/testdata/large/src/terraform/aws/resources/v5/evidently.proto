@@ -1,0 +1,300 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsEvidentlyFeature version is 0
+message AwsEvidentlyFeature {
+  string arn = 1;
+
+  string created_time = 2 [json_name = "created_time"];
+
+  string default_variation = 3 [json_name = "default_variation"];
+
+  string description = 4;
+
+  map<string, string> entity_overrides = 5 [json_name = "entity_overrides"];
+
+  repeated EvaluationRules evaluation_rules = 6 [json_name = "evaluation_rules"];
+
+  string evaluation_strategy = 7 [json_name = "evaluation_strategy"];
+
+  string id = 8;
+
+  string last_updated_time = 9 [json_name = "last_updated_time"];
+
+  string name = 10;
+
+  string project = 11;
+
+  string status = 12;
+
+  map<string, string> tags = 13;
+
+  map<string, string> tags_all = 14 [json_name = "tags_all"];
+
+  string value_type = 15 [json_name = "value_type"];
+
+  repeated Timeouts timeouts = 16;
+
+  repeated Variations variations = 17;
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+
+  message EvaluationRules {
+    // name: string
+    string name = 1;
+
+    // type: string
+    string type = 2;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+
+  message Variations {
+    string name = 1;
+
+    Value value = 2;
+
+    message Value {
+      string bool_value = 1 [json_name = "bool_value"];
+
+      string double_value = 2 [json_name = "double_value"];
+
+      string long_value = 3 [json_name = "long_value"];
+
+      string string_value = 4 [json_name = "string_value"];
+    }
+  }
+}
+
+// AwsEvidentlyLaunch version is 0
+message AwsEvidentlyLaunch {
+  string arn = 1;
+
+  string created_time = 2 [json_name = "created_time"];
+
+  string description = 3;
+
+  repeated Execution execution = 4;
+
+  string id = 5;
+
+  string last_updated_time = 6 [json_name = "last_updated_time"];
+
+  string name = 7;
+
+  string project = 8;
+
+  string randomization_salt = 9 [json_name = "randomization_salt"];
+
+  string status = 10;
+
+  string status_reason = 11 [json_name = "status_reason"];
+
+  map<string, string> tags = 12;
+
+  map<string, string> tags_all = 13 [json_name = "tags_all"];
+
+  string type = 14;
+
+  repeated Groups groups = 15;
+
+  repeated MetricMonitors metric_monitors = 16 [json_name = "metric_monitors"];
+
+  ScheduledSplitsConfig scheduled_splits_config = 17 [json_name = "scheduled_splits_config"];
+
+  repeated Timeouts timeouts = 18;
+
+  map<string, string> for_each = 19 [json_name = "for_each"];
+
+  repeated string depends_on = 20 [json_name = "depends_on"];
+
+  int32 count = 21;
+
+  string provider = 22;
+
+  terraform.v1.Lifecycle lifecycle = 23;
+
+  message Execution {
+    // ended_time: string
+    string ended_time = 1 [json_name = "ended_time"];
+
+    // started_time: string
+    string started_time = 2 [json_name = "started_time"];
+  }
+
+  message Groups {
+    string description = 1;
+
+    string feature = 2;
+
+    string name = 3;
+
+    string variation = 4;
+  }
+
+  message MetricMonitors {
+    MetricDefinition metric_definition = 1 [json_name = "metric_definition"];
+
+    message MetricDefinition {
+      string entity_id_key = 1 [json_name = "entity_id_key"];
+
+      string event_pattern = 2 [json_name = "event_pattern"];
+
+      string name = 3;
+
+      string unit_label = 4 [json_name = "unit_label"];
+
+      string value_key = 5 [json_name = "value_key"];
+    }
+  }
+
+  message ScheduledSplitsConfig {
+    repeated Steps steps = 1;
+
+    message Steps {
+      map<string, string> group_weights = 1 [json_name = "group_weights"];
+
+      string start_time = 2 [json_name = "start_time"];
+
+      repeated SegmentOverrides segment_overrides = 3 [json_name = "segment_overrides"];
+
+      message SegmentOverrides {
+        int64 evaluation_order = 1 [json_name = "evaluation_order"];
+
+        string segment = 2;
+
+        map<string, string> weights = 3;
+      }
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsEvidentlyProject version is 0
+message AwsEvidentlyProject {
+  int64 active_experiment_count = 1 [json_name = "active_experiment_count"];
+
+  int64 active_launch_count = 2 [json_name = "active_launch_count"];
+
+  string arn = 3;
+
+  string created_time = 4 [json_name = "created_time"];
+
+  string description = 5;
+
+  int64 experiment_count = 6 [json_name = "experiment_count"];
+
+  int64 feature_count = 7 [json_name = "feature_count"];
+
+  string id = 8;
+
+  string last_updated_time = 9 [json_name = "last_updated_time"];
+
+  int64 launch_count = 10 [json_name = "launch_count"];
+
+  string name = 11;
+
+  string status = 12;
+
+  map<string, string> tags = 13;
+
+  map<string, string> tags_all = 14 [json_name = "tags_all"];
+
+  DataDelivery data_delivery = 15 [json_name = "data_delivery"];
+
+  repeated Timeouts timeouts = 16;
+
+  map<string, string> for_each = 17 [json_name = "for_each"];
+
+  repeated string depends_on = 18 [json_name = "depends_on"];
+
+  int32 count = 19;
+
+  string provider = 20;
+
+  terraform.v1.Lifecycle lifecycle = 21;
+
+  message DataDelivery {
+    CloudwatchLogs cloudwatch_logs = 1 [json_name = "cloudwatch_logs"];
+
+    S3Destination s3_destination = 2 [json_name = "s3_destination"];
+
+    message CloudwatchLogs {
+      string log_group = 1 [json_name = "log_group"];
+    }
+
+    message S3Destination {
+      string bucket = 1;
+
+      string prefix = 2;
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsEvidentlySegment version is 0
+message AwsEvidentlySegment {
+  string arn = 1;
+
+  string created_time = 2 [json_name = "created_time"];
+
+  string description = 3;
+
+  int64 experiment_count = 4 [json_name = "experiment_count"];
+
+  string id = 5;
+
+  string last_updated_time = 6 [json_name = "last_updated_time"];
+
+  int64 launch_count = 7 [json_name = "launch_count"];
+
+  string name = 8;
+
+  string pattern = 9;
+
+  map<string, string> tags = 10;
+
+  map<string, string> tags_all = 11 [json_name = "tags_all"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+}

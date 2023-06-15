@@ -1,0 +1,191 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsCloudwatchEventBus version is 0
+message AwsCloudwatchEventBus {
+  string arn = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsCloudwatchEventConnection version is 0
+message AwsCloudwatchEventConnection {
+  string arn = 1;
+
+  string authorization_type = 2 [json_name = "authorization_type"];
+
+  string id = 3;
+
+  string name = 4;
+
+  string secret_arn = 5 [json_name = "secret_arn"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsCloudwatchEventSource version is 0
+message AwsCloudwatchEventSource {
+  string arn = 1;
+
+  string created_by = 2 [json_name = "created_by"];
+
+  string id = 3;
+
+  string name = 4;
+
+  string name_prefix = 5 [json_name = "name_prefix"];
+
+  string state = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsCloudwatchLogDataProtectionPolicyDocument version is 0
+message AwsCloudwatchLogDataProtectionPolicyDocument {
+  string description = 1;
+
+  string id = 2;
+
+  string json = 3;
+
+  string name = 4;
+
+  string version = 5;
+
+  repeated Statement statement = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Statement {
+    repeated string data_identifiers = 1 [json_name = "data_identifiers"];
+
+    string sid = 2;
+
+    Operation operation = 3;
+
+    message Operation {
+      Audit audit = 1;
+
+      Deidentify deidentify = 2;
+
+      message Audit {
+        FindingsDestination findings_destination = 1 [json_name = "findings_destination"];
+
+        message FindingsDestination {
+          CloudwatchLogs cloudwatch_logs = 1 [json_name = "cloudwatch_logs"];
+
+          Firehose firehose = 2;
+
+          S3 s3 = 3;
+
+          message CloudwatchLogs {
+            string log_group = 1 [json_name = "log_group"];
+          }
+
+          message Firehose {
+            string delivery_stream = 1 [json_name = "delivery_stream"];
+          }
+
+          message S3 {
+            string bucket = 1;
+          }
+        }
+      }
+
+      message Deidentify {
+        MaskConfig mask_config = 1 [json_name = "mask_config"];
+
+        message MaskConfig {
+        }
+      }
+    }
+  }
+}
+
+// AwsCloudwatchLogGroup version is 0
+message AwsCloudwatchLogGroup {
+  string arn = 1;
+
+  int64 creation_time = 2 [json_name = "creation_time"];
+
+  string id = 3;
+
+  string kms_key_id = 4 [json_name = "kms_key_id"];
+
+  string name = 5;
+
+  int64 retention_in_days = 6 [json_name = "retention_in_days"];
+
+  map<string, string> tags = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsCloudwatchLogGroups version is 0
+message AwsCloudwatchLogGroups {
+  repeated string arns = 1;
+
+  string id = 2;
+
+  string log_group_name_prefix = 3 [json_name = "log_group_name_prefix"];
+
+  repeated string log_group_names = 4 [json_name = "log_group_names"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}

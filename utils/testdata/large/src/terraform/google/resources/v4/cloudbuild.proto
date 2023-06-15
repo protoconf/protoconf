@@ -1,0 +1,798 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleCloudbuildBitbucketServerConfig version is 0
+message GoogleCloudbuildBitbucketServerConfig {
+  // Immutable. API Key that will be attached to webhook. Once this field has been set, it cannot be changed.
+  // Changing this field will result in deleting/ recreating the resource.
+  string api_key = 1 [json_name = "api_key"];
+
+  // The ID to use for the BitbucketServerConfig, which will become the final component of the BitbucketServerConfig's resource name.
+  string config_id = 2 [json_name = "config_id"];
+
+  // Immutable. The URI of the Bitbucket Server host. Once this field has been set, it cannot be changed.
+  // If you need to change it, please create another BitbucketServerConfig.
+  string host_uri = 3 [json_name = "host_uri"];
+
+  string id = 4;
+
+  // The location of this bitbucket server config.
+  string location = 5;
+
+  // The resource name for the config.
+  string name = 6;
+
+  // The network to be used when reaching out to the Bitbucket Server instance. The VPC network must be enabled for private service connection.
+  // This should be set if the Bitbucket Server instance is hosted on-premises and not reachable by public internet. If this field is left empty,
+  // no network peering will occur and calls to the Bitbucket Server instance will be made over the public internet. Must be in the format
+  // projects/{project}/global/networks/{network}, where {project} is a project number or id and {network} is the name of a VPC network in the project.
+  string peered_network = 7 [json_name = "peered_network"];
+
+  string project = 8;
+
+  // SSL certificate to use for requests to Bitbucket Server. The format should be PEM format but the extension can be one of .pem, .cer, or .crt.
+  string ssl_ca = 9 [json_name = "ssl_ca"];
+
+  // Username of the account Cloud Build will use on Bitbucket Server.
+  string username = 10;
+
+  // Output only. UUID included in webhook requests. The UUID is used to look up the corresponding config.
+  string webhook_key = 11 [json_name = "webhook_key"];
+
+  repeated ConnectedRepositories connected_repositories = 12 [json_name = "connected_repositories"];
+
+  Secrets secrets = 13;
+
+  repeated Timeouts timeouts = 14;
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+
+  message ConnectedRepositories {
+    // Identifier for the project storing the repository.
+    string project_key = 1 [json_name = "project_key"];
+
+    // Identifier for the repository.
+    string repo_slug = 2 [json_name = "repo_slug"];
+  }
+
+  message Secrets {
+    // The resource name for the admin access token's secret version.
+    string admin_access_token_version_name = 1 [json_name = "admin_access_token_version_name"];
+
+    // The resource name for the read access token's secret version.
+    string read_access_token_version_name = 2 [json_name = "read_access_token_version_name"];
+
+    // Immutable. The resource name for the webhook secret's secret version. Once this field has been set, it cannot be changed.
+    // Changing this field will result in deleting/ recreating the resource.
+    string webhook_secret_version_name = 3 [json_name = "webhook_secret_version_name"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleCloudbuildTrigger version is 2
+message GoogleCloudbuildTrigger {
+  // Time when the trigger was created.
+  string create_time = 1 [json_name = "create_time"];
+
+  // Human-readable description of the trigger.
+  string description = 2;
+
+  // Whether the trigger is disabled or not. If true, the trigger will never result in a build.
+  bool disabled = 3;
+
+  // Path, from the source root, to a file whose contents is used for the template.
+  // Either a filename or build template must be provided. Set this only when using trigger_template or github.
+  // When using Pub/Sub, Webhook or Manual set the file name using git_file_source instead.
+  string filename = 4;
+
+  // A Common Expression Language string. Used only with Pub/Sub and Webhook.
+  string filter = 5;
+
+  string id = 6;
+
+  // ignoredFiles and includedFiles are file glob matches using https://golang.org/pkg/path/filepath/#Match
+  // extended with support for '**'.
+  //
+  // If ignoredFiles and changed files are both empty, then they are not
+  // used to determine whether or not to trigger a build.
+  //
+  // If ignoredFiles is not empty, then we ignore any files that match any
+  // of the ignored_file globs. If the change has no files that are outside
+  // of the ignoredFiles globs, then we do not trigger a build.
+  repeated string ignored_files = 7 [json_name = "ignored_files"];
+
+  // Build logs will be sent back to GitHub as part of the checkrun
+  // result.  Values can be INCLUDE_BUILD_LOGS_UNSPECIFIED or
+  // INCLUDE_BUILD_LOGS_WITH_STATUS Possible values: ["INCLUDE_BUILD_LOGS_UNSPECIFIED", "INCLUDE_BUILD_LOGS_WITH_STATUS"]
+  string include_build_logs = 8 [json_name = "include_build_logs"];
+
+  // ignoredFiles and includedFiles are file glob matches using https://golang.org/pkg/path/filepath/#Match
+  // extended with support for '**'.
+  //
+  // If any of the files altered in the commit pass the ignoredFiles filter
+  // and includedFiles is empty, then as far as this filter is concerned, we
+  // should trigger the build.
+  //
+  // If any of the files altered in the commit pass the ignoredFiles filter
+  // and includedFiles is not empty, then we make sure that at least one of
+  // those files matches a includedFiles glob. If not, then we do not trigger
+  // a build.
+  repeated string included_files = 9 [json_name = "included_files"];
+
+  // The [Cloud Build location](https://cloud.google.com/build/docs/locations) for the trigger.
+  // If not specified, "global" is used.
+  string location = 10;
+
+  // Name of the trigger. Must be unique within the project.
+  string name = 11;
+
+  string project = 12;
+
+  // The service account used for all user-controlled operations including
+  // triggers.patch, triggers.run, builds.create, and builds.cancel.
+  //
+  // If no service account is set, then the standard Cloud Build service account
+  // ([PROJECT_NUM]@system.gserviceaccount.com) will be used instead.
+  //
+  // Format: projects/{PROJECT_ID}/serviceAccounts/{ACCOUNT_ID_OR_EMAIL}
+  string service_account = 13 [json_name = "service_account"];
+
+  // Substitutions data for Build resource.
+  map<string, string> substitutions = 14;
+
+  // Tags for annotation of a BuildTrigger
+  repeated string tags = 15;
+
+  // The unique identifier for the trigger.
+  string trigger_id = 16 [json_name = "trigger_id"];
+
+  ApprovalConfig approval_config = 17 [json_name = "approval_config"];
+
+  BitbucketServerTriggerConfig bitbucket_server_trigger_config = 18 [json_name = "bitbucket_server_trigger_config"];
+
+  Build build = 19;
+
+  GitFileSource git_file_source = 20 [json_name = "git_file_source"];
+
+  Github github = 21;
+
+  PubsubConfig pubsub_config = 22 [json_name = "pubsub_config"];
+
+  SourceToBuild source_to_build = 23 [json_name = "source_to_build"];
+
+  repeated Timeouts timeouts = 24;
+
+  TriggerTemplate trigger_template = 25 [json_name = "trigger_template"];
+
+  WebhookConfig webhook_config = 26 [json_name = "webhook_config"];
+
+  map<string, string> for_each = 27 [json_name = "for_each"];
+
+  repeated string depends_on = 28 [json_name = "depends_on"];
+
+  int32 count = 29;
+
+  string provider = 30;
+
+  terraform.v1.Lifecycle lifecycle = 31;
+
+  message ApprovalConfig {
+    // Whether or not approval is needed. If this is set on a build, it will become pending when run,
+    // and will need to be explicitly approved to start.
+    bool approval_required = 1 [json_name = "approval_required"];
+  }
+
+  message BitbucketServerTriggerConfig {
+    // The Bitbucket server config resource that this trigger config maps to.
+    string bitbucket_server_config_resource = 1 [json_name = "bitbucket_server_config_resource"];
+
+    // Key of the project that the repo is in. For example: The key for https://mybitbucket.server/projects/TEST/repos/test-repo is "TEST".
+    string project_key = 2 [json_name = "project_key"];
+
+    // Slug of the repository. A repository slug is a URL-friendly version of a repository name, automatically generated by Bitbucket for use in the URL.
+    // For example, if the repository name is 'test repo', in the URL it would become 'test-repo' as in https://mybitbucket.server/projects/TEST/repos/test-repo.
+    string repo_slug = 3 [json_name = "repo_slug"];
+
+    PullRequest pull_request = 4 [json_name = "pull_request"];
+
+    Push push = 5;
+
+    message PullRequest {
+      // Regex of branches to match.
+      // The syntax of the regular expressions accepted is the syntax accepted by RE2 and described at https://github.com/google/re2/wiki/Syntax
+      string branch = 1;
+
+      // Configure builds to run whether a repository owner or collaborator need to comment /gcbrun. Possible values: ["COMMENTS_DISABLED", "COMMENTS_ENABLED", "COMMENTS_ENABLED_FOR_EXTERNAL_CONTRIBUTORS_ONLY"]
+      string comment_control = 2 [json_name = "comment_control"];
+
+      // If true, branches that do NOT match the git_ref will trigger a build.
+      bool invert_regex = 3 [json_name = "invert_regex"];
+    }
+
+    message Push {
+      // Regex of branches to match.  Specify only one of branch or tag.
+      string branch = 1;
+
+      // When true, only trigger a build if the revision regex does NOT match the gitRef regex.
+      bool invert_regex = 2 [json_name = "invert_regex"];
+
+      // Regex of tags to match.  Specify only one of branch or tag.
+      string tag = 3;
+    }
+  }
+
+  message Build {
+    // A list of images to be pushed upon the successful completion of all build steps.
+    // The images are pushed using the builder service account's credentials.
+    // The digests of the pushed images will be stored in the Build resource's results field.
+    // If any of the images fail to be pushed, the build status is marked FAILURE.
+    repeated string images = 1;
+
+    // Google Cloud Storage bucket where logs should be written.
+    // Logs file names will be of the format ${logsBucket}/log-${build_id}.txt.
+    string logs_bucket = 2 [json_name = "logs_bucket"];
+
+    // TTL in queue for this build. If provided and the build is enqueued longer than this value,
+    // the build will expire and the build status will be EXPIRED.
+    // The TTL starts ticking from createTime.
+    // A duration in seconds with up to nine fractional digits, terminated by 's'. Example: "3.5s".
+    string queue_ttl = 3 [json_name = "queue_ttl"];
+
+    // Substitutions data for Build resource.
+    map<string, string> substitutions = 4;
+
+    // Tags for annotation of a Build. These are not docker tags.
+    repeated string tags = 5;
+
+    // Amount of time that this build should be allowed to run, to second granularity.
+    // If this amount of time elapses, work on the build will cease and the build status will be TIMEOUT.
+    // This timeout must be equal to or greater than the sum of the timeouts for build steps within the build.
+    // The expected format is the number of seconds followed by s.
+    // Default time is ten minutes (600s).
+    string timeout = 6;
+
+    Artifacts artifacts = 7;
+
+    AvailableSecrets available_secrets = 8 [json_name = "available_secrets"];
+
+    Options options = 9;
+
+    repeated Secret secret = 10;
+
+    Source source = 11;
+
+    repeated Step step = 12;
+
+    message Artifacts {
+      // A list of images to be pushed upon the successful completion of all build steps.
+      //
+      // The images will be pushed using the builder service account's credentials.
+      //
+      // The digests of the pushed images will be stored in the Build resource's results field.
+      //
+      // If any of the images fail to be pushed, the build is marked FAILURE.
+      repeated string images = 1;
+
+      Objects objects = 2;
+
+      message Objects {
+        // Cloud Storage bucket and optional object path, in the form "gs://bucket/path/to/somewhere/".
+        //
+        // Files in the workspace matching any path pattern will be uploaded to Cloud Storage with
+        // this location as a prefix.
+        string location = 1;
+
+        // Path globs used to match files in the build's workspace.
+        repeated string paths = 2;
+
+        // Output only. Stores timing information for pushing all artifact objects.
+        repeated Timing timing = 3;
+
+        message Timing {
+          // end_time: string
+          string end_time = 1 [json_name = "end_time"];
+
+          // start_time: string
+          string start_time = 2 [json_name = "start_time"];
+        }
+      }
+    }
+
+    message AvailableSecrets {
+      repeated SecretManager secret_manager = 1 [json_name = "secret_manager"];
+
+      message SecretManager {
+        // Environment variable name to associate with the secret. Secret environment
+        // variables must be unique across all of a build's secrets, and must be used
+        // by at least one build step.
+        string env = 1;
+
+        // Resource name of the SecretVersion. In format: projects/*/secrets/*/versions/*
+        string version_name = 2 [json_name = "version_name"];
+      }
+    }
+
+    message Options {
+      // Requested disk size for the VM that runs the build. Note that this is NOT "disk free";
+      // some of the space will be used by the operating system and build utilities.
+      // Also note that this is the minimum disk size that will be allocated for the build --
+      // the build may run with a larger disk than requested. At present, the maximum disk size
+      // is 1000GB; builds that request more than the maximum are rejected with an error.
+      int64 disk_size_gb = 1 [json_name = "disk_size_gb"];
+
+      // Option to specify whether or not to apply bash style string operations to the substitutions.
+      //
+      // NOTE this is always enabled for triggered builds and cannot be overridden in the build configuration file.
+      bool dynamic_substitutions = 2 [json_name = "dynamic_substitutions"];
+
+      // A list of global environment variable definitions that will exist for all build steps
+      // in this build. If a variable is defined in both globally and in a build step,
+      // the variable will use the build step value.
+      //
+      // The elements are of the form "KEY=VALUE" for the environment variable "KEY" being given the value "VALUE".
+      repeated string env = 3;
+
+      // Option to define build log streaming behavior to Google Cloud Storage. Possible values: ["STREAM_DEFAULT", "STREAM_ON", "STREAM_OFF"]
+      string log_streaming_option = 4 [json_name = "log_streaming_option"];
+
+      // Option to specify the logging mode, which determines if and where build logs are stored. Possible values: ["LOGGING_UNSPECIFIED", "LEGACY", "GCS_ONLY", "STACKDRIVER_ONLY", "CLOUD_LOGGING_ONLY", "NONE"]
+      string logging = 5;
+
+      // Compute Engine machine type on which to run the build. Possible values: ["UNSPECIFIED", "N1_HIGHCPU_8", "N1_HIGHCPU_32", "E2_HIGHCPU_8", "E2_HIGHCPU_32"]
+      string machine_type = 6 [json_name = "machine_type"];
+
+      // Requested verifiability options. Possible values: ["NOT_VERIFIED", "VERIFIED"]
+      string requested_verify_option = 7 [json_name = "requested_verify_option"];
+
+      // A list of global environment variables, which are encrypted using a Cloud Key Management
+      // Service crypto key. These values must be specified in the build's Secret. These variables
+      // will be available to all build steps in this build.
+      repeated string secret_env = 8 [json_name = "secret_env"];
+
+      // Requested hash for SourceProvenance. Possible values: ["NONE", "SHA256", "MD5"]
+      repeated string source_provenance_hash = 9 [json_name = "source_provenance_hash"];
+
+      // Option to specify behavior when there is an error in the substitution checks.
+      //
+      // NOTE this is always set to ALLOW_LOOSE for triggered builds and cannot be overridden
+      // in the build configuration file. Possible values: ["MUST_MATCH", "ALLOW_LOOSE"]
+      string substitution_option = 10 [json_name = "substitution_option"];
+
+      // Option to specify a WorkerPool for the build. Format projects/{project}/workerPools/{workerPool}
+      //
+      // This field is experimental.
+      string worker_pool = 11 [json_name = "worker_pool"];
+
+      repeated Volumes volumes = 12;
+
+      message Volumes {
+        // Name of the volume to mount.
+        //
+        // Volume names must be unique per build step and must be valid names for Docker volumes.
+        // Each named volume must be used by at least two build steps.
+        string name = 1;
+
+        // Path at which to mount the volume.
+        //
+        // Paths must be absolute and cannot conflict with other volume paths on the same
+        // build step or with certain reserved volume paths.
+        string path = 2;
+      }
+    }
+
+    message Secret {
+      // Cloud KMS key name to use to decrypt these envs.
+      string kms_key_name = 1 [json_name = "kms_key_name"];
+
+      // Map of environment variable name to its encrypted value.
+      // Secret environment variables must be unique across all of a build's secrets,
+      // and must be used by at least one build step. Values can be at most 64 KB in size.
+      // There can be at most 100 secret values across all of a build's secrets.
+      map<string, string> secret_env = 2 [json_name = "secret_env"];
+    }
+
+    message Source {
+      RepoSource repo_source = 1 [json_name = "repo_source"];
+
+      StorageSource storage_source = 2 [json_name = "storage_source"];
+
+      message RepoSource {
+        // Regex matching branches to build. Exactly one a of branch name, tag, or commit SHA must be provided.
+        // The syntax of the regular expressions accepted is the syntax accepted by RE2 and
+        // described at https://github.com/google/re2/wiki/Syntax
+        string branch_name = 1 [json_name = "branch_name"];
+
+        // Explicit commit SHA to build. Exactly one a of branch name, tag, or commit SHA must be provided.
+        string commit_sha = 2 [json_name = "commit_sha"];
+
+        // Directory, relative to the source root, in which to run the build.
+        // This must be a relative path. If a step's dir is specified and is an absolute path,
+        // this value is ignored for that step's execution.
+        string dir = 3;
+
+        // Only trigger a build if the revision regex does NOT match the revision regex.
+        bool invert_regex = 4 [json_name = "invert_regex"];
+
+        // ID of the project that owns the Cloud Source Repository.
+        // If omitted, the project ID requesting the build is assumed.
+        string project_id = 5 [json_name = "project_id"];
+
+        // Name of the Cloud Source Repository.
+        string repo_name = 6 [json_name = "repo_name"];
+
+        // Substitutions to use in a triggered build. Should only be used with triggers.run
+        map<string, string> substitutions = 7;
+
+        // Regex matching tags to build. Exactly one a of branch name, tag, or commit SHA must be provided.
+        // The syntax of the regular expressions accepted is the syntax accepted by RE2 and
+        // described at https://github.com/google/re2/wiki/Syntax
+        string tag_name = 8 [json_name = "tag_name"];
+      }
+
+      message StorageSource {
+        // Google Cloud Storage bucket containing the source.
+        string bucket = 1;
+
+        // Google Cloud Storage generation for the object.
+        // If the generation is omitted, the latest generation will be used
+        string generation = 2;
+
+        // Google Cloud Storage object containing the source.
+        // This object must be a gzipped archive file (.tar.gz) containing source to build.
+        string object = 3;
+      }
+    }
+
+    message Step {
+      // Allow this build step to fail without failing the entire build if and
+      // only if the exit code is one of the specified codes.
+      //
+      // If 'allowFailure' is also specified, this field will take precedence.
+      repeated int64 allow_exit_codes = 1 [json_name = "allow_exit_codes"];
+
+      // Allow this build step to fail without failing the entire build.
+      // If false, the entire build will fail if this step fails. Otherwise, the
+      // build will succeed, but this step will still have a failure status.
+      // Error information will be reported in the 'failureDetail' field.
+      //
+      // 'allowExitCodes' takes precedence over this field.
+      bool allow_failure = 2 [json_name = "allow_failure"];
+
+      // A list of arguments that will be presented to the step when it is started.
+      //
+      // If the image used to run the step's container has an entrypoint, the args
+      // are used as arguments to that entrypoint. If the image does not define an
+      // entrypoint, the first element in args is used as the entrypoint, and the
+      // remainder will be used as arguments.
+      repeated string args = 3;
+
+      // Working directory to use when running this step's container.
+      //
+      // If this value is a relative path, it is relative to the build's working
+      // directory. If this value is absolute, it may be outside the build's working
+      // directory, in which case the contents of the path may not be persisted
+      // across build step executions, unless a 'volume' for that path is specified.
+      //
+      // If the build specifies a 'RepoSource' with 'dir' and a step with a
+      // 'dir',
+      // which specifies an absolute path, the 'RepoSource' 'dir' is ignored
+      // for the step's execution.
+      string dir = 4;
+
+      // Entrypoint to be used instead of the build step image's
+      // default entrypoint.
+      // If unset, the image's default entrypoint is used
+      string entrypoint = 5;
+
+      // A list of environment variable definitions to be used when
+      // running a step.
+      //
+      // The elements are of the form "KEY=VALUE" for the environment variable
+      // "KEY" being given the value "VALUE".
+      repeated string env = 6;
+
+      // Unique identifier for this build step, used in 'wait_for' to
+      // reference this build step as a dependency.
+      string id = 7;
+
+      // The name of the container image that will run this particular build step.
+      //
+      // If the image is available in the host's Docker daemon's cache, it will be
+      // run directly. If not, the host will attempt to pull the image first, using
+      // the builder service account's credentials if necessary.
+      //
+      // The Docker daemon's cache will already have the latest versions of all of
+      // the officially supported build steps (see https://github.com/GoogleCloudPlatform/cloud-builders
+      // for images and examples).
+      // The Docker daemon will also have cached many of the layers for some popular
+      // images, like "ubuntu", "debian", but they will be refreshed at the time
+      // you attempt to use them.
+      //
+      // If you built an image in a previous build step, it will be stored in the
+      // host's Docker daemon's cache and is available to use as the name for a
+      // later build step.
+      string name = 8;
+
+      // A shell script to be executed in the step.
+      // When script is provided, the user cannot specify the entrypoint or args.
+      string script = 9;
+
+      // A list of environment variables which are encrypted using
+      // a Cloud Key
+      // Management Service crypto key. These values must be specified in
+      // the build's 'Secret'.
+      repeated string secret_env = 10 [json_name = "secret_env"];
+
+      // Time limit for executing this build step. If not defined,
+      // the step has no
+      // time limit and will be allowed to continue to run until either it
+      // completes or the build itself times out.
+      string timeout = 11;
+
+      // Output only. Stores timing information for executing this
+      // build step.
+      string timing = 12;
+
+      // The ID(s) of the step(s) that this build step depends on.
+      //
+      // This build step will not start until all the build steps in 'wait_for'
+      // have completed successfully. If 'wait_for' is empty, this build step
+      // will start when all previous build steps in the 'Build.Steps' list
+      // have completed successfully.
+      repeated string wait_for = 13 [json_name = "wait_for"];
+
+      repeated Volumes volumes = 14;
+
+      message Volumes {
+        // Name of the volume to mount.
+        //
+        // Volume names must be unique per build step and must be valid names for
+        // Docker volumes. Each named volume must be used by at least two build steps.
+        string name = 1;
+
+        // Path at which to mount the volume.
+        //
+        // Paths must be absolute and cannot conflict with other volume paths on
+        // the same build step or with certain reserved volume paths.
+        string path = 2;
+      }
+    }
+  }
+
+  message GitFileSource {
+    // The full resource name of the github enterprise config.
+    // Format: projects/{project}/locations/{location}/githubEnterpriseConfigs/{id}. projects/{project}/githubEnterpriseConfigs/{id}.
+    string github_enterprise_config = 1 [json_name = "github_enterprise_config"];
+
+    // The path of the file, with the repo root as the root of the path.
+    string path = 2;
+
+    // The type of the repo, since it may not be explicit from the repo field (e.g from a URL).
+    // Values can be UNKNOWN, CLOUD_SOURCE_REPOSITORIES, GITHUB, BITBUCKET_SERVER Possible values: ["UNKNOWN", "CLOUD_SOURCE_REPOSITORIES", "GITHUB", "BITBUCKET_SERVER"]
+    string repo_type = 3 [json_name = "repo_type"];
+
+    // The branch, tag, arbitrary ref, or SHA version of the repo to use when resolving the
+    // filename (optional). This field respects the same syntax/resolution as described here: https://git-scm.com/docs/gitrevisions
+    // If unspecified, the revision from which the trigger invocation originated is assumed to be the revision from which to read the specified path.
+    string revision = 4;
+
+    // The URI of the repo (optional). If unspecified, the repo from which the trigger
+    // invocation originated is assumed to be the repo from which to read the specified path.
+    string uri = 5;
+  }
+
+  message Github {
+    // The resource name of the github enterprise config that should be applied to this installation.
+    // For example: "projects/{$projectId}/locations/{$locationId}/githubEnterpriseConfigs/{$configId}"
+    string enterprise_config_resource_name = 1 [json_name = "enterprise_config_resource_name"];
+
+    // Name of the repository. For example: The name for
+    // https://github.com/googlecloudplatform/cloud-builders is "cloud-builders".
+    string name = 2;
+
+    // Owner of the repository. For example: The owner for
+    // https://github.com/googlecloudplatform/cloud-builders is "googlecloudplatform".
+    string owner = 3;
+
+    PullRequest pull_request = 4 [json_name = "pull_request"];
+
+    Push push = 5;
+
+    message PullRequest {
+      // Regex of branches to match.
+      string branch = 1;
+
+      // Whether to block builds on a "/gcbrun" comment from a repository owner or collaborator. Possible values: ["COMMENTS_DISABLED", "COMMENTS_ENABLED", "COMMENTS_ENABLED_FOR_EXTERNAL_CONTRIBUTORS_ONLY"]
+      string comment_control = 2 [json_name = "comment_control"];
+
+      // If true, branches that do NOT match the git_ref will trigger a build.
+      bool invert_regex = 3 [json_name = "invert_regex"];
+    }
+
+    message Push {
+      // Regex of branches to match.  Specify only one of branch or tag.
+      string branch = 1;
+
+      // When true, only trigger a build if the revision regex does NOT match the git_ref regex.
+      bool invert_regex = 2 [json_name = "invert_regex"];
+
+      // Regex of tags to match.  Specify only one of branch or tag.
+      string tag = 3;
+    }
+  }
+
+  message PubsubConfig {
+    // Service account that will make the push request.
+    string service_account_email = 1 [json_name = "service_account_email"];
+
+    // Potential issues with the underlying Pub/Sub subscription configuration.
+    // Only populated on get requests.
+    string state = 2;
+
+    // Output only. Name of the subscription.
+    string subscription = 3;
+
+    // The name of the topic from which this subscription is receiving messages.
+    string topic = 4;
+  }
+
+  message SourceToBuild {
+    // The full resource name of the github enterprise config.
+    // Format: projects/{project}/locations/{location}/githubEnterpriseConfigs/{id}. projects/{project}/githubEnterpriseConfigs/{id}.
+    string github_enterprise_config = 1 [json_name = "github_enterprise_config"];
+
+    // The branch or tag to use. Must start with "refs/" (required).
+    string ref = 2;
+
+    // The type of the repo, since it may not be explicit from the repo field (e.g from a URL).
+    // Values can be UNKNOWN, CLOUD_SOURCE_REPOSITORIES, GITHUB, BITBUCKET_SERVER Possible values: ["UNKNOWN", "CLOUD_SOURCE_REPOSITORIES", "GITHUB", "BITBUCKET_SERVER"]
+    string repo_type = 3 [json_name = "repo_type"];
+
+    // The URI of the repo.
+    string uri = 4;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+
+  message TriggerTemplate {
+    // Name of the branch to build. Exactly one a of branch name, tag, or commit SHA must be provided.
+    // This field is a regular expression.
+    string branch_name = 1 [json_name = "branch_name"];
+
+    // Explicit commit SHA to build. Exactly one of a branch name, tag, or commit SHA must be provided.
+    string commit_sha = 2 [json_name = "commit_sha"];
+
+    // Directory, relative to the source root, in which to run the build.
+    //
+    // This must be a relative path. If a step's dir is specified and
+    // is an absolute path, this value is ignored for that step's
+    // execution.
+    string dir = 3;
+
+    // Only trigger a build if the revision regex does NOT match the revision regex.
+    bool invert_regex = 4 [json_name = "invert_regex"];
+
+    // ID of the project that owns the Cloud Source Repository. If
+    // omitted, the project ID requesting the build is assumed.
+    string project_id = 5 [json_name = "project_id"];
+
+    // Name of the Cloud Source Repository. If omitted, the name "default" is assumed.
+    string repo_name = 6 [json_name = "repo_name"];
+
+    // Name of the tag to build. Exactly one of a branch name, tag, or commit SHA must be provided.
+    // This field is a regular expression.
+    string tag_name = 7 [json_name = "tag_name"];
+  }
+
+  message WebhookConfig {
+    // Resource name for the secret required as a URL parameter.
+    string secret = 1;
+
+    // Potential issues with the underlying Pub/Sub subscription configuration.
+    // Only populated on get requests.
+    string state = 2;
+  }
+}
+
+// GoogleCloudbuildWorkerPool version is 0
+message GoogleCloudbuildWorkerPool {
+  // User specified annotations. See https://google.aip.dev/128#annotations for more details such as format and size limitations.
+  map<string, string> annotations = 1;
+
+  // Output only. Time at which the request to create the `WorkerPool` was received.
+  string create_time = 2 [json_name = "create_time"];
+
+  // Output only. Time at which the request to delete the `WorkerPool` was received.
+  string delete_time = 3 [json_name = "delete_time"];
+
+  // A user-specified, human-readable name for the `WorkerPool`. If provided, this value must be 1-63 characters.
+  string display_name = 4 [json_name = "display_name"];
+
+  string id = 5;
+
+  // The location for the resource
+  string location = 6;
+
+  // User-defined name of the `WorkerPool`.
+  string name = 7;
+
+  // The project for the resource
+  string project = 8;
+
+  // Output only. `WorkerPool` state. Possible values: STATE_UNSPECIFIED, PENDING, APPROVED, REJECTED, CANCELLED
+  string state = 9;
+
+  // Output only. A unique identifier for the `WorkerPool`.
+  string uid = 10;
+
+  // Output only. Time at which the request to update the `WorkerPool` was received.
+  string update_time = 11 [json_name = "update_time"];
+
+  NetworkConfig network_config = 12 [json_name = "network_config"];
+
+  repeated Timeouts timeouts = 13;
+
+  WorkerConfig worker_config = 14 [json_name = "worker_config"];
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+
+  message NetworkConfig {
+    // Required. Immutable. The network definition that the workers are peered to. If this section is left empty, the workers will be peered to `WorkerPool.project_id` on the service producer network. Must be in the format `projects/{project}/global/networks/{network}`, where `{project}` is a project number, such as `12345`, and `{network}` is the name of a VPC network in the project. See [Understanding network configuration options](https://cloud.google.com/cloud-build/docs/custom-workers/set-up-custom-worker-pool-environment#understanding_the_network_configuration_options)
+    string peered_network = 1 [json_name = "peered_network"];
+
+    // Optional. Immutable. Subnet IP range within the peered network. This is specified in CIDR notation with a slash and the subnet prefix size. You can optionally specify an IP address before the subnet prefix value. e.g. `192.168.0.0/29` would specify an IP range starting at 192.168.0.0 with a prefix size of 29 bits. `/16` would specify a prefix size of 16 bits, with an automatically determined IP within the peered VPC. If unspecified, a value of `/24` will be used.
+    string peered_network_ip_range = 2 [json_name = "peered_network_ip_range"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+
+  message WorkerConfig {
+    // Size of the disk attached to the worker, in GB. See [Worker pool config file](https://cloud.google.com/cloud-build/docs/custom-workers/worker-pool-config-file). Specify a value of up to 1000. If `0` is specified, Cloud Build will use a standard disk size.
+    int64 disk_size_gb = 1 [json_name = "disk_size_gb"];
+
+    // Machine type of a worker, such as `n1-standard-1`. See [Worker pool config file](https://cloud.google.com/cloud-build/docs/custom-workers/worker-pool-config-file). If left blank, Cloud Build will use `n1-standard-1`.
+    string machine_type = 2 [json_name = "machine_type"];
+
+    // If true, workers are created without any public address, which prevents network egress to public IPs.
+    bool no_external_ip = 3 [json_name = "no_external_ip"];
+  }
+}

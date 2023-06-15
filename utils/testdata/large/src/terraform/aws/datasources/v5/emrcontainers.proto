@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsEmrcontainersVirtualCluster version is 0
+message AwsEmrcontainersVirtualCluster {
+  string arn = 1;
+
+  repeated ContainerProvider container_provider = 2 [json_name = "container_provider"];
+
+  string created_at = 3 [json_name = "created_at"];
+
+  string id = 4;
+
+  string name = 5;
+
+  string state = 6;
+
+  map<string, string> tags = 7;
+
+  string virtual_cluster_id = 8 [json_name = "virtual_cluster_id"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message ContainerProvider {
+    // id: string
+    string id = 1;
+
+    // info: list of object
+    repeated Info info = 2;
+
+    // type: string
+    string type = 3;
+
+    message Info {
+      // eks_info: list of object
+      repeated EksInfo eks_info = 1 [json_name = "eks_info"];
+
+      message EksInfo {
+        // namespace: string
+        string namespace = 1;
+      }
+    }
+  }
+}

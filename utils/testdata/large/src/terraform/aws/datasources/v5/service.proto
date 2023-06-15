@@ -1,0 +1,155 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsService version is 0
+message AwsService {
+  string dns_name = 1 [json_name = "dns_name"];
+
+  string id = 2;
+
+  string partition = 3;
+
+  string region = 4;
+
+  string reverse_dns_name = 5 [json_name = "reverse_dns_name"];
+
+  string reverse_dns_prefix = 6 [json_name = "reverse_dns_prefix"];
+
+  string service_id = 7 [json_name = "service_id"];
+
+  bool supported = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+}
+
+// AwsServiceDiscoveryDnsNamespace version is 0
+message AwsServiceDiscoveryDnsNamespace {
+  string arn = 1;
+
+  string description = 2;
+
+  string hosted_zone = 3 [json_name = "hosted_zone"];
+
+  string id = 4;
+
+  string name = 5;
+
+  map<string, string> tags = 6;
+
+  string type = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsServiceDiscoveryHttpNamespace version is 0
+message AwsServiceDiscoveryHttpNamespace {
+  string arn = 1;
+
+  string description = 2;
+
+  string http_name = 3 [json_name = "http_name"];
+
+  string id = 4;
+
+  string name = 5;
+
+  map<string, string> tags = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsServiceDiscoveryService version is 0
+message AwsServiceDiscoveryService {
+  string arn = 1;
+
+  string description = 2;
+
+  repeated DnsConfig dns_config = 3 [json_name = "dns_config"];
+
+  repeated HealthCheckConfig health_check_config = 4 [json_name = "health_check_config"];
+
+  repeated HealthCheckCustomConfig health_check_custom_config = 5 [json_name = "health_check_custom_config"];
+
+  string id = 6;
+
+  string name = 7;
+
+  string namespace_id = 8 [json_name = "namespace_id"];
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message DnsConfig {
+    // dns_records: list of object
+    repeated DnsRecords dns_records = 1 [json_name = "dns_records"];
+
+    // namespace_id: string
+    string namespace_id = 2 [json_name = "namespace_id"];
+
+    // routing_policy: string
+    string routing_policy = 3 [json_name = "routing_policy"];
+
+    message DnsRecords {
+      // ttl: number
+      int64 ttl = 1;
+
+      // type: string
+      string type = 2;
+    }
+  }
+
+  message HealthCheckConfig {
+    // failure_threshold: number
+    int64 failure_threshold = 1 [json_name = "failure_threshold"];
+
+    // resource_path: string
+    string resource_path = 2 [json_name = "resource_path"];
+
+    // type: string
+    string type = 3;
+  }
+
+  message HealthCheckCustomConfig {
+    // failure_threshold: number
+    int64 failure_threshold = 1 [json_name = "failure_threshold"];
+  }
+}

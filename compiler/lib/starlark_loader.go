@@ -12,7 +12,6 @@ import (
 
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/ptypes"
-	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/dynamic"
 	"github.com/protoconf/protoconf/compiler/lib/parser"
 	"github.com/protoconf/protoconf/compiler/starproto"
@@ -96,8 +95,7 @@ func (l *starlarkLoader) loadValidators() (map[string]*starlark.Function, error)
 
 	l.Modules["add_validator"] = starlark.NewBuiltin("add_validator", starAddValidator(&validators))
 	protoregistry.GlobalFiles.RangeFiles(func(fd protoreflect.FileDescriptor) bool {
-		protoFileDesc, _ := desc.WrapFile(fd)
-		protoFile := protoFileDesc.GetName()
+		protoFile := fd.Path()
 		validatorFile := protoFile + consts.ValidatorExtensionSuffix
 		validatorAbsPath := filepath.Join(l.srcDir, validatorFile)
 		if exists, isDir, err := stat(validatorAbsPath); err != nil {

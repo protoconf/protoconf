@@ -1,0 +1,245 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleArtifactRegistryRepository version is 0
+message GoogleArtifactRegistryRepository {
+  // The time when the repository was created.
+  string create_time = 1 [json_name = "create_time"];
+
+  // The user-provided description of the repository.
+  string description = 2;
+
+  // The format of packages that are stored in the repository. Supported formats
+  // can be found [here](https://cloud.google.com/artifact-registry/docs/supported-formats).
+  // You can only create alpha formats if you are a member of the
+  // [alpha user group](https://cloud.google.com/artifact-registry/docs/supported-formats#alpha-access).
+  string format = 3;
+
+  string id = 4;
+
+  // The Cloud KMS resource name of the customer managed encryption key that’s
+  // used to encrypt the contents of the Repository. Has the form:
+  // 'projects/my-project/locations/my-region/keyRings/my-kr/cryptoKeys/my-key'.
+  // This value may not be changed after the Repository has been created.
+  string kms_key_name = 5 [json_name = "kms_key_name"];
+
+  // Labels with user-defined metadata.
+  // This field may contain up to 64 entries. Label keys and values may be no
+  // longer than 63 characters. Label keys must begin with a lowercase letter
+  // and may only contain lowercase letters, numeric characters, underscores,
+  // and dashes.
+  map<string, string> labels = 6;
+
+  // The name of the location this repository is located in.
+  string location = 7;
+
+  // The mode configures the repository to serve artifacts from different sources. Default value: "STANDARD_REPOSITORY" Possible values: ["STANDARD_REPOSITORY", "VIRTUAL_REPOSITORY", "REMOTE_REPOSITORY"]
+  string mode = 8;
+
+  // The name of the repository, for example:
+  // "repo1"
+  string name = 9;
+
+  string project = 10;
+
+  // The last part of the repository name, for example:
+  // "repo1"
+  string repository_id = 11 [json_name = "repository_id"];
+
+  // The time when the repository was last updated.
+  string update_time = 12 [json_name = "update_time"];
+
+  DockerConfig docker_config = 13 [json_name = "docker_config"];
+
+  MavenConfig maven_config = 14 [json_name = "maven_config"];
+
+  RemoteRepositoryConfig remote_repository_config = 15 [json_name = "remote_repository_config"];
+
+  repeated Timeouts timeouts = 16;
+
+  VirtualRepositoryConfig virtual_repository_config = 17 [json_name = "virtual_repository_config"];
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+
+  message DockerConfig {
+    // The repository which enabled this flag prevents all tags from being modified, moved or deleted. This does not prevent tags from being created.
+    bool immutable_tags = 1 [json_name = "immutable_tags"];
+  }
+
+  message MavenConfig {
+    // The repository with this flag will allow publishing the same
+    // snapshot versions.
+    bool allow_snapshot_overwrites = 1 [json_name = "allow_snapshot_overwrites"];
+
+    // Version policy defines the versions that the registry will accept. Default value: "VERSION_POLICY_UNSPECIFIED" Possible values: ["VERSION_POLICY_UNSPECIFIED", "RELEASE", "SNAPSHOT"]
+    string version_policy = 2 [json_name = "version_policy"];
+  }
+
+  message RemoteRepositoryConfig {
+    // The description of the remote source.
+    string description = 1;
+
+    DockerRepository docker_repository = 2 [json_name = "docker_repository"];
+
+    MavenRepository maven_repository = 3 [json_name = "maven_repository"];
+
+    NpmRepository npm_repository = 4 [json_name = "npm_repository"];
+
+    PythonRepository python_repository = 5 [json_name = "python_repository"];
+
+    message DockerRepository {
+      // Address of the remote repository. Default value: "DOCKER_HUB" Possible values: ["DOCKER_HUB"]
+      string public_repository = 1 [json_name = "public_repository"];
+    }
+
+    message MavenRepository {
+      // Address of the remote repository. Default value: "MAVEN_CENTRAL" Possible values: ["MAVEN_CENTRAL"]
+      string public_repository = 1 [json_name = "public_repository"];
+    }
+
+    message NpmRepository {
+      // Address of the remote repository. Default value: "NPMJS" Possible values: ["NPMJS"]
+      string public_repository = 1 [json_name = "public_repository"];
+    }
+
+    message PythonRepository {
+      // Address of the remote repository. Default value: "PYPI" Possible values: ["PYPI"]
+      string public_repository = 1 [json_name = "public_repository"];
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+
+  message VirtualRepositoryConfig {
+    repeated UpstreamPolicies upstream_policies = 1 [json_name = "upstream_policies"];
+
+    message UpstreamPolicies {
+      // The user-provided ID of the upstream policy.
+      string id = 1;
+
+      // Entries with a greater priority value take precedence in the pull order.
+      int64 priority = 2;
+
+      // A reference to the repository resource, for example:
+      // "projects/p1/locations/us-central1/repository/repo1".
+      string repository = 3;
+    }
+  }
+}
+
+// GoogleArtifactRegistryRepositoryIamBinding version is 0
+message GoogleArtifactRegistryRepositoryIamBinding {
+  string etag = 1;
+
+  string id = 2;
+
+  string location = 3;
+
+  repeated string members = 4;
+
+  string project = 5;
+
+  string repository = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleArtifactRegistryRepositoryIamMember version is 0
+message GoogleArtifactRegistryRepositoryIamMember {
+  string etag = 1;
+
+  string id = 2;
+
+  string location = 3;
+
+  string member = 4;
+
+  string project = 5;
+
+  string repository = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleArtifactRegistryRepositoryIamPolicy version is 0
+message GoogleArtifactRegistryRepositoryIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string location = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  string repository = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}

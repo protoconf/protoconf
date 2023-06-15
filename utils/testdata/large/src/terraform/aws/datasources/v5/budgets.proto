@@ -1,0 +1,167 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsBudgetsBudget version is 0
+message AwsBudgetsBudget {
+  string account_id = 1 [json_name = "account_id"];
+
+  string arn = 2;
+
+  repeated AutoAdjustData auto_adjust_data = 3 [json_name = "auto_adjust_data"];
+
+  bool budget_exceeded = 4 [json_name = "budget_exceeded"];
+
+  repeated BudgetLimit budget_limit = 5 [json_name = "budget_limit"];
+
+  string budget_type = 6 [json_name = "budget_type"];
+
+  repeated CalculatedSpend calculated_spend = 7 [json_name = "calculated_spend"];
+
+  repeated CostFilter cost_filter = 8 [json_name = "cost_filter"];
+
+  repeated CostTypes cost_types = 9 [json_name = "cost_types"];
+
+  string id = 10;
+
+  string name = 11;
+
+  string name_prefix = 12 [json_name = "name_prefix"];
+
+  repeated Notification notification = 13;
+
+  repeated PlannedLimit planned_limit = 14 [json_name = "planned_limit"];
+
+  string time_period_end = 15 [json_name = "time_period_end"];
+
+  string time_period_start = 16 [json_name = "time_period_start"];
+
+  string time_unit = 17 [json_name = "time_unit"];
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+
+  message AutoAdjustData {
+    // auto_adjust_type: string
+    string auto_adjust_type = 1 [json_name = "auto_adjust_type"];
+
+    // historical_options: list of object
+    repeated HistoricalOptions historical_options = 2 [json_name = "historical_options"];
+
+    // last_auto_adjust_time: string
+    string last_auto_adjust_time = 3 [json_name = "last_auto_adjust_time"];
+
+    message HistoricalOptions {
+      // budget_adjustment_period: number
+      int64 budget_adjustment_period = 1 [json_name = "budget_adjustment_period"];
+
+      // lookback_available_periods: number
+      int64 lookback_available_periods = 2 [json_name = "lookback_available_periods"];
+    }
+  }
+
+  message BudgetLimit {
+    // amount: string
+    string amount = 1;
+
+    // unit: string
+    string unit = 2;
+  }
+
+  message CalculatedSpend {
+    // actual_spend: list of object
+    repeated ActualSpend actual_spend = 1 [json_name = "actual_spend"];
+
+    message ActualSpend {
+      // amount: string
+      string amount = 1;
+
+      // unit: string
+      string unit = 2;
+    }
+  }
+
+  message CostFilter {
+    // name: string
+    string name = 1;
+
+    // values: list of string
+    repeated string values = 2;
+  }
+
+  message CostTypes {
+    // include_credit: bool
+    bool include_credit = 1 [json_name = "include_credit"];
+
+    // include_discount: bool
+    bool include_discount = 2 [json_name = "include_discount"];
+
+    // include_other_subscription: bool
+    bool include_other_subscription = 3 [json_name = "include_other_subscription"];
+
+    // include_recurring: bool
+    bool include_recurring = 4 [json_name = "include_recurring"];
+
+    // include_refund: bool
+    bool include_refund = 5 [json_name = "include_refund"];
+
+    // include_subscription: bool
+    bool include_subscription = 6 [json_name = "include_subscription"];
+
+    // include_support: bool
+    bool include_support = 7 [json_name = "include_support"];
+
+    // include_tax: bool
+    bool include_tax = 8 [json_name = "include_tax"];
+
+    // include_upfront: bool
+    bool include_upfront = 9 [json_name = "include_upfront"];
+
+    // use_amortized: bool
+    bool use_amortized = 10 [json_name = "use_amortized"];
+
+    // use_blended: bool
+    bool use_blended = 11 [json_name = "use_blended"];
+  }
+
+  message Notification {
+    // comparison_operator: string
+    string comparison_operator = 1 [json_name = "comparison_operator"];
+
+    // notification_type: string
+    string notification_type = 2 [json_name = "notification_type"];
+
+    // subscriber_email_addresses: set of string
+    repeated string subscriber_email_addresses = 3 [json_name = "subscriber_email_addresses"];
+
+    // subscriber_sns_topic_arns: set of string
+    repeated string subscriber_sns_topic_arns = 4 [json_name = "subscriber_sns_topic_arns"];
+
+    // threshold: number
+    int64 threshold = 5;
+
+    // threshold_type: string
+    string threshold_type = 6 [json_name = "threshold_type"];
+  }
+
+  message PlannedLimit {
+    // amount: string
+    string amount = 1;
+
+    // start_time: string
+    string start_time = 2 [json_name = "start_time"];
+
+    // unit: string
+    string unit = 3;
+  }
+}

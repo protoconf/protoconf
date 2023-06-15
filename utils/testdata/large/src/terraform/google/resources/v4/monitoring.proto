@@ -1,0 +1,1490 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleMonitoringAlertPolicy version is 0
+message GoogleMonitoringAlertPolicy {
+  // How to combine the results of multiple conditions to
+  // determine if an incident should be opened. Possible values: ["AND", "OR", "AND_WITH_MATCHING_RESOURCE"]
+  string combiner = 1;
+
+  // A read-only record of the creation of the alerting policy.
+  // If provided in a call to create or update, this field will
+  // be ignored.
+  repeated CreationRecord creation_record = 2 [json_name = "creation_record"];
+
+  // A short name or phrase used to identify the policy in
+  // dashboards, notifications, and incidents. To avoid confusion, don't use
+  // the same display name for multiple policies in the same project. The
+  // name is limited to 512 Unicode characters.
+  string display_name = 3 [json_name = "display_name"];
+
+  // Whether or not the policy is enabled. The default is true.
+  bool enabled = 4;
+
+  string id = 5;
+
+  // The unique resource name for this policy.
+  // Its syntax is: projects/[PROJECT_ID]/alertPolicies/[ALERT_POLICY_ID]
+  string name = 6;
+
+  // Identifies the notification channels to which notifications should be
+  // sent when incidents are opened or closed or when new violations occur
+  // on an already opened incident. Each element of this array corresponds
+  // to the name field in each of the NotificationChannel objects that are
+  // returned from the notificationChannels.list method. The syntax of the
+  // entries in this field is
+  // 'projects/[PROJECT_ID]/notificationChannels/[CHANNEL_ID]'
+  repeated string notification_channels = 7 [json_name = "notification_channels"];
+
+  string project = 8;
+
+  // This field is intended to be used for organizing and identifying the AlertPolicy
+  // objects.The field can contain up to 64 entries. Each key and value is limited
+  // to 63 Unicode characters or 128 bytes, whichever is smaller. Labels and values
+  // can contain only lowercase letters, numerals, underscores, and dashes. Keys
+  // must begin with a letter.
+  map<string, string> user_labels = 9 [json_name = "user_labels"];
+
+  AlertStrategy alert_strategy = 10 [json_name = "alert_strategy"];
+
+  repeated Conditions conditions = 11;
+
+  Documentation documentation = 12;
+
+  repeated Timeouts timeouts = 13;
+
+  map<string, string> for_each = 14 [json_name = "for_each"];
+
+  repeated string depends_on = 15 [json_name = "depends_on"];
+
+  int32 count = 16;
+
+  string provider = 17;
+
+  terraform.v1.Lifecycle lifecycle = 18;
+
+  message CreationRecord {
+    // mutate_time: string
+    string mutate_time = 1 [json_name = "mutate_time"];
+
+    // mutated_by: string
+    string mutated_by = 2 [json_name = "mutated_by"];
+  }
+
+  message AlertStrategy {
+    // If an alert policy that was active has no data for this long, any open incidents will close.
+    string auto_close = 1 [json_name = "auto_close"];
+
+    repeated NotificationChannelStrategy notification_channel_strategy = 2 [json_name = "notification_channel_strategy"];
+
+    NotificationRateLimit notification_rate_limit = 3 [json_name = "notification_rate_limit"];
+
+    message NotificationChannelStrategy {
+      // The notification channels that these settings apply to. Each of these
+      // correspond to the name field in one of the NotificationChannel objects
+      // referenced in the notification_channels field of this AlertPolicy. The format is
+      // 'projects/[PROJECT_ID_OR_NUMBER]/notificationChannels/[CHANNEL_ID]'
+      repeated string notification_channel_names = 1 [json_name = "notification_channel_names"];
+
+      // The frequency at which to send reminder notifications for open incidents.
+      string renotify_interval = 2 [json_name = "renotify_interval"];
+    }
+
+    message NotificationRateLimit {
+      // Not more than one notification per period.
+      string period = 1;
+    }
+  }
+
+  message Conditions {
+    // A short name or phrase used to identify the
+    // condition in dashboards, notifications, and
+    // incidents. To avoid confusion, don't use the same
+    // display name for multiple conditions in the same
+    // policy.
+    string display_name = 1 [json_name = "display_name"];
+
+    // The unique resource name for this condition.
+    // Its syntax is:
+    // projects/[PROJECT_ID]/alertPolicies/[POLICY_ID]/conditions/[CONDITION_ID]
+    // [CONDITION_ID] is assigned by Stackdriver Monitoring when
+    // the condition is created as part of a new or updated alerting
+    // policy.
+    string name = 2;
+
+    ConditionAbsent condition_absent = 3 [json_name = "condition_absent"];
+
+    ConditionMatchedLog condition_matched_log = 4 [json_name = "condition_matched_log"];
+
+    ConditionMonitoringQueryLanguage condition_monitoring_query_language = 5 [json_name = "condition_monitoring_query_language"];
+
+    ConditionThreshold condition_threshold = 6 [json_name = "condition_threshold"];
+
+    message ConditionAbsent {
+      // The amount of time that a time series must
+      // fail to report new data to be considered
+      // failing. Currently, only values that are a
+      // multiple of a minute--e.g. 60s, 120s, or 300s
+      // --are supported.
+      string duration = 1;
+
+      // A filter that identifies which time series
+      // should be compared with the threshold.The
+      // filter is similar to the one that is
+      // specified in the
+      // MetricService.ListTimeSeries request (that
+      // call is useful to verify the time series
+      // that will be retrieved / processed) and must
+      // specify the metric type and optionally may
+      // contain restrictions on resource type,
+      // resource labels, and metric labels. This
+      // field may not exceed 2048 Unicode characters
+      // in length.
+      string filter = 2;
+
+      repeated Aggregations aggregations = 3;
+
+      Trigger trigger = 4;
+
+      message Aggregations {
+        // The alignment period for per-time
+        // series alignment. If present,
+        // alignmentPeriod must be at least
+        // 60 seconds. After per-time series
+        // alignment, each time series will
+        // contain data points only on the
+        // period boundaries. If
+        // perSeriesAligner is not specified
+        // or equals ALIGN_NONE, then this
+        // field is ignored. If
+        // perSeriesAligner is specified and
+        // does not equal ALIGN_NONE, then
+        // this field must be defined;
+        // otherwise an error is returned.
+        string alignment_period = 1 [json_name = "alignment_period"];
+
+        // The approach to be used to combine
+        // time series. Not all reducer
+        // functions may be applied to all
+        // time series, depending on the
+        // metric type and the value type of
+        // the original time series.
+        // Reduction may change the metric
+        // type of value type of the time
+        // series.Time series data must be
+        // aligned in order to perform cross-
+        // time series reduction. If
+        // crossSeriesReducer is specified,
+        // then perSeriesAligner must be
+        // specified and not equal ALIGN_NONE
+        // and alignmentPeriod must be
+        // specified; otherwise, an error is
+        // returned. Possible values: ["REDUCE_NONE", "REDUCE_MEAN", "REDUCE_MIN", "REDUCE_MAX", "REDUCE_SUM", "REDUCE_STDDEV", "REDUCE_COUNT", "REDUCE_COUNT_TRUE", "REDUCE_COUNT_FALSE", "REDUCE_FRACTION_TRUE", "REDUCE_PERCENTILE_99", "REDUCE_PERCENTILE_95", "REDUCE_PERCENTILE_50", "REDUCE_PERCENTILE_05"]
+        string cross_series_reducer = 2 [json_name = "cross_series_reducer"];
+
+        // The set of fields to preserve when
+        // crossSeriesReducer is specified.
+        // The groupByFields determine how
+        // the time series are partitioned
+        // into subsets prior to applying the
+        // aggregation function. Each subset
+        // contains time series that have the
+        // same value for each of the
+        // grouping fields. Each individual
+        // time series is a member of exactly
+        // one subset. The crossSeriesReducer
+        // is applied to each subset of time
+        // series. It is not possible to
+        // reduce across different resource
+        // types, so this field implicitly
+        // contains resource.type. Fields not
+        // specified in groupByFields are
+        // aggregated away. If groupByFields
+        // is not specified and all the time
+        // series have the same resource
+        // type, then the time series are
+        // aggregated into a single output
+        // time series. If crossSeriesReducer
+        // is not defined, this field is
+        // ignored.
+        repeated string group_by_fields = 3 [json_name = "group_by_fields"];
+
+        // The approach to be used to align
+        // individual time series. Not all
+        // alignment functions may be applied
+        // to all time series, depending on
+        // the metric type and value type of
+        // the original time series.
+        // Alignment may change the metric
+        // type or the value type of the time
+        // series.Time series data must be
+        // aligned in order to perform cross-
+        // time series reduction. If
+        // crossSeriesReducer is specified,
+        // then perSeriesAligner must be
+        // specified and not equal ALIGN_NONE
+        // and alignmentPeriod must be
+        // specified; otherwise, an error is
+        // returned. Possible values: ["ALIGN_NONE", "ALIGN_DELTA", "ALIGN_RATE", "ALIGN_INTERPOLATE", "ALIGN_NEXT_OLDER", "ALIGN_MIN", "ALIGN_MAX", "ALIGN_MEAN", "ALIGN_COUNT", "ALIGN_SUM", "ALIGN_STDDEV", "ALIGN_COUNT_TRUE", "ALIGN_COUNT_FALSE", "ALIGN_FRACTION_TRUE", "ALIGN_PERCENTILE_99", "ALIGN_PERCENTILE_95", "ALIGN_PERCENTILE_50", "ALIGN_PERCENTILE_05", "ALIGN_PERCENT_CHANGE"]
+        string per_series_aligner = 4 [json_name = "per_series_aligner"];
+      }
+
+      message Trigger {
+        // The absolute number of time series
+        // that must fail the predicate for the
+        // condition to be triggered.
+        int64 count = 1;
+
+        // The percentage of time series that
+        // must fail the predicate for the
+        // condition to be triggered.
+        int64 percent = 2;
+      }
+    }
+
+    message ConditionMatchedLog {
+      // A logs-based filter.
+      string filter = 1;
+
+      // A map from a label key to an extractor expression, which is used to
+      // extract the value for this label key. Each entry in this map is
+      // a specification for how data should be extracted from log entries that
+      // match filter. Each combination of extracted values is treated as
+      // a separate rule for the purposes of triggering notifications.
+      // Label keys and corresponding values can be used in notifications
+      // generated by this condition.
+      map<string, string> label_extractors = 2 [json_name = "label_extractors"];
+    }
+
+    message ConditionMonitoringQueryLanguage {
+      // The amount of time that a time series must
+      // violate the threshold to be considered
+      // failing. Currently, only values that are a
+      // multiple of a minute--e.g., 0, 60, 120, or
+      // 300 seconds--are supported. If an invalid
+      // value is given, an error will be returned.
+      // When choosing a duration, it is useful to
+      // keep in mind the frequency of the underlying
+      // time series data (which may also be affected
+      // by any alignments specified in the
+      // aggregations field); a good duration is long
+      // enough so that a single outlier does not
+      // generate spurious alerts, but short enough
+      // that unhealthy states are detected and
+      // alerted on quickly.
+      string duration = 1;
+
+      // A condition control that determines how
+      // metric-threshold conditions are evaluated when
+      // data stops arriving. Possible values: ["EVALUATION_MISSING_DATA_INACTIVE", "EVALUATION_MISSING_DATA_ACTIVE", "EVALUATION_MISSING_DATA_NO_OP"]
+      string evaluation_missing_data = 2 [json_name = "evaluation_missing_data"];
+
+      // Monitoring Query Language query that outputs a boolean stream.
+      string query = 3;
+
+      Trigger trigger = 4;
+
+      message Trigger {
+        // The absolute number of time series
+        // that must fail the predicate for the
+        // condition to be triggered.
+        int64 count = 1;
+
+        // The percentage of time series that
+        // must fail the predicate for the
+        // condition to be triggered.
+        int64 percent = 2;
+      }
+    }
+
+    message ConditionThreshold {
+      // The comparison to apply between the time
+      // series (indicated by filter and aggregation)
+      // and the threshold (indicated by
+      // threshold_value). The comparison is applied
+      // on each time series, with the time series on
+      // the left-hand side and the threshold on the
+      // right-hand side. Only COMPARISON_LT and
+      // COMPARISON_GT are supported currently. Possible values: ["COMPARISON_GT", "COMPARISON_GE", "COMPARISON_LT", "COMPARISON_LE", "COMPARISON_EQ", "COMPARISON_NE"]
+      string comparison = 1;
+
+      // A filter that identifies a time series that
+      // should be used as the denominator of a ratio
+      // that will be compared with the threshold. If
+      // a denominator_filter is specified, the time
+      // series specified by the filter field will be
+      // used as the numerator.The filter is similar
+      // to the one that is specified in the
+      // MetricService.ListTimeSeries request (that
+      // call is useful to verify the time series
+      // that will be retrieved / processed) and must
+      // specify the metric type and optionally may
+      // contain restrictions on resource type,
+      // resource labels, and metric labels. This
+      // field may not exceed 2048 Unicode characters
+      // in length.
+      string denominator_filter = 2 [json_name = "denominator_filter"];
+
+      // The amount of time that a time series must
+      // violate the threshold to be considered
+      // failing. Currently, only values that are a
+      // multiple of a minute--e.g., 0, 60, 120, or
+      // 300 seconds--are supported. If an invalid
+      // value is given, an error will be returned.
+      // When choosing a duration, it is useful to
+      // keep in mind the frequency of the underlying
+      // time series data (which may also be affected
+      // by any alignments specified in the
+      // aggregations field); a good duration is long
+      // enough so that a single outlier does not
+      // generate spurious alerts, but short enough
+      // that unhealthy states are detected and
+      // alerted on quickly.
+      string duration = 3;
+
+      // A condition control that determines how
+      // metric-threshold conditions are evaluated when
+      // data stops arriving. Possible values: ["EVALUATION_MISSING_DATA_INACTIVE", "EVALUATION_MISSING_DATA_ACTIVE", "EVALUATION_MISSING_DATA_NO_OP"]
+      string evaluation_missing_data = 4 [json_name = "evaluation_missing_data"];
+
+      // A filter that identifies which time series
+      // should be compared with the threshold.The
+      // filter is similar to the one that is
+      // specified in the
+      // MetricService.ListTimeSeries request (that
+      // call is useful to verify the time series
+      // that will be retrieved / processed) and must
+      // specify the metric type and optionally may
+      // contain restrictions on resource type,
+      // resource labels, and metric labels. This
+      // field may not exceed 2048 Unicode characters
+      // in length.
+      string filter = 5;
+
+      // A value against which to compare the time
+      // series.
+      int64 threshold_value = 6 [json_name = "threshold_value"];
+
+      repeated Aggregations aggregations = 7;
+
+      repeated DenominatorAggregations denominator_aggregations = 8 [json_name = "denominator_aggregations"];
+
+      ForecastOptions forecast_options = 9 [json_name = "forecast_options"];
+
+      Trigger trigger = 10;
+
+      message Aggregations {
+        // The alignment period for per-time
+        // series alignment. If present,
+        // alignmentPeriod must be at least
+        // 60 seconds. After per-time series
+        // alignment, each time series will
+        // contain data points only on the
+        // period boundaries. If
+        // perSeriesAligner is not specified
+        // or equals ALIGN_NONE, then this
+        // field is ignored. If
+        // perSeriesAligner is specified and
+        // does not equal ALIGN_NONE, then
+        // this field must be defined;
+        // otherwise an error is returned.
+        string alignment_period = 1 [json_name = "alignment_period"];
+
+        // The approach to be used to combine
+        // time series. Not all reducer
+        // functions may be applied to all
+        // time series, depending on the
+        // metric type and the value type of
+        // the original time series.
+        // Reduction may change the metric
+        // type of value type of the time
+        // series.Time series data must be
+        // aligned in order to perform cross-
+        // time series reduction. If
+        // crossSeriesReducer is specified,
+        // then perSeriesAligner must be
+        // specified and not equal ALIGN_NONE
+        // and alignmentPeriod must be
+        // specified; otherwise, an error is
+        // returned. Possible values: ["REDUCE_NONE", "REDUCE_MEAN", "REDUCE_MIN", "REDUCE_MAX", "REDUCE_SUM", "REDUCE_STDDEV", "REDUCE_COUNT", "REDUCE_COUNT_TRUE", "REDUCE_COUNT_FALSE", "REDUCE_FRACTION_TRUE", "REDUCE_PERCENTILE_99", "REDUCE_PERCENTILE_95", "REDUCE_PERCENTILE_50", "REDUCE_PERCENTILE_05"]
+        string cross_series_reducer = 2 [json_name = "cross_series_reducer"];
+
+        // The set of fields to preserve when
+        // crossSeriesReducer is specified.
+        // The groupByFields determine how
+        // the time series are partitioned
+        // into subsets prior to applying the
+        // aggregation function. Each subset
+        // contains time series that have the
+        // same value for each of the
+        // grouping fields. Each individual
+        // time series is a member of exactly
+        // one subset. The crossSeriesReducer
+        // is applied to each subset of time
+        // series. It is not possible to
+        // reduce across different resource
+        // types, so this field implicitly
+        // contains resource.type. Fields not
+        // specified in groupByFields are
+        // aggregated away. If groupByFields
+        // is not specified and all the time
+        // series have the same resource
+        // type, then the time series are
+        // aggregated into a single output
+        // time series. If crossSeriesReducer
+        // is not defined, this field is
+        // ignored.
+        repeated string group_by_fields = 3 [json_name = "group_by_fields"];
+
+        // The approach to be used to align
+        // individual time series. Not all
+        // alignment functions may be applied
+        // to all time series, depending on
+        // the metric type and value type of
+        // the original time series.
+        // Alignment may change the metric
+        // type or the value type of the time
+        // series.Time series data must be
+        // aligned in order to perform cross-
+        // time series reduction. If
+        // crossSeriesReducer is specified,
+        // then perSeriesAligner must be
+        // specified and not equal ALIGN_NONE
+        // and alignmentPeriod must be
+        // specified; otherwise, an error is
+        // returned. Possible values: ["ALIGN_NONE", "ALIGN_DELTA", "ALIGN_RATE", "ALIGN_INTERPOLATE", "ALIGN_NEXT_OLDER", "ALIGN_MIN", "ALIGN_MAX", "ALIGN_MEAN", "ALIGN_COUNT", "ALIGN_SUM", "ALIGN_STDDEV", "ALIGN_COUNT_TRUE", "ALIGN_COUNT_FALSE", "ALIGN_FRACTION_TRUE", "ALIGN_PERCENTILE_99", "ALIGN_PERCENTILE_95", "ALIGN_PERCENTILE_50", "ALIGN_PERCENTILE_05", "ALIGN_PERCENT_CHANGE"]
+        string per_series_aligner = 4 [json_name = "per_series_aligner"];
+      }
+
+      message DenominatorAggregations {
+        // The alignment period for per-time
+        // series alignment. If present,
+        // alignmentPeriod must be at least
+        // 60 seconds. After per-time series
+        // alignment, each time series will
+        // contain data points only on the
+        // period boundaries. If
+        // perSeriesAligner is not specified
+        // or equals ALIGN_NONE, then this
+        // field is ignored. If
+        // perSeriesAligner is specified and
+        // does not equal ALIGN_NONE, then
+        // this field must be defined;
+        // otherwise an error is returned.
+        string alignment_period = 1 [json_name = "alignment_period"];
+
+        // The approach to be used to combine
+        // time series. Not all reducer
+        // functions may be applied to all
+        // time series, depending on the
+        // metric type and the value type of
+        // the original time series.
+        // Reduction may change the metric
+        // type of value type of the time
+        // series.Time series data must be
+        // aligned in order to perform cross-
+        // time series reduction. If
+        // crossSeriesReducer is specified,
+        // then perSeriesAligner must be
+        // specified and not equal ALIGN_NONE
+        // and alignmentPeriod must be
+        // specified; otherwise, an error is
+        // returned. Possible values: ["REDUCE_NONE", "REDUCE_MEAN", "REDUCE_MIN", "REDUCE_MAX", "REDUCE_SUM", "REDUCE_STDDEV", "REDUCE_COUNT", "REDUCE_COUNT_TRUE", "REDUCE_COUNT_FALSE", "REDUCE_FRACTION_TRUE", "REDUCE_PERCENTILE_99", "REDUCE_PERCENTILE_95", "REDUCE_PERCENTILE_50", "REDUCE_PERCENTILE_05"]
+        string cross_series_reducer = 2 [json_name = "cross_series_reducer"];
+
+        // The set of fields to preserve when
+        // crossSeriesReducer is specified.
+        // The groupByFields determine how
+        // the time series are partitioned
+        // into subsets prior to applying the
+        // aggregation function. Each subset
+        // contains time series that have the
+        // same value for each of the
+        // grouping fields. Each individual
+        // time series is a member of exactly
+        // one subset. The crossSeriesReducer
+        // is applied to each subset of time
+        // series. It is not possible to
+        // reduce across different resource
+        // types, so this field implicitly
+        // contains resource.type. Fields not
+        // specified in groupByFields are
+        // aggregated away. If groupByFields
+        // is not specified and all the time
+        // series have the same resource
+        // type, then the time series are
+        // aggregated into a single output
+        // time series. If crossSeriesReducer
+        // is not defined, this field is
+        // ignored.
+        repeated string group_by_fields = 3 [json_name = "group_by_fields"];
+
+        // The approach to be used to align
+        // individual time series. Not all
+        // alignment functions may be applied
+        // to all time series, depending on
+        // the metric type and value type of
+        // the original time series.
+        // Alignment may change the metric
+        // type or the value type of the time
+        // series.Time series data must be
+        // aligned in order to perform cross-
+        // time series reduction. If
+        // crossSeriesReducer is specified,
+        // then perSeriesAligner must be
+        // specified and not equal ALIGN_NONE
+        // and alignmentPeriod must be
+        // specified; otherwise, an error is
+        // returned. Possible values: ["ALIGN_NONE", "ALIGN_DELTA", "ALIGN_RATE", "ALIGN_INTERPOLATE", "ALIGN_NEXT_OLDER", "ALIGN_MIN", "ALIGN_MAX", "ALIGN_MEAN", "ALIGN_COUNT", "ALIGN_SUM", "ALIGN_STDDEV", "ALIGN_COUNT_TRUE", "ALIGN_COUNT_FALSE", "ALIGN_FRACTION_TRUE", "ALIGN_PERCENTILE_99", "ALIGN_PERCENTILE_95", "ALIGN_PERCENTILE_50", "ALIGN_PERCENTILE_05", "ALIGN_PERCENT_CHANGE"]
+        string per_series_aligner = 4 [json_name = "per_series_aligner"];
+      }
+
+      message ForecastOptions {
+        // The length of time into the future to forecast
+        // whether a timeseries will violate the threshold.
+        // If the predicted value is found to violate the
+        // threshold, and the violation is observed in all
+        // forecasts made for the Configured 'duration',
+        // then the timeseries is considered to be failing.
+        string forecast_horizon = 1 [json_name = "forecast_horizon"];
+      }
+
+      message Trigger {
+        // The absolute number of time series
+        // that must fail the predicate for the
+        // condition to be triggered.
+        int64 count = 1;
+
+        // The percentage of time series that
+        // must fail the predicate for the
+        // condition to be triggered.
+        int64 percent = 2;
+      }
+    }
+  }
+
+  message Documentation {
+    // The text of the documentation, interpreted according to mimeType.
+    // The content may not exceed 8,192 Unicode characters and may not
+    // exceed more than 10,240 bytes when encoded in UTF-8 format,
+    // whichever is smaller.
+    string content = 1;
+
+    // The format of the content field. Presently, only the value
+    // "text/markdown" is supported.
+    string mime_type = 2 [json_name = "mime_type"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleMonitoringCustomService version is 0
+message GoogleMonitoringCustomService {
+  // Name used for UI elements listing this Service.
+  string display_name = 1 [json_name = "display_name"];
+
+  string id = 2;
+
+  // The full resource name for this service. The syntax is:
+  // projects/[PROJECT_ID]/services/[SERVICE_ID].
+  string name = 3;
+
+  string project = 4;
+
+  // An optional service ID to use. If not given, the server will generate a
+  // service ID.
+  string service_id = 5 [json_name = "service_id"];
+
+  // Labels which have been used to annotate the service. Label keys must start
+  // with a letter. Label keys and values may contain lowercase letters,
+  // numbers, underscores, and dashes. Label keys and values have a maximum
+  // length of 63 characters, and must be less than 128 bytes in size. Up to 64
+  // label entries may be stored. For labels which do not have a semantic value,
+  // the empty string may be supplied for the label value.
+  map<string, string> user_labels = 6 [json_name = "user_labels"];
+
+  Telemetry telemetry = 7;
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Telemetry {
+    // The full name of the resource that defines this service.
+    // Formatted as described in
+    // https://cloud.google.com/apis/design/resource_names.
+    string resource_name = 1 [json_name = "resource_name"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleMonitoringDashboard version is 0
+message GoogleMonitoringDashboard {
+  // The JSON representation of a dashboard, following the format at https://cloud.google.com/monitoring/api/ref_v3/rest/v1/projects.dashboards.
+  string dashboard_json = 1 [json_name = "dashboard_json"];
+
+  string id = 2;
+
+  // The ID of the project in which the resource belongs. If it is not provided, the provider project is used.
+  string project = 3;
+
+  repeated Timeouts timeouts = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleMonitoringGroup version is 0
+message GoogleMonitoringGroup {
+  // A user-assigned name for this group, used only for display
+  // purposes.
+  string display_name = 1 [json_name = "display_name"];
+
+  // The filter used to determine which monitored resources
+  // belong to this group.
+  string filter = 2;
+
+  string id = 3;
+
+  // If true, the members of this group are considered to be a
+  // cluster. The system can perform additional analysis on
+  // groups that are clusters.
+  bool is_cluster = 4 [json_name = "is_cluster"];
+
+  // A unique identifier for this group. The format is
+  // "projects/{project_id_or_number}/groups/{group_id}".
+  string name = 5;
+
+  // The name of the group's parent, if it has one. The format is
+  // "projects/{project_id_or_number}/groups/{group_id}". For
+  // groups with no parent, parentName is the empty string, "".
+  string parent_name = 6 [json_name = "parent_name"];
+
+  string project = 7;
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleMonitoringMetricDescriptor version is 0
+message GoogleMonitoringMetricDescriptor {
+  // A detailed description of the metric, which can be used in documentation.
+  string description = 1;
+
+  // A concise name for the metric, which can be displayed in user interfaces. Use sentence case without an ending period, for example "Request count".
+  string display_name = 2 [json_name = "display_name"];
+
+  string id = 3;
+
+  // The launch stage of the metric definition. Possible values: ["LAUNCH_STAGE_UNSPECIFIED", "UNIMPLEMENTED", "PRELAUNCH", "EARLY_ACCESS", "ALPHA", "BETA", "GA", "DEPRECATED"]
+  string launch_stage = 4 [json_name = "launch_stage"];
+
+  // Whether the metric records instantaneous values, changes to a value, etc. Some combinations of metricKind and valueType might not be supported. Possible values: ["METRIC_KIND_UNSPECIFIED", "GAUGE", "DELTA", "CUMULATIVE"]
+  string metric_kind = 5 [json_name = "metric_kind"];
+
+  // If present, then a time series, which is identified partially by a metric type and a MonitoredResourceDescriptor, that is associated with this metric type can only be associated with one of the monitored resource types listed here. This field allows time series to be associated with the intersection of this metric type and the monitored resource types in this list.
+  repeated string monitored_resource_types = 6 [json_name = "monitored_resource_types"];
+
+  // The resource name of the metric descriptor.
+  string name = 7;
+
+  string project = 8;
+
+  // The metric type, including its DNS name prefix. The type is not URL-encoded. All service defined metrics must be prefixed with the service name, in the format of {service name}/{relative metric name}, such as cloudsql.googleapis.com/database/cpu/utilization. The relative metric name must have only upper and lower-case letters, digits, '/' and underscores '_' are allowed. Additionally, the maximum number of characters allowed for the relative_metric_name is 100. All user-defined metric types have the DNS name custom.googleapis.com, external.googleapis.com, or logging.googleapis.com/user/.
+  string type = 9;
+
+  // The units in which the metric value is reported. It is only applicable if the
+  // valueType is INT64, DOUBLE, or DISTRIBUTION. The unit defines the representation of
+  // the stored metric values.
+  //
+  // Different systems may scale the values to be more easily displayed (so a value of
+  // 0.02KBy might be displayed as 20By, and a value of 3523KBy might be displayed as
+  // 3.5MBy). However, if the unit is KBy, then the value of the metric is always in
+  // thousands of bytes, no matter how it may be displayed.
+  //
+  // If you want a custom metric to record the exact number of CPU-seconds used by a job,
+  // you can create an INT64 CUMULATIVE metric whose unit is s{CPU} (or equivalently
+  // 1s{CPU} or just s). If the job uses 12,005 CPU-seconds, then the value is written as
+  // 12005.
+  //
+  // Alternatively, if you want a custom metric to record data in a more granular way, you
+  // can create a DOUBLE CUMULATIVE metric whose unit is ks{CPU}, and then write the value
+  // 12.005 (which is 12005/1000), or use Kis{CPU} and write 11.723 (which is 12005/1024).
+  // The supported units are a subset of The Unified Code for Units of Measure standard.
+  // More info can be found in the API documentation
+  // (https://cloud.google.com/monitoring/api/ref_v3/rest/v3/projects.metricDescriptors).
+  string unit = 10;
+
+  // Whether the measurement is an integer, a floating-point number, etc. Some combinations of metricKind and valueType might not be supported. Possible values: ["BOOL", "INT64", "DOUBLE", "STRING", "DISTRIBUTION"]
+  string value_type = 11 [json_name = "value_type"];
+
+  repeated Labels labels = 12;
+
+  Metadata metadata = 13;
+
+  repeated Timeouts timeouts = 14;
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+
+  message Labels {
+    // A human-readable description for the label.
+    string description = 1;
+
+    // The key for this label. The key must not exceed 100 characters. The first character of the key must be an upper- or lower-case letter, the remaining characters must be letters, digits or underscores, and the key must match the regular expression [a-zA-Z][a-zA-Z0-9_]*
+    string key = 2;
+
+    // The type of data that can be assigned to the label. Default value: "STRING" Possible values: ["STRING", "BOOL", "INT64"]
+    string value_type = 3 [json_name = "value_type"];
+  }
+
+  message Metadata {
+    // The delay of data points caused by ingestion. Data points older than this age are guaranteed to be ingested and available to be read, excluding data loss due to errors. In '[duration format](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf?&_ga=2.264881487.1507873253.1593446723-935052455.1591817775#google.protobuf.Duration)'.
+    string ingest_delay = 1 [json_name = "ingest_delay"];
+
+    // The sampling period of metric data points. For metrics which are written periodically, consecutive data points are stored at this time interval, excluding data loss due to errors. Metrics with a higher granularity have a smaller sampling period. In '[duration format](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf?&_ga=2.264881487.1507873253.1593446723-935052455.1591817775#google.protobuf.Duration)'.
+    string sample_period = 2 [json_name = "sample_period"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleMonitoringMonitoredProject version is 0
+message GoogleMonitoringMonitoredProject {
+  // Output only. The time when this `MonitoredProject` was created.
+  string create_time = 1 [json_name = "create_time"];
+
+  string id = 2;
+
+  // Required. The resource name of the existing Metrics Scope that will monitor this project. Example: locations/global/metricsScopes/{SCOPING_PROJECT_ID_OR_NUMBER}
+  string metrics_scope = 3 [json_name = "metrics_scope"];
+
+  // Immutable. The resource name of the `MonitoredProject`. On input, the resource name includes the scoping project ID and monitored project ID. On output, it contains the equivalent project numbers. Example: `locations/global/metricsScopes/{SCOPING_PROJECT_ID_OR_NUMBER}/projects/{MONITORED_PROJECT_ID_OR_NUMBER}`
+  string name = 4;
+
+  repeated Timeouts timeouts = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// GoogleMonitoringNotificationChannel version is 0
+message GoogleMonitoringNotificationChannel {
+  // An optional human-readable description of this notification channel. This description may provide additional details, beyond the display name, for the channel. This may not exceed 1024 Unicode characters.
+  string description = 1;
+
+  // An optional human-readable name for this notification channel. It is recommended that you specify a non-empty and unique name in order to make it easier to identify the channels in your project, though this is not enforced. The display name is limited to 512 Unicode characters.
+  string display_name = 2 [json_name = "display_name"];
+
+  // Whether notifications are forwarded to the described channel. This makes it possible to disable delivery of notifications to a particular channel without removing the channel from all alerting policies that reference the channel. This is a more convenient approach when the change is temporary and you want to receive notifications from the same set of alerting policies on the channel at some point in the future.
+  bool enabled = 3;
+
+  // If true, the notification channel will be deleted regardless
+  // of its use in alert policies (the policies will be updated
+  // to remove the channel). If false, channels that are still
+  // referenced by an existing alerting policy will fail to be
+  // deleted in a delete operation.
+  bool force_delete = 4 [json_name = "force_delete"];
+
+  string id = 5;
+
+  // Configuration fields that define the channel and its behavior. The
+  // permissible and required labels are specified in the
+  // NotificationChannelDescriptor corresponding to the type field.
+  //
+  // Labels with sensitive data are obfuscated by the API and therefore Terraform cannot
+  // determine if there are upstream changes to these fields. They can also be configured via
+  // the sensitive_labels block, but cannot be configured in both places.
+  map<string, string> labels = 6;
+
+  // The full REST resource name for this channel. The syntax is:
+  // projects/[PROJECT_ID]/notificationChannels/[CHANNEL_ID]
+  // The [CHANNEL_ID] is automatically assigned by the server on creation.
+  string name = 7;
+
+  string project = 8;
+
+  // The type of the notification channel. This field matches the value of the NotificationChannelDescriptor.type field. See https://cloud.google.com/monitoring/api/ref_v3/rest/v3/projects.notificationChannelDescriptors/list to get the list of valid values such as "email", "slack", etc...
+  string type = 9;
+
+  // User-supplied key/value data that does not need to conform to the corresponding NotificationChannelDescriptor's schema, unlike the labels field. This field is intended to be used for organizing and identifying the NotificationChannel objects.The field can contain up to 64 entries. Each key and value is limited to 63 Unicode characters or 128 bytes, whichever is smaller. Labels and values can contain only lowercase letters, numerals, underscores, and dashes. Keys must begin with a letter.
+  map<string, string> user_labels = 10 [json_name = "user_labels"];
+
+  // Indicates whether this channel has been verified or not. On a ListNotificationChannels or GetNotificationChannel operation, this field is expected to be populated.If the value is UNVERIFIED, then it indicates that the channel is non-functioning (it both requires verification and lacks verification); otherwise, it is assumed that the channel works.If the channel is neither VERIFIED nor UNVERIFIED, it implies that the channel is of a type that does not require verification or that this specific channel has been exempted from verification because it was created prior to verification being required for channels of this type.This field cannot be modified using a standard UpdateNotificationChannel operation. To change the value of this field, you must call VerifyNotificationChannel.
+  string verification_status = 11 [json_name = "verification_status"];
+
+  SensitiveLabels sensitive_labels = 12 [json_name = "sensitive_labels"];
+
+  repeated Timeouts timeouts = 13;
+
+  map<string, string> for_each = 14 [json_name = "for_each"];
+
+  repeated string depends_on = 15 [json_name = "depends_on"];
+
+  int32 count = 16;
+
+  string provider = 17;
+
+  terraform.v1.Lifecycle lifecycle = 18;
+
+  message SensitiveLabels {
+    // An authorization token for a notification channel. Channel types that support this field include: slack
+    string auth_token = 1 [json_name = "auth_token"];
+
+    // An password for a notification channel. Channel types that support this field include: webhook_basicauth
+    string password = 2;
+
+    // An servicekey token for a notification channel. Channel types that support this field include: pagerduty
+    string service_key = 3 [json_name = "service_key"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleMonitoringService version is 0
+message GoogleMonitoringService {
+  // Name used for UI elements listing this Service.
+  string display_name = 1 [json_name = "display_name"];
+
+  string id = 2;
+
+  // The full resource name for this service. The syntax is:
+  // projects/[PROJECT_ID]/services/[SERVICE_ID].
+  string name = 3;
+
+  string project = 4;
+
+  // An optional service ID to use. If not given, the server will generate a
+  // service ID.
+  string service_id = 5 [json_name = "service_id"];
+
+  // Configuration for how to query telemetry on a Service.
+  repeated Telemetry telemetry = 6;
+
+  // Labels which have been used to annotate the service. Label keys must start
+  // with a letter. Label keys and values may contain lowercase letters,
+  // numbers, underscores, and dashes. Label keys and values have a maximum
+  // length of 63 characters, and must be less than 128 bytes in size. Up to 64
+  // label entries may be stored. For labels which do not have a semantic value,
+  // the empty string may be supplied for the label value.
+  map<string, string> user_labels = 7 [json_name = "user_labels"];
+
+  BasicService basic_service = 8 [json_name = "basic_service"];
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Telemetry {
+    // resource_name: string
+    string resource_name = 1 [json_name = "resource_name"];
+  }
+
+  message BasicService {
+    // Labels that specify the resource that emits the monitoring data
+    // which is used for SLO reporting of this 'Service'.
+    map<string, string> service_labels = 1 [json_name = "service_labels"];
+
+    // The type of service that this basic service defines, e.g.
+    // APP_ENGINE service type
+    string service_type = 2 [json_name = "service_type"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleMonitoringSlo version is 0
+message GoogleMonitoringSlo {
+  // A calendar period, semantically "since the start of the current
+  // <calendarPeriod>". Possible values: ["DAY", "WEEK", "FORTNIGHT", "MONTH"]
+  string calendar_period = 1 [json_name = "calendar_period"];
+
+  // Name used for UI elements listing this SLO.
+  string display_name = 2 [json_name = "display_name"];
+
+  // The fraction of service that must be good in order for this objective
+  // to be met. 0 < goal <= 0.999
+  int64 goal = 3;
+
+  string id = 4;
+
+  // The full resource name for this service. The syntax is:
+  // projects/[PROJECT_ID_OR_NUMBER]/services/[SERVICE_ID]/serviceLevelObjectives/[SLO_NAME]
+  string name = 5;
+
+  string project = 6;
+
+  // A rolling time period, semantically "in the past X days".
+  // Must be between 1 to 30 days, inclusive.
+  int64 rolling_period_days = 7 [json_name = "rolling_period_days"];
+
+  // ID of the service to which this SLO belongs.
+  string service = 8;
+
+  // The id to use for this ServiceLevelObjective. If omitted, an id will be generated instead.
+  string slo_id = 9 [json_name = "slo_id"];
+
+  // This field is intended to be used for organizing and identifying the AlertPolicy
+  // objects.The field can contain up to 64 entries. Each key and value is limited
+  // to 63 Unicode characters or 128 bytes, whichever is smaller. Labels and values
+  // can contain only lowercase letters, numerals, underscores, and dashes. Keys
+  // must begin with a letter.
+  map<string, string> user_labels = 10 [json_name = "user_labels"];
+
+  BasicSli basic_sli = 11 [json_name = "basic_sli"];
+
+  RequestBasedSli request_based_sli = 12 [json_name = "request_based_sli"];
+
+  repeated Timeouts timeouts = 13;
+
+  WindowsBasedSli windows_based_sli = 14 [json_name = "windows_based_sli"];
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+
+  message BasicSli {
+    // An optional set of locations to which this SLI is relevant.
+    // Telemetry from other locations will not be used to calculate
+    // performance for this SLI. If omitted, this SLI applies to all
+    // locations in which the Service has activity. For service types
+    // that don't support breaking down by location, setting this
+    // field will result in an error.
+    repeated string location = 1;
+
+    // An optional set of RPCs to which this SLI is relevant.
+    // Telemetry from other methods will not be used to calculate
+    // performance for this SLI. If omitted, this SLI applies to all
+    // the Service's methods. For service types that don't support
+    // breaking down by method, setting this field will result in an
+    // error.
+    repeated string method = 2;
+
+    // The set of API versions to which this SLI is relevant.
+    // Telemetry from other API versions will not be used to
+    // calculate performance for this SLI. If omitted,
+    // this SLI applies to all API versions. For service types
+    // that don't support breaking down by version, setting this
+    // field will result in an error.
+    repeated string version = 3;
+
+    Availability availability = 4;
+
+    Latency latency = 5;
+
+    message Availability {
+      // Whether an availability SLI is enabled or not. Must be set to true. Defaults to 'true'.
+      bool enabled = 1;
+    }
+
+    message Latency {
+      // A duration string, e.g. 10s.
+      // Good service is defined to be the count of requests made to
+      // this service that return in no more than threshold.
+      string threshold = 1;
+    }
+  }
+
+  message RequestBasedSli {
+    DistributionCut distribution_cut = 1 [json_name = "distribution_cut"];
+
+    GoodTotalRatio good_total_ratio = 2 [json_name = "good_total_ratio"];
+
+    message DistributionCut {
+      // A TimeSeries [monitoring filter](https://cloud.google.com/monitoring/api/v3/filters)
+      // aggregating values to quantify the good service provided.
+      //
+      // Must have ValueType = DISTRIBUTION and
+      // MetricKind = DELTA or MetricKind = CUMULATIVE.
+      string distribution_filter = 1 [json_name = "distribution_filter"];
+
+      Range range = 2;
+
+      message Range {
+        // max value for the range (inclusive). If not given,
+        // will be set to 0
+        int64 max = 1;
+
+        // Min value for the range (inclusive). If not given,
+        // will be set to 0
+        int64 min = 2;
+      }
+    }
+
+    message GoodTotalRatio {
+      // A TimeSeries [monitoring filter](https://cloud.google.com/monitoring/api/v3/filters)
+      // quantifying bad service provided, either demanded service that
+      // was not provided or demanded service that was of inadequate
+      // quality.
+      //
+      // Must have ValueType = DOUBLE or ValueType = INT64 and
+      // must have MetricKind = DELTA or MetricKind = CUMULATIVE.
+      //
+      // Exactly two of 'good_service_filter','bad_service_filter','total_service_filter'
+      // must be set (good + bad = total is assumed).
+      string bad_service_filter = 1 [json_name = "bad_service_filter"];
+
+      // A TimeSeries [monitoring filter](https://cloud.google.com/monitoring/api/v3/filters)
+      // quantifying good service provided.
+      // Must have ValueType = DOUBLE or ValueType = INT64 and
+      // must have MetricKind = DELTA or MetricKind = CUMULATIVE.
+      //
+      // Exactly two of 'good_service_filter','bad_service_filter','total_service_filter'
+      // must be set (good + bad = total is assumed).
+      string good_service_filter = 2 [json_name = "good_service_filter"];
+
+      // A TimeSeries [monitoring filter](https://cloud.google.com/monitoring/api/v3/filters)
+      // quantifying total demanded service.
+      //
+      // Must have ValueType = DOUBLE or ValueType = INT64 and
+      // must have MetricKind = DELTA or MetricKind = CUMULATIVE.
+      //
+      // Exactly two of 'good_service_filter','bad_service_filter','total_service_filter'
+      // must be set (good + bad = total is assumed).
+      string total_service_filter = 3 [json_name = "total_service_filter"];
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+
+  message WindowsBasedSli {
+    // A TimeSeries [monitoring filter](https://cloud.google.com/monitoring/api/v3/filters)
+    // with ValueType = BOOL. The window is good if any true values
+    // appear in the window. One of 'good_bad_metric_filter',
+    // 'good_total_ratio_threshold', 'metric_mean_in_range',
+    // 'metric_sum_in_range' must be set for 'windows_based_sli'.
+    string good_bad_metric_filter = 1 [json_name = "good_bad_metric_filter"];
+
+    // Duration over which window quality is evaluated, given as a
+    // duration string "{X}s" representing X seconds. Must be an
+    // integer fraction of a day and at least 60s.
+    string window_period = 2 [json_name = "window_period"];
+
+    GoodTotalRatioThreshold good_total_ratio_threshold = 3 [json_name = "good_total_ratio_threshold"];
+
+    MetricMeanInRange metric_mean_in_range = 4 [json_name = "metric_mean_in_range"];
+
+    MetricSumInRange metric_sum_in_range = 5 [json_name = "metric_sum_in_range"];
+
+    message GoodTotalRatioThreshold {
+      // If window performance >= threshold, the window is counted
+      // as good.
+      int64 threshold = 1;
+
+      BasicSliPerformance basic_sli_performance = 2 [json_name = "basic_sli_performance"];
+
+      Performance performance = 3;
+
+      message BasicSliPerformance {
+        // An optional set of locations to which this SLI is relevant.
+        // Telemetry from other locations will not be used to calculate
+        // performance for this SLI. If omitted, this SLI applies to all
+        // locations in which the Service has activity. For service types
+        // that don't support breaking down by location, setting this
+        // field will result in an error.
+        repeated string location = 1;
+
+        // An optional set of RPCs to which this SLI is relevant.
+        // Telemetry from other methods will not be used to calculate
+        // performance for this SLI. If omitted, this SLI applies to all
+        // the Service's methods. For service types that don't support
+        // breaking down by method, setting this field will result in an
+        // error.
+        repeated string method = 2;
+
+        // The set of API versions to which this SLI is relevant.
+        // Telemetry from other API versions will not be used to
+        // calculate performance for this SLI. If omitted,
+        // this SLI applies to all API versions. For service types
+        // that don't support breaking down by version, setting this
+        // field will result in an error.
+        repeated string version = 3;
+
+        Availability availability = 4;
+
+        Latency latency = 5;
+
+        message Availability {
+          // Whether an availability SLI is enabled or not. Must be set to 'true. Defaults to 'true'.
+          bool enabled = 1;
+        }
+
+        message Latency {
+          // A duration string, e.g. 10s.
+          // Good service is defined to be the count of requests made to
+          // this service that return in no more than threshold.
+          string threshold = 1;
+        }
+      }
+
+      message Performance {
+        DistributionCut distribution_cut = 1 [json_name = "distribution_cut"];
+
+        GoodTotalRatio good_total_ratio = 2 [json_name = "good_total_ratio"];
+
+        message DistributionCut {
+          // A TimeSeries [monitoring filter](https://cloud.google.com/monitoring/api/v3/filters)
+          // aggregating values to quantify the good service provided.
+          //
+          // Must have ValueType = DISTRIBUTION and
+          // MetricKind = DELTA or MetricKind = CUMULATIVE.
+          string distribution_filter = 1 [json_name = "distribution_filter"];
+
+          Range range = 2;
+
+          message Range {
+            // max value for the range (inclusive). If not given,
+            // will be set to 0
+            int64 max = 1;
+
+            // Min value for the range (inclusive). If not given,
+            // will be set to 0
+            int64 min = 2;
+          }
+        }
+
+        message GoodTotalRatio {
+          // A TimeSeries [monitoring filter](https://cloud.google.com/monitoring/api/v3/filters)
+          // quantifying bad service provided, either demanded service that
+          // was not provided or demanded service that was of inadequate
+          // quality. Exactly two of
+          // good, bad, or total service filter must be defined (where
+          // good + bad = total is assumed)
+          //
+          // Must have ValueType = DOUBLE or ValueType = INT64 and
+          // must have MetricKind = DELTA or MetricKind = CUMULATIVE.
+          string bad_service_filter = 1 [json_name = "bad_service_filter"];
+
+          // A TimeSeries [monitoring filter](https://cloud.google.com/monitoring/api/v3/filters)
+          // quantifying good service provided. Exactly two of
+          // good, bad, or total service filter must be defined (where
+          // good + bad = total is assumed)
+          //
+          // Must have ValueType = DOUBLE or ValueType = INT64 and
+          // must have MetricKind = DELTA or MetricKind = CUMULATIVE.
+          string good_service_filter = 2 [json_name = "good_service_filter"];
+
+          // A TimeSeries [monitoring filter](https://cloud.google.com/monitoring/api/v3/filters)
+          // quantifying total demanded service. Exactly two of
+          // good, bad, or total service filter must be defined (where
+          // good + bad = total is assumed)
+          //
+          // Must have ValueType = DOUBLE or ValueType = INT64 and
+          // must have MetricKind = DELTA or MetricKind = CUMULATIVE.
+          string total_service_filter = 3 [json_name = "total_service_filter"];
+        }
+      }
+    }
+
+    message MetricMeanInRange {
+      // A [monitoring filter](https://cloud.google.com/monitoring/api/v3/filters)
+      // specifying the TimeSeries to use for evaluating window
+      // The provided TimeSeries must have ValueType = INT64 or
+      // ValueType = DOUBLE and MetricKind = GAUGE. Mean value 'X'
+      // should satisfy 'range.min <= X <= range.max'
+      // under good service.
+      string time_series = 1 [json_name = "time_series"];
+
+      Range range = 2;
+
+      message Range {
+        // max value for the range (inclusive). If not given,
+        // will be set to "infinity", defining an open range
+        // ">= range.min"
+        int64 max = 1;
+
+        // Min value for the range (inclusive). If not given,
+        // will be set to "-infinity", defining an open range
+        // "< range.max"
+        int64 min = 2;
+      }
+    }
+
+    message MetricSumInRange {
+      // A [monitoring filter](https://cloud.google.com/monitoring/api/v3/filters)
+      // specifying the TimeSeries to use for evaluating window
+      // quality. The provided TimeSeries must have
+      // ValueType = INT64 or ValueType = DOUBLE and
+      // MetricKind = GAUGE.
+      //
+      // Summed value 'X' should satisfy
+      // 'range.min <= X <= range.max' for a good window.
+      string time_series = 1 [json_name = "time_series"];
+
+      Range range = 2;
+
+      message Range {
+        // max value for the range (inclusive). If not given,
+        // will be set to "infinity", defining an open range
+        // ">= range.min"
+        int64 max = 1;
+
+        // Min value for the range (inclusive). If not given,
+        // will be set to "-infinity", defining an open range
+        // "< range.max"
+        int64 min = 2;
+      }
+    }
+  }
+}
+
+// GoogleMonitoringUptimeCheckConfig version is 0
+message GoogleMonitoringUptimeCheckConfig {
+  // The checker type to use for the check. If the monitored resource type is servicedirectory_service, checkerType must be set to VPC_CHECKERS. Possible values: ["STATIC_IP_CHECKERS", "VPC_CHECKERS"]
+  string checker_type = 1 [json_name = "checker_type"];
+
+  // A human-friendly name for the uptime check configuration. The display name should be unique within a Stackdriver Workspace in order to make it easier to identify; however, uniqueness is not enforced.
+  string display_name = 2 [json_name = "display_name"];
+
+  string id = 3;
+
+  // A unique resource name for this UptimeCheckConfig. The format is projects/[PROJECT_ID]/uptimeCheckConfigs/[UPTIME_CHECK_ID].
+  string name = 4;
+
+  // How often, in seconds, the uptime check is performed. Currently, the only supported values are 60s (1 minute), 300s (5 minutes), 600s (10 minutes), and 900s (15 minutes). Optional, defaults to 300s.
+  string period = 5;
+
+  string project = 6;
+
+  // The list of regions from which the check will be run. Some regions contain one location, and others contain more than one. If this field is specified, enough regions to include a minimum of 3 locations must be provided, or an error message is returned. Not specifying this field will result in uptime checks running from all regions.
+  repeated string selected_regions = 7 [json_name = "selected_regions"];
+
+  // The maximum amount of time to wait for the request to complete (must be between 1 and 60 seconds). Accepted formats https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#google.protobuf.Duration
+  string timeout = 8;
+
+  // The id of the uptime check
+  string uptime_check_id = 9 [json_name = "uptime_check_id"];
+
+  repeated ContentMatchers content_matchers = 10 [json_name = "content_matchers"];
+
+  HttpCheck http_check = 11 [json_name = "http_check"];
+
+  MonitoredResource monitored_resource = 12 [json_name = "monitored_resource"];
+
+  ResourceGroup resource_group = 13 [json_name = "resource_group"];
+
+  TcpCheck tcp_check = 14 [json_name = "tcp_check"];
+
+  repeated Timeouts timeouts = 15;
+
+  map<string, string> for_each = 16 [json_name = "for_each"];
+
+  repeated string depends_on = 17 [json_name = "depends_on"];
+
+  int32 count = 18;
+
+  string provider = 19;
+
+  terraform.v1.Lifecycle lifecycle = 20;
+
+  message ContentMatchers {
+    // String or regex content to match (max 1024 bytes)
+    string content = 1;
+
+    // The type of content matcher that will be applied to the server output, compared to the content string when the check is run. Default value: "CONTAINS_STRING" Possible values: ["CONTAINS_STRING", "NOT_CONTAINS_STRING", "MATCHES_REGEX", "NOT_MATCHES_REGEX", "MATCHES_JSON_PATH", "NOT_MATCHES_JSON_PATH"]
+    string matcher = 2;
+
+    JsonPathMatcher json_path_matcher = 3 [json_name = "json_path_matcher"];
+
+    message JsonPathMatcher {
+      // Options to perform JSONPath content matching. Default value: "EXACT_MATCH" Possible values: ["EXACT_MATCH", "REGEX_MATCH"]
+      string json_matcher = 1 [json_name = "json_matcher"];
+
+      // JSONPath within the response output pointing to the expected 'ContentMatcher::content' to match against.
+      string json_path = 2 [json_name = "json_path"];
+    }
+  }
+
+  message HttpCheck {
+    // The request body associated with the HTTP POST request. If contentType is URL_ENCODED, the body passed in must be URL-encoded. Users can provide a Content-Length header via the headers field or the API will do so. If the requestMethod is GET and body is not empty, the API will return an error. The maximum byte size is 1 megabyte. Note - As with all bytes fields JSON representations are base64 encoded. e.g. "foo=bar" in URL-encoded form is "foo%3Dbar" and in base64 encoding is "Zm9vJTI1M0RiYXI=".
+    string body = 1;
+
+    // The content type to use for the check. Possible values: ["TYPE_UNSPECIFIED", "URL_ENCODED"]
+    string content_type = 2 [json_name = "content_type"];
+
+    // The list of headers to send as part of the uptime check request. If two headers have the same key and different values, they should be entered as a single header, with the value being a comma-separated list of all the desired values as described at https://www.w3.org/Protocols/rfc2616/rfc2616.txt (page 31). Entering two separate headers with the same key in a Create call will cause the first to be overwritten by the second. The maximum number of headers allowed is 100.
+    map<string, string> headers = 3;
+
+    // Boolean specifying whether to encrypt the header information. Encryption should be specified for any headers related to authentication that you do not wish to be seen when retrieving the configuration. The server will be responsible for encrypting the headers. On Get/List calls, if mask_headers is set to True then the headers will be obscured with ******.
+    bool mask_headers = 4 [json_name = "mask_headers"];
+
+    // The path to the page to run the check against. Will be combined with the host (specified within the MonitoredResource) and port to construct the full URL. If the provided path does not begin with "/", a "/" will be prepended automatically. Optional (defaults to "/").
+    string path = 5;
+
+    // The port to the page to run the check against. Will be combined with host (specified within the MonitoredResource) and path to construct the full URL. Optional (defaults to 80 without SSL, or 443 with SSL).
+    int64 port = 6;
+
+    // The HTTP request method to use for the check. If set to METHOD_UNSPECIFIED then requestMethod defaults to GET. Default value: "GET" Possible values: ["METHOD_UNSPECIFIED", "GET", "POST"]
+    string request_method = 7 [json_name = "request_method"];
+
+    // If true, use HTTPS instead of HTTP to run the check.
+    bool use_ssl = 8 [json_name = "use_ssl"];
+
+    // Boolean specifying whether to include SSL certificate validation as a part of the Uptime check. Only applies to checks where monitoredResource is set to uptime_url. If useSsl is false, setting validateSsl to true has no effect.
+    bool validate_ssl = 9 [json_name = "validate_ssl"];
+
+    repeated AcceptedResponseStatusCodes accepted_response_status_codes = 10 [json_name = "accepted_response_status_codes"];
+
+    AuthInfo auth_info = 11 [json_name = "auth_info"];
+
+    message AcceptedResponseStatusCodes {
+      // A class of status codes to accept. Possible values: ["STATUS_CLASS_1XX", "STATUS_CLASS_2XX", "STATUS_CLASS_3XX", "STATUS_CLASS_4XX", "STATUS_CLASS_5XX", "STATUS_CLASS_ANY"]
+      string status_class = 1 [json_name = "status_class"];
+
+      // A status code to accept.
+      int64 status_value = 2 [json_name = "status_value"];
+    }
+
+    message AuthInfo {
+      // The password to authenticate.
+      string password = 1;
+
+      // The username to authenticate.
+      string username = 2;
+    }
+  }
+
+  message MonitoredResource {
+    // Values for all of the labels listed in the associated monitored resource descriptor. For example, Compute Engine VM instances use the labels "project_id", "instance_id", and "zone".
+    map<string, string> labels = 1;
+
+    // The monitored resource type. This field must match the type field of a MonitoredResourceDescriptor (https://cloud.google.com/monitoring/api/ref_v3/rest/v3/projects.monitoredResourceDescriptors#MonitoredResourceDescriptor) object. For example, the type of a Compute Engine VM instance is gce_instance. For a list of types, see Monitoring resource types (https://cloud.google.com/monitoring/api/resources) and Logging resource types (https://cloud.google.com/logging/docs/api/v2/resource-list).
+    string type = 2;
+  }
+
+  message ResourceGroup {
+    // The group of resources being monitored. Should be the 'name' of a group
+    string group_id = 1 [json_name = "group_id"];
+
+    // The resource type of the group members. Possible values: ["RESOURCE_TYPE_UNSPECIFIED", "INSTANCE", "AWS_ELB_LOAD_BALANCER"]
+    string resource_type = 2 [json_name = "resource_type"];
+  }
+
+  message TcpCheck {
+    // The port to the page to run the check against. Will be combined with host (specified within the MonitoredResource) to construct the full URL.
+    int64 port = 1;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

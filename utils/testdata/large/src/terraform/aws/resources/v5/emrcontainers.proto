@@ -1,0 +1,156 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsEmrcontainersJobTemplate version is 0
+message AwsEmrcontainersJobTemplate {
+  string arn = 1;
+
+  string id = 2;
+
+  string kms_key_arn = 3 [json_name = "kms_key_arn"];
+
+  string name = 4;
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  JobTemplateData job_template_data = 7 [json_name = "job_template_data"];
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message JobTemplateData {
+    string execution_role_arn = 1 [json_name = "execution_role_arn"];
+
+    map<string, string> job_tags = 2 [json_name = "job_tags"];
+
+    string release_label = 3 [json_name = "release_label"];
+
+    ConfigurationOverrides configuration_overrides = 4 [json_name = "configuration_overrides"];
+
+    JobDriver job_driver = 5 [json_name = "job_driver"];
+
+    message ConfigurationOverrides {
+      repeated ApplicationConfiguration application_configuration = 1 [json_name = "application_configuration"];
+
+      MonitoringConfiguration monitoring_configuration = 2 [json_name = "monitoring_configuration"];
+
+      message ApplicationConfiguration {
+        string classification = 1;
+
+        map<string, string> properties = 2;
+
+        repeated Configurations configurations = 3;
+
+        message Configurations {
+          string classification = 1;
+
+          map<string, string> properties = 2;
+        }
+      }
+
+      message MonitoringConfiguration {
+        string persistent_app_ui = 1 [json_name = "persistent_app_ui"];
+
+        CloudWatchMonitoringConfiguration cloud_watch_monitoring_configuration = 2 [json_name = "cloud_watch_monitoring_configuration"];
+
+        S3MonitoringConfiguration s3_monitoring_configuration = 3 [json_name = "s3_monitoring_configuration"];
+
+        message CloudWatchMonitoringConfiguration {
+          string log_group_name = 1 [json_name = "log_group_name"];
+
+          string log_stream_name_prefix = 2 [json_name = "log_stream_name_prefix"];
+        }
+
+        message S3MonitoringConfiguration {
+          string log_uri = 1 [json_name = "log_uri"];
+        }
+      }
+    }
+
+    message JobDriver {
+      SparkSqlJobDriver spark_sql_job_driver = 1 [json_name = "spark_sql_job_driver"];
+
+      SparkSubmitJobDriver spark_submit_job_driver = 2 [json_name = "spark_submit_job_driver"];
+
+      message SparkSqlJobDriver {
+        string entry_point = 1 [json_name = "entry_point"];
+
+        string spark_sql_parameters = 2 [json_name = "spark_sql_parameters"];
+      }
+
+      message SparkSubmitJobDriver {
+        string entry_point = 1 [json_name = "entry_point"];
+
+        repeated string entry_point_arguments = 2 [json_name = "entry_point_arguments"];
+
+        string spark_submit_parameters = 3 [json_name = "spark_submit_parameters"];
+      }
+    }
+  }
+
+  message Timeouts {
+    string delete = 1;
+  }
+}
+
+// AwsEmrcontainersVirtualCluster version is 0
+message AwsEmrcontainersVirtualCluster {
+  string arn = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  map<string, string> tags = 4;
+
+  map<string, string> tags_all = 5 [json_name = "tags_all"];
+
+  ContainerProvider container_provider = 6 [json_name = "container_provider"];
+
+  repeated Timeouts timeouts = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message ContainerProvider {
+    string id = 1;
+
+    string type = 2;
+
+    Info info = 3;
+
+    message Info {
+      EksInfo eks_info = 1 [json_name = "eks_info"];
+
+      message EksInfo {
+        string namespace = 1;
+      }
+    }
+  }
+
+  message Timeouts {
+    string delete = 1;
+  }
+}

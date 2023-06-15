@@ -1,0 +1,349 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsMemorydbAcl version is 0
+message AwsMemorydbAcl {
+  string arn = 1;
+
+  string id = 2;
+
+  string minimum_engine_version = 3 [json_name = "minimum_engine_version"];
+
+  string name = 4;
+
+  string name_prefix = 5 [json_name = "name_prefix"];
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  repeated string user_names = 8 [json_name = "user_names"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+}
+
+// AwsMemorydbCluster version is 0
+message AwsMemorydbCluster {
+  string acl_name = 1 [json_name = "acl_name"];
+
+  string arn = 2;
+
+  bool auto_minor_version_upgrade = 3 [json_name = "auto_minor_version_upgrade"];
+
+  repeated ClusterEndpoint cluster_endpoint = 4 [json_name = "cluster_endpoint"];
+
+  bool data_tiering = 5 [json_name = "data_tiering"];
+
+  string description = 6;
+
+  string engine_patch_version = 7 [json_name = "engine_patch_version"];
+
+  string engine_version = 8 [json_name = "engine_version"];
+
+  string final_snapshot_name = 9 [json_name = "final_snapshot_name"];
+
+  string id = 10;
+
+  string kms_key_arn = 11 [json_name = "kms_key_arn"];
+
+  string maintenance_window = 12 [json_name = "maintenance_window"];
+
+  string name = 13;
+
+  string name_prefix = 14 [json_name = "name_prefix"];
+
+  string node_type = 15 [json_name = "node_type"];
+
+  int64 num_replicas_per_shard = 16 [json_name = "num_replicas_per_shard"];
+
+  int64 num_shards = 17 [json_name = "num_shards"];
+
+  string parameter_group_name = 18 [json_name = "parameter_group_name"];
+
+  int64 port = 19;
+
+  repeated string security_group_ids = 20 [json_name = "security_group_ids"];
+
+  repeated Shards shards = 21;
+
+  repeated string snapshot_arns = 22 [json_name = "snapshot_arns"];
+
+  string snapshot_name = 23 [json_name = "snapshot_name"];
+
+  int64 snapshot_retention_limit = 24 [json_name = "snapshot_retention_limit"];
+
+  string snapshot_window = 25 [json_name = "snapshot_window"];
+
+  string sns_topic_arn = 26 [json_name = "sns_topic_arn"];
+
+  string subnet_group_name = 27 [json_name = "subnet_group_name"];
+
+  map<string, string> tags = 28;
+
+  map<string, string> tags_all = 29 [json_name = "tags_all"];
+
+  bool tls_enabled = 30 [json_name = "tls_enabled"];
+
+  repeated Timeouts timeouts = 31;
+
+  map<string, string> for_each = 32 [json_name = "for_each"];
+
+  repeated string depends_on = 33 [json_name = "depends_on"];
+
+  int32 count = 34;
+
+  string provider = 35;
+
+  terraform.v1.Lifecycle lifecycle = 36;
+
+  message ClusterEndpoint {
+    // address: string
+    string address = 1;
+
+    // port: number
+    int64 port = 2;
+  }
+
+  message Shards {
+    // name: string
+    string name = 1;
+
+    // nodes: set of object
+    repeated Nodes nodes = 2;
+
+    // num_nodes: number
+    int64 num_nodes = 3 [json_name = "num_nodes"];
+
+    // slots: string
+    string slots = 4;
+
+    message Nodes {
+      // availability_zone: string
+      string availability_zone = 1 [json_name = "availability_zone"];
+
+      // create_time: string
+      string create_time = 2 [json_name = "create_time"];
+
+      // endpoint: list of object
+      repeated Endpoint endpoint = 3;
+
+      // name: string
+      string name = 4;
+
+      message Endpoint {
+        // address: string
+        string address = 1;
+
+        // port: number
+        int64 port = 2;
+      }
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsMemorydbParameterGroup version is 0
+message AwsMemorydbParameterGroup {
+  string arn = 1;
+
+  string description = 2;
+
+  string family = 3;
+
+  string id = 4;
+
+  string name = 5;
+
+  string name_prefix = 6 [json_name = "name_prefix"];
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  repeated Parameter parameter = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Parameter {
+    string name = 1;
+
+    string value = 2;
+  }
+}
+
+// AwsMemorydbSnapshot version is 0
+message AwsMemorydbSnapshot {
+  string arn = 1;
+
+  repeated ClusterConfiguration cluster_configuration = 2 [json_name = "cluster_configuration"];
+
+  string cluster_name = 3 [json_name = "cluster_name"];
+
+  string id = 4;
+
+  string kms_key_arn = 5 [json_name = "kms_key_arn"];
+
+  string name = 6;
+
+  string name_prefix = 7 [json_name = "name_prefix"];
+
+  string source = 8;
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message ClusterConfiguration {
+    // description: string
+    string description = 1;
+
+    // engine_version: string
+    string engine_version = 2 [json_name = "engine_version"];
+
+    // maintenance_window: string
+    string maintenance_window = 3 [json_name = "maintenance_window"];
+
+    // name: string
+    string name = 4;
+
+    // node_type: string
+    string node_type = 5 [json_name = "node_type"];
+
+    // num_shards: number
+    int64 num_shards = 6 [json_name = "num_shards"];
+
+    // parameter_group_name: string
+    string parameter_group_name = 7 [json_name = "parameter_group_name"];
+
+    // port: number
+    int64 port = 8;
+
+    // snapshot_retention_limit: number
+    int64 snapshot_retention_limit = 9 [json_name = "snapshot_retention_limit"];
+
+    // snapshot_window: string
+    string snapshot_window = 10 [json_name = "snapshot_window"];
+
+    // subnet_group_name: string
+    string subnet_group_name = 11 [json_name = "subnet_group_name"];
+
+    // topic_arn: string
+    string topic_arn = 12 [json_name = "topic_arn"];
+
+    // vpc_id: string
+    string vpc_id = 13 [json_name = "vpc_id"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsMemorydbSubnetGroup version is 0
+message AwsMemorydbSubnetGroup {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  string name = 4;
+
+  string name_prefix = 5 [json_name = "name_prefix"];
+
+  repeated string subnet_ids = 6 [json_name = "subnet_ids"];
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  string vpc_id = 9 [json_name = "vpc_id"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+}
+
+// AwsMemorydbUser version is 0
+message AwsMemorydbUser {
+  string access_string = 1 [json_name = "access_string"];
+
+  string arn = 2;
+
+  string id = 3;
+
+  string minimum_engine_version = 4 [json_name = "minimum_engine_version"];
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  string user_name = 7 [json_name = "user_name"];
+
+  AuthenticationMode authentication_mode = 8 [json_name = "authentication_mode"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message AuthenticationMode {
+    int64 password_count = 1 [json_name = "password_count"];
+
+    repeated string passwords = 2;
+
+    string type = 3;
+  }
+}

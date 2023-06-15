@@ -1,0 +1,95 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleRecaptchaEnterpriseKey version is 0
+message GoogleRecaptchaEnterpriseKey {
+  // The timestamp corresponding to the creation of this Key.
+  string create_time = 1 [json_name = "create_time"];
+
+  // Human-readable display name of this key. Modifiable by user.
+  string display_name = 2 [json_name = "display_name"];
+
+  string id = 3;
+
+  // See [Creating and managing labels](https://cloud.google.com/recaptcha-enterprise/docs/labels).
+  map<string, string> labels = 4;
+
+  // The resource name for the Key in the format "projects/{project}/keys/{key}".
+  string name = 5;
+
+  // The project for the resource
+  string project = 6;
+
+  AndroidSettings android_settings = 7 [json_name = "android_settings"];
+
+  IosSettings ios_settings = 8 [json_name = "ios_settings"];
+
+  TestingOptions testing_options = 9 [json_name = "testing_options"];
+
+  repeated Timeouts timeouts = 10;
+
+  WebSettings web_settings = 11 [json_name = "web_settings"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message AndroidSettings {
+    // If set to true, it means allowed_package_names will not be enforced.
+    bool allow_all_package_names = 1 [json_name = "allow_all_package_names"];
+
+    // Android package names of apps allowed to use the key. Example: 'com.companyname.appname'
+    repeated string allowed_package_names = 2 [json_name = "allowed_package_names"];
+  }
+
+  message IosSettings {
+    // If set to true, it means allowed_bundle_ids will not be enforced.
+    bool allow_all_bundle_ids = 1 [json_name = "allow_all_bundle_ids"];
+
+    // iOS bundle ids of apps allowed to use the key. Example: 'com.companyname.productname.appname'
+    repeated string allowed_bundle_ids = 2 [json_name = "allowed_bundle_ids"];
+  }
+
+  message TestingOptions {
+    // For challenge-based keys only (CHECKBOX, INVISIBLE), all challenge requests for this site will return nocaptcha if NOCAPTCHA, or an unsolvable challenge if UNSOLVABLE_CHALLENGE. Possible values: TESTING_CHALLENGE_UNSPECIFIED, NOCAPTCHA, UNSOLVABLE_CHALLENGE
+    string testing_challenge = 1 [json_name = "testing_challenge"];
+
+    // All assessments for this Key will return this score. Must be between 0 (likely not legitimate) and 1 (likely legitimate) inclusive.
+    int64 testing_score = 2 [json_name = "testing_score"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+
+  message WebSettings {
+    // If set to true, it means allowed_domains will not be enforced.
+    bool allow_all_domains = 1 [json_name = "allow_all_domains"];
+
+    // If set to true, the key can be used on AMP (Accelerated Mobile Pages) websites. This is supported only for the SCORE integration type.
+    bool allow_amp_traffic = 2 [json_name = "allow_amp_traffic"];
+
+    // Domains or subdomains of websites allowed to use the key. All subdomains of an allowed domain are automatically allowed. A valid domain requires a host and must not include any path, port, query or fragment. Examples: 'example.com' or 'subdomain.example.com'
+    repeated string allowed_domains = 3 [json_name = "allowed_domains"];
+
+    // Settings for the frequency and difficulty at which this key triggers captcha challenges. This should only be specified for IntegrationTypes CHECKBOX and INVISIBLE. Possible values: CHALLENGE_SECURITY_PREFERENCE_UNSPECIFIED, USABILITY, BALANCE, SECURITY
+    string challenge_security_preference = 4 [json_name = "challenge_security_preference"];
+
+    // Required. Describes how this key is integrated with the website. Possible values: SCORE, CHECKBOX, INVISIBLE
+    string integration_type = 5 [json_name = "integration_type"];
+  }
+}

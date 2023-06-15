@@ -1,0 +1,118 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsRamPrincipalAssociation version is 0
+message AwsRamPrincipalAssociation {
+  string id = 1;
+
+  string principal = 2;
+
+  string resource_share_arn = 3 [json_name = "resource_share_arn"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsRamResourceAssociation version is 0
+message AwsRamResourceAssociation {
+  string id = 1;
+
+  string resource_arn = 2 [json_name = "resource_arn"];
+
+  string resource_share_arn = 3 [json_name = "resource_share_arn"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsRamResourceShare version is 0
+message AwsRamResourceShare {
+  bool allow_external_principals = 1 [json_name = "allow_external_principals"];
+
+  string arn = 2;
+
+  string id = 3;
+
+  string name = 4;
+
+  repeated string permission_arns = 5 [json_name = "permission_arns"];
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsRamResourceShareAccepter version is 0
+message AwsRamResourceShareAccepter {
+  string id = 1;
+
+  string invitation_arn = 2 [json_name = "invitation_arn"];
+
+  string receiver_account_id = 3 [json_name = "receiver_account_id"];
+
+  repeated string resources = 4;
+
+  string sender_account_id = 5 [json_name = "sender_account_id"];
+
+  string share_arn = 6 [json_name = "share_arn"];
+
+  string share_id = 7 [json_name = "share_id"];
+
+  string share_name = 8 [json_name = "share_name"];
+
+  string status = 9;
+
+  repeated Timeouts timeouts = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}

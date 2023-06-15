@@ -1,0 +1,1782 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsMedialiveChannel version is 0
+message AwsMedialiveChannel {
+  string arn = 1;
+
+  string channel_class = 2 [json_name = "channel_class"];
+
+  string channel_id = 3 [json_name = "channel_id"];
+
+  string id = 4;
+
+  string log_level = 5 [json_name = "log_level"];
+
+  string name = 6;
+
+  string role_arn = 7 [json_name = "role_arn"];
+
+  bool start_channel = 8 [json_name = "start_channel"];
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  CdiInputSpecification cdi_input_specification = 11 [json_name = "cdi_input_specification"];
+
+  repeated Destinations destinations = 12;
+
+  EncoderSettings encoder_settings = 13 [json_name = "encoder_settings"];
+
+  repeated InputAttachments input_attachments = 14 [json_name = "input_attachments"];
+
+  InputSpecification input_specification = 15 [json_name = "input_specification"];
+
+  Maintenance maintenance = 16;
+
+  repeated Timeouts timeouts = 17;
+
+  Vpc vpc = 18;
+
+  map<string, string> for_each = 19 [json_name = "for_each"];
+
+  repeated string depends_on = 20 [json_name = "depends_on"];
+
+  int32 count = 21;
+
+  string provider = 22;
+
+  terraform.v1.Lifecycle lifecycle = 23;
+
+  message CdiInputSpecification {
+    string resolution = 1;
+  }
+
+  message Destinations {
+    string id = 1;
+
+    repeated MediaPackageSettings media_package_settings = 2 [json_name = "media_package_settings"];
+
+    MultiplexSettings multiplex_settings = 3 [json_name = "multiplex_settings"];
+
+    repeated Settings settings = 4;
+
+    message MediaPackageSettings {
+      string channel_id = 1 [json_name = "channel_id"];
+    }
+
+    message MultiplexSettings {
+      string multiplex_id = 1 [json_name = "multiplex_id"];
+
+      string program_name = 2 [json_name = "program_name"];
+    }
+
+    message Settings {
+      string password_param = 1 [json_name = "password_param"];
+
+      string stream_name = 2 [json_name = "stream_name"];
+
+      string url = 3;
+
+      string username = 4;
+    }
+  }
+
+  message EncoderSettings {
+    repeated AudioDescriptions audio_descriptions = 1 [json_name = "audio_descriptions"];
+
+    AvailBlanking avail_blanking = 2 [json_name = "avail_blanking"];
+
+    repeated OutputGroups output_groups = 3 [json_name = "output_groups"];
+
+    TimecodeConfig timecode_config = 4 [json_name = "timecode_config"];
+
+    repeated VideoDescriptions video_descriptions = 5 [json_name = "video_descriptions"];
+
+    message AudioDescriptions {
+      string audio_selector_name = 1 [json_name = "audio_selector_name"];
+
+      string audio_type = 2 [json_name = "audio_type"];
+
+      string audio_type_control = 3 [json_name = "audio_type_control"];
+
+      string language_code = 4 [json_name = "language_code"];
+
+      string language_code_control = 5 [json_name = "language_code_control"];
+
+      string name = 6;
+
+      string stream_name = 7 [json_name = "stream_name"];
+
+      AudioNormalizationSettings audio_normalization_settings = 8 [json_name = "audio_normalization_settings"];
+
+      AudioWatermarkSettings audio_watermark_settings = 9 [json_name = "audio_watermark_settings"];
+
+      CodecSettings codec_settings = 10 [json_name = "codec_settings"];
+
+      RemixSettings remix_settings = 11 [json_name = "remix_settings"];
+
+      message AudioNormalizationSettings {
+        string algorithm = 1;
+
+        string algorithm_control = 2 [json_name = "algorithm_control"];
+
+        int64 target_lkfs = 3 [json_name = "target_lkfs"];
+      }
+
+      message AudioWatermarkSettings {
+        NielsenWatermarksSettings nielsen_watermarks_settings = 1 [json_name = "nielsen_watermarks_settings"];
+
+        message NielsenWatermarksSettings {
+          string nielsen_distribution_type = 1 [json_name = "nielsen_distribution_type"];
+
+          NielsenCbetSettings nielsen_cbet_settings = 2 [json_name = "nielsen_cbet_settings"];
+
+          repeated NielsenNaesIiNwSettings nielsen_naes_ii_nw_settings = 3 [json_name = "nielsen_naes_ii_nw_settings"];
+
+          message NielsenCbetSettings {
+            string cbet_check_digit_string = 1 [json_name = "cbet_check_digit_string"];
+
+            string cbet_stepaside = 2 [json_name = "cbet_stepaside"];
+
+            string csid = 3;
+          }
+
+          message NielsenNaesIiNwSettings {
+            string check_digit_string = 1 [json_name = "check_digit_string"];
+
+            int64 sid = 2;
+          }
+        }
+      }
+
+      message CodecSettings {
+        AacSettings aac_settings = 1 [json_name = "aac_settings"];
+
+        Ac3Settings ac3_settings = 2 [json_name = "ac3_settings"];
+
+        Eac3AtmosSettings eac3_atmos_settings = 3 [json_name = "eac3_atmos_settings"];
+
+        Eac3Settings eac3_settings = 4 [json_name = "eac3_settings"];
+
+        Mp2Settings mp2_settings = 5 [json_name = "mp2_settings"];
+
+        PassThroughSettings pass_through_settings = 6 [json_name = "pass_through_settings"];
+
+        WavSettings wav_settings = 7 [json_name = "wav_settings"];
+
+        message AacSettings {
+          int64 bitrate = 1;
+
+          string coding_mode = 2 [json_name = "coding_mode"];
+
+          string input_type = 3 [json_name = "input_type"];
+
+          string profile = 4;
+
+          string rate_control_mode = 5 [json_name = "rate_control_mode"];
+
+          string raw_format = 6 [json_name = "raw_format"];
+
+          int64 sample_rate = 7 [json_name = "sample_rate"];
+
+          string spec = 8;
+
+          string vbr_quality = 9 [json_name = "vbr_quality"];
+        }
+
+        message Ac3Settings {
+          int64 bitrate = 1;
+
+          string bitstream_mode = 2 [json_name = "bitstream_mode"];
+
+          string coding_mode = 3 [json_name = "coding_mode"];
+
+          int64 dialnorm = 4;
+
+          string drc_profile = 5 [json_name = "drc_profile"];
+
+          string lfe_filter = 6 [json_name = "lfe_filter"];
+
+          string metadata_control = 7 [json_name = "metadata_control"];
+        }
+
+        message Eac3AtmosSettings {
+          int64 bitrate = 1;
+
+          string coding_mode = 2 [json_name = "coding_mode"];
+
+          int64 dialnorm = 3;
+
+          string drc_line = 4 [json_name = "drc_line"];
+
+          string drc_rf = 5 [json_name = "drc_rf"];
+
+          int64 height_trim = 6 [json_name = "height_trim"];
+
+          int64 surround_trim = 7 [json_name = "surround_trim"];
+        }
+
+        message Eac3Settings {
+          string attenuation_control = 1 [json_name = "attenuation_control"];
+
+          int64 bitrate = 2;
+
+          string bitstream_mode = 3 [json_name = "bitstream_mode"];
+
+          string coding_mode = 4 [json_name = "coding_mode"];
+
+          string dc_filter = 5 [json_name = "dc_filter"];
+
+          int64 dialnorm = 6;
+
+          string drc_line = 7 [json_name = "drc_line"];
+
+          string drc_rf = 8 [json_name = "drc_rf"];
+
+          string lfe_control = 9 [json_name = "lfe_control"];
+
+          string lfe_filter = 10 [json_name = "lfe_filter"];
+
+          int64 lo_ro_center_mix_level = 11 [json_name = "lo_ro_center_mix_level"];
+
+          int64 lo_ro_surround_mix_level = 12 [json_name = "lo_ro_surround_mix_level"];
+
+          int64 lt_rt_center_mix_level = 13 [json_name = "lt_rt_center_mix_level"];
+
+          int64 lt_rt_surround_mix_level = 14 [json_name = "lt_rt_surround_mix_level"];
+
+          string metadata_control = 15 [json_name = "metadata_control"];
+
+          string passthrough_control = 16 [json_name = "passthrough_control"];
+
+          string phase_control = 17 [json_name = "phase_control"];
+
+          string stereo_downmix = 18 [json_name = "stereo_downmix"];
+
+          string surround_ex_mode = 19 [json_name = "surround_ex_mode"];
+
+          string surround_mode = 20 [json_name = "surround_mode"];
+        }
+
+        message Mp2Settings {
+          int64 bitrate = 1;
+
+          string coding_mode = 2 [json_name = "coding_mode"];
+
+          int64 sample_rate = 3 [json_name = "sample_rate"];
+        }
+
+        message PassThroughSettings {
+        }
+
+        message WavSettings {
+          int64 bit_depth = 1 [json_name = "bit_depth"];
+
+          string coding_mode = 2 [json_name = "coding_mode"];
+
+          int64 sample_rate = 3 [json_name = "sample_rate"];
+        }
+      }
+
+      message RemixSettings {
+        int64 channels_in = 1 [json_name = "channels_in"];
+
+        int64 channels_out = 2 [json_name = "channels_out"];
+
+        repeated ChannelMappings channel_mappings = 3 [json_name = "channel_mappings"];
+
+        message ChannelMappings {
+          int64 output_channel = 1 [json_name = "output_channel"];
+
+          repeated InputChannelLevels input_channel_levels = 2 [json_name = "input_channel_levels"];
+
+          message InputChannelLevels {
+            int64 gain = 1;
+
+            int64 input_channel = 2 [json_name = "input_channel"];
+          }
+        }
+      }
+    }
+
+    message AvailBlanking {
+      string state = 1;
+
+      AvailBlankingImage avail_blanking_image = 2 [json_name = "avail_blanking_image"];
+
+      message AvailBlankingImage {
+        string password_param = 1 [json_name = "password_param"];
+
+        string uri = 2;
+
+        string username = 3;
+      }
+    }
+
+    message OutputGroups {
+      string name = 1;
+
+      OutputGroupSettings output_group_settings = 2 [json_name = "output_group_settings"];
+
+      repeated Outputs outputs = 3;
+
+      message OutputGroupSettings {
+        repeated ArchiveGroupSettings archive_group_settings = 1 [json_name = "archive_group_settings"];
+
+        FrameCaptureGroupSettings frame_capture_group_settings = 2 [json_name = "frame_capture_group_settings"];
+
+        HlsGroupSettings hls_group_settings = 3 [json_name = "hls_group_settings"];
+
+        MediaPackageGroupSettings media_package_group_settings = 4 [json_name = "media_package_group_settings"];
+
+        MsSmoothGroupSettings ms_smooth_group_settings = 5 [json_name = "ms_smooth_group_settings"];
+
+        MultiplexGroupSettings multiplex_group_settings = 6 [json_name = "multiplex_group_settings"];
+
+        RtmpGroupSettings rtmp_group_settings = 7 [json_name = "rtmp_group_settings"];
+
+        UdpGroupSettings udp_group_settings = 8 [json_name = "udp_group_settings"];
+
+        message ArchiveGroupSettings {
+          int64 rollover_interval = 1 [json_name = "rollover_interval"];
+
+          ArchiveCdnSettings archive_cdn_settings = 2 [json_name = "archive_cdn_settings"];
+
+          Destination destination = 3;
+
+          message ArchiveCdnSettings {
+            ArchiveS3Settings archive_s3_settings = 1 [json_name = "archive_s3_settings"];
+
+            message ArchiveS3Settings {
+              string canned_acl = 1 [json_name = "canned_acl"];
+            }
+          }
+
+          message Destination {
+            string destination_ref_id = 1 [json_name = "destination_ref_id"];
+          }
+        }
+
+        message FrameCaptureGroupSettings {
+          Destination destination = 1;
+
+          FrameCaptureCdnSettings frame_capture_cdn_settings = 2 [json_name = "frame_capture_cdn_settings"];
+
+          message Destination {
+            string destination_ref_id = 1 [json_name = "destination_ref_id"];
+          }
+
+          message FrameCaptureCdnSettings {
+            FrameCaptureS3Settings frame_capture_s3_settings = 1 [json_name = "frame_capture_s3_settings"];
+
+            message FrameCaptureS3Settings {
+              string canned_acl = 1 [json_name = "canned_acl"];
+            }
+          }
+        }
+
+        message HlsGroupSettings {
+          repeated string ad_markers = 1 [json_name = "ad_markers"];
+
+          string base_url_content = 2 [json_name = "base_url_content"];
+
+          string base_url_content1 = 3 [json_name = "base_url_content1"];
+
+          string base_url_manifest = 4 [json_name = "base_url_manifest"];
+
+          string base_url_manifest1 = 5 [json_name = "base_url_manifest1"];
+
+          string caption_language_setting = 6 [json_name = "caption_language_setting"];
+
+          string client_cache = 7 [json_name = "client_cache"];
+
+          string codec_specification = 8 [json_name = "codec_specification"];
+
+          string constant_iv = 9 [json_name = "constant_iv"];
+
+          string directory_structure = 10 [json_name = "directory_structure"];
+
+          string discontinuity_tags = 11 [json_name = "discontinuity_tags"];
+
+          string encryption_type = 12 [json_name = "encryption_type"];
+
+          string hls_id3_segment_tagging = 13 [json_name = "hls_id3_segment_tagging"];
+
+          string iframe_only_playlists = 14 [json_name = "iframe_only_playlists"];
+
+          string incomplete_segment_behavior = 15 [json_name = "incomplete_segment_behavior"];
+
+          int64 index_n_segments = 16 [json_name = "index_n_segments"];
+
+          string input_loss_action = 17 [json_name = "input_loss_action"];
+
+          string iv_in_manifest = 18 [json_name = "iv_in_manifest"];
+
+          string iv_source = 19 [json_name = "iv_source"];
+
+          int64 keep_segments = 20 [json_name = "keep_segments"];
+
+          string key_format = 21 [json_name = "key_format"];
+
+          string key_format_versions = 22 [json_name = "key_format_versions"];
+
+          string manifest_compression = 23 [json_name = "manifest_compression"];
+
+          string manifest_duration_format = 24 [json_name = "manifest_duration_format"];
+
+          int64 min_segment_length = 25 [json_name = "min_segment_length"];
+
+          string mode = 26;
+
+          string output_selection = 27 [json_name = "output_selection"];
+
+          string program_date_time = 28 [json_name = "program_date_time"];
+
+          string program_date_time_clock = 29 [json_name = "program_date_time_clock"];
+
+          int64 program_date_time_period = 30 [json_name = "program_date_time_period"];
+
+          string redundant_manifest = 31 [json_name = "redundant_manifest"];
+
+          int64 segment_length = 32 [json_name = "segment_length"];
+
+          int64 segments_per_subdirectory = 33 [json_name = "segments_per_subdirectory"];
+
+          string stream_inf_resolution = 34 [json_name = "stream_inf_resolution"];
+
+          string timed_metadata_id3_frame = 35 [json_name = "timed_metadata_id3_frame"];
+
+          int64 timed_metadata_id3_period = 36 [json_name = "timed_metadata_id3_period"];
+
+          int64 timestamp_delta_milliseconds = 37 [json_name = "timestamp_delta_milliseconds"];
+
+          string ts_file_mode = 38 [json_name = "ts_file_mode"];
+
+          repeated CaptionLanguageMappings caption_language_mappings = 39 [json_name = "caption_language_mappings"];
+
+          Destination destination = 40;
+
+          repeated HlsCdnSettings hls_cdn_settings = 41 [json_name = "hls_cdn_settings"];
+
+          KeyProviderSettings key_provider_settings = 42 [json_name = "key_provider_settings"];
+
+          message CaptionLanguageMappings {
+            int64 caption_channel = 1 [json_name = "caption_channel"];
+
+            string language_code = 2 [json_name = "language_code"];
+
+            string language_description = 3 [json_name = "language_description"];
+          }
+
+          message Destination {
+            string destination_ref_id = 1 [json_name = "destination_ref_id"];
+          }
+
+          message HlsCdnSettings {
+            HlsAkamaiSettings hls_akamai_settings = 1 [json_name = "hls_akamai_settings"];
+
+            HlsBasicPutSettings hls_basic_put_settings = 2 [json_name = "hls_basic_put_settings"];
+
+            HlsMediaStoreSettings hls_media_store_settings = 3 [json_name = "hls_media_store_settings"];
+
+            HlsS3Settings hls_s3_settings = 4 [json_name = "hls_s3_settings"];
+
+            HlsWebdavSettings hls_webdav_settings = 5 [json_name = "hls_webdav_settings"];
+
+            message HlsAkamaiSettings {
+              int64 connection_retry_interval = 1 [json_name = "connection_retry_interval"];
+
+              int64 filecache_duration = 2 [json_name = "filecache_duration"];
+
+              string http_transfer_mode = 3 [json_name = "http_transfer_mode"];
+
+              int64 num_retries = 4 [json_name = "num_retries"];
+
+              int64 restart_delay = 5 [json_name = "restart_delay"];
+
+              string salt = 6;
+
+              string token = 7;
+            }
+
+            message HlsBasicPutSettings {
+              int64 connection_retry_interval = 1 [json_name = "connection_retry_interval"];
+
+              int64 filecache_duration = 2 [json_name = "filecache_duration"];
+
+              int64 num_retries = 3 [json_name = "num_retries"];
+
+              int64 restart_delay = 4 [json_name = "restart_delay"];
+            }
+
+            message HlsMediaStoreSettings {
+              int64 connection_retry_interval = 1 [json_name = "connection_retry_interval"];
+
+              int64 filecache_duration = 2 [json_name = "filecache_duration"];
+
+              string media_store_storage_class = 3 [json_name = "media_store_storage_class"];
+
+              int64 num_retries = 4 [json_name = "num_retries"];
+
+              int64 restart_delay = 5 [json_name = "restart_delay"];
+            }
+
+            message HlsS3Settings {
+              string canned_acl = 1 [json_name = "canned_acl"];
+            }
+
+            message HlsWebdavSettings {
+              int64 connection_retry_interval = 1 [json_name = "connection_retry_interval"];
+
+              int64 filecache_duration = 2 [json_name = "filecache_duration"];
+
+              string http_transfer_mode = 3 [json_name = "http_transfer_mode"];
+
+              int64 num_retries = 4 [json_name = "num_retries"];
+
+              int64 restart_delay = 5 [json_name = "restart_delay"];
+            }
+          }
+
+          message KeyProviderSettings {
+            repeated StaticKeySettings static_key_settings = 1 [json_name = "static_key_settings"];
+
+            message StaticKeySettings {
+              string static_key_value = 1 [json_name = "static_key_value"];
+
+              KeyProviderServer key_provider_server = 2 [json_name = "key_provider_server"];
+
+              message KeyProviderServer {
+                string password_param = 1 [json_name = "password_param"];
+
+                string uri = 2;
+
+                string username = 3;
+              }
+            }
+          }
+        }
+
+        message MediaPackageGroupSettings {
+          Destination destination = 1;
+
+          message Destination {
+            string destination_ref_id = 1 [json_name = "destination_ref_id"];
+          }
+        }
+
+        message MsSmoothGroupSettings {
+          string acquisition_point_id = 1 [json_name = "acquisition_point_id"];
+
+          string audio_only_timecode_control = 2 [json_name = "audio_only_timecode_control"];
+
+          string certificate_mode = 3 [json_name = "certificate_mode"];
+
+          int64 connection_retry_interval = 4 [json_name = "connection_retry_interval"];
+
+          string event_id = 5 [json_name = "event_id"];
+
+          string event_id_mode = 6 [json_name = "event_id_mode"];
+
+          string event_stop_behavior = 7 [json_name = "event_stop_behavior"];
+
+          int64 filecache_duration = 8 [json_name = "filecache_duration"];
+
+          int64 fragment_length = 9 [json_name = "fragment_length"];
+
+          string input_loss_action = 10 [json_name = "input_loss_action"];
+
+          int64 num_retries = 11 [json_name = "num_retries"];
+
+          int64 restart_delay = 12 [json_name = "restart_delay"];
+
+          string segmentation_mode = 13 [json_name = "segmentation_mode"];
+
+          int64 send_delay_ms = 14 [json_name = "send_delay_ms"];
+
+          string sparse_track_type = 15 [json_name = "sparse_track_type"];
+
+          string stream_manifest_behavior = 16 [json_name = "stream_manifest_behavior"];
+
+          string timestamp_offset = 17 [json_name = "timestamp_offset"];
+
+          string timestamp_offset_mode = 18 [json_name = "timestamp_offset_mode"];
+
+          Destination destination = 19;
+
+          message Destination {
+            string destination_ref_id = 1 [json_name = "destination_ref_id"];
+          }
+        }
+
+        message MultiplexGroupSettings {
+        }
+
+        message RtmpGroupSettings {
+          repeated string ad_markers = 1 [json_name = "ad_markers"];
+
+          string authentication_scheme = 2 [json_name = "authentication_scheme"];
+
+          string cache_full_behavior = 3 [json_name = "cache_full_behavior"];
+
+          int64 cache_length = 4 [json_name = "cache_length"];
+
+          string caption_data = 5 [json_name = "caption_data"];
+
+          string input_loss_action = 6 [json_name = "input_loss_action"];
+
+          int64 restart_delay = 7 [json_name = "restart_delay"];
+        }
+
+        message UdpGroupSettings {
+          string input_loss_action = 1 [json_name = "input_loss_action"];
+
+          string timed_metadata_id3_frame = 2 [json_name = "timed_metadata_id3_frame"];
+
+          int64 timed_metadata_id3_period = 3 [json_name = "timed_metadata_id3_period"];
+        }
+      }
+
+      message Outputs {
+        repeated string audio_description_names = 1 [json_name = "audio_description_names"];
+
+        repeated string caption_description_names = 2 [json_name = "caption_description_names"];
+
+        string output_name = 3 [json_name = "output_name"];
+
+        string video_description_name = 4 [json_name = "video_description_name"];
+
+        OutputSettings output_settings = 5 [json_name = "output_settings"];
+
+        message OutputSettings {
+          ArchiveOutputSettings archive_output_settings = 1 [json_name = "archive_output_settings"];
+
+          FrameCaptureOutputSettings frame_capture_output_settings = 2 [json_name = "frame_capture_output_settings"];
+
+          HlsOutputSettings hls_output_settings = 3 [json_name = "hls_output_settings"];
+
+          MediaPackageOutputSettings media_package_output_settings = 4 [json_name = "media_package_output_settings"];
+
+          MsSmoothOutputSettings ms_smooth_output_settings = 5 [json_name = "ms_smooth_output_settings"];
+
+          MultiplexOutputSettings multiplex_output_settings = 6 [json_name = "multiplex_output_settings"];
+
+          RtmpOutputSettings rtmp_output_settings = 7 [json_name = "rtmp_output_settings"];
+
+          UdpOutputSettings udp_output_settings = 8 [json_name = "udp_output_settings"];
+
+          message ArchiveOutputSettings {
+            string extension = 1;
+
+            string name_modifier = 2 [json_name = "name_modifier"];
+
+            ContainerSettings container_settings = 3 [json_name = "container_settings"];
+
+            message ContainerSettings {
+              M2tsSettings m2ts_settings = 1 [json_name = "m2ts_settings"];
+
+              RawSettings raw_settings = 2 [json_name = "raw_settings"];
+
+              message M2tsSettings {
+                string absent_input_audio_behavior = 1 [json_name = "absent_input_audio_behavior"];
+
+                string arib = 2;
+
+                string arib_captions_pid = 3 [json_name = "arib_captions_pid"];
+
+                string arib_captions_pid_control = 4 [json_name = "arib_captions_pid_control"];
+
+                string audio_buffer_model = 5 [json_name = "audio_buffer_model"];
+
+                int64 audio_frames_per_pes = 6 [json_name = "audio_frames_per_pes"];
+
+                string audio_pids = 7 [json_name = "audio_pids"];
+
+                string audio_stream_type = 8 [json_name = "audio_stream_type"];
+
+                int64 bitrate = 9;
+
+                string buffer_model = 10 [json_name = "buffer_model"];
+
+                string cc_descriptor = 11 [json_name = "cc_descriptor"];
+
+                string dvb_sub_pids = 12 [json_name = "dvb_sub_pids"];
+
+                string dvb_teletext_pid = 13 [json_name = "dvb_teletext_pid"];
+
+                string ebif = 14;
+
+                string ebp_audio_interval = 15 [json_name = "ebp_audio_interval"];
+
+                int64 ebp_lookahead_ms = 16 [json_name = "ebp_lookahead_ms"];
+
+                string ebp_placement = 17 [json_name = "ebp_placement"];
+
+                string ecm_pid = 18 [json_name = "ecm_pid"];
+
+                string es_rate_in_pes = 19 [json_name = "es_rate_in_pes"];
+
+                string etv_platform_pid = 20 [json_name = "etv_platform_pid"];
+
+                string etv_signal_pid = 21 [json_name = "etv_signal_pid"];
+
+                int64 fragment_time = 22 [json_name = "fragment_time"];
+
+                string klv = 23;
+
+                string klv_data_pids = 24 [json_name = "klv_data_pids"];
+
+                string nielsen_id3_behavior = 25 [json_name = "nielsen_id3_behavior"];
+
+                int64 null_packet_bitrate = 26 [json_name = "null_packet_bitrate"];
+
+                int64 pat_interval = 27 [json_name = "pat_interval"];
+
+                string pcr_control = 28 [json_name = "pcr_control"];
+
+                int64 pcr_period = 29 [json_name = "pcr_period"];
+
+                string pcr_pid = 30 [json_name = "pcr_pid"];
+
+                int64 pmt_interval = 31 [json_name = "pmt_interval"];
+
+                string pmt_pid = 32 [json_name = "pmt_pid"];
+
+                int64 program_num = 33 [json_name = "program_num"];
+
+                string rate_mode = 34 [json_name = "rate_mode"];
+
+                string scte27_pids = 35 [json_name = "scte27_pids"];
+
+                string scte35_control = 36 [json_name = "scte35_control"];
+
+                string scte35_pid = 37 [json_name = "scte35_pid"];
+
+                string segmentation_markers = 38 [json_name = "segmentation_markers"];
+
+                string segmentation_style = 39 [json_name = "segmentation_style"];
+
+                int64 segmentation_time = 40 [json_name = "segmentation_time"];
+
+                string timed_metadata_behavior = 41 [json_name = "timed_metadata_behavior"];
+
+                string timed_metadata_pid = 42 [json_name = "timed_metadata_pid"];
+
+                int64 transport_stream_id = 43 [json_name = "transport_stream_id"];
+
+                string video_pid = 44 [json_name = "video_pid"];
+
+                DvbNitSettings dvb_nit_settings = 45 [json_name = "dvb_nit_settings"];
+
+                DvbSdtSettings dvb_sdt_settings = 46 [json_name = "dvb_sdt_settings"];
+
+                DvbTdtSettings dvb_tdt_settings = 47 [json_name = "dvb_tdt_settings"];
+
+                message DvbNitSettings {
+                  int64 network_id = 1 [json_name = "network_id"];
+
+                  string network_name = 2 [json_name = "network_name"];
+
+                  int64 rep_interval = 3 [json_name = "rep_interval"];
+                }
+
+                message DvbSdtSettings {
+                  string output_sdt = 1 [json_name = "output_sdt"];
+
+                  int64 rep_interval = 2 [json_name = "rep_interval"];
+
+                  string service_name = 3 [json_name = "service_name"];
+
+                  string service_provider_name = 4 [json_name = "service_provider_name"];
+                }
+
+                message DvbTdtSettings {
+                  int64 rep_interval = 1 [json_name = "rep_interval"];
+                }
+              }
+
+              message RawSettings {
+              }
+            }
+          }
+
+          message FrameCaptureOutputSettings {
+            string name_modifier = 1 [json_name = "name_modifier"];
+          }
+
+          message HlsOutputSettings {
+            string h265_packaging_type = 1 [json_name = "h265_packaging_type"];
+
+            string name_modifier = 2 [json_name = "name_modifier"];
+
+            string segment_modifier = 3 [json_name = "segment_modifier"];
+
+            HlsSettings hls_settings = 4 [json_name = "hls_settings"];
+
+            message HlsSettings {
+              AudioOnlyHlsSettings audio_only_hls_settings = 1 [json_name = "audio_only_hls_settings"];
+
+              Fmp4HlsSettings fmp4_hls_settings = 2 [json_name = "fmp4_hls_settings"];
+
+              FrameCaptureHlsSettings frame_capture_hls_settings = 3 [json_name = "frame_capture_hls_settings"];
+
+              StandardHlsSettings standard_hls_settings = 4 [json_name = "standard_hls_settings"];
+
+              message AudioOnlyHlsSettings {
+                string audio_group_id = 1 [json_name = "audio_group_id"];
+
+                string audio_track_type = 2 [json_name = "audio_track_type"];
+
+                string segment_type = 3 [json_name = "segment_type"];
+
+                AudioOnlyImage audio_only_image = 4 [json_name = "audio_only_image"];
+
+                message AudioOnlyImage {
+                  string password_param = 1 [json_name = "password_param"];
+
+                  string uri = 2;
+
+                  string username = 3;
+                }
+              }
+
+              message Fmp4HlsSettings {
+                string audio_rendition_sets = 1 [json_name = "audio_rendition_sets"];
+
+                string nielsen_id3_behavior = 2 [json_name = "nielsen_id3_behavior"];
+
+                string timed_metadata_behavior = 3 [json_name = "timed_metadata_behavior"];
+              }
+
+              message FrameCaptureHlsSettings {
+              }
+
+              message StandardHlsSettings {
+                string audio_rendition_sets = 1 [json_name = "audio_rendition_sets"];
+
+                M3u8Settings m3u8_settings = 2 [json_name = "m3u8_settings"];
+
+                message M3u8Settings {
+                  int64 audio_frames_per_pes = 1 [json_name = "audio_frames_per_pes"];
+
+                  string audio_pids = 2 [json_name = "audio_pids"];
+
+                  string ecm_pid = 3 [json_name = "ecm_pid"];
+
+                  string nielsen_id3_behavior = 4 [json_name = "nielsen_id3_behavior"];
+
+                  int64 pat_interval = 5 [json_name = "pat_interval"];
+
+                  string pcr_control = 6 [json_name = "pcr_control"];
+
+                  int64 pcr_period = 7 [json_name = "pcr_period"];
+
+                  string pcr_pid = 8 [json_name = "pcr_pid"];
+
+                  int64 pmt_interval = 9 [json_name = "pmt_interval"];
+
+                  string pmt_pid = 10 [json_name = "pmt_pid"];
+
+                  int64 program_num = 11 [json_name = "program_num"];
+
+                  string scte35_behavior = 12 [json_name = "scte35_behavior"];
+
+                  string scte35_pid = 13 [json_name = "scte35_pid"];
+
+                  string timed_metadata_behavior = 14 [json_name = "timed_metadata_behavior"];
+
+                  string timed_metadata_pid = 15 [json_name = "timed_metadata_pid"];
+
+                  int64 transport_stream_id = 16 [json_name = "transport_stream_id"];
+
+                  string video_pid = 17 [json_name = "video_pid"];
+                }
+              }
+            }
+          }
+
+          message MediaPackageOutputSettings {
+          }
+
+          message MsSmoothOutputSettings {
+            string h265_packaging_type = 1 [json_name = "h265_packaging_type"];
+
+            string name_modifier = 2 [json_name = "name_modifier"];
+          }
+
+          message MultiplexOutputSettings {
+            Destination destination = 1;
+
+            message Destination {
+              string destination_ref_id = 1 [json_name = "destination_ref_id"];
+            }
+          }
+
+          message RtmpOutputSettings {
+            string certificate_mode = 1 [json_name = "certificate_mode"];
+
+            int64 connection_retry_interval = 2 [json_name = "connection_retry_interval"];
+
+            int64 num_retries = 3 [json_name = "num_retries"];
+
+            Destination destination = 4;
+
+            message Destination {
+              string destination_ref_id = 1 [json_name = "destination_ref_id"];
+            }
+          }
+
+          message UdpOutputSettings {
+            int64 buffer_msec = 1 [json_name = "buffer_msec"];
+
+            ContainerSettings container_settings = 2 [json_name = "container_settings"];
+
+            Destination destination = 3;
+
+            FecOutputSettings fec_output_settings = 4 [json_name = "fec_output_settings"];
+
+            message ContainerSettings {
+              M2tsSettings m2ts_settings = 1 [json_name = "m2ts_settings"];
+
+              message M2tsSettings {
+                string absent_input_audio_behavior = 1 [json_name = "absent_input_audio_behavior"];
+
+                string arib = 2;
+
+                string arib_captions_pid = 3 [json_name = "arib_captions_pid"];
+
+                string arib_captions_pid_control = 4 [json_name = "arib_captions_pid_control"];
+
+                string audio_buffer_model = 5 [json_name = "audio_buffer_model"];
+
+                int64 audio_frames_per_pes = 6 [json_name = "audio_frames_per_pes"];
+
+                string audio_pids = 7 [json_name = "audio_pids"];
+
+                string audio_stream_type = 8 [json_name = "audio_stream_type"];
+
+                int64 bitrate = 9;
+
+                string buffer_model = 10 [json_name = "buffer_model"];
+
+                string cc_descriptor = 11 [json_name = "cc_descriptor"];
+
+                string dvb_sub_pids = 12 [json_name = "dvb_sub_pids"];
+
+                string dvb_teletext_pid = 13 [json_name = "dvb_teletext_pid"];
+
+                string ebif = 14;
+
+                string ebp_audio_interval = 15 [json_name = "ebp_audio_interval"];
+
+                int64 ebp_lookahead_ms = 16 [json_name = "ebp_lookahead_ms"];
+
+                string ebp_placement = 17 [json_name = "ebp_placement"];
+
+                string ecm_pid = 18 [json_name = "ecm_pid"];
+
+                string es_rate_in_pes = 19 [json_name = "es_rate_in_pes"];
+
+                string etv_platform_pid = 20 [json_name = "etv_platform_pid"];
+
+                string etv_signal_pid = 21 [json_name = "etv_signal_pid"];
+
+                int64 fragment_time = 22 [json_name = "fragment_time"];
+
+                string klv = 23;
+
+                string klv_data_pids = 24 [json_name = "klv_data_pids"];
+
+                string nielsen_id3_behavior = 25 [json_name = "nielsen_id3_behavior"];
+
+                int64 null_packet_bitrate = 26 [json_name = "null_packet_bitrate"];
+
+                int64 pat_interval = 27 [json_name = "pat_interval"];
+
+                string pcr_control = 28 [json_name = "pcr_control"];
+
+                int64 pcr_period = 29 [json_name = "pcr_period"];
+
+                string pcr_pid = 30 [json_name = "pcr_pid"];
+
+                int64 pmt_interval = 31 [json_name = "pmt_interval"];
+
+                string pmt_pid = 32 [json_name = "pmt_pid"];
+
+                int64 program_num = 33 [json_name = "program_num"];
+
+                string rate_mode = 34 [json_name = "rate_mode"];
+
+                string scte27_pids = 35 [json_name = "scte27_pids"];
+
+                string scte35_control = 36 [json_name = "scte35_control"];
+
+                string scte35_pid = 37 [json_name = "scte35_pid"];
+
+                string segmentation_markers = 38 [json_name = "segmentation_markers"];
+
+                string segmentation_style = 39 [json_name = "segmentation_style"];
+
+                int64 segmentation_time = 40 [json_name = "segmentation_time"];
+
+                string timed_metadata_behavior = 41 [json_name = "timed_metadata_behavior"];
+
+                string timed_metadata_pid = 42 [json_name = "timed_metadata_pid"];
+
+                int64 transport_stream_id = 43 [json_name = "transport_stream_id"];
+
+                string video_pid = 44 [json_name = "video_pid"];
+
+                DvbNitSettings dvb_nit_settings = 45 [json_name = "dvb_nit_settings"];
+
+                DvbSdtSettings dvb_sdt_settings = 46 [json_name = "dvb_sdt_settings"];
+
+                DvbTdtSettings dvb_tdt_settings = 47 [json_name = "dvb_tdt_settings"];
+
+                message DvbNitSettings {
+                  int64 network_id = 1 [json_name = "network_id"];
+
+                  string network_name = 2 [json_name = "network_name"];
+
+                  int64 rep_interval = 3 [json_name = "rep_interval"];
+                }
+
+                message DvbSdtSettings {
+                  string output_sdt = 1 [json_name = "output_sdt"];
+
+                  int64 rep_interval = 2 [json_name = "rep_interval"];
+
+                  string service_name = 3 [json_name = "service_name"];
+
+                  string service_provider_name = 4 [json_name = "service_provider_name"];
+                }
+
+                message DvbTdtSettings {
+                  int64 rep_interval = 1 [json_name = "rep_interval"];
+                }
+              }
+            }
+
+            message Destination {
+              string destination_ref_id = 1 [json_name = "destination_ref_id"];
+            }
+
+            message FecOutputSettings {
+              int64 column_depth = 1 [json_name = "column_depth"];
+
+              string include_fec = 2 [json_name = "include_fec"];
+
+              int64 row_length = 3 [json_name = "row_length"];
+            }
+          }
+        }
+      }
+    }
+
+    message TimecodeConfig {
+      string source = 1;
+
+      int64 sync_threshold = 2 [json_name = "sync_threshold"];
+    }
+
+    message VideoDescriptions {
+      int64 height = 1;
+
+      string name = 2;
+
+      string respond_to_afd = 3 [json_name = "respond_to_afd"];
+
+      string scaling_behavior = 4 [json_name = "scaling_behavior"];
+
+      int64 sharpness = 5;
+
+      int64 width = 6;
+
+      CodecSettings codec_settings = 7 [json_name = "codec_settings"];
+
+      message CodecSettings {
+        FrameCaptureSettings frame_capture_settings = 1 [json_name = "frame_capture_settings"];
+
+        H264Settings h264_settings = 2 [json_name = "h264_settings"];
+
+        H265Settings h265_settings = 3 [json_name = "h265_settings"];
+
+        message FrameCaptureSettings {
+          int64 capture_interval = 1 [json_name = "capture_interval"];
+
+          string capture_interval_units = 2 [json_name = "capture_interval_units"];
+        }
+
+        message H264Settings {
+          string adaptive_quantization = 1 [json_name = "adaptive_quantization"];
+
+          string afd_signaling = 2 [json_name = "afd_signaling"];
+
+          int64 bitrate = 3;
+
+          int64 buf_fill_pct = 4 [json_name = "buf_fill_pct"];
+
+          int64 buf_size = 5 [json_name = "buf_size"];
+
+          string color_metadata = 6 [json_name = "color_metadata"];
+
+          string entropy_encoding = 7 [json_name = "entropy_encoding"];
+
+          string fixed_afd = 8 [json_name = "fixed_afd"];
+
+          string flicker_aq = 9 [json_name = "flicker_aq"];
+
+          string force_field_pictures = 10 [json_name = "force_field_pictures"];
+
+          string framerate_control = 11 [json_name = "framerate_control"];
+
+          int64 framerate_denominator = 12 [json_name = "framerate_denominator"];
+
+          int64 framerate_numerator = 13 [json_name = "framerate_numerator"];
+
+          string gop_b_reference = 14 [json_name = "gop_b_reference"];
+
+          int64 gop_closed_cadence = 15 [json_name = "gop_closed_cadence"];
+
+          int64 gop_num_b_frames = 16 [json_name = "gop_num_b_frames"];
+
+          int64 gop_size = 17 [json_name = "gop_size"];
+
+          string gop_size_units = 18 [json_name = "gop_size_units"];
+
+          string level = 19;
+
+          string look_ahead_rate_control = 20 [json_name = "look_ahead_rate_control"];
+
+          int64 max_bitrate = 21 [json_name = "max_bitrate"];
+
+          int64 min_i_interval = 22 [json_name = "min_i_interval"];
+
+          int64 num_ref_frames = 23 [json_name = "num_ref_frames"];
+
+          string par_control = 24 [json_name = "par_control"];
+
+          int64 par_denominator = 25 [json_name = "par_denominator"];
+
+          int64 par_numerator = 26 [json_name = "par_numerator"];
+
+          string profile = 27;
+
+          string quality_level = 28 [json_name = "quality_level"];
+
+          int64 qvbr_quality_level = 29 [json_name = "qvbr_quality_level"];
+
+          string rate_control_mode = 30 [json_name = "rate_control_mode"];
+
+          string scan_type = 31 [json_name = "scan_type"];
+
+          string scene_change_detect = 32 [json_name = "scene_change_detect"];
+
+          int64 slices = 33;
+
+          int64 softness = 34;
+
+          string spatial_aq = 35 [json_name = "spatial_aq"];
+
+          string subgop_length = 36 [json_name = "subgop_length"];
+
+          string syntax = 37;
+
+          string temporal_aq = 38 [json_name = "temporal_aq"];
+
+          string timecode_insertion = 39 [json_name = "timecode_insertion"];
+
+          FilterSettings filter_settings = 40 [json_name = "filter_settings"];
+
+          message FilterSettings {
+            TemporalFilterSettings temporal_filter_settings = 1 [json_name = "temporal_filter_settings"];
+
+            message TemporalFilterSettings {
+              string post_filter_sharpening = 1 [json_name = "post_filter_sharpening"];
+
+              string strength = 2;
+            }
+          }
+        }
+
+        message H265Settings {
+          string adaptive_quantization = 1 [json_name = "adaptive_quantization"];
+
+          string afd_signaling = 2 [json_name = "afd_signaling"];
+
+          string alternative_transfer_function = 3 [json_name = "alternative_transfer_function"];
+
+          int64 bitrate = 4;
+
+          int64 buf_size = 5 [json_name = "buf_size"];
+
+          string color_metadata = 6 [json_name = "color_metadata"];
+
+          string fixed_afd = 7 [json_name = "fixed_afd"];
+
+          string flicker_aq = 8 [json_name = "flicker_aq"];
+
+          int64 framerate_denominator = 9 [json_name = "framerate_denominator"];
+
+          int64 framerate_numerator = 10 [json_name = "framerate_numerator"];
+
+          int64 gop_closed_cadence = 11 [json_name = "gop_closed_cadence"];
+
+          int64 gop_size = 12 [json_name = "gop_size"];
+
+          string gop_size_units = 13 [json_name = "gop_size_units"];
+
+          string level = 14;
+
+          string look_ahead_rate_control = 15 [json_name = "look_ahead_rate_control"];
+
+          int64 max_bitrate = 16 [json_name = "max_bitrate"];
+
+          int64 min_i_interval = 17 [json_name = "min_i_interval"];
+
+          int64 par_denominator = 18 [json_name = "par_denominator"];
+
+          int64 par_numerator = 19 [json_name = "par_numerator"];
+
+          string profile = 20;
+
+          int64 qvbr_quality_level = 21 [json_name = "qvbr_quality_level"];
+
+          string rate_control_mode = 22 [json_name = "rate_control_mode"];
+
+          string scan_type = 23 [json_name = "scan_type"];
+
+          string scene_change_detect = 24 [json_name = "scene_change_detect"];
+
+          int64 slices = 25;
+
+          string tier = 26;
+
+          string timecode_insertion = 27 [json_name = "timecode_insertion"];
+
+          ColorSpaceSettings color_space_settings = 28 [json_name = "color_space_settings"];
+
+          FilterSettings filter_settings = 29 [json_name = "filter_settings"];
+
+          TimecodeBurninSettings timecode_burnin_settings = 30 [json_name = "timecode_burnin_settings"];
+
+          message ColorSpaceSettings {
+            ColorSpacePassthroughSettings color_space_passthrough_settings = 1 [json_name = "color_space_passthrough_settings"];
+
+            DolbyVision81Settings dolby_vision81_settings = 2 [json_name = "dolby_vision81_settings"];
+
+            Hdr10Settings hdr10_settings = 3 [json_name = "hdr10_settings"];
+
+            Rec601Settings rec601_settings = 4 [json_name = "rec601_settings"];
+
+            Rec709Settings rec709_settings = 5 [json_name = "rec709_settings"];
+
+            message ColorSpacePassthroughSettings {
+            }
+
+            message DolbyVision81Settings {
+            }
+
+            message Hdr10Settings {
+              int64 max_cll = 1 [json_name = "max_cll"];
+
+              int64 max_fall = 2 [json_name = "max_fall"];
+            }
+
+            message Rec601Settings {
+            }
+
+            message Rec709Settings {
+            }
+          }
+
+          message FilterSettings {
+            TemporalFilterSettings temporal_filter_settings = 1 [json_name = "temporal_filter_settings"];
+
+            message TemporalFilterSettings {
+              string post_filter_sharpening = 1 [json_name = "post_filter_sharpening"];
+
+              string strength = 2;
+            }
+          }
+
+          message TimecodeBurninSettings {
+            string prefix = 1;
+
+            string timecode_burnin_font_size = 2 [json_name = "timecode_burnin_font_size"];
+
+            string timecode_burnin_position = 3 [json_name = "timecode_burnin_position"];
+          }
+        }
+      }
+    }
+  }
+
+  message InputAttachments {
+    string input_attachment_name = 1 [json_name = "input_attachment_name"];
+
+    string input_id = 2 [json_name = "input_id"];
+
+    AutomaticInputFailoverSettings automatic_input_failover_settings = 3 [json_name = "automatic_input_failover_settings"];
+
+    InputSettings input_settings = 4 [json_name = "input_settings"];
+
+    message AutomaticInputFailoverSettings {
+      int64 error_clear_time_msec = 1 [json_name = "error_clear_time_msec"];
+
+      string input_preference = 2 [json_name = "input_preference"];
+
+      string secondary_input_id = 3 [json_name = "secondary_input_id"];
+
+      repeated FailoverCondition failover_condition = 4 [json_name = "failover_condition"];
+
+      message FailoverCondition {
+        FailoverConditionSettings failover_condition_settings = 1 [json_name = "failover_condition_settings"];
+
+        message FailoverConditionSettings {
+          AudioSilenceSettings audio_silence_settings = 1 [json_name = "audio_silence_settings"];
+
+          InputLossSettings input_loss_settings = 2 [json_name = "input_loss_settings"];
+
+          VideoBlackSettings video_black_settings = 3 [json_name = "video_black_settings"];
+
+          message AudioSilenceSettings {
+            string audio_selector_name = 1 [json_name = "audio_selector_name"];
+
+            int64 audio_silence_threshold_msec = 2 [json_name = "audio_silence_threshold_msec"];
+          }
+
+          message InputLossSettings {
+            int64 input_loss_threshold_msec = 1 [json_name = "input_loss_threshold_msec"];
+          }
+
+          message VideoBlackSettings {
+            int64 black_detect_threshold = 1 [json_name = "black_detect_threshold"];
+
+            int64 video_black_threshold_msec = 2 [json_name = "video_black_threshold_msec"];
+          }
+        }
+      }
+    }
+
+    message InputSettings {
+      string deblock_filter = 1 [json_name = "deblock_filter"];
+
+      string denoise_filter = 2 [json_name = "denoise_filter"];
+
+      int64 filter_strength = 3 [json_name = "filter_strength"];
+
+      string input_filter = 4 [json_name = "input_filter"];
+
+      int64 scte35_pid = 5 [json_name = "scte35_pid"];
+
+      string smpte2038_data_preference = 6 [json_name = "smpte2038_data_preference"];
+
+      string source_end_behavior = 7 [json_name = "source_end_behavior"];
+
+      repeated AudioSelector audio_selector = 8 [json_name = "audio_selector"];
+
+      repeated CaptionSelector caption_selector = 9 [json_name = "caption_selector"];
+
+      NetworkInputSettings network_input_settings = 10 [json_name = "network_input_settings"];
+
+      VideoSelector video_selector = 11 [json_name = "video_selector"];
+
+      message AudioSelector {
+        string name = 1;
+
+        SelectorSettings selector_settings = 2 [json_name = "selector_settings"];
+
+        message SelectorSettings {
+          AudioHlsRenditionSelection audio_hls_rendition_selection = 1 [json_name = "audio_hls_rendition_selection"];
+
+          AudioLanguageSelection audio_language_selection = 2 [json_name = "audio_language_selection"];
+
+          AudioPidSelection audio_pid_selection = 3 [json_name = "audio_pid_selection"];
+
+          AudioTrackSelection audio_track_selection = 4 [json_name = "audio_track_selection"];
+
+          message AudioHlsRenditionSelection {
+            string group_id = 1 [json_name = "group_id"];
+
+            string name = 2;
+          }
+
+          message AudioLanguageSelection {
+            string language_code = 1 [json_name = "language_code"];
+
+            string language_selection_policy = 2 [json_name = "language_selection_policy"];
+          }
+
+          message AudioPidSelection {
+            int64 pid = 1;
+          }
+
+          message AudioTrackSelection {
+            repeated Track track = 1;
+
+            message Track {
+              int64 track = 1;
+            }
+          }
+        }
+      }
+
+      message CaptionSelector {
+        string language_code = 1 [json_name = "language_code"];
+
+        string name = 2;
+
+        SelectorSettings selector_settings = 3 [json_name = "selector_settings"];
+
+        message SelectorSettings {
+          AncillarySourceSettings ancillary_source_settings = 1 [json_name = "ancillary_source_settings"];
+
+          DvbTdtSettings dvb_tdt_settings = 2 [json_name = "dvb_tdt_settings"];
+
+          EmbeddedSourceSettings embedded_source_settings = 3 [json_name = "embedded_source_settings"];
+
+          Scte20SourceSettings scte20_source_settings = 4 [json_name = "scte20_source_settings"];
+
+          Scte27SourceSettings scte27_source_settings = 5 [json_name = "scte27_source_settings"];
+
+          TeletextSourceSettings teletext_source_settings = 6 [json_name = "teletext_source_settings"];
+
+          message AncillarySourceSettings {
+            int64 source_ancillary_channel_number = 1 [json_name = "source_ancillary_channel_number"];
+          }
+
+          message DvbTdtSettings {
+            string ocr_language = 1 [json_name = "ocr_language"];
+
+            int64 pid = 2;
+          }
+
+          message EmbeddedSourceSettings {
+            string convert_608_to_708 = 1 [json_name = "convert_608_to_708"];
+
+            string scte20_detection = 2 [json_name = "scte20_detection"];
+
+            int64 source_608_channel_number = 3 [json_name = "source_608_channel_number"];
+
+            int64 source_608_track_number = 4 [json_name = "source_608_track_number"];
+          }
+
+          message Scte20SourceSettings {
+            string convert_608_to_708 = 1 [json_name = "convert_608_to_708"];
+
+            int64 source_608_channel_number = 2 [json_name = "source_608_channel_number"];
+          }
+
+          message Scte27SourceSettings {
+            string ocr_language = 1 [json_name = "ocr_language"];
+
+            int64 pid = 2;
+          }
+
+          message TeletextSourceSettings {
+            string page_number = 1 [json_name = "page_number"];
+
+            OutputRectangle output_rectangle = 2 [json_name = "output_rectangle"];
+
+            message OutputRectangle {
+              int64 height = 1;
+
+              int64 left_offset = 2 [json_name = "left_offset"];
+
+              int64 top_offset = 3 [json_name = "top_offset"];
+
+              int64 width = 4;
+            }
+          }
+        }
+      }
+
+      message NetworkInputSettings {
+        string server_validation = 1 [json_name = "server_validation"];
+
+        HlsInputSettings hls_input_settings = 2 [json_name = "hls_input_settings"];
+
+        message HlsInputSettings {
+          int64 bandwidth = 1;
+
+          int64 buffer_segments = 2 [json_name = "buffer_segments"];
+
+          int64 retries = 3;
+
+          int64 retry_interval = 4 [json_name = "retry_interval"];
+
+          string scte35_source = 5 [json_name = "scte35_source"];
+        }
+      }
+
+      message VideoSelector {
+        string color_space = 1 [json_name = "color_space"];
+
+        string color_space_usage = 2 [json_name = "color_space_usage"];
+      }
+    }
+  }
+
+  message InputSpecification {
+    string codec = 1;
+
+    string input_resolution = 2 [json_name = "input_resolution"];
+
+    string maximum_bitrate = 3 [json_name = "maximum_bitrate"];
+  }
+
+  message Maintenance {
+    string maintenance_day = 1 [json_name = "maintenance_day"];
+
+    string maintenance_start_time = 2 [json_name = "maintenance_start_time"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+
+  message Vpc {
+    repeated string availability_zones = 1 [json_name = "availability_zones"];
+
+    repeated string public_address_allocation_ids = 2 [json_name = "public_address_allocation_ids"];
+
+    repeated string security_group_ids = 3 [json_name = "security_group_ids"];
+
+    repeated string subnet_ids = 4 [json_name = "subnet_ids"];
+  }
+}
+
+// AwsMedialiveInput version is 0
+message AwsMedialiveInput {
+  string arn = 1;
+
+  repeated string attached_channels = 2 [json_name = "attached_channels"];
+
+  string id = 3;
+
+  string input_class = 4 [json_name = "input_class"];
+
+  repeated string input_partner_ids = 5 [json_name = "input_partner_ids"];
+
+  repeated string input_security_groups = 6 [json_name = "input_security_groups"];
+
+  string input_source_type = 7 [json_name = "input_source_type"];
+
+  string name = 8;
+
+  string role_arn = 9 [json_name = "role_arn"];
+
+  map<string, string> tags = 10;
+
+  map<string, string> tags_all = 11 [json_name = "tags_all"];
+
+  string type = 12;
+
+  repeated Destinations destinations = 13;
+
+  repeated InputDevices input_devices = 14 [json_name = "input_devices"];
+
+  repeated MediaConnectFlows media_connect_flows = 15 [json_name = "media_connect_flows"];
+
+  repeated Sources sources = 16;
+
+  repeated Timeouts timeouts = 17;
+
+  Vpc vpc = 18;
+
+  map<string, string> for_each = 19 [json_name = "for_each"];
+
+  repeated string depends_on = 20 [json_name = "depends_on"];
+
+  int32 count = 21;
+
+  string provider = 22;
+
+  terraform.v1.Lifecycle lifecycle = 23;
+
+  message Destinations {
+    string stream_name = 1 [json_name = "stream_name"];
+  }
+
+  message InputDevices {
+    string id = 1;
+  }
+
+  message MediaConnectFlows {
+    string flow_arn = 1 [json_name = "flow_arn"];
+  }
+
+  message Sources {
+    string password_param = 1 [json_name = "password_param"];
+
+    string url = 2;
+
+    string username = 3;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+
+  message Vpc {
+    repeated string security_group_ids = 1 [json_name = "security_group_ids"];
+
+    repeated string subnet_ids = 2 [json_name = "subnet_ids"];
+  }
+}
+
+// AwsMedialiveInputSecurityGroup version is 0
+message AwsMedialiveInputSecurityGroup {
+  string arn = 1;
+
+  string id = 2;
+
+  repeated string inputs = 3;
+
+  map<string, string> tags = 4;
+
+  map<string, string> tags_all = 5 [json_name = "tags_all"];
+
+  repeated Timeouts timeouts = 6;
+
+  repeated WhitelistRules whitelist_rules = 7 [json_name = "whitelist_rules"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+
+  message WhitelistRules {
+    string cidr = 1;
+  }
+}
+
+// AwsMedialiveMultiplex version is 0
+message AwsMedialiveMultiplex {
+  string arn = 1;
+
+  repeated string availability_zones = 2 [json_name = "availability_zones"];
+
+  string id = 3;
+
+  string name = 4;
+
+  bool start_multiplex = 5 [json_name = "start_multiplex"];
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  MultiplexSettings multiplex_settings = 8 [json_name = "multiplex_settings"];
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message MultiplexSettings {
+    int64 maximum_video_buffer_delay_milliseconds = 1 [
+      json_name = "maximum_video_buffer_delay_milliseconds"
+    ];
+
+    int64 transport_stream_bitrate = 2 [json_name = "transport_stream_bitrate"];
+
+    int64 transport_stream_id = 3 [json_name = "transport_stream_id"];
+
+    int64 transport_stream_reserved_bitrate = 4 [json_name = "transport_stream_reserved_bitrate"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsMedialiveMultiplexProgram version is 0
+message AwsMedialiveMultiplexProgram {
+  string id = 1;
+
+  string multiplex_id = 2 [json_name = "multiplex_id"];
+
+  string program_name = 3 [json_name = "program_name"];
+
+  repeated MultiplexProgramSettings multiplex_program_settings = 4 [json_name = "multiplex_program_settings"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message MultiplexProgramSettings {
+    string preferred_channel_pipeline = 1 [json_name = "preferred_channel_pipeline"];
+
+    int64 program_number = 2 [json_name = "program_number"];
+
+    repeated ServiceDescriptor service_descriptor = 3 [json_name = "service_descriptor"];
+
+    repeated VideoSettings video_settings = 4 [json_name = "video_settings"];
+
+    message ServiceDescriptor {
+      string provider_name = 1 [json_name = "provider_name"];
+
+      string service_name = 2 [json_name = "service_name"];
+    }
+
+    message VideoSettings {
+      int64 constant_bitrate = 1 [json_name = "constant_bitrate"];
+
+      repeated StatmuxSettings statmux_settings = 2 [json_name = "statmux_settings"];
+
+      message StatmuxSettings {
+        int64 maximum_bitrate = 1 [json_name = "maximum_bitrate"];
+
+        int64 minimum_bitrate = 2 [json_name = "minimum_bitrate"];
+
+        int64 priority = 3;
+      }
+    }
+  }
+}

@@ -1,0 +1,202 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsIdentitystoreGroup version is 0
+message AwsIdentitystoreGroup {
+  string description = 1;
+
+  string display_name = 2 [json_name = "display_name"];
+
+  repeated ExternalIds external_ids = 3 [json_name = "external_ids"];
+
+  string group_id = 4 [json_name = "group_id"];
+
+  string id = 5;
+
+  string identity_store_id = 6 [json_name = "identity_store_id"];
+
+  AlternateIdentifier alternate_identifier = 7 [json_name = "alternate_identifier"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message ExternalIds {
+    // id: string
+    string id = 1;
+
+    // issuer: string
+    string issuer = 2;
+  }
+
+  message AlternateIdentifier {
+    ExternalId external_id = 1 [json_name = "external_id"];
+
+    UniqueAttribute unique_attribute = 2 [json_name = "unique_attribute"];
+
+    message ExternalId {
+      string id = 1;
+
+      string issuer = 2;
+    }
+
+    message UniqueAttribute {
+      string attribute_path = 1 [json_name = "attribute_path"];
+
+      string attribute_value = 2 [json_name = "attribute_value"];
+    }
+  }
+}
+
+// AwsIdentitystoreUser version is 0
+message AwsIdentitystoreUser {
+  repeated Addresses addresses = 1;
+
+  string display_name = 2 [json_name = "display_name"];
+
+  repeated Emails emails = 3;
+
+  repeated ExternalIds external_ids = 4 [json_name = "external_ids"];
+
+  string id = 5;
+
+  string identity_store_id = 6 [json_name = "identity_store_id"];
+
+  string locale = 7;
+
+  repeated Name name = 8;
+
+  string nickname = 9;
+
+  repeated PhoneNumbers phone_numbers = 10 [json_name = "phone_numbers"];
+
+  string preferred_language = 11 [json_name = "preferred_language"];
+
+  string profile_url = 12 [json_name = "profile_url"];
+
+  string timezone = 13;
+
+  string title = 14;
+
+  string user_id = 15 [json_name = "user_id"];
+
+  string user_name = 16 [json_name = "user_name"];
+
+  string user_type = 17 [json_name = "user_type"];
+
+  AlternateIdentifier alternate_identifier = 18 [json_name = "alternate_identifier"];
+
+  map<string, string> for_each = 19 [json_name = "for_each"];
+
+  repeated string depends_on = 20 [json_name = "depends_on"];
+
+  int32 count = 21;
+
+  string provider = 22;
+
+  terraform.v1.Lifecycle lifecycle = 23;
+
+  message Addresses {
+    // country: string
+    string country = 1;
+
+    // formatted: string
+    string formatted = 2;
+
+    // locality: string
+    string locality = 3;
+
+    // postal_code: string
+    string postal_code = 4 [json_name = "postal_code"];
+
+    // primary: bool
+    bool primary = 5;
+
+    // region: string
+    string region = 6;
+
+    // street_address: string
+    string street_address = 7 [json_name = "street_address"];
+
+    // type: string
+    string type = 8;
+  }
+
+  message Emails {
+    // primary: bool
+    bool primary = 1;
+
+    // type: string
+    string type = 2;
+
+    // value: string
+    string value = 3;
+  }
+
+  message ExternalIds {
+    // id: string
+    string id = 1;
+
+    // issuer: string
+    string issuer = 2;
+  }
+
+  message Name {
+    // family_name: string
+    string family_name = 1 [json_name = "family_name"];
+
+    // formatted: string
+    string formatted = 2;
+
+    // given_name: string
+    string given_name = 3 [json_name = "given_name"];
+
+    // honorific_prefix: string
+    string honorific_prefix = 4 [json_name = "honorific_prefix"];
+
+    // honorific_suffix: string
+    string honorific_suffix = 5 [json_name = "honorific_suffix"];
+
+    // middle_name: string
+    string middle_name = 6 [json_name = "middle_name"];
+  }
+
+  message PhoneNumbers {
+    // primary: bool
+    bool primary = 1;
+
+    // type: string
+    string type = 2;
+
+    // value: string
+    string value = 3;
+  }
+
+  message AlternateIdentifier {
+    ExternalId external_id = 1 [json_name = "external_id"];
+
+    UniqueAttribute unique_attribute = 2 [json_name = "unique_attribute"];
+
+    message ExternalId {
+      string id = 1;
+
+      string issuer = 2;
+    }
+
+    message UniqueAttribute {
+      string attribute_path = 1 [json_name = "attribute_path"];
+
+      string attribute_value = 2 [json_name = "attribute_value"];
+    }
+  }
+}

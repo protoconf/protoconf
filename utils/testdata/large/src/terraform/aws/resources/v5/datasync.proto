@@ -1,0 +1,507 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsDatasyncAgent version is 0
+message AwsDatasyncAgent {
+  string activation_key = 1 [json_name = "activation_key"];
+
+  string arn = 2;
+
+  string id = 3;
+
+  string ip_address = 4 [json_name = "ip_address"];
+
+  string name = 5;
+
+  string private_link_endpoint = 6 [json_name = "private_link_endpoint"];
+
+  repeated string security_group_arns = 7 [json_name = "security_group_arns"];
+
+  repeated string subnet_arns = 8 [json_name = "subnet_arns"];
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  string vpc_endpoint_id = 11 [json_name = "vpc_endpoint_id"];
+
+  repeated Timeouts timeouts = 12;
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message Timeouts {
+    string create = 1;
+  }
+}
+
+// AwsDatasyncLocationEfs version is 0
+message AwsDatasyncLocationEfs {
+  string access_point_arn = 1 [json_name = "access_point_arn"];
+
+  string arn = 2;
+
+  string efs_file_system_arn = 3 [json_name = "efs_file_system_arn"];
+
+  string file_system_access_role_arn = 4 [json_name = "file_system_access_role_arn"];
+
+  string id = 5;
+
+  string in_transit_encryption = 6 [json_name = "in_transit_encryption"];
+
+  string subdirectory = 7;
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  string uri = 10;
+
+  Ec2Config ec2_config = 11 [json_name = "ec2_config"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message Ec2Config {
+    repeated string security_group_arns = 1 [json_name = "security_group_arns"];
+
+    string subnet_arn = 2 [json_name = "subnet_arn"];
+  }
+}
+
+// AwsDatasyncLocationFsxLustreFileSystem version is 0
+message AwsDatasyncLocationFsxLustreFileSystem {
+  string arn = 1;
+
+  string creation_time = 2 [json_name = "creation_time"];
+
+  string fsx_filesystem_arn = 3 [json_name = "fsx_filesystem_arn"];
+
+  string id = 4;
+
+  repeated string security_group_arns = 5 [json_name = "security_group_arns"];
+
+  string subdirectory = 6;
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  string uri = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+}
+
+// AwsDatasyncLocationFsxOpenzfsFileSystem version is 0
+message AwsDatasyncLocationFsxOpenzfsFileSystem {
+  string arn = 1;
+
+  string creation_time = 2 [json_name = "creation_time"];
+
+  string fsx_filesystem_arn = 3 [json_name = "fsx_filesystem_arn"];
+
+  string id = 4;
+
+  repeated string security_group_arns = 5 [json_name = "security_group_arns"];
+
+  string subdirectory = 6;
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  string uri = 9;
+
+  Protocol protocol = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Protocol {
+    Nfs nfs = 1;
+
+    message Nfs {
+      MountOptions mount_options = 1 [json_name = "mount_options"];
+
+      message MountOptions {
+        string version = 1;
+      }
+    }
+  }
+}
+
+// AwsDatasyncLocationFsxWindowsFileSystem version is 0
+message AwsDatasyncLocationFsxWindowsFileSystem {
+  string arn = 1;
+
+  string creation_time = 2 [json_name = "creation_time"];
+
+  string domain = 3;
+
+  string fsx_filesystem_arn = 4 [json_name = "fsx_filesystem_arn"];
+
+  string id = 5;
+
+  string password = 6;
+
+  repeated string security_group_arns = 7 [json_name = "security_group_arns"];
+
+  string subdirectory = 8;
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  string uri = 11;
+
+  string user = 12;
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+}
+
+// AwsDatasyncLocationHdfs version is 0
+message AwsDatasyncLocationHdfs {
+  repeated string agent_arns = 1 [json_name = "agent_arns"];
+
+  string arn = 2;
+
+  string authentication_type = 3 [json_name = "authentication_type"];
+
+  int64 block_size = 4 [json_name = "block_size"];
+
+  string id = 5;
+
+  string kerberos_keytab = 6 [json_name = "kerberos_keytab"];
+
+  string kerberos_krb5_conf = 7 [json_name = "kerberos_krb5_conf"];
+
+  string kerberos_principal = 8 [json_name = "kerberos_principal"];
+
+  string kms_key_provider_uri = 9 [json_name = "kms_key_provider_uri"];
+
+  int64 replication_factor = 10 [json_name = "replication_factor"];
+
+  string simple_user = 11 [json_name = "simple_user"];
+
+  string subdirectory = 12;
+
+  map<string, string> tags = 13;
+
+  map<string, string> tags_all = 14 [json_name = "tags_all"];
+
+  string uri = 15;
+
+  repeated NameNode name_node = 16 [json_name = "name_node"];
+
+  QopConfiguration qop_configuration = 17 [json_name = "qop_configuration"];
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+
+  message NameNode {
+    string hostname = 1;
+
+    int64 port = 2;
+  }
+
+  message QopConfiguration {
+    string data_transfer_protection = 1 [json_name = "data_transfer_protection"];
+
+    string rpc_protection = 2 [json_name = "rpc_protection"];
+  }
+}
+
+// AwsDatasyncLocationNfs version is 0
+message AwsDatasyncLocationNfs {
+  string arn = 1;
+
+  string id = 2;
+
+  string server_hostname = 3 [json_name = "server_hostname"];
+
+  string subdirectory = 4;
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  string uri = 7;
+
+  MountOptions mount_options = 8 [json_name = "mount_options"];
+
+  OnPremConfig on_prem_config = 9 [json_name = "on_prem_config"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message MountOptions {
+    string version = 1;
+  }
+
+  message OnPremConfig {
+    repeated string agent_arns = 1 [json_name = "agent_arns"];
+  }
+}
+
+// AwsDatasyncLocationObjectStorage version is 0
+message AwsDatasyncLocationObjectStorage {
+  string access_key = 1 [json_name = "access_key"];
+
+  repeated string agent_arns = 2 [json_name = "agent_arns"];
+
+  string arn = 3;
+
+  string bucket_name = 4 [json_name = "bucket_name"];
+
+  string id = 5;
+
+  string secret_key = 6 [json_name = "secret_key"];
+
+  string server_certificate = 7 [json_name = "server_certificate"];
+
+  string server_hostname = 8 [json_name = "server_hostname"];
+
+  int64 server_port = 9 [json_name = "server_port"];
+
+  string server_protocol = 10 [json_name = "server_protocol"];
+
+  string subdirectory = 11;
+
+  map<string, string> tags = 12;
+
+  map<string, string> tags_all = 13 [json_name = "tags_all"];
+
+  string uri = 14;
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+}
+
+// AwsDatasyncLocationS3 version is 0
+message AwsDatasyncLocationS3 {
+  repeated string agent_arns = 1 [json_name = "agent_arns"];
+
+  string arn = 2;
+
+  string id = 3;
+
+  string s3_bucket_arn = 4 [json_name = "s3_bucket_arn"];
+
+  string s3_storage_class = 5 [json_name = "s3_storage_class"];
+
+  string subdirectory = 6;
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  string uri = 9;
+
+  S3Config s3_config = 10 [json_name = "s3_config"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message S3Config {
+    string bucket_access_role_arn = 1 [json_name = "bucket_access_role_arn"];
+  }
+}
+
+// AwsDatasyncLocationSmb version is 0
+message AwsDatasyncLocationSmb {
+  repeated string agent_arns = 1 [json_name = "agent_arns"];
+
+  string arn = 2;
+
+  string domain = 3;
+
+  string id = 4;
+
+  string password = 5;
+
+  string server_hostname = 6 [json_name = "server_hostname"];
+
+  string subdirectory = 7;
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  string uri = 10;
+
+  string user = 11;
+
+  MountOptions mount_options = 12 [json_name = "mount_options"];
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message MountOptions {
+    string version = 1;
+  }
+}
+
+// AwsDatasyncTask version is 0
+message AwsDatasyncTask {
+  string arn = 1;
+
+  string cloudwatch_log_group_arn = 2 [json_name = "cloudwatch_log_group_arn"];
+
+  string destination_location_arn = 3 [json_name = "destination_location_arn"];
+
+  string id = 4;
+
+  string name = 5;
+
+  string source_location_arn = 6 [json_name = "source_location_arn"];
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  Excludes excludes = 9;
+
+  Includes includes = 10;
+
+  Options options = 11;
+
+  Schedule schedule = 12;
+
+  repeated Timeouts timeouts = 13;
+
+  map<string, string> for_each = 14 [json_name = "for_each"];
+
+  repeated string depends_on = 15 [json_name = "depends_on"];
+
+  int32 count = 16;
+
+  string provider = 17;
+
+  terraform.v1.Lifecycle lifecycle = 18;
+
+  message Excludes {
+    string filter_type = 1 [json_name = "filter_type"];
+
+    string value = 2;
+  }
+
+  message Includes {
+    string filter_type = 1 [json_name = "filter_type"];
+
+    string value = 2;
+  }
+
+  message Options {
+    string atime = 1;
+
+    int64 bytes_per_second = 2 [json_name = "bytes_per_second"];
+
+    string gid = 3;
+
+    string log_level = 4 [json_name = "log_level"];
+
+    string mtime = 5;
+
+    string overwrite_mode = 6 [json_name = "overwrite_mode"];
+
+    string posix_permissions = 7 [json_name = "posix_permissions"];
+
+    string preserve_deleted_files = 8 [json_name = "preserve_deleted_files"];
+
+    string preserve_devices = 9 [json_name = "preserve_devices"];
+
+    string security_descriptor_copy_flags = 10 [json_name = "security_descriptor_copy_flags"];
+
+    string task_queueing = 11 [json_name = "task_queueing"];
+
+    string transfer_mode = 12 [json_name = "transfer_mode"];
+
+    string uid = 13;
+
+    string verify_mode = 14 [json_name = "verify_mode"];
+  }
+
+  message Schedule {
+    string schedule_expression = 1 [json_name = "schedule_expression"];
+  }
+
+  message Timeouts {
+    string create = 1;
+  }
+}

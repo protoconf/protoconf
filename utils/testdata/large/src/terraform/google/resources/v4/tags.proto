@@ -1,0 +1,361 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleTagsLocationTagBinding version is 0
+message GoogleTagsLocationTagBinding {
+  string id = 1;
+
+  // The geographic location where the transfer config should reside.
+  // Examples: US, EU, asia-northeast1. The default value is US.
+  string location = 2;
+
+  // The generated id for the TagBinding. This is a string of the form: 'tagBindings/{full-resource-name}/{tag-value-name}'
+  string name = 3;
+
+  // The full resource name of the resource the TagValue is bound to. E.g. //cloudresourcemanager.googleapis.com/projects/123
+  string parent = 4;
+
+  // The TagValue of the TagBinding. Must be of the form tagValues/456.
+  string tag_value = 5 [json_name = "tag_value"];
+
+  repeated Timeouts timeouts = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// GoogleTagsTagBinding version is 0
+message GoogleTagsTagBinding {
+  string id = 1;
+
+  // The generated id for the TagBinding. This is a string of the form: 'tagBindings/{full-resource-name}/{tag-value-name}'
+  string name = 2;
+
+  // The full resource name of the resource the TagValue is bound to. E.g. //cloudresourcemanager.googleapis.com/projects/123
+  string parent = 3;
+
+  // The TagValue of the TagBinding. Must be of the form tagValues/456.
+  string tag_value = 4 [json_name = "tag_value"];
+
+  repeated Timeouts timeouts = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// GoogleTagsTagKey version is 0
+message GoogleTagsTagKey {
+  // Output only. Creation time.
+  //
+  // A timestamp in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits. Examples: "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z".
+  string create_time = 1 [json_name = "create_time"];
+
+  // User-assigned description of the TagKey. Must not exceed 256 characters.
+  string description = 2;
+
+  string id = 3;
+
+  // The generated numeric id for the TagKey.
+  string name = 4;
+
+  // Output only. Namespaced name of the TagKey.
+  string namespaced_name = 5 [json_name = "namespaced_name"];
+
+  // Input only. The resource name of the new TagKey's parent. Must be of the form organizations/{org_id} or projects/{project_id_or_number}.
+  string parent = 6;
+
+  // Optional. A purpose cannot be changed once set.
+  //
+  // A purpose denotes that this Tag is intended for use in policies of a specific policy engine, and will involve that policy engine in management operations involving this Tag. Possible values: ["GCE_FIREWALL"]
+  string purpose = 7;
+
+  // Optional. Purpose data cannot be changed once set.
+  //
+  // Purpose data corresponds to the policy system that the tag is intended for. For example, the GCE_FIREWALL purpose expects data in the following format: 'network = "<project-name>/<vpc-name>"'.
+  map<string, string> purpose_data = 8 [json_name = "purpose_data"];
+
+  // Input only. The user friendly name for a TagKey. The short name should be unique for TagKeys within the same tag namespace.
+  //
+  // The short name must be 1-63 characters, beginning and ending with an alphanumeric character ([a-z0-9A-Z]) with dashes (-), underscores (_), dots (.), and alphanumerics between.
+  string short_name = 9 [json_name = "short_name"];
+
+  // Output only. Update time.
+  //
+  // A timestamp in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits. Examples: "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z".
+  string update_time = 10 [json_name = "update_time"];
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleTagsTagKeyIamBinding version is 0
+message GoogleTagsTagKeyIamBinding {
+  string etag = 1;
+
+  string id = 2;
+
+  repeated string members = 3;
+
+  string role = 4;
+
+  string tag_key = 5 [json_name = "tag_key"];
+
+  Condition condition = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleTagsTagKeyIamMember version is 0
+message GoogleTagsTagKeyIamMember {
+  string etag = 1;
+
+  string id = 2;
+
+  string member = 3;
+
+  string role = 4;
+
+  string tag_key = 5 [json_name = "tag_key"];
+
+  Condition condition = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleTagsTagKeyIamPolicy version is 0
+message GoogleTagsTagKeyIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string policy_data = 3 [json_name = "policy_data"];
+
+  string tag_key = 4 [json_name = "tag_key"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// GoogleTagsTagValue version is 0
+message GoogleTagsTagValue {
+  // Output only. Creation time.
+  //
+  // A timestamp in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits. Examples: "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z".
+  string create_time = 1 [json_name = "create_time"];
+
+  // User-assigned description of the TagValue. Must not exceed 256 characters.
+  string description = 2;
+
+  string id = 3;
+
+  // The generated numeric id for the TagValue.
+  string name = 4;
+
+  // Output only. Namespaced name of the TagValue. Will be in the format {parentNamespace}/{tagKeyShortName}/{shortName}.
+  string namespaced_name = 5 [json_name = "namespaced_name"];
+
+  // Input only. The resource name of the new TagValue's parent. Must be of the form tagKeys/{tag_key_id}.
+  string parent = 6;
+
+  // Input only. User-assigned short name for TagValue. The short name should be unique for TagValues within the same parent TagKey.
+  //
+  // The short name must be 63 characters or less, beginning and ending with an alphanumeric character ([a-z0-9A-Z]) with dashes (-), underscores (_), dots (.), and alphanumerics between.
+  string short_name = 7 [json_name = "short_name"];
+
+  // Output only. Update time.
+  // A timestamp in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits. Examples: "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z".
+  string update_time = 8 [json_name = "update_time"];
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleTagsTagValueIamBinding version is 0
+message GoogleTagsTagValueIamBinding {
+  string etag = 1;
+
+  string id = 2;
+
+  repeated string members = 3;
+
+  string role = 4;
+
+  string tag_value = 5 [json_name = "tag_value"];
+
+  Condition condition = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleTagsTagValueIamMember version is 0
+message GoogleTagsTagValueIamMember {
+  string etag = 1;
+
+  string id = 2;
+
+  string member = 3;
+
+  string role = 4;
+
+  string tag_value = 5 [json_name = "tag_value"];
+
+  Condition condition = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleTagsTagValueIamPolicy version is 0
+message GoogleTagsTagValueIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string policy_data = 3 [json_name = "policy_data"];
+
+  string tag_value = 4 [json_name = "tag_value"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}

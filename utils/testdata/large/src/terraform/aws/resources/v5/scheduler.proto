@@ -1,0 +1,206 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsSchedulerSchedule version is 0
+message AwsSchedulerSchedule {
+  string arn = 1;
+
+  string description = 2;
+
+  string end_date = 3 [json_name = "end_date"];
+
+  string group_name = 4 [json_name = "group_name"];
+
+  string id = 5;
+
+  string kms_key_arn = 6 [json_name = "kms_key_arn"];
+
+  string name = 7;
+
+  string name_prefix = 8 [json_name = "name_prefix"];
+
+  string schedule_expression = 9 [json_name = "schedule_expression"];
+
+  string schedule_expression_timezone = 10 [json_name = "schedule_expression_timezone"];
+
+  string start_date = 11 [json_name = "start_date"];
+
+  string state = 12;
+
+  FlexibleTimeWindow flexible_time_window = 13 [json_name = "flexible_time_window"];
+
+  Target target = 14;
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+
+  message FlexibleTimeWindow {
+    int64 maximum_window_in_minutes = 1 [json_name = "maximum_window_in_minutes"];
+
+    string mode = 2;
+  }
+
+  message Target {
+    string arn = 1;
+
+    string input = 2;
+
+    string role_arn = 3 [json_name = "role_arn"];
+
+    DeadLetterConfig dead_letter_config = 4 [json_name = "dead_letter_config"];
+
+    EcsParameters ecs_parameters = 5 [json_name = "ecs_parameters"];
+
+    EventbridgeParameters eventbridge_parameters = 6 [json_name = "eventbridge_parameters"];
+
+    KinesisParameters kinesis_parameters = 7 [json_name = "kinesis_parameters"];
+
+    RetryPolicy retry_policy = 8 [json_name = "retry_policy"];
+
+    SagemakerPipelineParameters sagemaker_pipeline_parameters = 9 [json_name = "sagemaker_pipeline_parameters"];
+
+    SqsParameters sqs_parameters = 10 [json_name = "sqs_parameters"];
+
+    message DeadLetterConfig {
+      string arn = 1;
+    }
+
+    message EcsParameters {
+      bool enable_ecs_managed_tags = 1 [json_name = "enable_ecs_managed_tags"];
+
+      bool enable_execute_command = 2 [json_name = "enable_execute_command"];
+
+      string group = 3;
+
+      string launch_type = 4 [json_name = "launch_type"];
+
+      string platform_version = 5 [json_name = "platform_version"];
+
+      string propagate_tags = 6 [json_name = "propagate_tags"];
+
+      string reference_id = 7 [json_name = "reference_id"];
+
+      map<string, string> tags = 8;
+
+      int64 task_count = 9 [json_name = "task_count"];
+
+      string task_definition_arn = 10 [json_name = "task_definition_arn"];
+
+      repeated CapacityProviderStrategy capacity_provider_strategy = 11 [json_name = "capacity_provider_strategy"];
+
+      NetworkConfiguration network_configuration = 12 [json_name = "network_configuration"];
+
+      repeated PlacementConstraints placement_constraints = 13 [json_name = "placement_constraints"];
+
+      repeated PlacementStrategy placement_strategy = 14 [json_name = "placement_strategy"];
+
+      message CapacityProviderStrategy {
+        int64 base = 1;
+
+        string capacity_provider = 2 [json_name = "capacity_provider"];
+
+        int64 weight = 3;
+      }
+
+      message NetworkConfiguration {
+        bool assign_public_ip = 1 [json_name = "assign_public_ip"];
+
+        repeated string security_groups = 2 [json_name = "security_groups"];
+
+        repeated string subnets = 3;
+      }
+
+      message PlacementConstraints {
+        string expression = 1;
+
+        string type = 2;
+      }
+
+      message PlacementStrategy {
+        string field = 1;
+
+        string type = 2;
+      }
+    }
+
+    message EventbridgeParameters {
+      string detail_type = 1 [json_name = "detail_type"];
+
+      string source = 2;
+    }
+
+    message KinesisParameters {
+      string partition_key = 1 [json_name = "partition_key"];
+    }
+
+    message RetryPolicy {
+      int64 maximum_event_age_in_seconds = 1 [json_name = "maximum_event_age_in_seconds"];
+
+      int64 maximum_retry_attempts = 2 [json_name = "maximum_retry_attempts"];
+    }
+
+    message SagemakerPipelineParameters {
+      repeated PipelineParameter pipeline_parameter = 1 [json_name = "pipeline_parameter"];
+
+      message PipelineParameter {
+        string name = 1;
+
+        string value = 2;
+      }
+    }
+
+    message SqsParameters {
+      string message_group_id = 1 [json_name = "message_group_id"];
+    }
+  }
+}
+
+// AwsSchedulerScheduleGroup version is 0
+message AwsSchedulerScheduleGroup {
+  string arn = 1;
+
+  string creation_date = 2 [json_name = "creation_date"];
+
+  string id = 3;
+
+  string last_modification_date = 4 [json_name = "last_modification_date"];
+
+  string name = 5;
+
+  string name_prefix = 6 [json_name = "name_prefix"];
+
+  string state = 7;
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  repeated Timeouts timeouts = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}

@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.datasources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleClientConfig version is 0
+message GoogleClientConfig {
+  // The OAuth2 access token used by the client to authenticate against the Google Cloud API.
+  string access_token = 1 [json_name = "access_token"];
+
+  // The ID of this data source in Terraform state. It is created in a projects/{{project}}/regions/{{region}}/zones/{{zone}} format and is NOT used by the data source in requests to Google APIs.
+  string id = 2;
+
+  // The ID of the project to apply any resources to.
+  string project = 3;
+
+  // The region to operate under.
+  string region = 4;
+
+  // The zone to operate under.
+  string zone = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// GoogleClientOpenidUserinfo version is 0
+message GoogleClientOpenidUserinfo {
+  // The email of the account used by the provider to authenticate with GCP.
+  string email = 1;
+
+  // The ID of this data source in Terraform state. Its value is the same as the `email` attribute. Do not use this field, use the `email` attribute instead.
+  string id = 2;
+
+  map<string, string> for_each = 3 [json_name = "for_each"];
+
+  repeated string depends_on = 4 [json_name = "depends_on"];
+
+  int32 count = 5;
+
+  string provider = 6;
+
+  terraform.v1.Lifecycle lifecycle = 7;
+}

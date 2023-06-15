@@ -1,0 +1,4051 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleDataCatalogEntry version is 0
+message GoogleDataCatalogEntry {
+  // Specification for a group of BigQuery tables with name pattern [prefix]YYYYMMDD.
+  // Context: https://cloud.google.com/bigquery/docs/partitioned-tables#partitioning_versus_sharding.
+  repeated BigqueryDateShardedSpec bigquery_date_sharded_spec = 1 [json_name = "bigquery_date_sharded_spec"];
+
+  // Specification that applies to a BigQuery table. This is only valid on entries of type TABLE.
+  repeated BigqueryTableSpec bigquery_table_spec = 2 [json_name = "bigquery_table_spec"];
+
+  // Entry description, which can consist of several sentences or paragraphs that describe entry contents.
+  string description = 3;
+
+  // Display information such as title and description. A short name to identify the entry,
+  // for example, "Analytics Data - Jan 2011".
+  string display_name = 4 [json_name = "display_name"];
+
+  // The name of the entry group this entry is in.
+  string entry_group = 5 [json_name = "entry_group"];
+
+  // The id of the entry to create.
+  string entry_id = 6 [json_name = "entry_id"];
+
+  string id = 7;
+
+  // This field indicates the entry's source system that Data Catalog integrates with, such as BigQuery or Pub/Sub.
+  string integrated_system = 8 [json_name = "integrated_system"];
+
+  // The resource this metadata entry refers to.
+  // For Google Cloud Platform resources, linkedResource is the full name of the resource.
+  // For example, the linkedResource for a table resource from BigQuery is:
+  // //bigquery.googleapis.com/projects/projectId/datasets/datasetId/tables/tableId
+  // Output only when Entry is of type in the EntryType enum. For entries with userSpecifiedType,
+  // this field is optional and defaults to an empty string.
+  string linked_resource = 9 [json_name = "linked_resource"];
+
+  // The Data Catalog resource name of the entry in URL format.
+  // Example: projects/{project_id}/locations/{location}/entryGroups/{entryGroupId}/entries/{entryId}.
+  // Note that this Entry and its child resources may not actually be stored in the location in this name.
+  string name = 10;
+
+  // Schema of the entry (e.g. BigQuery, GoogleSQL, Avro schema), as a json string. An entry might not have any schema
+  // attached to it. See
+  // https://cloud.google.com/data-catalog/docs/reference/rest/v1/projects.locations.entryGroups.entries#schema
+  // for what fields this schema can contain.
+  string schema = 11;
+
+  // The type of the entry. Only used for Entries with types in the EntryType enum.
+  // Currently, only FILESET enum value is allowed. All other entries created through Data Catalog must use userSpecifiedType. Possible values: ["FILESET"]
+  string type = 12;
+
+  // This field indicates the entry's source system that Data Catalog does not integrate with.
+  // userSpecifiedSystem strings must begin with a letter or underscore and can only contain letters, numbers,
+  // and underscores; are case insensitive; must be at least 1 character and at most 64 characters long.
+  string user_specified_system = 13 [json_name = "user_specified_system"];
+
+  // Entry type if it does not fit any of the input-allowed values listed in EntryType enum above.
+  // When creating an entry, users should check the enum values first, if nothing matches the entry
+  // to be created, then provide a custom value, for example "my_special_type".
+  // userSpecifiedType strings must begin with a letter or underscore and can only contain letters,
+  // numbers, and underscores; are case insensitive; must be at least 1 character and at most 64 characters long.
+  string user_specified_type = 14 [json_name = "user_specified_type"];
+
+  GcsFilesetSpec gcs_fileset_spec = 15 [json_name = "gcs_fileset_spec"];
+
+  repeated Timeouts timeouts = 16;
+
+  map<string, string> for_each = 17 [json_name = "for_each"];
+
+  repeated string depends_on = 18 [json_name = "depends_on"];
+
+  int32 count = 19;
+
+  string provider = 20;
+
+  terraform.v1.Lifecycle lifecycle = 21;
+
+  message BigqueryDateShardedSpec {
+    // dataset: string
+    string dataset = 1;
+
+    // shard_count: number
+    int64 shard_count = 2 [json_name = "shard_count"];
+
+    // table_prefix: string
+    string table_prefix = 3 [json_name = "table_prefix"];
+  }
+
+  message BigqueryTableSpec {
+    // table_source_type: string
+    string table_source_type = 1 [json_name = "table_source_type"];
+
+    // table_spec: list of object
+    repeated TableSpec table_spec = 2 [json_name = "table_spec"];
+
+    // view_spec: list of object
+    repeated ViewSpec view_spec = 3 [json_name = "view_spec"];
+
+    message TableSpec {
+      // grouped_entry: string
+      string grouped_entry = 1 [json_name = "grouped_entry"];
+    }
+
+    message ViewSpec {
+      // view_query: string
+      string view_query = 1 [json_name = "view_query"];
+    }
+  }
+
+  message GcsFilesetSpec {
+    // Patterns to identify a set of files in Google Cloud Storage.
+    // See [Cloud Storage documentation](https://cloud.google.com/storage/docs/gsutil/addlhelp/WildcardNames)
+    // for more information. Note that bucket wildcards are currently not supported. Examples of valid filePatterns:
+    //
+    // * gs://bucket_name/dir/*: matches all files within bucket_name/dir directory.
+    // * gs://bucket_name/dir/**: matches all files in bucket_name/dir spanning all subdirectories.
+    // * gs://bucket_name/file*: matches files prefixed by file in bucket_name
+    // * gs://bucket_name/??.txt: matches files with two characters followed by .txt in bucket_name
+    // * gs://bucket_name/[aeiou].txt: matches files that contain a single vowel character followed by .txt in bucket_name
+    // * gs://bucket_name/[a-m].txt: matches files that contain a, b, ... or m followed by .txt in bucket_name
+    // * gs://bucket_name/a/*/b: matches all files in bucket_name that match a/*/b pattern, such as a/c/b, a/d/b
+    // * gs://another_bucket/a.txt: matches gs://another_bucket/a.txt
+    repeated string file_patterns = 1 [json_name = "file_patterns"];
+
+    // Sample files contained in this fileset, not all files contained in this fileset are represented here.
+    repeated SampleGcsFileSpecs sample_gcs_file_specs = 2 [json_name = "sample_gcs_file_specs"];
+
+    message SampleGcsFileSpecs {
+      // file_path: string
+      string file_path = 1 [json_name = "file_path"];
+
+      // size_bytes: number
+      int64 size_bytes = 2 [json_name = "size_bytes"];
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleDataCatalogEntryGroup version is 0
+message GoogleDataCatalogEntryGroup {
+  // Entry group description, which can consist of several sentences or paragraphs that describe entry group contents.
+  string description = 1;
+
+  // A short name to identify the entry group, for example, "analytics data - jan 2011".
+  string display_name = 2 [json_name = "display_name"];
+
+  // The id of the entry group to create. The id must begin with a letter or underscore,
+  // contain only English letters, numbers and underscores, and be at most 64 characters.
+  string entry_group_id = 3 [json_name = "entry_group_id"];
+
+  string id = 4;
+
+  // The resource name of the entry group in URL format. Example: projects/{project}/locations/{location}/entryGroups/{entryGroupId}
+  string name = 5;
+
+  string project = 6;
+
+  // EntryGroup location region.
+  string region = 7;
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleDataCatalogEntryGroupIamBinding version is 0
+message GoogleDataCatalogEntryGroupIamBinding {
+  string entry_group = 1 [json_name = "entry_group"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  repeated string members = 4;
+
+  string project = 5;
+
+  string region = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleDataCatalogEntryGroupIamMember version is 0
+message GoogleDataCatalogEntryGroupIamMember {
+  string entry_group = 1 [json_name = "entry_group"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string member = 4;
+
+  string project = 5;
+
+  string region = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleDataCatalogEntryGroupIamPolicy version is 0
+message GoogleDataCatalogEntryGroupIamPolicy {
+  string entry_group = 1 [json_name = "entry_group"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  string region = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleDataCatalogPolicyTag version is 0
+message GoogleDataCatalogPolicyTag {
+  // Resource names of child policy tags of this policy tag.
+  repeated string child_policy_tags = 1 [json_name = "child_policy_tags"];
+
+  // Description of this policy tag. It must: contain only unicode characters, tabs,
+  // newlines, carriage returns and page breaks; and be at most 2000 bytes long when
+  // encoded in UTF-8. If not set, defaults to an empty description.
+  // If not set, defaults to an empty description.
+  string description = 2;
+
+  // User defined name of this policy tag. It must: be unique within the parent
+  // taxonomy; contain only unicode letters, numbers, underscores, dashes and spaces;
+  // not start or end with spaces; and be at most 200 bytes long when encoded in UTF-8.
+  string display_name = 3 [json_name = "display_name"];
+
+  string id = 4;
+
+  // Resource name of this policy tag, whose format is:
+  // "projects/{project}/locations/{region}/taxonomies/{taxonomy}/policyTags/{policytag}"
+  string name = 5;
+
+  // Resource name of this policy tag's parent policy tag.
+  // If empty, it means this policy tag is a top level policy tag.
+  // If not set, defaults to an empty string.
+  string parent_policy_tag = 6 [json_name = "parent_policy_tag"];
+
+  // Taxonomy the policy tag is associated with
+  string taxonomy = 7;
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleDataCatalogPolicyTagIamBinding version is 0
+message GoogleDataCatalogPolicyTagIamBinding {
+  string etag = 1;
+
+  string id = 2;
+
+  repeated string members = 3;
+
+  string policy_tag = 4 [json_name = "policy_tag"];
+
+  string role = 5;
+
+  Condition condition = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleDataCatalogPolicyTagIamMember version is 0
+message GoogleDataCatalogPolicyTagIamMember {
+  string etag = 1;
+
+  string id = 2;
+
+  string member = 3;
+
+  string policy_tag = 4 [json_name = "policy_tag"];
+
+  string role = 5;
+
+  Condition condition = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleDataCatalogPolicyTagIamPolicy version is 0
+message GoogleDataCatalogPolicyTagIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string policy_data = 3 [json_name = "policy_data"];
+
+  string policy_tag = 4 [json_name = "policy_tag"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// GoogleDataCatalogTag version is 0
+message GoogleDataCatalogTag {
+  // Resources like Entry can have schemas associated with them. This scope allows users to attach tags to an
+  // individual column based on that schema.
+  //
+  // For attaching a tag to a nested column, use '.' to separate the column names. Example:
+  // 'outer_column.inner_column'
+  string column = 1;
+
+  string id = 2;
+
+  // The resource name of the tag in URL format. Example:
+  // projects/{project_id}/locations/{location}/entrygroups/{entryGroupId}/entries/{entryId}/tags/{tag_id} or
+  // projects/{project_id}/locations/{location}/entrygroups/{entryGroupId}/tags/{tag_id}
+  // where tag_id is a system-generated identifier. Note that this Tag may not actually be stored in the location in this name.
+  string name = 3;
+
+  // The name of the parent this tag is attached to. This can be the name of an entry or an entry group. If an entry group, the tag will be attached to
+  // all entries in that group.
+  string parent = 4;
+
+  // The resource name of the tag template that this tag uses. Example:
+  // projects/{project_id}/locations/{location}/tagTemplates/{tagTemplateId}
+  // This field cannot be modified after creation.
+  string template = 5;
+
+  // The display name of the tag template.
+  string template_displayname = 6 [json_name = "template_displayname"];
+
+  repeated Fields fields = 7;
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Fields {
+    // Holds the value for a tag field with boolean type.
+    bool bool_value = 1 [json_name = "bool_value"];
+
+    // The display name of this field
+    string display_name = 2 [json_name = "display_name"];
+
+    // Holds the value for a tag field with double type.
+    int64 double_value = 3 [json_name = "double_value"];
+
+    // The display name of the enum value.
+    string enum_value = 4 [json_name = "enum_value"];
+
+    string field_name = 5 [json_name = "field_name"];
+
+    // The order of this field with respect to other fields in this tag. For example, a higher value can indicate
+    // a more important field. The value can be negative. Multiple fields can have the same order, and field orders
+    // within a tag do not have to be sequential.
+    int64 order = 6;
+
+    // Holds the value for a tag field with string type.
+    string string_value = 7 [json_name = "string_value"];
+
+    // Holds the value for a tag field with timestamp type.
+    string timestamp_value = 8 [json_name = "timestamp_value"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleDataCatalogTagTemplate version is 0
+message GoogleDataCatalogTagTemplate {
+  // The display name for this template.
+  string display_name = 1 [json_name = "display_name"];
+
+  // This confirms the deletion of any possible tags using this template. Must be set to true in order to delete the tag template.
+  bool force_delete = 2 [json_name = "force_delete"];
+
+  string id = 3;
+
+  // The resource name of the tag template in URL format. Example: projects/{project_id}/locations/{location}/tagTemplates/{tagTemplateId}
+  string name = 4;
+
+  string project = 5;
+
+  // Template location region.
+  string region = 6;
+
+  // The id of the tag template to create.
+  string tag_template_id = 7 [json_name = "tag_template_id"];
+
+  repeated Fields fields = 8;
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Fields {
+    // A description for this field.
+    string description = 1;
+
+    // The display name for this field.
+    string display_name = 2 [json_name = "display_name"];
+
+    string field_id = 3 [json_name = "field_id"];
+
+    // Whether this is a required field. Defaults to false.
+    bool is_required = 4 [json_name = "is_required"];
+
+    // The resource name of the tag template field in URL format. Example: projects/{project_id}/locations/{location}/tagTemplates/{tagTemplateId}/fields/{field}
+    string name = 5;
+
+    // The order of this field with respect to other fields in this tag template.
+    // A higher value indicates a more important field. The value can be negative.
+    // Multiple fields can have the same order, and field orders within a tag do not have to be sequential.
+    int64 order = 6;
+
+    Type type = 7;
+
+    message Type {
+      // Represents primitive types - string, bool etc.
+      // Exactly one of 'primitive_type' or 'enum_type' must be set Possible values: ["DOUBLE", "STRING", "BOOL", "TIMESTAMP"]
+      string primitive_type = 1 [json_name = "primitive_type"];
+
+      EnumType enum_type = 2 [json_name = "enum_type"];
+
+      message EnumType {
+        repeated AllowedValues allowed_values = 1 [json_name = "allowed_values"];
+
+        message AllowedValues {
+          // The display name of the enum value.
+          string display_name = 1 [json_name = "display_name"];
+        }
+      }
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleDataCatalogTagTemplateIamBinding version is 0
+message GoogleDataCatalogTagTemplateIamBinding {
+  string etag = 1;
+
+  string id = 2;
+
+  repeated string members = 3;
+
+  string project = 4;
+
+  string region = 5;
+
+  string role = 6;
+
+  string tag_template = 7 [json_name = "tag_template"];
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleDataCatalogTagTemplateIamMember version is 0
+message GoogleDataCatalogTagTemplateIamMember {
+  string etag = 1;
+
+  string id = 2;
+
+  string member = 3;
+
+  string project = 4;
+
+  string region = 5;
+
+  string role = 6;
+
+  string tag_template = 7 [json_name = "tag_template"];
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleDataCatalogTagTemplateIamPolicy version is 0
+message GoogleDataCatalogTagTemplateIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string policy_data = 3 [json_name = "policy_data"];
+
+  string project = 4;
+
+  string region = 5;
+
+  string tag_template = 6 [json_name = "tag_template"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleDataCatalogTaxonomy version is 0
+message GoogleDataCatalogTaxonomy {
+  // A list of policy types that are activated for this taxonomy. If not set,
+  // defaults to an empty list. Possible values: ["POLICY_TYPE_UNSPECIFIED", "FINE_GRAINED_ACCESS_CONTROL"]
+  repeated string activated_policy_types = 1 [json_name = "activated_policy_types"];
+
+  // Description of this taxonomy. It must: contain only unicode characters,
+  // tabs, newlines, carriage returns and page breaks; and be at most 2000 bytes
+  // long when encoded in UTF-8. If not set, defaults to an empty description.
+  string description = 2;
+
+  // User defined name of this taxonomy.
+  // It must: contain only unicode letters, numbers, underscores, dashes
+  // and spaces; not start or end with spaces; and be at most 200 bytes
+  // long when encoded in UTF-8.
+  string display_name = 3 [json_name = "display_name"];
+
+  string id = 4;
+
+  // Resource name of this taxonomy, whose format is:
+  // "projects/{project}/locations/{region}/taxonomies/{taxonomy}".
+  string name = 5;
+
+  string project = 6;
+
+  // Taxonomy location region.
+  string region = 7;
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleDataCatalogTaxonomyIamBinding version is 0
+message GoogleDataCatalogTaxonomyIamBinding {
+  string etag = 1;
+
+  string id = 2;
+
+  repeated string members = 3;
+
+  string project = 4;
+
+  string region = 5;
+
+  string role = 6;
+
+  string taxonomy = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleDataCatalogTaxonomyIamMember version is 0
+message GoogleDataCatalogTaxonomyIamMember {
+  string etag = 1;
+
+  string id = 2;
+
+  string member = 3;
+
+  string project = 4;
+
+  string region = 5;
+
+  string role = 6;
+
+  string taxonomy = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleDataCatalogTaxonomyIamPolicy version is 0
+message GoogleDataCatalogTaxonomyIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string policy_data = 3 [json_name = "policy_data"];
+
+  string project = 4;
+
+  string region = 5;
+
+  string taxonomy = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleDataFusionInstance version is 0
+message GoogleDataFusionInstance {
+  // Endpoint on which the REST APIs is accessible.
+  string api_endpoint = 1 [json_name = "api_endpoint"];
+
+  // The time the instance was created in RFC3339 UTC "Zulu" format, accurate to nanoseconds.
+  string create_time = 2 [json_name = "create_time"];
+
+  // User-managed service account to set on Dataproc when Cloud Data Fusion creates Dataproc to run data processing pipelines.
+  string dataproc_service_account = 3 [json_name = "dataproc_service_account"];
+
+  // An optional description of the instance.
+  string description = 4;
+
+  // Display name for an instance.
+  string display_name = 5 [json_name = "display_name"];
+
+  // Option to enable granular role-based access control.
+  bool enable_rbac = 6 [json_name = "enable_rbac"];
+
+  // Option to enable Stackdriver Logging.
+  bool enable_stackdriver_logging = 7 [json_name = "enable_stackdriver_logging"];
+
+  // Option to enable Stackdriver Monitoring.
+  bool enable_stackdriver_monitoring = 8 [json_name = "enable_stackdriver_monitoring"];
+
+  // Cloud Storage bucket generated by Data Fusion in the customer project.
+  string gcs_bucket = 9 [json_name = "gcs_bucket"];
+
+  string id = 10;
+
+  // The resource labels for instance to use to annotate any related underlying resources,
+  // such as Compute Engine VMs.
+  map<string, string> labels = 11;
+
+  // The ID of the instance or a fully qualified identifier for the instance.
+  string name = 12;
+
+  // Map of additional options used to configure the behavior of Data Fusion instance.
+  map<string, string> options = 13;
+
+  // P4 service account for the customer project.
+  string p4_service_account = 14 [json_name = "p4_service_account"];
+
+  // Specifies whether the Data Fusion instance should be private. If set to
+  // true, all Data Fusion nodes will have private IP addresses and will not be
+  // able to access the public internet.
+  bool private_instance = 15 [json_name = "private_instance"];
+
+  string project = 16;
+
+  // The region of the Data Fusion instance.
+  string region = 17;
+
+  // Endpoint on which the Data Fusion UI and REST APIs are accessible.
+  string service_endpoint = 18 [json_name = "service_endpoint"];
+
+  // The current state of this Data Fusion instance.
+  // - CREATING: Instance is being created
+  // - RUNNING: Instance is running and ready for requests
+  // - FAILED: Instance creation failed
+  // - DELETING: Instance is being deleted
+  // - UPGRADING: Instance is being upgraded
+  // - RESTARTING: Instance is being restarted
+  string state = 19;
+
+  // Additional information about the current state of this Data Fusion instance if available.
+  string state_message = 20 [json_name = "state_message"];
+
+  // The name of the tenant project.
+  string tenant_project_id = 21 [json_name = "tenant_project_id"];
+
+  // Represents the type of Data Fusion instance. Each type is configured with
+  // the default settings for processing and memory.
+  // - BASIC: Basic Data Fusion instance. In Basic type, the user will be able to create data pipelines
+  // using point and click UI. However, there are certain limitations, such as fewer number
+  // of concurrent pipelines, no support for streaming pipelines, etc.
+  // - ENTERPRISE: Enterprise Data Fusion instance. In Enterprise type, the user will have more features
+  // available, such as support for streaming pipelines, higher number of concurrent pipelines, etc.
+  // - DEVELOPER: Developer Data Fusion instance. In Developer type, the user will have all features available but
+  // with restrictive capabilities. This is to help enterprises design and develop their data ingestion and integration
+  // pipelines at low cost. Possible values: ["BASIC", "ENTERPRISE", "DEVELOPER"]
+  string type = 22;
+
+  // The time the instance was last updated in RFC3339 UTC "Zulu" format, accurate to nanoseconds.
+  string update_time = 23 [json_name = "update_time"];
+
+  // Current version of the Data Fusion.
+  string version = 24;
+
+  // Name of the zone in which the Data Fusion instance will be created. Only DEVELOPER instances use this field.
+  string zone = 25;
+
+  repeated Accelerators accelerators = 26;
+
+  CryptoKeyConfig crypto_key_config = 27 [json_name = "crypto_key_config"];
+
+  EventPublishConfig event_publish_config = 28 [json_name = "event_publish_config"];
+
+  NetworkConfig network_config = 29 [json_name = "network_config"];
+
+  repeated Timeouts timeouts = 30;
+
+  map<string, string> for_each = 31 [json_name = "for_each"];
+
+  repeated string depends_on = 32 [json_name = "depends_on"];
+
+  int32 count = 33;
+
+  string provider = 34;
+
+  terraform.v1.Lifecycle lifecycle = 35;
+
+  message Accelerators {
+    // The type of an accelator for a CDF instance. Possible values: ["CDC", "HEALTHCARE", "CCAI_INSIGHTS"]
+    string accelerator_type = 1 [json_name = "accelerator_type"];
+
+    // The type of an accelator for a CDF instance. Possible values: ["ENABLED", "DISABLED"]
+    string state = 2;
+  }
+
+  message CryptoKeyConfig {
+    // The name of the key which is used to encrypt/decrypt customer data. For key in Cloud KMS, the key should be in the format of projects/*/locations/*/keyRings/*/cryptoKeys/*.
+    string key_reference = 1 [json_name = "key_reference"];
+  }
+
+  message EventPublishConfig {
+    // Option to enable Event Publishing.
+    bool enabled = 1;
+
+    // The resource name of the Pub/Sub topic. Format: projects/{projectId}/topics/{topic_id}
+    string topic = 2;
+  }
+
+  message NetworkConfig {
+    // The IP range in CIDR notation to use for the managed Data Fusion instance
+    // nodes. This range must not overlap with any other ranges used in the Data Fusion instance network.
+    string ip_allocation = 1 [json_name = "ip_allocation"];
+
+    // Name of the network in the project with which the tenant project
+    // will be peered for executing pipelines. In case of shared VPC where the network resides in another host
+    // project the network should specified in the form of projects/{host-project-id}/global/networks/{network}
+    string network = 2;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleDataFusionInstanceIamBinding version is 0
+message GoogleDataFusionInstanceIamBinding {
+  string etag = 1;
+
+  string id = 2;
+
+  repeated string members = 3;
+
+  string name = 4;
+
+  string project = 5;
+
+  string region = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleDataFusionInstanceIamMember version is 0
+message GoogleDataFusionInstanceIamMember {
+  string etag = 1;
+
+  string id = 2;
+
+  string member = 3;
+
+  string name = 4;
+
+  string project = 5;
+
+  string region = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleDataFusionInstanceIamPolicy version is 0
+message GoogleDataFusionInstanceIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  string region = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleDataLossPreventionDeidentifyTemplate version is 0
+message GoogleDataLossPreventionDeidentifyTemplate {
+  // The creation timestamp of an deidentifyTemplate. Set by the server.
+  string create_time = 1 [json_name = "create_time"];
+
+  // A description of the template.
+  string description = 2;
+
+  // User set display name of the template.
+  string display_name = 3 [json_name = "display_name"];
+
+  string id = 4;
+
+  // The resource name of the template. Set by the server.
+  string name = 5;
+
+  // The parent of the template in any of the following formats:
+  //
+  // * 'projects/{{project}}'
+  // * 'projects/{{project}}/locations/{{location}}'
+  // * 'organizations/{{organization_id}}'
+  // * 'organizations/{{organization_id}}/locations/{{location}}'
+  string parent = 6;
+
+  // The template id can contain uppercase and lowercase letters, numbers, and hyphens;
+  // that is, it must match the regular expression: [a-zA-Z\d-_]+. The maximum length is
+  // 100 characters. Can be empty to allow the system to generate one.
+  string template_id = 7 [json_name = "template_id"];
+
+  // The last update timestamp of an deidentifyTemplate. Set by the server.
+  string update_time = 8 [json_name = "update_time"];
+
+  DeidentifyConfig deidentify_config = 9 [json_name = "deidentify_config"];
+
+  repeated Timeouts timeouts = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message DeidentifyConfig {
+    ImageTransformations image_transformations = 1 [json_name = "image_transformations"];
+
+    InfoTypeTransformations info_type_transformations = 2 [json_name = "info_type_transformations"];
+
+    RecordTransformations record_transformations = 3 [json_name = "record_transformations"];
+
+    message ImageTransformations {
+      repeated Transforms transforms = 1;
+
+      message Transforms {
+        AllInfoTypes all_info_types = 1 [json_name = "all_info_types"];
+
+        AllText all_text = 2 [json_name = "all_text"];
+
+        RedactionColor redaction_color = 3 [json_name = "redaction_color"];
+
+        SelectedInfoTypes selected_info_types = 4 [json_name = "selected_info_types"];
+
+        message AllInfoTypes {
+        }
+
+        message AllText {
+        }
+
+        message RedactionColor {
+          // The amount of blue in the color as a value in the interval [0, 1].
+          int64 blue = 1;
+
+          // The amount of green in the color as a value in the interval [0, 1].
+          int64 green = 2;
+
+          // The amount of red in the color as a value in the interval [0, 1].
+          int64 red = 3;
+        }
+
+        message SelectedInfoTypes {
+          repeated InfoTypes info_types = 1 [json_name = "info_types"];
+
+          message InfoTypes {
+            // Name of the information type.
+            string name = 1;
+
+            // Version name for this InfoType.
+            string version = 2;
+          }
+        }
+      }
+    }
+
+    message InfoTypeTransformations {
+      repeated Transformations transformations = 1;
+
+      message Transformations {
+        repeated InfoTypes info_types = 1 [json_name = "info_types"];
+
+        PrimitiveTransformation primitive_transformation = 2 [json_name = "primitive_transformation"];
+
+        message InfoTypes {
+          // Name of the information type.
+          string name = 1;
+
+          // Version name for this InfoType.
+          string version = 2;
+        }
+
+        message PrimitiveTransformation {
+          // Replace each matching finding with the name of the info type.
+          bool replace_with_info_type_config = 1 [json_name = "replace_with_info_type_config"];
+
+          BucketingConfig bucketing_config = 2 [json_name = "bucketing_config"];
+
+          CharacterMaskConfig character_mask_config = 3 [json_name = "character_mask_config"];
+
+          CryptoDeterministicConfig crypto_deterministic_config = 4 [json_name = "crypto_deterministic_config"];
+
+          CryptoReplaceFfxFpeConfig crypto_replace_ffx_fpe_config = 5 [json_name = "crypto_replace_ffx_fpe_config"];
+
+          DateShiftConfig date_shift_config = 6 [json_name = "date_shift_config"];
+
+          FixedSizeBucketingConfig fixed_size_bucketing_config = 7 [json_name = "fixed_size_bucketing_config"];
+
+          RedactConfig redact_config = 8 [json_name = "redact_config"];
+
+          ReplaceConfig replace_config = 9 [json_name = "replace_config"];
+
+          ReplaceDictionaryConfig replace_dictionary_config = 10 [json_name = "replace_dictionary_config"];
+
+          TimePartConfig time_part_config = 11 [json_name = "time_part_config"];
+
+          message BucketingConfig {
+            repeated Buckets buckets = 1;
+
+            message Buckets {
+              Max max = 1;
+
+              Min min = 2;
+
+              ReplacementValue replacement_value = 3 [json_name = "replacement_value"];
+
+              message Max {
+                // Represents a day of the week. Possible values: ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"]
+                string day_of_week_value = 1 [json_name = "day_of_week_value"];
+
+                // A float value.
+                int64 float_value = 2 [json_name = "float_value"];
+
+                // An integer value (int64 format)
+                string integer_value = 3 [json_name = "integer_value"];
+
+                // A string value.
+                string string_value = 4 [json_name = "string_value"];
+
+                // A timestamp in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits. Examples: "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z".
+                string timestamp_value = 5 [json_name = "timestamp_value"];
+
+                DateValue date_value = 6 [json_name = "date_value"];
+
+                TimeValue time_value = 7 [json_name = "time_value"];
+
+                message DateValue {
+                  // Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.
+                  int64 day = 1;
+
+                  // Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.
+                  int64 month = 2;
+
+                  // Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.
+                  int64 year = 3;
+                }
+
+                message TimeValue {
+                  // Hours of day in 24 hour format. Should be from 0 to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.
+                  int64 hours = 1;
+
+                  // Minutes of hour of day. Must be from 0 to 59.
+                  int64 minutes = 2;
+
+                  // Fractions of seconds in nanoseconds. Must be from 0 to 999,999,999.
+                  int64 nanos = 3;
+
+                  // Seconds of minutes of the time. Must normally be from 0 to 59. An API may allow the value 60 if it allows leap-seconds.
+                  int64 seconds = 4;
+                }
+              }
+
+              message Min {
+                // Represents a day of the week. Possible values: ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"]
+                string day_of_week_value = 1 [json_name = "day_of_week_value"];
+
+                // A float value.
+                int64 float_value = 2 [json_name = "float_value"];
+
+                // An integer value (int64 format)
+                string integer_value = 3 [json_name = "integer_value"];
+
+                // A string value.
+                string string_value = 4 [json_name = "string_value"];
+
+                // A timestamp in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits. Examples: "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z".
+                string timestamp_value = 5 [json_name = "timestamp_value"];
+
+                DateValue date_value = 6 [json_name = "date_value"];
+
+                TimeValue time_value = 7 [json_name = "time_value"];
+
+                message DateValue {
+                  // Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.
+                  int64 day = 1;
+
+                  // Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.
+                  int64 month = 2;
+
+                  // Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.
+                  int64 year = 3;
+                }
+
+                message TimeValue {
+                  // Hours of day in 24 hour format. Should be from 0 to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.
+                  int64 hours = 1;
+
+                  // Minutes of hour of day. Must be from 0 to 59.
+                  int64 minutes = 2;
+
+                  // Fractions of seconds in nanoseconds. Must be from 0 to 999,999,999.
+                  int64 nanos = 3;
+
+                  // Seconds of minutes of the time. Must normally be from 0 to 59. An API may allow the value 60 if it allows leap-seconds.
+                  int64 seconds = 4;
+                }
+              }
+
+              message ReplacementValue {
+                // Represents a day of the week. Possible values: ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"]
+                string day_of_week_value = 1 [json_name = "day_of_week_value"];
+
+                // A float value.
+                int64 float_value = 2 [json_name = "float_value"];
+
+                // An integer value (int64 format)
+                string integer_value = 3 [json_name = "integer_value"];
+
+                // A string value.
+                string string_value = 4 [json_name = "string_value"];
+
+                // A timestamp in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits. Examples: "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z".
+                string timestamp_value = 5 [json_name = "timestamp_value"];
+
+                DateValue date_value = 6 [json_name = "date_value"];
+
+                TimeValue time_value = 7 [json_name = "time_value"];
+
+                message DateValue {
+                  // Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.
+                  int64 day = 1;
+
+                  // Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.
+                  int64 month = 2;
+
+                  // Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.
+                  int64 year = 3;
+                }
+
+                message TimeValue {
+                  // Hours of day in 24 hour format. Should be from 0 to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.
+                  int64 hours = 1;
+
+                  // Minutes of hour of day. Must be from 0 to 59.
+                  int64 minutes = 2;
+
+                  // Fractions of seconds in nanoseconds. Must be from 0 to 999,999,999.
+                  int64 nanos = 3;
+
+                  // Seconds of minutes of the time. Must normally be from 0 to 59. An API may allow the value 60 if it allows leap-seconds.
+                  int64 seconds = 4;
+                }
+              }
+            }
+          }
+
+          message CharacterMaskConfig {
+            // Character to use to mask the sensitive values—for example, * for an alphabetic string such as a name, or 0 for a numeric string
+            // such as ZIP code or credit card number. This string must have a length of 1. If not supplied, this value defaults to * for
+            // strings, and 0 for digits.
+            string masking_character = 1 [json_name = "masking_character"];
+
+            // Number of characters to mask. If not set, all matching chars will be masked. Skipped characters do not count towards this tally.
+            int64 number_to_mask = 2 [json_name = "number_to_mask"];
+
+            // Mask characters in reverse order. For example, if masking_character is 0, number_to_mask is 14, and reverse_order is 'false', then the
+            // input string '1234-5678-9012-3456' is masked as '00000000000000-3456'.
+            bool reverse_order = 3 [json_name = "reverse_order"];
+
+            repeated CharactersToIgnore characters_to_ignore = 4 [json_name = "characters_to_ignore"];
+
+            message CharactersToIgnore {
+              // Characters to not transform when masking.
+              string characters_to_skip = 1 [json_name = "characters_to_skip"];
+
+              // Common characters to not transform when masking. Useful to avoid removing punctuation. Possible values: ["NUMERIC", "ALPHA_UPPER_CASE", "ALPHA_LOWER_CASE", "PUNCTUATION", "WHITESPACE"]
+              string common_characters_to_ignore = 2 [json_name = "common_characters_to_ignore"];
+            }
+          }
+
+          message CryptoDeterministicConfig {
+            Context context = 1;
+
+            CryptoKey crypto_key = 2 [json_name = "crypto_key"];
+
+            SurrogateInfoType surrogate_info_type = 3 [json_name = "surrogate_info_type"];
+
+            message Context {
+              // Name describing the field.
+              string name = 1;
+            }
+
+            message CryptoKey {
+              KmsWrapped kms_wrapped = 1 [json_name = "kms_wrapped"];
+
+              Transient transient = 2;
+
+              Unwrapped unwrapped = 3;
+
+              message KmsWrapped {
+                // The resource name of the KMS CryptoKey to use for unwrapping.
+                string crypto_key_name = 1 [json_name = "crypto_key_name"];
+
+                // The wrapped data crypto key.
+                //
+                // A base64-encoded string.
+                string wrapped_key = 2 [json_name = "wrapped_key"];
+              }
+
+              message Transient {
+                // Name of the key. This is an arbitrary string used to differentiate different keys. A unique key is generated per name: two separate 'TransientCryptoKey' protos share the same generated key if their names are the same. When the data crypto key is generated, this name is not used in any way (repeating the api call will result in a different key being generated).
+                string name = 1;
+              }
+
+              message Unwrapped {
+                // A 128/192/256 bit key.
+                //
+                // A base64-encoded string.
+                string key = 1;
+              }
+            }
+
+            message SurrogateInfoType {
+              // Name of the information type. Either a name of your choosing when creating a CustomInfoType, or one of the names listed at [https://cloud.google.com/dlp/docs/infotypes-reference](https://cloud.google.com/dlp/docs/infotypes-reference) when specifying a built-in type. When sending Cloud DLP results to Data Catalog, infoType names should conform to the pattern '[A-Za-z0-9$-_]{1,64}'.
+              string name = 1;
+
+              // Optional version name for this InfoType.
+              string version = 2;
+            }
+          }
+
+          message CryptoReplaceFfxFpeConfig {
+            // Common alphabets. Possible values: ["FFX_COMMON_NATIVE_ALPHABET_UNSPECIFIED", "NUMERIC", "HEXADECIMAL", "UPPER_CASE_ALPHA_NUMERIC", "ALPHA_NUMERIC"]
+            string common_alphabet = 1 [json_name = "common_alphabet"];
+
+            // This is supported by mapping these to the alphanumeric characters that the FFX mode natively supports. This happens before/after encryption/decryption. Each character listed must appear only once. Number of characters must be in the range \[2, 95\]. This must be encoded as ASCII. The order of characters does not matter. The full list of allowed characters is:
+            //
+            // ''0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz ~'!@#$%^&*()_-+={[}]|:;"'<,>.?/''
+            string custom_alphabet = 2 [json_name = "custom_alphabet"];
+
+            // The native way to select the alphabet. Must be in the range \[2, 95\].
+            int64 radix = 3;
+
+            Context context = 4;
+
+            CryptoKey crypto_key = 5 [json_name = "crypto_key"];
+
+            SurrogateInfoType surrogate_info_type = 6 [json_name = "surrogate_info_type"];
+
+            message Context {
+              // Name describing the field.
+              string name = 1;
+            }
+
+            message CryptoKey {
+              KmsWrapped kms_wrapped = 1 [json_name = "kms_wrapped"];
+
+              Transient transient = 2;
+
+              Unwrapped unwrapped = 3;
+
+              message KmsWrapped {
+                // The resource name of the KMS CryptoKey to use for unwrapping.
+                string crypto_key_name = 1 [json_name = "crypto_key_name"];
+
+                // The wrapped data crypto key.
+                //
+                // A base64-encoded string.
+                string wrapped_key = 2 [json_name = "wrapped_key"];
+              }
+
+              message Transient {
+                // Name of the key. This is an arbitrary string used to differentiate different keys. A unique key is generated per name: two separate 'TransientCryptoKey' protos share the same generated key if their names are the same. When the data crypto key is generated, this name is not used in any way (repeating the api call will result in a different key being generated).
+                string name = 1;
+              }
+
+              message Unwrapped {
+                // A 128/192/256 bit key.
+                //
+                // A base64-encoded string.
+                string key = 1;
+              }
+            }
+
+            message SurrogateInfoType {
+              // Name of the information type. Either a name of your choosing when creating a CustomInfoType, or one of the names listed at [https://cloud.google.com/dlp/docs/infotypes-reference](https://cloud.google.com/dlp/docs/infotypes-reference) when specifying a built-in type. When sending Cloud DLP results to Data Catalog, infoType names should conform to the pattern '[A-Za-z0-9$-_]{1,64}'.
+              string name = 1;
+
+              // Optional version name for this InfoType.
+              string version = 2;
+            }
+          }
+
+          message DateShiftConfig {
+            // Range of shift in days. Negative means shift to earlier in time.
+            int64 lower_bound_days = 1 [json_name = "lower_bound_days"];
+
+            // Range of shift in days. Actual shift will be selected at random within this range (inclusive ends).
+            // Negative means shift to earlier in time. Must not be more than 365250 days (1000 years) each direction.
+            int64 upper_bound_days = 2 [json_name = "upper_bound_days"];
+
+            Context context = 3;
+
+            CryptoKey crypto_key = 4 [json_name = "crypto_key"];
+
+            message Context {
+              // Name describing the field.
+              string name = 1;
+            }
+
+            message CryptoKey {
+              KmsWrapped kms_wrapped = 1 [json_name = "kms_wrapped"];
+
+              Transient transient = 2;
+
+              Unwrapped unwrapped = 3;
+
+              message KmsWrapped {
+                // The resource name of the KMS CryptoKey to use for unwrapping.
+                string crypto_key_name = 1 [json_name = "crypto_key_name"];
+
+                // The wrapped data crypto key.
+                // A base64-encoded string.
+                string wrapped_key = 2 [json_name = "wrapped_key"];
+              }
+
+              message Transient {
+                // Name of the key. This is an arbitrary string used to differentiate different keys. A unique key is generated per name: two separate 'TransientCryptoKey' protos share the same generated key if their names are the same. When the data crypto key is generated, this name is not used in any way (repeating the api call will result in a different key being generated).
+                string name = 1;
+              }
+
+              message Unwrapped {
+                // A 128/192/256 bit key.
+                // A base64-encoded string.
+                string key = 1;
+              }
+            }
+          }
+
+          message FixedSizeBucketingConfig {
+            // Size of each bucket (except for minimum and maximum buckets).
+            // So if lower_bound = 10, upper_bound = 89, and bucketSize = 10, then the following buckets would be used: -10, 10-20, 20-30, 30-40, 40-50, 50-60, 60-70, 70-80, 80-89, 89+.
+            // Precision up to 2 decimals works.
+            int64 bucket_size = 1 [json_name = "bucket_size"];
+
+            LowerBound lower_bound = 2 [json_name = "lower_bound"];
+
+            UpperBound upper_bound = 3 [json_name = "upper_bound"];
+
+            message LowerBound {
+              // A float value.
+              int64 float_value = 1 [json_name = "float_value"];
+
+              // An integer value (int64 format)
+              string integer_value = 2 [json_name = "integer_value"];
+            }
+
+            message UpperBound {
+              // A float value.
+              int64 float_value = 1 [json_name = "float_value"];
+
+              // An integer value (int64 format)
+              string integer_value = 2 [json_name = "integer_value"];
+            }
+          }
+
+          message RedactConfig {
+          }
+
+          message ReplaceConfig {
+            NewValue new_value = 1 [json_name = "new_value"];
+
+            message NewValue {
+              // A boolean value.
+              bool boolean_value = 1 [json_name = "boolean_value"];
+
+              // Represents a day of the week. Possible values: ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"]
+              string day_of_week_value = 2 [json_name = "day_of_week_value"];
+
+              // A float value.
+              int64 float_value = 3 [json_name = "float_value"];
+
+              // An integer value.
+              int64 integer_value = 4 [json_name = "integer_value"];
+
+              // A string value.
+              string string_value = 5 [json_name = "string_value"];
+
+              // A timestamp in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits.
+              // Examples: "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z".
+              string timestamp_value = 6 [json_name = "timestamp_value"];
+
+              DateValue date_value = 7 [json_name = "date_value"];
+
+              TimeValue time_value = 8 [json_name = "time_value"];
+
+              message DateValue {
+                // Day of month. Must be from 1 to 31 and valid for the year and month, or 0 if specifying a
+                // year by itself or a year and month where the day is not significant.
+                int64 day = 1;
+
+                // Month of year. Must be from 1 to 12, or 0 if specifying a year without a month and day.
+                int64 month = 2;
+
+                // Year of date. Must be from 1 to 9999, or 0 if specifying a date without a year.
+                int64 year = 3;
+              }
+
+              message TimeValue {
+                // Hours of day in 24 hour format. Should be from 0 to 23.
+                int64 hours = 1;
+
+                // Minutes of hour of day. Must be from 0 to 59.
+                int64 minutes = 2;
+
+                // Fractions of seconds in nanoseconds. Must be from 0 to 999,999,999.
+                int64 nanos = 3;
+
+                // Seconds of minutes of the time. Must normally be from 0 to 59.
+                int64 seconds = 4;
+              }
+            }
+          }
+
+          message ReplaceDictionaryConfig {
+            WordList word_list = 1 [json_name = "word_list"];
+
+            message WordList {
+              // Words or phrases defining the dictionary. The dictionary must contain at least one phrase and every phrase must contain at least 2 characters that are letters or digits.
+              repeated string words = 1;
+            }
+          }
+
+          message TimePartConfig {
+            // The part of the time to keep. Possible values: ["YEAR", "MONTH", "DAY_OF_MONTH", "DAY_OF_WEEK", "WEEK_OF_YEAR", "HOUR_OF_DAY"]
+            string part_to_extract = 1 [json_name = "part_to_extract"];
+          }
+        }
+      }
+    }
+
+    message RecordTransformations {
+      repeated FieldTransformations field_transformations = 1 [json_name = "field_transformations"];
+
+      repeated RecordSuppressions record_suppressions = 2 [json_name = "record_suppressions"];
+
+      message FieldTransformations {
+        Condition condition = 1;
+
+        repeated Fields fields = 2;
+
+        InfoTypeTransformations info_type_transformations = 3 [json_name = "info_type_transformations"];
+
+        PrimitiveTransformation primitive_transformation = 4 [json_name = "primitive_transformation"];
+
+        message Condition {
+          Expressions expressions = 1;
+
+          message Expressions {
+            // The operator to apply to the result of conditions. Default and currently only supported value is AND Default value: "AND" Possible values: ["AND"]
+            string logical_operator = 1 [json_name = "logical_operator"];
+
+            Conditions conditions = 2;
+
+            message Conditions {
+              repeated Conditions conditions = 1;
+
+              message Conditions {
+                // Operator used to compare the field or infoType to the value. Possible values: ["EQUAL_TO", "NOT_EQUAL_TO", "GREATER_THAN", "LESS_THAN", "GREATER_THAN_OR_EQUALS", "LESS_THAN_OR_EQUALS", "EXISTS"]
+                string operator = 1;
+
+                Field field = 2;
+
+                Value value = 3;
+
+                message Field {
+                  // Name describing the field.
+                  string name = 1;
+                }
+
+                message Value {
+                  // A boolean value.
+                  bool boolean_value = 1 [json_name = "boolean_value"];
+
+                  // Represents a day of the week. Possible values: ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"]
+                  string day_of_week_value = 2 [json_name = "day_of_week_value"];
+
+                  // A float value.
+                  int64 float_value = 3 [json_name = "float_value"];
+
+                  // An integer value (int64 format)
+                  string integer_value = 4 [json_name = "integer_value"];
+
+                  // A string value.
+                  string string_value = 5 [json_name = "string_value"];
+
+                  // A timestamp in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits. Examples: "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z".
+                  string timestamp_value = 6 [json_name = "timestamp_value"];
+
+                  DateValue date_value = 7 [json_name = "date_value"];
+
+                  TimeValue time_value = 8 [json_name = "time_value"];
+
+                  message DateValue {
+                    // Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.
+                    int64 day = 1;
+
+                    // Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.
+                    int64 month = 2;
+
+                    // Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.
+                    int64 year = 3;
+                  }
+
+                  message TimeValue {
+                    // Hours of day in 24 hour format. Should be from 0 to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.
+                    int64 hours = 1;
+
+                    // Minutes of hour of day. Must be from 0 to 59.
+                    int64 minutes = 2;
+
+                    // Fractions of seconds in nanoseconds. Must be from 0 to 999,999,999.
+                    int64 nanos = 3;
+
+                    // Seconds of minutes of the time. Must normally be from 0 to 59. An API may allow the value 60 if it allows leap-seconds.
+                    int64 seconds = 4;
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        message Fields {
+          // Name describing the field.
+          string name = 1;
+        }
+
+        message InfoTypeTransformations {
+          repeated Transformations transformations = 1;
+
+          message Transformations {
+            repeated InfoTypes info_types = 1 [json_name = "info_types"];
+
+            PrimitiveTransformation primitive_transformation = 2 [json_name = "primitive_transformation"];
+
+            message InfoTypes {
+              // Name of the information type.
+              string name = 1;
+
+              // Version name for this InfoType.
+              string version = 2;
+            }
+
+            message PrimitiveTransformation {
+              BucketingConfig bucketing_config = 1 [json_name = "bucketing_config"];
+
+              CharacterMaskConfig character_mask_config = 2 [json_name = "character_mask_config"];
+
+              CryptoDeterministicConfig crypto_deterministic_config = 3 [json_name = "crypto_deterministic_config"];
+
+              CryptoHashConfig crypto_hash_config = 4 [json_name = "crypto_hash_config"];
+
+              CryptoReplaceFfxFpeConfig crypto_replace_ffx_fpe_config = 5 [json_name = "crypto_replace_ffx_fpe_config"];
+
+              DateShiftConfig date_shift_config = 6 [json_name = "date_shift_config"];
+
+              FixedSizeBucketingConfig fixed_size_bucketing_config = 7 [json_name = "fixed_size_bucketing_config"];
+
+              RedactConfig redact_config = 8 [json_name = "redact_config"];
+
+              ReplaceConfig replace_config = 9 [json_name = "replace_config"];
+
+              ReplaceDictionaryConfig replace_dictionary_config = 10 [json_name = "replace_dictionary_config"];
+
+              ReplaceWithInfoTypeConfig replace_with_info_type_config = 11 [json_name = "replace_with_info_type_config"];
+
+              TimePartConfig time_part_config = 12 [json_name = "time_part_config"];
+
+              message BucketingConfig {
+                repeated Buckets buckets = 1;
+
+                message Buckets {
+                  Max max = 1;
+
+                  Min min = 2;
+
+                  ReplacementValue replacement_value = 3 [json_name = "replacement_value"];
+
+                  message Max {
+                    // Represents a day of the week. Possible values: ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"]
+                    string day_of_week_value = 1 [json_name = "day_of_week_value"];
+
+                    // A float value.
+                    int64 float_value = 2 [json_name = "float_value"];
+
+                    // An integer value (int64 format)
+                    string integer_value = 3 [json_name = "integer_value"];
+
+                    // A string value.
+                    string string_value = 4 [json_name = "string_value"];
+
+                    // A timestamp in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits. Examples: "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z".
+                    string timestamp_value = 5 [json_name = "timestamp_value"];
+
+                    DateValue date_value = 6 [json_name = "date_value"];
+
+                    TimeValue time_value = 7 [json_name = "time_value"];
+
+                    message DateValue {
+                      // Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.
+                      int64 day = 1;
+
+                      // Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.
+                      int64 month = 2;
+
+                      // Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.
+                      int64 year = 3;
+                    }
+
+                    message TimeValue {
+                      // Hours of day in 24 hour format. Should be from 0 to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.
+                      int64 hours = 1;
+
+                      // Minutes of hour of day. Must be from 0 to 59.
+                      int64 minutes = 2;
+
+                      // Fractions of seconds in nanoseconds. Must be from 0 to 999,999,999.
+                      int64 nanos = 3;
+
+                      // Seconds of minutes of the time. Must normally be from 0 to 59. An API may allow the value 60 if it allows leap-seconds.
+                      int64 seconds = 4;
+                    }
+                  }
+
+                  message Min {
+                    // Represents a day of the week. Possible values: ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"]
+                    string day_of_week_value = 1 [json_name = "day_of_week_value"];
+
+                    // A float value.
+                    int64 float_value = 2 [json_name = "float_value"];
+
+                    // An integer value (int64 format)
+                    string integer_value = 3 [json_name = "integer_value"];
+
+                    // A string value.
+                    string string_value = 4 [json_name = "string_value"];
+
+                    // A timestamp in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits. Examples: "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z".
+                    string timestamp_value = 5 [json_name = "timestamp_value"];
+
+                    DateValue date_value = 6 [json_name = "date_value"];
+
+                    TimeValue time_value = 7 [json_name = "time_value"];
+
+                    message DateValue {
+                      // Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.
+                      int64 day = 1;
+
+                      // Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.
+                      int64 month = 2;
+
+                      // Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.
+                      int64 year = 3;
+                    }
+
+                    message TimeValue {
+                      // Hours of day in 24 hour format. Should be from 0 to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.
+                      int64 hours = 1;
+
+                      // Minutes of hour of day. Must be from 0 to 59.
+                      int64 minutes = 2;
+
+                      // Fractions of seconds in nanoseconds. Must be from 0 to 999,999,999.
+                      int64 nanos = 3;
+
+                      // Seconds of minutes of the time. Must normally be from 0 to 59. An API may allow the value 60 if it allows leap-seconds.
+                      int64 seconds = 4;
+                    }
+                  }
+
+                  message ReplacementValue {
+                    // Represents a day of the week. Possible values: ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"]
+                    string day_of_week_value = 1 [json_name = "day_of_week_value"];
+
+                    // A float value.
+                    int64 float_value = 2 [json_name = "float_value"];
+
+                    // An integer value (int64 format)
+                    string integer_value = 3 [json_name = "integer_value"];
+
+                    // A string value.
+                    string string_value = 4 [json_name = "string_value"];
+
+                    // A timestamp in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits. Examples: "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z".
+                    string timestamp_value = 5 [json_name = "timestamp_value"];
+
+                    DateValue date_value = 6 [json_name = "date_value"];
+
+                    TimeValue time_value = 7 [json_name = "time_value"];
+
+                    message DateValue {
+                      // Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.
+                      int64 day = 1;
+
+                      // Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.
+                      int64 month = 2;
+
+                      // Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.
+                      int64 year = 3;
+                    }
+
+                    message TimeValue {
+                      // Hours of day in 24 hour format. Should be from 0 to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.
+                      int64 hours = 1;
+
+                      // Minutes of hour of day. Must be from 0 to 59.
+                      int64 minutes = 2;
+
+                      // Fractions of seconds in nanoseconds. Must be from 0 to 999,999,999.
+                      int64 nanos = 3;
+
+                      // Seconds of minutes of the time. Must normally be from 0 to 59. An API may allow the value 60 if it allows leap-seconds.
+                      int64 seconds = 4;
+                    }
+                  }
+                }
+              }
+
+              message CharacterMaskConfig {
+                // Character to use to mask the sensitive values—for example, * for an alphabetic string such as a name, or 0 for a numeric string
+                // such as ZIP code or credit card number. This string must have a length of 1. If not supplied, this value defaults to * for
+                // strings, and 0 for digits.
+                string masking_character = 1 [json_name = "masking_character"];
+
+                // Number of characters to mask. If not set, all matching chars will be masked. Skipped characters do not count towards this tally.
+                // If number_to_mask is negative, this denotes inverse masking. Cloud DLP masks all but a number of characters. For example, suppose you have the following values:
+                // - 'masking_character' is *
+                // - 'number_to_mask' is -4
+                // - 'reverse_order' is false
+                // - 'characters_to_ignore' includes -
+                // - Input string is 1234-5678-9012-3456
+                //
+                // The resulting de-identified string is ****-****-****-3456. Cloud DLP masks all but the last four characters. If reverseOrder is true, all but the first four characters are masked as 1234-****-****-****.
+                int64 number_to_mask = 2 [json_name = "number_to_mask"];
+
+                // Mask characters in reverse order. For example, if masking_character is 0, number_to_mask is 14, and reverse_order is 'false', then the
+                // input string '1234-5678-9012-3456' is masked as '00000000000000-3456'.
+                bool reverse_order = 3 [json_name = "reverse_order"];
+
+                repeated CharactersToIgnore characters_to_ignore = 4 [json_name = "characters_to_ignore"];
+
+                message CharactersToIgnore {
+                  // Characters to not transform when masking. Only one of this or 'common_characters_to_ignore' must be specified.
+                  string characters_to_skip = 1 [json_name = "characters_to_skip"];
+
+                  // Common characters to not transform when masking. Useful to avoid removing punctuation. Only one of this or 'characters_to_skip' must be specified. Possible values: ["NUMERIC", "ALPHA_UPPER_CASE", "ALPHA_LOWER_CASE", "PUNCTUATION", "WHITESPACE"]
+                  string common_characters_to_ignore = 2 [json_name = "common_characters_to_ignore"];
+                }
+              }
+
+              message CryptoDeterministicConfig {
+                Context context = 1;
+
+                CryptoKey crypto_key = 2 [json_name = "crypto_key"];
+
+                SurrogateInfoType surrogate_info_type = 3 [json_name = "surrogate_info_type"];
+
+                message Context {
+                  // Name describing the field.
+                  string name = 1;
+                }
+
+                message CryptoKey {
+                  KmsWrapped kms_wrapped = 1 [json_name = "kms_wrapped"];
+
+                  Transient transient = 2;
+
+                  Unwrapped unwrapped = 3;
+
+                  message KmsWrapped {
+                    // The resource name of the KMS CryptoKey to use for unwrapping.
+                    string crypto_key_name = 1 [json_name = "crypto_key_name"];
+
+                    // The wrapped data crypto key.
+                    //
+                    // A base64-encoded string.
+                    string wrapped_key = 2 [json_name = "wrapped_key"];
+                  }
+
+                  message Transient {
+                    // Name of the key. This is an arbitrary string used to differentiate different keys. A unique key is generated per name: two separate 'TransientCryptoKey' protos share the same generated key if their names are the same. When the data crypto key is generated, this name is not used in any way (repeating the api call will result in a different key being generated).
+                    string name = 1;
+                  }
+
+                  message Unwrapped {
+                    // A 128/192/256 bit key.
+                    //
+                    // A base64-encoded string.
+                    string key = 1;
+                  }
+                }
+
+                message SurrogateInfoType {
+                  // Name of the information type. Either a name of your choosing when creating a CustomInfoType, or one of the names listed at [https://cloud.google.com/dlp/docs/infotypes-reference](https://cloud.google.com/dlp/docs/infotypes-reference) when specifying a built-in type. When sending Cloud DLP results to Data Catalog, infoType names should conform to the pattern '[A-Za-z0-9$-_]{1,64}'.
+                  string name = 1;
+
+                  // Optional version name for this InfoType.
+                  string version = 2;
+                }
+              }
+
+              message CryptoHashConfig {
+                CryptoKey crypto_key = 1 [json_name = "crypto_key"];
+
+                message CryptoKey {
+                  KmsWrapped kms_wrapped = 1 [json_name = "kms_wrapped"];
+
+                  Transient transient = 2;
+
+                  Unwrapped unwrapped = 3;
+
+                  message KmsWrapped {
+                    // The resource name of the KMS CryptoKey to use for unwrapping.
+                    string crypto_key_name = 1 [json_name = "crypto_key_name"];
+
+                    // The wrapped data crypto key.
+                    //
+                    // A base64-encoded string.
+                    string wrapped_key = 2 [json_name = "wrapped_key"];
+                  }
+
+                  message Transient {
+                    // Name of the key. This is an arbitrary string used to differentiate different keys. A unique key is generated per name: two separate 'TransientCryptoKey' protos share the same generated key if their names are the same. When the data crypto key is generated, this name is not used in any way (repeating the api call will result in a different key being generated).
+                    string name = 1;
+                  }
+
+                  message Unwrapped {
+                    // A 128/192/256 bit key.
+                    //
+                    // A base64-encoded string.
+                    string key = 1;
+                  }
+                }
+              }
+
+              message CryptoReplaceFfxFpeConfig {
+                // Common alphabets. Only one of this, 'custom_alphabet' or 'radix' must be specified. Possible values: ["NUMERIC", "HEXADECIMAL", "UPPER_CASE_ALPHA_NUMERIC", "ALPHA_NUMERIC"]
+                string common_alphabet = 1 [json_name = "common_alphabet"];
+
+                // This is supported by mapping these to the alphanumeric characters that the FFX mode natively supports. This happens before/after encryption/decryption. Each character listed must appear only once. Number of characters must be in the range \[2, 95\]. This must be encoded as ASCII. The order of characters does not matter. The full list of allowed characters is:
+                //
+                // ''0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz ~'!@#$%^&*()_-+={[}]|:;"'<,>.?/''. Only one of this, 'common_alphabet' or 'radix' must be specified.
+                string custom_alphabet = 2 [json_name = "custom_alphabet"];
+
+                // The native way to select the alphabet. Must be in the range \[2, 95\]. Only one of this, 'custom_alphabet' or 'common_alphabet' must be specified.
+                int64 radix = 3;
+
+                Context context = 4;
+
+                CryptoKey crypto_key = 5 [json_name = "crypto_key"];
+
+                SurrogateInfoType surrogate_info_type = 6 [json_name = "surrogate_info_type"];
+
+                message Context {
+                  // Name describing the field.
+                  string name = 1;
+                }
+
+                message CryptoKey {
+                  KmsWrapped kms_wrapped = 1 [json_name = "kms_wrapped"];
+
+                  Transient transient = 2;
+
+                  Unwrapped unwrapped = 3;
+
+                  message KmsWrapped {
+                    // The resource name of the KMS CryptoKey to use for unwrapping.
+                    string crypto_key_name = 1 [json_name = "crypto_key_name"];
+
+                    // The wrapped data crypto key.
+                    //
+                    // A base64-encoded string.
+                    string wrapped_key = 2 [json_name = "wrapped_key"];
+                  }
+
+                  message Transient {
+                    // Name of the key. This is an arbitrary string used to differentiate different keys. A unique key is generated per name: two separate 'TransientCryptoKey' protos share the same generated key if their names are the same. When the data crypto key is generated, this name is not used in any way (repeating the api call will result in a different key being generated).
+                    string name = 1;
+                  }
+
+                  message Unwrapped {
+                    // A 128/192/256 bit key.
+                    //
+                    // A base64-encoded string.
+                    string key = 1;
+                  }
+                }
+
+                message SurrogateInfoType {
+                  // Name of the information type. Either a name of your choosing when creating a CustomInfoType, or one of the names listed at [https://cloud.google.com/dlp/docs/infotypes-reference](https://cloud.google.com/dlp/docs/infotypes-reference) when specifying a built-in type. When sending Cloud DLP results to Data Catalog, infoType names should conform to the pattern '[A-Za-z0-9$-_]{1,64}'.
+                  string name = 1;
+
+                  // Optional version name for this InfoType.
+                  string version = 2;
+                }
+              }
+
+              message DateShiftConfig {
+                // For example, -5 means shift date to at most 5 days back in the past.
+                int64 lower_bound_days = 1 [json_name = "lower_bound_days"];
+
+                // Range of shift in days. Actual shift will be selected at random within this range (inclusive ends). Negative means shift to earlier in time. Must not be more than 365250 days (1000 years) each direction.
+                //
+                // For example, 3 means shift date to at most 3 days into the future.
+                int64 upper_bound_days = 2 [json_name = "upper_bound_days"];
+
+                Context context = 3;
+
+                CryptoKey crypto_key = 4 [json_name = "crypto_key"];
+
+                message Context {
+                  // Name describing the field.
+                  string name = 1;
+                }
+
+                message CryptoKey {
+                  KmsWrapped kms_wrapped = 1 [json_name = "kms_wrapped"];
+
+                  Transient transient = 2;
+
+                  Unwrapped unwrapped = 3;
+
+                  message KmsWrapped {
+                    // The resource name of the KMS CryptoKey to use for unwrapping.
+                    string crypto_key_name = 1 [json_name = "crypto_key_name"];
+
+                    // The wrapped data crypto key.
+                    //
+                    // A base64-encoded string.
+                    string wrapped_key = 2 [json_name = "wrapped_key"];
+                  }
+
+                  message Transient {
+                    // Name of the key. This is an arbitrary string used to differentiate different keys. A unique key is generated per name: two separate 'TransientCryptoKey' protos share the same generated key if their names are the same. When the data crypto key is generated, this name is not used in any way (repeating the api call will result in a different key being generated).
+                    string name = 1;
+                  }
+
+                  message Unwrapped {
+                    // A 128/192/256 bit key.
+                    //
+                    // A base64-encoded string.
+                    string key = 1;
+                  }
+                }
+              }
+
+              message FixedSizeBucketingConfig {
+                // Size of each bucket (except for minimum and maximum buckets).
+                // So if lower_bound = 10, upper_bound = 89, and bucketSize = 10, then the following buckets would be used: -10, 10-20, 20-30, 30-40, 40-50, 50-60, 60-70, 70-80, 80-89, 89+.
+                // Precision up to 2 decimals works.
+                int64 bucket_size = 1 [json_name = "bucket_size"];
+
+                LowerBound lower_bound = 2 [json_name = "lower_bound"];
+
+                UpperBound upper_bound = 3 [json_name = "upper_bound"];
+
+                message LowerBound {
+                  // A float value.
+                  int64 float_value = 1 [json_name = "float_value"];
+
+                  // An integer value (int64 format)
+                  string integer_value = 2 [json_name = "integer_value"];
+                }
+
+                message UpperBound {
+                  // A float value.
+                  int64 float_value = 1 [json_name = "float_value"];
+
+                  // An integer value (int64 format)
+                  string integer_value = 2 [json_name = "integer_value"];
+                }
+              }
+
+              message RedactConfig {
+              }
+
+              message ReplaceConfig {
+                NewValue new_value = 1 [json_name = "new_value"];
+
+                message NewValue {
+                  // A boolean value.
+                  bool boolean_value = 1 [json_name = "boolean_value"];
+
+                  // Represents a day of the week. Possible values: ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"]
+                  string day_of_week_value = 2 [json_name = "day_of_week_value"];
+
+                  // A float value.
+                  int64 float_value = 3 [json_name = "float_value"];
+
+                  // An integer value (int64 format)
+                  string integer_value = 4 [json_name = "integer_value"];
+
+                  // A string value.
+                  string string_value = 5 [json_name = "string_value"];
+
+                  // A timestamp in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits.
+                  // Examples: "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z".
+                  string timestamp_value = 6 [json_name = "timestamp_value"];
+
+                  DateValue date_value = 7 [json_name = "date_value"];
+
+                  TimeValue time_value = 8 [json_name = "time_value"];
+
+                  message DateValue {
+                    // Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.
+                    int64 day = 1;
+
+                    // Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.
+                    int64 month = 2;
+
+                    // Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.
+                    int64 year = 3;
+                  }
+
+                  message TimeValue {
+                    // Hours of day in 24 hour format. Should be from 0 to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.
+                    int64 hours = 1;
+
+                    // Minutes of hour of day. Must be from 0 to 59.
+                    int64 minutes = 2;
+
+                    // Fractions of seconds in nanoseconds. Must be from 0 to 999,999,999.
+                    int64 nanos = 3;
+
+                    // Seconds of minutes of the time. Must normally be from 0 to 59. An API may allow the value 60 if it allows leap-seconds.
+                    int64 seconds = 4;
+                  }
+                }
+              }
+
+              message ReplaceDictionaryConfig {
+                WordList word_list = 1 [json_name = "word_list"];
+
+                message WordList {
+                  // Words or phrases defining the dictionary. The dictionary must contain at least one phrase and every phrase must contain at least 2 characters that are letters or digits.
+                  repeated string words = 1;
+                }
+              }
+
+              message ReplaceWithInfoTypeConfig {
+              }
+
+              message TimePartConfig {
+                // The part of the time to keep. Possible values: ["YEAR", "MONTH", "DAY_OF_MONTH", "DAY_OF_WEEK", "WEEK_OF_YEAR", "HOUR_OF_DAY"]
+                string part_to_extract = 1 [json_name = "part_to_extract"];
+              }
+            }
+          }
+        }
+
+        message PrimitiveTransformation {
+          BucketingConfig bucketing_config = 1 [json_name = "bucketing_config"];
+
+          CharacterMaskConfig character_mask_config = 2 [json_name = "character_mask_config"];
+
+          CryptoDeterministicConfig crypto_deterministic_config = 3 [json_name = "crypto_deterministic_config"];
+
+          CryptoHashConfig crypto_hash_config = 4 [json_name = "crypto_hash_config"];
+
+          CryptoReplaceFfxFpeConfig crypto_replace_ffx_fpe_config = 5 [json_name = "crypto_replace_ffx_fpe_config"];
+
+          DateShiftConfig date_shift_config = 6 [json_name = "date_shift_config"];
+
+          FixedSizeBucketingConfig fixed_size_bucketing_config = 7 [json_name = "fixed_size_bucketing_config"];
+
+          RedactConfig redact_config = 8 [json_name = "redact_config"];
+
+          ReplaceConfig replace_config = 9 [json_name = "replace_config"];
+
+          ReplaceDictionaryConfig replace_dictionary_config = 10 [json_name = "replace_dictionary_config"];
+
+          TimePartConfig time_part_config = 11 [json_name = "time_part_config"];
+
+          message BucketingConfig {
+            repeated Buckets buckets = 1;
+
+            message Buckets {
+              Max max = 1;
+
+              Min min = 2;
+
+              ReplacementValue replacement_value = 3 [json_name = "replacement_value"];
+
+              message Max {
+                // A boolean value.
+                bool boolean_value = 1 [json_name = "boolean_value"];
+
+                // Represents a day of the week. Possible values: ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"]
+                string day_of_week_value = 2 [json_name = "day_of_week_value"];
+
+                // A float value.
+                int64 float_value = 3 [json_name = "float_value"];
+
+                // An integer value (int64 format)
+                string integer_value = 4 [json_name = "integer_value"];
+
+                // A string value.
+                string string_value = 5 [json_name = "string_value"];
+
+                // A timestamp in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits. Examples: "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z".
+                string timestamp_value = 6 [json_name = "timestamp_value"];
+
+                DateValue date_value = 7 [json_name = "date_value"];
+
+                TimeValue time_value = 8 [json_name = "time_value"];
+
+                message DateValue {
+                  // Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.
+                  int64 day = 1;
+
+                  // Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.
+                  int64 month = 2;
+
+                  // Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.
+                  int64 year = 3;
+                }
+
+                message TimeValue {
+                  // Hours of day in 24 hour format. Should be from 0 to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.
+                  int64 hours = 1;
+
+                  // Minutes of hour of day. Must be from 0 to 59.
+                  int64 minutes = 2;
+
+                  // Fractions of seconds in nanoseconds. Must be from 0 to 999,999,999.
+                  int64 nanos = 3;
+
+                  // Seconds of minutes of the time. Must normally be from 0 to 59. An API may allow the value 60 if it allows leap-seconds.
+                  int64 seconds = 4;
+                }
+              }
+
+              message Min {
+                // A boolean value.
+                bool boolean_value = 1 [json_name = "boolean_value"];
+
+                // Represents a day of the week. Possible values: ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"]
+                string day_of_week_value = 2 [json_name = "day_of_week_value"];
+
+                // A float value.
+                int64 float_value = 3 [json_name = "float_value"];
+
+                // An integer value (int64 format)
+                string integer_value = 4 [json_name = "integer_value"];
+
+                // A string value.
+                string string_value = 5 [json_name = "string_value"];
+
+                // A timestamp in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits. Examples: "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z".
+                string timestamp_value = 6 [json_name = "timestamp_value"];
+
+                DateValue date_value = 7 [json_name = "date_value"];
+
+                TimeValue time_value = 8 [json_name = "time_value"];
+
+                message DateValue {
+                  // Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.
+                  int64 day = 1;
+
+                  // Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.
+                  int64 month = 2;
+
+                  // Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.
+                  int64 year = 3;
+                }
+
+                message TimeValue {
+                  // Hours of day in 24 hour format. Should be from 0 to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.
+                  int64 hours = 1;
+
+                  // Minutes of hour of day. Must be from 0 to 59.
+                  int64 minutes = 2;
+
+                  // Fractions of seconds in nanoseconds. Must be from 0 to 999,999,999.
+                  int64 nanos = 3;
+
+                  // Seconds of minutes of the time. Must normally be from 0 to 59. An API may allow the value 60 if it allows leap-seconds.
+                  int64 seconds = 4;
+                }
+              }
+
+              message ReplacementValue {
+                // A boolean value.
+                bool boolean_value = 1 [json_name = "boolean_value"];
+
+                // Represents a day of the week. Possible values: ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"]
+                string day_of_week_value = 2 [json_name = "day_of_week_value"];
+
+                // A float value.
+                int64 float_value = 3 [json_name = "float_value"];
+
+                // An integer value (int64 format)
+                string integer_value = 4 [json_name = "integer_value"];
+
+                // A string value.
+                string string_value = 5 [json_name = "string_value"];
+
+                // A timestamp in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits. Examples: "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z".
+                string timestamp_value = 6 [json_name = "timestamp_value"];
+
+                DateValue date_value = 7 [json_name = "date_value"];
+
+                TimeValue time_value = 8 [json_name = "time_value"];
+
+                message DateValue {
+                  // Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.
+                  int64 day = 1;
+
+                  // Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.
+                  int64 month = 2;
+
+                  // Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.
+                  int64 year = 3;
+                }
+
+                message TimeValue {
+                  // Hours of day in 24 hour format. Should be from 0 to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.
+                  int64 hours = 1;
+
+                  // Minutes of hour of day. Must be from 0 to 59.
+                  int64 minutes = 2;
+
+                  // Fractions of seconds in nanoseconds. Must be from 0 to 999,999,999.
+                  int64 nanos = 3;
+
+                  // Seconds of minutes of the time. Must normally be from 0 to 59. An API may allow the value 60 if it allows leap-seconds.
+                  int64 seconds = 4;
+                }
+              }
+            }
+          }
+
+          message CharacterMaskConfig {
+            // Character to use to mask the sensitive values—for example, * for an alphabetic string such as a name, or 0 for a numeric string
+            // such as ZIP code or credit card number. This string must have a length of 1. If not supplied, this value defaults to * for
+            // strings, and 0 for digits.
+            string masking_character = 1 [json_name = "masking_character"];
+
+            // Number of characters to mask. If not set, all matching chars will be masked. Skipped characters do not count towards this tally.
+            // If number_to_mask is negative, this denotes inverse masking. Cloud DLP masks all but a number of characters. For example, suppose you have the following values:
+            // - 'masking_character' is *
+            // - 'number_to_mask' is -4
+            // - 'reverse_order' is false
+            // - 'characters_to_ignore' includes -
+            // - Input string is 1234-5678-9012-3456
+            //
+            // The resulting de-identified string is ****-****-****-3456. Cloud DLP masks all but the last four characters. If reverseOrder is true, all but the first four characters are masked as 1234-****-****-****.
+            int64 number_to_mask = 2 [json_name = "number_to_mask"];
+
+            // Mask characters in reverse order. For example, if masking_character is 0, number_to_mask is 14, and reverse_order is 'false', then the
+            // input string '1234-5678-9012-3456' is masked as '00000000000000-3456'.
+            bool reverse_order = 3 [json_name = "reverse_order"];
+
+            repeated CharactersToIgnore characters_to_ignore = 4 [json_name = "characters_to_ignore"];
+
+            message CharactersToIgnore {
+              // Characters to not transform when masking.
+              string characters_to_skip = 1 [json_name = "characters_to_skip"];
+
+              // Common characters to not transform when masking. Useful to avoid removing punctuation. Possible values: ["NUMERIC", "ALPHA_UPPER_CASE", "ALPHA_LOWER_CASE", "PUNCTUATION", "WHITESPACE"]
+              string common_characters_to_ignore = 2 [json_name = "common_characters_to_ignore"];
+            }
+          }
+
+          message CryptoDeterministicConfig {
+            Context context = 1;
+
+            CryptoKey crypto_key = 2 [json_name = "crypto_key"];
+
+            SurrogateInfoType surrogate_info_type = 3 [json_name = "surrogate_info_type"];
+
+            message Context {
+              // Name describing the field.
+              string name = 1;
+            }
+
+            message CryptoKey {
+              KmsWrapped kms_wrapped = 1 [json_name = "kms_wrapped"];
+
+              Transient transient = 2;
+
+              Unwrapped unwrapped = 3;
+
+              message KmsWrapped {
+                // The resource name of the KMS CryptoKey to use for unwrapping.
+                string crypto_key_name = 1 [json_name = "crypto_key_name"];
+
+                // The wrapped data crypto key.
+                //
+                // A base64-encoded string.
+                string wrapped_key = 2 [json_name = "wrapped_key"];
+              }
+
+              message Transient {
+                // Name of the key. This is an arbitrary string used to differentiate different keys. A unique key is generated per name: two separate 'TransientCryptoKey' protos share the same generated key if their names are the same. When the data crypto key is generated, this name is not used in any way (repeating the api call will result in a different key being generated).
+                string name = 1;
+              }
+
+              message Unwrapped {
+                // A 128/192/256 bit key.
+                //
+                // A base64-encoded string.
+                string key = 1;
+              }
+            }
+
+            message SurrogateInfoType {
+              // Name of the information type. Either a name of your choosing when creating a CustomInfoType, or one of the names listed at [https://cloud.google.com/dlp/docs/infotypes-reference](https://cloud.google.com/dlp/docs/infotypes-reference) when specifying a built-in type. When sending Cloud DLP results to Data Catalog, infoType names should conform to the pattern '[A-Za-z0-9$-_]{1,64}'.
+              string name = 1;
+
+              // Optional version name for this InfoType.
+              string version = 2;
+            }
+          }
+
+          message CryptoHashConfig {
+            CryptoKey crypto_key = 1 [json_name = "crypto_key"];
+
+            message CryptoKey {
+              KmsWrapped kms_wrapped = 1 [json_name = "kms_wrapped"];
+
+              Transient transient = 2;
+
+              Unwrapped unwrapped = 3;
+
+              message KmsWrapped {
+                // The resource name of the KMS CryptoKey to use for unwrapping.
+                string crypto_key_name = 1 [json_name = "crypto_key_name"];
+
+                // The wrapped data crypto key.
+                //
+                // A base64-encoded string.
+                string wrapped_key = 2 [json_name = "wrapped_key"];
+              }
+
+              message Transient {
+                // Name of the key. This is an arbitrary string used to differentiate different keys. A unique key is generated per name: two separate 'TransientCryptoKey' protos share the same generated key if their names are the same. When the data crypto key is generated, this name is not used in any way (repeating the api call will result in a different key being generated).
+                string name = 1;
+              }
+
+              message Unwrapped {
+                // A 128/192/256 bit key.
+                //
+                // A base64-encoded string.
+                string key = 1;
+              }
+            }
+          }
+
+          message CryptoReplaceFfxFpeConfig {
+            // Common alphabets. Possible values: ["FFX_COMMON_NATIVE_ALPHABET_UNSPECIFIED", "NUMERIC", "HEXADECIMAL", "UPPER_CASE_ALPHA_NUMERIC", "ALPHA_NUMERIC"]
+            string common_alphabet = 1 [json_name = "common_alphabet"];
+
+            // This is supported by mapping these to the alphanumeric characters that the FFX mode natively supports. This happens before/after encryption/decryption. Each character listed must appear only once. Number of characters must be in the range \[2, 95\]. This must be encoded as ASCII. The order of characters does not matter. The full list of allowed characters is:
+            //
+            // ''0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz ~'!@#$%^&*()_-+={[}]|:;"'<,>.?/''
+            string custom_alphabet = 2 [json_name = "custom_alphabet"];
+
+            // The native way to select the alphabet. Must be in the range \[2, 95\].
+            int64 radix = 3;
+
+            Context context = 4;
+
+            CryptoKey crypto_key = 5 [json_name = "crypto_key"];
+
+            SurrogateInfoType surrogate_info_type = 6 [json_name = "surrogate_info_type"];
+
+            message Context {
+              // Name describing the field.
+              string name = 1;
+            }
+
+            message CryptoKey {
+              KmsWrapped kms_wrapped = 1 [json_name = "kms_wrapped"];
+
+              Transient transient = 2;
+
+              Unwrapped unwrapped = 3;
+
+              message KmsWrapped {
+                // The resource name of the KMS CryptoKey to use for unwrapping.
+                string crypto_key_name = 1 [json_name = "crypto_key_name"];
+
+                // The wrapped data crypto key.
+                //
+                // A base64-encoded string.
+                string wrapped_key = 2 [json_name = "wrapped_key"];
+              }
+
+              message Transient {
+                // Name of the key. This is an arbitrary string used to differentiate different keys. A unique key is generated per name: two separate 'TransientCryptoKey' protos share the same generated key if their names are the same. When the data crypto key is generated, this name is not used in any way (repeating the api call will result in a different key being generated).
+                string name = 1;
+              }
+
+              message Unwrapped {
+                // A 128/192/256 bit key.
+                //
+                // A base64-encoded string.
+                string key = 1;
+              }
+            }
+
+            message SurrogateInfoType {
+              // Name of the information type. Either a name of your choosing when creating a CustomInfoType, or one of the names listed at [https://cloud.google.com/dlp/docs/infotypes-reference](https://cloud.google.com/dlp/docs/infotypes-reference) when specifying a built-in type. When sending Cloud DLP results to Data Catalog, infoType names should conform to the pattern '[A-Za-z0-9$-_]{1,64}'.
+              string name = 1;
+
+              // Optional version name for this InfoType.
+              string version = 2;
+            }
+          }
+
+          message DateShiftConfig {
+            // For example, -5 means shift date to at most 5 days back in the past.
+            int64 lower_bound_days = 1 [json_name = "lower_bound_days"];
+
+            // Range of shift in days. Actual shift will be selected at random within this range (inclusive ends). Negative means shift to earlier in time. Must not be more than 365250 days (1000 years) each direction.
+            //
+            // For example, 3 means shift date to at most 3 days into the future.
+            int64 upper_bound_days = 2 [json_name = "upper_bound_days"];
+
+            Context context = 3;
+
+            CryptoKey crypto_key = 4 [json_name = "crypto_key"];
+
+            message Context {
+              // Name describing the field.
+              string name = 1;
+            }
+
+            message CryptoKey {
+              KmsWrapped kms_wrapped = 1 [json_name = "kms_wrapped"];
+
+              Transient transient = 2;
+
+              Unwrapped unwrapped = 3;
+
+              message KmsWrapped {
+                // The resource name of the KMS CryptoKey to use for unwrapping.
+                string crypto_key_name = 1 [json_name = "crypto_key_name"];
+
+                // The wrapped data crypto key.
+                //
+                // A base64-encoded string.
+                string wrapped_key = 2 [json_name = "wrapped_key"];
+              }
+
+              message Transient {
+                // Name of the key. This is an arbitrary string used to differentiate different keys. A unique key is generated per name: two separate 'TransientCryptoKey' protos share the same generated key if their names are the same. When the data crypto key is generated, this name is not used in any way (repeating the api call will result in a different key being generated).
+                string name = 1;
+              }
+
+              message Unwrapped {
+                // A 128/192/256 bit key.
+                //
+                // A base64-encoded string.
+                string key = 1;
+              }
+            }
+          }
+
+          message FixedSizeBucketingConfig {
+            // Size of each bucket (except for minimum and maximum buckets).
+            // So if lower_bound = 10, upper_bound = 89, and bucketSize = 10, then the following buckets would be used: -10, 10-20, 20-30, 30-40, 40-50, 50-60, 60-70, 70-80, 80-89, 89+.
+            // Precision up to 2 decimals works.
+            int64 bucket_size = 1 [json_name = "bucket_size"];
+
+            LowerBound lower_bound = 2 [json_name = "lower_bound"];
+
+            UpperBound upper_bound = 3 [json_name = "upper_bound"];
+
+            message LowerBound {
+              // A boolean value.
+              bool boolean_value = 1 [json_name = "boolean_value"];
+
+              // Represents a day of the week. Possible values: ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"]
+              string day_of_week_value = 2 [json_name = "day_of_week_value"];
+
+              // A float value.
+              int64 float_value = 3 [json_name = "float_value"];
+
+              // An integer value (int64 format)
+              string integer_value = 4 [json_name = "integer_value"];
+
+              // A string value.
+              string string_value = 5 [json_name = "string_value"];
+
+              // A timestamp in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits. Examples: "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z".
+              string timestamp_value = 6 [json_name = "timestamp_value"];
+
+              DateValue date_value = 7 [json_name = "date_value"];
+
+              TimeValue time_value = 8 [json_name = "time_value"];
+
+              message DateValue {
+                // Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.
+                int64 day = 1;
+
+                // Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.
+                int64 month = 2;
+
+                // Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.
+                int64 year = 3;
+              }
+
+              message TimeValue {
+                // Hours of day in 24 hour format. Should be from 0 to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.
+                int64 hours = 1;
+
+                // Minutes of hour of day. Must be from 0 to 59.
+                int64 minutes = 2;
+
+                // Fractions of seconds in nanoseconds. Must be from 0 to 999,999,999.
+                int64 nanos = 3;
+
+                // Seconds of minutes of the time. Must normally be from 0 to 59. An API may allow the value 60 if it allows leap-seconds.
+                int64 seconds = 4;
+              }
+            }
+
+            message UpperBound {
+              // A boolean value.
+              bool boolean_value = 1 [json_name = "boolean_value"];
+
+              // Represents a day of the week. Possible values: ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"]
+              string day_of_week_value = 2 [json_name = "day_of_week_value"];
+
+              // A float value.
+              int64 float_value = 3 [json_name = "float_value"];
+
+              // An integer value (int64 format)
+              string integer_value = 4 [json_name = "integer_value"];
+
+              // A string value.
+              string string_value = 5 [json_name = "string_value"];
+
+              // A timestamp in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits. Examples: "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z".
+              string timestamp_value = 6 [json_name = "timestamp_value"];
+
+              DateValue date_value = 7 [json_name = "date_value"];
+
+              TimeValue time_value = 8 [json_name = "time_value"];
+
+              message DateValue {
+                // Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.
+                int64 day = 1;
+
+                // Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.
+                int64 month = 2;
+
+                // Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.
+                int64 year = 3;
+              }
+
+              message TimeValue {
+                // Hours of day in 24 hour format. Should be from 0 to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.
+                int64 hours = 1;
+
+                // Minutes of hour of day. Must be from 0 to 59.
+                int64 minutes = 2;
+
+                // Fractions of seconds in nanoseconds. Must be from 0 to 999,999,999.
+                int64 nanos = 3;
+
+                // Seconds of minutes of the time. Must normally be from 0 to 59. An API may allow the value 60 if it allows leap-seconds.
+                int64 seconds = 4;
+              }
+            }
+          }
+
+          message RedactConfig {
+          }
+
+          message ReplaceConfig {
+            NewValue new_value = 1 [json_name = "new_value"];
+
+            message NewValue {
+              // A boolean value.
+              bool boolean_value = 1 [json_name = "boolean_value"];
+
+              // Represents a day of the week. Possible values: ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"]
+              string day_of_week_value = 2 [json_name = "day_of_week_value"];
+
+              // A float value.
+              int64 float_value = 3 [json_name = "float_value"];
+
+              // An integer value (int64 format)
+              string integer_value = 4 [json_name = "integer_value"];
+
+              // A string value.
+              string string_value = 5 [json_name = "string_value"];
+
+              // A timestamp in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits. Examples: "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z".
+              string timestamp_value = 6 [json_name = "timestamp_value"];
+
+              DateValue date_value = 7 [json_name = "date_value"];
+
+              TimeValue time_value = 8 [json_name = "time_value"];
+
+              message DateValue {
+                // Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.
+                int64 day = 1;
+
+                // Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.
+                int64 month = 2;
+
+                // Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.
+                int64 year = 3;
+              }
+
+              message TimeValue {
+                // Hours of day in 24 hour format. Should be from 0 to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.
+                int64 hours = 1;
+
+                // Minutes of hour of day. Must be from 0 to 59.
+                int64 minutes = 2;
+
+                // Fractions of seconds in nanoseconds. Must be from 0 to 999,999,999.
+                int64 nanos = 3;
+
+                // Seconds of minutes of the time. Must normally be from 0 to 59. An API may allow the value 60 if it allows leap-seconds.
+                int64 seconds = 4;
+              }
+            }
+          }
+
+          message ReplaceDictionaryConfig {
+            WordList word_list = 1 [json_name = "word_list"];
+
+            message WordList {
+              // Words or phrases defining the dictionary. The dictionary must contain at least one phrase and every phrase must contain at least 2 characters that are letters or digits.
+              repeated string words = 1;
+            }
+          }
+
+          message TimePartConfig {
+            // The part of the time to keep. Possible values: ["YEAR", "MONTH", "DAY_OF_MONTH", "DAY_OF_WEEK", "WEEK_OF_YEAR", "HOUR_OF_DAY"]
+            string part_to_extract = 1 [json_name = "part_to_extract"];
+          }
+        }
+      }
+
+      message RecordSuppressions {
+        Condition condition = 1;
+
+        message Condition {
+          Expressions expressions = 1;
+
+          message Expressions {
+            // The operator to apply to the result of conditions. Default and currently only supported value is AND. Default value: "AND" Possible values: ["AND"]
+            string logical_operator = 1 [json_name = "logical_operator"];
+
+            Conditions conditions = 2;
+
+            message Conditions {
+              repeated Conditions conditions = 1;
+
+              message Conditions {
+                // Operator used to compare the field or infoType to the value. Possible values: ["EQUAL_TO", "NOT_EQUAL_TO", "GREATER_THAN", "LESS_THAN", "GREATER_THAN_OR_EQUALS", "LESS_THAN_OR_EQUALS", "EXISTS"]
+                string operator = 1;
+
+                Field field = 2;
+
+                Value value = 3;
+
+                message Field {
+                  // Name describing the field.
+                  string name = 1;
+                }
+
+                message Value {
+                  // A boolean value.
+                  bool boolean_value = 1 [json_name = "boolean_value"];
+
+                  // Represents a day of the week. Possible values: ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"]
+                  string day_of_week_value = 2 [json_name = "day_of_week_value"];
+
+                  // A float value.
+                  int64 float_value = 3 [json_name = "float_value"];
+
+                  // An integer value (int64 format)
+                  string integer_value = 4 [json_name = "integer_value"];
+
+                  // A string value.
+                  string string_value = 5 [json_name = "string_value"];
+
+                  // A timestamp in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits. Examples: "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z".
+                  string timestamp_value = 6 [json_name = "timestamp_value"];
+
+                  DateValue date_value = 7 [json_name = "date_value"];
+
+                  TimeValue time_value = 8 [json_name = "time_value"];
+
+                  message DateValue {
+                    // Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.
+                    int64 day = 1;
+
+                    // Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.
+                    int64 month = 2;
+
+                    // Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.
+                    int64 year = 3;
+                  }
+
+                  message TimeValue {
+                    // Hours of day in 24 hour format. Should be from 0 to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.
+                    int64 hours = 1;
+
+                    // Minutes of hour of day. Must be from 0 to 59.
+                    int64 minutes = 2;
+
+                    // Fractions of seconds in nanoseconds. Must be from 0 to 999,999,999.
+                    int64 nanos = 3;
+
+                    // Seconds of minutes of the time. Must normally be from 0 to 59. An API may allow the value 60 if it allows leap-seconds.
+                    int64 seconds = 4;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleDataLossPreventionInspectTemplate version is 0
+message GoogleDataLossPreventionInspectTemplate {
+  // A description of the inspect template.
+  string description = 1;
+
+  // User set display name of the inspect template.
+  string display_name = 2 [json_name = "display_name"];
+
+  string id = 3;
+
+  // The resource name of the inspect template. Set by the server.
+  string name = 4;
+
+  // The parent of the inspect template in any of the following formats:
+  //
+  // * 'projects/{{project}}'
+  // * 'projects/{{project}}/locations/{{location}}'
+  // * 'organizations/{{organization_id}}'
+  // * 'organizations/{{organization_id}}/locations/{{location}}'
+  string parent = 5;
+
+  // The template id can contain uppercase and lowercase letters, numbers, and hyphens;
+  // that is, it must match the regular expression: [a-zA-Z\d-_]+. The maximum length is
+  // 100 characters. Can be empty to allow the system to generate one.
+  string template_id = 6 [json_name = "template_id"];
+
+  InspectConfig inspect_config = 7 [json_name = "inspect_config"];
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message InspectConfig {
+    // List of options defining data content to scan. If empty, text, images, and other content will be included. Possible values: ["CONTENT_TEXT", "CONTENT_IMAGE"]
+    repeated string content_options = 1 [json_name = "content_options"];
+
+    // When true, excludes type information of the findings.
+    bool exclude_info_types = 2 [json_name = "exclude_info_types"];
+
+    // When true, a contextual quote from the data that triggered a finding is included in the response.
+    bool include_quote = 3 [json_name = "include_quote"];
+
+    // Only returns findings equal or above this threshold. See https://cloud.google.com/dlp/docs/likelihood for more info Default value: "POSSIBLE" Possible values: ["VERY_UNLIKELY", "UNLIKELY", "POSSIBLE", "LIKELY", "VERY_LIKELY"]
+    string min_likelihood = 4 [json_name = "min_likelihood"];
+
+    repeated CustomInfoTypes custom_info_types = 5 [json_name = "custom_info_types"];
+
+    repeated InfoTypes info_types = 6 [json_name = "info_types"];
+
+    Limits limits = 7;
+
+    repeated RuleSet rule_set = 8 [json_name = "rule_set"];
+
+    message CustomInfoTypes {
+      // If set to EXCLUSION_TYPE_EXCLUDE this infoType will not cause a finding to be returned. It still can be used for rules matching. Possible values: ["EXCLUSION_TYPE_EXCLUDE"]
+      string exclusion_type = 1 [json_name = "exclusion_type"];
+
+      // Likelihood to return for this CustomInfoType. This base value can be altered by a detection rule if the finding meets the criteria
+      // specified by the rule. Default value: "VERY_LIKELY" Possible values: ["VERY_UNLIKELY", "UNLIKELY", "POSSIBLE", "LIKELY", "VERY_LIKELY"]
+      string likelihood = 2;
+
+      Dictionary dictionary = 3;
+
+      InfoType info_type = 4 [json_name = "info_type"];
+
+      Regex regex = 5;
+
+      StoredType stored_type = 6 [json_name = "stored_type"];
+
+      SurrogateType surrogate_type = 7 [json_name = "surrogate_type"];
+
+      message Dictionary {
+        CloudStoragePath cloud_storage_path = 1 [json_name = "cloud_storage_path"];
+
+        WordList word_list = 2 [json_name = "word_list"];
+
+        message CloudStoragePath {
+          // A url representing a file or path (no wildcards) in Cloud Storage. Example: 'gs://[BUCKET_NAME]/dictionary.txt'
+          string path = 1;
+        }
+
+        message WordList {
+          // Words or phrases defining the dictionary. The dictionary must contain at least one
+          // phrase and every phrase must contain at least 2 characters that are letters or digits.
+          repeated string words = 1;
+        }
+      }
+
+      message InfoType {
+        // Name of the information type. Either a name of your choosing when creating a CustomInfoType, or one of the names
+        // listed at https://cloud.google.com/dlp/docs/infotypes-reference when specifying a built-in type.
+        string name = 1;
+
+        // Version name for this InfoType.
+        string version = 2;
+      }
+
+      message Regex {
+        // The index of the submatch to extract as findings. When not specified, the entire match is returned. No more than 3 may be included.
+        repeated int64 group_indexes = 1 [json_name = "group_indexes"];
+
+        // Pattern defining the regular expression.
+        // Its syntax (https://github.com/google/re2/wiki/Syntax) can be found under the google/re2 repository on GitHub.
+        string pattern = 2;
+      }
+
+      message StoredType {
+        // Resource name of the requested StoredInfoType, for example 'organizations/433245324/storedInfoTypes/432452342'
+        // or 'projects/project-id/storedInfoTypes/432452342'.
+        string name = 1;
+      }
+
+      message SurrogateType {
+      }
+    }
+
+    message InfoTypes {
+      // Name of the information type. Either a name of your choosing when creating a CustomInfoType, or one of the names listed
+      // at https://cloud.google.com/dlp/docs/infotypes-reference when specifying a built-in type.
+      string name = 1;
+
+      // Version of the information type to use. By default, the version is set to stable
+      string version = 2;
+    }
+
+    message Limits {
+      // Max number of findings that will be returned for each item scanned. The maximum returned is 2000.
+      int64 max_findings_per_item = 1 [json_name = "max_findings_per_item"];
+
+      // Max number of findings that will be returned per request/job. The maximum returned is 2000.
+      int64 max_findings_per_request = 2 [json_name = "max_findings_per_request"];
+
+      repeated MaxFindingsPerInfoType max_findings_per_info_type = 3 [json_name = "max_findings_per_info_type"];
+
+      message MaxFindingsPerInfoType {
+        // Max findings limit for the given infoType.
+        int64 max_findings = 1 [json_name = "max_findings"];
+
+        InfoType info_type = 2 [json_name = "info_type"];
+
+        message InfoType {
+          // Name of the information type. Either a name of your choosing when creating a CustomInfoType, or one of the names listed
+          // at https://cloud.google.com/dlp/docs/infotypes-reference when specifying a built-in type.
+          string name = 1;
+
+          // Version name for this InfoType.
+          string version = 2;
+        }
+      }
+    }
+
+    message RuleSet {
+      repeated InfoTypes info_types = 1 [json_name = "info_types"];
+
+      repeated Rules rules = 2;
+
+      message InfoTypes {
+        // Name of the information type. Either a name of your choosing when creating a CustomInfoType, or one of the names listed
+        // at https://cloud.google.com/dlp/docs/infotypes-reference when specifying a built-in type.
+        string name = 1;
+
+        // Version name for this InfoType.
+        string version = 2;
+      }
+
+      message Rules {
+        ExclusionRule exclusion_rule = 1 [json_name = "exclusion_rule"];
+
+        HotwordRule hotword_rule = 2 [json_name = "hotword_rule"];
+
+        message ExclusionRule {
+          // How the rule is applied. See the documentation for more information: https://cloud.google.com/dlp/docs/reference/rest/v2/InspectConfig#MatchingType Possible values: ["MATCHING_TYPE_FULL_MATCH", "MATCHING_TYPE_PARTIAL_MATCH", "MATCHING_TYPE_INVERSE_MATCH"]
+          string matching_type = 1 [json_name = "matching_type"];
+
+          Dictionary dictionary = 2;
+
+          ExcludeByHotword exclude_by_hotword = 3 [json_name = "exclude_by_hotword"];
+
+          ExcludeInfoTypes exclude_info_types = 4 [json_name = "exclude_info_types"];
+
+          Regex regex = 5;
+
+          message Dictionary {
+            CloudStoragePath cloud_storage_path = 1 [json_name = "cloud_storage_path"];
+
+            WordList word_list = 2 [json_name = "word_list"];
+
+            message CloudStoragePath {
+              // A url representing a file or path (no wildcards) in Cloud Storage. Example: 'gs://[BUCKET_NAME]/dictionary.txt'
+              string path = 1;
+            }
+
+            message WordList {
+              // Words or phrases defining the dictionary. The dictionary must contain at least one
+              // phrase and every phrase must contain at least 2 characters that are letters or digits.
+              repeated string words = 1;
+            }
+          }
+
+          message ExcludeByHotword {
+            HotwordRegex hotword_regex = 1 [json_name = "hotword_regex"];
+
+            Proximity proximity = 2;
+
+            message HotwordRegex {
+              // The index of the submatch to extract as findings. When not specified,
+              // the entire match is returned. No more than 3 may be included.
+              repeated int64 group_indexes = 1 [json_name = "group_indexes"];
+
+              // Pattern defining the regular expression. Its syntax
+              // (https://github.com/google/re2/wiki/Syntax) can be found under the google/re2 repository on GitHub.
+              string pattern = 2;
+            }
+
+            message Proximity {
+              // Number of characters after the finding to consider.
+              int64 window_after = 1 [json_name = "window_after"];
+
+              // Number of characters before the finding to consider.
+              int64 window_before = 2 [json_name = "window_before"];
+            }
+          }
+
+          message ExcludeInfoTypes {
+            repeated InfoTypes info_types = 1 [json_name = "info_types"];
+
+            message InfoTypes {
+              // Name of the information type. Either a name of your choosing when creating a CustomInfoType, or one of the names listed
+              // at https://cloud.google.com/dlp/docs/infotypes-reference when specifying a built-in type.
+              string name = 1;
+
+              // Version name for this InfoType.
+              string version = 2;
+            }
+          }
+
+          message Regex {
+            // The index of the submatch to extract as findings. When not specified, the entire match is returned. No more than 3 may be included.
+            repeated int64 group_indexes = 1 [json_name = "group_indexes"];
+
+            // Pattern defining the regular expression.
+            // Its syntax (https://github.com/google/re2/wiki/Syntax) can be found under the google/re2 repository on GitHub.
+            string pattern = 2;
+          }
+        }
+
+        message HotwordRule {
+          HotwordRegex hotword_regex = 1 [json_name = "hotword_regex"];
+
+          LikelihoodAdjustment likelihood_adjustment = 2 [json_name = "likelihood_adjustment"];
+
+          Proximity proximity = 3;
+
+          message HotwordRegex {
+            // The index of the submatch to extract as findings. When not specified,
+            // the entire match is returned. No more than 3 may be included.
+            repeated int64 group_indexes = 1 [json_name = "group_indexes"];
+
+            // Pattern defining the regular expression. Its syntax
+            // (https://github.com/google/re2/wiki/Syntax) can be found under the google/re2 repository on GitHub.
+            string pattern = 2;
+          }
+
+          message LikelihoodAdjustment {
+            // Set the likelihood of a finding to a fixed value. Either this or relative_likelihood can be set. Possible values: ["VERY_UNLIKELY", "UNLIKELY", "POSSIBLE", "LIKELY", "VERY_LIKELY"]
+            string fixed_likelihood = 1 [json_name = "fixed_likelihood"];
+
+            // Increase or decrease the likelihood by the specified number of levels. For example,
+            // if a finding would be POSSIBLE without the detection rule and relativeLikelihood is 1,
+            // then it is upgraded to LIKELY, while a value of -1 would downgrade it to UNLIKELY.
+            // Likelihood may never drop below VERY_UNLIKELY or exceed VERY_LIKELY, so applying an
+            // adjustment of 1 followed by an adjustment of -1 when base likelihood is VERY_LIKELY
+            // will result in a final likelihood of LIKELY. Either this or fixed_likelihood can be set.
+            int64 relative_likelihood = 2 [json_name = "relative_likelihood"];
+          }
+
+          message Proximity {
+            // Number of characters after the finding to consider. Either this or window_before must be specified
+            int64 window_after = 1 [json_name = "window_after"];
+
+            // Number of characters before the finding to consider. Either this or window_after must be specified
+            int64 window_before = 2 [json_name = "window_before"];
+          }
+        }
+      }
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleDataLossPreventionJobTrigger version is 0
+message GoogleDataLossPreventionJobTrigger {
+  // The creation timestamp of an inspectTemplate. Set by the server.
+  string create_time = 1 [json_name = "create_time"];
+
+  // A description of the job trigger.
+  string description = 2;
+
+  // User set display name of the job trigger.
+  string display_name = 3 [json_name = "display_name"];
+
+  string id = 4;
+
+  // The timestamp of the last time this trigger executed.
+  string last_run_time = 5 [json_name = "last_run_time"];
+
+  // The resource name of the job trigger. Set by the server.
+  string name = 6;
+
+  // The parent of the trigger, either in the format 'projects/{{project}}'
+  // or 'projects/{{project}}/locations/{{location}}'
+  string parent = 7;
+
+  // Whether the trigger is currently active. Default value: "HEALTHY" Possible values: ["PAUSED", "HEALTHY", "CANCELLED"]
+  string status = 8;
+
+  // The last update timestamp of an inspectTemplate. Set by the server.
+  string update_time = 9 [json_name = "update_time"];
+
+  InspectJob inspect_job = 10 [json_name = "inspect_job"];
+
+  repeated Timeouts timeouts = 11;
+
+  repeated Triggers triggers = 12;
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message InspectJob {
+    // The name of the template to run when this job is triggered.
+    string inspect_template_name = 1 [json_name = "inspect_template_name"];
+
+    repeated Actions actions = 2;
+
+    InspectConfig inspect_config = 3 [json_name = "inspect_config"];
+
+    StorageConfig storage_config = 4 [json_name = "storage_config"];
+
+    message Actions {
+      Deidentify deidentify = 1;
+
+      JobNotificationEmails job_notification_emails = 2 [json_name = "job_notification_emails"];
+
+      PubSub pub_sub = 3 [json_name = "pub_sub"];
+
+      PublishFindingsToCloudDataCatalog publish_findings_to_cloud_data_catalog = 4 [
+        json_name = "publish_findings_to_cloud_data_catalog"
+      ];
+
+      PublishSummaryToCscc publish_summary_to_cscc = 5 [json_name = "publish_summary_to_cscc"];
+
+      PublishToStackdriver publish_to_stackdriver = 6 [json_name = "publish_to_stackdriver"];
+
+      SaveFindings save_findings = 7 [json_name = "save_findings"];
+
+      message Deidentify {
+        // User settable Cloud Storage bucket and folders to store de-identified files.
+        //
+        // This field must be set for cloud storage deidentification.
+        //
+        // The output Cloud Storage bucket must be different from the input bucket.
+        //
+        // De-identified files will overwrite files in the output path.
+        //
+        // Form of: gs://bucket/folder/ or gs://bucket
+        string cloud_storage_output = 1 [json_name = "cloud_storage_output"];
+
+        // List of user-specified file type groups to transform. If specified, only the files with these filetypes will be transformed.
+        //
+        // If empty, all supported files will be transformed. Supported types may be automatically added over time.
+        //
+        // If a file type is set in this field that isn't supported by the Deidentify action then the job will fail and will not be successfully created/started. Possible values: ["IMAGE", "TEXT_FILE", "CSV", "TSV"]
+        repeated string file_types_to_transform = 2 [json_name = "file_types_to_transform"];
+
+        TransformationConfig transformation_config = 3 [json_name = "transformation_config"];
+
+        TransformationDetailsStorageConfig transformation_details_storage_config = 4 [
+          json_name = "transformation_details_storage_config"
+        ];
+
+        message TransformationConfig {
+          // If this template is specified, it will serve as the default de-identify template.
+          string deidentify_template = 1 [json_name = "deidentify_template"];
+
+          // If this template is specified, it will serve as the de-identify template for images.
+          string image_redact_template = 2 [json_name = "image_redact_template"];
+
+          // If this template is specified, it will serve as the de-identify template for structured content such as delimited files and tables.
+          string structured_deidentify_template = 3 [json_name = "structured_deidentify_template"];
+        }
+
+        message TransformationDetailsStorageConfig {
+          Table table = 1;
+
+          message Table {
+            // The ID of the dataset containing this table.
+            string dataset_id = 1 [json_name = "dataset_id"];
+
+            // The ID of the project containing this table.
+            string project_id = 2 [json_name = "project_id"];
+
+            // The ID of the table. The ID must contain only letters (a-z,
+            // A-Z), numbers (0-9), or underscores (_). The maximum length
+            // is 1,024 characters.
+            string table_id = 3 [json_name = "table_id"];
+          }
+        }
+      }
+
+      message JobNotificationEmails {
+      }
+
+      message PubSub {
+        // Cloud Pub/Sub topic to send notifications to.
+        string topic = 1;
+      }
+
+      message PublishFindingsToCloudDataCatalog {
+      }
+
+      message PublishSummaryToCscc {
+      }
+
+      message PublishToStackdriver {
+      }
+
+      message SaveFindings {
+        OutputConfig output_config = 1 [json_name = "output_config"];
+
+        message OutputConfig {
+          // Schema used for writing the findings for Inspect jobs. This field is only used for
+          // Inspect and must be unspecified for Risk jobs. Columns are derived from the Finding
+          // object. If appending to an existing table, any columns from the predefined schema
+          // that are missing will be added. No columns in the existing table will be deleted.
+          //
+          // If unspecified, then all available columns will be used for a new table or an (existing)
+          // table with no schema, and no changes will be made to an existing table that has a schema.
+          // Only for use with external storage. Possible values: ["BASIC_COLUMNS", "GCS_COLUMNS", "DATASTORE_COLUMNS", "BIG_QUERY_COLUMNS", "ALL_COLUMNS"]
+          string output_schema = 1 [json_name = "output_schema"];
+
+          Table table = 2;
+
+          message Table {
+            // Dataset ID of the table.
+            string dataset_id = 1 [json_name = "dataset_id"];
+
+            // The Google Cloud Platform project ID of the project containing the table.
+            string project_id = 2 [json_name = "project_id"];
+
+            // Name of the table. If is not set a new one will be generated for you with the following format:
+            // 'dlp_googleapis_yyyy_mm_dd_[dlp_job_id]'. Pacific timezone will be used for generating the date details.
+            string table_id = 3 [json_name = "table_id"];
+          }
+        }
+      }
+    }
+
+    message InspectConfig {
+      // When true, excludes type information of the findings.
+      bool exclude_info_types = 1 [json_name = "exclude_info_types"];
+
+      // When true, a contextual quote from the data that triggered a finding is included in the response.
+      bool include_quote = 2 [json_name = "include_quote"];
+
+      // Only returns findings equal or above this threshold. See https://cloud.google.com/dlp/docs/likelihood for more info Default value: "POSSIBLE" Possible values: ["VERY_UNLIKELY", "UNLIKELY", "POSSIBLE", "LIKELY", "VERY_LIKELY"]
+      string min_likelihood = 3 [json_name = "min_likelihood"];
+
+      repeated CustomInfoTypes custom_info_types = 4 [json_name = "custom_info_types"];
+
+      repeated InfoTypes info_types = 5 [json_name = "info_types"];
+
+      Limits limits = 6;
+
+      repeated RuleSet rule_set = 7 [json_name = "rule_set"];
+
+      message CustomInfoTypes {
+        // If set to EXCLUSION_TYPE_EXCLUDE this infoType will not cause a finding to be returned. It still can be used for rules matching. Possible values: ["EXCLUSION_TYPE_EXCLUDE"]
+        string exclusion_type = 1 [json_name = "exclusion_type"];
+
+        // Likelihood to return for this CustomInfoType. This base value can be altered by a detection rule if the finding meets the criteria
+        // specified by the rule. Default value: "VERY_LIKELY" Possible values: ["VERY_UNLIKELY", "UNLIKELY", "POSSIBLE", "LIKELY", "VERY_LIKELY"]
+        string likelihood = 2;
+
+        Dictionary dictionary = 3;
+
+        InfoType info_type = 4 [json_name = "info_type"];
+
+        Regex regex = 5;
+
+        StoredType stored_type = 6 [json_name = "stored_type"];
+
+        SurrogateType surrogate_type = 7 [json_name = "surrogate_type"];
+
+        message Dictionary {
+          CloudStoragePath cloud_storage_path = 1 [json_name = "cloud_storage_path"];
+
+          WordList word_list = 2 [json_name = "word_list"];
+
+          message CloudStoragePath {
+            // A url representing a file or path (no wildcards) in Cloud Storage. Example: 'gs://[BUCKET_NAME]/dictionary.txt'
+            string path = 1;
+          }
+
+          message WordList {
+            // Words or phrases defining the dictionary. The dictionary must contain at least one
+            // phrase and every phrase must contain at least 2 characters that are letters or digits.
+            repeated string words = 1;
+          }
+        }
+
+        message InfoType {
+          // Name of the information type. Either a name of your choosing when creating a CustomInfoType, or one of the names
+          // listed at https://cloud.google.com/dlp/docs/infotypes-reference when specifying a built-in type.
+          string name = 1;
+
+          // Version of the information type to use. By default, the version is set to stable.
+          string version = 2;
+        }
+
+        message Regex {
+          // The index of the submatch to extract as findings. When not specified, the entire match is returned. No more than 3 may be included.
+          repeated int64 group_indexes = 1 [json_name = "group_indexes"];
+
+          // Pattern defining the regular expression.
+          // Its syntax (https://github.com/google/re2/wiki/Syntax) can be found under the google/re2 repository on GitHub.
+          string pattern = 2;
+        }
+
+        message StoredType {
+          // The creation timestamp of an inspectTemplate. Set by the server.
+          string create_time = 1 [json_name = "create_time"];
+
+          // Resource name of the requested StoredInfoType, for example 'organizations/433245324/storedInfoTypes/432452342'
+          // or 'projects/project-id/storedInfoTypes/432452342'.
+          string name = 2;
+        }
+
+        message SurrogateType {
+        }
+      }
+
+      message InfoTypes {
+        // Name of the information type. Either a name of your choosing when creating a CustomInfoType, or one of the names listed
+        // at https://cloud.google.com/dlp/docs/infotypes-reference when specifying a built-in type.
+        string name = 1;
+
+        // Version of the information type to use. By default, the version is set to stable
+        string version = 2;
+      }
+
+      message Limits {
+        // Max number of findings that will be returned for each item scanned. The maximum returned is 2000.
+        int64 max_findings_per_item = 1 [json_name = "max_findings_per_item"];
+
+        // Max number of findings that will be returned per request/job. The maximum returned is 2000.
+        int64 max_findings_per_request = 2 [json_name = "max_findings_per_request"];
+
+        repeated MaxFindingsPerInfoType max_findings_per_info_type = 3 [json_name = "max_findings_per_info_type"];
+
+        message MaxFindingsPerInfoType {
+          // Max findings limit for the given infoType.
+          int64 max_findings = 1 [json_name = "max_findings"];
+
+          InfoType info_type = 2 [json_name = "info_type"];
+
+          message InfoType {
+            // Name of the information type. Either a name of your choosing when creating a CustomInfoType, or one of the names listed
+            // at https://cloud.google.com/dlp/docs/infotypes-reference when specifying a built-in type.
+            string name = 1;
+
+            // Version of the information type to use. By default, the version is set to stable
+            string version = 2;
+          }
+        }
+      }
+
+      message RuleSet {
+        repeated InfoTypes info_types = 1 [json_name = "info_types"];
+
+        repeated Rules rules = 2;
+
+        message InfoTypes {
+          // Name of the information type. Either a name of your choosing when creating a CustomInfoType, or one of the names listed
+          // at https://cloud.google.com/dlp/docs/infotypes-reference when specifying a built-in type.
+          string name = 1;
+
+          // Version of the information type to use. By default, the version is set to stable.
+          string version = 2;
+        }
+
+        message Rules {
+          ExclusionRule exclusion_rule = 1 [json_name = "exclusion_rule"];
+
+          HotwordRule hotword_rule = 2 [json_name = "hotword_rule"];
+
+          message ExclusionRule {
+            // How the rule is applied. See the documentation for more information: https://cloud.google.com/dlp/docs/reference/rest/v2/InspectConfig#MatchingType Possible values: ["MATCHING_TYPE_FULL_MATCH", "MATCHING_TYPE_PARTIAL_MATCH", "MATCHING_TYPE_INVERSE_MATCH"]
+            string matching_type = 1 [json_name = "matching_type"];
+
+            Dictionary dictionary = 2;
+
+            ExcludeByHotword exclude_by_hotword = 3 [json_name = "exclude_by_hotword"];
+
+            ExcludeInfoTypes exclude_info_types = 4 [json_name = "exclude_info_types"];
+
+            Regex regex = 5;
+
+            message Dictionary {
+              CloudStoragePath cloud_storage_path = 1 [json_name = "cloud_storage_path"];
+
+              WordList word_list = 2 [json_name = "word_list"];
+
+              message CloudStoragePath {
+                // A url representing a file or path (no wildcards) in Cloud Storage. Example: 'gs://[BUCKET_NAME]/dictionary.txt'
+                string path = 1;
+              }
+
+              message WordList {
+                // Words or phrases defining the dictionary. The dictionary must contain at least one
+                // phrase and every phrase must contain at least 2 characters that are letters or digits.
+                repeated string words = 1;
+              }
+            }
+
+            message ExcludeByHotword {
+              HotwordRegex hotword_regex = 1 [json_name = "hotword_regex"];
+
+              Proximity proximity = 2;
+
+              message HotwordRegex {
+                // The index of the submatch to extract as findings. When not specified,
+                // the entire match is returned. No more than 3 may be included.
+                repeated int64 group_indexes = 1 [json_name = "group_indexes"];
+
+                // Pattern defining the regular expression. Its syntax
+                // (https://github.com/google/re2/wiki/Syntax) can be found under the google/re2 repository on GitHub.
+                string pattern = 2;
+              }
+
+              message Proximity {
+                // Number of characters after the finding to consider. Either this or window_before must be specified
+                int64 window_after = 1 [json_name = "window_after"];
+
+                // Number of characters before the finding to consider. Either this or window_after must be specified
+                int64 window_before = 2 [json_name = "window_before"];
+              }
+            }
+
+            message ExcludeInfoTypes {
+              repeated InfoTypes info_types = 1 [json_name = "info_types"];
+
+              message InfoTypes {
+                // Name of the information type. Either a name of your choosing when creating a CustomInfoType, or one of the names listed
+                // at https://cloud.google.com/dlp/docs/infotypes-reference when specifying a built-in type.
+                string name = 1;
+
+                // Version of the information type to use. By default, the version is set to stable.
+                string version = 2;
+              }
+            }
+
+            message Regex {
+              // The index of the submatch to extract as findings. When not specified, the entire match is returned. No more than 3 may be included.
+              repeated int64 group_indexes = 1 [json_name = "group_indexes"];
+
+              // Pattern defining the regular expression.
+              // Its syntax (https://github.com/google/re2/wiki/Syntax) can be found under the google/re2 repository on GitHub.
+              string pattern = 2;
+            }
+          }
+
+          message HotwordRule {
+            HotwordRegex hotword_regex = 1 [json_name = "hotword_regex"];
+
+            LikelihoodAdjustment likelihood_adjustment = 2 [json_name = "likelihood_adjustment"];
+
+            Proximity proximity = 3;
+
+            message HotwordRegex {
+              // The index of the submatch to extract as findings. When not specified,
+              // the entire match is returned. No more than 3 may be included.
+              repeated int64 group_indexes = 1 [json_name = "group_indexes"];
+
+              // Pattern defining the regular expression. Its syntax
+              // (https://github.com/google/re2/wiki/Syntax) can be found under the google/re2 repository on GitHub.
+              string pattern = 2;
+            }
+
+            message LikelihoodAdjustment {
+              // Set the likelihood of a finding to a fixed value. Either this or relative_likelihood can be set. Possible values: ["VERY_UNLIKELY", "UNLIKELY", "POSSIBLE", "LIKELY", "VERY_LIKELY"]
+              string fixed_likelihood = 1 [json_name = "fixed_likelihood"];
+
+              // Increase or decrease the likelihood by the specified number of levels. For example,
+              // if a finding would be POSSIBLE without the detection rule and relativeLikelihood is 1,
+              // then it is upgraded to LIKELY, while a value of -1 would downgrade it to UNLIKELY.
+              // Likelihood may never drop below VERY_UNLIKELY or exceed VERY_LIKELY, so applying an
+              // adjustment of 1 followed by an adjustment of -1 when base likelihood is VERY_LIKELY
+              // will result in a final likelihood of LIKELY. Either this or fixed_likelihood can be set.
+              int64 relative_likelihood = 2 [json_name = "relative_likelihood"];
+            }
+
+            message Proximity {
+              // Number of characters after the finding to consider. Either this or window_before must be specified
+              int64 window_after = 1 [json_name = "window_after"];
+
+              // Number of characters before the finding to consider. Either this or window_after must be specified
+              int64 window_before = 2 [json_name = "window_before"];
+            }
+          }
+        }
+      }
+    }
+
+    message StorageConfig {
+      BigQueryOptions big_query_options = 1 [json_name = "big_query_options"];
+
+      CloudStorageOptions cloud_storage_options = 2 [json_name = "cloud_storage_options"];
+
+      DatastoreOptions datastore_options = 3 [json_name = "datastore_options"];
+
+      HybridOptions hybrid_options = 4 [json_name = "hybrid_options"];
+
+      TimespanConfig timespan_config = 5 [json_name = "timespan_config"];
+
+      message BigQueryOptions {
+        // Max number of rows to scan. If the table has more rows than this value, the rest of the rows are omitted.
+        // If not set, or if set to 0, all rows will be scanned. Only one of rowsLimit and rowsLimitPercent can be
+        // specified. Cannot be used in conjunction with TimespanConfig.
+        int64 rows_limit = 1 [json_name = "rows_limit"];
+
+        // Max percentage of rows to scan. The rest are omitted. The number of rows scanned is rounded down.
+        // Must be between 0 and 100, inclusively. Both 0 and 100 means no limit. Defaults to 0. Only one of
+        // rowsLimit and rowsLimitPercent can be specified. Cannot be used in conjunction with TimespanConfig.
+        int64 rows_limit_percent = 2 [json_name = "rows_limit_percent"];
+
+        // How to sample rows if not all rows are scanned. Meaningful only when used in conjunction with either
+        // rowsLimit or rowsLimitPercent. If not specified, rows are scanned in the order BigQuery reads them. Default value: "TOP" Possible values: ["TOP", "RANDOM_START"]
+        string sample_method = 3 [json_name = "sample_method"];
+
+        repeated ExcludedFields excluded_fields = 4 [json_name = "excluded_fields"];
+
+        repeated IdentifyingFields identifying_fields = 5 [json_name = "identifying_fields"];
+
+        repeated IncludedFields included_fields = 6 [json_name = "included_fields"];
+
+        TableReference table_reference = 7 [json_name = "table_reference"];
+
+        message ExcludedFields {
+          // Name describing the field excluded from scanning.
+          string name = 1;
+        }
+
+        message IdentifyingFields {
+          // Name of a BigQuery field to be returned with the findings.
+          string name = 1;
+        }
+
+        message IncludedFields {
+          // Name describing the field to which scanning is limited.
+          string name = 1;
+        }
+
+        message TableReference {
+          // The dataset ID of the table.
+          string dataset_id = 1 [json_name = "dataset_id"];
+
+          // The Google Cloud Platform project ID of the project containing the table.
+          string project_id = 2 [json_name = "project_id"];
+
+          // The name of the table.
+          string table_id = 3 [json_name = "table_id"];
+        }
+      }
+
+      message CloudStorageOptions {
+        // Max number of bytes to scan from a file. If a scanned file's size is bigger than this value
+        // then the rest of the bytes are omitted.
+        int64 bytes_limit_per_file = 1 [json_name = "bytes_limit_per_file"];
+
+        // Max percentage of bytes to scan from a file. The rest are omitted. The number of bytes scanned is rounded down.
+        // Must be between 0 and 100, inclusively. Both 0 and 100 means no limit.
+        int64 bytes_limit_per_file_percent = 2 [json_name = "bytes_limit_per_file_percent"];
+
+        // List of file type groups to include in the scan. If empty, all files are scanned and available data
+        // format processors are applied. In addition, the binary content of the selected files is always scanned as well.
+        // Images are scanned only as binary if the specified region does not support image inspection and no fileTypes were specified. Possible values: ["BINARY_FILE", "TEXT_FILE", "IMAGE", "WORD", "PDF", "AVRO", "CSV", "TSV"]
+        repeated string file_types = 3 [json_name = "file_types"];
+
+        // Limits the number of files to scan to this percentage of the input FileSet. Number of files scanned is rounded down.
+        // Must be between 0 and 100, inclusively. Both 0 and 100 means no limit.
+        int64 files_limit_percent = 4 [json_name = "files_limit_percent"];
+
+        // How to sample bytes if not all bytes are scanned. Meaningful only when used in conjunction with bytesLimitPerFile.
+        // If not specified, scanning would start from the top. Possible values: ["TOP", "RANDOM_START"]
+        string sample_method = 5 [json_name = "sample_method"];
+
+        FileSet file_set = 6 [json_name = "file_set"];
+
+        message FileSet {
+          // The Cloud Storage url of the file(s) to scan, in the format 'gs://<bucket>/<path>'. Trailing wildcard
+          // in the path is allowed.
+          //
+          // If the url ends in a trailing slash, the bucket or directory represented by the url will be scanned
+          // non-recursively (content in sub-directories will not be scanned). This means that 'gs://mybucket/' is
+          // equivalent to 'gs://mybucket/*', and 'gs://mybucket/directory/' is equivalent to 'gs://mybucket/directory/*'.
+          string url = 1;
+
+          RegexFileSet regex_file_set = 2 [json_name = "regex_file_set"];
+
+          message RegexFileSet {
+            // The name of a Cloud Storage bucket.
+            string bucket_name = 1 [json_name = "bucket_name"];
+
+            // A list of regular expressions matching file paths to exclude. All files in the bucket that match at
+            // least one of these regular expressions will be excluded from the scan.
+            repeated string exclude_regex = 2 [json_name = "exclude_regex"];
+
+            // A list of regular expressions matching file paths to include. All files in the bucket
+            // that match at least one of these regular expressions will be included in the set of files,
+            // except for those that also match an item in excludeRegex. Leaving this field empty will
+            // match all files by default (this is equivalent to including .* in the list)
+            repeated string include_regex = 3 [json_name = "include_regex"];
+          }
+        }
+      }
+
+      message DatastoreOptions {
+        Kind kind = 1;
+
+        PartitionId partition_id = 2 [json_name = "partition_id"];
+
+        message Kind {
+          // The name of the Datastore kind.
+          string name = 1;
+        }
+
+        message PartitionId {
+          // If not empty, the ID of the namespace to which the entities belong.
+          string namespace_id = 1 [json_name = "namespace_id"];
+
+          // The ID of the project to which the entities belong.
+          string project_id = 2 [json_name = "project_id"];
+        }
+      }
+
+      message HybridOptions {
+        // A short description of where the data is coming from. Will be stored once in the job. 256 max length.
+        string description = 1;
+
+        // To organize findings, these labels will be added to each finding.
+        //
+        // Label keys must be between 1 and 63 characters long and must conform to the following regular expression: '[a-z]([-a-z0-9]*[a-z0-9])?'.
+        //
+        // Label values must be between 0 and 63 characters long and must conform to the regular expression '([a-z]([-a-z0-9]*[a-z0-9])?)?'.
+        //
+        // No more than 10 labels can be associated with a given finding.
+        //
+        // Examples:
+        // * '"environment" : "production"'
+        // * '"pipeline" : "etl"'
+        map<string, string> labels = 2;
+
+        // These are labels that each inspection request must include within their 'finding_labels' map. Request
+        // may contain others, but any missing one of these will be rejected.
+        //
+        // Label keys must be between 1 and 63 characters long and must conform to the following regular expression: '[a-z]([-a-z0-9]*[a-z0-9])?'.
+        //
+        // No more than 10 keys can be required.
+        repeated string required_finding_label_keys = 3 [json_name = "required_finding_label_keys"];
+
+        TableOptions table_options = 4 [json_name = "table_options"];
+
+        message TableOptions {
+          repeated IdentifyingFields identifying_fields = 1 [json_name = "identifying_fields"];
+
+          message IdentifyingFields {
+            // Name describing the field.
+            string name = 1;
+          }
+        }
+      }
+
+      message TimespanConfig {
+        // When the job is started by a JobTrigger we will automatically figure out a valid startTime to avoid
+        // scanning files that have not been modified since the last time the JobTrigger executed. This will
+        // be based on the time of the execution of the last run of the JobTrigger.
+        bool enable_auto_population_of_timespan_config = 1 [
+          json_name = "enable_auto_population_of_timespan_config"
+        ];
+
+        // Exclude files or rows newer than this value. If set to zero, no upper time limit is applied.
+        string end_time = 2 [json_name = "end_time"];
+
+        // Exclude files or rows older than this value.
+        string start_time = 3 [json_name = "start_time"];
+
+        TimestampField timestamp_field = 4 [json_name = "timestamp_field"];
+
+        message TimestampField {
+          // Specification of the field containing the timestamp of scanned items. Used for data sources like Datastore and BigQuery.
+          //
+          // For BigQuery: Required to filter out rows based on the given start and end times. If not specified and the table was
+          // modified between the given start and end times, the entire table will be scanned. The valid data types of the timestamp
+          // field are: INTEGER, DATE, TIMESTAMP, or DATETIME BigQuery column.
+          //
+          // For Datastore. Valid data types of the timestamp field are: TIMESTAMP. Datastore entity will be scanned if the
+          // timestamp property does not exist or its value is empty or invalid.
+          string name = 1;
+        }
+      }
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+
+  message Triggers {
+    Manual manual = 1;
+
+    Schedule schedule = 2;
+
+    message Manual {
+    }
+
+    message Schedule {
+      // With this option a job is started a regular periodic basis. For example: every day (86400 seconds).
+      //
+      // A scheduled start time will be skipped if the previous execution has not ended when its scheduled time occurs.
+      //
+      // This value must be set to a time duration greater than or equal to 1 day and can be no longer than 60 days.
+      //
+      // A duration in seconds with up to nine fractional digits, terminated by 's'. Example: "3.5s".
+      string recurrence_period_duration = 1 [json_name = "recurrence_period_duration"];
+    }
+  }
+}
+
+// GoogleDataLossPreventionStoredInfoType version is 0
+message GoogleDataLossPreventionStoredInfoType {
+  // A description of the info type.
+  string description = 1;
+
+  // User set display name of the info type.
+  string display_name = 2 [json_name = "display_name"];
+
+  string id = 3;
+
+  // The resource name of the info type. Set by the server.
+  string name = 4;
+
+  // The parent of the info type in any of the following formats:
+  //
+  // * 'projects/{{project}}'
+  // * 'projects/{{project}}/locations/{{location}}'
+  // * 'organizations/{{organization_id}}'
+  // * 'organizations/{{organization_id}}/locations/{{location}}'
+  string parent = 5;
+
+  // The storedInfoType ID can contain uppercase and lowercase letters, numbers, and hyphens;
+  // that is, it must match the regular expression: [a-zA-Z\d-_]+. The maximum length is 100
+  // characters. Can be empty to allow the system to generate one.
+  string stored_info_type_id = 6 [json_name = "stored_info_type_id"];
+
+  Dictionary dictionary = 7;
+
+  LargeCustomDictionary large_custom_dictionary = 8 [json_name = "large_custom_dictionary"];
+
+  Regex regex = 9;
+
+  repeated Timeouts timeouts = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Dictionary {
+    CloudStoragePath cloud_storage_path = 1 [json_name = "cloud_storage_path"];
+
+    WordList word_list = 2 [json_name = "word_list"];
+
+    message CloudStoragePath {
+      // A url representing a file or path (no wildcards) in Cloud Storage. Example: 'gs://[BUCKET_NAME]/dictionary.txt'
+      string path = 1;
+    }
+
+    message WordList {
+      // Words or phrases defining the dictionary. The dictionary must contain at least one
+      // phrase and every phrase must contain at least 2 characters that are letters or digits.
+      repeated string words = 1;
+    }
+  }
+
+  message LargeCustomDictionary {
+    BigQueryField big_query_field = 1 [json_name = "big_query_field"];
+
+    CloudStorageFileSet cloud_storage_file_set = 2 [json_name = "cloud_storage_file_set"];
+
+    OutputPath output_path = 3 [json_name = "output_path"];
+
+    message BigQueryField {
+      Field field = 1;
+
+      Table table = 2;
+
+      message Field {
+        // Name describing the field.
+        string name = 1;
+      }
+
+      message Table {
+        // The dataset ID of the table.
+        string dataset_id = 1 [json_name = "dataset_id"];
+
+        // The Google Cloud Platform project ID of the project containing the table.
+        string project_id = 2 [json_name = "project_id"];
+
+        // The name of the table.
+        string table_id = 3 [json_name = "table_id"];
+      }
+    }
+
+    message CloudStorageFileSet {
+      // The url, in the format 'gs://<bucket>/<path>'. Trailing wildcard in the path is allowed.
+      string url = 1;
+    }
+
+    message OutputPath {
+      // A url representing a file or path (no wildcards) in Cloud Storage. Example: 'gs://[BUCKET_NAME]/dictionary.txt'
+      string path = 1;
+    }
+  }
+
+  message Regex {
+    // The index of the submatch to extract as findings. When not specified, the entire match is returned. No more than 3 may be included.
+    repeated int64 group_indexes = 1 [json_name = "group_indexes"];
+
+    // Pattern defining the regular expression.
+    // Its syntax (https://github.com/google/re2/wiki/Syntax) can be found under the google/re2 repository on GitHub.
+    string pattern = 2;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

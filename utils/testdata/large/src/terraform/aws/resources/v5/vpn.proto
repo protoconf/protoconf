@@ -1,0 +1,318 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsVpnConnection version is 0
+message AwsVpnConnection {
+  string arn = 1;
+
+  string core_network_arn = 2 [json_name = "core_network_arn"];
+
+  string core_network_attachment_arn = 3 [json_name = "core_network_attachment_arn"];
+
+  string customer_gateway_configuration = 4 [json_name = "customer_gateway_configuration"];
+
+  string customer_gateway_id = 5 [json_name = "customer_gateway_id"];
+
+  bool enable_acceleration = 6 [json_name = "enable_acceleration"];
+
+  string id = 7;
+
+  string local_ipv4_network_cidr = 8 [json_name = "local_ipv4_network_cidr"];
+
+  string local_ipv6_network_cidr = 9 [json_name = "local_ipv6_network_cidr"];
+
+  string outside_ip_address_type = 10 [json_name = "outside_ip_address_type"];
+
+  string remote_ipv4_network_cidr = 11 [json_name = "remote_ipv4_network_cidr"];
+
+  string remote_ipv6_network_cidr = 12 [json_name = "remote_ipv6_network_cidr"];
+
+  repeated Routes routes = 13;
+
+  bool static_routes_only = 14 [json_name = "static_routes_only"];
+
+  map<string, string> tags = 15;
+
+  map<string, string> tags_all = 16 [json_name = "tags_all"];
+
+  string transit_gateway_attachment_id = 17 [json_name = "transit_gateway_attachment_id"];
+
+  string transit_gateway_id = 18 [json_name = "transit_gateway_id"];
+
+  string transport_transit_gateway_attachment_id = 19 [
+    json_name = "transport_transit_gateway_attachment_id"
+  ];
+
+  string tunnel1_address = 20 [json_name = "tunnel1_address"];
+
+  string tunnel1_bgp_asn = 21 [json_name = "tunnel1_bgp_asn"];
+
+  int64 tunnel1_bgp_holdtime = 22 [json_name = "tunnel1_bgp_holdtime"];
+
+  string tunnel1_cgw_inside_address = 23 [json_name = "tunnel1_cgw_inside_address"];
+
+  string tunnel1_dpd_timeout_action = 24 [json_name = "tunnel1_dpd_timeout_action"];
+
+  int64 tunnel1_dpd_timeout_seconds = 25 [json_name = "tunnel1_dpd_timeout_seconds"];
+
+  bool tunnel1_enable_tunnel_lifecycle_control = 26 [
+    json_name = "tunnel1_enable_tunnel_lifecycle_control"
+  ];
+
+  repeated string tunnel1_ike_versions = 27 [json_name = "tunnel1_ike_versions"];
+
+  string tunnel1_inside_cidr = 28 [json_name = "tunnel1_inside_cidr"];
+
+  string tunnel1_inside_ipv6_cidr = 29 [json_name = "tunnel1_inside_ipv6_cidr"];
+
+  repeated int64 tunnel1_phase1_dh_group_numbers = 30 [json_name = "tunnel1_phase1_dh_group_numbers"];
+
+  repeated string tunnel1_phase1_encryption_algorithms = 31 [json_name = "tunnel1_phase1_encryption_algorithms"];
+
+  repeated string tunnel1_phase1_integrity_algorithms = 32 [json_name = "tunnel1_phase1_integrity_algorithms"];
+
+  int64 tunnel1_phase1_lifetime_seconds = 33 [json_name = "tunnel1_phase1_lifetime_seconds"];
+
+  repeated int64 tunnel1_phase2_dh_group_numbers = 34 [json_name = "tunnel1_phase2_dh_group_numbers"];
+
+  repeated string tunnel1_phase2_encryption_algorithms = 35 [json_name = "tunnel1_phase2_encryption_algorithms"];
+
+  repeated string tunnel1_phase2_integrity_algorithms = 36 [json_name = "tunnel1_phase2_integrity_algorithms"];
+
+  int64 tunnel1_phase2_lifetime_seconds = 37 [json_name = "tunnel1_phase2_lifetime_seconds"];
+
+  string tunnel1_preshared_key = 38 [json_name = "tunnel1_preshared_key"];
+
+  int64 tunnel1_rekey_fuzz_percentage = 39 [json_name = "tunnel1_rekey_fuzz_percentage"];
+
+  int64 tunnel1_rekey_margin_time_seconds = 40 [json_name = "tunnel1_rekey_margin_time_seconds"];
+
+  int64 tunnel1_replay_window_size = 41 [json_name = "tunnel1_replay_window_size"];
+
+  string tunnel1_startup_action = 42 [json_name = "tunnel1_startup_action"];
+
+  string tunnel1_vgw_inside_address = 43 [json_name = "tunnel1_vgw_inside_address"];
+
+  string tunnel2_address = 44 [json_name = "tunnel2_address"];
+
+  string tunnel2_bgp_asn = 45 [json_name = "tunnel2_bgp_asn"];
+
+  int64 tunnel2_bgp_holdtime = 46 [json_name = "tunnel2_bgp_holdtime"];
+
+  string tunnel2_cgw_inside_address = 47 [json_name = "tunnel2_cgw_inside_address"];
+
+  string tunnel2_dpd_timeout_action = 48 [json_name = "tunnel2_dpd_timeout_action"];
+
+  int64 tunnel2_dpd_timeout_seconds = 49 [json_name = "tunnel2_dpd_timeout_seconds"];
+
+  bool tunnel2_enable_tunnel_lifecycle_control = 50 [
+    json_name = "tunnel2_enable_tunnel_lifecycle_control"
+  ];
+
+  repeated string tunnel2_ike_versions = 51 [json_name = "tunnel2_ike_versions"];
+
+  string tunnel2_inside_cidr = 52 [json_name = "tunnel2_inside_cidr"];
+
+  string tunnel2_inside_ipv6_cidr = 53 [json_name = "tunnel2_inside_ipv6_cidr"];
+
+  repeated int64 tunnel2_phase1_dh_group_numbers = 54 [json_name = "tunnel2_phase1_dh_group_numbers"];
+
+  repeated string tunnel2_phase1_encryption_algorithms = 55 [json_name = "tunnel2_phase1_encryption_algorithms"];
+
+  repeated string tunnel2_phase1_integrity_algorithms = 56 [json_name = "tunnel2_phase1_integrity_algorithms"];
+
+  int64 tunnel2_phase1_lifetime_seconds = 57 [json_name = "tunnel2_phase1_lifetime_seconds"];
+
+  repeated int64 tunnel2_phase2_dh_group_numbers = 58 [json_name = "tunnel2_phase2_dh_group_numbers"];
+
+  repeated string tunnel2_phase2_encryption_algorithms = 59 [json_name = "tunnel2_phase2_encryption_algorithms"];
+
+  repeated string tunnel2_phase2_integrity_algorithms = 60 [json_name = "tunnel2_phase2_integrity_algorithms"];
+
+  int64 tunnel2_phase2_lifetime_seconds = 61 [json_name = "tunnel2_phase2_lifetime_seconds"];
+
+  string tunnel2_preshared_key = 62 [json_name = "tunnel2_preshared_key"];
+
+  int64 tunnel2_rekey_fuzz_percentage = 63 [json_name = "tunnel2_rekey_fuzz_percentage"];
+
+  int64 tunnel2_rekey_margin_time_seconds = 64 [json_name = "tunnel2_rekey_margin_time_seconds"];
+
+  int64 tunnel2_replay_window_size = 65 [json_name = "tunnel2_replay_window_size"];
+
+  string tunnel2_startup_action = 66 [json_name = "tunnel2_startup_action"];
+
+  string tunnel2_vgw_inside_address = 67 [json_name = "tunnel2_vgw_inside_address"];
+
+  string tunnel_inside_ip_version = 68 [json_name = "tunnel_inside_ip_version"];
+
+  string type = 69;
+
+  repeated VgwTelemetry vgw_telemetry = 70 [json_name = "vgw_telemetry"];
+
+  string vpn_gateway_id = 71 [json_name = "vpn_gateway_id"];
+
+  Tunnel1LogOptions tunnel1_log_options = 72 [json_name = "tunnel1_log_options"];
+
+  Tunnel2LogOptions tunnel2_log_options = 73 [json_name = "tunnel2_log_options"];
+
+  map<string, string> for_each = 74 [json_name = "for_each"];
+
+  repeated string depends_on = 75 [json_name = "depends_on"];
+
+  int32 count = 76;
+
+  string provider = 77;
+
+  terraform.v1.Lifecycle lifecycle = 78;
+
+  message Routes {
+    // destination_cidr_block: string
+    string destination_cidr_block = 1 [json_name = "destination_cidr_block"];
+
+    // source: string
+    string source = 2;
+
+    // state: string
+    string state = 3;
+  }
+
+  message VgwTelemetry {
+    // accepted_route_count: number
+    int64 accepted_route_count = 1 [json_name = "accepted_route_count"];
+
+    // certificate_arn: string
+    string certificate_arn = 2 [json_name = "certificate_arn"];
+
+    // last_status_change: string
+    string last_status_change = 3 [json_name = "last_status_change"];
+
+    // outside_ip_address: string
+    string outside_ip_address = 4 [json_name = "outside_ip_address"];
+
+    // status: string
+    string status = 5;
+
+    // status_message: string
+    string status_message = 6 [json_name = "status_message"];
+  }
+
+  message Tunnel1LogOptions {
+    CloudwatchLogOptions cloudwatch_log_options = 1 [json_name = "cloudwatch_log_options"];
+
+    message CloudwatchLogOptions {
+      bool log_enabled = 1 [json_name = "log_enabled"];
+
+      string log_group_arn = 2 [json_name = "log_group_arn"];
+
+      string log_output_format = 3 [json_name = "log_output_format"];
+    }
+  }
+
+  message Tunnel2LogOptions {
+    CloudwatchLogOptions cloudwatch_log_options = 1 [json_name = "cloudwatch_log_options"];
+
+    message CloudwatchLogOptions {
+      bool log_enabled = 1 [json_name = "log_enabled"];
+
+      string log_group_arn = 2 [json_name = "log_group_arn"];
+
+      string log_output_format = 3 [json_name = "log_output_format"];
+    }
+  }
+}
+
+// AwsVpnConnectionRoute version is 0
+message AwsVpnConnectionRoute {
+  string destination_cidr_block = 1 [json_name = "destination_cidr_block"];
+
+  string id = 2;
+
+  string vpn_connection_id = 3 [json_name = "vpn_connection_id"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsVpnGateway version is 0
+message AwsVpnGateway {
+  string amazon_side_asn = 1 [json_name = "amazon_side_asn"];
+
+  string arn = 2;
+
+  string availability_zone = 3 [json_name = "availability_zone"];
+
+  string id = 4;
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  string vpc_id = 7 [json_name = "vpc_id"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsVpnGatewayAttachment version is 0
+message AwsVpnGatewayAttachment {
+  string id = 1;
+
+  string vpc_id = 2 [json_name = "vpc_id"];
+
+  string vpn_gateway_id = 3 [json_name = "vpn_gateway_id"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsVpnGatewayRoutePropagation version is 0
+message AwsVpnGatewayRoutePropagation {
+  string id = 1;
+
+  string route_table_id = 2 [json_name = "route_table_id"];
+
+  string vpn_gateway_id = 3 [json_name = "vpn_gateway_id"];
+
+  repeated Timeouts timeouts = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}

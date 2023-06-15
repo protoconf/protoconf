@@ -1,0 +1,822 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsConnectBotAssociation version is 0
+message AwsConnectBotAssociation {
+  string id = 1;
+
+  string instance_id = 2 [json_name = "instance_id"];
+
+  LexBot lex_bot = 3 [json_name = "lex_bot"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+
+  message LexBot {
+    string lex_region = 1 [json_name = "lex_region"];
+
+    string name = 2;
+  }
+}
+
+// AwsConnectContactFlow version is 0
+message AwsConnectContactFlow {
+  string arn = 1;
+
+  string contact_flow_id = 2 [json_name = "contact_flow_id"];
+
+  string content = 3;
+
+  string content_hash = 4 [json_name = "content_hash"];
+
+  string description = 5;
+
+  string filename = 6;
+
+  string id = 7;
+
+  string instance_id = 8 [json_name = "instance_id"];
+
+  string name = 9;
+
+  map<string, string> tags = 10;
+
+  map<string, string> tags_all = 11 [json_name = "tags_all"];
+
+  string type = 12;
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+}
+
+// AwsConnectContactFlowModule version is 0
+message AwsConnectContactFlowModule {
+  string arn = 1;
+
+  string contact_flow_module_id = 2 [json_name = "contact_flow_module_id"];
+
+  string content = 3;
+
+  string content_hash = 4 [json_name = "content_hash"];
+
+  string description = 5;
+
+  string filename = 6;
+
+  string id = 7;
+
+  string instance_id = 8 [json_name = "instance_id"];
+
+  string name = 9;
+
+  map<string, string> tags = 10;
+
+  map<string, string> tags_all = 11 [json_name = "tags_all"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+}
+
+// AwsConnectHoursOfOperation version is 0
+message AwsConnectHoursOfOperation {
+  string arn = 1;
+
+  string description = 2;
+
+  string hours_of_operation_id = 3 [json_name = "hours_of_operation_id"];
+
+  string id = 4;
+
+  string instance_id = 5 [json_name = "instance_id"];
+
+  string name = 6;
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  string time_zone = 9 [json_name = "time_zone"];
+
+  repeated Config config = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Config {
+    string day = 1;
+
+    EndTime end_time = 2 [json_name = "end_time"];
+
+    StartTime start_time = 3 [json_name = "start_time"];
+
+    message EndTime {
+      int64 hours = 1;
+
+      int64 minutes = 2;
+    }
+
+    message StartTime {
+      int64 hours = 1;
+
+      int64 minutes = 2;
+    }
+  }
+}
+
+// AwsConnectInstance version is 0
+message AwsConnectInstance {
+  string arn = 1;
+
+  bool auto_resolve_best_voices_enabled = 2 [json_name = "auto_resolve_best_voices_enabled"];
+
+  bool contact_flow_logs_enabled = 3 [json_name = "contact_flow_logs_enabled"];
+
+  bool contact_lens_enabled = 4 [json_name = "contact_lens_enabled"];
+
+  string created_time = 5 [json_name = "created_time"];
+
+  string directory_id = 6 [json_name = "directory_id"];
+
+  bool early_media_enabled = 7 [json_name = "early_media_enabled"];
+
+  string id = 8;
+
+  string identity_management_type = 9 [json_name = "identity_management_type"];
+
+  bool inbound_calls_enabled = 10 [json_name = "inbound_calls_enabled"];
+
+  string instance_alias = 11 [json_name = "instance_alias"];
+
+  bool multi_party_conference_enabled = 12 [json_name = "multi_party_conference_enabled"];
+
+  bool outbound_calls_enabled = 13 [json_name = "outbound_calls_enabled"];
+
+  string service_role = 14 [json_name = "service_role"];
+
+  string status = 15;
+
+  repeated Timeouts timeouts = 16;
+
+  map<string, string> for_each = 17 [json_name = "for_each"];
+
+  repeated string depends_on = 18 [json_name = "depends_on"];
+
+  int32 count = 19;
+
+  string provider = 20;
+
+  terraform.v1.Lifecycle lifecycle = 21;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsConnectInstanceStorageConfig version is 0
+message AwsConnectInstanceStorageConfig {
+  string association_id = 1 [json_name = "association_id"];
+
+  string id = 2;
+
+  string instance_id = 3 [json_name = "instance_id"];
+
+  string resource_type = 4 [json_name = "resource_type"];
+
+  StorageConfig storage_config = 5 [json_name = "storage_config"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message StorageConfig {
+    string storage_type = 1 [json_name = "storage_type"];
+
+    KinesisFirehoseConfig kinesis_firehose_config = 2 [json_name = "kinesis_firehose_config"];
+
+    KinesisStreamConfig kinesis_stream_config = 3 [json_name = "kinesis_stream_config"];
+
+    KinesisVideoStreamConfig kinesis_video_stream_config = 4 [json_name = "kinesis_video_stream_config"];
+
+    S3Config s3_config = 5 [json_name = "s3_config"];
+
+    message KinesisFirehoseConfig {
+      string firehose_arn = 1 [json_name = "firehose_arn"];
+    }
+
+    message KinesisStreamConfig {
+      string stream_arn = 1 [json_name = "stream_arn"];
+    }
+
+    message KinesisVideoStreamConfig {
+      string prefix = 1;
+
+      int64 retention_period_hours = 2 [json_name = "retention_period_hours"];
+
+      EncryptionConfig encryption_config = 3 [json_name = "encryption_config"];
+
+      message EncryptionConfig {
+        string encryption_type = 1 [json_name = "encryption_type"];
+
+        string key_id = 2 [json_name = "key_id"];
+      }
+    }
+
+    message S3Config {
+      string bucket_name = 1 [json_name = "bucket_name"];
+
+      string bucket_prefix = 2 [json_name = "bucket_prefix"];
+
+      EncryptionConfig encryption_config = 3 [json_name = "encryption_config"];
+
+      message EncryptionConfig {
+        string encryption_type = 1 [json_name = "encryption_type"];
+
+        string key_id = 2 [json_name = "key_id"];
+      }
+    }
+  }
+}
+
+// AwsConnectLambdaFunctionAssociation version is 0
+message AwsConnectLambdaFunctionAssociation {
+  string function_arn = 1 [json_name = "function_arn"];
+
+  string id = 2;
+
+  string instance_id = 3 [json_name = "instance_id"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsConnectPhoneNumber version is 0
+message AwsConnectPhoneNumber {
+  string arn = 1;
+
+  string country_code = 2 [json_name = "country_code"];
+
+  string description = 3;
+
+  string id = 4;
+
+  string phone_number = 5 [json_name = "phone_number"];
+
+  string prefix = 6;
+
+  repeated Status status = 7;
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  string target_arn = 10 [json_name = "target_arn"];
+
+  string type = 11;
+
+  repeated Timeouts timeouts = 12;
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message Status {
+    // message: string
+    string message = 1;
+
+    // status: string
+    string status = 2;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsConnectQueue version is 0
+message AwsConnectQueue {
+  string arn = 1;
+
+  string description = 2;
+
+  string hours_of_operation_id = 3 [json_name = "hours_of_operation_id"];
+
+  string id = 4;
+
+  string instance_id = 5 [json_name = "instance_id"];
+
+  int64 max_contacts = 6 [json_name = "max_contacts"];
+
+  string name = 7;
+
+  string queue_id = 8 [json_name = "queue_id"];
+
+  repeated string quick_connect_ids = 9 [json_name = "quick_connect_ids"];
+
+  string status = 10;
+
+  map<string, string> tags = 11;
+
+  map<string, string> tags_all = 12 [json_name = "tags_all"];
+
+  OutboundCallerConfig outbound_caller_config = 13 [json_name = "outbound_caller_config"];
+
+  map<string, string> for_each = 14 [json_name = "for_each"];
+
+  repeated string depends_on = 15 [json_name = "depends_on"];
+
+  int32 count = 16;
+
+  string provider = 17;
+
+  terraform.v1.Lifecycle lifecycle = 18;
+
+  message OutboundCallerConfig {
+    string outbound_caller_id_name = 1 [json_name = "outbound_caller_id_name"];
+
+    string outbound_caller_id_number_id = 2 [json_name = "outbound_caller_id_number_id"];
+
+    string outbound_flow_id = 3 [json_name = "outbound_flow_id"];
+  }
+}
+
+// AwsConnectQuickConnect version is 0
+message AwsConnectQuickConnect {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  string instance_id = 4 [json_name = "instance_id"];
+
+  string name = 5;
+
+  string quick_connect_id = 6 [json_name = "quick_connect_id"];
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  QuickConnectConfig quick_connect_config = 9 [json_name = "quick_connect_config"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message QuickConnectConfig {
+    string quick_connect_type = 1 [json_name = "quick_connect_type"];
+
+    repeated PhoneConfig phone_config = 2 [json_name = "phone_config"];
+
+    repeated QueueConfig queue_config = 3 [json_name = "queue_config"];
+
+    repeated UserConfig user_config = 4 [json_name = "user_config"];
+
+    message PhoneConfig {
+      string phone_number = 1 [json_name = "phone_number"];
+    }
+
+    message QueueConfig {
+      string contact_flow_id = 1 [json_name = "contact_flow_id"];
+
+      string queue_id = 2 [json_name = "queue_id"];
+    }
+
+    message UserConfig {
+      string contact_flow_id = 1 [json_name = "contact_flow_id"];
+
+      string user_id = 2 [json_name = "user_id"];
+    }
+  }
+}
+
+// AwsConnectRoutingProfile version is 0
+message AwsConnectRoutingProfile {
+  string arn = 1;
+
+  string default_outbound_queue_id = 2 [json_name = "default_outbound_queue_id"];
+
+  string description = 3;
+
+  string id = 4;
+
+  string instance_id = 5 [json_name = "instance_id"];
+
+  string name = 6;
+
+  string routing_profile_id = 7 [json_name = "routing_profile_id"];
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  repeated MediaConcurrencies media_concurrencies = 10 [json_name = "media_concurrencies"];
+
+  repeated QueueConfigs queue_configs = 11 [json_name = "queue_configs"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message MediaConcurrencies {
+    string channel = 1;
+
+    int64 concurrency = 2;
+  }
+
+  message QueueConfigs {
+    string channel = 1;
+
+    int64 delay = 2;
+
+    int64 priority = 3;
+
+    string queue_arn = 4 [json_name = "queue_arn"];
+
+    string queue_id = 5 [json_name = "queue_id"];
+
+    string queue_name = 6 [json_name = "queue_name"];
+  }
+}
+
+// AwsConnectSecurityProfile version is 0
+message AwsConnectSecurityProfile {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  string instance_id = 4 [json_name = "instance_id"];
+
+  string name = 5;
+
+  string organization_resource_id = 6 [json_name = "organization_resource_id"];
+
+  repeated string permissions = 7;
+
+  string security_profile_id = 8 [json_name = "security_profile_id"];
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+}
+
+// AwsConnectUser version is 0
+message AwsConnectUser {
+  string arn = 1;
+
+  string directory_user_id = 2 [json_name = "directory_user_id"];
+
+  string hierarchy_group_id = 3 [json_name = "hierarchy_group_id"];
+
+  string id = 4;
+
+  string instance_id = 5 [json_name = "instance_id"];
+
+  string name = 6;
+
+  string password = 7;
+
+  string routing_profile_id = 8 [json_name = "routing_profile_id"];
+
+  repeated string security_profile_ids = 9 [json_name = "security_profile_ids"];
+
+  map<string, string> tags = 10;
+
+  map<string, string> tags_all = 11 [json_name = "tags_all"];
+
+  string user_id = 12 [json_name = "user_id"];
+
+  IdentityInfo identity_info = 13 [json_name = "identity_info"];
+
+  PhoneConfig phone_config = 14 [json_name = "phone_config"];
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+
+  message IdentityInfo {
+    string email = 1;
+
+    string first_name = 2 [json_name = "first_name"];
+
+    string last_name = 3 [json_name = "last_name"];
+  }
+
+  message PhoneConfig {
+    int64 after_contact_work_time_limit = 1 [json_name = "after_contact_work_time_limit"];
+
+    bool auto_accept = 2 [json_name = "auto_accept"];
+
+    string desk_phone_number = 3 [json_name = "desk_phone_number"];
+
+    string phone_type = 4 [json_name = "phone_type"];
+  }
+}
+
+// AwsConnectUserHierarchyGroup version is 0
+message AwsConnectUserHierarchyGroup {
+  string arn = 1;
+
+  string hierarchy_group_id = 2 [json_name = "hierarchy_group_id"];
+
+  repeated HierarchyPath hierarchy_path = 3 [json_name = "hierarchy_path"];
+
+  string id = 4;
+
+  string instance_id = 5 [json_name = "instance_id"];
+
+  string level_id = 6 [json_name = "level_id"];
+
+  string name = 7;
+
+  string parent_group_id = 8 [json_name = "parent_group_id"];
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message HierarchyPath {
+    // level_five: list of object
+    repeated LevelFive level_five = 1 [json_name = "level_five"];
+
+    // level_four: list of object
+    repeated LevelFour level_four = 2 [json_name = "level_four"];
+
+    // level_one: list of object
+    repeated LevelOne level_one = 3 [json_name = "level_one"];
+
+    // level_three: list of object
+    repeated LevelThree level_three = 4 [json_name = "level_three"];
+
+    // level_two: list of object
+    repeated LevelTwo level_two = 5 [json_name = "level_two"];
+
+    message LevelFive {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message LevelFour {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message LevelOne {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message LevelThree {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message LevelTwo {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+  }
+}
+
+// AwsConnectUserHierarchyStructure version is 0
+message AwsConnectUserHierarchyStructure {
+  string id = 1;
+
+  string instance_id = 2 [json_name = "instance_id"];
+
+  HierarchyStructure hierarchy_structure = 3 [json_name = "hierarchy_structure"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+
+  message HierarchyStructure {
+    LevelFive level_five = 1 [json_name = "level_five"];
+
+    LevelFour level_four = 2 [json_name = "level_four"];
+
+    LevelOne level_one = 3 [json_name = "level_one"];
+
+    LevelThree level_three = 4 [json_name = "level_three"];
+
+    LevelTwo level_two = 5 [json_name = "level_two"];
+
+    message LevelFive {
+      string arn = 1;
+
+      string id = 2;
+
+      string name = 3;
+    }
+
+    message LevelFour {
+      string arn = 1;
+
+      string id = 2;
+
+      string name = 3;
+    }
+
+    message LevelOne {
+      string arn = 1;
+
+      string id = 2;
+
+      string name = 3;
+    }
+
+    message LevelThree {
+      string arn = 1;
+
+      string id = 2;
+
+      string name = 3;
+    }
+
+    message LevelTwo {
+      string arn = 1;
+
+      string id = 2;
+
+      string name = 3;
+    }
+  }
+}
+
+// AwsConnectVocabulary version is 0
+message AwsConnectVocabulary {
+  string arn = 1;
+
+  string content = 2;
+
+  string failure_reason = 3 [json_name = "failure_reason"];
+
+  string id = 4;
+
+  string instance_id = 5 [json_name = "instance_id"];
+
+  string language_code = 6 [json_name = "language_code"];
+
+  string last_modified_time = 7 [json_name = "last_modified_time"];
+
+  string name = 8;
+
+  string state = 9;
+
+  map<string, string> tags = 10;
+
+  map<string, string> tags_all = 11 [json_name = "tags_all"];
+
+  string vocabulary_id = 12 [json_name = "vocabulary_id"];
+
+  repeated Timeouts timeouts = 13;
+
+  map<string, string> for_each = 14 [json_name = "for_each"];
+
+  repeated string depends_on = 15 [json_name = "depends_on"];
+
+  int32 count = 16;
+
+  string provider = 17;
+
+  terraform.v1.Lifecycle lifecycle = 18;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}

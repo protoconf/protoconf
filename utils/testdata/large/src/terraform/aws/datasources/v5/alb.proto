@@ -1,0 +1,392 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsAlb version is 0
+message AwsAlb {
+  repeated AccessLogs access_logs = 1 [json_name = "access_logs"];
+
+  string arn = 2;
+
+  string arn_suffix = 3 [json_name = "arn_suffix"];
+
+  string customer_owned_ipv4_pool = 4 [json_name = "customer_owned_ipv4_pool"];
+
+  string desync_mitigation_mode = 5 [json_name = "desync_mitigation_mode"];
+
+  string dns_name = 6 [json_name = "dns_name"];
+
+  bool drop_invalid_header_fields = 7 [json_name = "drop_invalid_header_fields"];
+
+  bool enable_cross_zone_load_balancing = 8 [json_name = "enable_cross_zone_load_balancing"];
+
+  bool enable_deletion_protection = 9 [json_name = "enable_deletion_protection"];
+
+  bool enable_http2 = 10 [json_name = "enable_http2"];
+
+  bool enable_tls_version_and_cipher_suite_headers = 11 [
+    json_name = "enable_tls_version_and_cipher_suite_headers"
+  ];
+
+  bool enable_waf_fail_open = 12 [json_name = "enable_waf_fail_open"];
+
+  bool enable_xff_client_port = 13 [json_name = "enable_xff_client_port"];
+
+  string id = 14;
+
+  int64 idle_timeout = 15 [json_name = "idle_timeout"];
+
+  bool internal = 16;
+
+  string ip_address_type = 17 [json_name = "ip_address_type"];
+
+  string load_balancer_type = 18 [json_name = "load_balancer_type"];
+
+  string name = 19;
+
+  bool preserve_host_header = 20 [json_name = "preserve_host_header"];
+
+  repeated string security_groups = 21 [json_name = "security_groups"];
+
+  repeated SubnetMapping subnet_mapping = 22 [json_name = "subnet_mapping"];
+
+  repeated string subnets = 23;
+
+  map<string, string> tags = 24;
+
+  string vpc_id = 25 [json_name = "vpc_id"];
+
+  string xff_header_processing_mode = 26 [json_name = "xff_header_processing_mode"];
+
+  string zone_id = 27 [json_name = "zone_id"];
+
+  repeated Timeouts timeouts = 28;
+
+  map<string, string> for_each = 29 [json_name = "for_each"];
+
+  repeated string depends_on = 30 [json_name = "depends_on"];
+
+  int32 count = 31;
+
+  string provider = 32;
+
+  terraform.v1.Lifecycle lifecycle = 33;
+
+  message AccessLogs {
+    // bucket: string
+    string bucket = 1;
+
+    // enabled: bool
+    bool enabled = 2;
+
+    // prefix: string
+    string prefix = 3;
+  }
+
+  message SubnetMapping {
+    // allocation_id: string
+    string allocation_id = 1 [json_name = "allocation_id"];
+
+    // ipv6_address: string
+    string ipv6_address = 2 [json_name = "ipv6_address"];
+
+    // outpost_id: string
+    string outpost_id = 3 [json_name = "outpost_id"];
+
+    // private_ipv4_address: string
+    string private_ipv4_address = 4 [json_name = "private_ipv4_address"];
+
+    // subnet_id: string
+    string subnet_id = 5 [json_name = "subnet_id"];
+  }
+
+  message Timeouts {
+    string read = 1;
+  }
+}
+
+// AwsAlbListener version is 0
+message AwsAlbListener {
+  string alpn_policy = 1 [json_name = "alpn_policy"];
+
+  string arn = 2;
+
+  string certificate_arn = 3 [json_name = "certificate_arn"];
+
+  repeated DefaultAction default_action = 4 [json_name = "default_action"];
+
+  string id = 5;
+
+  string load_balancer_arn = 6 [json_name = "load_balancer_arn"];
+
+  int64 port = 7;
+
+  string protocol = 8;
+
+  string ssl_policy = 9 [json_name = "ssl_policy"];
+
+  map<string, string> tags = 10;
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message DefaultAction {
+    // authenticate_cognito: list of object
+    repeated AuthenticateCognito authenticate_cognito = 1 [json_name = "authenticate_cognito"];
+
+    // authenticate_oidc: list of object
+    repeated AuthenticateOidc authenticate_oidc = 2 [json_name = "authenticate_oidc"];
+
+    // fixed_response: list of object
+    repeated FixedResponse fixed_response = 3 [json_name = "fixed_response"];
+
+    // forward: list of object
+    repeated Forward forward = 4;
+
+    // order: number
+    int64 order = 5;
+
+    // redirect: list of object
+    repeated Redirect redirect = 6;
+
+    // target_group_arn: string
+    string target_group_arn = 7 [json_name = "target_group_arn"];
+
+    // type: string
+    string type = 8;
+
+    message AuthenticateCognito {
+      // authentication_request_extra_params: map of string
+      map<string, string> authentication_request_extra_params = 1 [json_name = "authentication_request_extra_params"];
+
+      // on_unauthenticated_request: string
+      string on_unauthenticated_request = 2 [json_name = "on_unauthenticated_request"];
+
+      // scope: string
+      string scope = 3;
+
+      // session_cookie_name: string
+      string session_cookie_name = 4 [json_name = "session_cookie_name"];
+
+      // session_timeout: number
+      int64 session_timeout = 5 [json_name = "session_timeout"];
+
+      // user_pool_arn: string
+      string user_pool_arn = 6 [json_name = "user_pool_arn"];
+
+      // user_pool_client_id: string
+      string user_pool_client_id = 7 [json_name = "user_pool_client_id"];
+
+      // user_pool_domain: string
+      string user_pool_domain = 8 [json_name = "user_pool_domain"];
+    }
+
+    message AuthenticateOidc {
+      // authentication_request_extra_params: map of string
+      map<string, string> authentication_request_extra_params = 1 [json_name = "authentication_request_extra_params"];
+
+      // authorization_endpoint: string
+      string authorization_endpoint = 2 [json_name = "authorization_endpoint"];
+
+      // client_id: string
+      string client_id = 3 [json_name = "client_id"];
+
+      // client_secret: string
+      string client_secret = 4 [json_name = "client_secret"];
+
+      // issuer: string
+      string issuer = 5;
+
+      // on_unauthenticated_request: string
+      string on_unauthenticated_request = 6 [json_name = "on_unauthenticated_request"];
+
+      // scope: string
+      string scope = 7;
+
+      // session_cookie_name: string
+      string session_cookie_name = 8 [json_name = "session_cookie_name"];
+
+      // session_timeout: number
+      int64 session_timeout = 9 [json_name = "session_timeout"];
+
+      // token_endpoint: string
+      string token_endpoint = 10 [json_name = "token_endpoint"];
+
+      // user_info_endpoint: string
+      string user_info_endpoint = 11 [json_name = "user_info_endpoint"];
+    }
+
+    message FixedResponse {
+      // content_type: string
+      string content_type = 1 [json_name = "content_type"];
+
+      // message_body: string
+      string message_body = 2 [json_name = "message_body"];
+
+      // status_code: string
+      string status_code = 3 [json_name = "status_code"];
+    }
+
+    message Forward {
+      // stickiness: list of object
+      repeated Stickiness stickiness = 1;
+
+      // target_group: set of object
+      repeated TargetGroup target_group = 2 [json_name = "target_group"];
+
+      message Stickiness {
+        // duration: number
+        int64 duration = 1;
+
+        // enabled: bool
+        bool enabled = 2;
+      }
+
+      message TargetGroup {
+        // arn: string
+        string arn = 1;
+
+        // weight: number
+        int64 weight = 2;
+      }
+    }
+
+    message Redirect {
+      // host: string
+      string host = 1;
+
+      // path: string
+      string path = 2;
+
+      // port: string
+      string port = 3;
+
+      // protocol: string
+      string protocol = 4;
+
+      // query: string
+      string query = 5;
+
+      // status_code: string
+      string status_code = 6 [json_name = "status_code"];
+    }
+  }
+
+  message Timeouts {
+    string read = 1;
+  }
+}
+
+// AwsAlbTargetGroup version is 0
+message AwsAlbTargetGroup {
+  string arn = 1;
+
+  string arn_suffix = 2 [json_name = "arn_suffix"];
+
+  bool connection_termination = 3 [json_name = "connection_termination"];
+
+  int64 deregistration_delay = 4 [json_name = "deregistration_delay"];
+
+  repeated HealthCheck health_check = 5 [json_name = "health_check"];
+
+  string id = 6;
+
+  bool lambda_multi_value_headers_enabled = 7 [json_name = "lambda_multi_value_headers_enabled"];
+
+  string load_balancing_algorithm_type = 8 [json_name = "load_balancing_algorithm_type"];
+
+  string load_balancing_cross_zone_enabled = 9 [json_name = "load_balancing_cross_zone_enabled"];
+
+  string name = 10;
+
+  int64 port = 11;
+
+  string preserve_client_ip = 12 [json_name = "preserve_client_ip"];
+
+  string protocol = 13;
+
+  string protocol_version = 14 [json_name = "protocol_version"];
+
+  bool proxy_protocol_v2 = 15 [json_name = "proxy_protocol_v2"];
+
+  int64 slow_start = 16 [json_name = "slow_start"];
+
+  repeated Stickiness stickiness = 17;
+
+  map<string, string> tags = 18;
+
+  string target_type = 19 [json_name = "target_type"];
+
+  string vpc_id = 20 [json_name = "vpc_id"];
+
+  repeated Timeouts timeouts = 21;
+
+  map<string, string> for_each = 22 [json_name = "for_each"];
+
+  repeated string depends_on = 23 [json_name = "depends_on"];
+
+  int32 count = 24;
+
+  string provider = 25;
+
+  terraform.v1.Lifecycle lifecycle = 26;
+
+  message HealthCheck {
+    // enabled: bool
+    bool enabled = 1;
+
+    // healthy_threshold: number
+    int64 healthy_threshold = 2 [json_name = "healthy_threshold"];
+
+    // interval: number
+    int64 interval = 3;
+
+    // matcher: string
+    string matcher = 4;
+
+    // path: string
+    string path = 5;
+
+    // port: string
+    string port = 6;
+
+    // protocol: string
+    string protocol = 7;
+
+    // timeout: number
+    int64 timeout = 8;
+
+    // unhealthy_threshold: number
+    int64 unhealthy_threshold = 9 [json_name = "unhealthy_threshold"];
+  }
+
+  message Stickiness {
+    // cookie_duration: number
+    int64 cookie_duration = 1 [json_name = "cookie_duration"];
+
+    // cookie_name: string
+    string cookie_name = 2 [json_name = "cookie_name"];
+
+    // enabled: bool
+    bool enabled = 3;
+
+    // type: string
+    string type = 4;
+  }
+
+  message Timeouts {
+    string read = 1;
+  }
+}

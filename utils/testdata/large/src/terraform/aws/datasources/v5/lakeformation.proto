@@ -1,0 +1,169 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsLakeformationDataLakeSettings version is 0
+message AwsLakeformationDataLakeSettings {
+  repeated string admins = 1;
+
+  bool allow_external_data_filtering = 2 [json_name = "allow_external_data_filtering"];
+
+  repeated string authorized_session_tag_value_list = 3 [json_name = "authorized_session_tag_value_list"];
+
+  string catalog_id = 4 [json_name = "catalog_id"];
+
+  repeated CreateDatabaseDefaultPermissions create_database_default_permissions = 5 [json_name = "create_database_default_permissions"];
+
+  repeated CreateTableDefaultPermissions create_table_default_permissions = 6 [json_name = "create_table_default_permissions"];
+
+  repeated string external_data_filtering_allow_list = 7 [json_name = "external_data_filtering_allow_list"];
+
+  string id = 8;
+
+  repeated string trusted_resource_owners = 9 [json_name = "trusted_resource_owners"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message CreateDatabaseDefaultPermissions {
+    // permissions: set of string
+    repeated string permissions = 1;
+
+    // principal: string
+    string principal = 2;
+  }
+
+  message CreateTableDefaultPermissions {
+    // permissions: set of string
+    repeated string permissions = 1;
+
+    // principal: string
+    string principal = 2;
+  }
+}
+
+// AwsLakeformationPermissions version is 0
+message AwsLakeformationPermissions {
+  string catalog_id = 1 [json_name = "catalog_id"];
+
+  bool catalog_resource = 2 [json_name = "catalog_resource"];
+
+  string id = 3;
+
+  repeated string permissions = 4;
+
+  repeated string permissions_with_grant_option = 5 [json_name = "permissions_with_grant_option"];
+
+  string principal = 6;
+
+  DataLocation data_location = 7 [json_name = "data_location"];
+
+  Database database = 8;
+
+  LfTag lf_tag = 9 [json_name = "lf_tag"];
+
+  LfTagPolicy lf_tag_policy = 10 [json_name = "lf_tag_policy"];
+
+  Table table = 11;
+
+  TableWithColumns table_with_columns = 12 [json_name = "table_with_columns"];
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message DataLocation {
+    string arn = 1;
+
+    string catalog_id = 2 [json_name = "catalog_id"];
+  }
+
+  message Database {
+    string catalog_id = 1 [json_name = "catalog_id"];
+
+    string name = 2;
+  }
+
+  message LfTag {
+    string catalog_id = 1 [json_name = "catalog_id"];
+
+    string key = 2;
+
+    repeated string values = 3;
+  }
+
+  message LfTagPolicy {
+    string catalog_id = 1 [json_name = "catalog_id"];
+
+    string resource_type = 2 [json_name = "resource_type"];
+
+    repeated Expression expression = 3;
+
+    message Expression {
+      string key = 1;
+
+      repeated string values = 2;
+    }
+  }
+
+  message Table {
+    string catalog_id = 1 [json_name = "catalog_id"];
+
+    string database_name = 2 [json_name = "database_name"];
+
+    string name = 3;
+
+    bool wildcard = 4;
+  }
+
+  message TableWithColumns {
+    string catalog_id = 1 [json_name = "catalog_id"];
+
+    repeated string column_names = 2 [json_name = "column_names"];
+
+    string database_name = 3 [json_name = "database_name"];
+
+    repeated string excluded_column_names = 4 [json_name = "excluded_column_names"];
+
+    string name = 5;
+
+    bool wildcard = 6;
+  }
+}
+
+// AwsLakeformationResource version is 0
+message AwsLakeformationResource {
+  string arn = 1;
+
+  string id = 2;
+
+  string last_modified = 3 [json_name = "last_modified"];
+
+  string role_arn = 4 [json_name = "role_arn"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}

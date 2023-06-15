@@ -1,0 +1,647 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleVertexAiDataset version is 0
+message GoogleVertexAiDataset {
+  // The timestamp of when the dataset was created in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits.
+  string create_time = 1 [json_name = "create_time"];
+
+  // The user-defined name of the Dataset. The name can be up to 128 characters long and can be consist of any UTF-8 characters.
+  string display_name = 2 [json_name = "display_name"];
+
+  string id = 3;
+
+  // A set of key/value label pairs to assign to this Workflow.
+  map<string, string> labels = 4;
+
+  // Points to a YAML file stored on Google Cloud Storage describing additional information about the Dataset. The schema is defined as an OpenAPI 3.0.2 Schema Object. The schema files that can be used here are found in gs://google-cloud-aiplatform/schema/dataset/metadata/.
+  string metadata_schema_uri = 5 [json_name = "metadata_schema_uri"];
+
+  // The resource name of the Dataset. This value is set by Google.
+  string name = 6;
+
+  string project = 7;
+
+  // The region of the dataset. eg us-central1
+  string region = 8;
+
+  // The timestamp of when the dataset was last updated in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits.
+  string update_time = 9 [json_name = "update_time"];
+
+  EncryptionSpec encryption_spec = 10 [json_name = "encryption_spec"];
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message EncryptionSpec {
+    // Required. The Cloud KMS resource identifier of the customer managed encryption key used to protect a resource.
+    // Has the form: projects/my-project/locations/my-region/keyRings/my-kr/cryptoKeys/my-key. The key needs to be in the same region as where the resource is created.
+    string kms_key_name = 1 [json_name = "kms_key_name"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleVertexAiEndpoint version is 0
+message GoogleVertexAiEndpoint {
+  // Output only. Timestamp when this Endpoint was created.
+  string create_time = 1 [json_name = "create_time"];
+
+  // Output only. The models deployed in this Endpoint. To add or remove DeployedModels use EndpointService.DeployModel and EndpointService.UndeployModel respectively. Models can also be deployed and undeployed using the [Cloud Console](https://console.cloud.google.com/vertex-ai/).
+  repeated DeployedModels deployed_models = 2 [json_name = "deployed_models"];
+
+  // The description of the Endpoint.
+  string description = 3;
+
+  // Required. The display name of the Endpoint. The name can be up to 128 characters long and can consist of any UTF-8 characters.
+  string display_name = 4 [json_name = "display_name"];
+
+  // Used to perform consistent read-modify-write updates. If not set, a blind "overwrite" update happens.
+  string etag = 5;
+
+  string id = 6;
+
+  // The labels with user-defined metadata to organize your Endpoints. Label keys and values can be no longer than 64 characters (Unicode codepoints), can only contain lowercase letters, numeric characters, underscores and dashes. International characters are allowed. See https://goo.gl/xmQnxf for more information and examples of labels.
+  map<string, string> labels = 7;
+
+  // The location for the resource
+  string location = 8;
+
+  // Output only. Resource name of the Model Monitoring job associated with this Endpoint if monitoring is enabled by CreateModelDeploymentMonitoringJob. Format: 'projects/{project}/locations/{location}/modelDeploymentMonitoringJobs/{model_deployment_monitoring_job}'
+  string model_deployment_monitoring_job = 9 [json_name = "model_deployment_monitoring_job"];
+
+  // The resource name of the Endpoint. The name must be numeric with no leading zeros and can be at most 10 digits.
+  string name = 10;
+
+  // The full name of the Google Compute Engine [network](https://cloud.google.com//compute/docs/networks-and-firewalls#networks) to which the Endpoint should be peered. Private services access must already be configured for the network. If left unspecified, the Endpoint is not peered with any network. Only one of the fields, network or enable_private_service_connect, can be set. [Format](https://cloud.google.com/compute/docs/reference/rest/v1/networks/insert): 'projects/{project}/global/networks/{network}'. Where '{project}' is a project number, as in '12345', and '{network}' is network name.
+  string network = 11;
+
+  string project = 12;
+
+  // The region for the resource
+  string region = 13;
+
+  // Output only. Timestamp when this Endpoint was last updated.
+  string update_time = 14 [json_name = "update_time"];
+
+  EncryptionSpec encryption_spec = 15 [json_name = "encryption_spec"];
+
+  repeated Timeouts timeouts = 16;
+
+  map<string, string> for_each = 17 [json_name = "for_each"];
+
+  repeated string depends_on = 18 [json_name = "depends_on"];
+
+  int32 count = 19;
+
+  string provider = 20;
+
+  terraform.v1.Lifecycle lifecycle = 21;
+
+  message DeployedModels {
+    // automatic_resources: list of object
+    repeated AutomaticResources automatic_resources = 1 [json_name = "automatic_resources"];
+
+    // create_time: string
+    string create_time = 2 [json_name = "create_time"];
+
+    // dedicated_resources: list of object
+    repeated DedicatedResources dedicated_resources = 3 [json_name = "dedicated_resources"];
+
+    // display_name: string
+    string display_name = 4 [json_name = "display_name"];
+
+    // enable_access_logging: bool
+    bool enable_access_logging = 5 [json_name = "enable_access_logging"];
+
+    // enable_container_logging: bool
+    bool enable_container_logging = 6 [json_name = "enable_container_logging"];
+
+    // id: string
+    string id = 7;
+
+    // model: string
+    string model = 8;
+
+    // model_version_id: string
+    string model_version_id = 9 [json_name = "model_version_id"];
+
+    // private_endpoints: list of object
+    repeated PrivateEndpoints private_endpoints = 10 [json_name = "private_endpoints"];
+
+    // service_account: string
+    string service_account = 11 [json_name = "service_account"];
+
+    // shared_resources: string
+    string shared_resources = 12 [json_name = "shared_resources"];
+
+    message AutomaticResources {
+      // max_replica_count: number
+      int64 max_replica_count = 1 [json_name = "max_replica_count"];
+
+      // min_replica_count: number
+      int64 min_replica_count = 2 [json_name = "min_replica_count"];
+    }
+
+    message DedicatedResources {
+      // autoscaling_metric_specs: list of object
+      repeated AutoscalingMetricSpecs autoscaling_metric_specs = 1 [json_name = "autoscaling_metric_specs"];
+
+      // machine_spec: list of object
+      repeated MachineSpec machine_spec = 2 [json_name = "machine_spec"];
+
+      // max_replica_count: number
+      int64 max_replica_count = 3 [json_name = "max_replica_count"];
+
+      // min_replica_count: number
+      int64 min_replica_count = 4 [json_name = "min_replica_count"];
+
+      message AutoscalingMetricSpecs {
+        // metric_name: string
+        string metric_name = 1 [json_name = "metric_name"];
+
+        // target: number
+        int64 target = 2;
+      }
+
+      message MachineSpec {
+        // accelerator_count: number
+        int64 accelerator_count = 1 [json_name = "accelerator_count"];
+
+        // accelerator_type: string
+        string accelerator_type = 2 [json_name = "accelerator_type"];
+
+        // machine_type: string
+        string machine_type = 3 [json_name = "machine_type"];
+      }
+    }
+
+    message PrivateEndpoints {
+      // explain_http_uri: string
+      string explain_http_uri = 1 [json_name = "explain_http_uri"];
+
+      // health_http_uri: string
+      string health_http_uri = 2 [json_name = "health_http_uri"];
+
+      // predict_http_uri: string
+      string predict_http_uri = 3 [json_name = "predict_http_uri"];
+
+      // service_attachment: string
+      string service_attachment = 4 [json_name = "service_attachment"];
+    }
+  }
+
+  message EncryptionSpec {
+    // Required. The Cloud KMS resource identifier of the customer managed encryption key used to protect a resource. Has the form: 'projects/my-project/locations/my-region/keyRings/my-kr/cryptoKeys/my-key'. The key needs to be in the same region as where the compute resource is created.
+    string kms_key_name = 1 [json_name = "kms_key_name"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleVertexAiFeaturestore version is 0
+message GoogleVertexAiFeaturestore {
+  // The timestamp of when the featurestore was created in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits.
+  string create_time = 1 [json_name = "create_time"];
+
+  // Used to perform consistent read-modify-write updates.
+  string etag = 2;
+
+  // If set to true, any EntityTypes and Features for this Featurestore will also be deleted
+  bool force_destroy = 3 [json_name = "force_destroy"];
+
+  string id = 4;
+
+  // A set of key/value label pairs to assign to this Featurestore.
+  map<string, string> labels = 5;
+
+  // The name of the Featurestore. This value may be up to 60 characters, and valid characters are [a-z0-9_]. The first character cannot be a number.
+  string name = 6;
+
+  string project = 7;
+
+  // The region of the dataset. eg us-central1
+  string region = 8;
+
+  // The timestamp of when the featurestore was last updated in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits.
+  string update_time = 9 [json_name = "update_time"];
+
+  EncryptionSpec encryption_spec = 10 [json_name = "encryption_spec"];
+
+  OnlineServingConfig online_serving_config = 11 [json_name = "online_serving_config"];
+
+  repeated Timeouts timeouts = 12;
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message EncryptionSpec {
+    // The Cloud KMS resource identifier of the customer managed encryption key used to protect a resource. Has the form: projects/my-project/locations/my-region/keyRings/my-kr/cryptoKeys/my-key. The key needs to be in the same region as where the compute resource is created.
+    string kms_key_name = 1 [json_name = "kms_key_name"];
+  }
+
+  message OnlineServingConfig {
+    // The number of nodes for each cluster. The number of nodes will not scale automatically but can be scaled manually by providing different values when updating.
+    int64 fixed_node_count = 1 [json_name = "fixed_node_count"];
+
+    Scaling scaling = 2;
+
+    message Scaling {
+      // The maximum number of nodes to scale up to. Must be greater than minNodeCount, and less than or equal to 10 times of 'minNodeCount'.
+      int64 max_node_count = 1 [json_name = "max_node_count"];
+
+      // The minimum number of nodes to scale down to. Must be greater than or equal to 1.
+      int64 min_node_count = 2 [json_name = "min_node_count"];
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleVertexAiFeaturestoreEntitytype version is 0
+message GoogleVertexAiFeaturestoreEntitytype {
+  // The timestamp of when the featurestore was created in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits.
+  string create_time = 1 [json_name = "create_time"];
+
+  // Optional. Description of the EntityType.
+  string description = 2;
+
+  // Used to perform consistent read-modify-write updates.
+  string etag = 3;
+
+  // The name of the Featurestore to use, in the format projects/{project}/locations/{location}/featurestores/{featurestore}.
+  string featurestore = 4;
+
+  string id = 5;
+
+  // A set of key/value label pairs to assign to this EntityType.
+  map<string, string> labels = 6;
+
+  // The name of the EntityType. This value may be up to 60 characters, and valid characters are [a-z0-9_]. The first character cannot be a number.
+  string name = 7;
+
+  // The region of the EntityType.
+  string region = 8;
+
+  // The timestamp of when the featurestore was last updated in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits.
+  string update_time = 9 [json_name = "update_time"];
+
+  MonitoringConfig monitoring_config = 10 [json_name = "monitoring_config"];
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message MonitoringConfig {
+    CategoricalThresholdConfig categorical_threshold_config = 1 [json_name = "categorical_threshold_config"];
+
+    ImportFeaturesAnalysis import_features_analysis = 2 [json_name = "import_features_analysis"];
+
+    NumericalThresholdConfig numerical_threshold_config = 3 [json_name = "numerical_threshold_config"];
+
+    SnapshotAnalysis snapshot_analysis = 4 [json_name = "snapshot_analysis"];
+
+    message CategoricalThresholdConfig {
+      // Specify a threshold value that can trigger the alert. For categorical feature, the distribution distance is calculated by L-inifinity norm. Each feature must have a non-zero threshold if they need to be monitored. Otherwise no alert will be triggered for that feature. The default value is 0.3.
+      int64 value = 1;
+    }
+
+    message ImportFeaturesAnalysis {
+      // Defines the baseline to do anomaly detection for feature values imported by each [entityTypes.importFeatureValues][] operation. The value must be one of the values below:
+      // * LATEST_STATS: Choose the later one statistics generated by either most recent snapshot analysis or previous import features analysis. If non of them exists, skip anomaly detection and only generate a statistics.
+      // * MOST_RECENT_SNAPSHOT_STATS: Use the statistics generated by the most recent snapshot analysis if exists.
+      // * PREVIOUS_IMPORT_FEATURES_STATS: Use the statistics generated by the previous import features analysis if exists.
+      string anomaly_detection_baseline = 1 [json_name = "anomaly_detection_baseline"];
+
+      // Whether to enable / disable / inherite default hebavior for import features analysis. The value must be one of the values below:
+      // * DEFAULT: The default behavior of whether to enable the monitoring. EntityType-level config: disabled.
+      // * ENABLED: Explicitly enables import features analysis. EntityType-level config: by default enables import features analysis for all Features under it.
+      // * DISABLED: Explicitly disables import features analysis. EntityType-level config: by default disables import features analysis for all Features under it.
+      string state = 2;
+    }
+
+    message NumericalThresholdConfig {
+      // Specify a threshold value that can trigger the alert. For numerical feature, the distribution distance is calculated by Jensen–Shannon divergence. Each feature must have a non-zero threshold if they need to be monitored. Otherwise no alert will be triggered for that feature. The default value is 0.3.
+      int64 value = 1;
+    }
+
+    message SnapshotAnalysis {
+      // The monitoring schedule for snapshot analysis. For EntityType-level config: unset / disabled = true indicates disabled by default for Features under it; otherwise by default enable snapshot analysis monitoring with monitoringInterval for Features under it.
+      bool disabled = 1;
+
+      // Configuration of the snapshot analysis based monitoring pipeline running interval. The value indicates number of days. The default value is 1.
+      // If both FeaturestoreMonitoringConfig.SnapshotAnalysis.monitoring_interval_days and [FeaturestoreMonitoringConfig.SnapshotAnalysis.monitoring_interval][] are set when creating/updating EntityTypes/Features, FeaturestoreMonitoringConfig.SnapshotAnalysis.monitoring_interval_days will be used.
+      int64 monitoring_interval_days = 2 [json_name = "monitoring_interval_days"];
+
+      // Customized export features time window for snapshot analysis. Unit is one day. The default value is 21 days. Minimum value is 1 day. Maximum value is 4000 days.
+      int64 staleness_days = 3 [json_name = "staleness_days"];
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleVertexAiFeaturestoreEntitytypeFeature version is 0
+message GoogleVertexAiFeaturestoreEntitytypeFeature {
+  // The timestamp of when the entity type was created in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits.
+  string create_time = 1 [json_name = "create_time"];
+
+  // Description of the feature.
+  string description = 2;
+
+  // The name of the Featurestore to use, in the format projects/{project}/locations/{location}/featurestores/{featurestore}/entityTypes/{entitytype}.
+  string entitytype = 3;
+
+  // Used to perform consistent read-modify-write updates.
+  string etag = 4;
+
+  string id = 5;
+
+  // A set of key/value label pairs to assign to the feature.
+  map<string, string> labels = 6;
+
+  // The name of the feature. The feature can be up to 64 characters long and can consist only of ASCII Latin letters A-Z and a-z, underscore(_), and ASCII digits 0-9 starting with a letter. The value will be unique given an entity type.
+  string name = 7;
+
+  // The timestamp when the entity type was most recently updated in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits.
+  string update_time = 8 [json_name = "update_time"];
+
+  // Type of Feature value. Immutable. https://cloud.google.com/vertex-ai/docs/reference/rest/v1/projects.locations.featurestores.entityTypes.features#ValueType
+  string value_type = 9 [json_name = "value_type"];
+
+  repeated Timeouts timeouts = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleVertexAiIndex version is 0
+message GoogleVertexAiIndex {
+  // The timestamp of when the Index was created in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits.
+  string create_time = 1 [json_name = "create_time"];
+
+  // The pointers to DeployedIndexes created from this Index. An Index can be only deleted if all its DeployedIndexes had been undeployed first.
+  repeated DeployedIndexes deployed_indexes = 2 [json_name = "deployed_indexes"];
+
+  // The description of the Index.
+  string description = 3;
+
+  // The display name of the Index. The name can be up to 128 characters long and can consist of any UTF-8 characters.
+  string display_name = 4 [json_name = "display_name"];
+
+  // Used to perform consistent read-modify-write updates.
+  string etag = 5;
+
+  string id = 6;
+
+  // Stats of the index resource.
+  repeated IndexStats index_stats = 7 [json_name = "index_stats"];
+
+  // The update method to use with this Index. The value must be the followings. If not set, BATCH_UPDATE will be used by default.
+  // * BATCH_UPDATE: user can call indexes.patch with files on Cloud Storage of datapoints to update.
+  // * STREAM_UPDATE: user can call indexes.upsertDatapoints/DeleteDatapoints to update the Index and the updates will be applied in corresponding DeployedIndexes in nearly real-time.
+  string index_update_method = 8 [json_name = "index_update_method"];
+
+  // The labels with user-defined metadata to organize your Indexes.
+  map<string, string> labels = 9;
+
+  // Points to a YAML file stored on Google Cloud Storage describing additional information about the Index, that is specific to it. Unset if the Index does not have any additional information.
+  string metadata_schema_uri = 10 [json_name = "metadata_schema_uri"];
+
+  // The resource name of the Index.
+  string name = 11;
+
+  string project = 12;
+
+  // The region of the index. eg us-central1
+  string region = 13;
+
+  // The timestamp of when the Index was last updated in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits.
+  string update_time = 14 [json_name = "update_time"];
+
+  Metadata metadata = 15;
+
+  repeated Timeouts timeouts = 16;
+
+  map<string, string> for_each = 17 [json_name = "for_each"];
+
+  repeated string depends_on = 18 [json_name = "depends_on"];
+
+  int32 count = 19;
+
+  string provider = 20;
+
+  terraform.v1.Lifecycle lifecycle = 21;
+
+  message DeployedIndexes {
+    // deployed_index_id: string
+    string deployed_index_id = 1 [json_name = "deployed_index_id"];
+
+    // index_endpoint: string
+    string index_endpoint = 2 [json_name = "index_endpoint"];
+  }
+
+  message IndexStats {
+    // shards_count: number
+    int64 shards_count = 1 [json_name = "shards_count"];
+
+    // vectors_count: string
+    string vectors_count = 2 [json_name = "vectors_count"];
+  }
+
+  message Metadata {
+    // Allows inserting, updating  or deleting the contents of the Matching Engine Index.
+    // The string must be a valid Cloud Storage directory path. If this
+    // field is set when calling IndexService.UpdateIndex, then no other
+    // Index field can be also updated as part of the same call.
+    // The expected structure and format of the files this URI points to is
+    // described at https://cloud.google.com/vertex-ai/docs/matching-engine/using-matching-engine#input-data-format
+    string contents_delta_uri = 1 [json_name = "contents_delta_uri"];
+
+    // If this field is set together with contentsDeltaUri when calling IndexService.UpdateIndex,
+    // then existing content of the Index will be replaced by the data from the contentsDeltaUri.
+    bool is_complete_overwrite = 2 [json_name = "is_complete_overwrite"];
+
+    Config config = 3;
+
+    message Config {
+      // The default number of neighbors to find via approximate search before exact reordering is
+      // performed. Exact reordering is a procedure where results returned by an
+      // approximate search algorithm are reordered via a more expensive distance computation.
+      // Required if tree-AH algorithm is used.
+      int64 approximate_neighbors_count = 1 [json_name = "approximate_neighbors_count"];
+
+      // The number of dimensions of the input vectors.
+      int64 dimensions = 2;
+
+      // The distance measure used in nearest neighbor search. The value must be one of the followings:
+      // * SQUARED_L2_DISTANCE: Euclidean (L_2) Distance
+      // * L1_DISTANCE: Manhattan (L_1) Distance
+      // * COSINE_DISTANCE: Cosine Distance. Defined as 1 - cosine similarity.
+      // * DOT_PRODUCT_DISTANCE: Dot Product Distance. Defined as a negative of the dot product
+      string distance_measure_type = 3 [json_name = "distance_measure_type"];
+
+      // Type of normalization to be carried out on each vector. The value must be one of the followings:
+      // * UNIT_L2_NORM: Unit L2 normalization type
+      // * NONE: No normalization type is specified.
+      string feature_norm_type = 4 [json_name = "feature_norm_type"];
+
+      AlgorithmConfig algorithm_config = 5 [json_name = "algorithm_config"];
+
+      message AlgorithmConfig {
+        BruteForceConfig brute_force_config = 1 [json_name = "brute_force_config"];
+
+        TreeAhConfig tree_ah_config = 2 [json_name = "tree_ah_config"];
+
+        message BruteForceConfig {
+        }
+
+        message TreeAhConfig {
+          // Number of embeddings on each leaf node. The default value is 1000 if not set.
+          int64 leaf_node_embedding_count = 1 [json_name = "leaf_node_embedding_count"];
+
+          // The default percentage of leaf nodes that any query may be searched. Must be in
+          // range 1-100, inclusive. The default value is 10 (means 10%) if not set.
+          int64 leaf_nodes_to_search_percent = 2 [json_name = "leaf_nodes_to_search_percent"];
+        }
+      }
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleVertexAiTensorboard version is 0
+message GoogleVertexAiTensorboard {
+  // Consumer project Cloud Storage path prefix used to store blob data, which can either be a bucket or directory. Does not end with a '/'.
+  string blob_storage_path_prefix = 1 [json_name = "blob_storage_path_prefix"];
+
+  // The timestamp of when the Tensorboard was created in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits.
+  string create_time = 2 [json_name = "create_time"];
+
+  // Description of this Tensorboard.
+  string description = 3;
+
+  // User provided name of this Tensorboard.
+  string display_name = 4 [json_name = "display_name"];
+
+  string id = 5;
+
+  // The labels with user-defined metadata to organize your Tensorboards.
+  map<string, string> labels = 6;
+
+  // Name of the Tensorboard.
+  string name = 7;
+
+  string project = 8;
+
+  // The region of the tensorboard. eg us-central1
+  string region = 9;
+
+  // The number of Runs stored in this Tensorboard.
+  string run_count = 10 [json_name = "run_count"];
+
+  // The timestamp of when the Tensorboard was last updated in RFC3339 UTC "Zulu" format, with nanosecond resolution and up to nine fractional digits.
+  string update_time = 11 [json_name = "update_time"];
+
+  EncryptionSpec encryption_spec = 12 [json_name = "encryption_spec"];
+
+  repeated Timeouts timeouts = 13;
+
+  map<string, string> for_each = 14 [json_name = "for_each"];
+
+  repeated string depends_on = 15 [json_name = "depends_on"];
+
+  int32 count = 16;
+
+  string provider = 17;
+
+  terraform.v1.Lifecycle lifecycle = 18;
+
+  message EncryptionSpec {
+    // The Cloud KMS resource identifier of the customer managed encryption key used to protect a resource.
+    // Has the form: projects/my-project/locations/my-region/keyRings/my-kr/cryptoKeys/my-key. The key needs to be in the same region as where the resource is created.
+    string kms_key_name = 1 [json_name = "kms_key_name"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

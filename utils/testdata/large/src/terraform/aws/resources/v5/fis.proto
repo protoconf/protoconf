@@ -1,0 +1,103 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsFisExperimentTemplate version is 0
+message AwsFisExperimentTemplate {
+  string description = 1;
+
+  string id = 2;
+
+  string role_arn = 3 [json_name = "role_arn"];
+
+  map<string, string> tags = 4;
+
+  map<string, string> tags_all = 5 [json_name = "tags_all"];
+
+  repeated Action action = 6;
+
+  repeated StopCondition stop_condition = 7 [json_name = "stop_condition"];
+
+  repeated Target target = 8;
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Action {
+    string action_id = 1 [json_name = "action_id"];
+
+    string description = 2;
+
+    string name = 3;
+
+    repeated string start_after = 4 [json_name = "start_after"];
+
+    repeated Parameter parameter = 5;
+
+    Target target = 6;
+
+    message Parameter {
+      string key = 1;
+
+      string value = 2;
+    }
+
+    message Target {
+      string key = 1;
+
+      string value = 2;
+    }
+  }
+
+  message StopCondition {
+    string source = 1;
+
+    string value = 2;
+  }
+
+  message Target {
+    string name = 1;
+
+    repeated string resource_arns = 2 [json_name = "resource_arns"];
+
+    string resource_type = 3 [json_name = "resource_type"];
+
+    string selection_mode = 4 [json_name = "selection_mode"];
+
+    repeated Filter filter = 5;
+
+    repeated ResourceTag resource_tag = 6 [json_name = "resource_tag"];
+
+    message Filter {
+      string path = 1;
+
+      repeated string values = 2;
+    }
+
+    message ResourceTag {
+      string key = 1;
+
+      string value = 2;
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

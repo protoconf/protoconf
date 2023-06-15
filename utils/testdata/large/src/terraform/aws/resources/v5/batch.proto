@@ -1,0 +1,230 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsBatchComputeEnvironment version is 0
+message AwsBatchComputeEnvironment {
+  string arn = 1;
+
+  string compute_environment_name = 2 [json_name = "compute_environment_name"];
+
+  string compute_environment_name_prefix = 3 [json_name = "compute_environment_name_prefix"];
+
+  string ecs_cluster_arn = 4 [json_name = "ecs_cluster_arn"];
+
+  string id = 5;
+
+  string service_role = 6 [json_name = "service_role"];
+
+  string state = 7;
+
+  string status = 8;
+
+  string status_reason = 9 [json_name = "status_reason"];
+
+  map<string, string> tags = 10;
+
+  map<string, string> tags_all = 11 [json_name = "tags_all"];
+
+  string type = 12;
+
+  ComputeResources compute_resources = 13 [json_name = "compute_resources"];
+
+  EksConfiguration eks_configuration = 14 [json_name = "eks_configuration"];
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+
+  message ComputeResources {
+    string allocation_strategy = 1 [json_name = "allocation_strategy"];
+
+    int64 bid_percentage = 2 [json_name = "bid_percentage"];
+
+    int64 desired_vcpus = 3 [json_name = "desired_vcpus"];
+
+    string ec2_key_pair = 4 [json_name = "ec2_key_pair"];
+
+    string image_id = 5 [json_name = "image_id"];
+
+    string instance_role = 6 [json_name = "instance_role"];
+
+    repeated string instance_type = 7 [json_name = "instance_type"];
+
+    int64 max_vcpus = 8 [json_name = "max_vcpus"];
+
+    int64 min_vcpus = 9 [json_name = "min_vcpus"];
+
+    repeated string security_group_ids = 10 [json_name = "security_group_ids"];
+
+    string spot_iam_fleet_role = 11 [json_name = "spot_iam_fleet_role"];
+
+    repeated string subnets = 12;
+
+    map<string, string> tags = 13;
+
+    string type = 14;
+
+    repeated Ec2Configuration ec2_configuration = 15 [json_name = "ec2_configuration"];
+
+    LaunchTemplate launch_template = 16 [json_name = "launch_template"];
+
+    message Ec2Configuration {
+      string image_id_override = 1 [json_name = "image_id_override"];
+
+      string image_type = 2 [json_name = "image_type"];
+    }
+
+    message LaunchTemplate {
+      string launch_template_id = 1 [json_name = "launch_template_id"];
+
+      string launch_template_name = 2 [json_name = "launch_template_name"];
+
+      string version = 3;
+    }
+  }
+
+  message EksConfiguration {
+    string eks_cluster_arn = 1 [json_name = "eks_cluster_arn"];
+
+    string kubernetes_namespace = 2 [json_name = "kubernetes_namespace"];
+  }
+}
+
+// AwsBatchJobDefinition version is 0
+message AwsBatchJobDefinition {
+  string arn = 1;
+
+  string container_properties = 2 [json_name = "container_properties"];
+
+  string id = 3;
+
+  string name = 4;
+
+  map<string, string> parameters = 5;
+
+  repeated string platform_capabilities = 6 [json_name = "platform_capabilities"];
+
+  bool propagate_tags = 7 [json_name = "propagate_tags"];
+
+  int64 revision = 8;
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  string type = 11;
+
+  RetryStrategy retry_strategy = 12 [json_name = "retry_strategy"];
+
+  Timeout timeout = 13;
+
+  map<string, string> for_each = 14 [json_name = "for_each"];
+
+  repeated string depends_on = 15 [json_name = "depends_on"];
+
+  int32 count = 16;
+
+  string provider = 17;
+
+  terraform.v1.Lifecycle lifecycle = 18;
+
+  message RetryStrategy {
+    int64 attempts = 1;
+
+    repeated EvaluateOnExit evaluate_on_exit = 2 [json_name = "evaluate_on_exit"];
+
+    message EvaluateOnExit {
+      string action = 1;
+
+      string on_exit_code = 2 [json_name = "on_exit_code"];
+
+      string on_reason = 3 [json_name = "on_reason"];
+
+      string on_status_reason = 4 [json_name = "on_status_reason"];
+    }
+  }
+
+  message Timeout {
+    int64 attempt_duration_seconds = 1 [json_name = "attempt_duration_seconds"];
+  }
+}
+
+// AwsBatchJobQueue version is 0
+message AwsBatchJobQueue {
+  string arn = 1;
+
+  repeated string compute_environments = 2 [json_name = "compute_environments"];
+
+  string id = 3;
+
+  string name = 4;
+
+  int64 priority = 5;
+
+  string scheduling_policy_arn = 6 [json_name = "scheduling_policy_arn"];
+
+  string state = 7;
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+}
+
+// AwsBatchSchedulingPolicy version is 0
+message AwsBatchSchedulingPolicy {
+  string arn = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  map<string, string> tags = 4;
+
+  map<string, string> tags_all = 5 [json_name = "tags_all"];
+
+  FairSharePolicy fair_share_policy = 6 [json_name = "fair_share_policy"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message FairSharePolicy {
+    int64 compute_reservation = 1 [json_name = "compute_reservation"];
+
+    int64 share_decay_seconds = 2 [json_name = "share_decay_seconds"];
+
+    repeated ShareDistribution share_distribution = 3 [json_name = "share_distribution"];
+
+    message ShareDistribution {
+      string share_identifier = 1 [json_name = "share_identifier"];
+
+      int64 weight_factor = 2 [json_name = "weight_factor"];
+    }
+  }
+}

@@ -1,0 +1,119 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsFsxOpenzfsSnapshot version is 0
+message AwsFsxOpenzfsSnapshot {
+  string arn = 1;
+
+  string creation_time = 2 [json_name = "creation_time"];
+
+  string id = 3;
+
+  bool most_recent = 4 [json_name = "most_recent"];
+
+  string name = 5;
+
+  string snapshot_id = 6 [json_name = "snapshot_id"];
+
+  repeated string snapshot_ids = 7 [json_name = "snapshot_ids"];
+
+  map<string, string> tags = 8;
+
+  string volume_id = 9 [json_name = "volume_id"];
+
+  repeated Filter filter = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+}
+
+// AwsFsxWindowsFileSystem version is 0
+message AwsFsxWindowsFileSystem {
+  string active_directory_id = 1 [json_name = "active_directory_id"];
+
+  repeated string aliases = 2;
+
+  string arn = 3;
+
+  repeated AuditLogConfiguration audit_log_configuration = 4 [json_name = "audit_log_configuration"];
+
+  int64 automatic_backup_retention_days = 5 [json_name = "automatic_backup_retention_days"];
+
+  string backup_id = 6 [json_name = "backup_id"];
+
+  bool copy_tags_to_backups = 7 [json_name = "copy_tags_to_backups"];
+
+  string daily_automatic_backup_start_time = 8 [json_name = "daily_automatic_backup_start_time"];
+
+  string deployment_type = 9 [json_name = "deployment_type"];
+
+  string dns_name = 10 [json_name = "dns_name"];
+
+  string id = 11;
+
+  string kms_key_id = 12 [json_name = "kms_key_id"];
+
+  repeated string network_interface_ids = 13 [json_name = "network_interface_ids"];
+
+  string owner_id = 14 [json_name = "owner_id"];
+
+  string preferred_file_server_ip = 15 [json_name = "preferred_file_server_ip"];
+
+  string preferred_subnet_id = 16 [json_name = "preferred_subnet_id"];
+
+  repeated string security_group_ids = 17 [json_name = "security_group_ids"];
+
+  bool skip_final_backup = 18 [json_name = "skip_final_backup"];
+
+  int64 storage_capacity = 19 [json_name = "storage_capacity"];
+
+  string storage_type = 20 [json_name = "storage_type"];
+
+  repeated string subnet_ids = 21 [json_name = "subnet_ids"];
+
+  map<string, string> tags = 22;
+
+  int64 throughput_capacity = 23 [json_name = "throughput_capacity"];
+
+  string vpc_id = 24 [json_name = "vpc_id"];
+
+  string weekly_maintenance_start_time = 25 [json_name = "weekly_maintenance_start_time"];
+
+  map<string, string> for_each = 26 [json_name = "for_each"];
+
+  repeated string depends_on = 27 [json_name = "depends_on"];
+
+  int32 count = 28;
+
+  string provider = 29;
+
+  terraform.v1.Lifecycle lifecycle = 30;
+
+  message AuditLogConfiguration {
+    // audit_log_destination: string
+    string audit_log_destination = 1 [json_name = "audit_log_destination"];
+
+    // file_access_audit_log_level: string
+    string file_access_audit_log_level = 2 [json_name = "file_access_audit_log_level"];
+
+    // file_share_access_audit_log_level: string
+    string file_share_access_audit_log_level = 3 [json_name = "file_share_access_audit_log_level"];
+  }
+}

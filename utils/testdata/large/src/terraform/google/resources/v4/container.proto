@@ -1,0 +1,2615 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleContainerAnalysisNote version is 0
+message GoogleContainerAnalysisNote {
+  // The time this note was created.
+  string create_time = 1 [json_name = "create_time"];
+
+  // Time of expiration for this note. Leave empty if note does not expire.
+  string expiration_time = 2 [json_name = "expiration_time"];
+
+  string id = 3;
+
+  // The type of analysis this note describes
+  string kind = 4;
+
+  // A detailed description of the note
+  string long_description = 5 [json_name = "long_description"];
+
+  // The name of the note.
+  string name = 6;
+
+  string project = 7;
+
+  // Names of other notes related to this note.
+  repeated string related_note_names = 8 [json_name = "related_note_names"];
+
+  // A one sentence description of the note.
+  string short_description = 9 [json_name = "short_description"];
+
+  // The time this note was last updated.
+  string update_time = 10 [json_name = "update_time"];
+
+  AttestationAuthority attestation_authority = 11 [json_name = "attestation_authority"];
+
+  repeated RelatedUrl related_url = 12 [json_name = "related_url"];
+
+  repeated Timeouts timeouts = 13;
+
+  map<string, string> for_each = 14 [json_name = "for_each"];
+
+  repeated string depends_on = 15 [json_name = "depends_on"];
+
+  int32 count = 16;
+
+  string provider = 17;
+
+  terraform.v1.Lifecycle lifecycle = 18;
+
+  message AttestationAuthority {
+    Hint hint = 1;
+
+    message Hint {
+      // The human readable name of this Attestation Authority, for
+      // example "qa".
+      string human_readable_name = 1 [json_name = "human_readable_name"];
+    }
+  }
+
+  message RelatedUrl {
+    // Label to describe usage of the URL
+    string label = 1;
+
+    // Specific URL associated with the resource.
+    string url = 2;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleContainerAnalysisNoteIamBinding version is 0
+message GoogleContainerAnalysisNoteIamBinding {
+  string etag = 1;
+
+  string id = 2;
+
+  repeated string members = 3;
+
+  string note = 4;
+
+  string project = 5;
+
+  string role = 6;
+
+  Condition condition = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleContainerAnalysisNoteIamMember version is 0
+message GoogleContainerAnalysisNoteIamMember {
+  string etag = 1;
+
+  string id = 2;
+
+  string member = 3;
+
+  string note = 4;
+
+  string project = 5;
+
+  string role = 6;
+
+  Condition condition = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleContainerAnalysisNoteIamPolicy version is 0
+message GoogleContainerAnalysisNoteIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string note = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// GoogleContainerAnalysisOccurrence version is 0
+message GoogleContainerAnalysisOccurrence {
+  // The time when the repository was created.
+  string create_time = 1 [json_name = "create_time"];
+
+  string id = 2;
+
+  // The note kind which explicitly denotes which of the occurrence
+  // details are specified. This field can be used as a filter in list
+  // requests.
+  string kind = 3;
+
+  // The name of the occurrence.
+  string name = 4;
+
+  // The analysis note associated with this occurrence, in the form of
+  // projects/[PROJECT]/notes/[NOTE_ID]. This field can be used as a
+  // filter in list requests.
+  string note_name = 5 [json_name = "note_name"];
+
+  string project = 6;
+
+  // A description of actions that can be taken to remedy the note.
+  string remediation = 7;
+
+  // Required. Immutable. A URI that represents the resource for which
+  // the occurrence applies. For example,
+  // https://gcr.io/project/image@sha256:123abc for a Docker image.
+  string resource_uri = 8 [json_name = "resource_uri"];
+
+  // The time when the repository was last updated.
+  string update_time = 9 [json_name = "update_time"];
+
+  Attestation attestation = 10;
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message Attestation {
+    // The serialized payload that is verified by one or
+    // more signatures. A base64-encoded string.
+    string serialized_payload = 1 [json_name = "serialized_payload"];
+
+    repeated Signatures signatures = 2;
+
+    message Signatures {
+      // The identifier for the public key that verifies this
+      // signature. MUST be an RFC3986 conformant
+      // URI. * When possible, the key id should be an
+      // immutable reference, such as a cryptographic digest.
+      // Examples of valid values:
+      //
+      // * OpenPGP V4 public key fingerprint. See https://www.iana.org/assignments/uri-schemes/prov/openpgp4fpr
+      //  for more details on this scheme.
+      //    * 'openpgp4fpr:74FAF3B861BDA0870C7B6DEF607E48D2A663AEEA'
+      // * RFC6920 digest-named SubjectPublicKeyInfo (digest of the DER serialization):
+      //    * "ni:///sha-256;cD9o9Cq6LG3jD0iKXqEi_vdjJGecm_iXkbqVoScViaU"
+      string public_key_id = 1 [json_name = "public_key_id"];
+
+      // The content of the signature, an opaque bytestring.
+      // The payload that this signature verifies MUST be
+      // unambiguously provided with the Signature during
+      // verification. A wrapper message might provide the
+      // payload explicitly. Alternatively, a message might
+      // have a canonical serialization that can always be
+      // unambiguously computed to derive the payload.
+      string signature = 2;
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleContainerAttachedCluster version is 0
+message GoogleContainerAttachedCluster {
+  // Optional. Annotations on the cluster. This field has the same
+  // restrictions as Kubernetes annotations. The total size of all keys and
+  // values combined is limited to 256k. Key can have 2 segments: prefix (optional)
+  // and name (required), separated by a slash (/). Prefix must be a DNS subdomain.
+  // Name must be 63 characters or less, begin and end with alphanumerics,
+  // with dashes (-), underscores (_), dots (.), and alphanumerics between.
+  map<string, string> annotations = 1;
+
+  // Output only. The region where this cluster runs.
+  //
+  // For EKS clusters, this is an AWS region. For AKS clusters,
+  // this is an Azure region.
+  string cluster_region = 2 [json_name = "cluster_region"];
+
+  // Output only. The time at which this cluster was created.
+  string create_time = 3 [json_name = "create_time"];
+
+  // Policy to determine what flags to send on delete.
+  string deletion_policy = 4 [json_name = "deletion_policy"];
+
+  // A human readable description of this attached cluster. Cannot be longer
+  // than 255 UTF-8 encoded bytes.
+  string description = 5;
+
+  // The Kubernetes distribution of the underlying attached cluster. Supported values:
+  // "eks", "aks".
+  string distribution = 6;
+
+  // A set of errors found in the cluster.
+  repeated Errors errors = 7;
+
+  string id = 8;
+
+  // The Kubernetes version of the cluster.
+  string kubernetes_version = 9 [json_name = "kubernetes_version"];
+
+  // The location for the resource
+  string location = 10;
+
+  // The name of this resource.
+  string name = 11;
+
+  // The platform version for the cluster (e.g. '1.23.0-gke.1').
+  string platform_version = 12 [json_name = "platform_version"];
+
+  string project = 13;
+
+  // If set, there are currently changes in flight to the cluster.
+  bool reconciling = 14;
+
+  // The current state of the cluster. Possible values:
+  // STATE_UNSPECIFIED, PROVISIONING, RUNNING, RECONCILING, STOPPING, ERROR,
+  // DEGRADED
+  string state = 15;
+
+  // A globally unique identifier for the cluster.
+  string uid = 16;
+
+  // The time at which this cluster was last updated.
+  string update_time = 17 [json_name = "update_time"];
+
+  // Workload Identity settings.
+  repeated WorkloadIdentityConfig workload_identity_config = 18 [json_name = "workload_identity_config"];
+
+  Authorization authorization = 19;
+
+  Fleet fleet = 20;
+
+  LoggingConfig logging_config = 21 [json_name = "logging_config"];
+
+  MonitoringConfig monitoring_config = 22 [json_name = "monitoring_config"];
+
+  OidcConfig oidc_config = 23 [json_name = "oidc_config"];
+
+  repeated Timeouts timeouts = 24;
+
+  map<string, string> for_each = 25 [json_name = "for_each"];
+
+  repeated string depends_on = 26 [json_name = "depends_on"];
+
+  int32 count = 27;
+
+  string provider = 28;
+
+  terraform.v1.Lifecycle lifecycle = 29;
+
+  message Errors {
+    // message: string
+    string message = 1;
+  }
+
+  message WorkloadIdentityConfig {
+    // identity_provider: string
+    string identity_provider = 1 [json_name = "identity_provider"];
+
+    // issuer_uri: string
+    string issuer_uri = 2 [json_name = "issuer_uri"];
+
+    // workload_pool: string
+    string workload_pool = 3 [json_name = "workload_pool"];
+  }
+
+  message Authorization {
+    // Users that can perform operations as a cluster admin. A managed
+    // ClusterRoleBinding will be created to grant the 'cluster-admin' ClusterRole
+    // to the users. Up to ten admin users can be provided.
+    //
+    // For more info on RBAC, see
+    // https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles
+    repeated string admin_users = 1 [json_name = "admin_users"];
+  }
+
+  message Fleet {
+    // The name of the managed Hub Membership resource associated to this
+    // cluster. Membership names are formatted as
+    // projects/<project-number>/locations/global/membership/<cluster-id>.
+    string membership = 1;
+
+    // The number of the Fleet host project where this cluster will be registered.
+    string project = 2;
+  }
+
+  message LoggingConfig {
+    ComponentConfig component_config = 1 [json_name = "component_config"];
+
+    message ComponentConfig {
+      // The components to be enabled. Possible values: ["SYSTEM_COMPONENTS", "WORKLOADS"]
+      repeated string enable_components = 1 [json_name = "enable_components"];
+    }
+  }
+
+  message MonitoringConfig {
+    ManagedPrometheusConfig managed_prometheus_config = 1 [json_name = "managed_prometheus_config"];
+
+    message ManagedPrometheusConfig {
+      // Enable Managed Collection.
+      bool enabled = 1;
+    }
+  }
+
+  message OidcConfig {
+    // A JSON Web Token (JWT) issuer URI. 'issuer' must start with 'https://'
+    string issuer_url = 1 [json_name = "issuer_url"];
+
+    // OIDC verification keys in JWKS format (RFC 7517).
+    string jwks = 2;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleContainerAwsCluster version is 0
+message GoogleContainerAwsCluster {
+  // Optional. Annotations on the cluster. This field has the same restrictions as Kubernetes annotations. The total size of all keys and values combined is limited to 256k. Key can have 2 segments: prefix (optional) and name (required), separated by a slash (/). Prefix must be a DNS subdomain. Name must be 63 characters or less, begin and end with alphanumerics, with dashes (-), underscores (_), dots (.), and alphanumerics between.
+  map<string, string> annotations = 1;
+
+  // The AWS region where the cluster runs. Each Google Cloud region supports a subset of nearby AWS regions. You can call to list all supported AWS regions within a given Google Cloud region.
+  string aws_region = 2 [json_name = "aws_region"];
+
+  // Output only. The time at which this cluster was created.
+  string create_time = 3 [json_name = "create_time"];
+
+  // Optional. A human readable description of this cluster. Cannot be longer than 255 UTF-8 encoded bytes.
+  string description = 4;
+
+  // Output only. The endpoint of the cluster's API server.
+  string endpoint = 5;
+
+  // Allows clients to perform consistent read-modify-writes through optimistic concurrency control. May be sent on update and delete requests to ensure the client has an up-to-date value before proceeding.
+  string etag = 6;
+
+  string id = 7;
+
+  // The location for the resource
+  string location = 8;
+
+  // The name of this resource.
+  string name = 9;
+
+  // The project for the resource
+  string project = 10;
+
+  // Output only. If set, there are currently changes in flight to the cluster.
+  bool reconciling = 11;
+
+  // Output only. The current state of the cluster. Possible values: STATE_UNSPECIFIED, PROVISIONING, RUNNING, RECONCILING, STOPPING, ERROR, DEGRADED
+  string state = 12;
+
+  // Output only. A globally unique identifier for the cluster.
+  string uid = 13;
+
+  // Output only. The time at which this cluster was last updated.
+  string update_time = 14 [json_name = "update_time"];
+
+  // Output only. Workload Identity settings.
+  repeated WorkloadIdentityConfig workload_identity_config = 15 [json_name = "workload_identity_config"];
+
+  Authorization authorization = 16;
+
+  ControlPlane control_plane = 17 [json_name = "control_plane"];
+
+  Fleet fleet = 18;
+
+  Networking networking = 19;
+
+  repeated Timeouts timeouts = 20;
+
+  map<string, string> for_each = 21 [json_name = "for_each"];
+
+  repeated string depends_on = 22 [json_name = "depends_on"];
+
+  int32 count = 23;
+
+  string provider = 24;
+
+  terraform.v1.Lifecycle lifecycle = 25;
+
+  message WorkloadIdentityConfig {
+    // identity_provider: string
+    string identity_provider = 1 [json_name = "identity_provider"];
+
+    // issuer_uri: string
+    string issuer_uri = 2 [json_name = "issuer_uri"];
+
+    // workload_pool: string
+    string workload_pool = 3 [json_name = "workload_pool"];
+  }
+
+  message Authorization {
+    repeated AdminUsers admin_users = 1 [json_name = "admin_users"];
+
+    message AdminUsers {
+      // The name of the user, e.g. `my-gcp-id@gmail.com`.
+      string username = 1;
+    }
+  }
+
+  message ControlPlane {
+    // The name of the AWS IAM instance pofile to assign to each control plane replica.
+    string iam_instance_profile = 1 [json_name = "iam_instance_profile"];
+
+    // Optional. The AWS instance type. When unspecified, it defaults to `m5.large`.
+    string instance_type = 2 [json_name = "instance_type"];
+
+    // Optional. The IDs of additional security groups to add to control plane replicas. The Anthos Multi-Cloud API will automatically create and manage security groups with the minimum rules needed for a functioning cluster.
+    repeated string security_group_ids = 3 [json_name = "security_group_ids"];
+
+    // The list of subnets where control plane replicas will run. A replica will be provisioned on each subnet and up to three values can be provided. Each subnet must be in a different AWS Availability Zone (AZ).
+    repeated string subnet_ids = 4 [json_name = "subnet_ids"];
+
+    // Optional. A set of AWS resource tags to propagate to all underlying managed AWS resources. Specify at most 50 pairs containing alphanumerics, spaces, and symbols (.+-=_:@/). Keys can be up to 127 Unicode characters. Values can be up to 255 Unicode characters.
+    map<string, string> tags = 5;
+
+    // The Kubernetes version to run on control plane replicas (e.g. `1.19.10-gke.1000`). You can list all supported versions on a given Google Cloud region by calling .
+    string version = 6;
+
+    AwsServicesAuthentication aws_services_authentication = 7 [json_name = "aws_services_authentication"];
+
+    ConfigEncryption config_encryption = 8 [json_name = "config_encryption"];
+
+    DatabaseEncryption database_encryption = 9 [json_name = "database_encryption"];
+
+    MainVolume main_volume = 10 [json_name = "main_volume"];
+
+    ProxyConfig proxy_config = 11 [json_name = "proxy_config"];
+
+    RootVolume root_volume = 12 [json_name = "root_volume"];
+
+    SshConfig ssh_config = 13 [json_name = "ssh_config"];
+
+    message AwsServicesAuthentication {
+      // The Amazon Resource Name (ARN) of the role that the Anthos Multi-Cloud API will assume when managing AWS resources on your account.
+      string role_arn = 1 [json_name = "role_arn"];
+
+      // Optional. An identifier for the assumed role session. When unspecified, it defaults to `multicloud-service-agent`.
+      string role_session_name = 2 [json_name = "role_session_name"];
+    }
+
+    message ConfigEncryption {
+      // The ARN of the AWS KMS key used to encrypt cluster configuration.
+      string kms_key_arn = 1 [json_name = "kms_key_arn"];
+    }
+
+    message DatabaseEncryption {
+      // The ARN of the AWS KMS key used to encrypt cluster secrets.
+      string kms_key_arn = 1 [json_name = "kms_key_arn"];
+    }
+
+    message MainVolume {
+      // Optional. The number of I/O operations per second (IOPS) to provision for GP3 volume.
+      int64 iops = 1;
+
+      // Optional. The Amazon Resource Name (ARN) of the Customer Managed Key (CMK) used to encrypt AWS EBS volumes. If not specified, the default Amazon managed key associated to the AWS region where this cluster runs will be used.
+      string kms_key_arn = 2 [json_name = "kms_key_arn"];
+
+      // Optional. The size of the volume, in GiBs. When unspecified, a default value is provided. See the specific reference in the parent resource.
+      int64 size_gib = 3 [json_name = "size_gib"];
+
+      // Optional. Type of the EBS volume. When unspecified, it defaults to GP2 volume. Possible values: VOLUME_TYPE_UNSPECIFIED, GP2, GP3
+      string volume_type = 4 [json_name = "volume_type"];
+    }
+
+    message ProxyConfig {
+      // The ARN of the AWS Secret Manager secret that contains the HTTP(S) proxy configuration.
+      string secret_arn = 1 [json_name = "secret_arn"];
+
+      // The version string of the AWS Secret Manager secret that contains the HTTP(S) proxy configuration.
+      string secret_version = 2 [json_name = "secret_version"];
+    }
+
+    message RootVolume {
+      // Optional. The number of I/O operations per second (IOPS) to provision for GP3 volume.
+      int64 iops = 1;
+
+      // Optional. The Amazon Resource Name (ARN) of the Customer Managed Key (CMK) used to encrypt AWS EBS volumes. If not specified, the default Amazon managed key associated to the AWS region where this cluster runs will be used.
+      string kms_key_arn = 2 [json_name = "kms_key_arn"];
+
+      // Optional. The size of the volume, in GiBs. When unspecified, a default value is provided. See the specific reference in the parent resource.
+      int64 size_gib = 3 [json_name = "size_gib"];
+
+      // Optional. Type of the EBS volume. When unspecified, it defaults to GP2 volume. Possible values: VOLUME_TYPE_UNSPECIFIED, GP2, GP3
+      string volume_type = 4 [json_name = "volume_type"];
+    }
+
+    message SshConfig {
+      // The name of the EC2 key pair used to login into cluster machines.
+      string ec2_key_pair = 1 [json_name = "ec2_key_pair"];
+    }
+  }
+
+  message Fleet {
+    // The name of the managed Hub Membership resource associated to this cluster. Membership names are formatted as projects/<project-number>/locations/global/membership/<cluster-id>.
+    string membership = 1;
+
+    // The number of the Fleet host project where this cluster will be registered.
+    string project = 2;
+  }
+
+  message Networking {
+    // All pods in the cluster are assigned an RFC1918 IPv4 address from these ranges. Only a single range is supported. This field cannot be changed after creation.
+    repeated string pod_address_cidr_blocks = 1 [json_name = "pod_address_cidr_blocks"];
+
+    // All services in the cluster are assigned an RFC1918 IPv4 address from these ranges. Only a single range is supported. This field cannot be changed after creation.
+    repeated string service_address_cidr_blocks = 2 [json_name = "service_address_cidr_blocks"];
+
+    // The VPC associated with the cluster. All component clusters (i.e. control plane and node pools) run on a single VPC. This field cannot be changed after creation.
+    string vpc_id = 3 [json_name = "vpc_id"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleContainerAwsNodePool version is 0
+message GoogleContainerAwsNodePool {
+  // Optional. Annotations on the node pool. This field has the same restrictions as Kubernetes annotations. The total size of all keys and values combined is limited to 256k. Key can have 2 segments: prefix (optional) and name (required), separated by a slash (/). Prefix must be a DNS subdomain. Name must be 63 characters or less, begin and end with alphanumerics, with dashes (-), underscores (_), dots (.), and alphanumerics between.
+  map<string, string> annotations = 1;
+
+  // The awsCluster for the resource
+  string cluster = 2;
+
+  // Output only. The time at which this node pool was created.
+  string create_time = 3 [json_name = "create_time"];
+
+  // Allows clients to perform consistent read-modify-writes through optimistic concurrency control. May be sent on update and delete requests to ensure the client has an up-to-date value before proceeding.
+  string etag = 4;
+
+  string id = 5;
+
+  // The location for the resource
+  string location = 6;
+
+  // The name of this resource.
+  string name = 7;
+
+  // The project for the resource
+  string project = 8;
+
+  // Output only. If set, there are currently changes in flight to the node pool.
+  bool reconciling = 9;
+
+  // Output only. The lifecycle state of the node pool. Possible values: STATE_UNSPECIFIED, PROVISIONING, RUNNING, RECONCILING, STOPPING, ERROR, DEGRADED
+  string state = 10;
+
+  // The subnet where the node pool node run.
+  string subnet_id = 11 [json_name = "subnet_id"];
+
+  // Output only. A globally unique identifier for the node pool.
+  string uid = 12;
+
+  // Output only. The time at which this node pool was last updated.
+  string update_time = 13 [json_name = "update_time"];
+
+  // The Kubernetes version to run on this node pool (e.g. `1.19.10-gke.1000`). You can list all supported versions on a given Google Cloud region by calling GetAwsServerConfig.
+  string version = 14;
+
+  Autoscaling autoscaling = 15;
+
+  Config config = 16;
+
+  MaxPodsConstraint max_pods_constraint = 17 [json_name = "max_pods_constraint"];
+
+  repeated Timeouts timeouts = 18;
+
+  map<string, string> for_each = 19 [json_name = "for_each"];
+
+  repeated string depends_on = 20 [json_name = "depends_on"];
+
+  int32 count = 21;
+
+  string provider = 22;
+
+  terraform.v1.Lifecycle lifecycle = 23;
+
+  message Autoscaling {
+    // Maximum number of nodes in the NodePool. Must be >= min_node_count.
+    int64 max_node_count = 1 [json_name = "max_node_count"];
+
+    // Minimum number of nodes in the NodePool. Must be >= 1 and <= max_node_count.
+    int64 min_node_count = 2 [json_name = "min_node_count"];
+  }
+
+  message Config {
+    // The name of the AWS IAM role assigned to nodes in the pool.
+    string iam_instance_profile = 1 [json_name = "iam_instance_profile"];
+
+    // Optional. The AWS instance type. When unspecified, it defaults to `m5.large`.
+    string instance_type = 2 [json_name = "instance_type"];
+
+    // Optional. The initial labels assigned to nodes of this node pool. An object containing a list of "key": value pairs. Example: { "name": "wrench", "mass": "1.3kg", "count": "3" }.
+    map<string, string> labels = 3;
+
+    // Optional. The IDs of additional security groups to add to nodes in this pool. The manager will automatically create security groups with minimum rules needed for a functioning cluster.
+    repeated string security_group_ids = 4 [json_name = "security_group_ids"];
+
+    // Optional. Key/value metadata to assign to each underlying AWS resource. Specify at most 50 pairs containing alphanumerics, spaces, and symbols (.+-=_:@/). Keys can be up to 127 Unicode characters. Values can be up to 255 Unicode characters.
+    map<string, string> tags = 5;
+
+    AutoscalingMetricsCollection autoscaling_metrics_collection = 6 [json_name = "autoscaling_metrics_collection"];
+
+    ConfigEncryption config_encryption = 7 [json_name = "config_encryption"];
+
+    ProxyConfig proxy_config = 8 [json_name = "proxy_config"];
+
+    RootVolume root_volume = 9 [json_name = "root_volume"];
+
+    SshConfig ssh_config = 10 [json_name = "ssh_config"];
+
+    repeated Taints taints = 11;
+
+    message AutoscalingMetricsCollection {
+      // The frequency at which EC2 Auto Scaling sends aggregated data to AWS CloudWatch. The only valid value is "1Minute".
+      string granularity = 1;
+
+      // The metrics to enable. For a list of valid metrics, see https://docs.aws.amazon.com/autoscaling/ec2/APIReference/API_EnableMetricsCollection.html. If you specify granularity and don't specify any metrics, all metrics are enabled.
+      repeated string metrics = 2;
+    }
+
+    message ConfigEncryption {
+      // The ARN of the AWS KMS key used to encrypt node pool configuration.
+      string kms_key_arn = 1 [json_name = "kms_key_arn"];
+    }
+
+    message ProxyConfig {
+      // The ARN of the AWS Secret Manager secret that contains the HTTP(S) proxy configuration.
+      string secret_arn = 1 [json_name = "secret_arn"];
+
+      // The version string of the AWS Secret Manager secret that contains the HTTP(S) proxy configuration.
+      string secret_version = 2 [json_name = "secret_version"];
+    }
+
+    message RootVolume {
+      // Optional. The number of I/O operations per second (IOPS) to provision for GP3 volume.
+      int64 iops = 1;
+
+      // Optional. The Amazon Resource Name (ARN) of the Customer Managed Key (CMK) used to encrypt AWS EBS volumes. If not specified, the default Amazon managed key associated to the AWS region where this cluster runs will be used.
+      string kms_key_arn = 2 [json_name = "kms_key_arn"];
+
+      // Optional. The size of the volume, in GiBs. When unspecified, a default value is provided. See the specific reference in the parent resource.
+      int64 size_gib = 3 [json_name = "size_gib"];
+
+      // Optional. Type of the EBS volume. When unspecified, it defaults to GP2 volume. Possible values: VOLUME_TYPE_UNSPECIFIED, GP2, GP3
+      string volume_type = 4 [json_name = "volume_type"];
+    }
+
+    message SshConfig {
+      // The name of the EC2 key pair used to login into cluster machines.
+      string ec2_key_pair = 1 [json_name = "ec2_key_pair"];
+    }
+
+    message Taints {
+      // The taint effect. Possible values: EFFECT_UNSPECIFIED, NO_SCHEDULE, PREFER_NO_SCHEDULE, NO_EXECUTE
+      string effect = 1;
+
+      // Key for the taint.
+      string key = 2;
+
+      // Value for the taint.
+      string value = 3;
+    }
+  }
+
+  message MaxPodsConstraint {
+    // The maximum number of pods to schedule on a single node.
+    int64 max_pods_per_node = 1 [json_name = "max_pods_per_node"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleContainerAzureClient version is 0
+message GoogleContainerAzureClient {
+  // The Azure Active Directory Application ID.
+  string application_id = 1 [json_name = "application_id"];
+
+  // Output only. The PEM encoded x509 certificate.
+  string certificate = 2;
+
+  // Output only. The time at which this resource was created.
+  string create_time = 3 [json_name = "create_time"];
+
+  string id = 4;
+
+  // The location for the resource
+  string location = 5;
+
+  // The name of this resource.
+  string name = 6;
+
+  // The project for the resource
+  string project = 7;
+
+  // The Azure Active Directory Tenant ID.
+  string tenant_id = 8 [json_name = "tenant_id"];
+
+  // Output only. A globally unique identifier for the client.
+  string uid = 9;
+
+  repeated Timeouts timeouts = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// GoogleContainerAzureCluster version is 0
+message GoogleContainerAzureCluster {
+  // Optional. Annotations on the cluster. This field has the same restrictions as Kubernetes annotations. The total size of all keys and values combined is limited to 256k. Keys can have 2 segments: prefix (optional) and name (required), separated by a slash (/). Prefix must be a DNS subdomain. Name must be 63 characters or less, begin and end with alphanumerics, with dashes (-), underscores (_), dots (.), and alphanumerics between.
+  map<string, string> annotations = 1;
+
+  // The Azure region where the cluster runs. Each Google Cloud region supports a subset of nearby Azure regions. You can call to list all supported Azure regions within a given Google Cloud region.
+  string azure_region = 2 [json_name = "azure_region"];
+
+  // Name of the AzureClient. The `AzureClient` resource must reside on the same GCP project and region as the `AzureCluster`. `AzureClient` names are formatted as `projects/<project-number>/locations/<region>/azureClients/<client-id>`. See Resource Names (https:cloud.google.com/apis/design/resource_names) for more details on Google Cloud resource names.
+  string client = 3;
+
+  // Output only. The time at which this cluster was created.
+  string create_time = 4 [json_name = "create_time"];
+
+  // Optional. A human readable description of this cluster. Cannot be longer than 255 UTF-8 encoded bytes.
+  string description = 5;
+
+  // Output only. The endpoint of the cluster's API server.
+  string endpoint = 6;
+
+  // Allows clients to perform consistent read-modify-writes through optimistic concurrency control. May be sent on update and delete requests to ensure the client has an up-to-date value before proceeding.
+  string etag = 7;
+
+  string id = 8;
+
+  // The location for the resource
+  string location = 9;
+
+  // The name of this resource.
+  string name = 10;
+
+  // The project for the resource
+  string project = 11;
+
+  // Output only. If set, there are currently changes in flight to the cluster.
+  bool reconciling = 12;
+
+  // The ARM ID of the resource group where the cluster resources are deployed. For example: `/subscriptions/*/resourceGroups/*`
+  string resource_group_id = 13 [json_name = "resource_group_id"];
+
+  // Output only. The current state of the cluster. Possible values: STATE_UNSPECIFIED, PROVISIONING, RUNNING, RECONCILING, STOPPING, ERROR, DEGRADED
+  string state = 14;
+
+  // Output only. A globally unique identifier for the cluster.
+  string uid = 15;
+
+  // Output only. The time at which this cluster was last updated.
+  string update_time = 16 [json_name = "update_time"];
+
+  // Output only. Workload Identity settings.
+  repeated WorkloadIdentityConfig workload_identity_config = 17 [json_name = "workload_identity_config"];
+
+  Authorization authorization = 18;
+
+  AzureServicesAuthentication azure_services_authentication = 19 [json_name = "azure_services_authentication"];
+
+  ControlPlane control_plane = 20 [json_name = "control_plane"];
+
+  Fleet fleet = 21;
+
+  Networking networking = 22;
+
+  repeated Timeouts timeouts = 23;
+
+  map<string, string> for_each = 24 [json_name = "for_each"];
+
+  repeated string depends_on = 25 [json_name = "depends_on"];
+
+  int32 count = 26;
+
+  string provider = 27;
+
+  terraform.v1.Lifecycle lifecycle = 28;
+
+  message WorkloadIdentityConfig {
+    // identity_provider: string
+    string identity_provider = 1 [json_name = "identity_provider"];
+
+    // issuer_uri: string
+    string issuer_uri = 2 [json_name = "issuer_uri"];
+
+    // workload_pool: string
+    string workload_pool = 3 [json_name = "workload_pool"];
+  }
+
+  message Authorization {
+    repeated AdminUsers admin_users = 1 [json_name = "admin_users"];
+
+    message AdminUsers {
+      // The name of the user, e.g. `my-gcp-id@gmail.com`.
+      string username = 1;
+    }
+  }
+
+  message AzureServicesAuthentication {
+    // The Azure Active Directory Application ID for Authentication configuration.
+    string application_id = 1 [json_name = "application_id"];
+
+    // The Azure Active Directory Tenant ID for Authentication configuration.
+    string tenant_id = 2 [json_name = "tenant_id"];
+  }
+
+  message ControlPlane {
+    // The ARM ID of the subnet where the control plane VMs are deployed. Example: `/subscriptions//resourceGroups//providers/Microsoft.Network/virtualNetworks//subnets/default`.
+    string subnet_id = 1 [json_name = "subnet_id"];
+
+    // Optional. A set of tags to apply to all underlying control plane Azure resources.
+    map<string, string> tags = 2;
+
+    // The Kubernetes version to run on control plane replicas (e.g. `1.19.10-gke.1000`). You can list all supported versions on a given Google Cloud region by calling GetAzureServerConfig.
+    string version = 3;
+
+    // Optional. The Azure VM size name. Example: `Standard_DS2_v2`. For available VM sizes, see https://docs.microsoft.com/en-us/azure/virtual-machines/vm-naming-conventions. When unspecified, it defaults to `Standard_DS2_v2`.
+    string vm_size = 4 [json_name = "vm_size"];
+
+    DatabaseEncryption database_encryption = 5 [json_name = "database_encryption"];
+
+    MainVolume main_volume = 6 [json_name = "main_volume"];
+
+    ProxyConfig proxy_config = 7 [json_name = "proxy_config"];
+
+    repeated ReplicaPlacements replica_placements = 8 [json_name = "replica_placements"];
+
+    RootVolume root_volume = 9 [json_name = "root_volume"];
+
+    SshConfig ssh_config = 10 [json_name = "ssh_config"];
+
+    message DatabaseEncryption {
+      // The ARM ID of the Azure Key Vault key to encrypt / decrypt data. For example: `/subscriptions/<subscription-id>/resourceGroups/<resource-group-id>/providers/Microsoft.KeyVault/vaults/<key-vault-id>/keys/<key-name>` Encryption will always take the latest version of the key and hence specific version is not supported.
+      string key_id = 1 [json_name = "key_id"];
+    }
+
+    message MainVolume {
+      // Optional. The size of the disk, in GiBs. When unspecified, a default value is provided. See the specific reference in the parent resource.
+      int64 size_gib = 1 [json_name = "size_gib"];
+    }
+
+    message ProxyConfig {
+      // The ARM ID the of the resource group containing proxy keyvault. Resource group ids are formatted as `/subscriptions/<subscription-id>/resourceGroups/<resource-group-name>`
+      string resource_group_id = 1 [json_name = "resource_group_id"];
+
+      // The URL the of the proxy setting secret with its version. Secret ids are formatted as `https:<key-vault-name>.vault.azure.net/secrets/<secret-name>/<secret-version>`.
+      string secret_id = 2 [json_name = "secret_id"];
+    }
+
+    message ReplicaPlacements {
+      // For a given replica, the Azure availability zone where to provision the control plane VM and the ETCD disk.
+      string azure_availability_zone = 1 [json_name = "azure_availability_zone"];
+
+      // For a given replica, the ARM ID of the subnet where the control plane VM is deployed. Make sure it's a subnet under the virtual network in the cluster configuration.
+      string subnet_id = 2 [json_name = "subnet_id"];
+    }
+
+    message RootVolume {
+      // Optional. The size of the disk, in GiBs. When unspecified, a default value is provided. See the specific reference in the parent resource.
+      int64 size_gib = 1 [json_name = "size_gib"];
+    }
+
+    message SshConfig {
+      // The SSH public key data for VMs managed by Anthos. This accepts the authorized_keys file format used in OpenSSH according to the sshd(8) manual page.
+      string authorized_key = 1 [json_name = "authorized_key"];
+    }
+  }
+
+  message Fleet {
+    // The name of the managed Hub Membership resource associated to this cluster. Membership names are formatted as projects/<project-number>/locations/global/membership/<cluster-id>.
+    string membership = 1;
+
+    // The number of the Fleet host project where this cluster will be registered.
+    string project = 2;
+  }
+
+  message Networking {
+    // The IP address range of the pods in this cluster, in CIDR notation (e.g. `10.96.0.0/14`). All pods in the cluster get assigned a unique RFC1918 IPv4 address from these ranges. Only a single range is supported. This field cannot be changed after creation.
+    repeated string pod_address_cidr_blocks = 1 [json_name = "pod_address_cidr_blocks"];
+
+    // The IP address range for services in this cluster, in CIDR notation (e.g. `10.96.0.0/14`). All services in the cluster get assigned a unique RFC1918 IPv4 address from these ranges. Only a single range is supported. This field cannot be changed after creating a cluster.
+    repeated string service_address_cidr_blocks = 2 [json_name = "service_address_cidr_blocks"];
+
+    // The Azure Resource Manager (ARM) ID of the VNet associated with your cluster. All components in the cluster (i.e. control plane and node pools) run on a single VNet. Example: `/subscriptions/*/resourceGroups/*/providers/Microsoft.Network/virtualNetworks/*` This field cannot be changed after creation.
+    string virtual_network_id = 3 [json_name = "virtual_network_id"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleContainerAzureNodePool version is 0
+message GoogleContainerAzureNodePool {
+  // Optional. Annotations on the node pool. This field has the same restrictions as Kubernetes annotations. The total size of all keys and values combined is limited to 256k. Keys can have 2 segments: prefix (optional) and name (required), separated by a slash (/). Prefix must be a DNS subdomain. Name must be 63 characters or less, begin and end with alphanumerics, with dashes (-), underscores (_), dots (.), and alphanumerics between.
+  map<string, string> annotations = 1;
+
+  // Optional. The Azure availability zone of the nodes in this nodepool. When unspecified, it defaults to `1`.
+  string azure_availability_zone = 2 [json_name = "azure_availability_zone"];
+
+  // The azureCluster for the resource
+  string cluster = 3;
+
+  // Output only. The time at which this node pool was created.
+  string create_time = 4 [json_name = "create_time"];
+
+  // Allows clients to perform consistent read-modify-writes through optimistic concurrency control. May be sent on update and delete requests to ensure the client has an up-to-date value before proceeding.
+  string etag = 5;
+
+  string id = 6;
+
+  // The location for the resource
+  string location = 7;
+
+  // The name of this resource.
+  string name = 8;
+
+  // The project for the resource
+  string project = 9;
+
+  // Output only. If set, there are currently pending changes to the node pool.
+  bool reconciling = 10;
+
+  // Output only. The current state of the node pool. Possible values: STATE_UNSPECIFIED, PROVISIONING, RUNNING, RECONCILING, STOPPING, ERROR, DEGRADED
+  string state = 11;
+
+  // The ARM ID of the subnet where the node pool VMs run. Make sure it's a subnet under the virtual network in the cluster configuration.
+  string subnet_id = 12 [json_name = "subnet_id"];
+
+  // Output only. A globally unique identifier for the node pool.
+  string uid = 13;
+
+  // Output only. The time at which this node pool was last updated.
+  string update_time = 14 [json_name = "update_time"];
+
+  // The Kubernetes version (e.g. `1.19.10-gke.1000`) running on this node pool.
+  string version = 15;
+
+  Autoscaling autoscaling = 16;
+
+  Config config = 17;
+
+  MaxPodsConstraint max_pods_constraint = 18 [json_name = "max_pods_constraint"];
+
+  repeated Timeouts timeouts = 19;
+
+  map<string, string> for_each = 20 [json_name = "for_each"];
+
+  repeated string depends_on = 21 [json_name = "depends_on"];
+
+  int32 count = 22;
+
+  string provider = 23;
+
+  terraform.v1.Lifecycle lifecycle = 24;
+
+  message Autoscaling {
+    // Maximum number of nodes in the node pool. Must be >= min_node_count.
+    int64 max_node_count = 1 [json_name = "max_node_count"];
+
+    // Minimum number of nodes in the node pool. Must be >= 1 and <= max_node_count.
+    int64 min_node_count = 2 [json_name = "min_node_count"];
+  }
+
+  message Config {
+    // Optional. A set of tags to apply to all underlying Azure resources for this node pool. This currently only includes Virtual Machine Scale Sets. Specify at most 50 pairs containing alphanumerics, spaces, and symbols (.+-=_:@/). Keys can be up to 127 Unicode characters. Values can be up to 255 Unicode characters.
+    map<string, string> tags = 1;
+
+    // Optional. The Azure VM size name. Example: `Standard_DS2_v2`. See (/anthos/clusters/docs/azure/reference/supported-vms) for options. When unspecified, it defaults to `Standard_DS2_v2`.
+    string vm_size = 2 [json_name = "vm_size"];
+
+    ProxyConfig proxy_config = 3 [json_name = "proxy_config"];
+
+    RootVolume root_volume = 4 [json_name = "root_volume"];
+
+    SshConfig ssh_config = 5 [json_name = "ssh_config"];
+
+    message ProxyConfig {
+      // The ARM ID the of the resource group containing proxy keyvault. Resource group ids are formatted as `/subscriptions/<subscription-id>/resourceGroups/<resource-group-name>`
+      string resource_group_id = 1 [json_name = "resource_group_id"];
+
+      // The URL the of the proxy setting secret with its version. Secret ids are formatted as `https:<key-vault-name>.vault.azure.net/secrets/<secret-name>/<secret-version>`.
+      string secret_id = 2 [json_name = "secret_id"];
+    }
+
+    message RootVolume {
+      // Optional. The size of the disk, in GiBs. When unspecified, a default value is provided. See the specific reference in the parent resource.
+      int64 size_gib = 1 [json_name = "size_gib"];
+    }
+
+    message SshConfig {
+      // The SSH public key data for VMs managed by Anthos. This accepts the authorized_keys file format used in OpenSSH according to the sshd(8) manual page.
+      string authorized_key = 1 [json_name = "authorized_key"];
+    }
+  }
+
+  message MaxPodsConstraint {
+    // The maximum number of pods to schedule on a single node.
+    int64 max_pods_per_node = 1 [json_name = "max_pods_per_node"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleContainerCluster version is 1
+message GoogleContainerCluster {
+  // The IP address range of the Kubernetes pods in this cluster in CIDR notation (e.g. 10.96.0.0/14). Leave blank to have one automatically chosen or specify a /14 block in 10.0.0.0/8. This field will only work for routes-based clusters, where ip_allocation_policy is not defined.
+  string cluster_ipv4_cidr = 1 [json_name = "cluster_ipv4_cidr"];
+
+  // The desired datapath provider for this cluster. By default, uses the IPTables-based kube-proxy implementation.
+  string datapath_provider = 2 [json_name = "datapath_provider"];
+
+  // The default maximum number of pods per node in this cluster. This doesn't work on "routes-based" clusters, clusters that don't have IP Aliasing enabled.
+  int64 default_max_pods_per_node = 3 [json_name = "default_max_pods_per_node"];
+
+  // Description of the cluster.
+  string description = 4;
+
+  // Enable Autopilot for this cluster.
+  bool enable_autopilot = 5 [json_name = "enable_autopilot"];
+
+  // Enable Binary Authorization for this cluster. If enabled, all container images will be validated by Google Binary Authorization.
+  bool enable_binary_authorization = 6 [json_name = "enable_binary_authorization"];
+
+  // Whether Intra-node visibility is enabled for this cluster. This makes same node pod to pod traffic visible for VPC network.
+  bool enable_intranode_visibility = 7 [json_name = "enable_intranode_visibility"];
+
+  // Whether to enable Kubernetes Alpha features for this cluster. Note that when this option is enabled, the cluster cannot be upgraded and will be automatically deleted after 30 days.
+  bool enable_kubernetes_alpha = 8 [json_name = "enable_kubernetes_alpha"];
+
+  // Whether L4ILB Subsetting is enabled for this cluster.
+  bool enable_l4_ilb_subsetting = 9 [json_name = "enable_l4_ilb_subsetting"];
+
+  // Whether the ABAC authorizer is enabled for this cluster. When enabled, identities in the system, including service accounts, nodes, and controllers, will have statically granted permissions beyond those provided by the RBAC configuration or IAM. Defaults to false.
+  bool enable_legacy_abac = 10 [json_name = "enable_legacy_abac"];
+
+  // Enable Shielded Nodes features on all nodes in this cluster. Defaults to true.
+  bool enable_shielded_nodes = 11 [json_name = "enable_shielded_nodes"];
+
+  // Whether to enable Cloud TPU resources in this cluster.
+  bool enable_tpu = 12 [json_name = "enable_tpu"];
+
+  // The IP address of this cluster's Kubernetes master.
+  string endpoint = 13;
+
+  string id = 14;
+
+  // The number of nodes to create in this cluster's default node pool. In regional or multi-zonal clusters, this is the number of nodes per zone. Must be set if node_pool is not set. If you're using google_container_node_pool objects with no default node pool, you'll need to set this to a value of at least 1, alongside setting remove_default_node_pool to true.
+  int64 initial_node_count = 15 [json_name = "initial_node_count"];
+
+  // The fingerprint of the set of labels for this cluster.
+  string label_fingerprint = 16 [json_name = "label_fingerprint"];
+
+  // The location (region or zone) in which the cluster master will be created, as well as the default node location. If you specify a zone (such as us-central1-a), the cluster will be a zonal cluster with a single cluster master. If you specify a region (such as us-west1), the cluster will be a regional cluster with multiple masters spread across zones in the region, and with default node locations in those zones as well.
+  string location = 17;
+
+  // The logging service that the cluster should write logs to. Available options include logging.googleapis.com(Legacy Stackdriver), logging.googleapis.com/kubernetes(Stackdriver Kubernetes Engine Logging), and none. Defaults to logging.googleapis.com/kubernetes.
+  string logging_service = 18 [json_name = "logging_service"];
+
+  // The current version of the master in the cluster. This may be different than the min_master_version set in the config if the master has been updated by GKE.
+  string master_version = 19 [json_name = "master_version"];
+
+  // The minimum version of the master. GKE will auto-update the master to new versions, so this does not guarantee the current master version--use the read-only master_version field to obtain that. If unset, the cluster's version will be set by GKE to the version of the most recent official release (which is not necessarily the latest version).
+  string min_master_version = 20 [json_name = "min_master_version"];
+
+  // The monitoring service that the cluster should write metrics to. Automatically send metrics from pods in the cluster to the Google Cloud Monitoring API. VM metrics will be collected by Google Compute Engine regardless of this setting Available options include monitoring.googleapis.com(Legacy Stackdriver), monitoring.googleapis.com/kubernetes(Stackdriver Kubernetes Engine Monitoring), and none. Defaults to monitoring.googleapis.com/kubernetes.
+  string monitoring_service = 21 [json_name = "monitoring_service"];
+
+  // The name of the cluster, unique within the project and location.
+  string name = 22;
+
+  // The name or self_link of the Google Compute Engine network to which the cluster is connected. For Shared VPC, set this to the self link of the shared network.
+  string network = 23;
+
+  // Determines whether alias IPs or routes will be used for pod IPs in the cluster.
+  string networking_mode = 24 [json_name = "networking_mode"];
+
+  // The list of zones in which the cluster's nodes are located. Nodes must be in the region of their regional cluster or in the same region as their cluster's zone for zonal clusters. If this is specified for a zonal cluster, omit the cluster's zone.
+  repeated string node_locations = 25 [json_name = "node_locations"];
+
+  // The Kubernetes version on the nodes. Must either be unset or set to the same value as min_master_version on create. Defaults to the default version set by GKE which is not necessarily the latest version. This only affects nodes in the default node pool. While a fuzzy version can be specified, it's recommended that you specify explicit versions as Terraform will see spurious diffs when fuzzy versions are used. See the google_container_engine_versions data source's version_prefix field to approximate fuzzy versions in a Terraform-compatible way. To update nodes in other node pools, use the version attribute on the node pool.
+  string node_version = 26 [json_name = "node_version"];
+
+  string operation = 27;
+
+  // The desired state of IPv6 connectivity to Google Services. By default, no private IPv6 access to or from Google Services (all access will be via IPv4).
+  string private_ipv6_google_access = 28 [json_name = "private_ipv6_google_access"];
+
+  // The ID of the project in which the resource belongs. If it is not provided, the provider project is used.
+  string project = 29;
+
+  // If true, deletes the default node pool upon cluster creation. If you're using google_container_node_pool resources with no default node pool, this should be set to true, alongside setting initial_node_count to at least 1.
+  bool remove_default_node_pool = 30 [json_name = "remove_default_node_pool"];
+
+  // The GCE resource labels (a map of key/value pairs) to be applied to the cluster.
+  map<string, string> resource_labels = 31 [json_name = "resource_labels"];
+
+  // Server-defined URL for the resource.
+  string self_link = 32 [json_name = "self_link"];
+
+  // The IP address range of the Kubernetes services in this cluster, in CIDR notation (e.g. 1.2.3.4/29). Service addresses are typically put in the last /16 from the container CIDR.
+  string services_ipv4_cidr = 33 [json_name = "services_ipv4_cidr"];
+
+  // The name or self_link of the Google Compute Engine subnetwork in which the cluster's instances are launched.
+  string subnetwork = 34;
+
+  // The IP address range of the Cloud TPUs in this cluster, in CIDR notation (e.g. 1.2.3.4/29).
+  string tpu_ipv4_cidr_block = 35 [json_name = "tpu_ipv4_cidr_block"];
+
+  AddonsConfig addons_config = 36 [json_name = "addons_config"];
+
+  AuthenticatorGroupsConfig authenticator_groups_config = 37 [json_name = "authenticator_groups_config"];
+
+  BinaryAuthorization binary_authorization = 38 [json_name = "binary_authorization"];
+
+  ClusterAutoscaling cluster_autoscaling = 39 [json_name = "cluster_autoscaling"];
+
+  ConfidentialNodes confidential_nodes = 40 [json_name = "confidential_nodes"];
+
+  CostManagementConfig cost_management_config = 41 [json_name = "cost_management_config"];
+
+  DatabaseEncryption database_encryption = 42 [json_name = "database_encryption"];
+
+  DefaultSnatStatus default_snat_status = 43 [json_name = "default_snat_status"];
+
+  DnsConfig dns_config = 44 [json_name = "dns_config"];
+
+  GatewayApiConfig gateway_api_config = 45 [json_name = "gateway_api_config"];
+
+  IpAllocationPolicy ip_allocation_policy = 46 [json_name = "ip_allocation_policy"];
+
+  LoggingConfig logging_config = 47 [json_name = "logging_config"];
+
+  MaintenancePolicy maintenance_policy = 48 [json_name = "maintenance_policy"];
+
+  MasterAuth master_auth = 49 [json_name = "master_auth"];
+
+  MasterAuthorizedNetworksConfig master_authorized_networks_config = 50 [json_name = "master_authorized_networks_config"];
+
+  MeshCertificates mesh_certificates = 51 [json_name = "mesh_certificates"];
+
+  MonitoringConfig monitoring_config = 52 [json_name = "monitoring_config"];
+
+  NetworkPolicy network_policy = 53 [json_name = "network_policy"];
+
+  NodeConfig node_config = 54 [json_name = "node_config"];
+
+  repeated NodePool node_pool = 55 [json_name = "node_pool"];
+
+  NodePoolDefaults node_pool_defaults = 56 [json_name = "node_pool_defaults"];
+
+  NotificationConfig notification_config = 57 [json_name = "notification_config"];
+
+  PrivateClusterConfig private_cluster_config = 58 [json_name = "private_cluster_config"];
+
+  ReleaseChannel release_channel = 59 [json_name = "release_channel"];
+
+  ResourceUsageExportConfig resource_usage_export_config = 60 [json_name = "resource_usage_export_config"];
+
+  ServiceExternalIpsConfig service_external_ips_config = 61 [json_name = "service_external_ips_config"];
+
+  repeated Timeouts timeouts = 62;
+
+  VerticalPodAutoscaling vertical_pod_autoscaling = 63 [json_name = "vertical_pod_autoscaling"];
+
+  WorkloadIdentityConfig workload_identity_config = 64 [json_name = "workload_identity_config"];
+
+  map<string, string> for_each = 65 [json_name = "for_each"];
+
+  repeated string depends_on = 66 [json_name = "depends_on"];
+
+  int32 count = 67;
+
+  string provider = 68;
+
+  terraform.v1.Lifecycle lifecycle = 69;
+
+  message AddonsConfig {
+    CloudrunConfig cloudrun_config = 1 [json_name = "cloudrun_config"];
+
+    ConfigConnectorConfig config_connector_config = 2 [json_name = "config_connector_config"];
+
+    DnsCacheConfig dns_cache_config = 3 [json_name = "dns_cache_config"];
+
+    GcePersistentDiskCsiDriverConfig gce_persistent_disk_csi_driver_config = 4 [
+      json_name = "gce_persistent_disk_csi_driver_config"
+    ];
+
+    GcpFilestoreCsiDriverConfig gcp_filestore_csi_driver_config = 5 [json_name = "gcp_filestore_csi_driver_config"];
+
+    GkeBackupAgentConfig gke_backup_agent_config = 6 [json_name = "gke_backup_agent_config"];
+
+    HorizontalPodAutoscaling horizontal_pod_autoscaling = 7 [json_name = "horizontal_pod_autoscaling"];
+
+    HttpLoadBalancing http_load_balancing = 8 [json_name = "http_load_balancing"];
+
+    NetworkPolicyConfig network_policy_config = 9 [json_name = "network_policy_config"];
+
+    message CloudrunConfig {
+      bool disabled = 1;
+
+      string load_balancer_type = 2 [json_name = "load_balancer_type"];
+    }
+
+    message ConfigConnectorConfig {
+      bool enabled = 1;
+    }
+
+    message DnsCacheConfig {
+      bool enabled = 1;
+    }
+
+    message GcePersistentDiskCsiDriverConfig {
+      bool enabled = 1;
+    }
+
+    message GcpFilestoreCsiDriverConfig {
+      bool enabled = 1;
+    }
+
+    message GkeBackupAgentConfig {
+      bool enabled = 1;
+    }
+
+    message HorizontalPodAutoscaling {
+      bool disabled = 1;
+    }
+
+    message HttpLoadBalancing {
+      bool disabled = 1;
+    }
+
+    message NetworkPolicyConfig {
+      bool disabled = 1;
+    }
+  }
+
+  message AuthenticatorGroupsConfig {
+    // The name of the RBAC security group for use with Google security groups in Kubernetes RBAC. Group name must be in format gke-security-groups@yourdomain.com.
+    string security_group = 1 [json_name = "security_group"];
+  }
+
+  message BinaryAuthorization {
+    // Enable Binary Authorization for this cluster.
+    bool enabled = 1;
+
+    // Mode of operation for Binary Authorization policy evaluation.
+    string evaluation_mode = 2 [json_name = "evaluation_mode"];
+  }
+
+  message ClusterAutoscaling {
+    // Whether node auto-provisioning is enabled. Resource limits for cpu and memory must be defined to enable node auto-provisioning.
+    bool enabled = 1;
+
+    AutoProvisioningDefaults auto_provisioning_defaults = 2 [json_name = "auto_provisioning_defaults"];
+
+    repeated ResourceLimits resource_limits = 3 [json_name = "resource_limits"];
+
+    message AutoProvisioningDefaults {
+      // The Customer Managed Encryption Key used to encrypt the boot disk attached to each node in the node pool.
+      string boot_disk_kms_key = 1 [json_name = "boot_disk_kms_key"];
+
+      // Size of the disk attached to each node, specified in GB. The smallest allowed disk size is 10GB.
+      int64 disk_size = 2 [json_name = "disk_size"];
+
+      // Type of the disk attached to each node.
+      string disk_type = 3 [json_name = "disk_type"];
+
+      // The default image type used by NAP once a new node pool is being created.
+      string image_type = 4 [json_name = "image_type"];
+
+      // Minimum CPU platform to be used by this instance. The instance may be scheduled on the specified or newer CPU platform. Applicable values are the friendly names of CPU platforms, such as Intel Haswell.
+      string min_cpu_platform = 5 [json_name = "min_cpu_platform"];
+
+      // Scopes that are used by NAP when creating node pools.
+      repeated string oauth_scopes = 6 [json_name = "oauth_scopes"];
+
+      // The Google Cloud Platform Service Account to be used by the node VMs.
+      string service_account = 7 [json_name = "service_account"];
+
+      Management management = 8;
+
+      ShieldedInstanceConfig shielded_instance_config = 9 [json_name = "shielded_instance_config"];
+
+      UpgradeSettings upgrade_settings = 10 [json_name = "upgrade_settings"];
+
+      message Management {
+        // Specifies whether the node auto-repair is enabled for the node pool. If enabled, the nodes in this node pool will be monitored and, if they fail health checks too many times, an automatic repair action will be triggered.
+        bool auto_repair = 1 [json_name = "auto_repair"];
+
+        // Specifies whether node auto-upgrade is enabled for the node pool. If enabled, node auto-upgrade helps keep the nodes in your node pool up to date with the latest release version of Kubernetes.
+        bool auto_upgrade = 2 [json_name = "auto_upgrade"];
+
+        // Specifies the Auto Upgrade knobs for the node pool.
+        repeated UpgradeOptions upgrade_options = 3 [json_name = "upgrade_options"];
+
+        message UpgradeOptions {
+          // auto_upgrade_start_time: string
+          string auto_upgrade_start_time = 1 [json_name = "auto_upgrade_start_time"];
+
+          // description: string
+          string description = 2;
+        }
+      }
+
+      message ShieldedInstanceConfig {
+        // Defines whether the instance has integrity monitoring enabled.
+        bool enable_integrity_monitoring = 1 [json_name = "enable_integrity_monitoring"];
+
+        // Defines whether the instance has Secure Boot enabled.
+        bool enable_secure_boot = 2 [json_name = "enable_secure_boot"];
+      }
+
+      message UpgradeSettings {
+        // The maximum number of nodes that can be created beyond the current size of the node pool during the upgrade process.
+        int64 max_surge = 1 [json_name = "max_surge"];
+
+        // The maximum number of nodes that can be simultaneously unavailable during the upgrade process.
+        int64 max_unavailable = 2 [json_name = "max_unavailable"];
+
+        // Update strategy of the node pool.
+        string strategy = 3;
+
+        BlueGreenSettings blue_green_settings = 4 [json_name = "blue_green_settings"];
+
+        message BlueGreenSettings {
+          // Time needed after draining entire blue pool. After this period, blue pool will be cleaned up.
+          //
+          // 																A duration in seconds with up to nine fractional digits, ending with 's'. Example: "3.5s".
+          string node_pool_soak_duration = 1 [json_name = "node_pool_soak_duration"];
+
+          StandardRolloutPolicy standard_rollout_policy = 2 [json_name = "standard_rollout_policy"];
+
+          message StandardRolloutPolicy {
+            // Number of blue nodes to drain in a batch.
+            int64 batch_node_count = 1 [json_name = "batch_node_count"];
+
+            // Percentage of the bool pool nodes to drain in a batch. The range of this field should be (0.0, 1.0].
+            int64 batch_percentage = 2 [json_name = "batch_percentage"];
+
+            // Soak time after each batch gets drained.
+            //
+            // 																			A duration in seconds with up to nine fractional digits, ending with 's'. Example: "3.5s".
+            string batch_soak_duration = 3 [json_name = "batch_soak_duration"];
+          }
+        }
+      }
+    }
+
+    message ResourceLimits {
+      // Maximum amount of the resource in the cluster.
+      int64 maximum = 1;
+
+      // Minimum amount of the resource in the cluster.
+      int64 minimum = 2;
+
+      // The type of the resource. For example, cpu and memory. See the guide to using Node Auto-Provisioning for a list of types.
+      string resource_type = 3 [json_name = "resource_type"];
+    }
+  }
+
+  message ConfidentialNodes {
+    // Whether Confidential Nodes feature is enabled for all nodes in this cluster.
+    bool enabled = 1;
+  }
+
+  message CostManagementConfig {
+    // Whether to enable GKE cost allocation. When you enable GKE cost allocation, the cluster name and namespace of your GKE workloads appear in the labels field of the billing export to BigQuery. Defaults to false.
+    bool enabled = 1;
+  }
+
+  message DatabaseEncryption {
+    // The key to use to encrypt/decrypt secrets.
+    string key_name = 1 [json_name = "key_name"];
+
+    // ENCRYPTED or DECRYPTED.
+    string state = 2;
+  }
+
+  message DefaultSnatStatus {
+    // When disabled is set to false, default IP masquerade rules will be applied to the nodes to prevent sNAT on cluster internal traffic.
+    bool disabled = 1;
+  }
+
+  message DnsConfig {
+    // Which in-cluster DNS provider should be used.
+    string cluster_dns = 1 [json_name = "cluster_dns"];
+
+    // The suffix used for all cluster service records.
+    string cluster_dns_domain = 2 [json_name = "cluster_dns_domain"];
+
+    // The scope of access to cluster DNS records.
+    string cluster_dns_scope = 3 [json_name = "cluster_dns_scope"];
+  }
+
+  message GatewayApiConfig {
+    // The Gateway API release channel to use for Gateway API.
+    string channel = 1;
+  }
+
+  message IpAllocationPolicy {
+    // The IP address range for the cluster pod IPs. Set to blank to have a range chosen with the default size. Set to /netmask (e.g. /14) to have a range chosen with a specific netmask. Set to a CIDR notation (e.g. 10.96.0.0/14) from the RFC-1918 private networks (e.g. 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16) to pick a specific range to use.
+    string cluster_ipv4_cidr_block = 1 [json_name = "cluster_ipv4_cidr_block"];
+
+    // The name of the existing secondary range in the cluster's subnetwork to use for pod IP addresses. Alternatively, cluster_ipv4_cidr_block can be used to automatically create a GKE-managed one.
+    string cluster_secondary_range_name = 2 [json_name = "cluster_secondary_range_name"];
+
+    // The IP address range of the services IPs in this cluster. Set to blank to have a range chosen with the default size. Set to /netmask (e.g. /14) to have a range chosen with a specific netmask. Set to a CIDR notation (e.g. 10.96.0.0/14) from the RFC-1918 private networks (e.g. 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16) to pick a specific range to use.
+    string services_ipv4_cidr_block = 3 [json_name = "services_ipv4_cidr_block"];
+
+    // The name of the existing secondary range in the cluster's subnetwork to use for service ClusterIPs. Alternatively, services_ipv4_cidr_block can be used to automatically create a GKE-managed one.
+    string services_secondary_range_name = 4 [json_name = "services_secondary_range_name"];
+
+    // The IP Stack type of the cluster. Choose between IPV4 and IPV4_IPV6. Default type is IPV4 Only if not set
+    string stack_type = 5 [json_name = "stack_type"];
+
+    PodCidrOverprovisionConfig pod_cidr_overprovision_config = 6 [json_name = "pod_cidr_overprovision_config"];
+
+    message PodCidrOverprovisionConfig {
+      bool disabled = 1;
+    }
+  }
+
+  message LoggingConfig {
+    // GKE components exposing logs. Valid values include SYSTEM_COMPONENTS, APISERVER, CONTROLLER_MANAGER, SCHEDULER, and WORKLOADS.
+    repeated string enable_components = 1 [json_name = "enable_components"];
+  }
+
+  message MaintenancePolicy {
+    DailyMaintenanceWindow daily_maintenance_window = 1 [json_name = "daily_maintenance_window"];
+
+    repeated MaintenanceExclusion maintenance_exclusion = 2 [json_name = "maintenance_exclusion"];
+
+    RecurringWindow recurring_window = 3 [json_name = "recurring_window"];
+
+    message DailyMaintenanceWindow {
+      string duration = 1;
+
+      string start_time = 2 [json_name = "start_time"];
+    }
+
+    message MaintenanceExclusion {
+      string end_time = 1 [json_name = "end_time"];
+
+      string exclusion_name = 2 [json_name = "exclusion_name"];
+
+      string start_time = 3 [json_name = "start_time"];
+
+      ExclusionOptions exclusion_options = 4 [json_name = "exclusion_options"];
+
+      message ExclusionOptions {
+        // The scope of automatic upgrades to restrict in the exclusion window.
+        string scope = 1;
+      }
+    }
+
+    message RecurringWindow {
+      string end_time = 1 [json_name = "end_time"];
+
+      string recurrence = 2;
+
+      string start_time = 3 [json_name = "start_time"];
+    }
+  }
+
+  message MasterAuth {
+    // Base64 encoded public certificate used by clients to authenticate to the cluster endpoint.
+    string client_certificate = 1 [json_name = "client_certificate"];
+
+    // Base64 encoded private key used by clients to authenticate to the cluster endpoint.
+    string client_key = 2 [json_name = "client_key"];
+
+    // Base64 encoded public certificate that is the root of trust for the cluster.
+    string cluster_ca_certificate = 3 [json_name = "cluster_ca_certificate"];
+
+    ClientCertificateConfig client_certificate_config = 4 [json_name = "client_certificate_config"];
+
+    message ClientCertificateConfig {
+      // Whether client certificate authorization is enabled for this cluster.
+      bool issue_client_certificate = 1 [json_name = "issue_client_certificate"];
+    }
+  }
+
+  message MasterAuthorizedNetworksConfig {
+    // Whether master is accessbile via Google Compute Engine Public IP addresses.
+    bool gcp_public_cidrs_access_enabled = 1 [json_name = "gcp_public_cidrs_access_enabled"];
+
+    repeated CidrBlocks cidr_blocks = 2 [json_name = "cidr_blocks"];
+
+    message CidrBlocks {
+      // External network that can access Kubernetes master through HTTPS. Must be specified in CIDR notation.
+      string cidr_block = 1 [json_name = "cidr_block"];
+
+      // Field for users to identify CIDR blocks.
+      string display_name = 2 [json_name = "display_name"];
+    }
+  }
+
+  message MeshCertificates {
+    // When enabled the GKE Workload Identity Certificates controller and node agent will be deployed in the cluster.
+    bool enable_certificates = 1 [json_name = "enable_certificates"];
+  }
+
+  message MonitoringConfig {
+    // GKE components exposing metrics. Valid values include SYSTEM_COMPONENTS, APISERVER, CONTROLLER_MANAGER, and SCHEDULER.
+    repeated string enable_components = 1 [json_name = "enable_components"];
+
+    ManagedPrometheus managed_prometheus = 2 [json_name = "managed_prometheus"];
+
+    message ManagedPrometheus {
+      // Whether or not the managed collection is enabled.
+      bool enabled = 1;
+    }
+  }
+
+  message NetworkPolicy {
+    // Whether network policy is enabled on the cluster.
+    bool enabled = 1;
+
+    // The selected network policy provider. Defaults to PROVIDER_UNSPECIFIED.
+    string provider = 2;
+  }
+
+  message NodeConfig {
+    // The Customer Managed Encryption Key used to encrypt the boot disk attached to each node in the node pool.
+    string boot_disk_kms_key = 1 [json_name = "boot_disk_kms_key"];
+
+    // Size of the disk attached to each node, specified in GB. The smallest allowed disk size is 10GB.
+    int64 disk_size_gb = 2 [json_name = "disk_size_gb"];
+
+    // Type of the disk attached to each node. Such as pd-standard, pd-balanced or pd-ssd
+    string disk_type = 3 [json_name = "disk_type"];
+
+    // List of the type and count of accelerator cards attached to the instance.
+    repeated GuestAccelerator guest_accelerator = 4 [json_name = "guest_accelerator"];
+
+    // The image type to use for this node. Note that for a given image type, the latest version of it will be used.
+    string image_type = 5 [json_name = "image_type"];
+
+    // The map of Kubernetes labels (key/value pairs) to be applied to each node. These will added in addition to any default label(s) that Kubernetes may apply to the node.
+    map<string, string> labels = 6;
+
+    // The number of local SSD disks to be attached to the node.
+    int64 local_ssd_count = 7 [json_name = "local_ssd_count"];
+
+    // Type of logging agent that is used as the default value for node pools in the cluster. Valid values include DEFAULT and MAX_THROUGHPUT.
+    string logging_variant = 8 [json_name = "logging_variant"];
+
+    // The name of a Google Compute Engine machine type.
+    string machine_type = 9 [json_name = "machine_type"];
+
+    // The metadata key/value pairs assigned to instances in the cluster.
+    map<string, string> metadata = 10;
+
+    // Minimum CPU platform to be used by this instance. The instance may be scheduled on the specified or newer CPU platform.
+    string min_cpu_platform = 11 [json_name = "min_cpu_platform"];
+
+    // Setting this field will assign instances of this pool to run on the specified node group. This is useful for running workloads on sole tenant nodes.
+    string node_group = 12 [json_name = "node_group"];
+
+    // The set of Google API scopes to be made available on all of the node VMs.
+    repeated string oauth_scopes = 13 [json_name = "oauth_scopes"];
+
+    // Whether the nodes are created as preemptible VM instances.
+    bool preemptible = 14;
+
+    // The GCE resource labels (a map of key/value pairs) to be applied to the node pool.
+    map<string, string> resource_labels = 15 [json_name = "resource_labels"];
+
+    // The Google Cloud Platform Service Account to be used by the node VMs.
+    string service_account = 16 [json_name = "service_account"];
+
+    // Whether the nodes are created as spot VM instances.
+    bool spot = 17;
+
+    // The list of instance tags applied to all nodes.
+    repeated string tags = 18;
+
+    // List of Kubernetes taints to be applied to each node.
+    repeated Taint taint = 19;
+
+    AdvancedMachineFeatures advanced_machine_features = 20 [json_name = "advanced_machine_features"];
+
+    EphemeralStorageLocalSsdConfig ephemeral_storage_local_ssd_config = 21 [json_name = "ephemeral_storage_local_ssd_config"];
+
+    GcfsConfig gcfs_config = 22 [json_name = "gcfs_config"];
+
+    Gvnic gvnic = 23;
+
+    KubeletConfig kubelet_config = 24 [json_name = "kubelet_config"];
+
+    LinuxNodeConfig linux_node_config = 25 [json_name = "linux_node_config"];
+
+    LocalNvmeSsdBlockConfig local_nvme_ssd_block_config = 26 [json_name = "local_nvme_ssd_block_config"];
+
+    ReservationAffinity reservation_affinity = 27 [json_name = "reservation_affinity"];
+
+    ShieldedInstanceConfig shielded_instance_config = 28 [json_name = "shielded_instance_config"];
+
+    WorkloadMetadataConfig workload_metadata_config = 29 [json_name = "workload_metadata_config"];
+
+    message GuestAccelerator {
+      // count: number
+      int64 count = 1;
+
+      // gpu_partition_size: string
+      string gpu_partition_size = 2 [json_name = "gpu_partition_size"];
+
+      // gpu_sharing_config: list of object
+      repeated GpuSharingConfig gpu_sharing_config = 3 [json_name = "gpu_sharing_config"];
+
+      // type: string
+      string type = 4;
+
+      message GpuSharingConfig {
+        // gpu_sharing_strategy: string
+        string gpu_sharing_strategy = 1 [json_name = "gpu_sharing_strategy"];
+
+        // max_shared_clients_per_gpu: number
+        int64 max_shared_clients_per_gpu = 2 [json_name = "max_shared_clients_per_gpu"];
+      }
+    }
+
+    message Taint {
+      // effect: string
+      string effect = 1;
+
+      // key: string
+      string key = 2;
+
+      // value: string
+      string value = 3;
+    }
+
+    message AdvancedMachineFeatures {
+      // The number of threads per physical core. To disable simultaneous multithreading (SMT) set this to 1. If unset, the maximum number of threads supported per core by the underlying processor is assumed.
+      int64 threads_per_core = 1 [json_name = "threads_per_core"];
+    }
+
+    message EphemeralStorageLocalSsdConfig {
+      // Number of local SSDs to use to back ephemeral storage. Uses NVMe interfaces. Each local SSD must be 375 or 3000 GB in size, and all local SSDs must share the same size.
+      int64 local_ssd_count = 1 [json_name = "local_ssd_count"];
+    }
+
+    message GcfsConfig {
+      // Whether or not GCFS is enabled
+      bool enabled = 1;
+    }
+
+    message Gvnic {
+      // Whether or not gvnic is enabled
+      bool enabled = 1;
+    }
+
+    message KubeletConfig {
+      // Enable CPU CFS quota enforcement for containers that specify CPU limits.
+      bool cpu_cfs_quota = 1 [json_name = "cpu_cfs_quota"];
+
+      // Set the CPU CFS quota period value 'cpu.cfs_period_us'.
+      string cpu_cfs_quota_period = 2 [json_name = "cpu_cfs_quota_period"];
+
+      // Control the CPU management policy on the node.
+      string cpu_manager_policy = 3 [json_name = "cpu_manager_policy"];
+
+      // Controls the maximum number of processes allowed to run in a pod.
+      int64 pod_pids_limit = 4 [json_name = "pod_pids_limit"];
+    }
+
+    message LinuxNodeConfig {
+      // The Linux kernel parameters to be applied to the nodes and all pods running on the nodes.
+      map<string, string> sysctls = 1;
+    }
+
+    message LocalNvmeSsdBlockConfig {
+      // Number of raw-block local NVMe SSD disks to be attached to the node. Each local SSD is 375 GB in size.
+      int64 local_ssd_count = 1 [json_name = "local_ssd_count"];
+    }
+
+    message ReservationAffinity {
+      // Corresponds to the type of reservation consumption.
+      string consume_reservation_type = 1 [json_name = "consume_reservation_type"];
+
+      // The label key of a reservation resource.
+      string key = 2;
+
+      // The label values of the reservation resource.
+      repeated string values = 3;
+    }
+
+    message ShieldedInstanceConfig {
+      // Defines whether the instance has integrity monitoring enabled.
+      bool enable_integrity_monitoring = 1 [json_name = "enable_integrity_monitoring"];
+
+      // Defines whether the instance has Secure Boot enabled.
+      bool enable_secure_boot = 2 [json_name = "enable_secure_boot"];
+    }
+
+    message WorkloadMetadataConfig {
+      // Mode is the configuration for how to expose metadata to workloads running on the node.
+      string mode = 1;
+    }
+  }
+
+  message NodePool {
+    // The initial number of nodes for the pool. In regional or multi-zonal clusters, this is the number of nodes per zone. Changing this will force recreation of the resource.
+    int64 initial_node_count = 1 [json_name = "initial_node_count"];
+
+    // The resource URLs of the managed instance groups associated with this node pool.
+    repeated string instance_group_urls = 2 [json_name = "instance_group_urls"];
+
+    // List of instance group URLs which have been assigned to this node pool.
+    repeated string managed_instance_group_urls = 3 [json_name = "managed_instance_group_urls"];
+
+    // The maximum number of pods per node in this node pool. Note that this does not work on node pools which are "route-based" - that is, node pools belonging to clusters that do not have IP Aliasing enabled.
+    int64 max_pods_per_node = 4 [json_name = "max_pods_per_node"];
+
+    // The name of the node pool. If left blank, Terraform will auto-generate a unique name.
+    string name = 5;
+
+    // Creates a unique name for the node pool beginning with the specified prefix. Conflicts with name.
+    string name_prefix = 6 [json_name = "name_prefix"];
+
+    // The number of nodes per instance group. This field can be used to update the number of nodes per instance group but should not be used alongside autoscaling.
+    int64 node_count = 7 [json_name = "node_count"];
+
+    // The list of zones in which the node pool's nodes should be located. Nodes must be in the region of their regional cluster or in the same region as their cluster's zone for zonal clusters. If unspecified, the cluster-level node_locations will be used.
+    repeated string node_locations = 8 [json_name = "node_locations"];
+
+    // The Kubernetes version for the nodes in this pool. Note that if this field and auto_upgrade are both specified, they will fight each other for what the node version should be, so setting both is highly discouraged. While a fuzzy version can be specified, it's recommended that you specify explicit versions as Terraform will see spurious diffs when fuzzy versions are used. See the google_container_engine_versions data source's version_prefix field to approximate fuzzy versions in a Terraform-compatible way.
+    string version = 9;
+
+    Autoscaling autoscaling = 10;
+
+    Management management = 11;
+
+    NetworkConfig network_config = 12 [json_name = "network_config"];
+
+    NodeConfig node_config = 13 [json_name = "node_config"];
+
+    PlacementPolicy placement_policy = 14 [json_name = "placement_policy"];
+
+    UpgradeSettings upgrade_settings = 15 [json_name = "upgrade_settings"];
+
+    message Autoscaling {
+      // Location policy specifies the algorithm used when scaling-up the node pool. "BALANCED" - Is a best effort policy that aims to balance the sizes of available zones. "ANY" - Instructs the cluster autoscaler to prioritize utilization of unused reservations, and reduces preemption risk for Spot VMs.
+      string location_policy = 1 [json_name = "location_policy"];
+
+      // Maximum number of nodes per zone in the node pool. Must be >= min_node_count. Cannot be used with total limits.
+      int64 max_node_count = 2 [json_name = "max_node_count"];
+
+      // Minimum number of nodes per zone in the node pool. Must be >=0 and <= max_node_count. Cannot be used with total limits.
+      int64 min_node_count = 3 [json_name = "min_node_count"];
+
+      // Maximum number of all nodes in the node pool. Must be >= total_min_node_count. Cannot be used with per zone limits.
+      int64 total_max_node_count = 4 [json_name = "total_max_node_count"];
+
+      // Minimum number of all nodes in the node pool. Must be >=0 and <= total_max_node_count. Cannot be used with per zone limits.
+      int64 total_min_node_count = 5 [json_name = "total_min_node_count"];
+    }
+
+    message Management {
+      // Whether the nodes will be automatically repaired.
+      bool auto_repair = 1 [json_name = "auto_repair"];
+
+      // Whether the nodes will be automatically upgraded.
+      bool auto_upgrade = 2 [json_name = "auto_upgrade"];
+    }
+
+    message NetworkConfig {
+      // Whether to create a new range for pod IPs in this node pool. Defaults are provided for pod_range and pod_ipv4_cidr_block if they are not specified.
+      bool create_pod_range = 1 [json_name = "create_pod_range"];
+
+      // Whether nodes have internal IP addresses only.
+      bool enable_private_nodes = 2 [json_name = "enable_private_nodes"];
+
+      // The IP address range for pod IPs in this node pool. Only applicable if create_pod_range is true. Set to blank to have a range chosen with the default size. Set to /netmask (e.g. /14) to have a range chosen with a specific netmask. Set to a CIDR notation (e.g. 10.96.0.0/14) to pick a specific range to use.
+      string pod_ipv4_cidr_block = 3 [json_name = "pod_ipv4_cidr_block"];
+
+      // The ID of the secondary range for pod IPs. If create_pod_range is true, this ID is used for the new range. If create_pod_range is false, uses an existing secondary range with this ID.
+      string pod_range = 4 [json_name = "pod_range"];
+
+      PodCidrOverprovisionConfig pod_cidr_overprovision_config = 5 [json_name = "pod_cidr_overprovision_config"];
+
+      message PodCidrOverprovisionConfig {
+        bool disabled = 1;
+      }
+    }
+
+    message NodeConfig {
+      // The Customer Managed Encryption Key used to encrypt the boot disk attached to each node in the node pool.
+      string boot_disk_kms_key = 1 [json_name = "boot_disk_kms_key"];
+
+      // Size of the disk attached to each node, specified in GB. The smallest allowed disk size is 10GB.
+      int64 disk_size_gb = 2 [json_name = "disk_size_gb"];
+
+      // Type of the disk attached to each node. Such as pd-standard, pd-balanced or pd-ssd
+      string disk_type = 3 [json_name = "disk_type"];
+
+      // List of the type and count of accelerator cards attached to the instance.
+      repeated GuestAccelerator guest_accelerator = 4 [json_name = "guest_accelerator"];
+
+      // The image type to use for this node. Note that for a given image type, the latest version of it will be used.
+      string image_type = 5 [json_name = "image_type"];
+
+      // The map of Kubernetes labels (key/value pairs) to be applied to each node. These will added in addition to any default label(s) that Kubernetes may apply to the node.
+      map<string, string> labels = 6;
+
+      // The number of local SSD disks to be attached to the node.
+      int64 local_ssd_count = 7 [json_name = "local_ssd_count"];
+
+      // Type of logging agent that is used as the default value for node pools in the cluster. Valid values include DEFAULT and MAX_THROUGHPUT.
+      string logging_variant = 8 [json_name = "logging_variant"];
+
+      // The name of a Google Compute Engine machine type.
+      string machine_type = 9 [json_name = "machine_type"];
+
+      // The metadata key/value pairs assigned to instances in the cluster.
+      map<string, string> metadata = 10;
+
+      // Minimum CPU platform to be used by this instance. The instance may be scheduled on the specified or newer CPU platform.
+      string min_cpu_platform = 11 [json_name = "min_cpu_platform"];
+
+      // Setting this field will assign instances of this pool to run on the specified node group. This is useful for running workloads on sole tenant nodes.
+      string node_group = 12 [json_name = "node_group"];
+
+      // The set of Google API scopes to be made available on all of the node VMs.
+      repeated string oauth_scopes = 13 [json_name = "oauth_scopes"];
+
+      // Whether the nodes are created as preemptible VM instances.
+      bool preemptible = 14;
+
+      // The GCE resource labels (a map of key/value pairs) to be applied to the node pool.
+      map<string, string> resource_labels = 15 [json_name = "resource_labels"];
+
+      // The Google Cloud Platform Service Account to be used by the node VMs.
+      string service_account = 16 [json_name = "service_account"];
+
+      // Whether the nodes are created as spot VM instances.
+      bool spot = 17;
+
+      // The list of instance tags applied to all nodes.
+      repeated string tags = 18;
+
+      // List of Kubernetes taints to be applied to each node.
+      repeated Taint taint = 19;
+
+      AdvancedMachineFeatures advanced_machine_features = 20 [json_name = "advanced_machine_features"];
+
+      EphemeralStorageLocalSsdConfig ephemeral_storage_local_ssd_config = 21 [json_name = "ephemeral_storage_local_ssd_config"];
+
+      GcfsConfig gcfs_config = 22 [json_name = "gcfs_config"];
+
+      Gvnic gvnic = 23;
+
+      KubeletConfig kubelet_config = 24 [json_name = "kubelet_config"];
+
+      LinuxNodeConfig linux_node_config = 25 [json_name = "linux_node_config"];
+
+      LocalNvmeSsdBlockConfig local_nvme_ssd_block_config = 26 [json_name = "local_nvme_ssd_block_config"];
+
+      ReservationAffinity reservation_affinity = 27 [json_name = "reservation_affinity"];
+
+      ShieldedInstanceConfig shielded_instance_config = 28 [json_name = "shielded_instance_config"];
+
+      WorkloadMetadataConfig workload_metadata_config = 29 [json_name = "workload_metadata_config"];
+
+      message GuestAccelerator {
+        // count: number
+        int64 count = 1;
+
+        // gpu_partition_size: string
+        string gpu_partition_size = 2 [json_name = "gpu_partition_size"];
+
+        // gpu_sharing_config: list of object
+        repeated GpuSharingConfig gpu_sharing_config = 3 [json_name = "gpu_sharing_config"];
+
+        // type: string
+        string type = 4;
+
+        message GpuSharingConfig {
+          // gpu_sharing_strategy: string
+          string gpu_sharing_strategy = 1 [json_name = "gpu_sharing_strategy"];
+
+          // max_shared_clients_per_gpu: number
+          int64 max_shared_clients_per_gpu = 2 [json_name = "max_shared_clients_per_gpu"];
+        }
+      }
+
+      message Taint {
+        // effect: string
+        string effect = 1;
+
+        // key: string
+        string key = 2;
+
+        // value: string
+        string value = 3;
+      }
+
+      message AdvancedMachineFeatures {
+        // The number of threads per physical core. To disable simultaneous multithreading (SMT) set this to 1. If unset, the maximum number of threads supported per core by the underlying processor is assumed.
+        int64 threads_per_core = 1 [json_name = "threads_per_core"];
+      }
+
+      message EphemeralStorageLocalSsdConfig {
+        // Number of local SSDs to use to back ephemeral storage. Uses NVMe interfaces. Each local SSD must be 375 or 3000 GB in size, and all local SSDs must share the same size.
+        int64 local_ssd_count = 1 [json_name = "local_ssd_count"];
+      }
+
+      message GcfsConfig {
+        // Whether or not GCFS is enabled
+        bool enabled = 1;
+      }
+
+      message Gvnic {
+        // Whether or not gvnic is enabled
+        bool enabled = 1;
+      }
+
+      message KubeletConfig {
+        // Enable CPU CFS quota enforcement for containers that specify CPU limits.
+        bool cpu_cfs_quota = 1 [json_name = "cpu_cfs_quota"];
+
+        // Set the CPU CFS quota period value 'cpu.cfs_period_us'.
+        string cpu_cfs_quota_period = 2 [json_name = "cpu_cfs_quota_period"];
+
+        // Control the CPU management policy on the node.
+        string cpu_manager_policy = 3 [json_name = "cpu_manager_policy"];
+
+        // Controls the maximum number of processes allowed to run in a pod.
+        int64 pod_pids_limit = 4 [json_name = "pod_pids_limit"];
+      }
+
+      message LinuxNodeConfig {
+        // The Linux kernel parameters to be applied to the nodes and all pods running on the nodes.
+        map<string, string> sysctls = 1;
+      }
+
+      message LocalNvmeSsdBlockConfig {
+        // Number of raw-block local NVMe SSD disks to be attached to the node. Each local SSD is 375 GB in size.
+        int64 local_ssd_count = 1 [json_name = "local_ssd_count"];
+      }
+
+      message ReservationAffinity {
+        // Corresponds to the type of reservation consumption.
+        string consume_reservation_type = 1 [json_name = "consume_reservation_type"];
+
+        // The label key of a reservation resource.
+        string key = 2;
+
+        // The label values of the reservation resource.
+        repeated string values = 3;
+      }
+
+      message ShieldedInstanceConfig {
+        // Defines whether the instance has integrity monitoring enabled.
+        bool enable_integrity_monitoring = 1 [json_name = "enable_integrity_monitoring"];
+
+        // Defines whether the instance has Secure Boot enabled.
+        bool enable_secure_boot = 2 [json_name = "enable_secure_boot"];
+      }
+
+      message WorkloadMetadataConfig {
+        // Mode is the configuration for how to expose metadata to workloads running on the node.
+        string mode = 1;
+      }
+    }
+
+    message PlacementPolicy {
+      // Type defines the type of placement policy
+      string type = 1;
+    }
+
+    message UpgradeSettings {
+      // The number of additional nodes that can be added to the node pool during an upgrade. Increasing max_surge raises the number of nodes that can be upgraded simultaneously. Can be set to 0 or greater.
+      int64 max_surge = 1 [json_name = "max_surge"];
+
+      // The number of nodes that can be simultaneously unavailable during an upgrade. Increasing max_unavailable raises the number of nodes that can be upgraded in parallel. Can be set to 0 or greater.
+      int64 max_unavailable = 2 [json_name = "max_unavailable"];
+
+      // Update strategy for the given nodepool.
+      string strategy = 3;
+
+      BlueGreenSettings blue_green_settings = 4 [json_name = "blue_green_settings"];
+
+      message BlueGreenSettings {
+        // Time needed after draining entire blue pool. After this period, blue pool will be cleaned up.
+        string node_pool_soak_duration = 1 [json_name = "node_pool_soak_duration"];
+
+        StandardRolloutPolicy standard_rollout_policy = 2 [json_name = "standard_rollout_policy"];
+
+        message StandardRolloutPolicy {
+          // Number of blue nodes to drain in a batch.
+          int64 batch_node_count = 1 [json_name = "batch_node_count"];
+
+          // Percentage of the blue pool nodes to drain in a batch.
+          int64 batch_percentage = 2 [json_name = "batch_percentage"];
+
+          // Soak time after each batch gets drained.
+          string batch_soak_duration = 3 [json_name = "batch_soak_duration"];
+        }
+      }
+    }
+  }
+
+  message NodePoolDefaults {
+    NodeConfigDefaults node_config_defaults = 1 [json_name = "node_config_defaults"];
+
+    message NodeConfigDefaults {
+      // Type of logging agent that is used as the default value for node pools in the cluster. Valid values include DEFAULT and MAX_THROUGHPUT.
+      string logging_variant = 1 [json_name = "logging_variant"];
+    }
+  }
+
+  message NotificationConfig {
+    Pubsub pubsub = 1;
+
+    message Pubsub {
+      // Whether or not the notification config is enabled
+      bool enabled = 1;
+
+      // The pubsub topic to push upgrade notifications to. Must be in the same project as the cluster. Must be in the format: projects/{project}/topics/{topic}.
+      string topic = 2;
+
+      Filter filter = 3;
+
+      message Filter {
+        // Can be used to filter what notifications are sent. Valid values include include UPGRADE_AVAILABLE_EVENT, UPGRADE_EVENT and SECURITY_BULLETIN_EVENT
+        repeated string event_type = 1 [json_name = "event_type"];
+      }
+    }
+  }
+
+  message PrivateClusterConfig {
+    // When true, the cluster's private endpoint is used as the cluster endpoint and access through the public endpoint is disabled. When false, either endpoint can be used. This field only applies to private clusters, when enable_private_nodes is true.
+    bool enable_private_endpoint = 1 [json_name = "enable_private_endpoint"];
+
+    // Enables the private cluster feature, creating a private endpoint on the cluster. In a private cluster, nodes only have RFC 1918 private addresses and communicate with the master's private endpoint via private networking.
+    bool enable_private_nodes = 2 [json_name = "enable_private_nodes"];
+
+    // The IP range in CIDR notation to use for the hosted master network. This range will be used for assigning private IP addresses to the cluster master(s) and the ILB VIP. This range must not overlap with any other ranges in use within the cluster's network, and it must be a /28 subnet. See Private Cluster Limitations for more details. This field only applies to private clusters, when enable_private_nodes is true.
+    string master_ipv4_cidr_block = 3 [json_name = "master_ipv4_cidr_block"];
+
+    // The name of the peering between this cluster and the Google owned VPC.
+    string peering_name = 4 [json_name = "peering_name"];
+
+    // The internal IP address of this cluster's master endpoint.
+    string private_endpoint = 5 [json_name = "private_endpoint"];
+
+    // Subnetwork in cluster's network where master's endpoint will be provisioned.
+    string private_endpoint_subnetwork = 6 [json_name = "private_endpoint_subnetwork"];
+
+    // The external IP address of this cluster's master endpoint.
+    string public_endpoint = 7 [json_name = "public_endpoint"];
+
+    MasterGlobalAccessConfig master_global_access_config = 8 [json_name = "master_global_access_config"];
+
+    message MasterGlobalAccessConfig {
+      // Whether the cluster master is accessible globally or not.
+      bool enabled = 1;
+    }
+  }
+
+  message ReleaseChannel {
+    // The selected release channel. Accepted values are:
+    // * UNSPECIFIED: Not set.
+    // * RAPID: Weekly upgrade cadence; Early testers and developers who requires new features.
+    // * REGULAR: Multiple per month upgrade cadence; Production users who need features not yet offered in the Stable channel.
+    // * STABLE: Every few months upgrade cadence; Production users who need stability above all else, and for whom frequent upgrades are too risky.
+    string channel = 1;
+  }
+
+  message ResourceUsageExportConfig {
+    // Whether to enable network egress metering for this cluster. If enabled, a daemonset will be created in the cluster to meter network egress traffic.
+    bool enable_network_egress_metering = 1 [json_name = "enable_network_egress_metering"];
+
+    // Whether to enable resource consumption metering on this cluster. When enabled, a table will be created in the resource export BigQuery dataset to store resource consumption data. The resulting table can be joined with the resource usage table or with BigQuery billing export. Defaults to true.
+    bool enable_resource_consumption_metering = 2 [json_name = "enable_resource_consumption_metering"];
+
+    BigqueryDestination bigquery_destination = 3 [json_name = "bigquery_destination"];
+
+    message BigqueryDestination {
+      // The ID of a BigQuery Dataset.
+      string dataset_id = 1 [json_name = "dataset_id"];
+    }
+  }
+
+  message ServiceExternalIpsConfig {
+    // When enabled, services with exterenal ips specified will be allowed.
+    bool enabled = 1;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string read = 3;
+
+    string update = 4;
+  }
+
+  message VerticalPodAutoscaling {
+    // Enables vertical pod autoscaling.
+    bool enabled = 1;
+  }
+
+  message WorkloadIdentityConfig {
+    // The workload pool to attach all Kubernetes service accounts to.
+    string workload_pool = 1 [json_name = "workload_pool"];
+  }
+}
+
+// GoogleContainerNodePool version is 1
+message GoogleContainerNodePool {
+  // The cluster to create the node pool for. Cluster must be present in location provided for zonal clusters.
+  string cluster = 1;
+
+  string id = 2;
+
+  // The initial number of nodes for the pool. In regional or multi-zonal clusters, this is the number of nodes per zone. Changing this will force recreation of the resource.
+  int64 initial_node_count = 3 [json_name = "initial_node_count"];
+
+  // The resource URLs of the managed instance groups associated with this node pool.
+  repeated string instance_group_urls = 4 [json_name = "instance_group_urls"];
+
+  // The location (region or zone) of the cluster.
+  string location = 5;
+
+  // List of instance group URLs which have been assigned to this node pool.
+  repeated string managed_instance_group_urls = 6 [json_name = "managed_instance_group_urls"];
+
+  // The maximum number of pods per node in this node pool. Note that this does not work on node pools which are "route-based" - that is, node pools belonging to clusters that do not have IP Aliasing enabled.
+  int64 max_pods_per_node = 7 [json_name = "max_pods_per_node"];
+
+  // The name of the node pool. If left blank, Terraform will auto-generate a unique name.
+  string name = 8;
+
+  // Creates a unique name for the node pool beginning with the specified prefix. Conflicts with name.
+  string name_prefix = 9 [json_name = "name_prefix"];
+
+  // The number of nodes per instance group. This field can be used to update the number of nodes per instance group but should not be used alongside autoscaling.
+  int64 node_count = 10 [json_name = "node_count"];
+
+  // The list of zones in which the node pool's nodes should be located. Nodes must be in the region of their regional cluster or in the same region as their cluster's zone for zonal clusters. If unspecified, the cluster-level node_locations will be used.
+  repeated string node_locations = 11 [json_name = "node_locations"];
+
+  string operation = 12;
+
+  // The ID of the project in which to create the node pool. If blank, the provider-configured project will be used.
+  string project = 13;
+
+  // The Kubernetes version for the nodes in this pool. Note that if this field and auto_upgrade are both specified, they will fight each other for what the node version should be, so setting both is highly discouraged. While a fuzzy version can be specified, it's recommended that you specify explicit versions as Terraform will see spurious diffs when fuzzy versions are used. See the google_container_engine_versions data source's version_prefix field to approximate fuzzy versions in a Terraform-compatible way.
+  string version = 14;
+
+  Autoscaling autoscaling = 15;
+
+  Management management = 16;
+
+  NetworkConfig network_config = 17 [json_name = "network_config"];
+
+  NodeConfig node_config = 18 [json_name = "node_config"];
+
+  PlacementPolicy placement_policy = 19 [json_name = "placement_policy"];
+
+  repeated Timeouts timeouts = 20;
+
+  UpgradeSettings upgrade_settings = 21 [json_name = "upgrade_settings"];
+
+  map<string, string> for_each = 22 [json_name = "for_each"];
+
+  repeated string depends_on = 23 [json_name = "depends_on"];
+
+  int32 count = 24;
+
+  string provider = 25;
+
+  terraform.v1.Lifecycle lifecycle = 26;
+
+  message Autoscaling {
+    // Location policy specifies the algorithm used when scaling-up the node pool. "BALANCED" - Is a best effort policy that aims to balance the sizes of available zones. "ANY" - Instructs the cluster autoscaler to prioritize utilization of unused reservations, and reduces preemption risk for Spot VMs.
+    string location_policy = 1 [json_name = "location_policy"];
+
+    // Maximum number of nodes per zone in the node pool. Must be >= min_node_count. Cannot be used with total limits.
+    int64 max_node_count = 2 [json_name = "max_node_count"];
+
+    // Minimum number of nodes per zone in the node pool. Must be >=0 and <= max_node_count. Cannot be used with total limits.
+    int64 min_node_count = 3 [json_name = "min_node_count"];
+
+    // Maximum number of all nodes in the node pool. Must be >= total_min_node_count. Cannot be used with per zone limits.
+    int64 total_max_node_count = 4 [json_name = "total_max_node_count"];
+
+    // Minimum number of all nodes in the node pool. Must be >=0 and <= total_max_node_count. Cannot be used with per zone limits.
+    int64 total_min_node_count = 5 [json_name = "total_min_node_count"];
+  }
+
+  message Management {
+    // Whether the nodes will be automatically repaired.
+    bool auto_repair = 1 [json_name = "auto_repair"];
+
+    // Whether the nodes will be automatically upgraded.
+    bool auto_upgrade = 2 [json_name = "auto_upgrade"];
+  }
+
+  message NetworkConfig {
+    // Whether to create a new range for pod IPs in this node pool. Defaults are provided for pod_range and pod_ipv4_cidr_block if they are not specified.
+    bool create_pod_range = 1 [json_name = "create_pod_range"];
+
+    // Whether nodes have internal IP addresses only.
+    bool enable_private_nodes = 2 [json_name = "enable_private_nodes"];
+
+    // The IP address range for pod IPs in this node pool. Only applicable if create_pod_range is true. Set to blank to have a range chosen with the default size. Set to /netmask (e.g. /14) to have a range chosen with a specific netmask. Set to a CIDR notation (e.g. 10.96.0.0/14) to pick a specific range to use.
+    string pod_ipv4_cidr_block = 3 [json_name = "pod_ipv4_cidr_block"];
+
+    // The ID of the secondary range for pod IPs. If create_pod_range is true, this ID is used for the new range. If create_pod_range is false, uses an existing secondary range with this ID.
+    string pod_range = 4 [json_name = "pod_range"];
+
+    PodCidrOverprovisionConfig pod_cidr_overprovision_config = 5 [json_name = "pod_cidr_overprovision_config"];
+
+    message PodCidrOverprovisionConfig {
+      bool disabled = 1;
+    }
+  }
+
+  message NodeConfig {
+    // The Customer Managed Encryption Key used to encrypt the boot disk attached to each node in the node pool.
+    string boot_disk_kms_key = 1 [json_name = "boot_disk_kms_key"];
+
+    // Size of the disk attached to each node, specified in GB. The smallest allowed disk size is 10GB.
+    int64 disk_size_gb = 2 [json_name = "disk_size_gb"];
+
+    // Type of the disk attached to each node. Such as pd-standard, pd-balanced or pd-ssd
+    string disk_type = 3 [json_name = "disk_type"];
+
+    // List of the type and count of accelerator cards attached to the instance.
+    repeated GuestAccelerator guest_accelerator = 4 [json_name = "guest_accelerator"];
+
+    // The image type to use for this node. Note that for a given image type, the latest version of it will be used.
+    string image_type = 5 [json_name = "image_type"];
+
+    // The map of Kubernetes labels (key/value pairs) to be applied to each node. These will added in addition to any default label(s) that Kubernetes may apply to the node.
+    map<string, string> labels = 6;
+
+    // The number of local SSD disks to be attached to the node.
+    int64 local_ssd_count = 7 [json_name = "local_ssd_count"];
+
+    // Type of logging agent that is used as the default value for node pools in the cluster. Valid values include DEFAULT and MAX_THROUGHPUT.
+    string logging_variant = 8 [json_name = "logging_variant"];
+
+    // The name of a Google Compute Engine machine type.
+    string machine_type = 9 [json_name = "machine_type"];
+
+    // The metadata key/value pairs assigned to instances in the cluster.
+    map<string, string> metadata = 10;
+
+    // Minimum CPU platform to be used by this instance. The instance may be scheduled on the specified or newer CPU platform.
+    string min_cpu_platform = 11 [json_name = "min_cpu_platform"];
+
+    // Setting this field will assign instances of this pool to run on the specified node group. This is useful for running workloads on sole tenant nodes.
+    string node_group = 12 [json_name = "node_group"];
+
+    // The set of Google API scopes to be made available on all of the node VMs.
+    repeated string oauth_scopes = 13 [json_name = "oauth_scopes"];
+
+    // Whether the nodes are created as preemptible VM instances.
+    bool preemptible = 14;
+
+    // The GCE resource labels (a map of key/value pairs) to be applied to the node pool.
+    map<string, string> resource_labels = 15 [json_name = "resource_labels"];
+
+    // The Google Cloud Platform Service Account to be used by the node VMs.
+    string service_account = 16 [json_name = "service_account"];
+
+    // Whether the nodes are created as spot VM instances.
+    bool spot = 17;
+
+    // The list of instance tags applied to all nodes.
+    repeated string tags = 18;
+
+    // List of Kubernetes taints to be applied to each node.
+    repeated Taint taint = 19;
+
+    AdvancedMachineFeatures advanced_machine_features = 20 [json_name = "advanced_machine_features"];
+
+    EphemeralStorageLocalSsdConfig ephemeral_storage_local_ssd_config = 21 [json_name = "ephemeral_storage_local_ssd_config"];
+
+    GcfsConfig gcfs_config = 22 [json_name = "gcfs_config"];
+
+    Gvnic gvnic = 23;
+
+    KubeletConfig kubelet_config = 24 [json_name = "kubelet_config"];
+
+    LinuxNodeConfig linux_node_config = 25 [json_name = "linux_node_config"];
+
+    LocalNvmeSsdBlockConfig local_nvme_ssd_block_config = 26 [json_name = "local_nvme_ssd_block_config"];
+
+    ReservationAffinity reservation_affinity = 27 [json_name = "reservation_affinity"];
+
+    ShieldedInstanceConfig shielded_instance_config = 28 [json_name = "shielded_instance_config"];
+
+    WorkloadMetadataConfig workload_metadata_config = 29 [json_name = "workload_metadata_config"];
+
+    message GuestAccelerator {
+      // count: number
+      int64 count = 1;
+
+      // gpu_partition_size: string
+      string gpu_partition_size = 2 [json_name = "gpu_partition_size"];
+
+      // gpu_sharing_config: list of object
+      repeated GpuSharingConfig gpu_sharing_config = 3 [json_name = "gpu_sharing_config"];
+
+      // type: string
+      string type = 4;
+
+      message GpuSharingConfig {
+        // gpu_sharing_strategy: string
+        string gpu_sharing_strategy = 1 [json_name = "gpu_sharing_strategy"];
+
+        // max_shared_clients_per_gpu: number
+        int64 max_shared_clients_per_gpu = 2 [json_name = "max_shared_clients_per_gpu"];
+      }
+    }
+
+    message Taint {
+      // effect: string
+      string effect = 1;
+
+      // key: string
+      string key = 2;
+
+      // value: string
+      string value = 3;
+    }
+
+    message AdvancedMachineFeatures {
+      // The number of threads per physical core. To disable simultaneous multithreading (SMT) set this to 1. If unset, the maximum number of threads supported per core by the underlying processor is assumed.
+      int64 threads_per_core = 1 [json_name = "threads_per_core"];
+    }
+
+    message EphemeralStorageLocalSsdConfig {
+      // Number of local SSDs to use to back ephemeral storage. Uses NVMe interfaces. Each local SSD must be 375 or 3000 GB in size, and all local SSDs must share the same size.
+      int64 local_ssd_count = 1 [json_name = "local_ssd_count"];
+    }
+
+    message GcfsConfig {
+      // Whether or not GCFS is enabled
+      bool enabled = 1;
+    }
+
+    message Gvnic {
+      // Whether or not gvnic is enabled
+      bool enabled = 1;
+    }
+
+    message KubeletConfig {
+      // Enable CPU CFS quota enforcement for containers that specify CPU limits.
+      bool cpu_cfs_quota = 1 [json_name = "cpu_cfs_quota"];
+
+      // Set the CPU CFS quota period value 'cpu.cfs_period_us'.
+      string cpu_cfs_quota_period = 2 [json_name = "cpu_cfs_quota_period"];
+
+      // Control the CPU management policy on the node.
+      string cpu_manager_policy = 3 [json_name = "cpu_manager_policy"];
+
+      // Controls the maximum number of processes allowed to run in a pod.
+      int64 pod_pids_limit = 4 [json_name = "pod_pids_limit"];
+    }
+
+    message LinuxNodeConfig {
+      // The Linux kernel parameters to be applied to the nodes and all pods running on the nodes.
+      map<string, string> sysctls = 1;
+    }
+
+    message LocalNvmeSsdBlockConfig {
+      // Number of raw-block local NVMe SSD disks to be attached to the node. Each local SSD is 375 GB in size.
+      int64 local_ssd_count = 1 [json_name = "local_ssd_count"];
+    }
+
+    message ReservationAffinity {
+      // Corresponds to the type of reservation consumption.
+      string consume_reservation_type = 1 [json_name = "consume_reservation_type"];
+
+      // The label key of a reservation resource.
+      string key = 2;
+
+      // The label values of the reservation resource.
+      repeated string values = 3;
+    }
+
+    message ShieldedInstanceConfig {
+      // Defines whether the instance has integrity monitoring enabled.
+      bool enable_integrity_monitoring = 1 [json_name = "enable_integrity_monitoring"];
+
+      // Defines whether the instance has Secure Boot enabled.
+      bool enable_secure_boot = 2 [json_name = "enable_secure_boot"];
+    }
+
+    message WorkloadMetadataConfig {
+      // Mode is the configuration for how to expose metadata to workloads running on the node.
+      string mode = 1;
+    }
+  }
+
+  message PlacementPolicy {
+    // Type defines the type of placement policy
+    string type = 1;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+
+  message UpgradeSettings {
+    // The number of additional nodes that can be added to the node pool during an upgrade. Increasing max_surge raises the number of nodes that can be upgraded simultaneously. Can be set to 0 or greater.
+    int64 max_surge = 1 [json_name = "max_surge"];
+
+    // The number of nodes that can be simultaneously unavailable during an upgrade. Increasing max_unavailable raises the number of nodes that can be upgraded in parallel. Can be set to 0 or greater.
+    int64 max_unavailable = 2 [json_name = "max_unavailable"];
+
+    // Update strategy for the given nodepool.
+    string strategy = 3;
+
+    BlueGreenSettings blue_green_settings = 4 [json_name = "blue_green_settings"];
+
+    message BlueGreenSettings {
+      // Time needed after draining entire blue pool. After this period, blue pool will be cleaned up.
+      string node_pool_soak_duration = 1 [json_name = "node_pool_soak_duration"];
+
+      StandardRolloutPolicy standard_rollout_policy = 2 [json_name = "standard_rollout_policy"];
+
+      message StandardRolloutPolicy {
+        // Number of blue nodes to drain in a batch.
+        int64 batch_node_count = 1 [json_name = "batch_node_count"];
+
+        // Percentage of the blue pool nodes to drain in a batch.
+        int64 batch_percentage = 2 [json_name = "batch_percentage"];
+
+        // Soak time after each batch gets drained.
+        string batch_soak_duration = 3 [json_name = "batch_soak_duration"];
+      }
+    }
+  }
+}
+
+// GoogleContainerRegistry version is 0
+message GoogleContainerRegistry {
+  // The URI of the created resource.
+  string bucket_self_link = 1 [json_name = "bucket_self_link"];
+
+  string id = 2;
+
+  // The location of the registry. One of ASIA, EU, US or not specified. See the official documentation for more information on registry locations.
+  string location = 3;
+
+  // The ID of the project in which the resource belongs. If it is not provided, the provider project is used.
+  string project = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}

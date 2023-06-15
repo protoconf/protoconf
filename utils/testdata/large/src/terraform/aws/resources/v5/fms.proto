@@ -1,0 +1,88 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsFmsAdminAccount version is 0
+message AwsFmsAdminAccount {
+  string account_id = 1 [json_name = "account_id"];
+
+  string id = 2;
+
+  map<string, string> for_each = 3 [json_name = "for_each"];
+
+  repeated string depends_on = 4 [json_name = "depends_on"];
+
+  int32 count = 5;
+
+  string provider = 6;
+
+  terraform.v1.Lifecycle lifecycle = 7;
+}
+
+// AwsFmsPolicy version is 0
+message AwsFmsPolicy {
+  string arn = 1;
+
+  bool delete_all_policy_resources = 2 [json_name = "delete_all_policy_resources"];
+
+  bool delete_unused_fm_managed_resources = 3 [json_name = "delete_unused_fm_managed_resources"];
+
+  string description = 4;
+
+  bool exclude_resource_tags = 5 [json_name = "exclude_resource_tags"];
+
+  string id = 6;
+
+  string name = 7;
+
+  string policy_update_token = 8 [json_name = "policy_update_token"];
+
+  bool remediation_enabled = 9 [json_name = "remediation_enabled"];
+
+  map<string, string> resource_tags = 10 [json_name = "resource_tags"];
+
+  string resource_type = 11 [json_name = "resource_type"];
+
+  repeated string resource_type_list = 12 [json_name = "resource_type_list"];
+
+  map<string, string> tags = 13;
+
+  map<string, string> tags_all = 14 [json_name = "tags_all"];
+
+  ExcludeMap exclude_map = 15 [json_name = "exclude_map"];
+
+  IncludeMap include_map = 16 [json_name = "include_map"];
+
+  SecurityServicePolicyData security_service_policy_data = 17 [json_name = "security_service_policy_data"];
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+
+  message ExcludeMap {
+    repeated string account = 1;
+
+    repeated string orgunit = 2;
+  }
+
+  message IncludeMap {
+    repeated string account = 1;
+
+    repeated string orgunit = 2;
+  }
+
+  message SecurityServicePolicyData {
+    string managed_service_data = 1 [json_name = "managed_service_data"];
+
+    string type = 2;
+  }
+}

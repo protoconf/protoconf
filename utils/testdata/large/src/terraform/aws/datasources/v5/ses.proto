@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsSesActiveReceiptRuleSet version is 0
+message AwsSesActiveReceiptRuleSet {
+  string arn = 1;
+
+  string id = 2;
+
+  string rule_set_name = 3 [json_name = "rule_set_name"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsSesDomainIdentity version is 0
+message AwsSesDomainIdentity {
+  string arn = 1;
+
+  string domain = 2;
+
+  string id = 3;
+
+  string verification_token = 4 [json_name = "verification_token"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsSesEmailIdentity version is 0
+message AwsSesEmailIdentity {
+  string arn = 1;
+
+  string email = 2;
+
+  string id = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}

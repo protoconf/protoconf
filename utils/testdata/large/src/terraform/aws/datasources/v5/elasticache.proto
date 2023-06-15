@@ -1,0 +1,225 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsElasticacheCluster version is 0
+message AwsElasticacheCluster {
+  string arn = 1;
+
+  string availability_zone = 2 [json_name = "availability_zone"];
+
+  repeated CacheNodes cache_nodes = 3 [json_name = "cache_nodes"];
+
+  string cluster_address = 4 [json_name = "cluster_address"];
+
+  string cluster_id = 5 [json_name = "cluster_id"];
+
+  string configuration_endpoint = 6 [json_name = "configuration_endpoint"];
+
+  string engine = 7;
+
+  string engine_version = 8 [json_name = "engine_version"];
+
+  string id = 9;
+
+  string ip_discovery = 10 [json_name = "ip_discovery"];
+
+  repeated LogDeliveryConfiguration log_delivery_configuration = 11 [json_name = "log_delivery_configuration"];
+
+  string maintenance_window = 12 [json_name = "maintenance_window"];
+
+  string network_type = 13 [json_name = "network_type"];
+
+  string node_type = 14 [json_name = "node_type"];
+
+  string notification_topic_arn = 15 [json_name = "notification_topic_arn"];
+
+  int64 num_cache_nodes = 16 [json_name = "num_cache_nodes"];
+
+  string parameter_group_name = 17 [json_name = "parameter_group_name"];
+
+  int64 port = 18;
+
+  string preferred_outpost_arn = 19 [json_name = "preferred_outpost_arn"];
+
+  string replication_group_id = 20 [json_name = "replication_group_id"];
+
+  repeated string security_group_ids = 21 [json_name = "security_group_ids"];
+
+  int64 snapshot_retention_limit = 22 [json_name = "snapshot_retention_limit"];
+
+  string snapshot_window = 23 [json_name = "snapshot_window"];
+
+  string subnet_group_name = 24 [json_name = "subnet_group_name"];
+
+  map<string, string> tags = 25;
+
+  map<string, string> for_each = 26 [json_name = "for_each"];
+
+  repeated string depends_on = 27 [json_name = "depends_on"];
+
+  int32 count = 28;
+
+  string provider = 29;
+
+  terraform.v1.Lifecycle lifecycle = 30;
+
+  message CacheNodes {
+    // address: string
+    string address = 1;
+
+    // availability_zone: string
+    string availability_zone = 2 [json_name = "availability_zone"];
+
+    // id: string
+    string id = 3;
+
+    // outpost_arn: string
+    string outpost_arn = 4 [json_name = "outpost_arn"];
+
+    // port: number
+    int64 port = 5;
+  }
+
+  message LogDeliveryConfiguration {
+    // destination: string
+    string destination = 1;
+
+    // destination_type: string
+    string destination_type = 2 [json_name = "destination_type"];
+
+    // log_format: string
+    string log_format = 3 [json_name = "log_format"];
+
+    // log_type: string
+    string log_type = 4 [json_name = "log_type"];
+  }
+}
+
+// AwsElasticacheReplicationGroup version is 0
+message AwsElasticacheReplicationGroup {
+  string arn = 1;
+
+  bool auth_token_enabled = 2 [json_name = "auth_token_enabled"];
+
+  bool automatic_failover_enabled = 3 [json_name = "automatic_failover_enabled"];
+
+  string configuration_endpoint_address = 4 [json_name = "configuration_endpoint_address"];
+
+  string description = 5;
+
+  string id = 6;
+
+  repeated LogDeliveryConfiguration log_delivery_configuration = 7 [json_name = "log_delivery_configuration"];
+
+  repeated string member_clusters = 8 [json_name = "member_clusters"];
+
+  bool multi_az_enabled = 9 [json_name = "multi_az_enabled"];
+
+  string node_type = 10 [json_name = "node_type"];
+
+  int64 num_cache_clusters = 11 [json_name = "num_cache_clusters"];
+
+  int64 num_node_groups = 12 [json_name = "num_node_groups"];
+
+  int64 port = 13;
+
+  string primary_endpoint_address = 14 [json_name = "primary_endpoint_address"];
+
+  string reader_endpoint_address = 15 [json_name = "reader_endpoint_address"];
+
+  int64 replicas_per_node_group = 16 [json_name = "replicas_per_node_group"];
+
+  string replication_group_id = 17 [json_name = "replication_group_id"];
+
+  int64 snapshot_retention_limit = 18 [json_name = "snapshot_retention_limit"];
+
+  string snapshot_window = 19 [json_name = "snapshot_window"];
+
+  map<string, string> for_each = 20 [json_name = "for_each"];
+
+  repeated string depends_on = 21 [json_name = "depends_on"];
+
+  int32 count = 22;
+
+  string provider = 23;
+
+  terraform.v1.Lifecycle lifecycle = 24;
+
+  message LogDeliveryConfiguration {
+    // destination: string
+    string destination = 1;
+
+    // destination_type: string
+    string destination_type = 2 [json_name = "destination_type"];
+
+    // log_format: string
+    string log_format = 3 [json_name = "log_format"];
+
+    // log_type: string
+    string log_type = 4 [json_name = "log_type"];
+  }
+}
+
+// AwsElasticacheSubnetGroup version is 0
+message AwsElasticacheSubnetGroup {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  string name = 4;
+
+  repeated string subnet_ids = 5 [json_name = "subnet_ids"];
+
+  map<string, string> tags = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsElasticacheUser version is 0
+message AwsElasticacheUser {
+  string access_string = 1 [json_name = "access_string"];
+
+  string engine = 2;
+
+  string id = 3;
+
+  bool no_password_required = 4 [json_name = "no_password_required"];
+
+  repeated string passwords = 5;
+
+  string user_id = 6 [json_name = "user_id"];
+
+  string user_name = 7 [json_name = "user_name"];
+
+  repeated AuthenticationMode authentication_mode = 8 [json_name = "authentication_mode"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message AuthenticationMode {
+    int64 password_count = 1 [json_name = "password_count"];
+
+    string type = 2;
+  }
+}

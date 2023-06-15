@@ -1,0 +1,611 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsSpotDatafeedSubscription version is 0
+message AwsSpotDatafeedSubscription {
+  string bucket = 1;
+
+  string id = 2;
+
+  string prefix = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsSpotFleetRequest version is 1
+message AwsSpotFleetRequest {
+  string allocation_strategy = 1 [json_name = "allocation_strategy"];
+
+  string client_token = 2 [json_name = "client_token"];
+
+  string context = 3;
+
+  string excess_capacity_termination_policy = 4 [json_name = "excess_capacity_termination_policy"];
+
+  string fleet_type = 5 [json_name = "fleet_type"];
+
+  string iam_fleet_role = 6 [json_name = "iam_fleet_role"];
+
+  string id = 7;
+
+  string instance_interruption_behaviour = 8 [json_name = "instance_interruption_behaviour"];
+
+  int64 instance_pools_to_use_count = 9 [json_name = "instance_pools_to_use_count"];
+
+  repeated string load_balancers = 10 [json_name = "load_balancers"];
+
+  string on_demand_allocation_strategy = 11 [json_name = "on_demand_allocation_strategy"];
+
+  string on_demand_max_total_price = 12 [json_name = "on_demand_max_total_price"];
+
+  int64 on_demand_target_capacity = 13 [json_name = "on_demand_target_capacity"];
+
+  bool replace_unhealthy_instances = 14 [json_name = "replace_unhealthy_instances"];
+
+  string spot_price = 15 [json_name = "spot_price"];
+
+  string spot_request_state = 16 [json_name = "spot_request_state"];
+
+  map<string, string> tags = 17;
+
+  map<string, string> tags_all = 18 [json_name = "tags_all"];
+
+  int64 target_capacity = 19 [json_name = "target_capacity"];
+
+  string target_capacity_unit_type = 20 [json_name = "target_capacity_unit_type"];
+
+  repeated string target_group_arns = 21 [json_name = "target_group_arns"];
+
+  string terminate_instances_on_delete = 22 [json_name = "terminate_instances_on_delete"];
+
+  bool terminate_instances_with_expiration = 23 [json_name = "terminate_instances_with_expiration"];
+
+  string valid_from = 24 [json_name = "valid_from"];
+
+  string valid_until = 25 [json_name = "valid_until"];
+
+  bool wait_for_fulfillment = 26 [json_name = "wait_for_fulfillment"];
+
+  repeated LaunchSpecification launch_specification = 27 [json_name = "launch_specification"];
+
+  repeated LaunchTemplateConfig launch_template_config = 28 [json_name = "launch_template_config"];
+
+  SpotMaintenanceStrategies spot_maintenance_strategies = 29 [json_name = "spot_maintenance_strategies"];
+
+  repeated Timeouts timeouts = 30;
+
+  map<string, string> for_each = 31 [json_name = "for_each"];
+
+  repeated string depends_on = 32 [json_name = "depends_on"];
+
+  int32 count = 33;
+
+  string provider = 34;
+
+  terraform.v1.Lifecycle lifecycle = 35;
+
+  message LaunchSpecification {
+    string ami = 1;
+
+    bool associate_public_ip_address = 2 [json_name = "associate_public_ip_address"];
+
+    string availability_zone = 3 [json_name = "availability_zone"];
+
+    bool ebs_optimized = 4 [json_name = "ebs_optimized"];
+
+    string iam_instance_profile = 5 [json_name = "iam_instance_profile"];
+
+    string iam_instance_profile_arn = 6 [json_name = "iam_instance_profile_arn"];
+
+    string instance_type = 7 [json_name = "instance_type"];
+
+    string key_name = 8 [json_name = "key_name"];
+
+    bool monitoring = 9;
+
+    string placement_group = 10 [json_name = "placement_group"];
+
+    string placement_tenancy = 11 [json_name = "placement_tenancy"];
+
+    string spot_price = 12 [json_name = "spot_price"];
+
+    string subnet_id = 13 [json_name = "subnet_id"];
+
+    map<string, string> tags = 14;
+
+    string user_data = 15 [json_name = "user_data"];
+
+    repeated string vpc_security_group_ids = 16 [json_name = "vpc_security_group_ids"];
+
+    string weighted_capacity = 17 [json_name = "weighted_capacity"];
+
+    repeated EbsBlockDevice ebs_block_device = 18 [json_name = "ebs_block_device"];
+
+    repeated EphemeralBlockDevice ephemeral_block_device = 19 [json_name = "ephemeral_block_device"];
+
+    repeated RootBlockDevice root_block_device = 20 [json_name = "root_block_device"];
+
+    message EbsBlockDevice {
+      bool delete_on_termination = 1 [json_name = "delete_on_termination"];
+
+      string device_name = 2 [json_name = "device_name"];
+
+      bool encrypted = 3;
+
+      int64 iops = 4;
+
+      string kms_key_id = 5 [json_name = "kms_key_id"];
+
+      string snapshot_id = 6 [json_name = "snapshot_id"];
+
+      int64 throughput = 7;
+
+      int64 volume_size = 8 [json_name = "volume_size"];
+
+      string volume_type = 9 [json_name = "volume_type"];
+    }
+
+    message EphemeralBlockDevice {
+      string device_name = 1 [json_name = "device_name"];
+
+      string virtual_name = 2 [json_name = "virtual_name"];
+    }
+
+    message RootBlockDevice {
+      bool delete_on_termination = 1 [json_name = "delete_on_termination"];
+
+      bool encrypted = 2;
+
+      int64 iops = 3;
+
+      string kms_key_id = 4 [json_name = "kms_key_id"];
+
+      int64 throughput = 5;
+
+      int64 volume_size = 6 [json_name = "volume_size"];
+
+      string volume_type = 7 [json_name = "volume_type"];
+    }
+  }
+
+  message LaunchTemplateConfig {
+    LaunchTemplateSpecification launch_template_specification = 1 [json_name = "launch_template_specification"];
+
+    repeated Overrides overrides = 2;
+
+    message LaunchTemplateSpecification {
+      string id = 1;
+
+      string name = 2;
+
+      string version = 3;
+    }
+
+    message Overrides {
+      string availability_zone = 1 [json_name = "availability_zone"];
+
+      string instance_type = 2 [json_name = "instance_type"];
+
+      int64 priority = 3;
+
+      string spot_price = 4 [json_name = "spot_price"];
+
+      string subnet_id = 5 [json_name = "subnet_id"];
+
+      int64 weighted_capacity = 6 [json_name = "weighted_capacity"];
+
+      InstanceRequirements instance_requirements = 7 [json_name = "instance_requirements"];
+
+      message InstanceRequirements {
+        repeated string accelerator_manufacturers = 1 [json_name = "accelerator_manufacturers"];
+
+        repeated string accelerator_names = 2 [json_name = "accelerator_names"];
+
+        repeated string accelerator_types = 3 [json_name = "accelerator_types"];
+
+        repeated string allowed_instance_types = 4 [json_name = "allowed_instance_types"];
+
+        string bare_metal = 5 [json_name = "bare_metal"];
+
+        string burstable_performance = 6 [json_name = "burstable_performance"];
+
+        repeated string cpu_manufacturers = 7 [json_name = "cpu_manufacturers"];
+
+        repeated string excluded_instance_types = 8 [json_name = "excluded_instance_types"];
+
+        repeated string instance_generations = 9 [json_name = "instance_generations"];
+
+        string local_storage = 10 [json_name = "local_storage"];
+
+        repeated string local_storage_types = 11 [json_name = "local_storage_types"];
+
+        int64 on_demand_max_price_percentage_over_lowest_price = 12 [
+          json_name = "on_demand_max_price_percentage_over_lowest_price"
+        ];
+
+        bool require_hibernate_support = 13 [json_name = "require_hibernate_support"];
+
+        int64 spot_max_price_percentage_over_lowest_price = 14 [
+          json_name = "spot_max_price_percentage_over_lowest_price"
+        ];
+
+        AcceleratorCount accelerator_count = 15 [json_name = "accelerator_count"];
+
+        AcceleratorTotalMemoryMib accelerator_total_memory_mib = 16 [json_name = "accelerator_total_memory_mib"];
+
+        BaselineEbsBandwidthMbps baseline_ebs_bandwidth_mbps = 17 [json_name = "baseline_ebs_bandwidth_mbps"];
+
+        MemoryGibPerVcpu memory_gib_per_vcpu = 18 [json_name = "memory_gib_per_vcpu"];
+
+        MemoryMib memory_mib = 19 [json_name = "memory_mib"];
+
+        NetworkBandwidthGbps network_bandwidth_gbps = 20 [json_name = "network_bandwidth_gbps"];
+
+        NetworkInterfaceCount network_interface_count = 21 [json_name = "network_interface_count"];
+
+        TotalLocalStorageGb total_local_storage_gb = 22 [json_name = "total_local_storage_gb"];
+
+        VcpuCount vcpu_count = 23 [json_name = "vcpu_count"];
+
+        message AcceleratorCount {
+          int64 max = 1;
+
+          int64 min = 2;
+        }
+
+        message AcceleratorTotalMemoryMib {
+          int64 max = 1;
+
+          int64 min = 2;
+        }
+
+        message BaselineEbsBandwidthMbps {
+          int64 max = 1;
+
+          int64 min = 2;
+        }
+
+        message MemoryGibPerVcpu {
+          int64 max = 1;
+
+          int64 min = 2;
+        }
+
+        message MemoryMib {
+          int64 max = 1;
+
+          int64 min = 2;
+        }
+
+        message NetworkBandwidthGbps {
+          int64 max = 1;
+
+          int64 min = 2;
+        }
+
+        message NetworkInterfaceCount {
+          int64 max = 1;
+
+          int64 min = 2;
+        }
+
+        message TotalLocalStorageGb {
+          int64 max = 1;
+
+          int64 min = 2;
+        }
+
+        message VcpuCount {
+          int64 max = 1;
+
+          int64 min = 2;
+        }
+      }
+    }
+  }
+
+  message SpotMaintenanceStrategies {
+    CapacityRebalance capacity_rebalance = 1 [json_name = "capacity_rebalance"];
+
+    message CapacityRebalance {
+      string replacement_strategy = 1 [json_name = "replacement_strategy"];
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsSpotInstanceRequest version is 0
+message AwsSpotInstanceRequest {
+  string ami = 1;
+
+  string arn = 2;
+
+  bool associate_public_ip_address = 3 [json_name = "associate_public_ip_address"];
+
+  string availability_zone = 4 [json_name = "availability_zone"];
+
+  int64 block_duration_minutes = 5 [json_name = "block_duration_minutes"];
+
+  int64 cpu_core_count = 6 [json_name = "cpu_core_count"];
+
+  int64 cpu_threads_per_core = 7 [json_name = "cpu_threads_per_core"];
+
+  bool disable_api_stop = 8 [json_name = "disable_api_stop"];
+
+  bool disable_api_termination = 9 [json_name = "disable_api_termination"];
+
+  bool ebs_optimized = 10 [json_name = "ebs_optimized"];
+
+  bool get_password_data = 11 [json_name = "get_password_data"];
+
+  bool hibernation = 12;
+
+  string host_id = 13 [json_name = "host_id"];
+
+  string host_resource_group_arn = 14 [json_name = "host_resource_group_arn"];
+
+  string iam_instance_profile = 15 [json_name = "iam_instance_profile"];
+
+  string id = 16;
+
+  string instance_initiated_shutdown_behavior = 17 [json_name = "instance_initiated_shutdown_behavior"];
+
+  string instance_interruption_behavior = 18 [json_name = "instance_interruption_behavior"];
+
+  string instance_state = 19 [json_name = "instance_state"];
+
+  string instance_type = 20 [json_name = "instance_type"];
+
+  int64 ipv6_address_count = 21 [json_name = "ipv6_address_count"];
+
+  repeated string ipv6_addresses = 22 [json_name = "ipv6_addresses"];
+
+  string key_name = 23 [json_name = "key_name"];
+
+  string launch_group = 24 [json_name = "launch_group"];
+
+  bool monitoring = 25;
+
+  string outpost_arn = 26 [json_name = "outpost_arn"];
+
+  string password_data = 27 [json_name = "password_data"];
+
+  string placement_group = 28 [json_name = "placement_group"];
+
+  int64 placement_partition_number = 29 [json_name = "placement_partition_number"];
+
+  string primary_network_interface_id = 30 [json_name = "primary_network_interface_id"];
+
+  string private_dns = 31 [json_name = "private_dns"];
+
+  string private_ip = 32 [json_name = "private_ip"];
+
+  string public_dns = 33 [json_name = "public_dns"];
+
+  string public_ip = 34 [json_name = "public_ip"];
+
+  repeated string secondary_private_ips = 35 [json_name = "secondary_private_ips"];
+
+  repeated string security_groups = 36 [json_name = "security_groups"];
+
+  bool source_dest_check = 37 [json_name = "source_dest_check"];
+
+  string spot_bid_status = 38 [json_name = "spot_bid_status"];
+
+  string spot_instance_id = 39 [json_name = "spot_instance_id"];
+
+  string spot_price = 40 [json_name = "spot_price"];
+
+  string spot_request_state = 41 [json_name = "spot_request_state"];
+
+  string spot_type = 42 [json_name = "spot_type"];
+
+  string subnet_id = 43 [json_name = "subnet_id"];
+
+  map<string, string> tags = 44;
+
+  map<string, string> tags_all = 45 [json_name = "tags_all"];
+
+  string tenancy = 46;
+
+  string user_data = 47 [json_name = "user_data"];
+
+  string user_data_base64 = 48 [json_name = "user_data_base64"];
+
+  bool user_data_replace_on_change = 49 [json_name = "user_data_replace_on_change"];
+
+  string valid_from = 50 [json_name = "valid_from"];
+
+  string valid_until = 51 [json_name = "valid_until"];
+
+  map<string, string> volume_tags = 52 [json_name = "volume_tags"];
+
+  repeated string vpc_security_group_ids = 53 [json_name = "vpc_security_group_ids"];
+
+  bool wait_for_fulfillment = 54 [json_name = "wait_for_fulfillment"];
+
+  CapacityReservationSpecification capacity_reservation_specification = 55 [json_name = "capacity_reservation_specification"];
+
+  CpuOptions cpu_options = 56 [json_name = "cpu_options"];
+
+  CreditSpecification credit_specification = 57 [json_name = "credit_specification"];
+
+  repeated EbsBlockDevice ebs_block_device = 58 [json_name = "ebs_block_device"];
+
+  EnclaveOptions enclave_options = 59 [json_name = "enclave_options"];
+
+  repeated EphemeralBlockDevice ephemeral_block_device = 60 [json_name = "ephemeral_block_device"];
+
+  LaunchTemplate launch_template = 61 [json_name = "launch_template"];
+
+  MaintenanceOptions maintenance_options = 62 [json_name = "maintenance_options"];
+
+  MetadataOptions metadata_options = 63 [json_name = "metadata_options"];
+
+  repeated NetworkInterface network_interface = 64 [json_name = "network_interface"];
+
+  PrivateDnsNameOptions private_dns_name_options = 65 [json_name = "private_dns_name_options"];
+
+  RootBlockDevice root_block_device = 66 [json_name = "root_block_device"];
+
+  repeated Timeouts timeouts = 67;
+
+  map<string, string> for_each = 68 [json_name = "for_each"];
+
+  repeated string depends_on = 69 [json_name = "depends_on"];
+
+  int32 count = 70;
+
+  string provider = 71;
+
+  terraform.v1.Lifecycle lifecycle = 72;
+
+  message CapacityReservationSpecification {
+    string capacity_reservation_preference = 1 [json_name = "capacity_reservation_preference"];
+
+    CapacityReservationTarget capacity_reservation_target = 2 [json_name = "capacity_reservation_target"];
+
+    message CapacityReservationTarget {
+      string capacity_reservation_id = 1 [json_name = "capacity_reservation_id"];
+
+      string capacity_reservation_resource_group_arn = 2 [
+        json_name = "capacity_reservation_resource_group_arn"
+      ];
+    }
+  }
+
+  message CpuOptions {
+    string amd_sev_snp = 1 [json_name = "amd_sev_snp"];
+
+    int64 core_count = 2 [json_name = "core_count"];
+
+    int64 threads_per_core = 3 [json_name = "threads_per_core"];
+  }
+
+  message CreditSpecification {
+    string cpu_credits = 1 [json_name = "cpu_credits"];
+  }
+
+  message EbsBlockDevice {
+    bool delete_on_termination = 1 [json_name = "delete_on_termination"];
+
+    string device_name = 2 [json_name = "device_name"];
+
+    bool encrypted = 3;
+
+    int64 iops = 4;
+
+    string kms_key_id = 5 [json_name = "kms_key_id"];
+
+    string snapshot_id = 6 [json_name = "snapshot_id"];
+
+    map<string, string> tags = 7;
+
+    int64 throughput = 8;
+
+    string volume_id = 9 [json_name = "volume_id"];
+
+    int64 volume_size = 10 [json_name = "volume_size"];
+
+    string volume_type = 11 [json_name = "volume_type"];
+  }
+
+  message EnclaveOptions {
+    bool enabled = 1;
+  }
+
+  message EphemeralBlockDevice {
+    string device_name = 1 [json_name = "device_name"];
+
+    bool no_device = 2 [json_name = "no_device"];
+
+    string virtual_name = 3 [json_name = "virtual_name"];
+  }
+
+  message LaunchTemplate {
+    string id = 1;
+
+    string name = 2;
+
+    string version = 3;
+  }
+
+  message MaintenanceOptions {
+    string auto_recovery = 1 [json_name = "auto_recovery"];
+  }
+
+  message MetadataOptions {
+    string http_endpoint = 1 [json_name = "http_endpoint"];
+
+    int64 http_put_response_hop_limit = 2 [json_name = "http_put_response_hop_limit"];
+
+    string http_tokens = 3 [json_name = "http_tokens"];
+
+    string instance_metadata_tags = 4 [json_name = "instance_metadata_tags"];
+  }
+
+  message NetworkInterface {
+    bool delete_on_termination = 1 [json_name = "delete_on_termination"];
+
+    int64 device_index = 2 [json_name = "device_index"];
+
+    int64 network_card_index = 3 [json_name = "network_card_index"];
+
+    string network_interface_id = 4 [json_name = "network_interface_id"];
+  }
+
+  message PrivateDnsNameOptions {
+    bool enable_resource_name_dns_a_record = 1 [json_name = "enable_resource_name_dns_a_record"];
+
+    bool enable_resource_name_dns_aaaa_record = 2 [json_name = "enable_resource_name_dns_aaaa_record"];
+
+    string hostname_type = 3 [json_name = "hostname_type"];
+  }
+
+  message RootBlockDevice {
+    bool delete_on_termination = 1 [json_name = "delete_on_termination"];
+
+    string device_name = 2 [json_name = "device_name"];
+
+    bool encrypted = 3;
+
+    int64 iops = 4;
+
+    string kms_key_id = 5 [json_name = "kms_key_id"];
+
+    map<string, string> tags = 6;
+
+    int64 throughput = 7;
+
+    string volume_id = 8 [json_name = "volume_id"];
+
+    int64 volume_size = 9 [json_name = "volume_size"];
+
+    string volume_type = 10 [json_name = "volume_type"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}

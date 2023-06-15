@@ -1,0 +1,858 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsCognitoIdentityPool version is 0
+message AwsCognitoIdentityPool {
+  bool allow_classic_flow = 1 [json_name = "allow_classic_flow"];
+
+  bool allow_unauthenticated_identities = 2 [json_name = "allow_unauthenticated_identities"];
+
+  string arn = 3;
+
+  string developer_provider_name = 4 [json_name = "developer_provider_name"];
+
+  string id = 5;
+
+  string identity_pool_name = 6 [json_name = "identity_pool_name"];
+
+  repeated string openid_connect_provider_arns = 7 [json_name = "openid_connect_provider_arns"];
+
+  repeated string saml_provider_arns = 8 [json_name = "saml_provider_arns"];
+
+  map<string, string> supported_login_providers = 9 [json_name = "supported_login_providers"];
+
+  map<string, string> tags = 10;
+
+  map<string, string> tags_all = 11 [json_name = "tags_all"];
+
+  repeated CognitoIdentityProviders cognito_identity_providers = 12 [json_name = "cognito_identity_providers"];
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message CognitoIdentityProviders {
+    string client_id = 1 [json_name = "client_id"];
+
+    string provider_name = 2 [json_name = "provider_name"];
+
+    bool server_side_token_check = 3 [json_name = "server_side_token_check"];
+  }
+}
+
+// AwsCognitoIdentityPoolProviderPrincipalTag version is 0
+message AwsCognitoIdentityPoolProviderPrincipalTag {
+  string id = 1;
+
+  string identity_pool_id = 2 [json_name = "identity_pool_id"];
+
+  string identity_provider_name = 3 [json_name = "identity_provider_name"];
+
+  map<string, string> principal_tags = 4 [json_name = "principal_tags"];
+
+  bool use_defaults = 5 [json_name = "use_defaults"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsCognitoIdentityPoolRolesAttachment version is 0
+message AwsCognitoIdentityPoolRolesAttachment {
+  string id = 1;
+
+  string identity_pool_id = 2 [json_name = "identity_pool_id"];
+
+  map<string, string> roles = 3;
+
+  repeated RoleMapping role_mapping = 4 [json_name = "role_mapping"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message RoleMapping {
+    string ambiguous_role_resolution = 1 [json_name = "ambiguous_role_resolution"];
+
+    string identity_provider = 2 [json_name = "identity_provider"];
+
+    string type = 3;
+
+    repeated MappingRule mapping_rule = 4 [json_name = "mapping_rule"];
+
+    message MappingRule {
+      string claim = 1;
+
+      string match_type = 2 [json_name = "match_type"];
+
+      string role_arn = 3 [json_name = "role_arn"];
+
+      string value = 4;
+    }
+  }
+}
+
+// AwsCognitoIdentityProvider version is 0
+message AwsCognitoIdentityProvider {
+  map<string, string> attribute_mapping = 1 [json_name = "attribute_mapping"];
+
+  string id = 2;
+
+  repeated string idp_identifiers = 3 [json_name = "idp_identifiers"];
+
+  map<string, string> provider_details = 4 [json_name = "provider_details"];
+
+  string provider_name = 5 [json_name = "provider_name"];
+
+  string provider_type = 6 [json_name = "provider_type"];
+
+  string user_pool_id = 7 [json_name = "user_pool_id"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsCognitoManagedUserPoolClient version is 0
+message AwsCognitoManagedUserPoolClient {
+  int64 access_token_validity = 1 [json_name = "access_token_validity"];
+
+  repeated string allowed_oauth_flows = 2 [json_name = "allowed_oauth_flows"];
+
+  bool allowed_oauth_flows_user_pool_client = 3 [json_name = "allowed_oauth_flows_user_pool_client"];
+
+  repeated string allowed_oauth_scopes = 4 [json_name = "allowed_oauth_scopes"];
+
+  int64 auth_session_validity = 5 [json_name = "auth_session_validity"];
+
+  repeated string callback_urls = 6 [json_name = "callback_urls"];
+
+  string client_secret = 7 [json_name = "client_secret"];
+
+  string default_redirect_uri = 8 [json_name = "default_redirect_uri"];
+
+  bool enable_propagate_additional_user_context_data = 9 [
+    json_name = "enable_propagate_additional_user_context_data"
+  ];
+
+  bool enable_token_revocation = 10 [json_name = "enable_token_revocation"];
+
+  repeated string explicit_auth_flows = 11 [json_name = "explicit_auth_flows"];
+
+  string id = 12;
+
+  int64 id_token_validity = 13 [json_name = "id_token_validity"];
+
+  repeated string logout_urls = 14 [json_name = "logout_urls"];
+
+  string name = 15;
+
+  string name_pattern = 16 [json_name = "name_pattern"];
+
+  string name_prefix = 17 [json_name = "name_prefix"];
+
+  string prevent_user_existence_errors = 18 [json_name = "prevent_user_existence_errors"];
+
+  repeated string read_attributes = 19 [json_name = "read_attributes"];
+
+  int64 refresh_token_validity = 20 [json_name = "refresh_token_validity"];
+
+  repeated string supported_identity_providers = 21 [json_name = "supported_identity_providers"];
+
+  string user_pool_id = 22 [json_name = "user_pool_id"];
+
+  repeated string write_attributes = 23 [json_name = "write_attributes"];
+
+  repeated AnalyticsConfiguration analytics_configuration = 24 [json_name = "analytics_configuration"];
+
+  repeated TokenValidityUnits token_validity_units = 25 [json_name = "token_validity_units"];
+
+  map<string, string> for_each = 26 [json_name = "for_each"];
+
+  repeated string depends_on = 27 [json_name = "depends_on"];
+
+  int32 count = 28;
+
+  string provider = 29;
+
+  terraform.v1.Lifecycle lifecycle = 30;
+
+  message AnalyticsConfiguration {
+    string application_arn = 1 [json_name = "application_arn"];
+
+    string application_id = 2 [json_name = "application_id"];
+
+    string external_id = 3 [json_name = "external_id"];
+
+    string role_arn = 4 [json_name = "role_arn"];
+
+    bool user_data_shared = 5 [json_name = "user_data_shared"];
+  }
+
+  message TokenValidityUnits {
+    string access_token = 1 [json_name = "access_token"];
+
+    string id_token = 2 [json_name = "id_token"];
+
+    string refresh_token = 3 [json_name = "refresh_token"];
+  }
+}
+
+// AwsCognitoResourceServer version is 0
+message AwsCognitoResourceServer {
+  string id = 1;
+
+  string identifier = 2;
+
+  string name = 3;
+
+  repeated string scope_identifiers = 4 [json_name = "scope_identifiers"];
+
+  string user_pool_id = 5 [json_name = "user_pool_id"];
+
+  repeated Scope scope = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Scope {
+    string scope_description = 1 [json_name = "scope_description"];
+
+    string scope_name = 2 [json_name = "scope_name"];
+  }
+}
+
+// AwsCognitoRiskConfiguration version is 0
+message AwsCognitoRiskConfiguration {
+  string client_id = 1 [json_name = "client_id"];
+
+  string id = 2;
+
+  string user_pool_id = 3 [json_name = "user_pool_id"];
+
+  AccountTakeoverRiskConfiguration account_takeover_risk_configuration = 4 [json_name = "account_takeover_risk_configuration"];
+
+  CompromisedCredentialsRiskConfiguration compromised_credentials_risk_configuration = 5 [
+    json_name = "compromised_credentials_risk_configuration"
+  ];
+
+  RiskExceptionConfiguration risk_exception_configuration = 6 [json_name = "risk_exception_configuration"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message AccountTakeoverRiskConfiguration {
+    Actions actions = 1;
+
+    NotifyConfiguration notify_configuration = 2 [json_name = "notify_configuration"];
+
+    message Actions {
+      HighAction high_action = 1 [json_name = "high_action"];
+
+      LowAction low_action = 2 [json_name = "low_action"];
+
+      MediumAction medium_action = 3 [json_name = "medium_action"];
+
+      message HighAction {
+        string event_action = 1 [json_name = "event_action"];
+
+        bool notify = 2;
+      }
+
+      message LowAction {
+        string event_action = 1 [json_name = "event_action"];
+
+        bool notify = 2;
+      }
+
+      message MediumAction {
+        string event_action = 1 [json_name = "event_action"];
+
+        bool notify = 2;
+      }
+    }
+
+    message NotifyConfiguration {
+      string from = 1;
+
+      string reply_to = 2 [json_name = "reply_to"];
+
+      string source_arn = 3 [json_name = "source_arn"];
+
+      BlockEmail block_email = 4 [json_name = "block_email"];
+
+      MfaEmail mfa_email = 5 [json_name = "mfa_email"];
+
+      NoActionEmail no_action_email = 6 [json_name = "no_action_email"];
+
+      message BlockEmail {
+        string html_body = 1 [json_name = "html_body"];
+
+        string subject = 2;
+
+        string text_body = 3 [json_name = "text_body"];
+      }
+
+      message MfaEmail {
+        string html_body = 1 [json_name = "html_body"];
+
+        string subject = 2;
+
+        string text_body = 3 [json_name = "text_body"];
+      }
+
+      message NoActionEmail {
+        string html_body = 1 [json_name = "html_body"];
+
+        string subject = 2;
+
+        string text_body = 3 [json_name = "text_body"];
+      }
+    }
+  }
+
+  message CompromisedCredentialsRiskConfiguration {
+    repeated string event_filter = 1 [json_name = "event_filter"];
+
+    Actions actions = 2;
+
+    message Actions {
+      string event_action = 1 [json_name = "event_action"];
+    }
+  }
+
+  message RiskExceptionConfiguration {
+    repeated string blocked_ip_range_list = 1 [json_name = "blocked_ip_range_list"];
+
+    repeated string skipped_ip_range_list = 2 [json_name = "skipped_ip_range_list"];
+  }
+}
+
+// AwsCognitoUser version is 0
+message AwsCognitoUser {
+  map<string, string> attributes = 1;
+
+  map<string, string> client_metadata = 2 [json_name = "client_metadata"];
+
+  string creation_date = 3 [json_name = "creation_date"];
+
+  repeated string desired_delivery_mediums = 4 [json_name = "desired_delivery_mediums"];
+
+  bool enabled = 5;
+
+  bool force_alias_creation = 6 [json_name = "force_alias_creation"];
+
+  string id = 7;
+
+  string last_modified_date = 8 [json_name = "last_modified_date"];
+
+  string message_action = 9 [json_name = "message_action"];
+
+  repeated string mfa_setting_list = 10 [json_name = "mfa_setting_list"];
+
+  string password = 11;
+
+  string preferred_mfa_setting = 12 [json_name = "preferred_mfa_setting"];
+
+  string status = 13;
+
+  string sub = 14;
+
+  string temporary_password = 15 [json_name = "temporary_password"];
+
+  string user_pool_id = 16 [json_name = "user_pool_id"];
+
+  string username = 17;
+
+  map<string, string> validation_data = 18 [json_name = "validation_data"];
+
+  map<string, string> for_each = 19 [json_name = "for_each"];
+
+  repeated string depends_on = 20 [json_name = "depends_on"];
+
+  int32 count = 21;
+
+  string provider = 22;
+
+  terraform.v1.Lifecycle lifecycle = 23;
+}
+
+// AwsCognitoUserGroup version is 0
+message AwsCognitoUserGroup {
+  string description = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  int64 precedence = 4;
+
+  string role_arn = 5 [json_name = "role_arn"];
+
+  string user_pool_id = 6 [json_name = "user_pool_id"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsCognitoUserInGroup version is 0
+message AwsCognitoUserInGroup {
+  string group_name = 1 [json_name = "group_name"];
+
+  string id = 2;
+
+  string user_pool_id = 3 [json_name = "user_pool_id"];
+
+  string username = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsCognitoUserPool version is 0
+message AwsCognitoUserPool {
+  repeated string alias_attributes = 1 [json_name = "alias_attributes"];
+
+  string arn = 2;
+
+  repeated string auto_verified_attributes = 3 [json_name = "auto_verified_attributes"];
+
+  string creation_date = 4 [json_name = "creation_date"];
+
+  string custom_domain = 5 [json_name = "custom_domain"];
+
+  string deletion_protection = 6 [json_name = "deletion_protection"];
+
+  string domain = 7;
+
+  string email_verification_message = 8 [json_name = "email_verification_message"];
+
+  string email_verification_subject = 9 [json_name = "email_verification_subject"];
+
+  string endpoint = 10;
+
+  int64 estimated_number_of_users = 11 [json_name = "estimated_number_of_users"];
+
+  string id = 12;
+
+  string last_modified_date = 13 [json_name = "last_modified_date"];
+
+  string mfa_configuration = 14 [json_name = "mfa_configuration"];
+
+  string name = 15;
+
+  string sms_authentication_message = 16 [json_name = "sms_authentication_message"];
+
+  string sms_verification_message = 17 [json_name = "sms_verification_message"];
+
+  map<string, string> tags = 18;
+
+  map<string, string> tags_all = 19 [json_name = "tags_all"];
+
+  repeated string username_attributes = 20 [json_name = "username_attributes"];
+
+  AccountRecoverySetting account_recovery_setting = 21 [json_name = "account_recovery_setting"];
+
+  AdminCreateUserConfig admin_create_user_config = 22 [json_name = "admin_create_user_config"];
+
+  DeviceConfiguration device_configuration = 23 [json_name = "device_configuration"];
+
+  EmailConfiguration email_configuration = 24 [json_name = "email_configuration"];
+
+  LambdaConfig lambda_config = 25 [json_name = "lambda_config"];
+
+  PasswordPolicy password_policy = 26 [json_name = "password_policy"];
+
+  repeated Schema schema = 27;
+
+  SmsConfiguration sms_configuration = 28 [json_name = "sms_configuration"];
+
+  SoftwareTokenMfaConfiguration software_token_mfa_configuration = 29 [json_name = "software_token_mfa_configuration"];
+
+  UserAttributeUpdateSettings user_attribute_update_settings = 30 [json_name = "user_attribute_update_settings"];
+
+  UserPoolAddOns user_pool_add_ons = 31 [json_name = "user_pool_add_ons"];
+
+  UsernameConfiguration username_configuration = 32 [json_name = "username_configuration"];
+
+  VerificationMessageTemplate verification_message_template = 33 [json_name = "verification_message_template"];
+
+  map<string, string> for_each = 34 [json_name = "for_each"];
+
+  repeated string depends_on = 35 [json_name = "depends_on"];
+
+  int32 count = 36;
+
+  string provider = 37;
+
+  terraform.v1.Lifecycle lifecycle = 38;
+
+  message AccountRecoverySetting {
+    repeated RecoveryMechanism recovery_mechanism = 1 [json_name = "recovery_mechanism"];
+
+    message RecoveryMechanism {
+      string name = 1;
+
+      int64 priority = 2;
+    }
+  }
+
+  message AdminCreateUserConfig {
+    bool allow_admin_create_user_only = 1 [json_name = "allow_admin_create_user_only"];
+
+    InviteMessageTemplate invite_message_template = 2 [json_name = "invite_message_template"];
+
+    message InviteMessageTemplate {
+      string email_message = 1 [json_name = "email_message"];
+
+      string email_subject = 2 [json_name = "email_subject"];
+
+      string sms_message = 3 [json_name = "sms_message"];
+    }
+  }
+
+  message DeviceConfiguration {
+    bool challenge_required_on_new_device = 1 [json_name = "challenge_required_on_new_device"];
+
+    bool device_only_remembered_on_user_prompt = 2 [
+      json_name = "device_only_remembered_on_user_prompt"
+    ];
+  }
+
+  message EmailConfiguration {
+    string configuration_set = 1 [json_name = "configuration_set"];
+
+    string email_sending_account = 2 [json_name = "email_sending_account"];
+
+    string from_email_address = 3 [json_name = "from_email_address"];
+
+    string reply_to_email_address = 4 [json_name = "reply_to_email_address"];
+
+    string source_arn = 5 [json_name = "source_arn"];
+  }
+
+  message LambdaConfig {
+    string create_auth_challenge = 1 [json_name = "create_auth_challenge"];
+
+    string custom_message = 2 [json_name = "custom_message"];
+
+    string define_auth_challenge = 3 [json_name = "define_auth_challenge"];
+
+    string kms_key_id = 4 [json_name = "kms_key_id"];
+
+    string post_authentication = 5 [json_name = "post_authentication"];
+
+    string post_confirmation = 6 [json_name = "post_confirmation"];
+
+    string pre_authentication = 7 [json_name = "pre_authentication"];
+
+    string pre_sign_up = 8 [json_name = "pre_sign_up"];
+
+    string pre_token_generation = 9 [json_name = "pre_token_generation"];
+
+    string user_migration = 10 [json_name = "user_migration"];
+
+    string verify_auth_challenge_response = 11 [json_name = "verify_auth_challenge_response"];
+
+    CustomEmailSender custom_email_sender = 12 [json_name = "custom_email_sender"];
+
+    CustomSmsSender custom_sms_sender = 13 [json_name = "custom_sms_sender"];
+
+    message CustomEmailSender {
+      string lambda_arn = 1 [json_name = "lambda_arn"];
+
+      string lambda_version = 2 [json_name = "lambda_version"];
+    }
+
+    message CustomSmsSender {
+      string lambda_arn = 1 [json_name = "lambda_arn"];
+
+      string lambda_version = 2 [json_name = "lambda_version"];
+    }
+  }
+
+  message PasswordPolicy {
+    int64 minimum_length = 1 [json_name = "minimum_length"];
+
+    bool require_lowercase = 2 [json_name = "require_lowercase"];
+
+    bool require_numbers = 3 [json_name = "require_numbers"];
+
+    bool require_symbols = 4 [json_name = "require_symbols"];
+
+    bool require_uppercase = 5 [json_name = "require_uppercase"];
+
+    int64 temporary_password_validity_days = 6 [json_name = "temporary_password_validity_days"];
+  }
+
+  message Schema {
+    string attribute_data_type = 1 [json_name = "attribute_data_type"];
+
+    bool developer_only_attribute = 2 [json_name = "developer_only_attribute"];
+
+    bool mutable = 3;
+
+    string name = 4;
+
+    bool required = 5;
+
+    NumberAttributeConstraints number_attribute_constraints = 6 [json_name = "number_attribute_constraints"];
+
+    StringAttributeConstraints string_attribute_constraints = 7 [json_name = "string_attribute_constraints"];
+
+    message NumberAttributeConstraints {
+      string max_value = 1 [json_name = "max_value"];
+
+      string min_value = 2 [json_name = "min_value"];
+    }
+
+    message StringAttributeConstraints {
+      string max_length = 1 [json_name = "max_length"];
+
+      string min_length = 2 [json_name = "min_length"];
+    }
+  }
+
+  message SmsConfiguration {
+    string external_id = 1 [json_name = "external_id"];
+
+    string sns_caller_arn = 2 [json_name = "sns_caller_arn"];
+
+    string sns_region = 3 [json_name = "sns_region"];
+  }
+
+  message SoftwareTokenMfaConfiguration {
+    bool enabled = 1;
+  }
+
+  message UserAttributeUpdateSettings {
+    repeated string attributes_require_verification_before_update = 1 [
+      json_name = "attributes_require_verification_before_update"
+    ];
+  }
+
+  message UserPoolAddOns {
+    string advanced_security_mode = 1 [json_name = "advanced_security_mode"];
+  }
+
+  message UsernameConfiguration {
+    bool case_sensitive = 1 [json_name = "case_sensitive"];
+  }
+
+  message VerificationMessageTemplate {
+    string default_email_option = 1 [json_name = "default_email_option"];
+
+    string email_message = 2 [json_name = "email_message"];
+
+    string email_message_by_link = 3 [json_name = "email_message_by_link"];
+
+    string email_subject = 4 [json_name = "email_subject"];
+
+    string email_subject_by_link = 5 [json_name = "email_subject_by_link"];
+
+    string sms_message = 6 [json_name = "sms_message"];
+  }
+}
+
+// AwsCognitoUserPoolClient version is 0
+message AwsCognitoUserPoolClient {
+  int64 access_token_validity = 1 [json_name = "access_token_validity"];
+
+  repeated string allowed_oauth_flows = 2 [json_name = "allowed_oauth_flows"];
+
+  bool allowed_oauth_flows_user_pool_client = 3 [json_name = "allowed_oauth_flows_user_pool_client"];
+
+  repeated string allowed_oauth_scopes = 4 [json_name = "allowed_oauth_scopes"];
+
+  int64 auth_session_validity = 5 [json_name = "auth_session_validity"];
+
+  repeated string callback_urls = 6 [json_name = "callback_urls"];
+
+  string client_secret = 7 [json_name = "client_secret"];
+
+  string default_redirect_uri = 8 [json_name = "default_redirect_uri"];
+
+  bool enable_propagate_additional_user_context_data = 9 [
+    json_name = "enable_propagate_additional_user_context_data"
+  ];
+
+  bool enable_token_revocation = 10 [json_name = "enable_token_revocation"];
+
+  repeated string explicit_auth_flows = 11 [json_name = "explicit_auth_flows"];
+
+  bool generate_secret = 12 [json_name = "generate_secret"];
+
+  string id = 13;
+
+  int64 id_token_validity = 14 [json_name = "id_token_validity"];
+
+  repeated string logout_urls = 15 [json_name = "logout_urls"];
+
+  string name = 16;
+
+  string prevent_user_existence_errors = 17 [json_name = "prevent_user_existence_errors"];
+
+  repeated string read_attributes = 18 [json_name = "read_attributes"];
+
+  int64 refresh_token_validity = 19 [json_name = "refresh_token_validity"];
+
+  repeated string supported_identity_providers = 20 [json_name = "supported_identity_providers"];
+
+  string user_pool_id = 21 [json_name = "user_pool_id"];
+
+  repeated string write_attributes = 22 [json_name = "write_attributes"];
+
+  repeated AnalyticsConfiguration analytics_configuration = 23 [json_name = "analytics_configuration"];
+
+  repeated TokenValidityUnits token_validity_units = 24 [json_name = "token_validity_units"];
+
+  map<string, string> for_each = 25 [json_name = "for_each"];
+
+  repeated string depends_on = 26 [json_name = "depends_on"];
+
+  int32 count = 27;
+
+  string provider = 28;
+
+  terraform.v1.Lifecycle lifecycle = 29;
+
+  message AnalyticsConfiguration {
+    string application_arn = 1 [json_name = "application_arn"];
+
+    string application_id = 2 [json_name = "application_id"];
+
+    string external_id = 3 [json_name = "external_id"];
+
+    string role_arn = 4 [json_name = "role_arn"];
+
+    bool user_data_shared = 5 [json_name = "user_data_shared"];
+  }
+
+  message TokenValidityUnits {
+    string access_token = 1 [json_name = "access_token"];
+
+    string id_token = 2 [json_name = "id_token"];
+
+    string refresh_token = 3 [json_name = "refresh_token"];
+  }
+}
+
+// AwsCognitoUserPoolDomain version is 0
+message AwsCognitoUserPoolDomain {
+  string aws_account_id = 1 [json_name = "aws_account_id"];
+
+  string certificate_arn = 2 [json_name = "certificate_arn"];
+
+  string cloudfront_distribution = 3 [json_name = "cloudfront_distribution"];
+
+  string cloudfront_distribution_arn = 4 [json_name = "cloudfront_distribution_arn"];
+
+  string cloudfront_distribution_zone_id = 5 [json_name = "cloudfront_distribution_zone_id"];
+
+  string domain = 6;
+
+  string id = 7;
+
+  string s3_bucket = 8 [json_name = "s3_bucket"];
+
+  string user_pool_id = 9 [json_name = "user_pool_id"];
+
+  string version = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+}
+
+// AwsCognitoUserPoolUiCustomization version is 0
+message AwsCognitoUserPoolUiCustomization {
+  string client_id = 1 [json_name = "client_id"];
+
+  string creation_date = 2 [json_name = "creation_date"];
+
+  string css = 3;
+
+  string css_version = 4 [json_name = "css_version"];
+
+  string id = 5;
+
+  string image_file = 6 [json_name = "image_file"];
+
+  string image_url = 7 [json_name = "image_url"];
+
+  string last_modified_date = 8 [json_name = "last_modified_date"];
+
+  string user_pool_id = 9 [json_name = "user_pool_id"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+}

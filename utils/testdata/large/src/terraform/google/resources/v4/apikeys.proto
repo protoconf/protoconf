@@ -1,0 +1,95 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleApikeysKey version is 0
+message GoogleApikeysKey {
+  // Human-readable display name of this API key. Modifiable by user.
+  string display_name = 1 [json_name = "display_name"];
+
+  string id = 2;
+
+  // Output only. An encrypted and signed value held by this key. This field can be accessed only through the `GetKeyString` method.
+  string key_string = 3 [json_name = "key_string"];
+
+  // The resource name of the key. The name must be unique within the project, must conform with RFC-1034, is restricted to lower-cased letters, and has a maximum length of 63 characters. In another word, the name must match the regular expression: `[a-z]([a-z0-9-]{0,61}[a-z0-9])?`.
+  string name = 4;
+
+  // The project for the resource
+  string project = 5;
+
+  // Output only. Unique id in UUID4 format.
+  string uid = 6;
+
+  Restrictions restrictions = 7;
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Restrictions {
+    AndroidKeyRestrictions android_key_restrictions = 1 [json_name = "android_key_restrictions"];
+
+    repeated ApiTargets api_targets = 2 [json_name = "api_targets"];
+
+    BrowserKeyRestrictions browser_key_restrictions = 3 [json_name = "browser_key_restrictions"];
+
+    IosKeyRestrictions ios_key_restrictions = 4 [json_name = "ios_key_restrictions"];
+
+    ServerKeyRestrictions server_key_restrictions = 5 [json_name = "server_key_restrictions"];
+
+    message AndroidKeyRestrictions {
+      repeated AllowedApplications allowed_applications = 1 [json_name = "allowed_applications"];
+
+      message AllowedApplications {
+        // The package name of the application.
+        string package_name = 1 [json_name = "package_name"];
+
+        // The SHA1 fingerprint of the application. For example, both sha1 formats are acceptable : DA:39:A3:EE:5E:6B:4B:0D:32:55:BF:EF:95:60:18:90:AF:D8:07:09 or DA39A3EE5E6B4B0D3255BFEF95601890AFD80709. Output format is the latter.
+        string sha1_fingerprint = 2 [json_name = "sha1_fingerprint"];
+      }
+    }
+
+    message ApiTargets {
+      // Optional. List of one or more methods that can be called. If empty, all methods for the service are allowed. A wildcard (*) can be used as the last symbol. Valid examples: `google.cloud.translate.v2.TranslateService.GetSupportedLanguage` `TranslateText` `Get*` `translate.googleapis.com.Get*`
+      repeated string methods = 1;
+
+      // The service for this restriction. It should be the canonical service name, for example: `translate.googleapis.com`. You can use `gcloud services list` to get a list of services that are enabled in the project.
+      string service = 2;
+    }
+
+    message BrowserKeyRestrictions {
+      // A list of regular expressions for the referrer URLs that are allowed to make API calls with this key.
+      repeated string allowed_referrers = 1 [json_name = "allowed_referrers"];
+    }
+
+    message IosKeyRestrictions {
+      // A list of bundle IDs that are allowed when making API calls with this key.
+      repeated string allowed_bundle_ids = 1 [json_name = "allowed_bundle_ids"];
+    }
+
+    message ServerKeyRestrictions {
+      // A list of the caller IP addresses that are allowed to make API calls with this key.
+      repeated string allowed_ips = 1 [json_name = "allowed_ips"];
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

@@ -1,0 +1,103 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsAcmpcaCertificate version is 0
+message AwsAcmpcaCertificate {
+  string arn = 1;
+
+  string certificate = 2;
+
+  string certificate_authority_arn = 3 [json_name = "certificate_authority_arn"];
+
+  string certificate_chain = 4 [json_name = "certificate_chain"];
+
+  string id = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsAcmpcaCertificateAuthority version is 0
+message AwsAcmpcaCertificateAuthority {
+  string arn = 1;
+
+  string certificate = 2;
+
+  string certificate_chain = 3 [json_name = "certificate_chain"];
+
+  string certificate_signing_request = 4 [json_name = "certificate_signing_request"];
+
+  string id = 5;
+
+  string key_storage_security_standard = 6 [json_name = "key_storage_security_standard"];
+
+  string not_after = 7 [json_name = "not_after"];
+
+  string not_before = 8 [json_name = "not_before"];
+
+  repeated RevocationConfiguration revocation_configuration = 9 [json_name = "revocation_configuration"];
+
+  string serial = 10;
+
+  string status = 11;
+
+  map<string, string> tags = 12;
+
+  string type = 13;
+
+  string usage_mode = 14 [json_name = "usage_mode"];
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+
+  message RevocationConfiguration {
+    // crl_configuration: list of object
+    repeated CrlConfiguration crl_configuration = 1 [json_name = "crl_configuration"];
+
+    // ocsp_configuration: list of object
+    repeated OcspConfiguration ocsp_configuration = 2 [json_name = "ocsp_configuration"];
+
+    message CrlConfiguration {
+      // custom_cname: string
+      string custom_cname = 1 [json_name = "custom_cname"];
+
+      // enabled: bool
+      bool enabled = 2;
+
+      // expiration_in_days: number
+      int64 expiration_in_days = 3 [json_name = "expiration_in_days"];
+
+      // s3_bucket_name: string
+      string s3_bucket_name = 4 [json_name = "s3_bucket_name"];
+
+      // s3_object_acl: string
+      string s3_object_acl = 5 [json_name = "s3_object_acl"];
+    }
+
+    message OcspConfiguration {
+      // enabled: bool
+      bool enabled = 1;
+
+      // ocsp_custom_cname: string
+      string ocsp_custom_cname = 2 [json_name = "ocsp_custom_cname"];
+    }
+  }
+}

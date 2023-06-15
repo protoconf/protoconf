@@ -1,0 +1,112 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsGlobalacceleratorAccelerator version is 0
+message AwsGlobalacceleratorAccelerator {
+  string arn = 1;
+
+  repeated Attributes attributes = 2;
+
+  string dns_name = 3 [json_name = "dns_name"];
+
+  string dual_stack_dns_name = 4 [json_name = "dual_stack_dns_name"];
+
+  bool enabled = 5;
+
+  string hosted_zone_id = 6 [json_name = "hosted_zone_id"];
+
+  string id = 7;
+
+  string ip_address_type = 8 [json_name = "ip_address_type"];
+
+  repeated IpSets ip_sets = 9 [json_name = "ip_sets"];
+
+  string name = 10;
+
+  map<string, string> tags = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message Attributes {
+    // flow_logs_enabled: bool
+    bool flow_logs_enabled = 1 [json_name = "flow_logs_enabled"];
+
+    // flow_logs_s3_bucket: string
+    string flow_logs_s3_bucket = 2 [json_name = "flow_logs_s3_bucket"];
+
+    // flow_logs_s3_prefix: string
+    string flow_logs_s3_prefix = 3 [json_name = "flow_logs_s3_prefix"];
+  }
+
+  message IpSets {
+    // ip_addresses: list of string
+    repeated string ip_addresses = 1 [json_name = "ip_addresses"];
+
+    // ip_family: string
+    string ip_family = 2 [json_name = "ip_family"];
+  }
+}
+
+// AwsGlobalacceleratorCustomRoutingAccelerator version is 0
+message AwsGlobalacceleratorCustomRoutingAccelerator {
+  string arn = 1;
+
+  repeated Attributes attributes = 2;
+
+  string dns_name = 3 [json_name = "dns_name"];
+
+  bool enabled = 4;
+
+  string hosted_zone_id = 5 [json_name = "hosted_zone_id"];
+
+  string id = 6;
+
+  string ip_address_type = 7 [json_name = "ip_address_type"];
+
+  repeated IpSets ip_sets = 8 [json_name = "ip_sets"];
+
+  string name = 9;
+
+  map<string, string> tags = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Attributes {
+    // flow_logs_enabled: bool
+    bool flow_logs_enabled = 1 [json_name = "flow_logs_enabled"];
+
+    // flow_logs_s3_bucket: string
+    string flow_logs_s3_bucket = 2 [json_name = "flow_logs_s3_bucket"];
+
+    // flow_logs_s3_prefix: string
+    string flow_logs_s3_prefix = 3 [json_name = "flow_logs_s3_prefix"];
+  }
+
+  message IpSets {
+    // ip_addresses: list of string
+    repeated string ip_addresses = 1 [json_name = "ip_addresses"];
+
+    // ip_family: string
+    string ip_family = 2 [json_name = "ip_family"];
+  }
+}

@@ -1,0 +1,219 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsGrafanaLicenseAssociation version is 0
+message AwsGrafanaLicenseAssociation {
+  string free_trial_expiration = 1 [json_name = "free_trial_expiration"];
+
+  string id = 2;
+
+  string license_expiration = 3 [json_name = "license_expiration"];
+
+  string license_type = 4 [json_name = "license_type"];
+
+  string workspace_id = 5 [json_name = "workspace_id"];
+
+  repeated Timeouts timeouts = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsGrafanaRoleAssociation version is 0
+message AwsGrafanaRoleAssociation {
+  repeated string group_ids = 1 [json_name = "group_ids"];
+
+  string id = 2;
+
+  string role = 3;
+
+  repeated string user_ids = 4 [json_name = "user_ids"];
+
+  string workspace_id = 5 [json_name = "workspace_id"];
+
+  repeated Timeouts timeouts = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsGrafanaWorkspace version is 0
+message AwsGrafanaWorkspace {
+  string account_access_type = 1 [json_name = "account_access_type"];
+
+  string arn = 2;
+
+  repeated string authentication_providers = 3 [json_name = "authentication_providers"];
+
+  string configuration = 4;
+
+  repeated string data_sources = 5 [json_name = "data_sources"];
+
+  string description = 6;
+
+  string endpoint = 7;
+
+  string grafana_version = 8 [json_name = "grafana_version"];
+
+  string id = 9;
+
+  string name = 10;
+
+  repeated string notification_destinations = 11 [json_name = "notification_destinations"];
+
+  string organization_role_name = 12 [json_name = "organization_role_name"];
+
+  repeated string organizational_units = 13 [json_name = "organizational_units"];
+
+  string permission_type = 14 [json_name = "permission_type"];
+
+  string role_arn = 15 [json_name = "role_arn"];
+
+  string saml_configuration_status = 16 [json_name = "saml_configuration_status"];
+
+  string stack_set_name = 17 [json_name = "stack_set_name"];
+
+  map<string, string> tags = 18;
+
+  map<string, string> tags_all = 19 [json_name = "tags_all"];
+
+  NetworkAccessControl network_access_control = 20 [json_name = "network_access_control"];
+
+  repeated Timeouts timeouts = 21;
+
+  VpcConfiguration vpc_configuration = 22 [json_name = "vpc_configuration"];
+
+  map<string, string> for_each = 23 [json_name = "for_each"];
+
+  repeated string depends_on = 24 [json_name = "depends_on"];
+
+  int32 count = 25;
+
+  string provider = 26;
+
+  terraform.v1.Lifecycle lifecycle = 27;
+
+  message NetworkAccessControl {
+    repeated string prefix_list_ids = 1 [json_name = "prefix_list_ids"];
+
+    repeated string vpce_ids = 2 [json_name = "vpce_ids"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string update = 2;
+  }
+
+  message VpcConfiguration {
+    repeated string security_group_ids = 1 [json_name = "security_group_ids"];
+
+    repeated string subnet_ids = 2 [json_name = "subnet_ids"];
+  }
+}
+
+// AwsGrafanaWorkspaceApiKey version is 0
+message AwsGrafanaWorkspaceApiKey {
+  string id = 1;
+
+  string key = 2;
+
+  string key_name = 3 [json_name = "key_name"];
+
+  string key_role = 4 [json_name = "key_role"];
+
+  int64 seconds_to_live = 5 [json_name = "seconds_to_live"];
+
+  string workspace_id = 6 [json_name = "workspace_id"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsGrafanaWorkspaceSamlConfiguration version is 0
+message AwsGrafanaWorkspaceSamlConfiguration {
+  repeated string admin_role_values = 1 [json_name = "admin_role_values"];
+
+  repeated string allowed_organizations = 2 [json_name = "allowed_organizations"];
+
+  repeated string editor_role_values = 3 [json_name = "editor_role_values"];
+
+  string email_assertion = 4 [json_name = "email_assertion"];
+
+  string groups_assertion = 5 [json_name = "groups_assertion"];
+
+  string id = 6;
+
+  string idp_metadata_url = 7 [json_name = "idp_metadata_url"];
+
+  string idp_metadata_xml = 8 [json_name = "idp_metadata_xml"];
+
+  string login_assertion = 9 [json_name = "login_assertion"];
+
+  int64 login_validity_duration = 10 [json_name = "login_validity_duration"];
+
+  string name_assertion = 11 [json_name = "name_assertion"];
+
+  string org_assertion = 12 [json_name = "org_assertion"];
+
+  string role_assertion = 13 [json_name = "role_assertion"];
+
+  string status = 14;
+
+  string workspace_id = 15 [json_name = "workspace_id"];
+
+  repeated Timeouts timeouts = 16;
+
+  map<string, string> for_each = 17 [json_name = "for_each"];
+
+  repeated string depends_on = 18 [json_name = "depends_on"];
+
+  int32 count = 19;
+
+  string provider = 20;
+
+  terraform.v1.Lifecycle lifecycle = 21;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}

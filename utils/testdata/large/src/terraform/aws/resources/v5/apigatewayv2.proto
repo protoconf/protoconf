@@ -1,0 +1,508 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsApigatewayv2Api version is 0
+message AwsApigatewayv2Api {
+  string api_endpoint = 1 [json_name = "api_endpoint"];
+
+  string api_key_selection_expression = 2 [json_name = "api_key_selection_expression"];
+
+  string arn = 3;
+
+  string body = 4;
+
+  string credentials_arn = 5 [json_name = "credentials_arn"];
+
+  string description = 6;
+
+  bool disable_execute_api_endpoint = 7 [json_name = "disable_execute_api_endpoint"];
+
+  string execution_arn = 8 [json_name = "execution_arn"];
+
+  bool fail_on_warnings = 9 [json_name = "fail_on_warnings"];
+
+  string id = 10;
+
+  string name = 11;
+
+  string protocol_type = 12 [json_name = "protocol_type"];
+
+  string route_key = 13 [json_name = "route_key"];
+
+  string route_selection_expression = 14 [json_name = "route_selection_expression"];
+
+  map<string, string> tags = 15;
+
+  map<string, string> tags_all = 16 [json_name = "tags_all"];
+
+  string target = 17;
+
+  string version = 18;
+
+  CorsConfiguration cors_configuration = 19 [json_name = "cors_configuration"];
+
+  map<string, string> for_each = 20 [json_name = "for_each"];
+
+  repeated string depends_on = 21 [json_name = "depends_on"];
+
+  int32 count = 22;
+
+  string provider = 23;
+
+  terraform.v1.Lifecycle lifecycle = 24;
+
+  message CorsConfiguration {
+    bool allow_credentials = 1 [json_name = "allow_credentials"];
+
+    repeated string allow_headers = 2 [json_name = "allow_headers"];
+
+    repeated string allow_methods = 3 [json_name = "allow_methods"];
+
+    repeated string allow_origins = 4 [json_name = "allow_origins"];
+
+    repeated string expose_headers = 5 [json_name = "expose_headers"];
+
+    int64 max_age = 6 [json_name = "max_age"];
+  }
+}
+
+// AwsApigatewayv2ApiMapping version is 0
+message AwsApigatewayv2ApiMapping {
+  string api_id = 1 [json_name = "api_id"];
+
+  string api_mapping_key = 2 [json_name = "api_mapping_key"];
+
+  string domain_name = 3 [json_name = "domain_name"];
+
+  string id = 4;
+
+  string stage = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsApigatewayv2Authorizer version is 0
+message AwsApigatewayv2Authorizer {
+  string api_id = 1 [json_name = "api_id"];
+
+  string authorizer_credentials_arn = 2 [json_name = "authorizer_credentials_arn"];
+
+  string authorizer_payload_format_version = 3 [json_name = "authorizer_payload_format_version"];
+
+  int64 authorizer_result_ttl_in_seconds = 4 [json_name = "authorizer_result_ttl_in_seconds"];
+
+  string authorizer_type = 5 [json_name = "authorizer_type"];
+
+  string authorizer_uri = 6 [json_name = "authorizer_uri"];
+
+  bool enable_simple_responses = 7 [json_name = "enable_simple_responses"];
+
+  string id = 8;
+
+  repeated string identity_sources = 9 [json_name = "identity_sources"];
+
+  string name = 10;
+
+  JwtConfiguration jwt_configuration = 11 [json_name = "jwt_configuration"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message JwtConfiguration {
+    repeated string audience = 1;
+
+    string issuer = 2;
+  }
+}
+
+// AwsApigatewayv2Deployment version is 0
+message AwsApigatewayv2Deployment {
+  string api_id = 1 [json_name = "api_id"];
+
+  bool auto_deployed = 2 [json_name = "auto_deployed"];
+
+  string description = 3;
+
+  string id = 4;
+
+  map<string, string> triggers = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsApigatewayv2DomainName version is 0
+message AwsApigatewayv2DomainName {
+  string api_mapping_selection_expression = 1 [json_name = "api_mapping_selection_expression"];
+
+  string arn = 2;
+
+  string domain_name = 3 [json_name = "domain_name"];
+
+  string id = 4;
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  DomainNameConfiguration domain_name_configuration = 7 [json_name = "domain_name_configuration"];
+
+  MutualTlsAuthentication mutual_tls_authentication = 8 [json_name = "mutual_tls_authentication"];
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message DomainNameConfiguration {
+    string certificate_arn = 1 [json_name = "certificate_arn"];
+
+    string endpoint_type = 2 [json_name = "endpoint_type"];
+
+    string hosted_zone_id = 3 [json_name = "hosted_zone_id"];
+
+    string ownership_verification_certificate_arn = 4 [
+      json_name = "ownership_verification_certificate_arn"
+    ];
+
+    string security_policy = 5 [json_name = "security_policy"];
+
+    string target_domain_name = 6 [json_name = "target_domain_name"];
+  }
+
+  message MutualTlsAuthentication {
+    string truststore_uri = 1 [json_name = "truststore_uri"];
+
+    string truststore_version = 2 [json_name = "truststore_version"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string update = 2;
+  }
+}
+
+// AwsApigatewayv2Integration version is 0
+message AwsApigatewayv2Integration {
+  string api_id = 1 [json_name = "api_id"];
+
+  string connection_id = 2 [json_name = "connection_id"];
+
+  string connection_type = 3 [json_name = "connection_type"];
+
+  string content_handling_strategy = 4 [json_name = "content_handling_strategy"];
+
+  string credentials_arn = 5 [json_name = "credentials_arn"];
+
+  string description = 6;
+
+  string id = 7;
+
+  string integration_method = 8 [json_name = "integration_method"];
+
+  string integration_response_selection_expression = 9 [
+    json_name = "integration_response_selection_expression"
+  ];
+
+  string integration_subtype = 10 [json_name = "integration_subtype"];
+
+  string integration_type = 11 [json_name = "integration_type"];
+
+  string integration_uri = 12 [json_name = "integration_uri"];
+
+  string passthrough_behavior = 13 [json_name = "passthrough_behavior"];
+
+  string payload_format_version = 14 [json_name = "payload_format_version"];
+
+  map<string, string> request_parameters = 15 [json_name = "request_parameters"];
+
+  map<string, string> request_templates = 16 [json_name = "request_templates"];
+
+  string template_selection_expression = 17 [json_name = "template_selection_expression"];
+
+  int64 timeout_milliseconds = 18 [json_name = "timeout_milliseconds"];
+
+  repeated ResponseParameters response_parameters = 19 [json_name = "response_parameters"];
+
+  TlsConfig tls_config = 20 [json_name = "tls_config"];
+
+  map<string, string> for_each = 21 [json_name = "for_each"];
+
+  repeated string depends_on = 22 [json_name = "depends_on"];
+
+  int32 count = 23;
+
+  string provider = 24;
+
+  terraform.v1.Lifecycle lifecycle = 25;
+
+  message ResponseParameters {
+    map<string, string> mappings = 1;
+
+    string status_code = 2 [json_name = "status_code"];
+  }
+
+  message TlsConfig {
+    string server_name_to_verify = 1 [json_name = "server_name_to_verify"];
+  }
+}
+
+// AwsApigatewayv2IntegrationResponse version is 0
+message AwsApigatewayv2IntegrationResponse {
+  string api_id = 1 [json_name = "api_id"];
+
+  string content_handling_strategy = 2 [json_name = "content_handling_strategy"];
+
+  string id = 3;
+
+  string integration_id = 4 [json_name = "integration_id"];
+
+  string integration_response_key = 5 [json_name = "integration_response_key"];
+
+  map<string, string> response_templates = 6 [json_name = "response_templates"];
+
+  string template_selection_expression = 7 [json_name = "template_selection_expression"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsApigatewayv2Model version is 0
+message AwsApigatewayv2Model {
+  string api_id = 1 [json_name = "api_id"];
+
+  string content_type = 2 [json_name = "content_type"];
+
+  string description = 3;
+
+  string id = 4;
+
+  string name = 5;
+
+  string schema = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsApigatewayv2Route version is 0
+message AwsApigatewayv2Route {
+  string api_id = 1 [json_name = "api_id"];
+
+  bool api_key_required = 2 [json_name = "api_key_required"];
+
+  repeated string authorization_scopes = 3 [json_name = "authorization_scopes"];
+
+  string authorization_type = 4 [json_name = "authorization_type"];
+
+  string authorizer_id = 5 [json_name = "authorizer_id"];
+
+  string id = 6;
+
+  string model_selection_expression = 7 [json_name = "model_selection_expression"];
+
+  string operation_name = 8 [json_name = "operation_name"];
+
+  map<string, string> request_models = 9 [json_name = "request_models"];
+
+  string route_key = 10 [json_name = "route_key"];
+
+  string route_response_selection_expression = 11 [json_name = "route_response_selection_expression"];
+
+  string target = 12;
+
+  repeated RequestParameter request_parameter = 13 [json_name = "request_parameter"];
+
+  map<string, string> for_each = 14 [json_name = "for_each"];
+
+  repeated string depends_on = 15 [json_name = "depends_on"];
+
+  int32 count = 16;
+
+  string provider = 17;
+
+  terraform.v1.Lifecycle lifecycle = 18;
+
+  message RequestParameter {
+    string request_parameter_key = 1 [json_name = "request_parameter_key"];
+
+    bool required = 2;
+  }
+}
+
+// AwsApigatewayv2RouteResponse version is 0
+message AwsApigatewayv2RouteResponse {
+  string api_id = 1 [json_name = "api_id"];
+
+  string id = 2;
+
+  string model_selection_expression = 3 [json_name = "model_selection_expression"];
+
+  map<string, string> response_models = 4 [json_name = "response_models"];
+
+  string route_id = 5 [json_name = "route_id"];
+
+  string route_response_key = 6 [json_name = "route_response_key"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsApigatewayv2Stage version is 0
+message AwsApigatewayv2Stage {
+  string api_id = 1 [json_name = "api_id"];
+
+  string arn = 2;
+
+  bool auto_deploy = 3 [json_name = "auto_deploy"];
+
+  string client_certificate_id = 4 [json_name = "client_certificate_id"];
+
+  string deployment_id = 5 [json_name = "deployment_id"];
+
+  string description = 6;
+
+  string execution_arn = 7 [json_name = "execution_arn"];
+
+  string id = 8;
+
+  string invoke_url = 9 [json_name = "invoke_url"];
+
+  string name = 10;
+
+  map<string, string> stage_variables = 11 [json_name = "stage_variables"];
+
+  map<string, string> tags = 12;
+
+  map<string, string> tags_all = 13 [json_name = "tags_all"];
+
+  AccessLogSettings access_log_settings = 14 [json_name = "access_log_settings"];
+
+  DefaultRouteSettings default_route_settings = 15 [json_name = "default_route_settings"];
+
+  repeated RouteSettings route_settings = 16 [json_name = "route_settings"];
+
+  map<string, string> for_each = 17 [json_name = "for_each"];
+
+  repeated string depends_on = 18 [json_name = "depends_on"];
+
+  int32 count = 19;
+
+  string provider = 20;
+
+  terraform.v1.Lifecycle lifecycle = 21;
+
+  message AccessLogSettings {
+    string destination_arn = 1 [json_name = "destination_arn"];
+
+    string format = 2;
+  }
+
+  message DefaultRouteSettings {
+    bool data_trace_enabled = 1 [json_name = "data_trace_enabled"];
+
+    bool detailed_metrics_enabled = 2 [json_name = "detailed_metrics_enabled"];
+
+    string logging_level = 3 [json_name = "logging_level"];
+
+    int64 throttling_burst_limit = 4 [json_name = "throttling_burst_limit"];
+
+    int64 throttling_rate_limit = 5 [json_name = "throttling_rate_limit"];
+  }
+
+  message RouteSettings {
+    bool data_trace_enabled = 1 [json_name = "data_trace_enabled"];
+
+    bool detailed_metrics_enabled = 2 [json_name = "detailed_metrics_enabled"];
+
+    string logging_level = 3 [json_name = "logging_level"];
+
+    string route_key = 4 [json_name = "route_key"];
+
+    int64 throttling_burst_limit = 5 [json_name = "throttling_burst_limit"];
+
+    int64 throttling_rate_limit = 6 [json_name = "throttling_rate_limit"];
+  }
+}
+
+// AwsApigatewayv2VpcLink version is 0
+message AwsApigatewayv2VpcLink {
+  string arn = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  repeated string security_group_ids = 4 [json_name = "security_group_ids"];
+
+  repeated string subnet_ids = 5 [json_name = "subnet_ids"];
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}

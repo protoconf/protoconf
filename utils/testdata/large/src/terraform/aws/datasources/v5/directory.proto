@@ -1,0 +1,107 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsDirectoryServiceDirectory version is 0
+message AwsDirectoryServiceDirectory {
+  string access_url = 1 [json_name = "access_url"];
+
+  string alias = 2;
+
+  repeated ConnectSettings connect_settings = 3 [json_name = "connect_settings"];
+
+  string description = 4;
+
+  string directory_id = 5 [json_name = "directory_id"];
+
+  repeated string dns_ip_addresses = 6 [json_name = "dns_ip_addresses"];
+
+  string edition = 7;
+
+  bool enable_sso = 8 [json_name = "enable_sso"];
+
+  string id = 9;
+
+  string name = 10;
+
+  repeated RadiusSettings radius_settings = 11 [json_name = "radius_settings"];
+
+  string security_group_id = 12 [json_name = "security_group_id"];
+
+  string short_name = 13 [json_name = "short_name"];
+
+  string size = 14;
+
+  map<string, string> tags = 15;
+
+  string type = 16;
+
+  repeated VpcSettings vpc_settings = 17 [json_name = "vpc_settings"];
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+
+  message ConnectSettings {
+    // availability_zones: set of string
+    repeated string availability_zones = 1 [json_name = "availability_zones"];
+
+    // connect_ips: set of string
+    repeated string connect_ips = 2 [json_name = "connect_ips"];
+
+    // customer_dns_ips: set of string
+    repeated string customer_dns_ips = 3 [json_name = "customer_dns_ips"];
+
+    // customer_username: string
+    string customer_username = 4 [json_name = "customer_username"];
+
+    // subnet_ids: set of string
+    repeated string subnet_ids = 5 [json_name = "subnet_ids"];
+
+    // vpc_id: string
+    string vpc_id = 6 [json_name = "vpc_id"];
+  }
+
+  message RadiusSettings {
+    // authentication_protocol: string
+    string authentication_protocol = 1 [json_name = "authentication_protocol"];
+
+    // display_label: string
+    string display_label = 2 [json_name = "display_label"];
+
+    // radius_port: number
+    int64 radius_port = 3 [json_name = "radius_port"];
+
+    // radius_retries: number
+    int64 radius_retries = 4 [json_name = "radius_retries"];
+
+    // radius_servers: set of string
+    repeated string radius_servers = 5 [json_name = "radius_servers"];
+
+    // radius_timeout: number
+    int64 radius_timeout = 6 [json_name = "radius_timeout"];
+
+    // use_same_username: bool
+    bool use_same_username = 7 [json_name = "use_same_username"];
+  }
+
+  message VpcSettings {
+    // availability_zones: set of string
+    repeated string availability_zones = 1 [json_name = "availability_zones"];
+
+    // subnet_ids: set of string
+    repeated string subnet_ids = 2 [json_name = "subnet_ids"];
+
+    // vpc_id: string
+    string vpc_id = 3 [json_name = "vpc_id"];
+  }
+}

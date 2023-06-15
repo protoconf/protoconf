@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsSubnet version is 1
+message AwsSubnet {
+  string arn = 1;
+
+  bool assign_ipv6_address_on_creation = 2 [json_name = "assign_ipv6_address_on_creation"];
+
+  string availability_zone = 3 [json_name = "availability_zone"];
+
+  string availability_zone_id = 4 [json_name = "availability_zone_id"];
+
+  string cidr_block = 5 [json_name = "cidr_block"];
+
+  string customer_owned_ipv4_pool = 6 [json_name = "customer_owned_ipv4_pool"];
+
+  bool enable_dns64 = 7 [json_name = "enable_dns64"];
+
+  int64 enable_lni_at_device_index = 8 [json_name = "enable_lni_at_device_index"];
+
+  bool enable_resource_name_dns_a_record_on_launch = 9 [
+    json_name = "enable_resource_name_dns_a_record_on_launch"
+  ];
+
+  bool enable_resource_name_dns_aaaa_record_on_launch = 10 [
+    json_name = "enable_resource_name_dns_aaaa_record_on_launch"
+  ];
+
+  string id = 11;
+
+  string ipv6_cidr_block = 12 [json_name = "ipv6_cidr_block"];
+
+  string ipv6_cidr_block_association_id = 13 [json_name = "ipv6_cidr_block_association_id"];
+
+  bool ipv6_native = 14 [json_name = "ipv6_native"];
+
+  bool map_customer_owned_ip_on_launch = 15 [json_name = "map_customer_owned_ip_on_launch"];
+
+  bool map_public_ip_on_launch = 16 [json_name = "map_public_ip_on_launch"];
+
+  string outpost_arn = 17 [json_name = "outpost_arn"];
+
+  string owner_id = 18 [json_name = "owner_id"];
+
+  string private_dns_hostname_type_on_launch = 19 [json_name = "private_dns_hostname_type_on_launch"];
+
+  map<string, string> tags = 20;
+
+  map<string, string> tags_all = 21 [json_name = "tags_all"];
+
+  string vpc_id = 22 [json_name = "vpc_id"];
+
+  repeated Timeouts timeouts = 23;
+
+  map<string, string> for_each = 24 [json_name = "for_each"];
+
+  repeated string depends_on = 25 [json_name = "depends_on"];
+
+  int32 count = 26;
+
+  string provider = 27;
+
+  terraform.v1.Lifecycle lifecycle = 28;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}

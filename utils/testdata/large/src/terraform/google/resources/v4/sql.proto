@@ -1,0 +1,665 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleSqlDatabase version is 0
+message GoogleSqlDatabase {
+  // The charset value. See MySQL's
+  // [Supported Character Sets and Collations](https://dev.mysql.com/doc/refman/5.7/en/charset-charsets.html)
+  // and Postgres' [Character Set Support](https://www.postgresql.org/docs/9.6/static/multibyte.html)
+  // for more details and supported values. Postgres databases only support
+  // a value of 'UTF8' at creation time.
+  string charset = 1;
+
+  // The collation value. See MySQL's
+  // [Supported Character Sets and Collations](https://dev.mysql.com/doc/refman/5.7/en/charset-charsets.html)
+  // and Postgres' [Collation Support](https://www.postgresql.org/docs/9.6/static/collation.html)
+  // for more details and supported values. Postgres databases only support
+  // a value of 'en_US.UTF8' at creation time.
+  string collation = 2;
+
+  // The deletion policy for the database. Setting ABANDON allows the resource
+  // to be abandoned rather than deleted. This is useful for Postgres, where databases cannot be
+  // deleted from the API if there are users other than cloudsqlsuperuser with access. Possible
+  // values are: "ABANDON", "DELETE". Defaults to "DELETE".
+  string deletion_policy = 3 [json_name = "deletion_policy"];
+
+  string id = 4;
+
+  // The name of the Cloud SQL instance. This does not include the project
+  // ID.
+  string instance = 5;
+
+  // The name of the database in the Cloud SQL instance.
+  // This does not include the project ID or instance name.
+  string name = 6;
+
+  string project = 7;
+
+  string self_link = 8 [json_name = "self_link"];
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleSqlDatabaseInstance version is 0
+message GoogleSqlDatabaseInstance {
+  // Available Maintenance versions.
+  repeated string available_maintenance_versions = 1 [json_name = "available_maintenance_versions"];
+
+  // The connection name of the instance to be used in connection strings. For example, when connecting with Cloud SQL Proxy.
+  string connection_name = 2 [json_name = "connection_name"];
+
+  // The MySQL, PostgreSQL or SQL Server (beta) version to use. Supported values include MYSQL_5_6, MYSQL_5_7, MYSQL_8_0, POSTGRES_9_6, POSTGRES_10, POSTGRES_11, POSTGRES_12, POSTGRES_13, POSTGRES_14, SQLSERVER_2017_STANDARD, SQLSERVER_2017_ENTERPRISE, SQLSERVER_2017_EXPRESS, SQLSERVER_2017_WEB. Database Version Policies includes an up-to-date reference of supported versions.
+  string database_version = 3 [json_name = "database_version"];
+
+  // Used to block Terraform from deleting a SQL Instance. Defaults to true.
+  bool deletion_protection = 4 [json_name = "deletion_protection"];
+
+  string encryption_key_name = 5 [json_name = "encryption_key_name"];
+
+  // The first IPv4 address of any type assigned. This is to support accessing the first address in the list in a terraform output when the resource is configured with a count.
+  string first_ip_address = 6 [json_name = "first_ip_address"];
+
+  string id = 7;
+
+  // The type of the instance. The valid values are:- 'SQL_INSTANCE_TYPE_UNSPECIFIED', 'CLOUD_SQL_INSTANCE', 'ON_PREMISES_INSTANCE' and 'READ_REPLICA_INSTANCE'.
+  string instance_type = 8 [json_name = "instance_type"];
+
+  repeated IpAddress ip_address = 9 [json_name = "ip_address"];
+
+  // Maintenance version.
+  string maintenance_version = 10 [json_name = "maintenance_version"];
+
+  // The name of the instance that will act as the master in the replication setup. Note, this requires the master to have binary_log_enabled set, as well as existing backups.
+  string master_instance_name = 11 [json_name = "master_instance_name"];
+
+  // The name of the instance. If the name is left blank, Terraform will randomly generate one when the instance is first created. This is done because after a name is used, it cannot be reused for up to one week.
+  string name = 12;
+
+  // IPv4 address assigned. This is a workaround for an issue fixed in Terraform 0.12 but also provides a convenient way to access an IP of a specific type without performing filtering in a Terraform config.
+  string private_ip_address = 13 [json_name = "private_ip_address"];
+
+  // The ID of the project in which the resource belongs. If it is not provided, the provider project is used.
+  string project = 14;
+
+  // IPv4 address assigned. This is a workaround for an issue fixed in Terraform 0.12 but also provides a convenient way to access an IP of a specific type without performing filtering in a Terraform config.
+  string public_ip_address = 15 [json_name = "public_ip_address"];
+
+  // The region the instance will sit in. Note, Cloud SQL is not available in all regions. A valid region must be provided to use this resource. If a region is not provided in the resource definition, the provider region will be used instead, but this will be an apply-time error for instances if the provider region is not supported with Cloud SQL. If you choose not to provide the region argument for this resource, make sure you understand this.
+  string region = 16;
+
+  // Initial root password. Required for MS SQL Server.
+  string root_password = 17 [json_name = "root_password"];
+
+  // The URI of the created resource.
+  string self_link = 18 [json_name = "self_link"];
+
+  repeated ServerCaCert server_ca_cert = 19 [json_name = "server_ca_cert"];
+
+  // The service account email address assigned to the instance.
+  string service_account_email_address = 20 [json_name = "service_account_email_address"];
+
+  Clone clone = 21;
+
+  ReplicaConfiguration replica_configuration = 22 [json_name = "replica_configuration"];
+
+  RestoreBackupContext restore_backup_context = 23 [json_name = "restore_backup_context"];
+
+  Settings settings = 24;
+
+  repeated Timeouts timeouts = 25;
+
+  map<string, string> for_each = 26 [json_name = "for_each"];
+
+  repeated string depends_on = 27 [json_name = "depends_on"];
+
+  int32 count = 28;
+
+  string provider = 29;
+
+  terraform.v1.Lifecycle lifecycle = 30;
+
+  message IpAddress {
+    // ip_address: string
+    string ip_address = 1 [json_name = "ip_address"];
+
+    // time_to_retire: string
+    string time_to_retire = 2 [json_name = "time_to_retire"];
+
+    // type: string
+    string type = 3;
+  }
+
+  message ServerCaCert {
+    // cert: string
+    string cert = 1;
+
+    // common_name: string
+    string common_name = 2 [json_name = "common_name"];
+
+    // create_time: string
+    string create_time = 3 [json_name = "create_time"];
+
+    // expiration_time: string
+    string expiration_time = 4 [json_name = "expiration_time"];
+
+    // sha1_fingerprint: string
+    string sha1_fingerprint = 5 [json_name = "sha1_fingerprint"];
+  }
+
+  message Clone {
+    // The name of the allocated ip range for the private ip CloudSQL instance. For example: "google-managed-services-default". If set, the cloned instance ip will be created in the allocated range. The range name must comply with [RFC 1035](https://tools.ietf.org/html/rfc1035). Specifically, the name must be 1-63 characters long and match the regular expression [a-z]([-a-z0-9]*[a-z0-9])?.
+    string allocated_ip_range = 1 [json_name = "allocated_ip_range"];
+
+    // (SQL Server only, use with point_in_time) clone only the specified databases from the source instance. Clone all databases if empty.
+    repeated string database_names = 2 [json_name = "database_names"];
+
+    // The timestamp of the point in time that should be restored.
+    string point_in_time = 3 [json_name = "point_in_time"];
+
+    // The name of the instance from which the point in time should be restored.
+    string source_instance_name = 4 [json_name = "source_instance_name"];
+  }
+
+  message ReplicaConfiguration {
+    // PEM representation of the trusted CA's x509 certificate.
+    string ca_certificate = 1 [json_name = "ca_certificate"];
+
+    // PEM representation of the replica's x509 certificate.
+    string client_certificate = 2 [json_name = "client_certificate"];
+
+    // PEM representation of the replica's private key. The corresponding public key in encoded in the client_certificate.
+    string client_key = 3 [json_name = "client_key"];
+
+    // The number of seconds between connect retries. MySQL's default is 60 seconds.
+    int64 connect_retry_interval = 4 [json_name = "connect_retry_interval"];
+
+    // Path to a SQL file in Google Cloud Storage from which replica instances are created. Format is gs://bucket/filename.
+    string dump_file_path = 5 [json_name = "dump_file_path"];
+
+    // Specifies if the replica is the failover target. If the field is set to true the replica will be designated as a failover replica. If the master instance fails, the replica instance will be promoted as the new master instance.
+    bool failover_target = 6 [json_name = "failover_target"];
+
+    // Time in ms between replication heartbeats.
+    int64 master_heartbeat_period = 7 [json_name = "master_heartbeat_period"];
+
+    // Password for the replication connection.
+    string password = 8;
+
+    // Permissible ciphers for use in SSL encryption.
+    string ssl_cipher = 9 [json_name = "ssl_cipher"];
+
+    // Username for replication connection.
+    string username = 10;
+
+    // True if the master's common name value is checked during the SSL handshake.
+    bool verify_server_certificate = 11 [json_name = "verify_server_certificate"];
+  }
+
+  message RestoreBackupContext {
+    // The ID of the backup run to restore from.
+    int64 backup_run_id = 1 [json_name = "backup_run_id"];
+
+    // The ID of the instance that the backup was taken from.
+    string instance_id = 2 [json_name = "instance_id"];
+
+    // The full project ID of the source instance.
+    string project = 3;
+  }
+
+  message Settings {
+    // This specifies when the instance should be active. Can be either ALWAYS, NEVER or ON_DEMAND.
+    string activation_policy = 1 [json_name = "activation_policy"];
+
+    // The availability type of the Cloud SQL instance, high availability
+    // (REGIONAL) or single zone (ZONAL). For all instances, ensure that
+    // settings.backup_configuration.enabled is set to true.
+    // For MySQL instances, ensure that settings.backup_configuration.binary_log_enabled is set to true.
+    // For Postgres instances, ensure that settings.backup_configuration.point_in_time_recovery_enabled
+    // is set to true. Defaults to ZONAL.
+    string availability_type = 2 [json_name = "availability_type"];
+
+    // The name of server instance collation.
+    string collation = 3;
+
+    // Specifies if connections must use Cloud SQL connectors.
+    string connector_enforcement = 4 [json_name = "connector_enforcement"];
+
+    // Configuration to protect against accidental instance deletion.
+    bool deletion_protection_enabled = 5 [json_name = "deletion_protection_enabled"];
+
+    // Enables auto-resizing of the storage size. Defaults to true.
+    bool disk_autoresize = 6 [json_name = "disk_autoresize"];
+
+    // The maximum size, in GB, to which storage capacity can be automatically increased. The default value is 0, which specifies that there is no limit.
+    int64 disk_autoresize_limit = 7 [json_name = "disk_autoresize_limit"];
+
+    // The size of data disk, in GB. Size of a running instance cannot be reduced but can be increased. The minimum value is 10GB.
+    int64 disk_size = 8 [json_name = "disk_size"];
+
+    // The type of data disk: PD_SSD or PD_HDD. Defaults to PD_SSD.
+    string disk_type = 9 [json_name = "disk_type"];
+
+    // Pricing plan for this instance, can only be PER_USE.
+    string pricing_plan = 10 [json_name = "pricing_plan"];
+
+    // The machine type to use. See tiers for more details and supported versions. Postgres supports only shared-core machine types, and custom machine types such as db-custom-2-13312. See the Custom Machine Type Documentation to learn about specifying custom machine types.
+    string tier = 11;
+
+    // The time_zone to be used by the database engine (supported only for SQL Server), in SQL Server timezone format.
+    string time_zone = 12 [json_name = "time_zone"];
+
+    // A set of key/value user label pairs to assign to the instance.
+    map<string, string> user_labels = 13 [json_name = "user_labels"];
+
+    // Used to make sure changes to the settings block are atomic.
+    int64 version = 14;
+
+    ActiveDirectoryConfig active_directory_config = 15 [json_name = "active_directory_config"];
+
+    AdvancedMachineFeatures advanced_machine_features = 16 [json_name = "advanced_machine_features"];
+
+    BackupConfiguration backup_configuration = 17 [json_name = "backup_configuration"];
+
+    repeated DatabaseFlags database_flags = 18 [json_name = "database_flags"];
+
+    DenyMaintenancePeriod deny_maintenance_period = 19 [json_name = "deny_maintenance_period"];
+
+    InsightsConfig insights_config = 20 [json_name = "insights_config"];
+
+    IpConfiguration ip_configuration = 21 [json_name = "ip_configuration"];
+
+    LocationPreference location_preference = 22 [json_name = "location_preference"];
+
+    MaintenanceWindow maintenance_window = 23 [json_name = "maintenance_window"];
+
+    PasswordValidationPolicy password_validation_policy = 24 [json_name = "password_validation_policy"];
+
+    SqlServerAuditConfig sql_server_audit_config = 25 [json_name = "sql_server_audit_config"];
+
+    message ActiveDirectoryConfig {
+      // Domain name of the Active Directory for SQL Server (e.g., mydomain.com).
+      string domain = 1;
+    }
+
+    message AdvancedMachineFeatures {
+      // The number of threads per physical core. Can be 1 or 2.
+      int64 threads_per_core = 1 [json_name = "threads_per_core"];
+    }
+
+    message BackupConfiguration {
+      // True if binary logging is enabled. If settings.backup_configuration.enabled is false, this must be as well. Can only be used with MySQL.
+      bool binary_log_enabled = 1 [json_name = "binary_log_enabled"];
+
+      // True if backup configuration is enabled.
+      bool enabled = 2;
+
+      // Location of the backup configuration.
+      string location = 3;
+
+      // True if Point-in-time recovery is enabled.
+      bool point_in_time_recovery_enabled = 4 [json_name = "point_in_time_recovery_enabled"];
+
+      // HH:MM format time indicating when backup configuration starts.
+      string start_time = 5 [json_name = "start_time"];
+
+      // The number of days of transaction logs we retain for point in time restore, from 1-7.
+      int64 transaction_log_retention_days = 6 [json_name = "transaction_log_retention_days"];
+
+      BackupRetentionSettings backup_retention_settings = 7 [json_name = "backup_retention_settings"];
+
+      message BackupRetentionSettings {
+        // Number of backups to retain.
+        int64 retained_backups = 1 [json_name = "retained_backups"];
+
+        // The unit that 'retainedBackups' represents. Defaults to COUNT
+        string retention_unit = 2 [json_name = "retention_unit"];
+      }
+    }
+
+    message DatabaseFlags {
+      // Name of the flag.
+      string name = 1;
+
+      // Value of the flag.
+      string value = 2;
+    }
+
+    message DenyMaintenancePeriod {
+      // End date before which maintenance will not take place. The date is in format yyyy-mm-dd i.e., 2020-11-01, or mm-dd, i.e., 11-01
+      string end_date = 1 [json_name = "end_date"];
+
+      // Start date after which maintenance will not take place. The date is in format yyyy-mm-dd i.e., 2020-11-01, or mm-dd, i.e., 11-01
+      string start_date = 2 [json_name = "start_date"];
+
+      // Time in UTC when the "deny maintenance period" starts on start_date and ends on end_date. The time is in format: HH:mm:SS, i.e., 00:00:00
+      string time = 3;
+    }
+
+    message InsightsConfig {
+      // True if Query Insights feature is enabled.
+      bool query_insights_enabled = 1 [json_name = "query_insights_enabled"];
+
+      // Number of query execution plans captured by Insights per minute for all queries combined. Between 0 and 20. Default to 5.
+      int64 query_plans_per_minute = 2 [json_name = "query_plans_per_minute"];
+
+      // Maximum query length stored in bytes. Between 256 and 4500. Default to 1024.
+      int64 query_string_length = 3 [json_name = "query_string_length"];
+
+      // True if Query Insights will record application tags from query when enabled.
+      bool record_application_tags = 4 [json_name = "record_application_tags"];
+
+      // True if Query Insights will record client address when enabled.
+      bool record_client_address = 5 [json_name = "record_client_address"];
+    }
+
+    message IpConfiguration {
+      // The name of the allocated ip range for the private ip CloudSQL instance. For example: "google-managed-services-default". If set, the instance ip will be created in the allocated range. The range name must comply with RFC 1035. Specifically, the name must be 1-63 characters long and match the regular expression [a-z]([-a-z0-9]*[a-z0-9])?.
+      string allocated_ip_range = 1 [json_name = "allocated_ip_range"];
+
+      // Whether Google Cloud services such as BigQuery are allowed to access data in this Cloud SQL instance over a private IP connection. SQLSERVER database type is not supported.
+      bool enable_private_path_for_google_cloud_services = 2 [
+        json_name = "enable_private_path_for_google_cloud_services"
+      ];
+
+      // Whether this Cloud SQL instance should be assigned a public IPV4 address. At least ipv4_enabled must be enabled or a private_network must be configured.
+      bool ipv4_enabled = 3 [json_name = "ipv4_enabled"];
+
+      // The VPC network from which the Cloud SQL instance is accessible for private IP. For example, projects/myProject/global/networks/default. Specifying a network enables private IP. At least ipv4_enabled must be enabled or a private_network must be configured. This setting can be updated, but it cannot be removed after it is set.
+      string private_network = 4 [json_name = "private_network"];
+
+      bool require_ssl = 5 [json_name = "require_ssl"];
+
+      repeated AuthorizedNetworks authorized_networks = 6 [json_name = "authorized_networks"];
+
+      message AuthorizedNetworks {
+        string expiration_time = 1 [json_name = "expiration_time"];
+
+        string name = 2;
+
+        string value = 3;
+      }
+    }
+
+    message LocationPreference {
+      // A Google App Engine application whose zone to remain in. Must be in the same region as this instance.
+      string follow_gae_application = 1 [json_name = "follow_gae_application"];
+
+      // The preferred Compute Engine zone for the secondary/failover
+      string secondary_zone = 2 [json_name = "secondary_zone"];
+
+      // The preferred compute engine zone.
+      string zone = 3;
+    }
+
+    message MaintenanceWindow {
+      // Day of week (1-7), starting on Monday
+      int64 day = 1;
+
+      // Hour of day (0-23), ignored if day not set
+      int64 hour = 2;
+
+      // Receive updates earlier (canary) or later (stable)
+      string update_track = 3 [json_name = "update_track"];
+    }
+
+    message PasswordValidationPolicy {
+      // Password complexity.
+      string complexity = 1;
+
+      // Disallow username as a part of the password.
+      bool disallow_username_substring = 2 [json_name = "disallow_username_substring"];
+
+      // Whether the password policy is enabled or not.
+      bool enable_password_policy = 3 [json_name = "enable_password_policy"];
+
+      // Minimum number of characters allowed.
+      int64 min_length = 4 [json_name = "min_length"];
+
+      // Minimum interval after which the password can be changed. This flag is only supported for PostgresSQL.
+      string password_change_interval = 5 [json_name = "password_change_interval"];
+
+      // Number of previous passwords that cannot be reused.
+      int64 reuse_interval = 6 [json_name = "reuse_interval"];
+    }
+
+    message SqlServerAuditConfig {
+      // The name of the destination bucket (e.g., gs://mybucket).
+      string bucket = 1;
+
+      // How long to keep generated audit files. A duration in seconds with up to nine fractional digits, terminated by 's'. Example: "3.5s"..
+      string retention_interval = 2 [json_name = "retention_interval"];
+
+      // How often to upload generated audit files. A duration in seconds with up to nine fractional digits, terminated by 's'. Example: "3.5s".
+      string upload_interval = 3 [json_name = "upload_interval"];
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleSqlSourceRepresentationInstance version is 0
+message GoogleSqlSourceRepresentationInstance {
+  // The CA certificate on the external server. Include only if SSL/TLS is used on the external server.
+  string ca_certificate = 1 [json_name = "ca_certificate"];
+
+  // The client certificate on the external server. Required only for server-client authentication. Include only if SSL/TLS is used on the external server.
+  string client_certificate = 2 [json_name = "client_certificate"];
+
+  // The private key file for the client certificate on the external server. Required only for server-client authentication. Include only if SSL/TLS is used on the external server.
+  string client_key = 3 [json_name = "client_key"];
+
+  // The MySQL version running on your source database server. Possible values: ["MYSQL_5_6", "MYSQL_5_7", "MYSQL_8_0", "POSTGRES_9_6", "POSTGRES_10", "POSTGRES_11", "POSTGRES_12", "POSTGRES_13", "POSTGRES_14"]
+  string database_version = 4 [json_name = "database_version"];
+
+  // A file in the bucket that contains the data from the external server.
+  string dump_file_path = 5 [json_name = "dump_file_path"];
+
+  // The externally accessible IPv4 address for the source database server.
+  string host = 6;
+
+  string id = 7;
+
+  // The name of the source representation instance. Use any valid Cloud SQL instance name.
+  string name = 8;
+
+  // The password for the replication user account.
+  string password = 9;
+
+  // The externally accessible port for the source database server.
+  // Defaults to 3306.
+  int64 port = 10;
+
+  string project = 11;
+
+  // The Region in which the created instance should reside.
+  // If it is not provided, the provider region is used.
+  string region = 12;
+
+  // The replication user account on the external server.
+  string username = 13;
+
+  repeated Timeouts timeouts = 14;
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// GoogleSqlSslCert version is 1
+message GoogleSqlSslCert {
+  // The actual certificate data for this client certificate.
+  string cert = 1;
+
+  // The serial number extracted from the certificate data.
+  string cert_serial_number = 2 [json_name = "cert_serial_number"];
+
+  // The common name to be used in the certificate to identify the client. Constrained to [a-zA-Z.-_ ]+. Changing this forces a new resource to be created.
+  string common_name = 3 [json_name = "common_name"];
+
+  // The time when the certificate was created in RFC 3339 format, for example 2012-11-15T16:19:00.094Z.
+  string create_time = 4 [json_name = "create_time"];
+
+  // The time when the certificate expires in RFC 3339 format, for example 2012-11-15T16:19:00.094Z.
+  string expiration_time = 5 [json_name = "expiration_time"];
+
+  string id = 6;
+
+  // The name of the Cloud SQL instance. Changing this forces a new resource to be created.
+  string instance = 7;
+
+  // The private key associated with the client certificate.
+  string private_key = 8 [json_name = "private_key"];
+
+  // The ID of the project in which the resource belongs. If it is not provided, the provider project is used.
+  string project = 9;
+
+  // The CA cert of the server this client cert was generated from.
+  string server_ca_cert = 10 [json_name = "server_ca_cert"];
+
+  // The SHA1 Fingerprint of the certificate.
+  string sha1_fingerprint = 11 [json_name = "sha1_fingerprint"];
+
+  repeated Timeouts timeouts = 12;
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// GoogleSqlUser version is 1
+message GoogleSqlUser {
+  // The deletion policy for the user. Setting ABANDON allows the resource
+  // 				to be abandoned rather than deleted. This is useful for Postgres, where users cannot be deleted from the API if they
+  // 				have been granted SQL roles. Possible values are: "ABANDON".
+  string deletion_policy = 1 [json_name = "deletion_policy"];
+
+  // The host the user can connect from. This is only supported for MySQL instances. Don't set this field for PostgreSQL instances. Can be an IP address. Changing this forces a new resource to be created.
+  string host = 2;
+
+  string id = 3;
+
+  // The name of the Cloud SQL instance. Changing this forces a new resource to be created.
+  string instance = 4;
+
+  // The name of the user. Changing this forces a new resource to be created.
+  string name = 5;
+
+  // The password for the user. Can be updated. For Postgres instances this is a Required field, unless type is set to
+  //                either CLOUD_IAM_USER or CLOUD_IAM_SERVICE_ACCOUNT.
+  string password = 6;
+
+  // The ID of the project in which the resource belongs. If it is not provided, the provider project is used.
+  string project = 7;
+
+  repeated SqlServerUserDetails sql_server_user_details = 8 [json_name = "sql_server_user_details"];
+
+  // The user type. It determines the method to authenticate the user during login.
+  //                The default is the database's built-in user type. Flags include "BUILT_IN", "CLOUD_IAM_USER", or "CLOUD_IAM_SERVICE_ACCOUNT".
+  string type = 9;
+
+  PasswordPolicy password_policy = 10 [json_name = "password_policy"];
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message SqlServerUserDetails {
+    // disabled: bool
+    bool disabled = 1;
+
+    // server_roles: list of string
+    repeated string server_roles = 2 [json_name = "server_roles"];
+  }
+
+  message PasswordPolicy {
+    // Number of failed attempts allowed before the user get locked.
+    int64 allowed_failed_attempts = 1 [json_name = "allowed_failed_attempts"];
+
+    // If true, the check that will lock user after too many failed login attempts will be enabled.
+    bool enable_failed_attempts_check = 2 [json_name = "enable_failed_attempts_check"];
+
+    // If true, the user must specify the current password before changing the password. This flag is supported only for MySQL.
+    bool enable_password_verification = 3 [json_name = "enable_password_verification"];
+
+    // Password expiration duration with one week grace period.
+    string password_expiration_duration = 4 [json_name = "password_expiration_duration"];
+
+    repeated Status status = 5;
+
+    message Status {
+      // locked: bool
+      bool locked = 1;
+
+      // password_expiration_time: string
+      string password_expiration_time = 2 [json_name = "password_expiration_time"];
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

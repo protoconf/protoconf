@@ -1,0 +1,592 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsRdsCluster version is 0
+message AwsRdsCluster {
+  int64 allocated_storage = 1 [json_name = "allocated_storage"];
+
+  bool allow_major_version_upgrade = 2 [json_name = "allow_major_version_upgrade"];
+
+  bool apply_immediately = 3 [json_name = "apply_immediately"];
+
+  string arn = 4;
+
+  repeated string availability_zones = 5 [json_name = "availability_zones"];
+
+  int64 backtrack_window = 6 [json_name = "backtrack_window"];
+
+  int64 backup_retention_period = 7 [json_name = "backup_retention_period"];
+
+  string cluster_identifier = 8 [json_name = "cluster_identifier"];
+
+  string cluster_identifier_prefix = 9 [json_name = "cluster_identifier_prefix"];
+
+  repeated string cluster_members = 10 [json_name = "cluster_members"];
+
+  string cluster_resource_id = 11 [json_name = "cluster_resource_id"];
+
+  bool copy_tags_to_snapshot = 12 [json_name = "copy_tags_to_snapshot"];
+
+  string database_name = 13 [json_name = "database_name"];
+
+  string db_cluster_instance_class = 14 [json_name = "db_cluster_instance_class"];
+
+  string db_cluster_parameter_group_name = 15 [json_name = "db_cluster_parameter_group_name"];
+
+  string db_instance_parameter_group_name = 16 [json_name = "db_instance_parameter_group_name"];
+
+  string db_subnet_group_name = 17 [json_name = "db_subnet_group_name"];
+
+  bool deletion_protection = 18 [json_name = "deletion_protection"];
+
+  bool enable_global_write_forwarding = 19 [json_name = "enable_global_write_forwarding"];
+
+  bool enable_http_endpoint = 20 [json_name = "enable_http_endpoint"];
+
+  repeated string enabled_cloudwatch_logs_exports = 21 [json_name = "enabled_cloudwatch_logs_exports"];
+
+  string endpoint = 22;
+
+  string engine = 23;
+
+  string engine_mode = 24 [json_name = "engine_mode"];
+
+  string engine_version = 25 [json_name = "engine_version"];
+
+  string engine_version_actual = 26 [json_name = "engine_version_actual"];
+
+  string final_snapshot_identifier = 27 [json_name = "final_snapshot_identifier"];
+
+  string global_cluster_identifier = 28 [json_name = "global_cluster_identifier"];
+
+  string hosted_zone_id = 29 [json_name = "hosted_zone_id"];
+
+  bool iam_database_authentication_enabled = 30 [json_name = "iam_database_authentication_enabled"];
+
+  repeated string iam_roles = 31 [json_name = "iam_roles"];
+
+  string id = 32;
+
+  int64 iops = 33;
+
+  string kms_key_id = 34 [json_name = "kms_key_id"];
+
+  bool manage_master_user_password = 35 [json_name = "manage_master_user_password"];
+
+  string master_password = 36 [json_name = "master_password"];
+
+  repeated MasterUserSecret master_user_secret = 37 [json_name = "master_user_secret"];
+
+  string master_user_secret_kms_key_id = 38 [json_name = "master_user_secret_kms_key_id"];
+
+  string master_username = 39 [json_name = "master_username"];
+
+  string network_type = 40 [json_name = "network_type"];
+
+  int64 port = 41;
+
+  string preferred_backup_window = 42 [json_name = "preferred_backup_window"];
+
+  string preferred_maintenance_window = 43 [json_name = "preferred_maintenance_window"];
+
+  string reader_endpoint = 44 [json_name = "reader_endpoint"];
+
+  string replication_source_identifier = 45 [json_name = "replication_source_identifier"];
+
+  bool skip_final_snapshot = 46 [json_name = "skip_final_snapshot"];
+
+  string snapshot_identifier = 47 [json_name = "snapshot_identifier"];
+
+  string source_region = 48 [json_name = "source_region"];
+
+  bool storage_encrypted = 49 [json_name = "storage_encrypted"];
+
+  string storage_type = 50 [json_name = "storage_type"];
+
+  map<string, string> tags = 51;
+
+  map<string, string> tags_all = 52 [json_name = "tags_all"];
+
+  repeated string vpc_security_group_ids = 53 [json_name = "vpc_security_group_ids"];
+
+  RestoreToPointInTime restore_to_point_in_time = 54 [json_name = "restore_to_point_in_time"];
+
+  S3Import s3_import = 55 [json_name = "s3_import"];
+
+  ScalingConfiguration scaling_configuration = 56 [json_name = "scaling_configuration"];
+
+  Serverlessv2ScalingConfiguration serverlessv2_scaling_configuration = 57 [json_name = "serverlessv2_scaling_configuration"];
+
+  repeated Timeouts timeouts = 58;
+
+  map<string, string> for_each = 59 [json_name = "for_each"];
+
+  repeated string depends_on = 60 [json_name = "depends_on"];
+
+  int32 count = 61;
+
+  string provider = 62;
+
+  terraform.v1.Lifecycle lifecycle = 63;
+
+  message MasterUserSecret {
+    // kms_key_id: string
+    string kms_key_id = 1 [json_name = "kms_key_id"];
+
+    // secret_arn: string
+    string secret_arn = 2 [json_name = "secret_arn"];
+
+    // secret_status: string
+    string secret_status = 3 [json_name = "secret_status"];
+  }
+
+  message RestoreToPointInTime {
+    string restore_to_time = 1 [json_name = "restore_to_time"];
+
+    string restore_type = 2 [json_name = "restore_type"];
+
+    string source_cluster_identifier = 3 [json_name = "source_cluster_identifier"];
+
+    bool use_latest_restorable_time = 4 [json_name = "use_latest_restorable_time"];
+  }
+
+  message S3Import {
+    string bucket_name = 1 [json_name = "bucket_name"];
+
+    string bucket_prefix = 2 [json_name = "bucket_prefix"];
+
+    string ingestion_role = 3 [json_name = "ingestion_role"];
+
+    string source_engine = 4 [json_name = "source_engine"];
+
+    string source_engine_version = 5 [json_name = "source_engine_version"];
+  }
+
+  message ScalingConfiguration {
+    bool auto_pause = 1 [json_name = "auto_pause"];
+
+    int64 max_capacity = 2 [json_name = "max_capacity"];
+
+    int64 min_capacity = 3 [json_name = "min_capacity"];
+
+    int64 seconds_until_auto_pause = 4 [json_name = "seconds_until_auto_pause"];
+
+    string timeout_action = 5 [json_name = "timeout_action"];
+  }
+
+  message Serverlessv2ScalingConfiguration {
+    int64 max_capacity = 1 [json_name = "max_capacity"];
+
+    int64 min_capacity = 2 [json_name = "min_capacity"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsRdsClusterActivityStream version is 0
+message AwsRdsClusterActivityStream {
+  bool engine_native_audit_fields_included = 1 [json_name = "engine_native_audit_fields_included"];
+
+  string id = 2;
+
+  string kinesis_stream_name = 3 [json_name = "kinesis_stream_name"];
+
+  string kms_key_id = 4 [json_name = "kms_key_id"];
+
+  string mode = 5;
+
+  string resource_arn = 6 [json_name = "resource_arn"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsRdsClusterEndpoint version is 0
+message AwsRdsClusterEndpoint {
+  string arn = 1;
+
+  string cluster_endpoint_identifier = 2 [json_name = "cluster_endpoint_identifier"];
+
+  string cluster_identifier = 3 [json_name = "cluster_identifier"];
+
+  string custom_endpoint_type = 4 [json_name = "custom_endpoint_type"];
+
+  string endpoint = 5;
+
+  repeated string excluded_members = 6 [json_name = "excluded_members"];
+
+  string id = 7;
+
+  repeated string static_members = 8 [json_name = "static_members"];
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+}
+
+// AwsRdsClusterInstance version is 0
+message AwsRdsClusterInstance {
+  bool apply_immediately = 1 [json_name = "apply_immediately"];
+
+  string arn = 2;
+
+  bool auto_minor_version_upgrade = 3 [json_name = "auto_minor_version_upgrade"];
+
+  string availability_zone = 4 [json_name = "availability_zone"];
+
+  string ca_cert_identifier = 5 [json_name = "ca_cert_identifier"];
+
+  string cluster_identifier = 6 [json_name = "cluster_identifier"];
+
+  bool copy_tags_to_snapshot = 7 [json_name = "copy_tags_to_snapshot"];
+
+  string db_parameter_group_name = 8 [json_name = "db_parameter_group_name"];
+
+  string db_subnet_group_name = 9 [json_name = "db_subnet_group_name"];
+
+  string dbi_resource_id = 10 [json_name = "dbi_resource_id"];
+
+  string endpoint = 11;
+
+  string engine = 12;
+
+  string engine_version = 13 [json_name = "engine_version"];
+
+  string engine_version_actual = 14 [json_name = "engine_version_actual"];
+
+  string id = 15;
+
+  string identifier = 16;
+
+  string identifier_prefix = 17 [json_name = "identifier_prefix"];
+
+  string instance_class = 18 [json_name = "instance_class"];
+
+  string kms_key_id = 19 [json_name = "kms_key_id"];
+
+  int64 monitoring_interval = 20 [json_name = "monitoring_interval"];
+
+  string monitoring_role_arn = 21 [json_name = "monitoring_role_arn"];
+
+  string network_type = 22 [json_name = "network_type"];
+
+  bool performance_insights_enabled = 23 [json_name = "performance_insights_enabled"];
+
+  string performance_insights_kms_key_id = 24 [json_name = "performance_insights_kms_key_id"];
+
+  int64 performance_insights_retention_period = 25 [
+    json_name = "performance_insights_retention_period"
+  ];
+
+  int64 port = 26;
+
+  string preferred_backup_window = 27 [json_name = "preferred_backup_window"];
+
+  string preferred_maintenance_window = 28 [json_name = "preferred_maintenance_window"];
+
+  int64 promotion_tier = 29 [json_name = "promotion_tier"];
+
+  bool publicly_accessible = 30 [json_name = "publicly_accessible"];
+
+  bool storage_encrypted = 31 [json_name = "storage_encrypted"];
+
+  map<string, string> tags = 32;
+
+  map<string, string> tags_all = 33 [json_name = "tags_all"];
+
+  bool writer = 34;
+
+  repeated Timeouts timeouts = 35;
+
+  map<string, string> for_each = 36 [json_name = "for_each"];
+
+  repeated string depends_on = 37 [json_name = "depends_on"];
+
+  int32 count = 38;
+
+  string provider = 39;
+
+  terraform.v1.Lifecycle lifecycle = 40;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsRdsClusterParameterGroup version is 0
+message AwsRdsClusterParameterGroup {
+  string arn = 1;
+
+  string description = 2;
+
+  string family = 3;
+
+  string id = 4;
+
+  string name = 5;
+
+  string name_prefix = 6 [json_name = "name_prefix"];
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  repeated Parameter parameter = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Parameter {
+    string apply_method = 1 [json_name = "apply_method"];
+
+    string name = 2;
+
+    string value = 3;
+  }
+}
+
+// AwsRdsClusterRoleAssociation version is 0
+message AwsRdsClusterRoleAssociation {
+  string db_cluster_identifier = 1 [json_name = "db_cluster_identifier"];
+
+  string feature_name = 2 [json_name = "feature_name"];
+
+  string id = 3;
+
+  string role_arn = 4 [json_name = "role_arn"];
+
+  repeated Timeouts timeouts = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsRdsExportTask version is 0
+message AwsRdsExportTask {
+  repeated string export_only = 1 [json_name = "export_only"];
+
+  string export_task_identifier = 2 [json_name = "export_task_identifier"];
+
+  string failure_cause = 3 [json_name = "failure_cause"];
+
+  string iam_role_arn = 4 [json_name = "iam_role_arn"];
+
+  string id = 5;
+
+  string kms_key_id = 6 [json_name = "kms_key_id"];
+
+  int64 percent_progress = 7 [json_name = "percent_progress"];
+
+  string s3_bucket_name = 8 [json_name = "s3_bucket_name"];
+
+  string s3_prefix = 9 [json_name = "s3_prefix"];
+
+  string snapshot_time = 10 [json_name = "snapshot_time"];
+
+  string source_arn = 11 [json_name = "source_arn"];
+
+  string source_type = 12 [json_name = "source_type"];
+
+  string status = 13;
+
+  string task_end_time = 14 [json_name = "task_end_time"];
+
+  string task_start_time = 15 [json_name = "task_start_time"];
+
+  string warning_message = 16 [json_name = "warning_message"];
+
+  repeated Timeouts timeouts = 17;
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsRdsGlobalCluster version is 0
+message AwsRdsGlobalCluster {
+  string arn = 1;
+
+  string database_name = 2 [json_name = "database_name"];
+
+  bool deletion_protection = 3 [json_name = "deletion_protection"];
+
+  string engine = 4;
+
+  string engine_version = 5 [json_name = "engine_version"];
+
+  string engine_version_actual = 6 [json_name = "engine_version_actual"];
+
+  bool force_destroy = 7 [json_name = "force_destroy"];
+
+  string global_cluster_identifier = 8 [json_name = "global_cluster_identifier"];
+
+  repeated GlobalClusterMembers global_cluster_members = 9 [json_name = "global_cluster_members"];
+
+  string global_cluster_resource_id = 10 [json_name = "global_cluster_resource_id"];
+
+  string id = 11;
+
+  string source_db_cluster_identifier = 12 [json_name = "source_db_cluster_identifier"];
+
+  bool storage_encrypted = 13 [json_name = "storage_encrypted"];
+
+  repeated Timeouts timeouts = 14;
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+
+  message GlobalClusterMembers {
+    // db_cluster_arn: string
+    string db_cluster_arn = 1 [json_name = "db_cluster_arn"];
+
+    // is_writer: bool
+    bool is_writer = 2 [json_name = "is_writer"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsRdsReservedInstance version is 0
+message AwsRdsReservedInstance {
+  string arn = 1;
+
+  string currency_code = 2 [json_name = "currency_code"];
+
+  string db_instance_class = 3 [json_name = "db_instance_class"];
+
+  int64 duration = 4;
+
+  int64 fixed_price = 5 [json_name = "fixed_price"];
+
+  string id = 6;
+
+  int64 instance_count = 7 [json_name = "instance_count"];
+
+  string lease_id = 8 [json_name = "lease_id"];
+
+  bool multi_az = 9 [json_name = "multi_az"];
+
+  string offering_id = 10 [json_name = "offering_id"];
+
+  string offering_type = 11 [json_name = "offering_type"];
+
+  string product_description = 12 [json_name = "product_description"];
+
+  repeated RecurringCharges recurring_charges = 13 [json_name = "recurring_charges"];
+
+  string reservation_id = 14 [json_name = "reservation_id"];
+
+  string start_time = 15 [json_name = "start_time"];
+
+  string state = 16;
+
+  map<string, string> tags = 17;
+
+  map<string, string> tags_all = 18 [json_name = "tags_all"];
+
+  int64 usage_price = 19 [json_name = "usage_price"];
+
+  repeated Timeouts timeouts = 20;
+
+  map<string, string> for_each = 21 [json_name = "for_each"];
+
+  repeated string depends_on = 22 [json_name = "depends_on"];
+
+  int32 count = 23;
+
+  string provider = 24;
+
+  terraform.v1.Lifecycle lifecycle = 25;
+
+  message RecurringCharges {
+    // recurring_charge_amount: number
+    int64 recurring_charge_amount = 1 [json_name = "recurring_charge_amount"];
+
+    // recurring_charge_frequency: string
+    string recurring_charge_frequency = 2 [json_name = "recurring_charge_frequency"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

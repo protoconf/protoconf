@@ -1,0 +1,96 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsOamLink version is 0
+message AwsOamLink {
+  string arn = 1;
+
+  string id = 2;
+
+  string label = 3;
+
+  string label_template = 4 [json_name = "label_template"];
+
+  string link_id = 5 [json_name = "link_id"];
+
+  string link_identifier = 6 [json_name = "link_identifier"];
+
+  repeated string resource_types = 7 [json_name = "resource_types"];
+
+  string sink_arn = 8 [json_name = "sink_arn"];
+
+  map<string, string> tags = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+}
+
+// AwsOamLinks version is 0
+message AwsOamLinks {
+  repeated string arns = 1;
+
+  string id = 2;
+
+  map<string, string> for_each = 3 [json_name = "for_each"];
+
+  repeated string depends_on = 4 [json_name = "depends_on"];
+
+  int32 count = 5;
+
+  string provider = 6;
+
+  terraform.v1.Lifecycle lifecycle = 7;
+}
+
+// AwsOamSink version is 0
+message AwsOamSink {
+  string arn = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  string sink_id = 4 [json_name = "sink_id"];
+
+  string sink_identifier = 5 [json_name = "sink_identifier"];
+
+  map<string, string> tags = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsOamSinks version is 0
+message AwsOamSinks {
+  repeated string arns = 1;
+
+  string id = 2;
+
+  map<string, string> for_each = 3 [json_name = "for_each"];
+
+  repeated string depends_on = 4 [json_name = "depends_on"];
+
+  int32 count = 5;
+
+  string provider = 6;
+
+  terraform.v1.Lifecycle lifecycle = 7;
+}

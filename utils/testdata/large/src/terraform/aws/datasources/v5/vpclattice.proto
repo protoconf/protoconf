@@ -1,0 +1,187 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsVpclatticeAuthPolicy version is 0
+message AwsVpclatticeAuthPolicy {
+  string id = 1;
+
+  string policy = 2;
+
+  string resource_identifier = 3 [json_name = "resource_identifier"];
+
+  string state = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsVpclatticeListener version is 0
+message AwsVpclatticeListener {
+  string arn = 1;
+
+  string created_at = 2 [json_name = "created_at"];
+
+  repeated DefaultAction default_action = 3 [json_name = "default_action"];
+
+  string id = 4;
+
+  string last_updated_at = 5 [json_name = "last_updated_at"];
+
+  string listener_id = 6 [json_name = "listener_id"];
+
+  string listener_identifier = 7 [json_name = "listener_identifier"];
+
+  string name = 8;
+
+  int64 port = 9;
+
+  string protocol = 10;
+
+  string service_arn = 11 [json_name = "service_arn"];
+
+  string service_id = 12 [json_name = "service_id"];
+
+  string service_identifier = 13 [json_name = "service_identifier"];
+
+  map<string, string> tags = 14;
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+
+  message DefaultAction {
+    // fixed_response: list of object
+    repeated FixedResponse fixed_response = 1 [json_name = "fixed_response"];
+
+    // forward: list of object
+    repeated Forward forward = 2;
+
+    message FixedResponse {
+      // status_code: number
+      int64 status_code = 1 [json_name = "status_code"];
+    }
+
+    message Forward {
+      // target_groups: list of object
+      repeated TargetGroups target_groups = 1 [json_name = "target_groups"];
+
+      message TargetGroups {
+        // target_group_identifier: string
+        string target_group_identifier = 1 [json_name = "target_group_identifier"];
+
+        // weight: number
+        int64 weight = 2;
+      }
+    }
+  }
+}
+
+// AwsVpclatticeResourcePolicy version is 0
+message AwsVpclatticeResourcePolicy {
+  string id = 1;
+
+  string policy = 2;
+
+  string resource_arn = 3 [json_name = "resource_arn"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsVpclatticeService version is 0
+message AwsVpclatticeService {
+  string arn = 1;
+
+  string auth_type = 2 [json_name = "auth_type"];
+
+  string certificate_arn = 3 [json_name = "certificate_arn"];
+
+  string custom_domain_name = 4 [json_name = "custom_domain_name"];
+
+  repeated DnsEntry dns_entry = 5 [json_name = "dns_entry"];
+
+  string id = 6;
+
+  string name = 7;
+
+  string service_identifier = 8 [json_name = "service_identifier"];
+
+  string status = 9;
+
+  map<string, string> tags = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message DnsEntry {
+    // domain_name: string
+    string domain_name = 1 [json_name = "domain_name"];
+
+    // hosted_zone_id: string
+    string hosted_zone_id = 2 [json_name = "hosted_zone_id"];
+  }
+}
+
+// AwsVpclatticeServiceNetwork version is 0
+message AwsVpclatticeServiceNetwork {
+  string arn = 1;
+
+  string auth_type = 2 [json_name = "auth_type"];
+
+  string created_at = 3 [json_name = "created_at"];
+
+  string id = 4;
+
+  string last_updated_at = 5 [json_name = "last_updated_at"];
+
+  string name = 6;
+
+  int64 number_of_associated_services = 7 [json_name = "number_of_associated_services"];
+
+  int64 number_of_associated_vpcs = 8 [json_name = "number_of_associated_vpcs"];
+
+  string service_network_identifier = 9 [json_name = "service_network_identifier"];
+
+  map<string, string> tags = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+}

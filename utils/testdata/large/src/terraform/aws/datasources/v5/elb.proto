@@ -1,0 +1,145 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsElb version is 0
+message AwsElb {
+  repeated AccessLogs access_logs = 1 [json_name = "access_logs"];
+
+  string arn = 2;
+
+  repeated string availability_zones = 3 [json_name = "availability_zones"];
+
+  bool connection_draining = 4 [json_name = "connection_draining"];
+
+  int64 connection_draining_timeout = 5 [json_name = "connection_draining_timeout"];
+
+  bool cross_zone_load_balancing = 6 [json_name = "cross_zone_load_balancing"];
+
+  string desync_mitigation_mode = 7 [json_name = "desync_mitigation_mode"];
+
+  string dns_name = 8 [json_name = "dns_name"];
+
+  repeated HealthCheck health_check = 9 [json_name = "health_check"];
+
+  string id = 10;
+
+  int64 idle_timeout = 11 [json_name = "idle_timeout"];
+
+  repeated string instances = 12;
+
+  bool internal = 13;
+
+  repeated Listener listener = 14;
+
+  string name = 15;
+
+  repeated string security_groups = 16 [json_name = "security_groups"];
+
+  string source_security_group = 17 [json_name = "source_security_group"];
+
+  string source_security_group_id = 18 [json_name = "source_security_group_id"];
+
+  repeated string subnets = 19;
+
+  map<string, string> tags = 20;
+
+  string zone_id = 21 [json_name = "zone_id"];
+
+  map<string, string> for_each = 22 [json_name = "for_each"];
+
+  repeated string depends_on = 23 [json_name = "depends_on"];
+
+  int32 count = 24;
+
+  string provider = 25;
+
+  terraform.v1.Lifecycle lifecycle = 26;
+
+  message AccessLogs {
+    // bucket: string
+    string bucket = 1;
+
+    // bucket_prefix: string
+    string bucket_prefix = 2 [json_name = "bucket_prefix"];
+
+    // enabled: bool
+    bool enabled = 3;
+
+    // interval: number
+    int64 interval = 4;
+  }
+
+  message HealthCheck {
+    // healthy_threshold: number
+    int64 healthy_threshold = 1 [json_name = "healthy_threshold"];
+
+    // interval: number
+    int64 interval = 2;
+
+    // target: string
+    string target = 3;
+
+    // timeout: number
+    int64 timeout = 4;
+
+    // unhealthy_threshold: number
+    int64 unhealthy_threshold = 5 [json_name = "unhealthy_threshold"];
+  }
+
+  message Listener {
+    // instance_port: number
+    int64 instance_port = 1 [json_name = "instance_port"];
+
+    // instance_protocol: string
+    string instance_protocol = 2 [json_name = "instance_protocol"];
+
+    // lb_port: number
+    int64 lb_port = 3 [json_name = "lb_port"];
+
+    // lb_protocol: string
+    string lb_protocol = 4 [json_name = "lb_protocol"];
+
+    // ssl_certificate_id: string
+    string ssl_certificate_id = 5 [json_name = "ssl_certificate_id"];
+  }
+}
+
+// AwsElbHostedZoneId version is 0
+message AwsElbHostedZoneId {
+  string id = 1;
+
+  string region = 2;
+
+  map<string, string> for_each = 3 [json_name = "for_each"];
+
+  repeated string depends_on = 4 [json_name = "depends_on"];
+
+  int32 count = 5;
+
+  string provider = 6;
+
+  terraform.v1.Lifecycle lifecycle = 7;
+}
+
+// AwsElbServiceAccount version is 0
+message AwsElbServiceAccount {
+  string arn = 1;
+
+  string id = 2;
+
+  string region = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}

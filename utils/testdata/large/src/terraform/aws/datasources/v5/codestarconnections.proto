@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsCodestarconnectionsConnection version is 0
+message AwsCodestarconnectionsConnection {
+  string arn = 1;
+
+  string connection_status = 2 [json_name = "connection_status"];
+
+  string host_arn = 3 [json_name = "host_arn"];
+
+  string id = 4;
+
+  string name = 5;
+
+  string provider_type = 6 [json_name = "provider_type"];
+
+  map<string, string> tags = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}

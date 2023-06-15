@@ -1,0 +1,321 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsKmsAlias version is 0
+message AwsKmsAlias {
+  string arn = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  string name_prefix = 4 [json_name = "name_prefix"];
+
+  string target_key_arn = 5 [json_name = "target_key_arn"];
+
+  string target_key_id = 6 [json_name = "target_key_id"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsKmsCiphertext version is 0
+message AwsKmsCiphertext {
+  string ciphertext_blob = 1 [json_name = "ciphertext_blob"];
+
+  map<string, string> context = 2;
+
+  string id = 3;
+
+  string key_id = 4 [json_name = "key_id"];
+
+  string plaintext = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsKmsCustomKeyStore version is 0
+message AwsKmsCustomKeyStore {
+  string cloud_hsm_cluster_id = 1 [json_name = "cloud_hsm_cluster_id"];
+
+  string custom_key_store_name = 2 [json_name = "custom_key_store_name"];
+
+  string id = 3;
+
+  string key_store_password = 4 [json_name = "key_store_password"];
+
+  string trust_anchor_certificate = 5 [json_name = "trust_anchor_certificate"];
+
+  repeated Timeouts timeouts = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsKmsExternalKey version is 0
+message AwsKmsExternalKey {
+  string arn = 1;
+
+  bool bypass_policy_lockout_safety_check = 2 [json_name = "bypass_policy_lockout_safety_check"];
+
+  int64 deletion_window_in_days = 3 [json_name = "deletion_window_in_days"];
+
+  string description = 4;
+
+  bool enabled = 5;
+
+  string expiration_model = 6 [json_name = "expiration_model"];
+
+  string id = 7;
+
+  string key_material_base64 = 8 [json_name = "key_material_base64"];
+
+  string key_state = 9 [json_name = "key_state"];
+
+  string key_usage = 10 [json_name = "key_usage"];
+
+  bool multi_region = 11 [json_name = "multi_region"];
+
+  string policy = 12;
+
+  map<string, string> tags = 13;
+
+  map<string, string> tags_all = 14 [json_name = "tags_all"];
+
+  string valid_to = 15 [json_name = "valid_to"];
+
+  map<string, string> for_each = 16 [json_name = "for_each"];
+
+  repeated string depends_on = 17 [json_name = "depends_on"];
+
+  int32 count = 18;
+
+  string provider = 19;
+
+  terraform.v1.Lifecycle lifecycle = 20;
+}
+
+// AwsKmsGrant version is 0
+message AwsKmsGrant {
+  repeated string grant_creation_tokens = 1 [json_name = "grant_creation_tokens"];
+
+  string grant_id = 2 [json_name = "grant_id"];
+
+  string grant_token = 3 [json_name = "grant_token"];
+
+  string grantee_principal = 4 [json_name = "grantee_principal"];
+
+  string id = 5;
+
+  string key_id = 6 [json_name = "key_id"];
+
+  string name = 7;
+
+  repeated string operations = 8;
+
+  bool retire_on_delete = 9 [json_name = "retire_on_delete"];
+
+  string retiring_principal = 10 [json_name = "retiring_principal"];
+
+  repeated Constraints constraints = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message Constraints {
+    map<string, string> encryption_context_equals = 1 [json_name = "encryption_context_equals"];
+
+    map<string, string> encryption_context_subset = 2 [json_name = "encryption_context_subset"];
+  }
+}
+
+// AwsKmsKey version is 0
+message AwsKmsKey {
+  string arn = 1;
+
+  bool bypass_policy_lockout_safety_check = 2 [json_name = "bypass_policy_lockout_safety_check"];
+
+  string custom_key_store_id = 3 [json_name = "custom_key_store_id"];
+
+  string customer_master_key_spec = 4 [json_name = "customer_master_key_spec"];
+
+  int64 deletion_window_in_days = 5 [json_name = "deletion_window_in_days"];
+
+  string description = 6;
+
+  bool enable_key_rotation = 7 [json_name = "enable_key_rotation"];
+
+  string id = 8;
+
+  bool is_enabled = 9 [json_name = "is_enabled"];
+
+  string key_id = 10 [json_name = "key_id"];
+
+  string key_usage = 11 [json_name = "key_usage"];
+
+  bool multi_region = 12 [json_name = "multi_region"];
+
+  string policy = 13;
+
+  map<string, string> tags = 14;
+
+  map<string, string> tags_all = 15 [json_name = "tags_all"];
+
+  map<string, string> for_each = 16 [json_name = "for_each"];
+
+  repeated string depends_on = 17 [json_name = "depends_on"];
+
+  int32 count = 18;
+
+  string provider = 19;
+
+  terraform.v1.Lifecycle lifecycle = 20;
+}
+
+// AwsKmsKeyPolicy version is 0
+message AwsKmsKeyPolicy {
+  bool bypass_policy_lockout_safety_check = 1 [json_name = "bypass_policy_lockout_safety_check"];
+
+  string id = 2;
+
+  string key_id = 3 [json_name = "key_id"];
+
+  string policy = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsKmsReplicaExternalKey version is 0
+message AwsKmsReplicaExternalKey {
+  string arn = 1;
+
+  bool bypass_policy_lockout_safety_check = 2 [json_name = "bypass_policy_lockout_safety_check"];
+
+  int64 deletion_window_in_days = 3 [json_name = "deletion_window_in_days"];
+
+  string description = 4;
+
+  bool enabled = 5;
+
+  string expiration_model = 6 [json_name = "expiration_model"];
+
+  string id = 7;
+
+  string key_id = 8 [json_name = "key_id"];
+
+  string key_material_base64 = 9 [json_name = "key_material_base64"];
+
+  string key_state = 10 [json_name = "key_state"];
+
+  string key_usage = 11 [json_name = "key_usage"];
+
+  string policy = 12;
+
+  string primary_key_arn = 13 [json_name = "primary_key_arn"];
+
+  map<string, string> tags = 14;
+
+  map<string, string> tags_all = 15 [json_name = "tags_all"];
+
+  string valid_to = 16 [json_name = "valid_to"];
+
+  map<string, string> for_each = 17 [json_name = "for_each"];
+
+  repeated string depends_on = 18 [json_name = "depends_on"];
+
+  int32 count = 19;
+
+  string provider = 20;
+
+  terraform.v1.Lifecycle lifecycle = 21;
+}
+
+// AwsKmsReplicaKey version is 0
+message AwsKmsReplicaKey {
+  string arn = 1;
+
+  bool bypass_policy_lockout_safety_check = 2 [json_name = "bypass_policy_lockout_safety_check"];
+
+  int64 deletion_window_in_days = 3 [json_name = "deletion_window_in_days"];
+
+  string description = 4;
+
+  bool enabled = 5;
+
+  string id = 6;
+
+  string key_id = 7 [json_name = "key_id"];
+
+  bool key_rotation_enabled = 8 [json_name = "key_rotation_enabled"];
+
+  string key_spec = 9 [json_name = "key_spec"];
+
+  string key_usage = 10 [json_name = "key_usage"];
+
+  string policy = 11;
+
+  string primary_key_arn = 12 [json_name = "primary_key_arn"];
+
+  map<string, string> tags = 13;
+
+  map<string, string> tags_all = 14 [json_name = "tags_all"];
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+}

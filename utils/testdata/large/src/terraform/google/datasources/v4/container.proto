@@ -1,0 +1,1399 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.datasources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleContainerAnalysisNoteIamPolicy version is 0
+message GoogleContainerAnalysisNoteIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string note = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// GoogleContainerAttachedInstallManifest version is 0
+message GoogleContainerAttachedInstallManifest {
+  string cluster_id = 1 [json_name = "cluster_id"];
+
+  string id = 2;
+
+  string location = 3;
+
+  string manifest = 4;
+
+  string platform_version = 5 [json_name = "platform_version"];
+
+  string project = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleContainerAttachedVersions version is 0
+message GoogleContainerAttachedVersions {
+  string id = 1;
+
+  string location = 2;
+
+  string project = 3;
+
+  repeated string valid_versions = 4 [json_name = "valid_versions"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// GoogleContainerAwsVersions version is 0
+message GoogleContainerAwsVersions {
+  string id = 1;
+
+  string location = 2;
+
+  string project = 3;
+
+  repeated string supported_regions = 4 [json_name = "supported_regions"];
+
+  repeated string valid_versions = 5 [json_name = "valid_versions"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// GoogleContainerAzureVersions version is 0
+message GoogleContainerAzureVersions {
+  string id = 1;
+
+  string location = 2;
+
+  string project = 3;
+
+  repeated string supported_regions = 4 [json_name = "supported_regions"];
+
+  repeated string valid_versions = 5 [json_name = "valid_versions"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// GoogleContainerCluster version is 0
+message GoogleContainerCluster {
+  // The configuration for addons supported by GKE.
+  repeated AddonsConfig addons_config = 1 [json_name = "addons_config"];
+
+  // Configuration for the Google Groups for GKE feature.
+  repeated AuthenticatorGroupsConfig authenticator_groups_config = 2 [json_name = "authenticator_groups_config"];
+
+  // Configuration options for the Binary Authorization feature.
+  repeated BinaryAuthorization binary_authorization = 3 [json_name = "binary_authorization"];
+
+  // Per-cluster configuration of Node Auto-Provisioning with Cluster Autoscaler to automatically adjust the size of the cluster and create/delete node pools based on the current needs of the cluster's workload. See the guide to using Node Auto-Provisioning for more details.
+  repeated ClusterAutoscaling cluster_autoscaling = 4 [json_name = "cluster_autoscaling"];
+
+  // The IP address range of the Kubernetes pods in this cluster in CIDR notation (e.g. 10.96.0.0/14). Leave blank to have one automatically chosen or specify a /14 block in 10.0.0.0/8. This field will only work for routes-based clusters, where ip_allocation_policy is not defined.
+  string cluster_ipv4_cidr = 5 [json_name = "cluster_ipv4_cidr"];
+
+  // Configuration for the confidential nodes feature, which makes nodes run on confidential VMs. Warning: This configuration can't be changed (or added/removed) after cluster creation without deleting and recreating the entire cluster.
+  repeated ConfidentialNodes confidential_nodes = 6 [json_name = "confidential_nodes"];
+
+  // Cost management configuration for the cluster.
+  repeated CostManagementConfig cost_management_config = 7 [json_name = "cost_management_config"];
+
+  // Application-layer Secrets Encryption settings. The object format is {state = string, key_name = string}. Valid values of state are: "ENCRYPTED"; "DECRYPTED". key_name is the name of a CloudKMS key.
+  repeated DatabaseEncryption database_encryption = 8 [json_name = "database_encryption"];
+
+  // The desired datapath provider for this cluster. By default, uses the IPTables-based kube-proxy implementation.
+  string datapath_provider = 9 [json_name = "datapath_provider"];
+
+  // The default maximum number of pods per node in this cluster. This doesn't work on "routes-based" clusters, clusters that don't have IP Aliasing enabled.
+  int64 default_max_pods_per_node = 10 [json_name = "default_max_pods_per_node"];
+
+  // Whether the cluster disables default in-node sNAT rules. In-node sNAT rules will be disabled when defaultSnatStatus is disabled.
+  repeated DefaultSnatStatus default_snat_status = 11 [json_name = "default_snat_status"];
+
+  // Description of the cluster.
+  string description = 12;
+
+  // Configuration for Cloud DNS for Kubernetes Engine.
+  repeated DnsConfig dns_config = 13 [json_name = "dns_config"];
+
+  // Enable Autopilot for this cluster.
+  bool enable_autopilot = 14 [json_name = "enable_autopilot"];
+
+  // Enable Binary Authorization for this cluster. If enabled, all container images will be validated by Google Binary Authorization.
+  bool enable_binary_authorization = 15 [json_name = "enable_binary_authorization"];
+
+  // Whether Intra-node visibility is enabled for this cluster. This makes same node pod to pod traffic visible for VPC network.
+  bool enable_intranode_visibility = 16 [json_name = "enable_intranode_visibility"];
+
+  // Whether to enable Kubernetes Alpha features for this cluster. Note that when this option is enabled, the cluster cannot be upgraded and will be automatically deleted after 30 days.
+  bool enable_kubernetes_alpha = 17 [json_name = "enable_kubernetes_alpha"];
+
+  // Whether L4ILB Subsetting is enabled for this cluster.
+  bool enable_l4_ilb_subsetting = 18 [json_name = "enable_l4_ilb_subsetting"];
+
+  // Whether the ABAC authorizer is enabled for this cluster. When enabled, identities in the system, including service accounts, nodes, and controllers, will have statically granted permissions beyond those provided by the RBAC configuration or IAM. Defaults to false.
+  bool enable_legacy_abac = 19 [json_name = "enable_legacy_abac"];
+
+  // Enable Shielded Nodes features on all nodes in this cluster. Defaults to true.
+  bool enable_shielded_nodes = 20 [json_name = "enable_shielded_nodes"];
+
+  // Whether to enable Cloud TPU resources in this cluster.
+  bool enable_tpu = 21 [json_name = "enable_tpu"];
+
+  // The IP address of this cluster's Kubernetes master.
+  string endpoint = 22;
+
+  // Configuration for GKE Gateway API controller.
+  repeated GatewayApiConfig gateway_api_config = 23 [json_name = "gateway_api_config"];
+
+  string id = 24;
+
+  // The number of nodes to create in this cluster's default node pool. In regional or multi-zonal clusters, this is the number of nodes per zone. Must be set if node_pool is not set. If you're using google_container_node_pool objects with no default node pool, you'll need to set this to a value of at least 1, alongside setting remove_default_node_pool to true.
+  int64 initial_node_count = 25 [json_name = "initial_node_count"];
+
+  // Configuration of cluster IP allocation for VPC-native clusters. Adding this block enables IP aliasing, making the cluster VPC-native instead of routes-based.
+  repeated IpAllocationPolicy ip_allocation_policy = 26 [json_name = "ip_allocation_policy"];
+
+  // The fingerprint of the set of labels for this cluster.
+  string label_fingerprint = 27 [json_name = "label_fingerprint"];
+
+  // The location (region or zone) in which the cluster master will be created, as well as the default node location. If you specify a zone (such as us-central1-a), the cluster will be a zonal cluster with a single cluster master. If you specify a region (such as us-west1), the cluster will be a regional cluster with multiple masters spread across zones in the region, and with default node locations in those zones as well.
+  string location = 28;
+
+  // Logging configuration for the cluster.
+  repeated LoggingConfig logging_config = 29 [json_name = "logging_config"];
+
+  // The logging service that the cluster should write logs to. Available options include logging.googleapis.com(Legacy Stackdriver), logging.googleapis.com/kubernetes(Stackdriver Kubernetes Engine Logging), and none. Defaults to logging.googleapis.com/kubernetes.
+  string logging_service = 30 [json_name = "logging_service"];
+
+  // The maintenance policy to use for the cluster.
+  repeated MaintenancePolicy maintenance_policy = 31 [json_name = "maintenance_policy"];
+
+  // The authentication information for accessing the Kubernetes master. Some values in this block are only returned by the API if your service account has permission to get credentials for your GKE cluster. If you see an unexpected diff unsetting your client cert, ensure you have the container.clusters.getCredentials permission.
+  repeated MasterAuth master_auth = 32 [json_name = "master_auth"];
+
+  // The desired configuration options for master authorized networks. Omit the nested cidr_blocks attribute to disallow external access (except the cluster node IPs, which GKE automatically whitelists).
+  repeated MasterAuthorizedNetworksConfig master_authorized_networks_config = 33 [json_name = "master_authorized_networks_config"];
+
+  // The current version of the master in the cluster. This may be different than the min_master_version set in the config if the master has been updated by GKE.
+  string master_version = 34 [json_name = "master_version"];
+
+  // If set, and enable_certificates=true, the GKE Workload Identity Certificates controller and node agent will be deployed in the cluster.
+  repeated MeshCertificates mesh_certificates = 35 [json_name = "mesh_certificates"];
+
+  // The minimum version of the master. GKE will auto-update the master to new versions, so this does not guarantee the current master version--use the read-only master_version field to obtain that. If unset, the cluster's version will be set by GKE to the version of the most recent official release (which is not necessarily the latest version).
+  string min_master_version = 36 [json_name = "min_master_version"];
+
+  // Monitoring configuration for the cluster.
+  repeated MonitoringConfig monitoring_config = 37 [json_name = "monitoring_config"];
+
+  // The monitoring service that the cluster should write metrics to. Automatically send metrics from pods in the cluster to the Google Cloud Monitoring API. VM metrics will be collected by Google Compute Engine regardless of this setting Available options include monitoring.googleapis.com(Legacy Stackdriver), monitoring.googleapis.com/kubernetes(Stackdriver Kubernetes Engine Monitoring), and none. Defaults to monitoring.googleapis.com/kubernetes.
+  string monitoring_service = 38 [json_name = "monitoring_service"];
+
+  // The name of the cluster, unique within the project and location.
+  string name = 39;
+
+  // The name or self_link of the Google Compute Engine network to which the cluster is connected. For Shared VPC, set this to the self link of the shared network.
+  string network = 40;
+
+  // Configuration options for the NetworkPolicy feature.
+  repeated NetworkPolicy network_policy = 41 [json_name = "network_policy"];
+
+  // Determines whether alias IPs or routes will be used for pod IPs in the cluster.
+  string networking_mode = 42 [json_name = "networking_mode"];
+
+  // The configuration of the nodepool
+  repeated NodeConfig node_config = 43 [json_name = "node_config"];
+
+  // The list of zones in which the cluster's nodes are located. Nodes must be in the region of their regional cluster or in the same region as their cluster's zone for zonal clusters. If this is specified for a zonal cluster, omit the cluster's zone.
+  repeated string node_locations = 44 [json_name = "node_locations"];
+
+  // List of node pools associated with this cluster. See google_container_node_pool for schema. Warning: node pools defined inside a cluster can't be changed (or added/removed) after cluster creation without deleting and recreating the entire cluster. Unless you absolutely need the ability to say "these are the only node pools associated with this cluster", use the google_container_node_pool resource instead of this property.
+  repeated NodePool node_pool = 45 [json_name = "node_pool"];
+
+  // The default nodel pool settings for the entire cluster.
+  repeated NodePoolDefaults node_pool_defaults = 46 [json_name = "node_pool_defaults"];
+
+  // The Kubernetes version on the nodes. Must either be unset or set to the same value as min_master_version on create. Defaults to the default version set by GKE which is not necessarily the latest version. This only affects nodes in the default node pool. While a fuzzy version can be specified, it's recommended that you specify explicit versions as Terraform will see spurious diffs when fuzzy versions are used. See the google_container_engine_versions data source's version_prefix field to approximate fuzzy versions in a Terraform-compatible way. To update nodes in other node pools, use the version attribute on the node pool.
+  string node_version = 47 [json_name = "node_version"];
+
+  // The notification config for sending cluster upgrade notifications
+  repeated NotificationConfig notification_config = 48 [json_name = "notification_config"];
+
+  string operation = 49;
+
+  // Configuration for private clusters, clusters with private nodes.
+  repeated PrivateClusterConfig private_cluster_config = 50 [json_name = "private_cluster_config"];
+
+  // The desired state of IPv6 connectivity to Google Services. By default, no private IPv6 access to or from Google Services (all access will be via IPv4).
+  string private_ipv6_google_access = 51 [json_name = "private_ipv6_google_access"];
+
+  // The ID of the project in which the resource belongs. If it is not provided, the provider project is used.
+  string project = 52;
+
+  // Configuration options for the Release channel feature, which provide more control over automatic upgrades of your GKE clusters. Note that removing this field from your config will not unenroll it. Instead, use the "UNSPECIFIED" channel.
+  repeated ReleaseChannel release_channel = 53 [json_name = "release_channel"];
+
+  // If true, deletes the default node pool upon cluster creation. If you're using google_container_node_pool resources with no default node pool, this should be set to true, alongside setting initial_node_count to at least 1.
+  bool remove_default_node_pool = 54 [json_name = "remove_default_node_pool"];
+
+  // The GCE resource labels (a map of key/value pairs) to be applied to the cluster.
+  map<string, string> resource_labels = 55 [json_name = "resource_labels"];
+
+  // Configuration for the ResourceUsageExportConfig feature.
+  repeated ResourceUsageExportConfig resource_usage_export_config = 56 [json_name = "resource_usage_export_config"];
+
+  // Server-defined URL for the resource.
+  string self_link = 57 [json_name = "self_link"];
+
+  // If set, and enabled=true, services with external ips field will not be blocked
+  repeated ServiceExternalIpsConfig service_external_ips_config = 58 [json_name = "service_external_ips_config"];
+
+  // The IP address range of the Kubernetes services in this cluster, in CIDR notation (e.g. 1.2.3.4/29). Service addresses are typically put in the last /16 from the container CIDR.
+  string services_ipv4_cidr = 59 [json_name = "services_ipv4_cidr"];
+
+  // The name or self_link of the Google Compute Engine subnetwork in which the cluster's instances are launched.
+  string subnetwork = 60;
+
+  // The IP address range of the Cloud TPUs in this cluster, in CIDR notation (e.g. 1.2.3.4/29).
+  string tpu_ipv4_cidr_block = 61 [json_name = "tpu_ipv4_cidr_block"];
+
+  // Vertical Pod Autoscaling automatically adjusts the resources of pods controlled by it.
+  repeated VerticalPodAutoscaling vertical_pod_autoscaling = 62 [json_name = "vertical_pod_autoscaling"];
+
+  // Configuration for the use of Kubernetes Service Accounts in GCP IAM policies.
+  repeated WorkloadIdentityConfig workload_identity_config = 63 [json_name = "workload_identity_config"];
+
+  map<string, string> for_each = 64 [json_name = "for_each"];
+
+  repeated string depends_on = 65 [json_name = "depends_on"];
+
+  int32 count = 66;
+
+  string provider = 67;
+
+  terraform.v1.Lifecycle lifecycle = 68;
+
+  message AddonsConfig {
+    // cloudrun_config: list of object
+    repeated CloudrunConfig cloudrun_config = 1 [json_name = "cloudrun_config"];
+
+    // config_connector_config: list of object
+    repeated ConfigConnectorConfig config_connector_config = 2 [json_name = "config_connector_config"];
+
+    // dns_cache_config: list of object
+    repeated DnsCacheConfig dns_cache_config = 3 [json_name = "dns_cache_config"];
+
+    // gce_persistent_disk_csi_driver_config: list of object
+    repeated GcePersistentDiskCsiDriverConfig gce_persistent_disk_csi_driver_config = 4 [
+      json_name = "gce_persistent_disk_csi_driver_config"
+    ];
+
+    // gcp_filestore_csi_driver_config: list of object
+    repeated GcpFilestoreCsiDriverConfig gcp_filestore_csi_driver_config = 5 [json_name = "gcp_filestore_csi_driver_config"];
+
+    // gke_backup_agent_config: list of object
+    repeated GkeBackupAgentConfig gke_backup_agent_config = 6 [json_name = "gke_backup_agent_config"];
+
+    // horizontal_pod_autoscaling: list of object
+    repeated HorizontalPodAutoscaling horizontal_pod_autoscaling = 7 [json_name = "horizontal_pod_autoscaling"];
+
+    // http_load_balancing: list of object
+    repeated HttpLoadBalancing http_load_balancing = 8 [json_name = "http_load_balancing"];
+
+    // network_policy_config: list of object
+    repeated NetworkPolicyConfig network_policy_config = 9 [json_name = "network_policy_config"];
+
+    message CloudrunConfig {
+      // disabled: bool
+      bool disabled = 1;
+
+      // load_balancer_type: string
+      string load_balancer_type = 2 [json_name = "load_balancer_type"];
+    }
+
+    message ConfigConnectorConfig {
+      // enabled: bool
+      bool enabled = 1;
+    }
+
+    message DnsCacheConfig {
+      // enabled: bool
+      bool enabled = 1;
+    }
+
+    message GcePersistentDiskCsiDriverConfig {
+      // enabled: bool
+      bool enabled = 1;
+    }
+
+    message GcpFilestoreCsiDriverConfig {
+      // enabled: bool
+      bool enabled = 1;
+    }
+
+    message GkeBackupAgentConfig {
+      // enabled: bool
+      bool enabled = 1;
+    }
+
+    message HorizontalPodAutoscaling {
+      // disabled: bool
+      bool disabled = 1;
+    }
+
+    message HttpLoadBalancing {
+      // disabled: bool
+      bool disabled = 1;
+    }
+
+    message NetworkPolicyConfig {
+      // disabled: bool
+      bool disabled = 1;
+    }
+  }
+
+  message AuthenticatorGroupsConfig {
+    // security_group: string
+    string security_group = 1 [json_name = "security_group"];
+  }
+
+  message BinaryAuthorization {
+    // enabled: bool
+    bool enabled = 1;
+
+    // evaluation_mode: string
+    string evaluation_mode = 2 [json_name = "evaluation_mode"];
+  }
+
+  message ClusterAutoscaling {
+    // auto_provisioning_defaults: list of object
+    repeated AutoProvisioningDefaults auto_provisioning_defaults = 1 [json_name = "auto_provisioning_defaults"];
+
+    // enabled: bool
+    bool enabled = 2;
+
+    // resource_limits: list of object
+    repeated ResourceLimits resource_limits = 3 [json_name = "resource_limits"];
+
+    message AutoProvisioningDefaults {
+      // boot_disk_kms_key: string
+      string boot_disk_kms_key = 1 [json_name = "boot_disk_kms_key"];
+
+      // disk_size: number
+      int64 disk_size = 2 [json_name = "disk_size"];
+
+      // disk_type: string
+      string disk_type = 3 [json_name = "disk_type"];
+
+      // image_type: string
+      string image_type = 4 [json_name = "image_type"];
+
+      // management: list of object
+      repeated Management management = 5;
+
+      // min_cpu_platform: string
+      string min_cpu_platform = 6 [json_name = "min_cpu_platform"];
+
+      // oauth_scopes: list of string
+      repeated string oauth_scopes = 7 [json_name = "oauth_scopes"];
+
+      // service_account: string
+      string service_account = 8 [json_name = "service_account"];
+
+      // shielded_instance_config: list of object
+      repeated ShieldedInstanceConfig shielded_instance_config = 9 [json_name = "shielded_instance_config"];
+
+      // upgrade_settings: list of object
+      repeated UpgradeSettings upgrade_settings = 10 [json_name = "upgrade_settings"];
+
+      message Management {
+        // auto_repair: bool
+        bool auto_repair = 1 [json_name = "auto_repair"];
+
+        // auto_upgrade: bool
+        bool auto_upgrade = 2 [json_name = "auto_upgrade"];
+
+        // upgrade_options: list of object
+        repeated UpgradeOptions upgrade_options = 3 [json_name = "upgrade_options"];
+
+        message UpgradeOptions {
+          // auto_upgrade_start_time: string
+          string auto_upgrade_start_time = 1 [json_name = "auto_upgrade_start_time"];
+
+          // description: string
+          string description = 2;
+        }
+      }
+
+      message ShieldedInstanceConfig {
+        // enable_integrity_monitoring: bool
+        bool enable_integrity_monitoring = 1 [json_name = "enable_integrity_monitoring"];
+
+        // enable_secure_boot: bool
+        bool enable_secure_boot = 2 [json_name = "enable_secure_boot"];
+      }
+
+      message UpgradeSettings {
+        // blue_green_settings: list of object
+        repeated BlueGreenSettings blue_green_settings = 1 [json_name = "blue_green_settings"];
+
+        // max_surge: number
+        int64 max_surge = 2 [json_name = "max_surge"];
+
+        // max_unavailable: number
+        int64 max_unavailable = 3 [json_name = "max_unavailable"];
+
+        // strategy: string
+        string strategy = 4;
+
+        message BlueGreenSettings {
+          // node_pool_soak_duration: string
+          string node_pool_soak_duration = 1 [json_name = "node_pool_soak_duration"];
+
+          // standard_rollout_policy: list of object
+          repeated StandardRolloutPolicy standard_rollout_policy = 2 [json_name = "standard_rollout_policy"];
+
+          message StandardRolloutPolicy {
+            // batch_node_count: number
+            int64 batch_node_count = 1 [json_name = "batch_node_count"];
+
+            // batch_percentage: number
+            int64 batch_percentage = 2 [json_name = "batch_percentage"];
+
+            // batch_soak_duration: string
+            string batch_soak_duration = 3 [json_name = "batch_soak_duration"];
+          }
+        }
+      }
+    }
+
+    message ResourceLimits {
+      // maximum: number
+      int64 maximum = 1;
+
+      // minimum: number
+      int64 minimum = 2;
+
+      // resource_type: string
+      string resource_type = 3 [json_name = "resource_type"];
+    }
+  }
+
+  message ConfidentialNodes {
+    // enabled: bool
+    bool enabled = 1;
+  }
+
+  message CostManagementConfig {
+    // enabled: bool
+    bool enabled = 1;
+  }
+
+  message DatabaseEncryption {
+    // key_name: string
+    string key_name = 1 [json_name = "key_name"];
+
+    // state: string
+    string state = 2;
+  }
+
+  message DefaultSnatStatus {
+    // disabled: bool
+    bool disabled = 1;
+  }
+
+  message DnsConfig {
+    // cluster_dns: string
+    string cluster_dns = 1 [json_name = "cluster_dns"];
+
+    // cluster_dns_domain: string
+    string cluster_dns_domain = 2 [json_name = "cluster_dns_domain"];
+
+    // cluster_dns_scope: string
+    string cluster_dns_scope = 3 [json_name = "cluster_dns_scope"];
+  }
+
+  message GatewayApiConfig {
+    // channel: string
+    string channel = 1;
+  }
+
+  message IpAllocationPolicy {
+    // cluster_ipv4_cidr_block: string
+    string cluster_ipv4_cidr_block = 1 [json_name = "cluster_ipv4_cidr_block"];
+
+    // cluster_secondary_range_name: string
+    string cluster_secondary_range_name = 2 [json_name = "cluster_secondary_range_name"];
+
+    // pod_cidr_overprovision_config: list of object
+    repeated PodCidrOverprovisionConfig pod_cidr_overprovision_config = 3 [json_name = "pod_cidr_overprovision_config"];
+
+    // services_ipv4_cidr_block: string
+    string services_ipv4_cidr_block = 4 [json_name = "services_ipv4_cidr_block"];
+
+    // services_secondary_range_name: string
+    string services_secondary_range_name = 5 [json_name = "services_secondary_range_name"];
+
+    // stack_type: string
+    string stack_type = 6 [json_name = "stack_type"];
+
+    message PodCidrOverprovisionConfig {
+      // disabled: bool
+      bool disabled = 1;
+    }
+  }
+
+  message LoggingConfig {
+    // enable_components: list of string
+    repeated string enable_components = 1 [json_name = "enable_components"];
+  }
+
+  message MaintenancePolicy {
+    // daily_maintenance_window: list of object
+    repeated DailyMaintenanceWindow daily_maintenance_window = 1 [json_name = "daily_maintenance_window"];
+
+    // maintenance_exclusion: set of object
+    repeated MaintenanceExclusion maintenance_exclusion = 2 [json_name = "maintenance_exclusion"];
+
+    // recurring_window: list of object
+    repeated RecurringWindow recurring_window = 3 [json_name = "recurring_window"];
+
+    message DailyMaintenanceWindow {
+      // duration: string
+      string duration = 1;
+
+      // start_time: string
+      string start_time = 2 [json_name = "start_time"];
+    }
+
+    message MaintenanceExclusion {
+      // end_time: string
+      string end_time = 1 [json_name = "end_time"];
+
+      // exclusion_name: string
+      string exclusion_name = 2 [json_name = "exclusion_name"];
+
+      // exclusion_options: list of object
+      repeated ExclusionOptions exclusion_options = 3 [json_name = "exclusion_options"];
+
+      // start_time: string
+      string start_time = 4 [json_name = "start_time"];
+
+      message ExclusionOptions {
+        // scope: string
+        string scope = 1;
+      }
+    }
+
+    message RecurringWindow {
+      // end_time: string
+      string end_time = 1 [json_name = "end_time"];
+
+      // recurrence: string
+      string recurrence = 2;
+
+      // start_time: string
+      string start_time = 3 [json_name = "start_time"];
+    }
+  }
+
+  message MasterAuth {
+    // client_certificate: string
+    string client_certificate = 1 [json_name = "client_certificate"];
+
+    // client_certificate_config: list of object
+    repeated ClientCertificateConfig client_certificate_config = 2 [json_name = "client_certificate_config"];
+
+    // client_key: string
+    string client_key = 3 [json_name = "client_key"];
+
+    // cluster_ca_certificate: string
+    string cluster_ca_certificate = 4 [json_name = "cluster_ca_certificate"];
+
+    message ClientCertificateConfig {
+      // issue_client_certificate: bool
+      bool issue_client_certificate = 1 [json_name = "issue_client_certificate"];
+    }
+  }
+
+  message MasterAuthorizedNetworksConfig {
+    // cidr_blocks: set of object
+    repeated CidrBlocks cidr_blocks = 1 [json_name = "cidr_blocks"];
+
+    // gcp_public_cidrs_access_enabled: bool
+    bool gcp_public_cidrs_access_enabled = 2 [json_name = "gcp_public_cidrs_access_enabled"];
+
+    message CidrBlocks {
+      // cidr_block: string
+      string cidr_block = 1 [json_name = "cidr_block"];
+
+      // display_name: string
+      string display_name = 2 [json_name = "display_name"];
+    }
+  }
+
+  message MeshCertificates {
+    // enable_certificates: bool
+    bool enable_certificates = 1 [json_name = "enable_certificates"];
+  }
+
+  message MonitoringConfig {
+    // enable_components: list of string
+    repeated string enable_components = 1 [json_name = "enable_components"];
+
+    // managed_prometheus: list of object
+    repeated ManagedPrometheus managed_prometheus = 2 [json_name = "managed_prometheus"];
+
+    message ManagedPrometheus {
+      // enabled: bool
+      bool enabled = 1;
+    }
+  }
+
+  message NetworkPolicy {
+    // enabled: bool
+    bool enabled = 1;
+
+    // provider: string
+    string provider = 2;
+  }
+
+  message NodeConfig {
+    // advanced_machine_features: list of object
+    repeated AdvancedMachineFeatures advanced_machine_features = 1 [json_name = "advanced_machine_features"];
+
+    // boot_disk_kms_key: string
+    string boot_disk_kms_key = 2 [json_name = "boot_disk_kms_key"];
+
+    // disk_size_gb: number
+    int64 disk_size_gb = 3 [json_name = "disk_size_gb"];
+
+    // disk_type: string
+    string disk_type = 4 [json_name = "disk_type"];
+
+    // ephemeral_storage_local_ssd_config: list of object
+    repeated EphemeralStorageLocalSsdConfig ephemeral_storage_local_ssd_config = 5 [json_name = "ephemeral_storage_local_ssd_config"];
+
+    // gcfs_config: list of object
+    repeated GcfsConfig gcfs_config = 6 [json_name = "gcfs_config"];
+
+    // guest_accelerator: list of object
+    repeated GuestAccelerator guest_accelerator = 7 [json_name = "guest_accelerator"];
+
+    // gvnic: list of object
+    repeated Gvnic gvnic = 8;
+
+    // image_type: string
+    string image_type = 9 [json_name = "image_type"];
+
+    // kubelet_config: list of object
+    repeated KubeletConfig kubelet_config = 10 [json_name = "kubelet_config"];
+
+    // labels: map of string
+    map<string, string> labels = 11;
+
+    // linux_node_config: list of object
+    repeated LinuxNodeConfig linux_node_config = 12 [json_name = "linux_node_config"];
+
+    // local_nvme_ssd_block_config: list of object
+    repeated LocalNvmeSsdBlockConfig local_nvme_ssd_block_config = 13 [json_name = "local_nvme_ssd_block_config"];
+
+    // local_ssd_count: number
+    int64 local_ssd_count = 14 [json_name = "local_ssd_count"];
+
+    // logging_variant: string
+    string logging_variant = 15 [json_name = "logging_variant"];
+
+    // machine_type: string
+    string machine_type = 16 [json_name = "machine_type"];
+
+    // metadata: map of string
+    map<string, string> metadata = 17;
+
+    // min_cpu_platform: string
+    string min_cpu_platform = 18 [json_name = "min_cpu_platform"];
+
+    // node_group: string
+    string node_group = 19 [json_name = "node_group"];
+
+    // oauth_scopes: set of string
+    repeated string oauth_scopes = 20 [json_name = "oauth_scopes"];
+
+    // preemptible: bool
+    bool preemptible = 21;
+
+    // reservation_affinity: list of object
+    repeated ReservationAffinity reservation_affinity = 22 [json_name = "reservation_affinity"];
+
+    // resource_labels: map of string
+    map<string, string> resource_labels = 23 [json_name = "resource_labels"];
+
+    // service_account: string
+    string service_account = 24 [json_name = "service_account"];
+
+    // shielded_instance_config: list of object
+    repeated ShieldedInstanceConfig shielded_instance_config = 25 [json_name = "shielded_instance_config"];
+
+    // spot: bool
+    bool spot = 26;
+
+    // tags: list of string
+    repeated string tags = 27;
+
+    // taint: list of object
+    repeated Taint taint = 28;
+
+    // workload_metadata_config: list of object
+    repeated WorkloadMetadataConfig workload_metadata_config = 29 [json_name = "workload_metadata_config"];
+
+    message AdvancedMachineFeatures {
+      // threads_per_core: number
+      int64 threads_per_core = 1 [json_name = "threads_per_core"];
+    }
+
+    message EphemeralStorageLocalSsdConfig {
+      // local_ssd_count: number
+      int64 local_ssd_count = 1 [json_name = "local_ssd_count"];
+    }
+
+    message GcfsConfig {
+      // enabled: bool
+      bool enabled = 1;
+    }
+
+    message GuestAccelerator {
+      // count: number
+      int64 count = 1;
+
+      // gpu_partition_size: string
+      string gpu_partition_size = 2 [json_name = "gpu_partition_size"];
+
+      // gpu_sharing_config: list of object
+      repeated GpuSharingConfig gpu_sharing_config = 3 [json_name = "gpu_sharing_config"];
+
+      // type: string
+      string type = 4;
+
+      message GpuSharingConfig {
+        // gpu_sharing_strategy: string
+        string gpu_sharing_strategy = 1 [json_name = "gpu_sharing_strategy"];
+
+        // max_shared_clients_per_gpu: number
+        int64 max_shared_clients_per_gpu = 2 [json_name = "max_shared_clients_per_gpu"];
+      }
+    }
+
+    message Gvnic {
+      // enabled: bool
+      bool enabled = 1;
+    }
+
+    message KubeletConfig {
+      // cpu_cfs_quota: bool
+      bool cpu_cfs_quota = 1 [json_name = "cpu_cfs_quota"];
+
+      // cpu_cfs_quota_period: string
+      string cpu_cfs_quota_period = 2 [json_name = "cpu_cfs_quota_period"];
+
+      // cpu_manager_policy: string
+      string cpu_manager_policy = 3 [json_name = "cpu_manager_policy"];
+
+      // pod_pids_limit: number
+      int64 pod_pids_limit = 4 [json_name = "pod_pids_limit"];
+    }
+
+    message LinuxNodeConfig {
+      // sysctls: map of string
+      map<string, string> sysctls = 1;
+    }
+
+    message LocalNvmeSsdBlockConfig {
+      // local_ssd_count: number
+      int64 local_ssd_count = 1 [json_name = "local_ssd_count"];
+    }
+
+    message ReservationAffinity {
+      // consume_reservation_type: string
+      string consume_reservation_type = 1 [json_name = "consume_reservation_type"];
+
+      // key: string
+      string key = 2;
+
+      // values: set of string
+      repeated string values = 3;
+    }
+
+    message ShieldedInstanceConfig {
+      // enable_integrity_monitoring: bool
+      bool enable_integrity_monitoring = 1 [json_name = "enable_integrity_monitoring"];
+
+      // enable_secure_boot: bool
+      bool enable_secure_boot = 2 [json_name = "enable_secure_boot"];
+    }
+
+    message Taint {
+      // effect: string
+      string effect = 1;
+
+      // key: string
+      string key = 2;
+
+      // value: string
+      string value = 3;
+    }
+
+    message WorkloadMetadataConfig {
+      // mode: string
+      string mode = 1;
+    }
+  }
+
+  message NodePool {
+    // autoscaling: list of object
+    repeated Autoscaling autoscaling = 1;
+
+    // initial_node_count: number
+    int64 initial_node_count = 2 [json_name = "initial_node_count"];
+
+    // instance_group_urls: list of string
+    repeated string instance_group_urls = 3 [json_name = "instance_group_urls"];
+
+    // managed_instance_group_urls: list of string
+    repeated string managed_instance_group_urls = 4 [json_name = "managed_instance_group_urls"];
+
+    // management: list of object
+    repeated Management management = 5;
+
+    // max_pods_per_node: number
+    int64 max_pods_per_node = 6 [json_name = "max_pods_per_node"];
+
+    // name: string
+    string name = 7;
+
+    // name_prefix: string
+    string name_prefix = 8 [json_name = "name_prefix"];
+
+    // network_config: list of object
+    repeated NetworkConfig network_config = 9 [json_name = "network_config"];
+
+    // node_config: list of object
+    repeated NodeConfig node_config = 10 [json_name = "node_config"];
+
+    // node_count: number
+    int64 node_count = 11 [json_name = "node_count"];
+
+    // node_locations: set of string
+    repeated string node_locations = 12 [json_name = "node_locations"];
+
+    // placement_policy: list of object
+    repeated PlacementPolicy placement_policy = 13 [json_name = "placement_policy"];
+
+    // upgrade_settings: list of object
+    repeated UpgradeSettings upgrade_settings = 14 [json_name = "upgrade_settings"];
+
+    // version: string
+    string version = 15;
+
+    message Autoscaling {
+      // location_policy: string
+      string location_policy = 1 [json_name = "location_policy"];
+
+      // max_node_count: number
+      int64 max_node_count = 2 [json_name = "max_node_count"];
+
+      // min_node_count: number
+      int64 min_node_count = 3 [json_name = "min_node_count"];
+
+      // total_max_node_count: number
+      int64 total_max_node_count = 4 [json_name = "total_max_node_count"];
+
+      // total_min_node_count: number
+      int64 total_min_node_count = 5 [json_name = "total_min_node_count"];
+    }
+
+    message Management {
+      // auto_repair: bool
+      bool auto_repair = 1 [json_name = "auto_repair"];
+
+      // auto_upgrade: bool
+      bool auto_upgrade = 2 [json_name = "auto_upgrade"];
+    }
+
+    message NetworkConfig {
+      // create_pod_range: bool
+      bool create_pod_range = 1 [json_name = "create_pod_range"];
+
+      // enable_private_nodes: bool
+      bool enable_private_nodes = 2 [json_name = "enable_private_nodes"];
+
+      // pod_cidr_overprovision_config: list of object
+      repeated PodCidrOverprovisionConfig pod_cidr_overprovision_config = 3 [json_name = "pod_cidr_overprovision_config"];
+
+      // pod_ipv4_cidr_block: string
+      string pod_ipv4_cidr_block = 4 [json_name = "pod_ipv4_cidr_block"];
+
+      // pod_range: string
+      string pod_range = 5 [json_name = "pod_range"];
+
+      message PodCidrOverprovisionConfig {
+        // disabled: bool
+        bool disabled = 1;
+      }
+    }
+
+    message NodeConfig {
+      // advanced_machine_features: list of object
+      repeated AdvancedMachineFeatures advanced_machine_features = 1 [json_name = "advanced_machine_features"];
+
+      // boot_disk_kms_key: string
+      string boot_disk_kms_key = 2 [json_name = "boot_disk_kms_key"];
+
+      // disk_size_gb: number
+      int64 disk_size_gb = 3 [json_name = "disk_size_gb"];
+
+      // disk_type: string
+      string disk_type = 4 [json_name = "disk_type"];
+
+      // ephemeral_storage_local_ssd_config: list of object
+      repeated EphemeralStorageLocalSsdConfig ephemeral_storage_local_ssd_config = 5 [json_name = "ephemeral_storage_local_ssd_config"];
+
+      // gcfs_config: list of object
+      repeated GcfsConfig gcfs_config = 6 [json_name = "gcfs_config"];
+
+      // guest_accelerator: list of object
+      repeated GuestAccelerator guest_accelerator = 7 [json_name = "guest_accelerator"];
+
+      // gvnic: list of object
+      repeated Gvnic gvnic = 8;
+
+      // image_type: string
+      string image_type = 9 [json_name = "image_type"];
+
+      // kubelet_config: list of object
+      repeated KubeletConfig kubelet_config = 10 [json_name = "kubelet_config"];
+
+      // labels: map of string
+      map<string, string> labels = 11;
+
+      // linux_node_config: list of object
+      repeated LinuxNodeConfig linux_node_config = 12 [json_name = "linux_node_config"];
+
+      // local_nvme_ssd_block_config: list of object
+      repeated LocalNvmeSsdBlockConfig local_nvme_ssd_block_config = 13 [json_name = "local_nvme_ssd_block_config"];
+
+      // local_ssd_count: number
+      int64 local_ssd_count = 14 [json_name = "local_ssd_count"];
+
+      // logging_variant: string
+      string logging_variant = 15 [json_name = "logging_variant"];
+
+      // machine_type: string
+      string machine_type = 16 [json_name = "machine_type"];
+
+      // metadata: map of string
+      map<string, string> metadata = 17;
+
+      // min_cpu_platform: string
+      string min_cpu_platform = 18 [json_name = "min_cpu_platform"];
+
+      // node_group: string
+      string node_group = 19 [json_name = "node_group"];
+
+      // oauth_scopes: set of string
+      repeated string oauth_scopes = 20 [json_name = "oauth_scopes"];
+
+      // preemptible: bool
+      bool preemptible = 21;
+
+      // reservation_affinity: list of object
+      repeated ReservationAffinity reservation_affinity = 22 [json_name = "reservation_affinity"];
+
+      // resource_labels: map of string
+      map<string, string> resource_labels = 23 [json_name = "resource_labels"];
+
+      // service_account: string
+      string service_account = 24 [json_name = "service_account"];
+
+      // shielded_instance_config: list of object
+      repeated ShieldedInstanceConfig shielded_instance_config = 25 [json_name = "shielded_instance_config"];
+
+      // spot: bool
+      bool spot = 26;
+
+      // tags: list of string
+      repeated string tags = 27;
+
+      // taint: list of object
+      repeated Taint taint = 28;
+
+      // workload_metadata_config: list of object
+      repeated WorkloadMetadataConfig workload_metadata_config = 29 [json_name = "workload_metadata_config"];
+
+      message AdvancedMachineFeatures {
+        // threads_per_core: number
+        int64 threads_per_core = 1 [json_name = "threads_per_core"];
+      }
+
+      message EphemeralStorageLocalSsdConfig {
+        // local_ssd_count: number
+        int64 local_ssd_count = 1 [json_name = "local_ssd_count"];
+      }
+
+      message GcfsConfig {
+        // enabled: bool
+        bool enabled = 1;
+      }
+
+      message GuestAccelerator {
+        // count: number
+        int64 count = 1;
+
+        // gpu_partition_size: string
+        string gpu_partition_size = 2 [json_name = "gpu_partition_size"];
+
+        // gpu_sharing_config: list of object
+        repeated GpuSharingConfig gpu_sharing_config = 3 [json_name = "gpu_sharing_config"];
+
+        // type: string
+        string type = 4;
+
+        message GpuSharingConfig {
+          // gpu_sharing_strategy: string
+          string gpu_sharing_strategy = 1 [json_name = "gpu_sharing_strategy"];
+
+          // max_shared_clients_per_gpu: number
+          int64 max_shared_clients_per_gpu = 2 [json_name = "max_shared_clients_per_gpu"];
+        }
+      }
+
+      message Gvnic {
+        // enabled: bool
+        bool enabled = 1;
+      }
+
+      message KubeletConfig {
+        // cpu_cfs_quota: bool
+        bool cpu_cfs_quota = 1 [json_name = "cpu_cfs_quota"];
+
+        // cpu_cfs_quota_period: string
+        string cpu_cfs_quota_period = 2 [json_name = "cpu_cfs_quota_period"];
+
+        // cpu_manager_policy: string
+        string cpu_manager_policy = 3 [json_name = "cpu_manager_policy"];
+
+        // pod_pids_limit: number
+        int64 pod_pids_limit = 4 [json_name = "pod_pids_limit"];
+      }
+
+      message LinuxNodeConfig {
+        // sysctls: map of string
+        map<string, string> sysctls = 1;
+      }
+
+      message LocalNvmeSsdBlockConfig {
+        // local_ssd_count: number
+        int64 local_ssd_count = 1 [json_name = "local_ssd_count"];
+      }
+
+      message ReservationAffinity {
+        // consume_reservation_type: string
+        string consume_reservation_type = 1 [json_name = "consume_reservation_type"];
+
+        // key: string
+        string key = 2;
+
+        // values: set of string
+        repeated string values = 3;
+      }
+
+      message ShieldedInstanceConfig {
+        // enable_integrity_monitoring: bool
+        bool enable_integrity_monitoring = 1 [json_name = "enable_integrity_monitoring"];
+
+        // enable_secure_boot: bool
+        bool enable_secure_boot = 2 [json_name = "enable_secure_boot"];
+      }
+
+      message Taint {
+        // effect: string
+        string effect = 1;
+
+        // key: string
+        string key = 2;
+
+        // value: string
+        string value = 3;
+      }
+
+      message WorkloadMetadataConfig {
+        // mode: string
+        string mode = 1;
+      }
+    }
+
+    message PlacementPolicy {
+      // type: string
+      string type = 1;
+    }
+
+    message UpgradeSettings {
+      // blue_green_settings: list of object
+      repeated BlueGreenSettings blue_green_settings = 1 [json_name = "blue_green_settings"];
+
+      // max_surge: number
+      int64 max_surge = 2 [json_name = "max_surge"];
+
+      // max_unavailable: number
+      int64 max_unavailable = 3 [json_name = "max_unavailable"];
+
+      // strategy: string
+      string strategy = 4;
+
+      message BlueGreenSettings {
+        // node_pool_soak_duration: string
+        string node_pool_soak_duration = 1 [json_name = "node_pool_soak_duration"];
+
+        // standard_rollout_policy: list of object
+        repeated StandardRolloutPolicy standard_rollout_policy = 2 [json_name = "standard_rollout_policy"];
+
+        message StandardRolloutPolicy {
+          // batch_node_count: number
+          int64 batch_node_count = 1 [json_name = "batch_node_count"];
+
+          // batch_percentage: number
+          int64 batch_percentage = 2 [json_name = "batch_percentage"];
+
+          // batch_soak_duration: string
+          string batch_soak_duration = 3 [json_name = "batch_soak_duration"];
+        }
+      }
+    }
+  }
+
+  message NodePoolDefaults {
+    // node_config_defaults: list of object
+    repeated NodeConfigDefaults node_config_defaults = 1 [json_name = "node_config_defaults"];
+
+    message NodeConfigDefaults {
+      // logging_variant: string
+      string logging_variant = 1 [json_name = "logging_variant"];
+    }
+  }
+
+  message NotificationConfig {
+    // pubsub: list of object
+    repeated Pubsub pubsub = 1;
+
+    message Pubsub {
+      // enabled: bool
+      bool enabled = 1;
+
+      // filter: list of object
+      repeated Filter filter = 2;
+
+      // topic: string
+      string topic = 3;
+
+      message Filter {
+        // event_type: list of string
+        repeated string event_type = 1 [json_name = "event_type"];
+      }
+    }
+  }
+
+  message PrivateClusterConfig {
+    // enable_private_endpoint: bool
+    bool enable_private_endpoint = 1 [json_name = "enable_private_endpoint"];
+
+    // enable_private_nodes: bool
+    bool enable_private_nodes = 2 [json_name = "enable_private_nodes"];
+
+    // master_global_access_config: list of object
+    repeated MasterGlobalAccessConfig master_global_access_config = 3 [json_name = "master_global_access_config"];
+
+    // master_ipv4_cidr_block: string
+    string master_ipv4_cidr_block = 4 [json_name = "master_ipv4_cidr_block"];
+
+    // peering_name: string
+    string peering_name = 5 [json_name = "peering_name"];
+
+    // private_endpoint: string
+    string private_endpoint = 6 [json_name = "private_endpoint"];
+
+    // private_endpoint_subnetwork: string
+    string private_endpoint_subnetwork = 7 [json_name = "private_endpoint_subnetwork"];
+
+    // public_endpoint: string
+    string public_endpoint = 8 [json_name = "public_endpoint"];
+
+    message MasterGlobalAccessConfig {
+      // enabled: bool
+      bool enabled = 1;
+    }
+  }
+
+  message ReleaseChannel {
+    // channel: string
+    string channel = 1;
+  }
+
+  message ResourceUsageExportConfig {
+    // bigquery_destination: list of object
+    repeated BigqueryDestination bigquery_destination = 1 [json_name = "bigquery_destination"];
+
+    // enable_network_egress_metering: bool
+    bool enable_network_egress_metering = 2 [json_name = "enable_network_egress_metering"];
+
+    // enable_resource_consumption_metering: bool
+    bool enable_resource_consumption_metering = 3 [json_name = "enable_resource_consumption_metering"];
+
+    message BigqueryDestination {
+      // dataset_id: string
+      string dataset_id = 1 [json_name = "dataset_id"];
+    }
+  }
+
+  message ServiceExternalIpsConfig {
+    // enabled: bool
+    bool enabled = 1;
+  }
+
+  message VerticalPodAutoscaling {
+    // enabled: bool
+    bool enabled = 1;
+  }
+
+  message WorkloadIdentityConfig {
+    // workload_pool: string
+    string workload_pool = 1 [json_name = "workload_pool"];
+  }
+}
+
+// GoogleContainerEngineVersions version is 0
+message GoogleContainerEngineVersions {
+  string default_cluster_version = 1 [json_name = "default_cluster_version"];
+
+  string id = 2;
+
+  string latest_master_version = 3 [json_name = "latest_master_version"];
+
+  string latest_node_version = 4 [json_name = "latest_node_version"];
+
+  string location = 5;
+
+  string project = 6;
+
+  map<string, string> release_channel_default_version = 7 [json_name = "release_channel_default_version"];
+
+  map<string, string> release_channel_latest_version = 8 [json_name = "release_channel_latest_version"];
+
+  repeated string valid_master_versions = 9 [json_name = "valid_master_versions"];
+
+  repeated string valid_node_versions = 10 [json_name = "valid_node_versions"];
+
+  string version_prefix = 11 [json_name = "version_prefix"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+}
+
+// GoogleContainerRegistryImage version is 0
+message GoogleContainerRegistryImage {
+  string digest = 1;
+
+  string id = 2;
+
+  string image_url = 3 [json_name = "image_url"];
+
+  string name = 4;
+
+  string project = 5;
+
+  string region = 6;
+
+  string tag = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// GoogleContainerRegistryRepository version is 0
+message GoogleContainerRegistryRepository {
+  string id = 1;
+
+  string project = 2;
+
+  string region = 3;
+
+  string repository_url = 4 [json_name = "repository_url"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}

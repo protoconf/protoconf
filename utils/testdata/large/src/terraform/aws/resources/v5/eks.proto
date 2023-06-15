@@ -1,0 +1,401 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsEksAddon version is 0
+message AwsEksAddon {
+  string addon_name = 1 [json_name = "addon_name"];
+
+  string addon_version = 2 [json_name = "addon_version"];
+
+  string arn = 3;
+
+  string cluster_name = 4 [json_name = "cluster_name"];
+
+  string configuration_values = 5 [json_name = "configuration_values"];
+
+  string created_at = 6 [json_name = "created_at"];
+
+  string id = 7;
+
+  string modified_at = 8 [json_name = "modified_at"];
+
+  bool preserve = 9;
+
+  string resolve_conflicts = 10 [json_name = "resolve_conflicts"];
+
+  string resolve_conflicts_on_create = 11 [json_name = "resolve_conflicts_on_create"];
+
+  string resolve_conflicts_on_update = 12 [json_name = "resolve_conflicts_on_update"];
+
+  string service_account_role_arn = 13 [json_name = "service_account_role_arn"];
+
+  map<string, string> tags = 14;
+
+  map<string, string> tags_all = 15 [json_name = "tags_all"];
+
+  repeated Timeouts timeouts = 16;
+
+  map<string, string> for_each = 17 [json_name = "for_each"];
+
+  repeated string depends_on = 18 [json_name = "depends_on"];
+
+  int32 count = 19;
+
+  string provider = 20;
+
+  terraform.v1.Lifecycle lifecycle = 21;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsEksCluster version is 0
+message AwsEksCluster {
+  string arn = 1;
+
+  repeated CertificateAuthority certificate_authority = 2 [json_name = "certificate_authority"];
+
+  string cluster_id = 3 [json_name = "cluster_id"];
+
+  string created_at = 4 [json_name = "created_at"];
+
+  repeated string enabled_cluster_log_types = 5 [json_name = "enabled_cluster_log_types"];
+
+  string endpoint = 6;
+
+  string id = 7;
+
+  repeated Identity identity = 8;
+
+  string name = 9;
+
+  string platform_version = 10 [json_name = "platform_version"];
+
+  string role_arn = 11 [json_name = "role_arn"];
+
+  string status = 12;
+
+  map<string, string> tags = 13;
+
+  map<string, string> tags_all = 14 [json_name = "tags_all"];
+
+  string version = 15;
+
+  EncryptionConfig encryption_config = 16 [json_name = "encryption_config"];
+
+  KubernetesNetworkConfig kubernetes_network_config = 17 [json_name = "kubernetes_network_config"];
+
+  OutpostConfig outpost_config = 18 [json_name = "outpost_config"];
+
+  repeated Timeouts timeouts = 19;
+
+  VpcConfig vpc_config = 20 [json_name = "vpc_config"];
+
+  map<string, string> for_each = 21 [json_name = "for_each"];
+
+  repeated string depends_on = 22 [json_name = "depends_on"];
+
+  int32 count = 23;
+
+  string provider = 24;
+
+  terraform.v1.Lifecycle lifecycle = 25;
+
+  message CertificateAuthority {
+    // data: string
+    string data = 1;
+  }
+
+  message Identity {
+    // oidc: list of object
+    repeated Oidc oidc = 1;
+
+    message Oidc {
+      // issuer: string
+      string issuer = 1;
+    }
+  }
+
+  message EncryptionConfig {
+    repeated string resources = 1;
+
+    Provider provider = 2;
+
+    message Provider {
+      string key_arn = 1 [json_name = "key_arn"];
+    }
+  }
+
+  message KubernetesNetworkConfig {
+    string ip_family = 1 [json_name = "ip_family"];
+
+    string service_ipv4_cidr = 2 [json_name = "service_ipv4_cidr"];
+
+    string service_ipv6_cidr = 3 [json_name = "service_ipv6_cidr"];
+  }
+
+  message OutpostConfig {
+    string control_plane_instance_type = 1 [json_name = "control_plane_instance_type"];
+
+    repeated string outpost_arns = 2 [json_name = "outpost_arns"];
+
+    ControlPlanePlacement control_plane_placement = 3 [json_name = "control_plane_placement"];
+
+    message ControlPlanePlacement {
+      string group_name = 1 [json_name = "group_name"];
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+
+  message VpcConfig {
+    string cluster_security_group_id = 1 [json_name = "cluster_security_group_id"];
+
+    bool endpoint_private_access = 2 [json_name = "endpoint_private_access"];
+
+    bool endpoint_public_access = 3 [json_name = "endpoint_public_access"];
+
+    repeated string public_access_cidrs = 4 [json_name = "public_access_cidrs"];
+
+    repeated string security_group_ids = 5 [json_name = "security_group_ids"];
+
+    repeated string subnet_ids = 6 [json_name = "subnet_ids"];
+
+    string vpc_id = 7 [json_name = "vpc_id"];
+  }
+}
+
+// AwsEksFargateProfile version is 0
+message AwsEksFargateProfile {
+  string arn = 1;
+
+  string cluster_name = 2 [json_name = "cluster_name"];
+
+  string fargate_profile_name = 3 [json_name = "fargate_profile_name"];
+
+  string id = 4;
+
+  string pod_execution_role_arn = 5 [json_name = "pod_execution_role_arn"];
+
+  string status = 6;
+
+  repeated string subnet_ids = 7 [json_name = "subnet_ids"];
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  repeated Selector selector = 10;
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message Selector {
+    map<string, string> labels = 1;
+
+    string namespace = 2;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsEksIdentityProviderConfig version is 0
+message AwsEksIdentityProviderConfig {
+  string arn = 1;
+
+  string cluster_name = 2 [json_name = "cluster_name"];
+
+  string id = 3;
+
+  string status = 4;
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  Oidc oidc = 7;
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Oidc {
+    string client_id = 1 [json_name = "client_id"];
+
+    string groups_claim = 2 [json_name = "groups_claim"];
+
+    string groups_prefix = 3 [json_name = "groups_prefix"];
+
+    string identity_provider_config_name = 4 [json_name = "identity_provider_config_name"];
+
+    string issuer_url = 5 [json_name = "issuer_url"];
+
+    map<string, string> required_claims = 6 [json_name = "required_claims"];
+
+    string username_claim = 7 [json_name = "username_claim"];
+
+    string username_prefix = 8 [json_name = "username_prefix"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsEksNodeGroup version is 0
+message AwsEksNodeGroup {
+  string ami_type = 1 [json_name = "ami_type"];
+
+  string arn = 2;
+
+  string capacity_type = 3 [json_name = "capacity_type"];
+
+  string cluster_name = 4 [json_name = "cluster_name"];
+
+  int64 disk_size = 5 [json_name = "disk_size"];
+
+  bool force_update_version = 6 [json_name = "force_update_version"];
+
+  string id = 7;
+
+  repeated string instance_types = 8 [json_name = "instance_types"];
+
+  map<string, string> labels = 9;
+
+  string node_group_name = 10 [json_name = "node_group_name"];
+
+  string node_group_name_prefix = 11 [json_name = "node_group_name_prefix"];
+
+  string node_role_arn = 12 [json_name = "node_role_arn"];
+
+  string release_version = 13 [json_name = "release_version"];
+
+  repeated Resources resources = 14;
+
+  string status = 15;
+
+  repeated string subnet_ids = 16 [json_name = "subnet_ids"];
+
+  map<string, string> tags = 17;
+
+  map<string, string> tags_all = 18 [json_name = "tags_all"];
+
+  string version = 19;
+
+  LaunchTemplate launch_template = 20 [json_name = "launch_template"];
+
+  RemoteAccess remote_access = 21 [json_name = "remote_access"];
+
+  ScalingConfig scaling_config = 22 [json_name = "scaling_config"];
+
+  repeated Taint taint = 23;
+
+  repeated Timeouts timeouts = 24;
+
+  UpdateConfig update_config = 25 [json_name = "update_config"];
+
+  map<string, string> for_each = 26 [json_name = "for_each"];
+
+  repeated string depends_on = 27 [json_name = "depends_on"];
+
+  int32 count = 28;
+
+  string provider = 29;
+
+  terraform.v1.Lifecycle lifecycle = 30;
+
+  message Resources {
+    // autoscaling_groups: list of object
+    repeated AutoscalingGroups autoscaling_groups = 1 [json_name = "autoscaling_groups"];
+
+    // remote_access_security_group_id: string
+    string remote_access_security_group_id = 2 [json_name = "remote_access_security_group_id"];
+
+    message AutoscalingGroups {
+      // name: string
+      string name = 1;
+    }
+  }
+
+  message LaunchTemplate {
+    string id = 1;
+
+    string name = 2;
+
+    string version = 3;
+  }
+
+  message RemoteAccess {
+    string ec2_ssh_key = 1 [json_name = "ec2_ssh_key"];
+
+    repeated string source_security_group_ids = 2 [json_name = "source_security_group_ids"];
+  }
+
+  message ScalingConfig {
+    int64 desired_size = 1 [json_name = "desired_size"];
+
+    int64 max_size = 2 [json_name = "max_size"];
+
+    int64 min_size = 3 [json_name = "min_size"];
+  }
+
+  message Taint {
+    string effect = 1;
+
+    string key = 2;
+
+    string value = 3;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+
+  message UpdateConfig {
+    int64 max_unavailable = 1 [json_name = "max_unavailable"];
+
+    int64 max_unavailable_percentage = 2 [json_name = "max_unavailable_percentage"];
+  }
+}

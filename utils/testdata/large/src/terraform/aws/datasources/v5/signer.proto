@@ -1,0 +1,147 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsSignerSigningJob version is 0
+message AwsSignerSigningJob {
+  string completed_at = 1 [json_name = "completed_at"];
+
+  string created_at = 2 [json_name = "created_at"];
+
+  string id = 3;
+
+  string job_id = 4 [json_name = "job_id"];
+
+  string job_invoker = 5 [json_name = "job_invoker"];
+
+  string job_owner = 6 [json_name = "job_owner"];
+
+  string platform_display_name = 7 [json_name = "platform_display_name"];
+
+  string platform_id = 8 [json_name = "platform_id"];
+
+  string profile_name = 9 [json_name = "profile_name"];
+
+  string profile_version = 10 [json_name = "profile_version"];
+
+  string requested_by = 11 [json_name = "requested_by"];
+
+  repeated RevocationRecord revocation_record = 12 [json_name = "revocation_record"];
+
+  string signature_expires_at = 13 [json_name = "signature_expires_at"];
+
+  repeated SignedObject signed_object = 14 [json_name = "signed_object"];
+
+  repeated Source source = 15;
+
+  string status = 16;
+
+  string status_reason = 17 [json_name = "status_reason"];
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+
+  message RevocationRecord {
+    // reason: string
+    string reason = 1;
+
+    // revoked_at: string
+    string revoked_at = 2 [json_name = "revoked_at"];
+
+    // revoked_by: string
+    string revoked_by = 3 [json_name = "revoked_by"];
+  }
+
+  message SignedObject {
+    // s3: list of object
+    repeated S3 s3 = 1;
+
+    message S3 {
+      // bucket: string
+      string bucket = 1;
+
+      // key: string
+      string key = 2;
+    }
+  }
+
+  message Source {
+    // s3: list of object
+    repeated S3 s3 = 1;
+
+    message S3 {
+      // bucket: string
+      string bucket = 1;
+
+      // key: string
+      string key = 2;
+
+      // version: string
+      string version = 3;
+    }
+  }
+}
+
+// AwsSignerSigningProfile version is 0
+message AwsSignerSigningProfile {
+  string arn = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  string platform_display_name = 4 [json_name = "platform_display_name"];
+
+  string platform_id = 5 [json_name = "platform_id"];
+
+  repeated RevocationRecord revocation_record = 6 [json_name = "revocation_record"];
+
+  repeated SignatureValidityPeriod signature_validity_period = 7 [json_name = "signature_validity_period"];
+
+  string status = 8;
+
+  map<string, string> tags = 9;
+
+  string version = 10;
+
+  string version_arn = 11 [json_name = "version_arn"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message RevocationRecord {
+    // revocation_effective_from: string
+    string revocation_effective_from = 1 [json_name = "revocation_effective_from"];
+
+    // revoked_at: string
+    string revoked_at = 2 [json_name = "revoked_at"];
+
+    // revoked_by: string
+    string revoked_by = 3 [json_name = "revoked_by"];
+  }
+
+  message SignatureValidityPeriod {
+    // type: string
+    string type = 1;
+
+    // value: number
+    int64 value = 2;
+  }
+}

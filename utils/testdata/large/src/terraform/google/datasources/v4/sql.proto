@@ -1,0 +1,1051 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.datasources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleSqlBackupRun version is 0
+message GoogleSqlBackupRun {
+  // The identifier for this backup run. Unique only for a specific Cloud SQL instance. If left empty and multiple backups exist for the instance, most_recent must be set to true.
+  int64 backup_id = 1 [json_name = "backup_id"];
+
+  string id = 2;
+
+  // Name of the database instance.
+  string instance = 3;
+
+  // Location of the backups.
+  string location = 4;
+
+  // Toggles use of the most recent backup run if multiple backups exist for a Cloud SQL instance.
+  bool most_recent = 5 [json_name = "most_recent"];
+
+  // Project ID of the project that contains the instance.
+  string project = 6;
+
+  // The time the backup operation actually started in UTC timezone in RFC 3339 format, for example 2012-11-15T16:19:00.094Z.
+  string start_time = 7 [json_name = "start_time"];
+
+  // The status of this run.
+  string status = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+}
+
+// GoogleSqlCaCerts version is 0
+message GoogleSqlCaCerts {
+  string active_version = 1 [json_name = "active_version"];
+
+  repeated Certs certs = 2;
+
+  string id = 3;
+
+  string instance = 4;
+
+  string project = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message Certs {
+    // cert: string
+    string cert = 1;
+
+    // common_name: string
+    string common_name = 2 [json_name = "common_name"];
+
+    // create_time: string
+    string create_time = 3 [json_name = "create_time"];
+
+    // expiration_time: string
+    string expiration_time = 4 [json_name = "expiration_time"];
+
+    // sha1_fingerprint: string
+    string sha1_fingerprint = 5 [json_name = "sha1_fingerprint"];
+  }
+}
+
+// GoogleSqlDatabase version is 0
+message GoogleSqlDatabase {
+  // The charset value. See MySQL's
+  // [Supported Character Sets and Collations](https://dev.mysql.com/doc/refman/5.7/en/charset-charsets.html)
+  // and Postgres' [Character Set Support](https://www.postgresql.org/docs/9.6/static/multibyte.html)
+  // for more details and supported values. Postgres databases only support
+  // a value of 'UTF8' at creation time.
+  string charset = 1;
+
+  // The collation value. See MySQL's
+  // [Supported Character Sets and Collations](https://dev.mysql.com/doc/refman/5.7/en/charset-charsets.html)
+  // and Postgres' [Collation Support](https://www.postgresql.org/docs/9.6/static/collation.html)
+  // for more details and supported values. Postgres databases only support
+  // a value of 'en_US.UTF8' at creation time.
+  string collation = 2;
+
+  // The deletion policy for the database. Setting ABANDON allows the resource
+  // to be abandoned rather than deleted. This is useful for Postgres, where databases cannot be
+  // deleted from the API if there are users other than cloudsqlsuperuser with access. Possible
+  // values are: "ABANDON", "DELETE". Defaults to "DELETE".
+  string deletion_policy = 3 [json_name = "deletion_policy"];
+
+  string id = 4;
+
+  // The name of the Cloud SQL instance. This does not include the project
+  // ID.
+  string instance = 5;
+
+  // The name of the database in the Cloud SQL instance.
+  // This does not include the project ID or instance name.
+  string name = 6;
+
+  string project = 7;
+
+  string self_link = 8 [json_name = "self_link"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+}
+
+// GoogleSqlDatabaseInstance version is 0
+message GoogleSqlDatabaseInstance {
+  // Available Maintenance versions.
+  repeated string available_maintenance_versions = 1 [json_name = "available_maintenance_versions"];
+
+  // Configuration for creating a new instance as a clone of another instance.
+  repeated Clone clone = 2;
+
+  // The connection name of the instance to be used in connection strings. For example, when connecting with Cloud SQL Proxy.
+  string connection_name = 3 [json_name = "connection_name"];
+
+  // The MySQL, PostgreSQL or SQL Server (beta) version to use. Supported values include MYSQL_5_6, MYSQL_5_7, MYSQL_8_0, POSTGRES_9_6, POSTGRES_10, POSTGRES_11, POSTGRES_12, POSTGRES_13, POSTGRES_14, SQLSERVER_2017_STANDARD, SQLSERVER_2017_ENTERPRISE, SQLSERVER_2017_EXPRESS, SQLSERVER_2017_WEB. Database Version Policies includes an up-to-date reference of supported versions.
+  string database_version = 4 [json_name = "database_version"];
+
+  // Used to block Terraform from deleting a SQL Instance. Defaults to true.
+  bool deletion_protection = 5 [json_name = "deletion_protection"];
+
+  string encryption_key_name = 6 [json_name = "encryption_key_name"];
+
+  // The first IPv4 address of any type assigned. This is to support accessing the first address in the list in a terraform output when the resource is configured with a count.
+  string first_ip_address = 7 [json_name = "first_ip_address"];
+
+  string id = 8;
+
+  // The type of the instance. The valid values are:- 'SQL_INSTANCE_TYPE_UNSPECIFIED', 'CLOUD_SQL_INSTANCE', 'ON_PREMISES_INSTANCE' and 'READ_REPLICA_INSTANCE'.
+  string instance_type = 9 [json_name = "instance_type"];
+
+  repeated IpAddress ip_address = 10 [json_name = "ip_address"];
+
+  // Maintenance version.
+  string maintenance_version = 11 [json_name = "maintenance_version"];
+
+  // The name of the instance that will act as the master in the replication setup. Note, this requires the master to have binary_log_enabled set, as well as existing backups.
+  string master_instance_name = 12 [json_name = "master_instance_name"];
+
+  // The name of the instance. If the name is left blank, Terraform will randomly generate one when the instance is first created. This is done because after a name is used, it cannot be reused for up to one week.
+  string name = 13;
+
+  // IPv4 address assigned. This is a workaround for an issue fixed in Terraform 0.12 but also provides a convenient way to access an IP of a specific type without performing filtering in a Terraform config.
+  string private_ip_address = 14 [json_name = "private_ip_address"];
+
+  // The ID of the project in which the resource belongs. If it is not provided, the provider project is used.
+  string project = 15;
+
+  // IPv4 address assigned. This is a workaround for an issue fixed in Terraform 0.12 but also provides a convenient way to access an IP of a specific type without performing filtering in a Terraform config.
+  string public_ip_address = 16 [json_name = "public_ip_address"];
+
+  // The region the instance will sit in. Note, Cloud SQL is not available in all regions. A valid region must be provided to use this resource. If a region is not provided in the resource definition, the provider region will be used instead, but this will be an apply-time error for instances if the provider region is not supported with Cloud SQL. If you choose not to provide the region argument for this resource, make sure you understand this.
+  string region = 17;
+
+  // The configuration for replication.
+  repeated ReplicaConfiguration replica_configuration = 18 [json_name = "replica_configuration"];
+
+  repeated RestoreBackupContext restore_backup_context = 19 [json_name = "restore_backup_context"];
+
+  // Initial root password. Required for MS SQL Server.
+  string root_password = 20 [json_name = "root_password"];
+
+  // The URI of the created resource.
+  string self_link = 21 [json_name = "self_link"];
+
+  repeated ServerCaCert server_ca_cert = 22 [json_name = "server_ca_cert"];
+
+  // The service account email address assigned to the instance.
+  string service_account_email_address = 23 [json_name = "service_account_email_address"];
+
+  // The settings to use for the database. The configuration is detailed below.
+  repeated Settings settings = 24;
+
+  map<string, string> for_each = 25 [json_name = "for_each"];
+
+  repeated string depends_on = 26 [json_name = "depends_on"];
+
+  int32 count = 27;
+
+  string provider = 28;
+
+  terraform.v1.Lifecycle lifecycle = 29;
+
+  message Clone {
+    // allocated_ip_range: string
+    string allocated_ip_range = 1 [json_name = "allocated_ip_range"];
+
+    // database_names: list of string
+    repeated string database_names = 2 [json_name = "database_names"];
+
+    // point_in_time: string
+    string point_in_time = 3 [json_name = "point_in_time"];
+
+    // source_instance_name: string
+    string source_instance_name = 4 [json_name = "source_instance_name"];
+  }
+
+  message IpAddress {
+    // ip_address: string
+    string ip_address = 1 [json_name = "ip_address"];
+
+    // time_to_retire: string
+    string time_to_retire = 2 [json_name = "time_to_retire"];
+
+    // type: string
+    string type = 3;
+  }
+
+  message ReplicaConfiguration {
+    // ca_certificate: string
+    string ca_certificate = 1 [json_name = "ca_certificate"];
+
+    // client_certificate: string
+    string client_certificate = 2 [json_name = "client_certificate"];
+
+    // client_key: string
+    string client_key = 3 [json_name = "client_key"];
+
+    // connect_retry_interval: number
+    int64 connect_retry_interval = 4 [json_name = "connect_retry_interval"];
+
+    // dump_file_path: string
+    string dump_file_path = 5 [json_name = "dump_file_path"];
+
+    // failover_target: bool
+    bool failover_target = 6 [json_name = "failover_target"];
+
+    // master_heartbeat_period: number
+    int64 master_heartbeat_period = 7 [json_name = "master_heartbeat_period"];
+
+    // password: string
+    string password = 8;
+
+    // ssl_cipher: string
+    string ssl_cipher = 9 [json_name = "ssl_cipher"];
+
+    // username: string
+    string username = 10;
+
+    // verify_server_certificate: bool
+    bool verify_server_certificate = 11 [json_name = "verify_server_certificate"];
+  }
+
+  message RestoreBackupContext {
+    // backup_run_id: number
+    int64 backup_run_id = 1 [json_name = "backup_run_id"];
+
+    // instance_id: string
+    string instance_id = 2 [json_name = "instance_id"];
+
+    // project: string
+    string project = 3;
+  }
+
+  message ServerCaCert {
+    // cert: string
+    string cert = 1;
+
+    // common_name: string
+    string common_name = 2 [json_name = "common_name"];
+
+    // create_time: string
+    string create_time = 3 [json_name = "create_time"];
+
+    // expiration_time: string
+    string expiration_time = 4 [json_name = "expiration_time"];
+
+    // sha1_fingerprint: string
+    string sha1_fingerprint = 5 [json_name = "sha1_fingerprint"];
+  }
+
+  message Settings {
+    // activation_policy: string
+    string activation_policy = 1 [json_name = "activation_policy"];
+
+    // active_directory_config: list of object
+    repeated ActiveDirectoryConfig active_directory_config = 2 [json_name = "active_directory_config"];
+
+    // advanced_machine_features: list of object
+    repeated AdvancedMachineFeatures advanced_machine_features = 3 [json_name = "advanced_machine_features"];
+
+    // availability_type: string
+    string availability_type = 4 [json_name = "availability_type"];
+
+    // backup_configuration: list of object
+    repeated BackupConfiguration backup_configuration = 5 [json_name = "backup_configuration"];
+
+    // collation: string
+    string collation = 6;
+
+    // connector_enforcement: string
+    string connector_enforcement = 7 [json_name = "connector_enforcement"];
+
+    // database_flags: list of object
+    repeated DatabaseFlags database_flags = 8 [json_name = "database_flags"];
+
+    // deletion_protection_enabled: bool
+    bool deletion_protection_enabled = 9 [json_name = "deletion_protection_enabled"];
+
+    // deny_maintenance_period: list of object
+    repeated DenyMaintenancePeriod deny_maintenance_period = 10 [json_name = "deny_maintenance_period"];
+
+    // disk_autoresize: bool
+    bool disk_autoresize = 11 [json_name = "disk_autoresize"];
+
+    // disk_autoresize_limit: number
+    int64 disk_autoresize_limit = 12 [json_name = "disk_autoresize_limit"];
+
+    // disk_size: number
+    int64 disk_size = 13 [json_name = "disk_size"];
+
+    // disk_type: string
+    string disk_type = 14 [json_name = "disk_type"];
+
+    // insights_config: list of object
+    repeated InsightsConfig insights_config = 15 [json_name = "insights_config"];
+
+    // ip_configuration: list of object
+    repeated IpConfiguration ip_configuration = 16 [json_name = "ip_configuration"];
+
+    // location_preference: list of object
+    repeated LocationPreference location_preference = 17 [json_name = "location_preference"];
+
+    // maintenance_window: list of object
+    repeated MaintenanceWindow maintenance_window = 18 [json_name = "maintenance_window"];
+
+    // password_validation_policy: list of object
+    repeated PasswordValidationPolicy password_validation_policy = 19 [json_name = "password_validation_policy"];
+
+    // pricing_plan: string
+    string pricing_plan = 20 [json_name = "pricing_plan"];
+
+    // sql_server_audit_config: list of object
+    repeated SqlServerAuditConfig sql_server_audit_config = 21 [json_name = "sql_server_audit_config"];
+
+    // tier: string
+    string tier = 22;
+
+    // time_zone: string
+    string time_zone = 23 [json_name = "time_zone"];
+
+    // user_labels: map of string
+    map<string, string> user_labels = 24 [json_name = "user_labels"];
+
+    // version: number
+    int64 version = 25;
+
+    message ActiveDirectoryConfig {
+      // domain: string
+      string domain = 1;
+    }
+
+    message AdvancedMachineFeatures {
+      // threads_per_core: number
+      int64 threads_per_core = 1 [json_name = "threads_per_core"];
+    }
+
+    message BackupConfiguration {
+      // backup_retention_settings: list of object
+      repeated BackupRetentionSettings backup_retention_settings = 1 [json_name = "backup_retention_settings"];
+
+      // binary_log_enabled: bool
+      bool binary_log_enabled = 2 [json_name = "binary_log_enabled"];
+
+      // enabled: bool
+      bool enabled = 3;
+
+      // location: string
+      string location = 4;
+
+      // point_in_time_recovery_enabled: bool
+      bool point_in_time_recovery_enabled = 5 [json_name = "point_in_time_recovery_enabled"];
+
+      // start_time: string
+      string start_time = 6 [json_name = "start_time"];
+
+      // transaction_log_retention_days: number
+      int64 transaction_log_retention_days = 7 [json_name = "transaction_log_retention_days"];
+
+      message BackupRetentionSettings {
+        // retained_backups: number
+        int64 retained_backups = 1 [json_name = "retained_backups"];
+
+        // retention_unit: string
+        string retention_unit = 2 [json_name = "retention_unit"];
+      }
+    }
+
+    message DatabaseFlags {
+      // name: string
+      string name = 1;
+
+      // value: string
+      string value = 2;
+    }
+
+    message DenyMaintenancePeriod {
+      // end_date: string
+      string end_date = 1 [json_name = "end_date"];
+
+      // start_date: string
+      string start_date = 2 [json_name = "start_date"];
+
+      // time: string
+      string time = 3;
+    }
+
+    message InsightsConfig {
+      // query_insights_enabled: bool
+      bool query_insights_enabled = 1 [json_name = "query_insights_enabled"];
+
+      // query_plans_per_minute: number
+      int64 query_plans_per_minute = 2 [json_name = "query_plans_per_minute"];
+
+      // query_string_length: number
+      int64 query_string_length = 3 [json_name = "query_string_length"];
+
+      // record_application_tags: bool
+      bool record_application_tags = 4 [json_name = "record_application_tags"];
+
+      // record_client_address: bool
+      bool record_client_address = 5 [json_name = "record_client_address"];
+    }
+
+    message IpConfiguration {
+      // allocated_ip_range: string
+      string allocated_ip_range = 1 [json_name = "allocated_ip_range"];
+
+      // authorized_networks: set of object
+      repeated AuthorizedNetworks authorized_networks = 2 [json_name = "authorized_networks"];
+
+      // enable_private_path_for_google_cloud_services: bool
+      bool enable_private_path_for_google_cloud_services = 3 [
+        json_name = "enable_private_path_for_google_cloud_services"
+      ];
+
+      // ipv4_enabled: bool
+      bool ipv4_enabled = 4 [json_name = "ipv4_enabled"];
+
+      // private_network: string
+      string private_network = 5 [json_name = "private_network"];
+
+      // require_ssl: bool
+      bool require_ssl = 6 [json_name = "require_ssl"];
+
+      message AuthorizedNetworks {
+        // expiration_time: string
+        string expiration_time = 1 [json_name = "expiration_time"];
+
+        // name: string
+        string name = 2;
+
+        // value: string
+        string value = 3;
+      }
+    }
+
+    message LocationPreference {
+      // follow_gae_application: string
+      string follow_gae_application = 1 [json_name = "follow_gae_application"];
+
+      // secondary_zone: string
+      string secondary_zone = 2 [json_name = "secondary_zone"];
+
+      // zone: string
+      string zone = 3;
+    }
+
+    message MaintenanceWindow {
+      // day: number
+      int64 day = 1;
+
+      // hour: number
+      int64 hour = 2;
+
+      // update_track: string
+      string update_track = 3 [json_name = "update_track"];
+    }
+
+    message PasswordValidationPolicy {
+      // complexity: string
+      string complexity = 1;
+
+      // disallow_username_substring: bool
+      bool disallow_username_substring = 2 [json_name = "disallow_username_substring"];
+
+      // enable_password_policy: bool
+      bool enable_password_policy = 3 [json_name = "enable_password_policy"];
+
+      // min_length: number
+      int64 min_length = 4 [json_name = "min_length"];
+
+      // password_change_interval: string
+      string password_change_interval = 5 [json_name = "password_change_interval"];
+
+      // reuse_interval: number
+      int64 reuse_interval = 6 [json_name = "reuse_interval"];
+    }
+
+    message SqlServerAuditConfig {
+      // bucket: string
+      string bucket = 1;
+
+      // retention_interval: string
+      string retention_interval = 2 [json_name = "retention_interval"];
+
+      // upload_interval: string
+      string upload_interval = 3 [json_name = "upload_interval"];
+    }
+  }
+}
+
+// GoogleSqlDatabaseInstances version is 0
+message GoogleSqlDatabaseInstances {
+  // To filter out the database instances which are of the specified database version.
+  string database_version = 1 [json_name = "database_version"];
+
+  string id = 2;
+
+  repeated Instances instances = 3;
+
+  // Project ID of the project that contains the instances.
+  string project = 4;
+
+  // To filter out the database instances which are located in this specified region.
+  string region = 5;
+
+  // To filter out the database instances based on the current state of the database instance, valid values include : "SQL_INSTANCE_STATE_UNSPECIFIED", "RUNNABLE", "SUSPENDED", "PENDING_DELETE", "PENDING_CREATE", "MAINTENANCE" and "FAILED".
+  string state = 6;
+
+  // To filter out the database instances based on the machine type.
+  string tier = 7;
+
+  // To filter out the database instances which are located in this specified zone.
+  string zone = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Instances {
+    // available_maintenance_versions: list of string
+    repeated string available_maintenance_versions = 1 [json_name = "available_maintenance_versions"];
+
+    // clone: list of object
+    repeated Clone clone = 2;
+
+    // connection_name: string
+    string connection_name = 3 [json_name = "connection_name"];
+
+    // database_version: string
+    string database_version = 4 [json_name = "database_version"];
+
+    // deletion_protection: bool
+    bool deletion_protection = 5 [json_name = "deletion_protection"];
+
+    // encryption_key_name: string
+    string encryption_key_name = 6 [json_name = "encryption_key_name"];
+
+    // first_ip_address: string
+    string first_ip_address = 7 [json_name = "first_ip_address"];
+
+    // instance_type: string
+    string instance_type = 8 [json_name = "instance_type"];
+
+    // ip_address: list of object
+    repeated IpAddress ip_address = 9 [json_name = "ip_address"];
+
+    // maintenance_version: string
+    string maintenance_version = 10 [json_name = "maintenance_version"];
+
+    // master_instance_name: string
+    string master_instance_name = 11 [json_name = "master_instance_name"];
+
+    // name: string
+    string name = 12;
+
+    // private_ip_address: string
+    string private_ip_address = 13 [json_name = "private_ip_address"];
+
+    // project: string
+    string project = 14;
+
+    // public_ip_address: string
+    string public_ip_address = 15 [json_name = "public_ip_address"];
+
+    // region: string
+    string region = 16;
+
+    // replica_configuration: list of object
+    repeated ReplicaConfiguration replica_configuration = 17 [json_name = "replica_configuration"];
+
+    // restore_backup_context: list of object
+    repeated RestoreBackupContext restore_backup_context = 18 [json_name = "restore_backup_context"];
+
+    // root_password: string
+    string root_password = 19 [json_name = "root_password"];
+
+    // self_link: string
+    string self_link = 20 [json_name = "self_link"];
+
+    // server_ca_cert: list of object
+    repeated ServerCaCert server_ca_cert = 21 [json_name = "server_ca_cert"];
+
+    // service_account_email_address: string
+    string service_account_email_address = 22 [json_name = "service_account_email_address"];
+
+    // settings: list of object
+    repeated Settings settings = 23;
+
+    message Clone {
+      // allocated_ip_range: string
+      string allocated_ip_range = 1 [json_name = "allocated_ip_range"];
+
+      // database_names: list of string
+      repeated string database_names = 2 [json_name = "database_names"];
+
+      // point_in_time: string
+      string point_in_time = 3 [json_name = "point_in_time"];
+
+      // source_instance_name: string
+      string source_instance_name = 4 [json_name = "source_instance_name"];
+    }
+
+    message IpAddress {
+      // ip_address: string
+      string ip_address = 1 [json_name = "ip_address"];
+
+      // time_to_retire: string
+      string time_to_retire = 2 [json_name = "time_to_retire"];
+
+      // type: string
+      string type = 3;
+    }
+
+    message ReplicaConfiguration {
+      // ca_certificate: string
+      string ca_certificate = 1 [json_name = "ca_certificate"];
+
+      // client_certificate: string
+      string client_certificate = 2 [json_name = "client_certificate"];
+
+      // client_key: string
+      string client_key = 3 [json_name = "client_key"];
+
+      // connect_retry_interval: number
+      int64 connect_retry_interval = 4 [json_name = "connect_retry_interval"];
+
+      // dump_file_path: string
+      string dump_file_path = 5 [json_name = "dump_file_path"];
+
+      // failover_target: bool
+      bool failover_target = 6 [json_name = "failover_target"];
+
+      // master_heartbeat_period: number
+      int64 master_heartbeat_period = 7 [json_name = "master_heartbeat_period"];
+
+      // password: string
+      string password = 8;
+
+      // ssl_cipher: string
+      string ssl_cipher = 9 [json_name = "ssl_cipher"];
+
+      // username: string
+      string username = 10;
+
+      // verify_server_certificate: bool
+      bool verify_server_certificate = 11 [json_name = "verify_server_certificate"];
+    }
+
+    message RestoreBackupContext {
+      // backup_run_id: number
+      int64 backup_run_id = 1 [json_name = "backup_run_id"];
+
+      // instance_id: string
+      string instance_id = 2 [json_name = "instance_id"];
+
+      // project: string
+      string project = 3;
+    }
+
+    message ServerCaCert {
+      // cert: string
+      string cert = 1;
+
+      // common_name: string
+      string common_name = 2 [json_name = "common_name"];
+
+      // create_time: string
+      string create_time = 3 [json_name = "create_time"];
+
+      // expiration_time: string
+      string expiration_time = 4 [json_name = "expiration_time"];
+
+      // sha1_fingerprint: string
+      string sha1_fingerprint = 5 [json_name = "sha1_fingerprint"];
+    }
+
+    message Settings {
+      // activation_policy: string
+      string activation_policy = 1 [json_name = "activation_policy"];
+
+      // active_directory_config: list of object
+      repeated ActiveDirectoryConfig active_directory_config = 2 [json_name = "active_directory_config"];
+
+      // advanced_machine_features: list of object
+      repeated AdvancedMachineFeatures advanced_machine_features = 3 [json_name = "advanced_machine_features"];
+
+      // availability_type: string
+      string availability_type = 4 [json_name = "availability_type"];
+
+      // backup_configuration: list of object
+      repeated BackupConfiguration backup_configuration = 5 [json_name = "backup_configuration"];
+
+      // collation: string
+      string collation = 6;
+
+      // connector_enforcement: string
+      string connector_enforcement = 7 [json_name = "connector_enforcement"];
+
+      // database_flags: list of object
+      repeated DatabaseFlags database_flags = 8 [json_name = "database_flags"];
+
+      // deletion_protection_enabled: bool
+      bool deletion_protection_enabled = 9 [json_name = "deletion_protection_enabled"];
+
+      // deny_maintenance_period: list of object
+      repeated DenyMaintenancePeriod deny_maintenance_period = 10 [json_name = "deny_maintenance_period"];
+
+      // disk_autoresize: bool
+      bool disk_autoresize = 11 [json_name = "disk_autoresize"];
+
+      // disk_autoresize_limit: number
+      int64 disk_autoresize_limit = 12 [json_name = "disk_autoresize_limit"];
+
+      // disk_size: number
+      int64 disk_size = 13 [json_name = "disk_size"];
+
+      // disk_type: string
+      string disk_type = 14 [json_name = "disk_type"];
+
+      // insights_config: list of object
+      repeated InsightsConfig insights_config = 15 [json_name = "insights_config"];
+
+      // ip_configuration: list of object
+      repeated IpConfiguration ip_configuration = 16 [json_name = "ip_configuration"];
+
+      // location_preference: list of object
+      repeated LocationPreference location_preference = 17 [json_name = "location_preference"];
+
+      // maintenance_window: list of object
+      repeated MaintenanceWindow maintenance_window = 18 [json_name = "maintenance_window"];
+
+      // password_validation_policy: list of object
+      repeated PasswordValidationPolicy password_validation_policy = 19 [json_name = "password_validation_policy"];
+
+      // pricing_plan: string
+      string pricing_plan = 20 [json_name = "pricing_plan"];
+
+      // sql_server_audit_config: list of object
+      repeated SqlServerAuditConfig sql_server_audit_config = 21 [json_name = "sql_server_audit_config"];
+
+      // tier: string
+      string tier = 22;
+
+      // time_zone: string
+      string time_zone = 23 [json_name = "time_zone"];
+
+      // user_labels: map of string
+      map<string, string> user_labels = 24 [json_name = "user_labels"];
+
+      // version: number
+      int64 version = 25;
+
+      message ActiveDirectoryConfig {
+        // domain: string
+        string domain = 1;
+      }
+
+      message AdvancedMachineFeatures {
+        // threads_per_core: number
+        int64 threads_per_core = 1 [json_name = "threads_per_core"];
+      }
+
+      message BackupConfiguration {
+        // backup_retention_settings: list of object
+        repeated BackupRetentionSettings backup_retention_settings = 1 [json_name = "backup_retention_settings"];
+
+        // binary_log_enabled: bool
+        bool binary_log_enabled = 2 [json_name = "binary_log_enabled"];
+
+        // enabled: bool
+        bool enabled = 3;
+
+        // location: string
+        string location = 4;
+
+        // point_in_time_recovery_enabled: bool
+        bool point_in_time_recovery_enabled = 5 [json_name = "point_in_time_recovery_enabled"];
+
+        // start_time: string
+        string start_time = 6 [json_name = "start_time"];
+
+        // transaction_log_retention_days: number
+        int64 transaction_log_retention_days = 7 [json_name = "transaction_log_retention_days"];
+
+        message BackupRetentionSettings {
+          // retained_backups: number
+          int64 retained_backups = 1 [json_name = "retained_backups"];
+
+          // retention_unit: string
+          string retention_unit = 2 [json_name = "retention_unit"];
+        }
+      }
+
+      message DatabaseFlags {
+        // name: string
+        string name = 1;
+
+        // value: string
+        string value = 2;
+      }
+
+      message DenyMaintenancePeriod {
+        // end_date: string
+        string end_date = 1 [json_name = "end_date"];
+
+        // start_date: string
+        string start_date = 2 [json_name = "start_date"];
+
+        // time: string
+        string time = 3;
+      }
+
+      message InsightsConfig {
+        // query_insights_enabled: bool
+        bool query_insights_enabled = 1 [json_name = "query_insights_enabled"];
+
+        // query_plans_per_minute: number
+        int64 query_plans_per_minute = 2 [json_name = "query_plans_per_minute"];
+
+        // query_string_length: number
+        int64 query_string_length = 3 [json_name = "query_string_length"];
+
+        // record_application_tags: bool
+        bool record_application_tags = 4 [json_name = "record_application_tags"];
+
+        // record_client_address: bool
+        bool record_client_address = 5 [json_name = "record_client_address"];
+      }
+
+      message IpConfiguration {
+        // allocated_ip_range: string
+        string allocated_ip_range = 1 [json_name = "allocated_ip_range"];
+
+        // authorized_networks: set of object
+        repeated AuthorizedNetworks authorized_networks = 2 [json_name = "authorized_networks"];
+
+        // enable_private_path_for_google_cloud_services: bool
+        bool enable_private_path_for_google_cloud_services = 3 [
+          json_name = "enable_private_path_for_google_cloud_services"
+        ];
+
+        // ipv4_enabled: bool
+        bool ipv4_enabled = 4 [json_name = "ipv4_enabled"];
+
+        // private_network: string
+        string private_network = 5 [json_name = "private_network"];
+
+        // require_ssl: bool
+        bool require_ssl = 6 [json_name = "require_ssl"];
+
+        message AuthorizedNetworks {
+          // expiration_time: string
+          string expiration_time = 1 [json_name = "expiration_time"];
+
+          // name: string
+          string name = 2;
+
+          // value: string
+          string value = 3;
+        }
+      }
+
+      message LocationPreference {
+        // follow_gae_application: string
+        string follow_gae_application = 1 [json_name = "follow_gae_application"];
+
+        // secondary_zone: string
+        string secondary_zone = 2 [json_name = "secondary_zone"];
+
+        // zone: string
+        string zone = 3;
+      }
+
+      message MaintenanceWindow {
+        // day: number
+        int64 day = 1;
+
+        // hour: number
+        int64 hour = 2;
+
+        // update_track: string
+        string update_track = 3 [json_name = "update_track"];
+      }
+
+      message PasswordValidationPolicy {
+        // complexity: string
+        string complexity = 1;
+
+        // disallow_username_substring: bool
+        bool disallow_username_substring = 2 [json_name = "disallow_username_substring"];
+
+        // enable_password_policy: bool
+        bool enable_password_policy = 3 [json_name = "enable_password_policy"];
+
+        // min_length: number
+        int64 min_length = 4 [json_name = "min_length"];
+
+        // password_change_interval: string
+        string password_change_interval = 5 [json_name = "password_change_interval"];
+
+        // reuse_interval: number
+        int64 reuse_interval = 6 [json_name = "reuse_interval"];
+      }
+
+      message SqlServerAuditConfig {
+        // bucket: string
+        string bucket = 1;
+
+        // retention_interval: string
+        string retention_interval = 2 [json_name = "retention_interval"];
+
+        // upload_interval: string
+        string upload_interval = 3 [json_name = "upload_interval"];
+      }
+    }
+  }
+}
+
+// GoogleSqlDatabases version is 0
+message GoogleSqlDatabases {
+  repeated Databases databases = 1;
+
+  string id = 2;
+
+  // The name of the Cloud SQL database instance in which the database belongs.
+  string instance = 3;
+
+  // Project ID of the project that contains the instance.
+  string project = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message Databases {
+    // charset: string
+    string charset = 1;
+
+    // collation: string
+    string collation = 2;
+
+    // deletion_policy: string
+    string deletion_policy = 3 [json_name = "deletion_policy"];
+
+    // instance: string
+    string instance = 4;
+
+    // name: string
+    string name = 5;
+
+    // project: string
+    string project = 6;
+
+    // self_link: string
+    string self_link = 7 [json_name = "self_link"];
+  }
+}
+
+// GoogleSqlTiers version is 0
+message GoogleSqlTiers {
+  string id = 1;
+
+  // Project ID of the project for which to list tiers.
+  string project = 2;
+
+  repeated Tiers tiers = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+
+  message Tiers {
+    // disk_quota: number
+    int64 disk_quota = 1 [json_name = "disk_quota"];
+
+    // ram: number
+    int64 ram = 2;
+
+    // region: list of string
+    repeated string region = 3;
+
+    // tier: string
+    string tier = 4;
+  }
+}

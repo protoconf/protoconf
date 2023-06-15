@@ -1,0 +1,80 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsRolesanywhereProfile version is 0
+message AwsRolesanywhereProfile {
+  string arn = 1;
+
+  int64 duration_seconds = 2 [json_name = "duration_seconds"];
+
+  bool enabled = 3;
+
+  string id = 4;
+
+  repeated string managed_policy_arns = 5 [json_name = "managed_policy_arns"];
+
+  string name = 6;
+
+  bool require_instance_properties = 7 [json_name = "require_instance_properties"];
+
+  repeated string role_arns = 8 [json_name = "role_arns"];
+
+  string session_policy = 9 [json_name = "session_policy"];
+
+  map<string, string> tags = 10;
+
+  map<string, string> tags_all = 11 [json_name = "tags_all"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+}
+
+// AwsRolesanywhereTrustAnchor version is 0
+message AwsRolesanywhereTrustAnchor {
+  string arn = 1;
+
+  bool enabled = 2;
+
+  string id = 3;
+
+  string name = 4;
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  Source source = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Source {
+    string source_type = 1 [json_name = "source_type"];
+
+    SourceData source_data = 2 [json_name = "source_data"];
+
+    message SourceData {
+      string acm_pca_arn = 1 [json_name = "acm_pca_arn"];
+
+      string x509_certificate_data = 2 [json_name = "x509_certificate_data"];
+    }
+  }
+}

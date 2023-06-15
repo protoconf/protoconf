@@ -1,0 +1,1319 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleDataplexAsset version is 0
+message GoogleDataplexAsset {
+  // Output only. The time when the asset was created.
+  string create_time = 1 [json_name = "create_time"];
+
+  // The zone for the resource
+  string dataplex_zone = 2 [json_name = "dataplex_zone"];
+
+  // Optional. Description of the asset.
+  string description = 3;
+
+  // Output only. Status of the discovery feature applied to data referenced by this asset.
+  repeated DiscoveryStatus discovery_status = 4 [json_name = "discovery_status"];
+
+  // Optional. User friendly display name.
+  string display_name = 5 [json_name = "display_name"];
+
+  string id = 6;
+
+  // Optional. User defined labels for the asset.
+  map<string, string> labels = 7;
+
+  // The lake for the resource
+  string lake = 8;
+
+  // The location for the resource
+  string location = 9;
+
+  // The name of the asset.
+  string name = 10;
+
+  // The project for the resource
+  string project = 11;
+
+  // Output only. Status of the resource referenced by this asset.
+  repeated ResourceStatus resource_status = 12 [json_name = "resource_status"];
+
+  // Output only. Status of the security policy applied to resource referenced by this asset.
+  repeated SecurityStatus security_status = 13 [json_name = "security_status"];
+
+  // Output only. Current state of the asset. Possible values: STATE_UNSPECIFIED, ACTIVE, CREATING, DELETING, ACTION_REQUIRED
+  string state = 14;
+
+  // Output only. System generated globally unique ID for the asset. This ID will be different if the asset is deleted and re-created with the same name.
+  string uid = 15;
+
+  // Output only. The time when the asset was last updated.
+  string update_time = 16 [json_name = "update_time"];
+
+  DiscoverySpec discovery_spec = 17 [json_name = "discovery_spec"];
+
+  ResourceSpec resource_spec = 18 [json_name = "resource_spec"];
+
+  repeated Timeouts timeouts = 19;
+
+  map<string, string> for_each = 20 [json_name = "for_each"];
+
+  repeated string depends_on = 21 [json_name = "depends_on"];
+
+  int32 count = 22;
+
+  string provider = 23;
+
+  terraform.v1.Lifecycle lifecycle = 24;
+
+  message DiscoveryStatus {
+    // last_run_duration: string
+    string last_run_duration = 1 [json_name = "last_run_duration"];
+
+    // last_run_time: string
+    string last_run_time = 2 [json_name = "last_run_time"];
+
+    // message: string
+    string message = 3;
+
+    // state: string
+    string state = 4;
+
+    // stats: list of object
+    repeated Stats stats = 5;
+
+    // update_time: string
+    string update_time = 6 [json_name = "update_time"];
+
+    message Stats {
+      // data_items: number
+      int64 data_items = 1 [json_name = "data_items"];
+
+      // data_size: number
+      int64 data_size = 2 [json_name = "data_size"];
+
+      // filesets: number
+      int64 filesets = 3;
+
+      // tables: number
+      int64 tables = 4;
+    }
+  }
+
+  message ResourceStatus {
+    // message: string
+    string message = 1;
+
+    // state: string
+    string state = 2;
+
+    // update_time: string
+    string update_time = 3 [json_name = "update_time"];
+  }
+
+  message SecurityStatus {
+    // message: string
+    string message = 1;
+
+    // state: string
+    string state = 2;
+
+    // update_time: string
+    string update_time = 3 [json_name = "update_time"];
+  }
+
+  message DiscoverySpec {
+    // Required. Whether discovery is enabled.
+    bool enabled = 1;
+
+    // Optional. The list of patterns to apply for selecting data to exclude during discovery. For Cloud Storage bucket assets, these are interpreted as glob patterns used to match object names. For BigQuery dataset assets, these are interpreted as patterns to match table names.
+    repeated string exclude_patterns = 2 [json_name = "exclude_patterns"];
+
+    // Optional. The list of patterns to apply for selecting data to include during discovery if only a subset of the data should considered. For Cloud Storage bucket assets, these are interpreted as glob patterns used to match object names. For BigQuery dataset assets, these are interpreted as patterns to match table names.
+    repeated string include_patterns = 3 [json_name = "include_patterns"];
+
+    // Optional. Cron schedule (https://en.wikipedia.org/wiki/Cron) for running discovery periodically. Successive discovery runs must be scheduled at least 60 minutes apart. The default value is to run discovery every 60 minutes. To explicitly set a timezone to the cron tab, apply a prefix in the cron tab: "CRON_TZ=${IANA_TIME_ZONE}" or TZ=${IANA_TIME_ZONE}". The ${IANA_TIME_ZONE} may only be a valid string from IANA time zone database. For example, "CRON_TZ=America/New_York 1 * * * *", or "TZ=America/New_York 1 * * * *".
+    string schedule = 4;
+
+    CsvOptions csv_options = 5 [json_name = "csv_options"];
+
+    JsonOptions json_options = 6 [json_name = "json_options"];
+
+    message CsvOptions {
+      // Optional. The delimiter being used to separate values. This defaults to ','.
+      string delimiter = 1;
+
+      // Optional. Whether to disable the inference of data type for CSV data. If true, all columns will be registered as strings.
+      bool disable_type_inference = 2 [json_name = "disable_type_inference"];
+
+      // Optional. The character encoding of the data. The default is UTF-8.
+      string encoding = 3;
+
+      // Optional. The number of rows to interpret as header rows that should be skipped when reading data rows.
+      int64 header_rows = 4 [json_name = "header_rows"];
+    }
+
+    message JsonOptions {
+      // Optional. Whether to disable the inference of data type for Json data. If true, all columns will be registered as their primitive types (strings, number or boolean).
+      bool disable_type_inference = 1 [json_name = "disable_type_inference"];
+
+      // Optional. The character encoding of the data. The default is UTF-8.
+      string encoding = 2;
+    }
+  }
+
+  message ResourceSpec {
+    // Immutable. Relative name of the cloud resource that contains the data that is being managed within a lake. For example: `projects/{project_number}/buckets/{bucket_id}` `projects/{project_number}/datasets/{dataset_id}`
+    string name = 1;
+
+    // Required. Immutable. Type of resource. Possible values: STORAGE_BUCKET, BIGQUERY_DATASET
+    string type = 2;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleDataplexAssetIamBinding version is 0
+message GoogleDataplexAssetIamBinding {
+  string asset = 1;
+
+  string dataplex_zone = 2 [json_name = "dataplex_zone"];
+
+  string etag = 3;
+
+  string id = 4;
+
+  string lake = 5;
+
+  string location = 6;
+
+  repeated string members = 7;
+
+  string project = 8;
+
+  string role = 9;
+
+  Condition condition = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleDataplexAssetIamMember version is 0
+message GoogleDataplexAssetIamMember {
+  string asset = 1;
+
+  string dataplex_zone = 2 [json_name = "dataplex_zone"];
+
+  string etag = 3;
+
+  string id = 4;
+
+  string lake = 5;
+
+  string location = 6;
+
+  string member = 7;
+
+  string project = 8;
+
+  string role = 9;
+
+  Condition condition = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleDataplexAssetIamPolicy version is 0
+message GoogleDataplexAssetIamPolicy {
+  string asset = 1;
+
+  string dataplex_zone = 2 [json_name = "dataplex_zone"];
+
+  string etag = 3;
+
+  string id = 4;
+
+  string lake = 5;
+
+  string location = 6;
+
+  string policy_data = 7 [json_name = "policy_data"];
+
+  string project = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+}
+
+// GoogleDataplexDatascan version is 0
+message GoogleDataplexDatascan {
+  // The time when the scan was created.
+  string create_time = 1 [json_name = "create_time"];
+
+  // The result of the data profile scan.
+  repeated DataProfileResult data_profile_result = 2 [json_name = "data_profile_result"];
+
+  // The result of the data quality scan.
+  repeated DataQualityResult data_quality_result = 3 [json_name = "data_quality_result"];
+
+  // DataScan identifier. Must contain only lowercase letters, numbers and hyphens. Must start with a letter. Must end with a number or a letter.
+  string data_scan_id = 4 [json_name = "data_scan_id"];
+
+  // Description of the scan.
+  string description = 5;
+
+  // User friendly display name.
+  string display_name = 6 [json_name = "display_name"];
+
+  // Status of the data scan execution.
+  repeated ExecutionStatus execution_status = 7 [json_name = "execution_status"];
+
+  string id = 8;
+
+  // User-defined labels for the scan. A list of key->value pairs.
+  map<string, string> labels = 9;
+
+  // The location where the data scan should reside.
+  string location = 10;
+
+  // The relative resource name of the scan, of the form: projects/{project}/locations/{locationId}/dataScans/{datascan_id}, where project refers to a project_id or project_number and locationId refers to a GCP region.
+  string name = 11;
+
+  string project = 12;
+
+  // Current state of the DataScan.
+  string state = 13;
+
+  // The type of DataScan.
+  string type = 14;
+
+  // System generated globally unique ID for the scan. This ID will be different if the scan is deleted and re-created with the same name.
+  string uid = 15;
+
+  // The time when the scan was last updated.
+  string update_time = 16 [json_name = "update_time"];
+
+  Data data = 17;
+
+  DataProfileSpec data_profile_spec = 18 [json_name = "data_profile_spec"];
+
+  DataQualitySpec data_quality_spec = 19 [json_name = "data_quality_spec"];
+
+  ExecutionSpec execution_spec = 20 [json_name = "execution_spec"];
+
+  repeated Timeouts timeouts = 21;
+
+  map<string, string> for_each = 22 [json_name = "for_each"];
+
+  repeated string depends_on = 23 [json_name = "depends_on"];
+
+  int32 count = 24;
+
+  string provider = 25;
+
+  terraform.v1.Lifecycle lifecycle = 26;
+
+  message DataProfileResult {
+    // profile: list of object
+    repeated Profile profile = 1;
+
+    // row_count: string
+    string row_count = 2 [json_name = "row_count"];
+
+    // scanned_data: list of object
+    repeated ScannedData scanned_data = 3 [json_name = "scanned_data"];
+
+    message Profile {
+      // fields: list of object
+      repeated Fields fields = 1;
+
+      message Fields {
+        // mode: string
+        string mode = 1;
+
+        // name: string
+        string name = 2;
+
+        // profile: list of object
+        repeated Profile profile = 3;
+
+        // type: string
+        string type = 4;
+
+        message Profile {
+          // distinct_ratio: number
+          int64 distinct_ratio = 1 [json_name = "distinct_ratio"];
+
+          // double_profile: list of object
+          repeated DoubleProfile double_profile = 2 [json_name = "double_profile"];
+
+          // integer_profile: list of object
+          repeated IntegerProfile integer_profile = 3 [json_name = "integer_profile"];
+
+          // null_ratio: number
+          int64 null_ratio = 4 [json_name = "null_ratio"];
+
+          // string_profile: list of object
+          repeated StringProfile string_profile = 5 [json_name = "string_profile"];
+
+          // top_n_values: list of object
+          repeated TopNValues top_n_values = 6 [json_name = "top_n_values"];
+
+          message DoubleProfile {
+            // average: number
+            int64 average = 1;
+
+            // max: string
+            string max = 2;
+
+            // min: string
+            string min = 3;
+
+            // quartiles: string
+            string quartiles = 4;
+
+            // standard_deviation: number
+            int64 standard_deviation = 5 [json_name = "standard_deviation"];
+          }
+
+          message IntegerProfile {
+            // average: number
+            int64 average = 1;
+
+            // max: string
+            string max = 2;
+
+            // min: string
+            string min = 3;
+
+            // quartiles: string
+            string quartiles = 4;
+
+            // standard_deviation: number
+            int64 standard_deviation = 5 [json_name = "standard_deviation"];
+          }
+
+          message StringProfile {
+            // average_length: number
+            int64 average_length = 1 [json_name = "average_length"];
+
+            // max_length: string
+            string max_length = 2 [json_name = "max_length"];
+
+            // min_length: string
+            string min_length = 3 [json_name = "min_length"];
+          }
+
+          message TopNValues {
+            // count: string
+            string count = 1;
+
+            // value: string
+            string value = 2;
+          }
+        }
+      }
+    }
+
+    message ScannedData {
+      // incremental_field: list of object
+      repeated IncrementalField incremental_field = 1 [json_name = "incremental_field"];
+
+      message IncrementalField {
+        // end: string
+        string end = 1;
+
+        // field: string
+        string field = 2;
+
+        // start: string
+        string start = 3;
+      }
+    }
+  }
+
+  message DataQualityResult {
+    // dimensions: list of object
+    repeated Dimensions dimensions = 1;
+
+    // passed: bool
+    bool passed = 2;
+
+    // row_count: string
+    string row_count = 3 [json_name = "row_count"];
+
+    // rules: list of object
+    repeated Rules rules = 4;
+
+    // scanned_data: list of object
+    repeated ScannedData scanned_data = 5 [json_name = "scanned_data"];
+
+    message Dimensions {
+      // passed: bool
+      bool passed = 1;
+    }
+
+    message Rules {
+      // evaluated_count: string
+      string evaluated_count = 1 [json_name = "evaluated_count"];
+
+      // failing_rows_query: string
+      string failing_rows_query = 2 [json_name = "failing_rows_query"];
+
+      // null_count: string
+      string null_count = 3 [json_name = "null_count"];
+
+      // pass_ratio: number
+      int64 pass_ratio = 4 [json_name = "pass_ratio"];
+
+      // passed: bool
+      bool passed = 5;
+
+      // passed_count: string
+      string passed_count = 6 [json_name = "passed_count"];
+
+      // rule: list of object
+      repeated Rule rule = 7;
+
+      message Rule {
+        // column: string
+        string column = 1;
+
+        // dimension: string
+        string dimension = 2;
+
+        // ignore_null: bool
+        bool ignore_null = 3 [json_name = "ignore_null"];
+
+        // non_null_expectation: list of object
+        repeated NonNullExpectation non_null_expectation = 4 [json_name = "non_null_expectation"];
+
+        // range_expectation: list of object
+        repeated RangeExpectation range_expectation = 5 [json_name = "range_expectation"];
+
+        // regex_expectation: list of object
+        repeated RegexExpectation regex_expectation = 6 [json_name = "regex_expectation"];
+
+        // row_condition_expectation: list of object
+        repeated RowConditionExpectation row_condition_expectation = 7 [json_name = "row_condition_expectation"];
+
+        // set_expectation: list of object
+        repeated SetExpectation set_expectation = 8 [json_name = "set_expectation"];
+
+        // statistic_range_expectation: list of object
+        repeated StatisticRangeExpectation statistic_range_expectation = 9 [json_name = "statistic_range_expectation"];
+
+        // table_condition_expectation: list of object
+        repeated TableConditionExpectation table_condition_expectation = 10 [json_name = "table_condition_expectation"];
+
+        // threshold: number
+        int64 threshold = 11;
+
+        // uniqueness_expectation: list of object
+        repeated UniquenessExpectation uniqueness_expectation = 12 [json_name = "uniqueness_expectation"];
+
+        message NonNullExpectation {
+        }
+
+        message RangeExpectation {
+          // max_value: string
+          string max_value = 1 [json_name = "max_value"];
+
+          // min_value: string
+          string min_value = 2 [json_name = "min_value"];
+
+          // strict_max_enabled: bool
+          bool strict_max_enabled = 3 [json_name = "strict_max_enabled"];
+
+          // strict_min_enabled: bool
+          bool strict_min_enabled = 4 [json_name = "strict_min_enabled"];
+        }
+
+        message RegexExpectation {
+          // regex: string
+          string regex = 1;
+        }
+
+        message RowConditionExpectation {
+          // sql_expression: string
+          string sql_expression = 1 [json_name = "sql_expression"];
+        }
+
+        message SetExpectation {
+          // values: list of string
+          repeated string values = 1;
+        }
+
+        message StatisticRangeExpectation {
+          // max_value: string
+          string max_value = 1 [json_name = "max_value"];
+
+          // min_value: string
+          string min_value = 2 [json_name = "min_value"];
+
+          // statistic: string
+          string statistic = 3;
+
+          // strict_max_enabled: bool
+          bool strict_max_enabled = 4 [json_name = "strict_max_enabled"];
+
+          // strict_min_enabled: bool
+          bool strict_min_enabled = 5 [json_name = "strict_min_enabled"];
+        }
+
+        message TableConditionExpectation {
+          // sql_expression: string
+          string sql_expression = 1 [json_name = "sql_expression"];
+        }
+
+        message UniquenessExpectation {
+        }
+      }
+    }
+
+    message ScannedData {
+      // incremental_field: list of object
+      repeated IncrementalField incremental_field = 1 [json_name = "incremental_field"];
+
+      message IncrementalField {
+        // end: string
+        string end = 1;
+
+        // field: string
+        string field = 2;
+
+        // start: string
+        string start = 3;
+      }
+    }
+  }
+
+  message ExecutionStatus {
+    // latest_job_end_time: string
+    string latest_job_end_time = 1 [json_name = "latest_job_end_time"];
+
+    // latest_job_start_time: string
+    string latest_job_start_time = 2 [json_name = "latest_job_start_time"];
+  }
+
+  message Data {
+    // The Dataplex entity that represents the data source(e.g. BigQuery table) for Datascan.
+    string entity = 1;
+
+    // The service-qualified full resource name of the cloud resource for a DataScan job to scan against. The field could be:
+    // (Cloud Storage bucket for DataDiscoveryScan)BigQuery table of type "TABLE" for DataProfileScan/DataQualityScan.
+    string resource = 2;
+  }
+
+  message DataProfileSpec {
+    // A filter applied to all rows in a single DataScan job. The filter needs to be a valid SQL expression for a WHERE clause in BigQuery standard SQL syntax. Example: col1 >= 0 AND col2 < 10
+    string row_filter = 1 [json_name = "row_filter"];
+
+    // The percentage of the records to be selected from the dataset for DataScan.
+    int64 sampling_percent = 2 [json_name = "sampling_percent"];
+  }
+
+  message DataQualitySpec {
+    // A filter applied to all rows in a single DataScan job. The filter needs to be a valid SQL expression for a WHERE clause in BigQuery standard SQL syntax. Example: col1 >= 0 AND col2 < 10
+    string row_filter = 1 [json_name = "row_filter"];
+
+    // The percentage of the records to be selected from the dataset for DataScan.
+    int64 sampling_percent = 2 [json_name = "sampling_percent"];
+
+    repeated Rules rules = 3;
+
+    message Rules {
+      // The unnested column which this rule is evaluated against.
+      string column = 1;
+
+      // The dimension a rule belongs to. Results are also aggregated at the dimension level. Supported dimensions are ["COMPLETENESS", "ACCURACY", "CONSISTENCY", "VALIDITY", "UNIQUENESS", "INTEGRITY"]
+      string dimension = 2;
+
+      // Rows with null values will automatically fail a rule, unless ignoreNull is true. In that case, such null rows are trivially considered passing. Only applicable to ColumnMap rules.
+      bool ignore_null = 3 [json_name = "ignore_null"];
+
+      // The minimum ratio of passing_rows / total_rows required to pass this rule, with a range of [0.0, 1.0]. 0 indicates default value (i.e. 1.0).
+      int64 threshold = 4;
+
+      NonNullExpectation non_null_expectation = 5 [json_name = "non_null_expectation"];
+
+      RangeExpectation range_expectation = 6 [json_name = "range_expectation"];
+
+      RegexExpectation regex_expectation = 7 [json_name = "regex_expectation"];
+
+      RowConditionExpectation row_condition_expectation = 8 [json_name = "row_condition_expectation"];
+
+      SetExpectation set_expectation = 9 [json_name = "set_expectation"];
+
+      StatisticRangeExpectation statistic_range_expectation = 10 [json_name = "statistic_range_expectation"];
+
+      TableConditionExpectation table_condition_expectation = 11 [json_name = "table_condition_expectation"];
+
+      UniquenessExpectation uniqueness_expectation = 12 [json_name = "uniqueness_expectation"];
+
+      message NonNullExpectation {
+      }
+
+      message RangeExpectation {
+        // The maximum column value allowed for a row to pass this validation. At least one of minValue and maxValue need to be provided.
+        string max_value = 1 [json_name = "max_value"];
+
+        // The minimum column value allowed for a row to pass this validation. At least one of minValue and maxValue need to be provided.
+        string min_value = 2 [json_name = "min_value"];
+
+        // Whether each value needs to be strictly lesser than ('<') the maximum, or if equality is allowed.
+        // Only relevant if a maxValue has been defined. Default = false.
+        bool strict_max_enabled = 3 [json_name = "strict_max_enabled"];
+
+        // Whether each value needs to be strictly greater than ('>') the minimum, or if equality is allowed.
+        // Only relevant if a minValue has been defined. Default = false.
+        bool strict_min_enabled = 4 [json_name = "strict_min_enabled"];
+      }
+
+      message RegexExpectation {
+        // A regular expression the column value is expected to match.
+        string regex = 1;
+      }
+
+      message RowConditionExpectation {
+        // The SQL expression.
+        string sql_expression = 1 [json_name = "sql_expression"];
+      }
+
+      message SetExpectation {
+        // Expected values for the column value.
+        repeated string values = 1;
+      }
+
+      message StatisticRangeExpectation {
+        // The maximum column statistic value allowed for a row to pass this validation.
+        // At least one of minValue and maxValue need to be provided.
+        string max_value = 1 [json_name = "max_value"];
+
+        // The minimum column statistic value allowed for a row to pass this validation.
+        // At least one of minValue and maxValue need to be provided.
+        string min_value = 2 [json_name = "min_value"];
+
+        // column statistics. Possible values: ["STATISTIC_UNDEFINED", "MEAN", "MIN", "MAX"]
+        string statistic = 3;
+
+        // Whether column statistic needs to be strictly lesser than ('<') the maximum, or if equality is allowed.
+        // Only relevant if a maxValue has been defined. Default = false.
+        bool strict_max_enabled = 4 [json_name = "strict_max_enabled"];
+
+        // Whether column statistic needs to be strictly greater than ('>') the minimum, or if equality is allowed.
+        // Only relevant if a minValue has been defined. Default = false.
+        bool strict_min_enabled = 5 [json_name = "strict_min_enabled"];
+      }
+
+      message TableConditionExpectation {
+        // The SQL expression.
+        string sql_expression = 1 [json_name = "sql_expression"];
+      }
+
+      message UniquenessExpectation {
+      }
+    }
+  }
+
+  message ExecutionSpec {
+    // The unnested field (of type Date or Timestamp) that contains values which monotonically increase over time. If not specified, a data scan will run for all data in the table.
+    string field = 1;
+
+    Trigger trigger = 2;
+
+    message Trigger {
+      OnDemand on_demand = 1 [json_name = "on_demand"];
+
+      Schedule schedule = 2;
+
+      message OnDemand {
+      }
+
+      message Schedule {
+        // Cron schedule for running scans periodically. This field is required for Schedule scans.
+        string cron = 1;
+      }
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleDataplexDatascanIamBinding version is 0
+message GoogleDataplexDatascanIamBinding {
+  string data_scan_id = 1 [json_name = "data_scan_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string location = 4;
+
+  repeated string members = 5;
+
+  string project = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleDataplexDatascanIamMember version is 0
+message GoogleDataplexDatascanIamMember {
+  string data_scan_id = 1 [json_name = "data_scan_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string location = 4;
+
+  string member = 5;
+
+  string project = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleDataplexDatascanIamPolicy version is 0
+message GoogleDataplexDatascanIamPolicy {
+  string data_scan_id = 1 [json_name = "data_scan_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string location = 4;
+
+  string policy_data = 5 [json_name = "policy_data"];
+
+  string project = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleDataplexLake version is 0
+message GoogleDataplexLake {
+  // Output only. Aggregated status of the underlying assets of the lake.
+  repeated AssetStatus asset_status = 1 [json_name = "asset_status"];
+
+  // Output only. The time when the lake was created.
+  string create_time = 2 [json_name = "create_time"];
+
+  // Optional. Description of the lake.
+  string description = 3;
+
+  // Optional. User friendly display name.
+  string display_name = 4 [json_name = "display_name"];
+
+  string id = 5;
+
+  // Optional. User-defined labels for the lake.
+  map<string, string> labels = 6;
+
+  // The location for the resource
+  string location = 7;
+
+  // Output only. Metastore status of the lake.
+  repeated MetastoreStatus metastore_status = 8 [json_name = "metastore_status"];
+
+  // The name of the lake.
+  string name = 9;
+
+  // The project for the resource
+  string project = 10;
+
+  // Output only. Service account associated with this lake. This service account must be authorized to access or operate on resources managed by the lake.
+  string service_account = 11 [json_name = "service_account"];
+
+  // Output only. Current state of the lake. Possible values: STATE_UNSPECIFIED, ACTIVE, CREATING, DELETING, ACTION_REQUIRED
+  string state = 12;
+
+  // Output only. System generated globally unique ID for the lake. This ID will be different if the lake is deleted and re-created with the same name.
+  string uid = 13;
+
+  // Output only. The time when the lake was last updated.
+  string update_time = 14 [json_name = "update_time"];
+
+  Metastore metastore = 15;
+
+  repeated Timeouts timeouts = 16;
+
+  map<string, string> for_each = 17 [json_name = "for_each"];
+
+  repeated string depends_on = 18 [json_name = "depends_on"];
+
+  int32 count = 19;
+
+  string provider = 20;
+
+  terraform.v1.Lifecycle lifecycle = 21;
+
+  message AssetStatus {
+    // active_assets: number
+    int64 active_assets = 1 [json_name = "active_assets"];
+
+    // security_policy_applying_assets: number
+    int64 security_policy_applying_assets = 2 [json_name = "security_policy_applying_assets"];
+
+    // update_time: string
+    string update_time = 3 [json_name = "update_time"];
+  }
+
+  message MetastoreStatus {
+    // endpoint: string
+    string endpoint = 1;
+
+    // message: string
+    string message = 2;
+
+    // state: string
+    string state = 3;
+
+    // update_time: string
+    string update_time = 4 [json_name = "update_time"];
+  }
+
+  message Metastore {
+    // Optional. A relative reference to the Dataproc Metastore (https://cloud.google.com/dataproc-metastore/docs) service associated with the lake: `projects/{project_id}/locations/{location_id}/services/{service_id}`
+    string service = 1;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleDataplexLakeIamBinding version is 0
+message GoogleDataplexLakeIamBinding {
+  string etag = 1;
+
+  string id = 2;
+
+  string lake = 3;
+
+  string location = 4;
+
+  repeated string members = 5;
+
+  string project = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleDataplexLakeIamMember version is 0
+message GoogleDataplexLakeIamMember {
+  string etag = 1;
+
+  string id = 2;
+
+  string lake = 3;
+
+  string location = 4;
+
+  string member = 5;
+
+  string project = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleDataplexLakeIamPolicy version is 0
+message GoogleDataplexLakeIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string lake = 3;
+
+  string location = 4;
+
+  string policy_data = 5 [json_name = "policy_data"];
+
+  string project = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleDataplexZone version is 0
+message GoogleDataplexZone {
+  // Output only. Aggregated status of the underlying assets of the zone.
+  repeated AssetStatus asset_status = 1 [json_name = "asset_status"];
+
+  // Output only. The time when the zone was created.
+  string create_time = 2 [json_name = "create_time"];
+
+  // Optional. Description of the zone.
+  string description = 3;
+
+  // Optional. User friendly display name.
+  string display_name = 4 [json_name = "display_name"];
+
+  string id = 5;
+
+  // Optional. User defined labels for the zone.
+  map<string, string> labels = 6;
+
+  // The lake for the resource
+  string lake = 7;
+
+  // The location for the resource
+  string location = 8;
+
+  // The name of the zone.
+  string name = 9;
+
+  // The project for the resource
+  string project = 10;
+
+  // Output only. Current state of the zone. Possible values: STATE_UNSPECIFIED, ACTIVE, CREATING, DELETING, ACTION_REQUIRED
+  string state = 11;
+
+  // Required. Immutable. The type of the zone. Possible values: TYPE_UNSPECIFIED, RAW, CURATED
+  string type = 12;
+
+  // Output only. System generated globally unique ID for the zone. This ID will be different if the zone is deleted and re-created with the same name.
+  string uid = 13;
+
+  // Output only. The time when the zone was last updated.
+  string update_time = 14 [json_name = "update_time"];
+
+  DiscoverySpec discovery_spec = 15 [json_name = "discovery_spec"];
+
+  ResourceSpec resource_spec = 16 [json_name = "resource_spec"];
+
+  repeated Timeouts timeouts = 17;
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+
+  message AssetStatus {
+    // active_assets: number
+    int64 active_assets = 1 [json_name = "active_assets"];
+
+    // security_policy_applying_assets: number
+    int64 security_policy_applying_assets = 2 [json_name = "security_policy_applying_assets"];
+
+    // update_time: string
+    string update_time = 3 [json_name = "update_time"];
+  }
+
+  message DiscoverySpec {
+    // Required. Whether discovery is enabled.
+    bool enabled = 1;
+
+    // Optional. The list of patterns to apply for selecting data to exclude during discovery. For Cloud Storage bucket assets, these are interpreted as glob patterns used to match object names. For BigQuery dataset assets, these are interpreted as patterns to match table names.
+    repeated string exclude_patterns = 2 [json_name = "exclude_patterns"];
+
+    // Optional. The list of patterns to apply for selecting data to include during discovery if only a subset of the data should considered. For Cloud Storage bucket assets, these are interpreted as glob patterns used to match object names. For BigQuery dataset assets, these are interpreted as patterns to match table names.
+    repeated string include_patterns = 3 [json_name = "include_patterns"];
+
+    // Optional. Cron schedule (https://en.wikipedia.org/wiki/Cron) for running discovery periodically. Successive discovery runs must be scheduled at least 60 minutes apart. The default value is to run discovery every 60 minutes. To explicitly set a timezone to the cron tab, apply a prefix in the cron tab: "CRON_TZ=${IANA_TIME_ZONE}" or TZ=${IANA_TIME_ZONE}". The ${IANA_TIME_ZONE} may only be a valid string from IANA time zone database. For example, "CRON_TZ=America/New_York 1 * * * *", or "TZ=America/New_York 1 * * * *".
+    string schedule = 4;
+
+    CsvOptions csv_options = 5 [json_name = "csv_options"];
+
+    JsonOptions json_options = 6 [json_name = "json_options"];
+
+    message CsvOptions {
+      // Optional. The delimiter being used to separate values. This defaults to ','.
+      string delimiter = 1;
+
+      // Optional. Whether to disable the inference of data type for CSV data. If true, all columns will be registered as strings.
+      bool disable_type_inference = 2 [json_name = "disable_type_inference"];
+
+      // Optional. The character encoding of the data. The default is UTF-8.
+      string encoding = 3;
+
+      // Optional. The number of rows to interpret as header rows that should be skipped when reading data rows.
+      int64 header_rows = 4 [json_name = "header_rows"];
+    }
+
+    message JsonOptions {
+      // Optional. Whether to disable the inference of data type for Json data. If true, all columns will be registered as their primitive types (strings, number or boolean).
+      bool disable_type_inference = 1 [json_name = "disable_type_inference"];
+
+      // Optional. The character encoding of the data. The default is UTF-8.
+      string encoding = 2;
+    }
+  }
+
+  message ResourceSpec {
+    // Required. Immutable. The location type of the resources that are allowed to be attached to the assets within this zone. Possible values: LOCATION_TYPE_UNSPECIFIED, SINGLE_REGION, MULTI_REGION
+    string location_type = 1 [json_name = "location_type"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleDataplexZoneIamBinding version is 0
+message GoogleDataplexZoneIamBinding {
+  string dataplex_zone = 1 [json_name = "dataplex_zone"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string lake = 4;
+
+  string location = 5;
+
+  repeated string members = 6;
+
+  string project = 7;
+
+  string role = 8;
+
+  Condition condition = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleDataplexZoneIamMember version is 0
+message GoogleDataplexZoneIamMember {
+  string dataplex_zone = 1 [json_name = "dataplex_zone"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string lake = 4;
+
+  string location = 5;
+
+  string member = 6;
+
+  string project = 7;
+
+  string role = 8;
+
+  Condition condition = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleDataplexZoneIamPolicy version is 0
+message GoogleDataplexZoneIamPolicy {
+  string dataplex_zone = 1 [json_name = "dataplex_zone"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string lake = 4;
+
+  string location = 5;
+
+  string policy_data = 6 [json_name = "policy_data"];
+
+  string project = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}

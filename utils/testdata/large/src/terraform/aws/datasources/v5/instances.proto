@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsInstances version is 0
+message AwsInstances {
+  string id = 1;
+
+  repeated string ids = 2;
+
+  repeated string instance_state_names = 3 [json_name = "instance_state_names"];
+
+  map<string, string> instance_tags = 4 [json_name = "instance_tags"];
+
+  repeated string ipv6_addresses = 5 [json_name = "ipv6_addresses"];
+
+  repeated string private_ips = 6 [json_name = "private_ips"];
+
+  repeated string public_ips = 7 [json_name = "public_ips"];
+
+  repeated Filter filter = 8;
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+
+  message Timeouts {
+    string read = 1;
+  }
+}

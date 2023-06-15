@@ -1,0 +1,100 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsNeptuneEngineVersion version is 0
+message AwsNeptuneEngineVersion {
+  string engine = 1;
+
+  string engine_description = 2 [json_name = "engine_description"];
+
+  repeated string exportable_log_types = 3 [json_name = "exportable_log_types"];
+
+  string id = 4;
+
+  string parameter_group_family = 5 [json_name = "parameter_group_family"];
+
+  repeated string preferred_versions = 6 [json_name = "preferred_versions"];
+
+  repeated string supported_timezones = 7 [json_name = "supported_timezones"];
+
+  bool supports_log_exports_to_cloudwatch = 8 [json_name = "supports_log_exports_to_cloudwatch"];
+
+  bool supports_read_replica = 9 [json_name = "supports_read_replica"];
+
+  repeated string valid_upgrade_targets = 10 [json_name = "valid_upgrade_targets"];
+
+  string version = 11;
+
+  string version_description = 12 [json_name = "version_description"];
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+}
+
+// AwsNeptuneOrderableDbInstance version is 0
+message AwsNeptuneOrderableDbInstance {
+  repeated string availability_zones = 1 [json_name = "availability_zones"];
+
+  string engine = 2;
+
+  string engine_version = 3 [json_name = "engine_version"];
+
+  string id = 4;
+
+  string instance_class = 5 [json_name = "instance_class"];
+
+  string license_model = 6 [json_name = "license_model"];
+
+  int64 max_iops_per_db_instance = 7 [json_name = "max_iops_per_db_instance"];
+
+  int64 max_iops_per_gib = 8 [json_name = "max_iops_per_gib"];
+
+  int64 max_storage_size = 9 [json_name = "max_storage_size"];
+
+  int64 min_iops_per_db_instance = 10 [json_name = "min_iops_per_db_instance"];
+
+  int64 min_iops_per_gib = 11 [json_name = "min_iops_per_gib"];
+
+  int64 min_storage_size = 12 [json_name = "min_storage_size"];
+
+  bool multi_az_capable = 13 [json_name = "multi_az_capable"];
+
+  repeated string preferred_instance_classes = 14 [json_name = "preferred_instance_classes"];
+
+  bool read_replica_capable = 15 [json_name = "read_replica_capable"];
+
+  string storage_type = 16 [json_name = "storage_type"];
+
+  bool supports_enhanced_monitoring = 17 [json_name = "supports_enhanced_monitoring"];
+
+  bool supports_iam_database_authentication = 18 [json_name = "supports_iam_database_authentication"];
+
+  bool supports_iops = 19 [json_name = "supports_iops"];
+
+  bool supports_performance_insights = 20 [json_name = "supports_performance_insights"];
+
+  bool supports_storage_encryption = 21 [json_name = "supports_storage_encryption"];
+
+  bool vpc = 22;
+
+  map<string, string> for_each = 23 [json_name = "for_each"];
+
+  repeated string depends_on = 24 [json_name = "depends_on"];
+
+  int32 count = 25;
+
+  string provider = 26;
+
+  terraform.v1.Lifecycle lifecycle = 27;
+}

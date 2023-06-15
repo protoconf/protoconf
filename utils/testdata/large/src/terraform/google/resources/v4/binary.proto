@@ -1,0 +1,287 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleBinaryAuthorizationAttestor version is 0
+message GoogleBinaryAuthorizationAttestor {
+  // A descriptive comment. This field may be updated. The field may be
+  // displayed in chooser dialogs.
+  string description = 1;
+
+  string id = 2;
+
+  // The resource name.
+  string name = 3;
+
+  string project = 4;
+
+  AttestationAuthorityNote attestation_authority_note = 5 [json_name = "attestation_authority_note"];
+
+  repeated Timeouts timeouts = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message AttestationAuthorityNote {
+    // This field will contain the service account email address that
+    // this Attestor will use as the principal when querying Container
+    // Analysis. Attestor administrators must grant this service account
+    // the IAM role needed to read attestations from the noteReference in
+    // Container Analysis (containeranalysis.notes.occurrences.viewer).
+    // This email address is fixed for the lifetime of the Attestor, but
+    // callers should not make any other assumptions about the service
+    // account email; future versions may use an email based on a
+    // different naming pattern.
+    string delegation_service_account_email = 1 [json_name = "delegation_service_account_email"];
+
+    // The resource name of a ATTESTATION_AUTHORITY Note, created by the
+    // user. If the Note is in a different project from the Attestor, it
+    // should be specified in the format 'projects/*/notes/*' (or the legacy
+    // 'providers/*/notes/*'). This field may not be updated.
+    // An attestation by this attestor is stored as a Container Analysis
+    // ATTESTATION_AUTHORITY Occurrence that names a container image
+    // and that links to this Note.
+    string note_reference = 2 [json_name = "note_reference"];
+
+    repeated PublicKeys public_keys = 3 [json_name = "public_keys"];
+
+    message PublicKeys {
+      // ASCII-armored representation of a PGP public key, as the
+      // entire output by the command
+      // 'gpg --export --armor foo@example.com' (either LF or CRLF
+      // line endings). When using this field, id should be left
+      // blank. The BinAuthz API handlers will calculate the ID
+      // and fill it in automatically. BinAuthz computes this ID
+      // as the OpenPGP RFC4880 V4 fingerprint, represented as
+      // upper-case hex. If id is provided by the caller, it will
+      // be overwritten by the API-calculated ID.
+      string ascii_armored_pgp_public_key = 1 [json_name = "ascii_armored_pgp_public_key"];
+
+      // A descriptive comment. This field may be updated.
+      string comment = 2;
+
+      // The ID of this public key. Signatures verified by BinAuthz
+      // must include the ID of the public key that can be used to
+      // verify them, and that ID must match the contents of this
+      // field exactly. Additional restrictions on this field can
+      // be imposed based on which public key type is encapsulated.
+      // See the documentation on publicKey cases below for details.
+      string id = 3;
+
+      PkixPublicKey pkix_public_key = 4 [json_name = "pkix_public_key"];
+
+      message PkixPublicKey {
+        // A PEM-encoded public key, as described in
+        // 'https://tools.ietf.org/html/rfc7468#section-13'
+        string public_key_pem = 1 [json_name = "public_key_pem"];
+
+        // The signature algorithm used to verify a message against
+        // a signature using this key. These signature algorithm must
+        // match the structure and any object identifiers encoded in
+        // publicKeyPem (i.e. this algorithm must match that of the
+        // public key).
+        string signature_algorithm = 2 [json_name = "signature_algorithm"];
+      }
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleBinaryAuthorizationAttestorIamBinding version is 0
+message GoogleBinaryAuthorizationAttestorIamBinding {
+  string attestor = 1;
+
+  string etag = 2;
+
+  string id = 3;
+
+  repeated string members = 4;
+
+  string project = 5;
+
+  string role = 6;
+
+  Condition condition = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleBinaryAuthorizationAttestorIamMember version is 0
+message GoogleBinaryAuthorizationAttestorIamMember {
+  string attestor = 1;
+
+  string etag = 2;
+
+  string id = 3;
+
+  string member = 4;
+
+  string project = 5;
+
+  string role = 6;
+
+  Condition condition = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleBinaryAuthorizationAttestorIamPolicy version is 0
+message GoogleBinaryAuthorizationAttestorIamPolicy {
+  string attestor = 1;
+
+  string etag = 2;
+
+  string id = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// GoogleBinaryAuthorizationPolicy version is 0
+message GoogleBinaryAuthorizationPolicy {
+  // A descriptive comment.
+  string description = 1;
+
+  // Controls the evaluation of a Google-maintained global admission policy
+  // for common system-level images. Images not covered by the global
+  // policy will be subject to the project admission policy. Possible values: ["ENABLE", "DISABLE"]
+  string global_policy_evaluation_mode = 2 [json_name = "global_policy_evaluation_mode"];
+
+  string id = 3;
+
+  string project = 4;
+
+  repeated AdmissionWhitelistPatterns admission_whitelist_patterns = 5 [json_name = "admission_whitelist_patterns"];
+
+  repeated ClusterAdmissionRules cluster_admission_rules = 6 [json_name = "cluster_admission_rules"];
+
+  DefaultAdmissionRule default_admission_rule = 7 [json_name = "default_admission_rule"];
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message AdmissionWhitelistPatterns {
+    // An image name pattern to whitelist, in the form
+    // 'registry/path/to/image'. This supports a trailing * as a
+    // wildcard, but this is allowed only in text after the registry/
+    // part.
+    string name_pattern = 1 [json_name = "name_pattern"];
+  }
+
+  message ClusterAdmissionRules {
+    string cluster = 1;
+
+    // The action when a pod creation is denied by the admission rule. Possible values: ["ENFORCED_BLOCK_AND_AUDIT_LOG", "DRYRUN_AUDIT_LOG_ONLY"]
+    string enforcement_mode = 2 [json_name = "enforcement_mode"];
+
+    // How this admission rule will be evaluated. Possible values: ["ALWAYS_ALLOW", "REQUIRE_ATTESTATION", "ALWAYS_DENY"]
+    string evaluation_mode = 3 [json_name = "evaluation_mode"];
+
+    // The resource names of the attestors that must attest to a
+    // container image. If the attestor is in a different project from the
+    // policy, it should be specified in the format 'projects/*/attestors/*'.
+    // Each attestor must exist before a policy can reference it. To add an
+    // attestor to a policy the principal issuing the policy change
+    // request must be able to read the attestor resource.
+    //
+    // Note: this field must be non-empty when the evaluation_mode field
+    // specifies REQUIRE_ATTESTATION, otherwise it must be empty.
+    repeated string require_attestations_by = 4 [json_name = "require_attestations_by"];
+  }
+
+  message DefaultAdmissionRule {
+    // The action when a pod creation is denied by the admission rule. Possible values: ["ENFORCED_BLOCK_AND_AUDIT_LOG", "DRYRUN_AUDIT_LOG_ONLY"]
+    string enforcement_mode = 1 [json_name = "enforcement_mode"];
+
+    // How this admission rule will be evaluated. Possible values: ["ALWAYS_ALLOW", "REQUIRE_ATTESTATION", "ALWAYS_DENY"]
+    string evaluation_mode = 2 [json_name = "evaluation_mode"];
+
+    // The resource names of the attestors that must attest to a
+    // container image. If the attestor is in a different project from the
+    // policy, it should be specified in the format 'projects/*/attestors/*'.
+    // Each attestor must exist before a policy can reference it. To add an
+    // attestor to a policy the principal issuing the policy change
+    // request must be able to read the attestor resource.
+    //
+    // Note: this field must be non-empty when the evaluation_mode field
+    // specifies REQUIRE_ATTESTATION, otherwise it must be empty.
+    repeated string require_attestations_by = 3 [json_name = "require_attestations_by"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

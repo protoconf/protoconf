@@ -1,0 +1,261 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsAmplifyApp version is 0
+message AwsAmplifyApp {
+  string access_token = 1 [json_name = "access_token"];
+
+  string arn = 2;
+
+  repeated string auto_branch_creation_patterns = 3 [json_name = "auto_branch_creation_patterns"];
+
+  string basic_auth_credentials = 4 [json_name = "basic_auth_credentials"];
+
+  string build_spec = 5 [json_name = "build_spec"];
+
+  string default_domain = 6 [json_name = "default_domain"];
+
+  string description = 7;
+
+  bool enable_auto_branch_creation = 8 [json_name = "enable_auto_branch_creation"];
+
+  bool enable_basic_auth = 9 [json_name = "enable_basic_auth"];
+
+  bool enable_branch_auto_build = 10 [json_name = "enable_branch_auto_build"];
+
+  bool enable_branch_auto_deletion = 11 [json_name = "enable_branch_auto_deletion"];
+
+  map<string, string> environment_variables = 12 [json_name = "environment_variables"];
+
+  string iam_service_role_arn = 13 [json_name = "iam_service_role_arn"];
+
+  string id = 14;
+
+  string name = 15;
+
+  string oauth_token = 16 [json_name = "oauth_token"];
+
+  string platform = 17;
+
+  repeated ProductionBranch production_branch = 18 [json_name = "production_branch"];
+
+  string repository = 19;
+
+  map<string, string> tags = 20;
+
+  map<string, string> tags_all = 21 [json_name = "tags_all"];
+
+  AutoBranchCreationConfig auto_branch_creation_config = 22 [json_name = "auto_branch_creation_config"];
+
+  repeated CustomRule custom_rule = 23 [json_name = "custom_rule"];
+
+  map<string, string> for_each = 24 [json_name = "for_each"];
+
+  repeated string depends_on = 25 [json_name = "depends_on"];
+
+  int32 count = 26;
+
+  string provider = 27;
+
+  terraform.v1.Lifecycle lifecycle = 28;
+
+  message ProductionBranch {
+    // branch_name: string
+    string branch_name = 1 [json_name = "branch_name"];
+
+    // last_deploy_time: string
+    string last_deploy_time = 2 [json_name = "last_deploy_time"];
+
+    // status: string
+    string status = 3;
+
+    // thumbnail_url: string
+    string thumbnail_url = 4 [json_name = "thumbnail_url"];
+  }
+
+  message AutoBranchCreationConfig {
+    string basic_auth_credentials = 1 [json_name = "basic_auth_credentials"];
+
+    string build_spec = 2 [json_name = "build_spec"];
+
+    bool enable_auto_build = 3 [json_name = "enable_auto_build"];
+
+    bool enable_basic_auth = 4 [json_name = "enable_basic_auth"];
+
+    bool enable_performance_mode = 5 [json_name = "enable_performance_mode"];
+
+    bool enable_pull_request_preview = 6 [json_name = "enable_pull_request_preview"];
+
+    map<string, string> environment_variables = 7 [json_name = "environment_variables"];
+
+    string framework = 8;
+
+    string pull_request_environment_name = 9 [json_name = "pull_request_environment_name"];
+
+    string stage = 10;
+  }
+
+  message CustomRule {
+    string condition = 1;
+
+    string source = 2;
+
+    string status = 3;
+
+    string target = 4;
+  }
+}
+
+// AwsAmplifyBackendEnvironment version is 0
+message AwsAmplifyBackendEnvironment {
+  string app_id = 1 [json_name = "app_id"];
+
+  string arn = 2;
+
+  string deployment_artifacts = 3 [json_name = "deployment_artifacts"];
+
+  string environment_name = 4 [json_name = "environment_name"];
+
+  string id = 5;
+
+  string stack_name = 6 [json_name = "stack_name"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsAmplifyBranch version is 0
+message AwsAmplifyBranch {
+  string app_id = 1 [json_name = "app_id"];
+
+  string arn = 2;
+
+  repeated string associated_resources = 3 [json_name = "associated_resources"];
+
+  string backend_environment_arn = 4 [json_name = "backend_environment_arn"];
+
+  string basic_auth_credentials = 5 [json_name = "basic_auth_credentials"];
+
+  string branch_name = 6 [json_name = "branch_name"];
+
+  repeated string custom_domains = 7 [json_name = "custom_domains"];
+
+  string description = 8;
+
+  string destination_branch = 9 [json_name = "destination_branch"];
+
+  string display_name = 10 [json_name = "display_name"];
+
+  bool enable_auto_build = 11 [json_name = "enable_auto_build"];
+
+  bool enable_basic_auth = 12 [json_name = "enable_basic_auth"];
+
+  bool enable_notification = 13 [json_name = "enable_notification"];
+
+  bool enable_performance_mode = 14 [json_name = "enable_performance_mode"];
+
+  bool enable_pull_request_preview = 15 [json_name = "enable_pull_request_preview"];
+
+  map<string, string> environment_variables = 16 [json_name = "environment_variables"];
+
+  string framework = 17;
+
+  string id = 18;
+
+  string pull_request_environment_name = 19 [json_name = "pull_request_environment_name"];
+
+  string source_branch = 20 [json_name = "source_branch"];
+
+  string stage = 21;
+
+  map<string, string> tags = 22;
+
+  map<string, string> tags_all = 23 [json_name = "tags_all"];
+
+  string ttl = 24;
+
+  map<string, string> for_each = 25 [json_name = "for_each"];
+
+  repeated string depends_on = 26 [json_name = "depends_on"];
+
+  int32 count = 27;
+
+  string provider = 28;
+
+  terraform.v1.Lifecycle lifecycle = 29;
+}
+
+// AwsAmplifyDomainAssociation version is 0
+message AwsAmplifyDomainAssociation {
+  string app_id = 1 [json_name = "app_id"];
+
+  string arn = 2;
+
+  string certificate_verification_dns_record = 3 [json_name = "certificate_verification_dns_record"];
+
+  string domain_name = 4 [json_name = "domain_name"];
+
+  bool enable_auto_sub_domain = 5 [json_name = "enable_auto_sub_domain"];
+
+  string id = 6;
+
+  bool wait_for_verification = 7 [json_name = "wait_for_verification"];
+
+  repeated SubDomain sub_domain = 8 [json_name = "sub_domain"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message SubDomain {
+    string branch_name = 1 [json_name = "branch_name"];
+
+    string dns_record = 2 [json_name = "dns_record"];
+
+    string prefix = 3;
+
+    bool verified = 4;
+  }
+}
+
+// AwsAmplifyWebhook version is 0
+message AwsAmplifyWebhook {
+  string app_id = 1 [json_name = "app_id"];
+
+  string arn = 2;
+
+  string branch_name = 3 [json_name = "branch_name"];
+
+  string description = 4;
+
+  string id = 5;
+
+  string url = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}

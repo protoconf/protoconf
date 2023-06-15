@@ -1,0 +1,110 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.datasources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleSpannerDatabaseIamPolicy version is 0
+message GoogleSpannerDatabaseIamPolicy {
+  string database = 1;
+
+  string etag = 2;
+
+  string id = 3;
+
+  string instance = 4;
+
+  string policy_data = 5 [json_name = "policy_data"];
+
+  string project = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleSpannerInstance version is 0
+message GoogleSpannerInstance {
+  // The name of the instance's configuration (similar but not
+  // quite the same as a region) which defines the geographic placement and
+  // replication of your databases in this instance. It determines where your data
+  // is stored. Values are typically of the form 'regional-europe-west1' , 'us-central' etc.
+  // In order to obtain a valid list please consult the
+  // [Configuration section of the docs](https://cloud.google.com/spanner/docs/instances).
+  string config = 1;
+
+  // The descriptive name for this instance as it appears in UIs. Must be
+  // unique per project and between 4 and 30 characters in length.
+  string display_name = 2 [json_name = "display_name"];
+
+  // When deleting a spanner instance, this boolean option will delete all backups of this instance.
+  // This must be set to true if you created a backup manually in the console.
+  bool force_destroy = 3 [json_name = "force_destroy"];
+
+  string id = 4;
+
+  // An object containing a list of "key": value pairs.
+  // Example: { "name": "wrench", "mass": "1.3kg", "count": "3" }.
+  map<string, string> labels = 5;
+
+  // A unique identifier for the instance, which cannot be changed after
+  // the instance is created. The name must be between 6 and 30 characters
+  // in length.
+  //
+  //
+  // If not provided, a random string starting with 'tf-' will be selected.
+  string name = 6;
+
+  // The number of nodes allocated to this instance. Exactly one of either node_count or processing_units
+  // must be present in terraform.
+  int64 num_nodes = 7 [json_name = "num_nodes"];
+
+  // The number of processing units allocated to this instance. Exactly one of processing_units
+  // or node_count must be present in terraform.
+  int64 processing_units = 8 [json_name = "processing_units"];
+
+  string project = 9;
+
+  // Instance status: 'CREATING' or 'READY'.
+  string state = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+}
+
+// GoogleSpannerInstanceIamPolicy version is 0
+message GoogleSpannerInstanceIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string instance = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}

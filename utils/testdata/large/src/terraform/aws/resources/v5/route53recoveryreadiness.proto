@@ -1,0 +1,172 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsRoute53recoveryreadinessCell version is 0
+message AwsRoute53recoveryreadinessCell {
+  string arn = 1;
+
+  string cell_name = 2 [json_name = "cell_name"];
+
+  repeated string cells = 3;
+
+  string id = 4;
+
+  repeated string parent_readiness_scopes = 5 [json_name = "parent_readiness_scopes"];
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Timeouts {
+    string delete = 1;
+  }
+}
+
+// AwsRoute53recoveryreadinessReadinessCheck version is 0
+message AwsRoute53recoveryreadinessReadinessCheck {
+  string arn = 1;
+
+  string id = 2;
+
+  string readiness_check_name = 3 [json_name = "readiness_check_name"];
+
+  string resource_set_name = 4 [json_name = "resource_set_name"];
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  repeated Timeouts timeouts = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Timeouts {
+    string delete = 1;
+  }
+}
+
+// AwsRoute53recoveryreadinessRecoveryGroup version is 0
+message AwsRoute53recoveryreadinessRecoveryGroup {
+  string arn = 1;
+
+  repeated string cells = 2;
+
+  string id = 3;
+
+  string recovery_group_name = 4 [json_name = "recovery_group_name"];
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  repeated Timeouts timeouts = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Timeouts {
+    string delete = 1;
+  }
+}
+
+// AwsRoute53recoveryreadinessResourceSet version is 0
+message AwsRoute53recoveryreadinessResourceSet {
+  string arn = 1;
+
+  string id = 2;
+
+  string resource_set_name = 3 [json_name = "resource_set_name"];
+
+  string resource_set_type = 4 [json_name = "resource_set_type"];
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  repeated Resources resources = 7;
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Resources {
+    string component_id = 1 [json_name = "component_id"];
+
+    repeated string readiness_scopes = 2 [json_name = "readiness_scopes"];
+
+    string resource_arn = 3 [json_name = "resource_arn"];
+
+    DnsTargetResource dns_target_resource = 4 [json_name = "dns_target_resource"];
+
+    message DnsTargetResource {
+      string domain_name = 1 [json_name = "domain_name"];
+
+      string hosted_zone_arn = 2 [json_name = "hosted_zone_arn"];
+
+      string record_set_id = 3 [json_name = "record_set_id"];
+
+      string record_type = 4 [json_name = "record_type"];
+
+      TargetResource target_resource = 5 [json_name = "target_resource"];
+
+      message TargetResource {
+        NlbResource nlb_resource = 1 [json_name = "nlb_resource"];
+
+        R53Resource r53_resource = 2 [json_name = "r53_resource"];
+
+        message NlbResource {
+          string arn = 1;
+        }
+
+        message R53Resource {
+          string domain_name = 1 [json_name = "domain_name"];
+
+          string record_set_id = 2 [json_name = "record_set_id"];
+        }
+      }
+    }
+  }
+
+  message Timeouts {
+    string delete = 1;
+  }
+}

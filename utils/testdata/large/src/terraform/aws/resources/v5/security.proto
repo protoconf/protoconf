@@ -1,0 +1,154 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsSecurityGroup version is 1
+message AwsSecurityGroup {
+  string arn = 1;
+
+  string description = 2;
+
+  repeated Egress egress = 3;
+
+  string id = 4;
+
+  repeated Ingress ingress = 5;
+
+  string name = 6;
+
+  string name_prefix = 7 [json_name = "name_prefix"];
+
+  string owner_id = 8 [json_name = "owner_id"];
+
+  bool revoke_rules_on_delete = 9 [json_name = "revoke_rules_on_delete"];
+
+  map<string, string> tags = 10;
+
+  map<string, string> tags_all = 11 [json_name = "tags_all"];
+
+  string vpc_id = 12 [json_name = "vpc_id"];
+
+  repeated Timeouts timeouts = 13;
+
+  map<string, string> for_each = 14 [json_name = "for_each"];
+
+  repeated string depends_on = 15 [json_name = "depends_on"];
+
+  int32 count = 16;
+
+  string provider = 17;
+
+  terraform.v1.Lifecycle lifecycle = 18;
+
+  message Egress {
+    // cidr_blocks: list of string
+    repeated string cidr_blocks = 1 [json_name = "cidr_blocks"];
+
+    // description: string
+    string description = 2;
+
+    // from_port: number
+    int64 from_port = 3 [json_name = "from_port"];
+
+    // ipv6_cidr_blocks: list of string
+    repeated string ipv6_cidr_blocks = 4 [json_name = "ipv6_cidr_blocks"];
+
+    // prefix_list_ids: list of string
+    repeated string prefix_list_ids = 5 [json_name = "prefix_list_ids"];
+
+    // protocol: string
+    string protocol = 6;
+
+    // security_groups: set of string
+    repeated string security_groups = 7 [json_name = "security_groups"];
+
+    // self: bool
+    bool self = 8;
+
+    // to_port: number
+    int64 to_port = 9 [json_name = "to_port"];
+  }
+
+  message Ingress {
+    // cidr_blocks: list of string
+    repeated string cidr_blocks = 1 [json_name = "cidr_blocks"];
+
+    // description: string
+    string description = 2;
+
+    // from_port: number
+    int64 from_port = 3 [json_name = "from_port"];
+
+    // ipv6_cidr_blocks: list of string
+    repeated string ipv6_cidr_blocks = 4 [json_name = "ipv6_cidr_blocks"];
+
+    // prefix_list_ids: list of string
+    repeated string prefix_list_ids = 5 [json_name = "prefix_list_ids"];
+
+    // protocol: string
+    string protocol = 6;
+
+    // security_groups: set of string
+    repeated string security_groups = 7 [json_name = "security_groups"];
+
+    // self: bool
+    bool self = 8;
+
+    // to_port: number
+    int64 to_port = 9 [json_name = "to_port"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsSecurityGroupRule version is 2
+message AwsSecurityGroupRule {
+  repeated string cidr_blocks = 1 [json_name = "cidr_blocks"];
+
+  string description = 2;
+
+  int64 from_port = 3 [json_name = "from_port"];
+
+  string id = 4;
+
+  repeated string ipv6_cidr_blocks = 5 [json_name = "ipv6_cidr_blocks"];
+
+  repeated string prefix_list_ids = 6 [json_name = "prefix_list_ids"];
+
+  string protocol = 7;
+
+  string security_group_id = 8 [json_name = "security_group_id"];
+
+  string security_group_rule_id = 9 [json_name = "security_group_rule_id"];
+
+  bool self = 10;
+
+  string source_security_group_id = 11 [json_name = "source_security_group_id"];
+
+  int64 to_port = 12 [json_name = "to_port"];
+
+  string type = 13;
+
+  repeated Timeouts timeouts = 14;
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+
+  message Timeouts {
+    string create = 1;
+  }
+}

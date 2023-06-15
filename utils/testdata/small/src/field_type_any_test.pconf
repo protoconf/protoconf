@@ -1,0 +1,15 @@
+load("//test.proto", "TestMessage", "MessageWithEnum")
+load("any.star", "any")
+
+def main():
+    _any=any.new(TestMessage(stringValue="recovered_from_any"))
+    recovered=TestMessage()
+    any.unpack(_any, recovered)
+    if recovered.stringValue != "recovered_from_any":
+        fail()
+    return TestMessage(
+        stringValue=recovered.stringValue,
+        any_field=TestMessage(stringValue="test_any"),
+        any_repeated=[TestMessage(stringValue="test_any_repeated")],
+        any_map={"hello": any.new(TestMessage(stringValue="test_any_map"))}
+    )

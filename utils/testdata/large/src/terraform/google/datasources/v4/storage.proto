@@ -1,0 +1,463 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.datasources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleStorageBucket version is 0
+message GoogleStorageBucket {
+  // The bucket's autoclass configuration.
+  repeated Autoclass autoclass = 1;
+
+  // The bucket's Cross-Origin Resource Sharing (CORS) configuration.
+  repeated Cors cors = 2;
+
+  // The bucket's custom location configuration, which specifies the individual regions that comprise a dual-region bucket. If the bucket is designated a single or multi-region, the parameters are empty.
+  repeated CustomPlacementConfig custom_placement_config = 3 [json_name = "custom_placement_config"];
+
+  // Whether or not to automatically apply an eventBasedHold to new objects added to the bucket.
+  bool default_event_based_hold = 4 [json_name = "default_event_based_hold"];
+
+  // The bucket's encryption configuration.
+  repeated Encryption encryption = 5;
+
+  // When deleting a bucket, this boolean option will delete all contained objects. If you try to delete a bucket that contains objects, Terraform will fail that run.
+  bool force_destroy = 6 [json_name = "force_destroy"];
+
+  string id = 7;
+
+  // A set of key/value label pairs to assign to the bucket.
+  map<string, string> labels = 8;
+
+  // The bucket's Lifecycle Rules configuration.
+  repeated LifecycleRule lifecycle_rule = 9 [json_name = "lifecycle_rule"];
+
+  // The Google Cloud Storage location
+  string location = 10;
+
+  // The bucket's Access & Storage Logs configuration.
+  repeated Logging logging = 11;
+
+  // The name of the bucket.
+  string name = 12;
+
+  // The ID of the project in which the resource belongs. If it is not provided, the provider project is used.
+  string project = 13;
+
+  // Prevents public access to a bucket.
+  string public_access_prevention = 14 [json_name = "public_access_prevention"];
+
+  // Enables Requester Pays on a storage bucket.
+  bool requester_pays = 15 [json_name = "requester_pays"];
+
+  // Configuration of the bucket's data retention policy for how long objects in the bucket should be retained.
+  repeated RetentionPolicy retention_policy = 16 [json_name = "retention_policy"];
+
+  // The URI of the created resource.
+  string self_link = 17 [json_name = "self_link"];
+
+  // The Storage Class of the new bucket. Supported values include: STANDARD, MULTI_REGIONAL, REGIONAL, NEARLINE, COLDLINE, ARCHIVE.
+  string storage_class = 18 [json_name = "storage_class"];
+
+  // Enables uniform bucket-level access on a bucket.
+  bool uniform_bucket_level_access = 19 [json_name = "uniform_bucket_level_access"];
+
+  // The base URL of the bucket, in the format gs://<bucket-name>.
+  string url = 20;
+
+  // The bucket's Versioning configuration.
+  repeated Versioning versioning = 21;
+
+  // Configuration if the bucket acts as a website.
+  repeated Website website = 22;
+
+  map<string, string> for_each = 23 [json_name = "for_each"];
+
+  repeated string depends_on = 24 [json_name = "depends_on"];
+
+  int32 count = 25;
+
+  string provider = 26;
+
+  terraform.v1.Lifecycle lifecycle = 27;
+
+  message Autoclass {
+    // enabled: bool
+    bool enabled = 1;
+  }
+
+  message Cors {
+    // max_age_seconds: number
+    int64 max_age_seconds = 1 [json_name = "max_age_seconds"];
+
+    // method: list of string
+    repeated string method = 2;
+
+    // origin: list of string
+    repeated string origin = 3;
+
+    // response_header: list of string
+    repeated string response_header = 4 [json_name = "response_header"];
+  }
+
+  message CustomPlacementConfig {
+    // data_locations: set of string
+    repeated string data_locations = 1 [json_name = "data_locations"];
+  }
+
+  message Encryption {
+    // default_kms_key_name: string
+    string default_kms_key_name = 1 [json_name = "default_kms_key_name"];
+  }
+
+  message LifecycleRule {
+    // action: set of object
+    repeated Action action = 1;
+
+    // condition: set of object
+    repeated Condition condition = 2;
+
+    message Action {
+      // storage_class: string
+      string storage_class = 1 [json_name = "storage_class"];
+
+      // type: string
+      string type = 2;
+    }
+
+    message Condition {
+      // age: number
+      int64 age = 1;
+
+      // created_before: string
+      string created_before = 2 [json_name = "created_before"];
+
+      // custom_time_before: string
+      string custom_time_before = 3 [json_name = "custom_time_before"];
+
+      // days_since_custom_time: number
+      int64 days_since_custom_time = 4 [json_name = "days_since_custom_time"];
+
+      // days_since_noncurrent_time: number
+      int64 days_since_noncurrent_time = 5 [json_name = "days_since_noncurrent_time"];
+
+      // matches_prefix: list of string
+      repeated string matches_prefix = 6 [json_name = "matches_prefix"];
+
+      // matches_storage_class: list of string
+      repeated string matches_storage_class = 7 [json_name = "matches_storage_class"];
+
+      // matches_suffix: list of string
+      repeated string matches_suffix = 8 [json_name = "matches_suffix"];
+
+      // noncurrent_time_before: string
+      string noncurrent_time_before = 9 [json_name = "noncurrent_time_before"];
+
+      // num_newer_versions: number
+      int64 num_newer_versions = 10 [json_name = "num_newer_versions"];
+
+      // with_state: string
+      string with_state = 11 [json_name = "with_state"];
+    }
+  }
+
+  message Logging {
+    // log_bucket: string
+    string log_bucket = 1 [json_name = "log_bucket"];
+
+    // log_object_prefix: string
+    string log_object_prefix = 2 [json_name = "log_object_prefix"];
+  }
+
+  message RetentionPolicy {
+    // is_locked: bool
+    bool is_locked = 1 [json_name = "is_locked"];
+
+    // retention_period: number
+    int64 retention_period = 2 [json_name = "retention_period"];
+  }
+
+  message Versioning {
+    // enabled: bool
+    bool enabled = 1;
+  }
+
+  message Website {
+    // main_page_suffix: string
+    string main_page_suffix = 1 [json_name = "main_page_suffix"];
+
+    // not_found_page: string
+    string not_found_page = 2 [json_name = "not_found_page"];
+  }
+}
+
+// GoogleStorageBucketIamPolicy version is 0
+message GoogleStorageBucketIamPolicy {
+  string bucket = 1;
+
+  string etag = 2;
+
+  string id = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// GoogleStorageBucketObject version is 0
+message GoogleStorageBucketObject {
+  // The name of the containing bucket.
+  string bucket = 1;
+
+  // Cache-Control directive to specify caching behavior of object data. If omitted and object is accessible to all anonymous users, the default will be public, max-age=3600
+  string cache_control = 2 [json_name = "cache_control"];
+
+  // Data as string to be uploaded. Must be defined if source is not. Note: The content field is marked as sensitive. To view the raw contents of the object, please define an output.
+  string content = 3;
+
+  // Content-Disposition of the object data.
+  string content_disposition = 4 [json_name = "content_disposition"];
+
+  // Content-Encoding of the object data.
+  string content_encoding = 5 [json_name = "content_encoding"];
+
+  // Content-Language of the object data.
+  string content_language = 6 [json_name = "content_language"];
+
+  // Content-Type of the object data. Defaults to "application/octet-stream" or "text/plain; charset=utf-8".
+  string content_type = 7 [json_name = "content_type"];
+
+  // Base 64 CRC32 hash of the uploaded data.
+  string crc32c = 8;
+
+  // Encryption key; encoded using base64.
+  repeated CustomerEncryption customer_encryption = 9 [json_name = "customer_encryption"];
+
+  string detect_md5hash = 10 [json_name = "detect_md5hash"];
+
+  // Whether an object is under event-based hold. Event-based hold is a way to retain objects until an event occurs, which is signified by the hold's release (i.e. this value is set to false). After being released (set to false), such objects will be subject to bucket-level retention (if any).
+  bool event_based_hold = 11 [json_name = "event_based_hold"];
+
+  string id = 12;
+
+  // Resource name of the Cloud KMS key that will be used to encrypt the object. Overrides the object metadata's kmsKeyName value, if any.
+  string kms_key_name = 13 [json_name = "kms_key_name"];
+
+  // Base 64 MD5 hash of the uploaded data.
+  string md5hash = 14;
+
+  // A url reference to download this object.
+  string media_link = 15 [json_name = "media_link"];
+
+  // User-provided metadata, in key/value pairs.
+  map<string, string> metadata = 16;
+
+  // The name of the object. If you're interpolating the name of this object, see output_name instead.
+  string name = 17;
+
+  // The name of the object. Use this field in interpolations with google_storage_object_acl to recreate google_storage_object_acl resources when your google_storage_bucket_object is recreated.
+  string output_name = 18 [json_name = "output_name"];
+
+  // A url reference to this object.
+  string self_link = 19 [json_name = "self_link"];
+
+  // A path to the data you want to upload. Must be defined if content is not.
+  string source = 20;
+
+  // The StorageClass of the new bucket object. Supported values include: MULTI_REGIONAL, REGIONAL, NEARLINE, COLDLINE, ARCHIVE. If not provided, this defaults to the bucket's default storage class or to a standard class.
+  string storage_class = 21 [json_name = "storage_class"];
+
+  // Whether an object is under temporary hold. While this flag is set to true, the object is protected against deletion and overwrites.
+  bool temporary_hold = 22 [json_name = "temporary_hold"];
+
+  map<string, string> for_each = 23 [json_name = "for_each"];
+
+  repeated string depends_on = 24 [json_name = "depends_on"];
+
+  int32 count = 25;
+
+  string provider = 26;
+
+  terraform.v1.Lifecycle lifecycle = 27;
+
+  message CustomerEncryption {
+    // encryption_algorithm: string
+    string encryption_algorithm = 1 [json_name = "encryption_algorithm"];
+
+    // encryption_key: string
+    string encryption_key = 2 [json_name = "encryption_key"];
+  }
+}
+
+// GoogleStorageBucketObjectContent version is 0
+message GoogleStorageBucketObjectContent {
+  // The name of the containing bucket.
+  string bucket = 1;
+
+  // Cache-Control directive to specify caching behavior of object data. If omitted and object is accessible to all anonymous users, the default will be public, max-age=3600
+  string cache_control = 2 [json_name = "cache_control"];
+
+  // Data as string to be uploaded. Must be defined if source is not. Note: The content field is marked as sensitive. To view the raw contents of the object, please define an output.
+  string content = 3;
+
+  // Content-Disposition of the object data.
+  string content_disposition = 4 [json_name = "content_disposition"];
+
+  // Content-Encoding of the object data.
+  string content_encoding = 5 [json_name = "content_encoding"];
+
+  // Content-Language of the object data.
+  string content_language = 6 [json_name = "content_language"];
+
+  // Content-Type of the object data. Defaults to "application/octet-stream" or "text/plain; charset=utf-8".
+  string content_type = 7 [json_name = "content_type"];
+
+  // Base 64 CRC32 hash of the uploaded data.
+  string crc32c = 8;
+
+  // Encryption key; encoded using base64.
+  repeated CustomerEncryption customer_encryption = 9 [json_name = "customer_encryption"];
+
+  string detect_md5hash = 10 [json_name = "detect_md5hash"];
+
+  // Whether an object is under event-based hold. Event-based hold is a way to retain objects until an event occurs, which is signified by the hold's release (i.e. this value is set to false). After being released (set to false), such objects will be subject to bucket-level retention (if any).
+  bool event_based_hold = 11 [json_name = "event_based_hold"];
+
+  string id = 12;
+
+  // Resource name of the Cloud KMS key that will be used to encrypt the object. Overrides the object metadata's kmsKeyName value, if any.
+  string kms_key_name = 13 [json_name = "kms_key_name"];
+
+  // Base 64 MD5 hash of the uploaded data.
+  string md5hash = 14;
+
+  // A url reference to download this object.
+  string media_link = 15 [json_name = "media_link"];
+
+  // User-provided metadata, in key/value pairs.
+  map<string, string> metadata = 16;
+
+  // The name of the object. If you're interpolating the name of this object, see output_name instead.
+  string name = 17;
+
+  // The name of the object. Use this field in interpolations with google_storage_object_acl to recreate google_storage_object_acl resources when your google_storage_bucket_object is recreated.
+  string output_name = 18 [json_name = "output_name"];
+
+  // A url reference to this object.
+  string self_link = 19 [json_name = "self_link"];
+
+  // A path to the data you want to upload. Must be defined if content is not.
+  string source = 20;
+
+  // The StorageClass of the new bucket object. Supported values include: MULTI_REGIONAL, REGIONAL, NEARLINE, COLDLINE, ARCHIVE. If not provided, this defaults to the bucket's default storage class or to a standard class.
+  string storage_class = 21 [json_name = "storage_class"];
+
+  // Whether an object is under temporary hold. While this flag is set to true, the object is protected against deletion and overwrites.
+  bool temporary_hold = 22 [json_name = "temporary_hold"];
+
+  map<string, string> for_each = 23 [json_name = "for_each"];
+
+  repeated string depends_on = 24 [json_name = "depends_on"];
+
+  int32 count = 25;
+
+  string provider = 26;
+
+  terraform.v1.Lifecycle lifecycle = 27;
+
+  message CustomerEncryption {
+    // encryption_algorithm: string
+    string encryption_algorithm = 1 [json_name = "encryption_algorithm"];
+
+    // encryption_key: string
+    string encryption_key = 2 [json_name = "encryption_key"];
+  }
+}
+
+// GoogleStorageObjectSignedUrl version is 0
+message GoogleStorageObjectSignedUrl {
+  string bucket = 1;
+
+  string content_md5 = 2 [json_name = "content_md5"];
+
+  string content_type = 3 [json_name = "content_type"];
+
+  string credentials = 4;
+
+  string duration = 5;
+
+  map<string, string> extension_headers = 6 [json_name = "extension_headers"];
+
+  string http_method = 7 [json_name = "http_method"];
+
+  string id = 8;
+
+  string path = 9;
+
+  string signed_url = 10 [json_name = "signed_url"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+}
+
+// GoogleStorageProjectServiceAccount version is 0
+message GoogleStorageProjectServiceAccount {
+  string email_address = 1 [json_name = "email_address"];
+
+  string id = 2;
+
+  string member = 3;
+
+  string project = 4;
+
+  string user_project = 5 [json_name = "user_project"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// GoogleStorageTransferProjectServiceAccount version is 0
+message GoogleStorageTransferProjectServiceAccount {
+  string email = 1;
+
+  string id = 2;
+
+  string member = 3;
+
+  string project = 4;
+
+  string subject_id = 5 [json_name = "subject_id"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}

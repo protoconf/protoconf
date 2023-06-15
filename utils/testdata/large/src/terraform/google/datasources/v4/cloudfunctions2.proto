@@ -1,0 +1,269 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.datasources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleCloudfunctions2Function version is 0
+message GoogleCloudfunctions2Function {
+  // Describes the Build step of the function that builds a container
+  // from the given source.
+  repeated BuildConfig build_config = 1 [json_name = "build_config"];
+
+  // User-provided description of a function.
+  string description = 2;
+
+  // The environment the function is hosted on.
+  string environment = 3;
+
+  // An Eventarc trigger managed by Google Cloud Functions that fires events in
+  // response to a condition in another service.
+  repeated EventTrigger event_trigger = 4 [json_name = "event_trigger"];
+
+  string id = 5;
+
+  // A set of key/value label pairs associated with this Cloud Function.
+  map<string, string> labels = 6;
+
+  // The location of this cloud function.
+  string location = 7;
+
+  // A user-defined name of the function. Function names must
+  // be unique globally and match pattern 'projects/*/locations/*/functions/*'.
+  string name = 8;
+
+  string project = 9;
+
+  // Describes the Service being deployed.
+  repeated ServiceConfig service_config = 10 [json_name = "service_config"];
+
+  // Describes the current state of the function.
+  string state = 11;
+
+  // The last update timestamp of a Cloud Function.
+  string update_time = 12 [json_name = "update_time"];
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message BuildConfig {
+    // build: string
+    string build = 1;
+
+    // docker_repository: string
+    string docker_repository = 2 [json_name = "docker_repository"];
+
+    // entry_point: string
+    string entry_point = 3 [json_name = "entry_point"];
+
+    // environment_variables: map of string
+    map<string, string> environment_variables = 4 [json_name = "environment_variables"];
+
+    // runtime: string
+    string runtime = 5;
+
+    // source: list of object
+    repeated Source source = 6;
+
+    // worker_pool: string
+    string worker_pool = 7 [json_name = "worker_pool"];
+
+    message Source {
+      // repo_source: list of object
+      repeated RepoSource repo_source = 1 [json_name = "repo_source"];
+
+      // storage_source: list of object
+      repeated StorageSource storage_source = 2 [json_name = "storage_source"];
+
+      message RepoSource {
+        // branch_name: string
+        string branch_name = 1 [json_name = "branch_name"];
+
+        // commit_sha: string
+        string commit_sha = 2 [json_name = "commit_sha"];
+
+        // dir: string
+        string dir = 3;
+
+        // invert_regex: bool
+        bool invert_regex = 4 [json_name = "invert_regex"];
+
+        // project_id: string
+        string project_id = 5 [json_name = "project_id"];
+
+        // repo_name: string
+        string repo_name = 6 [json_name = "repo_name"];
+
+        // tag_name: string
+        string tag_name = 7 [json_name = "tag_name"];
+      }
+
+      message StorageSource {
+        // bucket: string
+        string bucket = 1;
+
+        // generation: number
+        int64 generation = 2;
+
+        // object: string
+        string object = 3;
+      }
+    }
+  }
+
+  message EventTrigger {
+    // event_filters: set of object
+    repeated EventFilters event_filters = 1 [json_name = "event_filters"];
+
+    // event_type: string
+    string event_type = 2 [json_name = "event_type"];
+
+    // pubsub_topic: string
+    string pubsub_topic = 3 [json_name = "pubsub_topic"];
+
+    // retry_policy: string
+    string retry_policy = 4 [json_name = "retry_policy"];
+
+    // service_account_email: string
+    string service_account_email = 5 [json_name = "service_account_email"];
+
+    // trigger: string
+    string trigger = 6;
+
+    // trigger_region: string
+    string trigger_region = 7 [json_name = "trigger_region"];
+
+    message EventFilters {
+      // attribute: string
+      string attribute = 1;
+
+      // operator: string
+      string operator = 2;
+
+      // value: string
+      string value = 3;
+    }
+  }
+
+  message ServiceConfig {
+    // all_traffic_on_latest_revision: bool
+    bool all_traffic_on_latest_revision = 1 [json_name = "all_traffic_on_latest_revision"];
+
+    // available_cpu: string
+    string available_cpu = 2 [json_name = "available_cpu"];
+
+    // available_memory: string
+    string available_memory = 3 [json_name = "available_memory"];
+
+    // environment_variables: map of string
+    map<string, string> environment_variables = 4 [json_name = "environment_variables"];
+
+    // gcf_uri: string
+    string gcf_uri = 5 [json_name = "gcf_uri"];
+
+    // ingress_settings: string
+    string ingress_settings = 6 [json_name = "ingress_settings"];
+
+    // max_instance_count: number
+    int64 max_instance_count = 7 [json_name = "max_instance_count"];
+
+    // max_instance_request_concurrency: number
+    int64 max_instance_request_concurrency = 8 [json_name = "max_instance_request_concurrency"];
+
+    // min_instance_count: number
+    int64 min_instance_count = 9 [json_name = "min_instance_count"];
+
+    // secret_environment_variables: list of object
+    repeated SecretEnvironmentVariables secret_environment_variables = 10 [json_name = "secret_environment_variables"];
+
+    // secret_volumes: list of object
+    repeated SecretVolumes secret_volumes = 11 [json_name = "secret_volumes"];
+
+    // service: string
+    string service = 12;
+
+    // service_account_email: string
+    string service_account_email = 13 [json_name = "service_account_email"];
+
+    // timeout_seconds: number
+    int64 timeout_seconds = 14 [json_name = "timeout_seconds"];
+
+    // uri: string
+    string uri = 15;
+
+    // vpc_connector: string
+    string vpc_connector = 16 [json_name = "vpc_connector"];
+
+    // vpc_connector_egress_settings: string
+    string vpc_connector_egress_settings = 17 [json_name = "vpc_connector_egress_settings"];
+
+    message SecretEnvironmentVariables {
+      // key: string
+      string key = 1;
+
+      // project_id: string
+      string project_id = 2 [json_name = "project_id"];
+
+      // secret: string
+      string secret = 3;
+
+      // version: string
+      string version = 4;
+    }
+
+    message SecretVolumes {
+      // mount_path: string
+      string mount_path = 1 [json_name = "mount_path"];
+
+      // project_id: string
+      string project_id = 2 [json_name = "project_id"];
+
+      // secret: string
+      string secret = 3;
+
+      // versions: list of object
+      repeated Versions versions = 4;
+
+      message Versions {
+        // path: string
+        string path = 1;
+
+        // version: string
+        string version = 2;
+      }
+    }
+  }
+}
+
+// GoogleCloudfunctions2FunctionIamPolicy version is 0
+message GoogleCloudfunctions2FunctionIamPolicy {
+  string cloud_function = 1 [json_name = "cloud_function"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string location = 4;
+
+  string policy_data = 5 [json_name = "policy_data"];
+
+  string project = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}

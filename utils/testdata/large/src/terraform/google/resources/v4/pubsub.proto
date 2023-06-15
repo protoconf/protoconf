@@ -1,0 +1,680 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GooglePubsubLiteReservation version is 0
+message GooglePubsubLiteReservation {
+  string id = 1;
+
+  // Name of the reservation.
+  string name = 2;
+
+  string project = 3;
+
+  // The region of the pubsub lite reservation.
+  string region = 4;
+
+  // The reserved throughput capacity. Every unit of throughput capacity is
+  // equivalent to 1 MiB/s of published messages or 2 MiB/s of subscribed
+  // messages.
+  int64 throughput_capacity = 5 [json_name = "throughput_capacity"];
+
+  repeated Timeouts timeouts = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GooglePubsubLiteSubscription version is 0
+message GooglePubsubLiteSubscription {
+  string id = 1;
+
+  // Name of the subscription.
+  string name = 2;
+
+  string project = 3;
+
+  // The region of the pubsub lite topic.
+  string region = 4;
+
+  // A reference to a Topic resource.
+  string topic = 5;
+
+  // The zone of the pubsub lite topic.
+  string zone = 6;
+
+  DeliveryConfig delivery_config = 7 [json_name = "delivery_config"];
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message DeliveryConfig {
+    // When this subscription should send messages to subscribers relative to messages persistence in storage. Possible values: ["DELIVER_IMMEDIATELY", "DELIVER_AFTER_STORED", "DELIVERY_REQUIREMENT_UNSPECIFIED"]
+    string delivery_requirement = 1 [json_name = "delivery_requirement"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GooglePubsubLiteTopic version is 0
+message GooglePubsubLiteTopic {
+  string id = 1;
+
+  // Name of the topic.
+  string name = 2;
+
+  string project = 3;
+
+  // The region of the pubsub lite topic.
+  string region = 4;
+
+  // The zone of the pubsub lite topic.
+  string zone = 5;
+
+  PartitionConfig partition_config = 6 [json_name = "partition_config"];
+
+  ReservationConfig reservation_config = 7 [json_name = "reservation_config"];
+
+  RetentionConfig retention_config = 8 [json_name = "retention_config"];
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message PartitionConfig {
+    // The number of partitions in the topic. Must be at least 1.
+    int64 count = 1;
+
+    Capacity capacity = 2;
+
+    message Capacity {
+      // Subscribe throughput capacity per partition in MiB/s. Must be >= 4 and <= 16.
+      int64 publish_mib_per_sec = 1 [json_name = "publish_mib_per_sec"];
+
+      // Publish throughput capacity per partition in MiB/s. Must be >= 4 and <= 16.
+      int64 subscribe_mib_per_sec = 2 [json_name = "subscribe_mib_per_sec"];
+    }
+  }
+
+  message ReservationConfig {
+    // The Reservation to use for this topic's throughput capacity.
+    string throughput_reservation = 1 [json_name = "throughput_reservation"];
+  }
+
+  message RetentionConfig {
+    // The provisioned storage, in bytes, per partition. If the number of bytes stored
+    // in any of the topic's partitions grows beyond this value, older messages will be
+    // dropped to make room for newer ones, regardless of the value of period.
+    string per_partition_bytes = 1 [json_name = "per_partition_bytes"];
+
+    // How long a published message is retained. If unset, messages will be retained as
+    // long as the bytes retained for each partition is below perPartitionBytes. A
+    // duration in seconds with up to nine fractional digits, terminated by 's'.
+    // Example: "3.5s".
+    string period = 2;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GooglePubsubSchema version is 0
+message GooglePubsubSchema {
+  // The definition of the schema.
+  // This should contain a string representing the full definition of the schema
+  // that is a valid schema definition of the type specified in type.
+  string definition = 1;
+
+  string id = 2;
+
+  // The ID to use for the schema, which will become the final component of the schema's resource name.
+  string name = 3;
+
+  string project = 4;
+
+  // The type of the schema definition Default value: "TYPE_UNSPECIFIED" Possible values: ["TYPE_UNSPECIFIED", "PROTOCOL_BUFFER", "AVRO"]
+  string type = 5;
+
+  repeated Timeouts timeouts = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// GooglePubsubSubscription version is 0
+message GooglePubsubSubscription {
+  // This value is the maximum time after a subscriber receives a message
+  // before the subscriber should acknowledge the message. After message
+  // delivery but before the ack deadline expires and before the message is
+  // acknowledged, it is an outstanding message and will not be delivered
+  // again during that time (on a best-effort basis).
+  //
+  // For pull subscriptions, this value is used as the initial value for
+  // the ack deadline. To override this value for a given message, call
+  // subscriptions.modifyAckDeadline with the corresponding ackId if using
+  // pull. The minimum custom deadline you can specify is 10 seconds. The
+  // maximum custom deadline you can specify is 600 seconds (10 minutes).
+  // If this parameter is 0, a default value of 10 seconds is used.
+  //
+  // For push delivery, this value is also used to set the request timeout
+  // for the call to the push endpoint.
+  //
+  // If the subscriber never acknowledges the message, the Pub/Sub system
+  // will eventually redeliver the message.
+  int64 ack_deadline_seconds = 1 [json_name = "ack_deadline_seconds"];
+
+  // If 'true', Pub/Sub provides the following guarantees for the delivery
+  // of a message with a given value of messageId on this Subscriptions':
+  //
+  // - The message sent to a subscriber is guaranteed not to be resent before the message's acknowledgement deadline expires.
+  //
+  // - An acknowledged message will not be resent to a subscriber.
+  //
+  // Note that subscribers may still receive multiple copies of a message when 'enable_exactly_once_delivery'
+  // is true if the message was published multiple times by a publisher client. These copies are considered distinct by Pub/Sub and have distinct messageId values
+  bool enable_exactly_once_delivery = 2 [json_name = "enable_exactly_once_delivery"];
+
+  // If 'true', messages published with the same orderingKey in PubsubMessage will be delivered to
+  // the subscribers in the order in which they are received by the Pub/Sub system. Otherwise, they
+  // may be delivered in any order.
+  bool enable_message_ordering = 3 [json_name = "enable_message_ordering"];
+
+  // The subscription only delivers the messages that match the filter.
+  // Pub/Sub automatically acknowledges the messages that don't match the filter. You can filter messages
+  // by their attributes. The maximum length of a filter is 256 bytes. After creating the subscription,
+  // you can't modify the filter.
+  string filter = 4;
+
+  string id = 5;
+
+  // A set of key/value label pairs to assign to this Subscription.
+  map<string, string> labels = 6;
+
+  // How long to retain unacknowledged messages in the subscription's
+  // backlog, from the moment a message is published. If
+  // retain_acked_messages is true, then this also configures the retention
+  // of acknowledged messages, and thus configures how far back in time a
+  // subscriptions.seek can be done. Defaults to 7 days. Cannot be more
+  // than 7 days ('"604800s"') or less than 10 minutes ('"600s"').
+  //
+  // A duration in seconds with up to nine fractional digits, terminated
+  // by 's'. Example: '"600.5s"'.
+  string message_retention_duration = 7 [json_name = "message_retention_duration"];
+
+  // Name of the subscription.
+  string name = 8;
+
+  string project = 9;
+
+  // Indicates whether to retain acknowledged messages. If 'true', then
+  // messages are not expunged from the subscription's backlog, even if
+  // they are acknowledged, until they fall out of the
+  // messageRetentionDuration window.
+  bool retain_acked_messages = 10 [json_name = "retain_acked_messages"];
+
+  // A reference to a Topic resource.
+  string topic = 11;
+
+  BigqueryConfig bigquery_config = 12 [json_name = "bigquery_config"];
+
+  DeadLetterPolicy dead_letter_policy = 13 [json_name = "dead_letter_policy"];
+
+  ExpirationPolicy expiration_policy = 14 [json_name = "expiration_policy"];
+
+  PushConfig push_config = 15 [json_name = "push_config"];
+
+  RetryPolicy retry_policy = 16 [json_name = "retry_policy"];
+
+  repeated Timeouts timeouts = 17;
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+
+  message BigqueryConfig {
+    // When true and useTopicSchema is true, any fields that are a part of the topic schema that are not part of the BigQuery table schema are dropped when writing to BigQuery.
+    // Otherwise, the schemas must be kept in sync and any messages with extra fields are not written and remain in the subscription's backlog.
+    bool drop_unknown_fields = 1 [json_name = "drop_unknown_fields"];
+
+    // The name of the table to which to write data, of the form {projectId}:{datasetId}.{tableId}
+    string table = 2;
+
+    // When true, use the topic's schema as the columns to write to in BigQuery, if it exists.
+    bool use_topic_schema = 3 [json_name = "use_topic_schema"];
+
+    // When true, write the subscription name, messageId, publishTime, attributes, and orderingKey to additional columns in the table.
+    // The subscription name, messageId, and publishTime fields are put in their own columns while all other message properties (other than data) are written to a JSON object in the attributes column.
+    bool write_metadata = 4 [json_name = "write_metadata"];
+  }
+
+  message DeadLetterPolicy {
+    // The name of the topic to which dead letter messages should be published.
+    // Format is 'projects/{project}/topics/{topic}'.
+    //
+    // The Cloud Pub/Sub service account associated with the enclosing subscription's
+    // parent project (i.e.,
+    // service-{project_number}@gcp-sa-pubsub.iam.gserviceaccount.com) must have
+    // permission to Publish() to this topic.
+    //
+    // The operation will fail if the topic does not exist.
+    // Users should ensure that there is a subscription attached to this topic
+    // since messages published to a topic with no subscriptions are lost.
+    string dead_letter_topic = 1 [json_name = "dead_letter_topic"];
+
+    // The maximum number of delivery attempts for any message. The value must be
+    // between 5 and 100.
+    //
+    // The number of delivery attempts is defined as 1 + (the sum of number of
+    // NACKs and number of times the acknowledgement deadline has been exceeded for the message).
+    //
+    // A NACK is any call to ModifyAckDeadline with a 0 deadline. Note that
+    // client libraries may automatically extend ack_deadlines.
+    //
+    // This field will be honored on a best effort basis.
+    //
+    // If this parameter is 0, a default value of 5 is used.
+    int64 max_delivery_attempts = 2 [json_name = "max_delivery_attempts"];
+  }
+
+  message ExpirationPolicy {
+    // Specifies the "time-to-live" duration for an associated resource. The
+    // resource expires if it is not active for a period of ttl.
+    // If ttl is set to "", the associated resource never expires.
+    // A duration in seconds with up to nine fractional digits, terminated by 's'.
+    // Example - "3.5s".
+    string ttl = 1;
+  }
+
+  message PushConfig {
+    // Endpoint configuration attributes.
+    //
+    // Every endpoint has a set of API supported attributes that can
+    // be used to control different aspects of the message delivery.
+    //
+    // The currently supported attribute is x-goog-version, which you
+    // can use to change the format of the pushed message. This
+    // attribute indicates the version of the data expected by
+    // the endpoint. This controls the shape of the pushed message
+    // (i.e., its fields and metadata). The endpoint version is
+    // based on the version of the Pub/Sub API.
+    //
+    // If not present during the subscriptions.create call,
+    // it will default to the version of the API used to make
+    // such call. If not present during a subscriptions.modifyPushConfig
+    // call, its value will not be changed. subscriptions.get
+    // calls will always return a valid version, even if the
+    // subscription was created without this attribute.
+    //
+    // The possible values for this attribute are:
+    //
+    // - v1beta1: uses the push format defined in the v1beta1 Pub/Sub API.
+    // - v1 or v1beta2: uses the push format defined in the v1 Pub/Sub API.
+    map<string, string> attributes = 1;
+
+    // A URL locating the endpoint to which messages should be pushed.
+    // For example, a Webhook endpoint might use
+    // "https://example.com/push".
+    string push_endpoint = 2 [json_name = "push_endpoint"];
+
+    OidcToken oidc_token = 3 [json_name = "oidc_token"];
+
+    message OidcToken {
+      // Audience to be used when generating OIDC token. The audience claim
+      // identifies the recipients that the JWT is intended for. The audience
+      // value is a single case-sensitive string. Having multiple values (array)
+      // for the audience field is not supported. More info about the OIDC JWT
+      // token audience here: https://tools.ietf.org/html/rfc7519#section-4.1.3
+      // Note: if not specified, the Push endpoint URL will be used.
+      string audience = 1;
+
+      // Service account email to be used for generating the OIDC token.
+      // The caller (for subscriptions.create, subscriptions.patch, and
+      // subscriptions.modifyPushConfig RPCs) must have the
+      // iam.serviceAccounts.actAs permission for the service account.
+      string service_account_email = 2 [json_name = "service_account_email"];
+    }
+  }
+
+  message RetryPolicy {
+    // The maximum delay between consecutive deliveries of a given message. Value should be between 0 and 600 seconds. Defaults to 600 seconds.
+    // A duration in seconds with up to nine fractional digits, terminated by 's'. Example: "3.5s".
+    string maximum_backoff = 1 [json_name = "maximum_backoff"];
+
+    // The minimum delay between consecutive deliveries of a given message. Value should be between 0 and 600 seconds. Defaults to 10 seconds.
+    // A duration in seconds with up to nine fractional digits, terminated by 's'. Example: "3.5s".
+    string minimum_backoff = 2 [json_name = "minimum_backoff"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GooglePubsubSubscriptionIamBinding version is 0
+message GooglePubsubSubscriptionIamBinding {
+  string etag = 1;
+
+  string id = 2;
+
+  repeated string members = 3;
+
+  string project = 4;
+
+  string role = 5;
+
+  string subscription = 6;
+
+  Condition condition = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GooglePubsubSubscriptionIamMember version is 0
+message GooglePubsubSubscriptionIamMember {
+  string etag = 1;
+
+  string id = 2;
+
+  string member = 3;
+
+  string project = 4;
+
+  string role = 5;
+
+  string subscription = 6;
+
+  Condition condition = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GooglePubsubSubscriptionIamPolicy version is 0
+message GooglePubsubSubscriptionIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string policy_data = 3 [json_name = "policy_data"];
+
+  string project = 4;
+
+  string subscription = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// GooglePubsubTopic version is 0
+message GooglePubsubTopic {
+  string id = 1;
+
+  // The resource name of the Cloud KMS CryptoKey to be used to protect access
+  // to messages published on this topic. Your project's PubSub service account
+  // ('service-{{PROJECT_NUMBER}}@gcp-sa-pubsub.iam.gserviceaccount.com') must have
+  // 'roles/cloudkms.cryptoKeyEncrypterDecrypter' to use this feature.
+  // The expected format is 'projects/*/locations/*/keyRings/*/cryptoKeys/*'
+  string kms_key_name = 2 [json_name = "kms_key_name"];
+
+  // A set of key/value label pairs to assign to this Topic.
+  map<string, string> labels = 3;
+
+  // Indicates the minimum duration to retain a message after it is published
+  // to the topic. If this field is set, messages published to the topic in
+  // the last messageRetentionDuration are always available to subscribers.
+  // For instance, it allows any attached subscription to seek to a timestamp
+  // that is up to messageRetentionDuration in the past. If this field is not
+  // set, message retention is controlled by settings on individual subscriptions.
+  // Cannot be more than 31 days or less than 10 minutes.
+  string message_retention_duration = 4 [json_name = "message_retention_duration"];
+
+  // Name of the topic.
+  string name = 5;
+
+  string project = 6;
+
+  MessageStoragePolicy message_storage_policy = 7 [json_name = "message_storage_policy"];
+
+  SchemaSettings schema_settings = 8 [json_name = "schema_settings"];
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message MessageStoragePolicy {
+    // A list of IDs of GCP regions where messages that are published to
+    // the topic may be persisted in storage. Messages published by
+    // publishers running in non-allowed GCP regions (or running outside
+    // of GCP altogether) will be routed for storage in one of the
+    // allowed regions. An empty list means that no regions are allowed,
+    // and is not a valid configuration.
+    repeated string allowed_persistence_regions = 1 [json_name = "allowed_persistence_regions"];
+  }
+
+  message SchemaSettings {
+    // The encoding of messages validated against schema. Default value: "ENCODING_UNSPECIFIED" Possible values: ["ENCODING_UNSPECIFIED", "JSON", "BINARY"]
+    string encoding = 1;
+
+    // The name of the schema that messages published should be
+    // validated against. Format is projects/{project}/schemas/{schema}.
+    // The value of this field will be _deleted-schema_
+    // if the schema has been deleted.
+    string schema = 2;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GooglePubsubTopicIamBinding version is 0
+message GooglePubsubTopicIamBinding {
+  string etag = 1;
+
+  string id = 2;
+
+  repeated string members = 3;
+
+  string project = 4;
+
+  string role = 5;
+
+  string topic = 6;
+
+  Condition condition = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GooglePubsubTopicIamMember version is 0
+message GooglePubsubTopicIamMember {
+  string etag = 1;
+
+  string id = 2;
+
+  string member = 3;
+
+  string project = 4;
+
+  string role = 5;
+
+  string topic = 6;
+
+  Condition condition = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GooglePubsubTopicIamPolicy version is 0
+message GooglePubsubTopicIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string policy_data = 3 [json_name = "policy_data"];
+
+  string project = 4;
+
+  string topic = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}

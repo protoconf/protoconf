@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsAccessanalyzerAnalyzer version is 0
+message AwsAccessanalyzerAnalyzer {
+  string analyzer_name = 1 [json_name = "analyzer_name"];
+
+  string arn = 2;
+
+  string id = 3;
+
+  map<string, string> tags = 4;
+
+  map<string, string> tags_all = 5 [json_name = "tags_all"];
+
+  string type = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsAccessanalyzerArchiveRule version is 0
+message AwsAccessanalyzerArchiveRule {
+  string analyzer_name = 1 [json_name = "analyzer_name"];
+
+  string id = 2;
+
+  string rule_name = 3 [json_name = "rule_name"];
+
+  repeated Filter filter = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message Filter {
+    repeated string contains = 1;
+
+    string criteria = 2;
+
+    repeated string eq = 3;
+
+    string exists = 4;
+
+    repeated string neq = 5;
+  }
+}

@@ -1,0 +1,679 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsRedshiftAuthenticationProfile version is 0
+message AwsRedshiftAuthenticationProfile {
+  string authentication_profile_content = 1 [json_name = "authentication_profile_content"];
+
+  string authentication_profile_name = 2 [json_name = "authentication_profile_name"];
+
+  string id = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsRedshiftCluster version is 0
+message AwsRedshiftCluster {
+  bool allow_version_upgrade = 1 [json_name = "allow_version_upgrade"];
+
+  bool apply_immediately = 2 [json_name = "apply_immediately"];
+
+  string aqua_configuration_status = 3 [json_name = "aqua_configuration_status"];
+
+  string arn = 4;
+
+  int64 automated_snapshot_retention_period = 5 [json_name = "automated_snapshot_retention_period"];
+
+  string availability_zone = 6 [json_name = "availability_zone"];
+
+  bool availability_zone_relocation_enabled = 7 [json_name = "availability_zone_relocation_enabled"];
+
+  string cluster_identifier = 8 [json_name = "cluster_identifier"];
+
+  repeated ClusterNodes cluster_nodes = 9 [json_name = "cluster_nodes"];
+
+  string cluster_parameter_group_name = 10 [json_name = "cluster_parameter_group_name"];
+
+  string cluster_public_key = 11 [json_name = "cluster_public_key"];
+
+  string cluster_revision_number = 12 [json_name = "cluster_revision_number"];
+
+  string cluster_subnet_group_name = 13 [json_name = "cluster_subnet_group_name"];
+
+  string cluster_type = 14 [json_name = "cluster_type"];
+
+  string cluster_version = 15 [json_name = "cluster_version"];
+
+  string database_name = 16 [json_name = "database_name"];
+
+  string default_iam_role_arn = 17 [json_name = "default_iam_role_arn"];
+
+  string dns_name = 18 [json_name = "dns_name"];
+
+  string elastic_ip = 19 [json_name = "elastic_ip"];
+
+  bool encrypted = 20;
+
+  string endpoint = 21;
+
+  bool enhanced_vpc_routing = 22 [json_name = "enhanced_vpc_routing"];
+
+  string final_snapshot_identifier = 23 [json_name = "final_snapshot_identifier"];
+
+  repeated string iam_roles = 24 [json_name = "iam_roles"];
+
+  string id = 25;
+
+  string kms_key_id = 26 [json_name = "kms_key_id"];
+
+  string maintenance_track_name = 27 [json_name = "maintenance_track_name"];
+
+  int64 manual_snapshot_retention_period = 28 [json_name = "manual_snapshot_retention_period"];
+
+  string master_password = 29 [json_name = "master_password"];
+
+  string master_username = 30 [json_name = "master_username"];
+
+  string node_type = 31 [json_name = "node_type"];
+
+  int64 number_of_nodes = 32 [json_name = "number_of_nodes"];
+
+  string owner_account = 33 [json_name = "owner_account"];
+
+  int64 port = 34;
+
+  string preferred_maintenance_window = 35 [json_name = "preferred_maintenance_window"];
+
+  bool publicly_accessible = 36 [json_name = "publicly_accessible"];
+
+  bool skip_final_snapshot = 37 [json_name = "skip_final_snapshot"];
+
+  string snapshot_cluster_identifier = 38 [json_name = "snapshot_cluster_identifier"];
+
+  string snapshot_identifier = 39 [json_name = "snapshot_identifier"];
+
+  map<string, string> tags = 40;
+
+  map<string, string> tags_all = 41 [json_name = "tags_all"];
+
+  repeated string vpc_security_group_ids = 42 [json_name = "vpc_security_group_ids"];
+
+  Logging logging = 43;
+
+  SnapshotCopy snapshot_copy = 44 [json_name = "snapshot_copy"];
+
+  repeated Timeouts timeouts = 45;
+
+  map<string, string> for_each = 46 [json_name = "for_each"];
+
+  repeated string depends_on = 47 [json_name = "depends_on"];
+
+  int32 count = 48;
+
+  string provider = 49;
+
+  terraform.v1.Lifecycle lifecycle = 50;
+
+  message ClusterNodes {
+    // node_role: string
+    string node_role = 1 [json_name = "node_role"];
+
+    // private_ip_address: string
+    string private_ip_address = 2 [json_name = "private_ip_address"];
+
+    // public_ip_address: string
+    string public_ip_address = 3 [json_name = "public_ip_address"];
+  }
+
+  message Logging {
+    string bucket_name = 1 [json_name = "bucket_name"];
+
+    bool enable = 2;
+
+    string log_destination_type = 3 [json_name = "log_destination_type"];
+
+    repeated string log_exports = 4 [json_name = "log_exports"];
+
+    string s3_key_prefix = 5 [json_name = "s3_key_prefix"];
+  }
+
+  message SnapshotCopy {
+    string destination_region = 1 [json_name = "destination_region"];
+
+    string grant_name = 2 [json_name = "grant_name"];
+
+    int64 retention_period = 3 [json_name = "retention_period"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsRedshiftClusterIamRoles version is 0
+message AwsRedshiftClusterIamRoles {
+  string cluster_identifier = 1 [json_name = "cluster_identifier"];
+
+  string default_iam_role_arn = 2 [json_name = "default_iam_role_arn"];
+
+  repeated string iam_role_arns = 3 [json_name = "iam_role_arns"];
+
+  string id = 4;
+
+  repeated Timeouts timeouts = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsRedshiftClusterSnapshot version is 0
+message AwsRedshiftClusterSnapshot {
+  string arn = 1;
+
+  string cluster_identifier = 2 [json_name = "cluster_identifier"];
+
+  string id = 3;
+
+  string kms_key_id = 4 [json_name = "kms_key_id"];
+
+  int64 manual_snapshot_retention_period = 5 [json_name = "manual_snapshot_retention_period"];
+
+  string owner_account = 6 [json_name = "owner_account"];
+
+  string snapshot_identifier = 7 [json_name = "snapshot_identifier"];
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+}
+
+// AwsRedshiftEndpointAccess version is 0
+message AwsRedshiftEndpointAccess {
+  string address = 1;
+
+  string cluster_identifier = 2 [json_name = "cluster_identifier"];
+
+  string endpoint_name = 3 [json_name = "endpoint_name"];
+
+  string id = 4;
+
+  int64 port = 5;
+
+  string resource_owner = 6 [json_name = "resource_owner"];
+
+  string subnet_group_name = 7 [json_name = "subnet_group_name"];
+
+  repeated VpcEndpoint vpc_endpoint = 8 [json_name = "vpc_endpoint"];
+
+  repeated string vpc_security_group_ids = 9 [json_name = "vpc_security_group_ids"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message VpcEndpoint {
+    // network_interface: list of object
+    repeated NetworkInterface network_interface = 1 [json_name = "network_interface"];
+
+    // vpc_endpoint_id: string
+    string vpc_endpoint_id = 2 [json_name = "vpc_endpoint_id"];
+
+    // vpc_id: string
+    string vpc_id = 3 [json_name = "vpc_id"];
+
+    message NetworkInterface {
+      // availability_zone: string
+      string availability_zone = 1 [json_name = "availability_zone"];
+
+      // network_interface_id: string
+      string network_interface_id = 2 [json_name = "network_interface_id"];
+
+      // private_ip_address: string
+      string private_ip_address = 3 [json_name = "private_ip_address"];
+
+      // subnet_id: string
+      string subnet_id = 4 [json_name = "subnet_id"];
+    }
+  }
+}
+
+// AwsRedshiftEndpointAuthorization version is 0
+message AwsRedshiftEndpointAuthorization {
+  string account = 1;
+
+  bool allowed_all_vpcs = 2 [json_name = "allowed_all_vpcs"];
+
+  string cluster_identifier = 3 [json_name = "cluster_identifier"];
+
+  int64 endpoint_count = 4 [json_name = "endpoint_count"];
+
+  bool force_delete = 5 [json_name = "force_delete"];
+
+  string grantee = 6;
+
+  string grantor = 7;
+
+  string id = 8;
+
+  repeated string vpc_ids = 9 [json_name = "vpc_ids"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+}
+
+// AwsRedshiftEventSubscription version is 0
+message AwsRedshiftEventSubscription {
+  string arn = 1;
+
+  string customer_aws_id = 2 [json_name = "customer_aws_id"];
+
+  bool enabled = 3;
+
+  repeated string event_categories = 4 [json_name = "event_categories"];
+
+  string id = 5;
+
+  string name = 6;
+
+  string severity = 7;
+
+  string sns_topic_arn = 8 [json_name = "sns_topic_arn"];
+
+  repeated string source_ids = 9 [json_name = "source_ids"];
+
+  string source_type = 10 [json_name = "source_type"];
+
+  string status = 11;
+
+  map<string, string> tags = 12;
+
+  map<string, string> tags_all = 13 [json_name = "tags_all"];
+
+  repeated Timeouts timeouts = 14;
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsRedshiftHsmClientCertificate version is 0
+message AwsRedshiftHsmClientCertificate {
+  string arn = 1;
+
+  string hsm_client_certificate_identifier = 2 [json_name = "hsm_client_certificate_identifier"];
+
+  string hsm_client_certificate_public_key = 3 [json_name = "hsm_client_certificate_public_key"];
+
+  string id = 4;
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsRedshiftHsmConfiguration version is 0
+message AwsRedshiftHsmConfiguration {
+  string arn = 1;
+
+  string description = 2;
+
+  string hsm_configuration_identifier = 3 [json_name = "hsm_configuration_identifier"];
+
+  string hsm_ip_address = 4 [json_name = "hsm_ip_address"];
+
+  string hsm_partition_name = 5 [json_name = "hsm_partition_name"];
+
+  string hsm_partition_password = 6 [json_name = "hsm_partition_password"];
+
+  string hsm_server_public_certificate = 7 [json_name = "hsm_server_public_certificate"];
+
+  string id = 8;
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+}
+
+// AwsRedshiftParameterGroup version is 0
+message AwsRedshiftParameterGroup {
+  string arn = 1;
+
+  string description = 2;
+
+  string family = 3;
+
+  string id = 4;
+
+  string name = 5;
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  repeated Parameter parameter = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Parameter {
+    string name = 1;
+
+    string value = 2;
+  }
+}
+
+// AwsRedshiftPartner version is 0
+message AwsRedshiftPartner {
+  string account_id = 1 [json_name = "account_id"];
+
+  string cluster_identifier = 2 [json_name = "cluster_identifier"];
+
+  string database_name = 3 [json_name = "database_name"];
+
+  string id = 4;
+
+  string partner_name = 5 [json_name = "partner_name"];
+
+  string status = 6;
+
+  string status_message = 7 [json_name = "status_message"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsRedshiftScheduledAction version is 0
+message AwsRedshiftScheduledAction {
+  string description = 1;
+
+  bool enable = 2;
+
+  string end_time = 3 [json_name = "end_time"];
+
+  string iam_role = 4 [json_name = "iam_role"];
+
+  string id = 5;
+
+  string name = 6;
+
+  string schedule = 7;
+
+  string start_time = 8 [json_name = "start_time"];
+
+  TargetAction target_action = 9 [json_name = "target_action"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message TargetAction {
+    PauseCluster pause_cluster = 1 [json_name = "pause_cluster"];
+
+    ResizeCluster resize_cluster = 2 [json_name = "resize_cluster"];
+
+    ResumeCluster resume_cluster = 3 [json_name = "resume_cluster"];
+
+    message PauseCluster {
+      string cluster_identifier = 1 [json_name = "cluster_identifier"];
+    }
+
+    message ResizeCluster {
+      bool classic = 1;
+
+      string cluster_identifier = 2 [json_name = "cluster_identifier"];
+
+      string cluster_type = 3 [json_name = "cluster_type"];
+
+      string node_type = 4 [json_name = "node_type"];
+
+      int64 number_of_nodes = 5 [json_name = "number_of_nodes"];
+    }
+
+    message ResumeCluster {
+      string cluster_identifier = 1 [json_name = "cluster_identifier"];
+    }
+  }
+}
+
+// AwsRedshiftSnapshotCopyGrant version is 0
+message AwsRedshiftSnapshotCopyGrant {
+  string arn = 1;
+
+  string id = 2;
+
+  string kms_key_id = 3 [json_name = "kms_key_id"];
+
+  string snapshot_copy_grant_name = 4 [json_name = "snapshot_copy_grant_name"];
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsRedshiftSnapshotSchedule version is 0
+message AwsRedshiftSnapshotSchedule {
+  string arn = 1;
+
+  repeated string definitions = 2;
+
+  string description = 3;
+
+  bool force_destroy = 4 [json_name = "force_destroy"];
+
+  string id = 5;
+
+  string identifier = 6;
+
+  string identifier_prefix = 7 [json_name = "identifier_prefix"];
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+}
+
+// AwsRedshiftSnapshotScheduleAssociation version is 0
+message AwsRedshiftSnapshotScheduleAssociation {
+  string cluster_identifier = 1 [json_name = "cluster_identifier"];
+
+  string id = 2;
+
+  string schedule_identifier = 3 [json_name = "schedule_identifier"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsRedshiftSubnetGroup version is 0
+message AwsRedshiftSubnetGroup {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  string name = 4;
+
+  repeated string subnet_ids = 5 [json_name = "subnet_ids"];
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsRedshiftUsageLimit version is 0
+message AwsRedshiftUsageLimit {
+  int64 amount = 1;
+
+  string arn = 2;
+
+  string breach_action = 3 [json_name = "breach_action"];
+
+  string cluster_identifier = 4 [json_name = "cluster_identifier"];
+
+  string feature_type = 5 [json_name = "feature_type"];
+
+  string id = 6;
+
+  string limit_type = 7 [json_name = "limit_type"];
+
+  string period = 8;
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+}

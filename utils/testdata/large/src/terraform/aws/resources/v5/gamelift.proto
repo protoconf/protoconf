@@ -1,0 +1,338 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsGameliftAlias version is 0
+message AwsGameliftAlias {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  string name = 4;
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  RoutingStrategy routing_strategy = 7 [json_name = "routing_strategy"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message RoutingStrategy {
+    string fleet_id = 1 [json_name = "fleet_id"];
+
+    string message = 2;
+
+    string type = 3;
+  }
+}
+
+// AwsGameliftBuild version is 0
+message AwsGameliftBuild {
+  string arn = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  string operating_system = 4 [json_name = "operating_system"];
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  string version = 7;
+
+  StorageLocation storage_location = 8 [json_name = "storage_location"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message StorageLocation {
+    string bucket = 1;
+
+    string key = 2;
+
+    string object_version = 3 [json_name = "object_version"];
+
+    string role_arn = 4 [json_name = "role_arn"];
+  }
+}
+
+// AwsGameliftFleet version is 0
+message AwsGameliftFleet {
+  string arn = 1;
+
+  string build_arn = 2 [json_name = "build_arn"];
+
+  string build_id = 3 [json_name = "build_id"];
+
+  string description = 4;
+
+  string ec2_instance_type = 5 [json_name = "ec2_instance_type"];
+
+  string fleet_type = 6 [json_name = "fleet_type"];
+
+  string id = 7;
+
+  string instance_role_arn = 8 [json_name = "instance_role_arn"];
+
+  repeated string log_paths = 9 [json_name = "log_paths"];
+
+  repeated string metric_groups = 10 [json_name = "metric_groups"];
+
+  string name = 11;
+
+  string new_game_session_protection_policy = 12 [json_name = "new_game_session_protection_policy"];
+
+  string operating_system = 13 [json_name = "operating_system"];
+
+  string script_arn = 14 [json_name = "script_arn"];
+
+  string script_id = 15 [json_name = "script_id"];
+
+  map<string, string> tags = 16;
+
+  map<string, string> tags_all = 17 [json_name = "tags_all"];
+
+  CertificateConfiguration certificate_configuration = 18 [json_name = "certificate_configuration"];
+
+  repeated Ec2InboundPermission ec2_inbound_permission = 19 [json_name = "ec2_inbound_permission"];
+
+  ResourceCreationLimitPolicy resource_creation_limit_policy = 20 [json_name = "resource_creation_limit_policy"];
+
+  RuntimeConfiguration runtime_configuration = 21 [json_name = "runtime_configuration"];
+
+  repeated Timeouts timeouts = 22;
+
+  map<string, string> for_each = 23 [json_name = "for_each"];
+
+  repeated string depends_on = 24 [json_name = "depends_on"];
+
+  int32 count = 25;
+
+  string provider = 26;
+
+  terraform.v1.Lifecycle lifecycle = 27;
+
+  message CertificateConfiguration {
+    string certificate_type = 1 [json_name = "certificate_type"];
+  }
+
+  message Ec2InboundPermission {
+    int64 from_port = 1 [json_name = "from_port"];
+
+    string ip_range = 2 [json_name = "ip_range"];
+
+    string protocol = 3;
+
+    int64 to_port = 4 [json_name = "to_port"];
+  }
+
+  message ResourceCreationLimitPolicy {
+    int64 new_game_sessions_per_creator = 1 [json_name = "new_game_sessions_per_creator"];
+
+    int64 policy_period_in_minutes = 2 [json_name = "policy_period_in_minutes"];
+  }
+
+  message RuntimeConfiguration {
+    int64 game_session_activation_timeout_seconds = 1 [
+      json_name = "game_session_activation_timeout_seconds"
+    ];
+
+    int64 max_concurrent_game_session_activations = 2 [
+      json_name = "max_concurrent_game_session_activations"
+    ];
+
+    repeated ServerProcess server_process = 3 [json_name = "server_process"];
+
+    message ServerProcess {
+      int64 concurrent_executions = 1 [json_name = "concurrent_executions"];
+
+      string launch_path = 2 [json_name = "launch_path"];
+
+      string parameters = 3;
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsGameliftGameServerGroup version is 0
+message AwsGameliftGameServerGroup {
+  string arn = 1;
+
+  string auto_scaling_group_arn = 2 [json_name = "auto_scaling_group_arn"];
+
+  string balancing_strategy = 3 [json_name = "balancing_strategy"];
+
+  string game_server_group_name = 4 [json_name = "game_server_group_name"];
+
+  string game_server_protection_policy = 5 [json_name = "game_server_protection_policy"];
+
+  string id = 6;
+
+  int64 max_size = 7 [json_name = "max_size"];
+
+  int64 min_size = 8 [json_name = "min_size"];
+
+  string role_arn = 9 [json_name = "role_arn"];
+
+  map<string, string> tags = 10;
+
+  map<string, string> tags_all = 11 [json_name = "tags_all"];
+
+  repeated string vpc_subnets = 12 [json_name = "vpc_subnets"];
+
+  AutoScalingPolicy auto_scaling_policy = 13 [json_name = "auto_scaling_policy"];
+
+  repeated InstanceDefinition instance_definition = 14 [json_name = "instance_definition"];
+
+  LaunchTemplate launch_template = 15 [json_name = "launch_template"];
+
+  repeated Timeouts timeouts = 16;
+
+  map<string, string> for_each = 17 [json_name = "for_each"];
+
+  repeated string depends_on = 18 [json_name = "depends_on"];
+
+  int32 count = 19;
+
+  string provider = 20;
+
+  terraform.v1.Lifecycle lifecycle = 21;
+
+  message AutoScalingPolicy {
+    int64 estimated_instance_warmup = 1 [json_name = "estimated_instance_warmup"];
+
+    TargetTrackingConfiguration target_tracking_configuration = 2 [json_name = "target_tracking_configuration"];
+
+    message TargetTrackingConfiguration {
+      int64 target_value = 1 [json_name = "target_value"];
+    }
+  }
+
+  message InstanceDefinition {
+    string instance_type = 1 [json_name = "instance_type"];
+
+    string weighted_capacity = 2 [json_name = "weighted_capacity"];
+  }
+
+  message LaunchTemplate {
+    string id = 1;
+
+    string name = 2;
+
+    string version = 3;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsGameliftGameSessionQueue version is 0
+message AwsGameliftGameSessionQueue {
+  string arn = 1;
+
+  string custom_event_data = 2 [json_name = "custom_event_data"];
+
+  repeated string destinations = 3;
+
+  string id = 4;
+
+  string name = 5;
+
+  string notification_target = 6 [json_name = "notification_target"];
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  int64 timeout_in_seconds = 9 [json_name = "timeout_in_seconds"];
+
+  repeated PlayerLatencyPolicy player_latency_policy = 10 [json_name = "player_latency_policy"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message PlayerLatencyPolicy {
+    int64 maximum_individual_player_latency_milliseconds = 1 [
+      json_name = "maximum_individual_player_latency_milliseconds"
+    ];
+
+    int64 policy_duration_seconds = 2 [json_name = "policy_duration_seconds"];
+  }
+}
+
+// AwsGameliftScript version is 0
+message AwsGameliftScript {
+  string arn = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  map<string, string> tags = 4;
+
+  map<string, string> tags_all = 5 [json_name = "tags_all"];
+
+  string version = 6;
+
+  string zip_file = 7 [json_name = "zip_file"];
+
+  StorageLocation storage_location = 8 [json_name = "storage_location"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message StorageLocation {
+    string bucket = 1;
+
+    string key = 2;
+
+    string object_version = 3 [json_name = "object_version"];
+
+    string role_arn = 4 [json_name = "role_arn"];
+  }
+}

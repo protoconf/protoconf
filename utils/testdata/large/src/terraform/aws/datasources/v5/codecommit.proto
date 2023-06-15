@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsCodecommitApprovalRuleTemplate version is 0
+message AwsCodecommitApprovalRuleTemplate {
+  string approval_rule_template_id = 1 [json_name = "approval_rule_template_id"];
+
+  string content = 2;
+
+  string creation_date = 3 [json_name = "creation_date"];
+
+  string description = 4;
+
+  string id = 5;
+
+  string last_modified_date = 6 [json_name = "last_modified_date"];
+
+  string last_modified_user = 7 [json_name = "last_modified_user"];
+
+  string name = 8;
+
+  string rule_content_sha256 = 9 [json_name = "rule_content_sha256"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+}
+
+// AwsCodecommitRepository version is 0
+message AwsCodecommitRepository {
+  string arn = 1;
+
+  string clone_url_http = 2 [json_name = "clone_url_http"];
+
+  string clone_url_ssh = 3 [json_name = "clone_url_ssh"];
+
+  string id = 4;
+
+  string repository_id = 5 [json_name = "repository_id"];
+
+  string repository_name = 6 [json_name = "repository_name"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}

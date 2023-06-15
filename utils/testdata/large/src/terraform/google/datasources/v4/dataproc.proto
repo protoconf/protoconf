@@ -1,0 +1,246 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.datasources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleDataprocAutoscalingPolicyIamPolicy version is 0
+message GoogleDataprocAutoscalingPolicyIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string location = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string policy_id = 5 [json_name = "policy_id"];
+
+  string project = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleDataprocClusterIamPolicy version is 0
+message GoogleDataprocClusterIamPolicy {
+  string cluster = 1;
+
+  string etag = 2;
+
+  string id = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  string region = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleDataprocJobIamPolicy version is 0
+message GoogleDataprocJobIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string job_id = 3 [json_name = "job_id"];
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  string region = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleDataprocMetastoreService version is 0
+message GoogleDataprocMetastoreService {
+  // A Cloud Storage URI (starting with gs://) that specifies where artifacts related to the metastore service are stored.
+  string artifact_gcs_uri = 1 [json_name = "artifact_gcs_uri"];
+
+  // The database type that the Metastore service stores its data. Default value: "MYSQL" Possible values: ["MYSQL", "SPANNER"]
+  string database_type = 2 [json_name = "database_type"];
+
+  // Information used to configure the Dataproc Metastore service to encrypt
+  // customer data at rest.
+  repeated EncryptionConfig encryption_config = 3 [json_name = "encryption_config"];
+
+  // The URI of the endpoint used to access the metastore service.
+  string endpoint_uri = 4 [json_name = "endpoint_uri"];
+
+  // Configuration information specific to running Hive metastore software as the metastore service.
+  repeated HiveMetastoreConfig hive_metastore_config = 5 [json_name = "hive_metastore_config"];
+
+  string id = 6;
+
+  // User-defined labels for the metastore service.
+  map<string, string> labels = 7;
+
+  // The location where the metastore service should reside.
+  // The default value is 'global'.
+  string location = 8;
+
+  // The one hour maintenance window of the metastore service.
+  // This specifies when the service can be restarted for maintenance purposes in UTC time.
+  // Maintenance window is not needed for services with the 'SPANNER' database type.
+  repeated MaintenanceWindow maintenance_window = 9 [json_name = "maintenance_window"];
+
+  // The relative resource name of the metastore service.
+  string name = 10;
+
+  // The relative resource name of the VPC network on which the instance can be accessed. It is specified in the following form:
+  //
+  // "projects/{projectNumber}/global/networks/{network_id}".
+  string network = 11;
+
+  // The configuration specifying the network settings for the Dataproc Metastore service.
+  repeated NetworkConfig network_config = 12 [json_name = "network_config"];
+
+  // The TCP port at which the metastore service is reached. Default: 9083.
+  int64 port = 13;
+
+  string project = 14;
+
+  // The release channel of the service. If unspecified, defaults to 'STABLE'. Default value: "STABLE" Possible values: ["CANARY", "STABLE"]
+  string release_channel = 15 [json_name = "release_channel"];
+
+  // The ID of the metastore service. The id must contain only letters (a-z, A-Z), numbers (0-9), underscores (_),
+  // and hyphens (-). Cannot begin or end with underscore or hyphen. Must consist of between
+  // 3 and 63 characters.
+  string service_id = 16 [json_name = "service_id"];
+
+  // The current state of the metastore service.
+  string state = 17;
+
+  // Additional information about the current state of the metastore service, if available.
+  string state_message = 18 [json_name = "state_message"];
+
+  // The configuration specifying telemetry settings for the Dataproc Metastore service. If unspecified defaults to JSON.
+  repeated TelemetryConfig telemetry_config = 19 [json_name = "telemetry_config"];
+
+  // The tier of the service. Possible values: ["DEVELOPER", "ENTERPRISE"]
+  string tier = 20;
+
+  // The globally unique resource identifier of the metastore service.
+  string uid = 21;
+
+  map<string, string> for_each = 22 [json_name = "for_each"];
+
+  repeated string depends_on = 23 [json_name = "depends_on"];
+
+  int32 count = 24;
+
+  string provider = 25;
+
+  terraform.v1.Lifecycle lifecycle = 26;
+
+  message EncryptionConfig {
+    // kms_key: string
+    string kms_key = 1 [json_name = "kms_key"];
+  }
+
+  message HiveMetastoreConfig {
+    // config_overrides: map of string
+    map<string, string> config_overrides = 1 [json_name = "config_overrides"];
+
+    // kerberos_config: list of object
+    repeated KerberosConfig kerberos_config = 2 [json_name = "kerberos_config"];
+
+    // version: string
+    string version = 3;
+
+    message KerberosConfig {
+      // keytab: list of object
+      repeated Keytab keytab = 1;
+
+      // krb5_config_gcs_uri: string
+      string krb5_config_gcs_uri = 2 [json_name = "krb5_config_gcs_uri"];
+
+      // principal: string
+      string principal = 3;
+
+      message Keytab {
+        // cloud_secret: string
+        string cloud_secret = 1 [json_name = "cloud_secret"];
+      }
+    }
+  }
+
+  message MaintenanceWindow {
+    // day_of_week: string
+    string day_of_week = 1 [json_name = "day_of_week"];
+
+    // hour_of_day: number
+    int64 hour_of_day = 2 [json_name = "hour_of_day"];
+  }
+
+  message NetworkConfig {
+    // consumers: list of object
+    repeated Consumers consumers = 1;
+
+    message Consumers {
+      // endpoint_uri: string
+      string endpoint_uri = 1 [json_name = "endpoint_uri"];
+
+      // subnetwork: string
+      string subnetwork = 2;
+    }
+  }
+
+  message TelemetryConfig {
+    // log_format: string
+    string log_format = 1 [json_name = "log_format"];
+  }
+}
+
+// GoogleDataprocMetastoreServiceIamPolicy version is 0
+message GoogleDataprocMetastoreServiceIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string location = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  string service_id = 6 [json_name = "service_id"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}

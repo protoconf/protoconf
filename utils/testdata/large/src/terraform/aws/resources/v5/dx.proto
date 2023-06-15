@@ -1,0 +1,765 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsDxBgpPeer version is 0
+message AwsDxBgpPeer {
+  string address_family = 1 [json_name = "address_family"];
+
+  string amazon_address = 2 [json_name = "amazon_address"];
+
+  string aws_device = 3 [json_name = "aws_device"];
+
+  int64 bgp_asn = 4 [json_name = "bgp_asn"];
+
+  string bgp_auth_key = 5 [json_name = "bgp_auth_key"];
+
+  string bgp_peer_id = 6 [json_name = "bgp_peer_id"];
+
+  string bgp_status = 7 [json_name = "bgp_status"];
+
+  string customer_address = 8 [json_name = "customer_address"];
+
+  string id = 9;
+
+  string virtual_interface_id = 10 [json_name = "virtual_interface_id"];
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsDxConnection version is 1
+message AwsDxConnection {
+  string arn = 1;
+
+  string aws_device = 2 [json_name = "aws_device"];
+
+  string bandwidth = 3;
+
+  string encryption_mode = 4 [json_name = "encryption_mode"];
+
+  string has_logical_redundancy = 5 [json_name = "has_logical_redundancy"];
+
+  string id = 6;
+
+  bool jumbo_frame_capable = 7 [json_name = "jumbo_frame_capable"];
+
+  string location = 8;
+
+  bool macsec_capable = 9 [json_name = "macsec_capable"];
+
+  string name = 10;
+
+  string owner_account_id = 11 [json_name = "owner_account_id"];
+
+  string partner_name = 12 [json_name = "partner_name"];
+
+  string port_encryption_status = 13 [json_name = "port_encryption_status"];
+
+  string provider_name = 14 [json_name = "provider_name"];
+
+  bool request_macsec = 15 [json_name = "request_macsec"];
+
+  bool skip_destroy = 16 [json_name = "skip_destroy"];
+
+  map<string, string> tags = 17;
+
+  map<string, string> tags_all = 18 [json_name = "tags_all"];
+
+  int64 vlan_id = 19 [json_name = "vlan_id"];
+
+  map<string, string> for_each = 20 [json_name = "for_each"];
+
+  repeated string depends_on = 21 [json_name = "depends_on"];
+
+  int32 count = 22;
+
+  string provider = 23;
+
+  terraform.v1.Lifecycle lifecycle = 24;
+}
+
+// AwsDxConnectionAssociation version is 0
+message AwsDxConnectionAssociation {
+  string connection_id = 1 [json_name = "connection_id"];
+
+  string id = 2;
+
+  string lag_id = 3 [json_name = "lag_id"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsDxConnectionConfirmation version is 0
+message AwsDxConnectionConfirmation {
+  string connection_id = 1 [json_name = "connection_id"];
+
+  string id = 2;
+
+  map<string, string> for_each = 3 [json_name = "for_each"];
+
+  repeated string depends_on = 4 [json_name = "depends_on"];
+
+  int32 count = 5;
+
+  string provider = 6;
+
+  terraform.v1.Lifecycle lifecycle = 7;
+}
+
+// AwsDxGateway version is 0
+message AwsDxGateway {
+  string amazon_side_asn = 1 [json_name = "amazon_side_asn"];
+
+  string id = 2;
+
+  string name = 3;
+
+  string owner_account_id = 4 [json_name = "owner_account_id"];
+
+  repeated Timeouts timeouts = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsDxGatewayAssociation version is 1
+message AwsDxGatewayAssociation {
+  repeated string allowed_prefixes = 1 [json_name = "allowed_prefixes"];
+
+  string associated_gateway_id = 2 [json_name = "associated_gateway_id"];
+
+  string associated_gateway_owner_account_id = 3 [json_name = "associated_gateway_owner_account_id"];
+
+  string associated_gateway_type = 4 [json_name = "associated_gateway_type"];
+
+  string dx_gateway_association_id = 5 [json_name = "dx_gateway_association_id"];
+
+  string dx_gateway_id = 6 [json_name = "dx_gateway_id"];
+
+  string dx_gateway_owner_account_id = 7 [json_name = "dx_gateway_owner_account_id"];
+
+  string id = 8;
+
+  string proposal_id = 9 [json_name = "proposal_id"];
+
+  string vpn_gateway_id = 10 [json_name = "vpn_gateway_id"];
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsDxGatewayAssociationProposal version is 0
+message AwsDxGatewayAssociationProposal {
+  repeated string allowed_prefixes = 1 [json_name = "allowed_prefixes"];
+
+  string associated_gateway_id = 2 [json_name = "associated_gateway_id"];
+
+  string associated_gateway_owner_account_id = 3 [json_name = "associated_gateway_owner_account_id"];
+
+  string associated_gateway_type = 4 [json_name = "associated_gateway_type"];
+
+  string dx_gateway_id = 5 [json_name = "dx_gateway_id"];
+
+  string dx_gateway_owner_account_id = 6 [json_name = "dx_gateway_owner_account_id"];
+
+  string id = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsDxHostedConnection version is 0
+message AwsDxHostedConnection {
+  string aws_device = 1 [json_name = "aws_device"];
+
+  string bandwidth = 2;
+
+  string connection_id = 3 [json_name = "connection_id"];
+
+  string has_logical_redundancy = 4 [json_name = "has_logical_redundancy"];
+
+  string id = 5;
+
+  bool jumbo_frame_capable = 6 [json_name = "jumbo_frame_capable"];
+
+  string lag_id = 7 [json_name = "lag_id"];
+
+  string loa_issue_time = 8 [json_name = "loa_issue_time"];
+
+  string location = 9;
+
+  string name = 10;
+
+  string owner_account_id = 11 [json_name = "owner_account_id"];
+
+  string partner_name = 12 [json_name = "partner_name"];
+
+  string provider_name = 13 [json_name = "provider_name"];
+
+  string region = 14;
+
+  string state = 15;
+
+  int64 vlan = 16;
+
+  map<string, string> for_each = 17 [json_name = "for_each"];
+
+  repeated string depends_on = 18 [json_name = "depends_on"];
+
+  int32 count = 19;
+
+  string provider = 20;
+
+  terraform.v1.Lifecycle lifecycle = 21;
+}
+
+// AwsDxHostedPrivateVirtualInterface version is 0
+message AwsDxHostedPrivateVirtualInterface {
+  string address_family = 1 [json_name = "address_family"];
+
+  string amazon_address = 2 [json_name = "amazon_address"];
+
+  string amazon_side_asn = 3 [json_name = "amazon_side_asn"];
+
+  string arn = 4;
+
+  string aws_device = 5 [json_name = "aws_device"];
+
+  int64 bgp_asn = 6 [json_name = "bgp_asn"];
+
+  string bgp_auth_key = 7 [json_name = "bgp_auth_key"];
+
+  string connection_id = 8 [json_name = "connection_id"];
+
+  string customer_address = 9 [json_name = "customer_address"];
+
+  string id = 10;
+
+  bool jumbo_frame_capable = 11 [json_name = "jumbo_frame_capable"];
+
+  int64 mtu = 12;
+
+  string name = 13;
+
+  string owner_account_id = 14 [json_name = "owner_account_id"];
+
+  int64 vlan = 15;
+
+  repeated Timeouts timeouts = 16;
+
+  map<string, string> for_each = 17 [json_name = "for_each"];
+
+  repeated string depends_on = 18 [json_name = "depends_on"];
+
+  int32 count = 19;
+
+  string provider = 20;
+
+  terraform.v1.Lifecycle lifecycle = 21;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsDxHostedPrivateVirtualInterfaceAccepter version is 0
+message AwsDxHostedPrivateVirtualInterfaceAccepter {
+  string arn = 1;
+
+  string dx_gateway_id = 2 [json_name = "dx_gateway_id"];
+
+  string id = 3;
+
+  map<string, string> tags = 4;
+
+  map<string, string> tags_all = 5 [json_name = "tags_all"];
+
+  string virtual_interface_id = 6 [json_name = "virtual_interface_id"];
+
+  string vpn_gateway_id = 7 [json_name = "vpn_gateway_id"];
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsDxHostedPublicVirtualInterface version is 0
+message AwsDxHostedPublicVirtualInterface {
+  string address_family = 1 [json_name = "address_family"];
+
+  string amazon_address = 2 [json_name = "amazon_address"];
+
+  string amazon_side_asn = 3 [json_name = "amazon_side_asn"];
+
+  string arn = 4;
+
+  string aws_device = 5 [json_name = "aws_device"];
+
+  int64 bgp_asn = 6 [json_name = "bgp_asn"];
+
+  string bgp_auth_key = 7 [json_name = "bgp_auth_key"];
+
+  string connection_id = 8 [json_name = "connection_id"];
+
+  string customer_address = 9 [json_name = "customer_address"];
+
+  string id = 10;
+
+  string name = 11;
+
+  string owner_account_id = 12 [json_name = "owner_account_id"];
+
+  repeated string route_filter_prefixes = 13 [json_name = "route_filter_prefixes"];
+
+  int64 vlan = 14;
+
+  repeated Timeouts timeouts = 15;
+
+  map<string, string> for_each = 16 [json_name = "for_each"];
+
+  repeated string depends_on = 17 [json_name = "depends_on"];
+
+  int32 count = 18;
+
+  string provider = 19;
+
+  terraform.v1.Lifecycle lifecycle = 20;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsDxHostedPublicVirtualInterfaceAccepter version is 0
+message AwsDxHostedPublicVirtualInterfaceAccepter {
+  string arn = 1;
+
+  string id = 2;
+
+  map<string, string> tags = 3;
+
+  map<string, string> tags_all = 4 [json_name = "tags_all"];
+
+  string virtual_interface_id = 5 [json_name = "virtual_interface_id"];
+
+  repeated Timeouts timeouts = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsDxHostedTransitVirtualInterface version is 0
+message AwsDxHostedTransitVirtualInterface {
+  string address_family = 1 [json_name = "address_family"];
+
+  string amazon_address = 2 [json_name = "amazon_address"];
+
+  string amazon_side_asn = 3 [json_name = "amazon_side_asn"];
+
+  string arn = 4;
+
+  string aws_device = 5 [json_name = "aws_device"];
+
+  int64 bgp_asn = 6 [json_name = "bgp_asn"];
+
+  string bgp_auth_key = 7 [json_name = "bgp_auth_key"];
+
+  string connection_id = 8 [json_name = "connection_id"];
+
+  string customer_address = 9 [json_name = "customer_address"];
+
+  string id = 10;
+
+  bool jumbo_frame_capable = 11 [json_name = "jumbo_frame_capable"];
+
+  int64 mtu = 12;
+
+  string name = 13;
+
+  string owner_account_id = 14 [json_name = "owner_account_id"];
+
+  int64 vlan = 15;
+
+  repeated Timeouts timeouts = 16;
+
+  map<string, string> for_each = 17 [json_name = "for_each"];
+
+  repeated string depends_on = 18 [json_name = "depends_on"];
+
+  int32 count = 19;
+
+  string provider = 20;
+
+  terraform.v1.Lifecycle lifecycle = 21;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsDxHostedTransitVirtualInterfaceAccepter version is 0
+message AwsDxHostedTransitVirtualInterfaceAccepter {
+  string arn = 1;
+
+  string dx_gateway_id = 2 [json_name = "dx_gateway_id"];
+
+  string id = 3;
+
+  map<string, string> tags = 4;
+
+  map<string, string> tags_all = 5 [json_name = "tags_all"];
+
+  string virtual_interface_id = 6 [json_name = "virtual_interface_id"];
+
+  repeated Timeouts timeouts = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsDxLag version is 0
+message AwsDxLag {
+  string arn = 1;
+
+  string connection_id = 2 [json_name = "connection_id"];
+
+  string connections_bandwidth = 3 [json_name = "connections_bandwidth"];
+
+  bool force_destroy = 4 [json_name = "force_destroy"];
+
+  string has_logical_redundancy = 5 [json_name = "has_logical_redundancy"];
+
+  string id = 6;
+
+  bool jumbo_frame_capable = 7 [json_name = "jumbo_frame_capable"];
+
+  string location = 8;
+
+  string name = 9;
+
+  string owner_account_id = 10 [json_name = "owner_account_id"];
+
+  string provider_name = 11 [json_name = "provider_name"];
+
+  map<string, string> tags = 12;
+
+  map<string, string> tags_all = 13 [json_name = "tags_all"];
+
+  map<string, string> for_each = 14 [json_name = "for_each"];
+
+  repeated string depends_on = 15 [json_name = "depends_on"];
+
+  int32 count = 16;
+
+  string provider = 17;
+
+  terraform.v1.Lifecycle lifecycle = 18;
+}
+
+// AwsDxMacsecKeyAssociation version is 0
+message AwsDxMacsecKeyAssociation {
+  string cak = 1;
+
+  string ckn = 2;
+
+  string connection_id = 3 [json_name = "connection_id"];
+
+  string id = 4;
+
+  string secret_arn = 5 [json_name = "secret_arn"];
+
+  string start_on = 6 [json_name = "start_on"];
+
+  string state = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsDxPrivateVirtualInterface version is 0
+message AwsDxPrivateVirtualInterface {
+  string address_family = 1 [json_name = "address_family"];
+
+  string amazon_address = 2 [json_name = "amazon_address"];
+
+  string amazon_side_asn = 3 [json_name = "amazon_side_asn"];
+
+  string arn = 4;
+
+  string aws_device = 5 [json_name = "aws_device"];
+
+  int64 bgp_asn = 6 [json_name = "bgp_asn"];
+
+  string bgp_auth_key = 7 [json_name = "bgp_auth_key"];
+
+  string connection_id = 8 [json_name = "connection_id"];
+
+  string customer_address = 9 [json_name = "customer_address"];
+
+  string dx_gateway_id = 10 [json_name = "dx_gateway_id"];
+
+  string id = 11;
+
+  bool jumbo_frame_capable = 12 [json_name = "jumbo_frame_capable"];
+
+  int64 mtu = 13;
+
+  string name = 14;
+
+  bool sitelink_enabled = 15 [json_name = "sitelink_enabled"];
+
+  map<string, string> tags = 16;
+
+  map<string, string> tags_all = 17 [json_name = "tags_all"];
+
+  int64 vlan = 18;
+
+  string vpn_gateway_id = 19 [json_name = "vpn_gateway_id"];
+
+  repeated Timeouts timeouts = 20;
+
+  map<string, string> for_each = 21 [json_name = "for_each"];
+
+  repeated string depends_on = 22 [json_name = "depends_on"];
+
+  int32 count = 23;
+
+  string provider = 24;
+
+  terraform.v1.Lifecycle lifecycle = 25;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsDxPublicVirtualInterface version is 0
+message AwsDxPublicVirtualInterface {
+  string address_family = 1 [json_name = "address_family"];
+
+  string amazon_address = 2 [json_name = "amazon_address"];
+
+  string amazon_side_asn = 3 [json_name = "amazon_side_asn"];
+
+  string arn = 4;
+
+  string aws_device = 5 [json_name = "aws_device"];
+
+  int64 bgp_asn = 6 [json_name = "bgp_asn"];
+
+  string bgp_auth_key = 7 [json_name = "bgp_auth_key"];
+
+  string connection_id = 8 [json_name = "connection_id"];
+
+  string customer_address = 9 [json_name = "customer_address"];
+
+  string id = 10;
+
+  string name = 11;
+
+  repeated string route_filter_prefixes = 12 [json_name = "route_filter_prefixes"];
+
+  map<string, string> tags = 13;
+
+  map<string, string> tags_all = 14 [json_name = "tags_all"];
+
+  int64 vlan = 15;
+
+  repeated Timeouts timeouts = 16;
+
+  map<string, string> for_each = 17 [json_name = "for_each"];
+
+  repeated string depends_on = 18 [json_name = "depends_on"];
+
+  int32 count = 19;
+
+  string provider = 20;
+
+  terraform.v1.Lifecycle lifecycle = 21;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsDxTransitVirtualInterface version is 0
+message AwsDxTransitVirtualInterface {
+  string address_family = 1 [json_name = "address_family"];
+
+  string amazon_address = 2 [json_name = "amazon_address"];
+
+  string amazon_side_asn = 3 [json_name = "amazon_side_asn"];
+
+  string arn = 4;
+
+  string aws_device = 5 [json_name = "aws_device"];
+
+  int64 bgp_asn = 6 [json_name = "bgp_asn"];
+
+  string bgp_auth_key = 7 [json_name = "bgp_auth_key"];
+
+  string connection_id = 8 [json_name = "connection_id"];
+
+  string customer_address = 9 [json_name = "customer_address"];
+
+  string dx_gateway_id = 10 [json_name = "dx_gateway_id"];
+
+  string id = 11;
+
+  bool jumbo_frame_capable = 12 [json_name = "jumbo_frame_capable"];
+
+  int64 mtu = 13;
+
+  string name = 14;
+
+  bool sitelink_enabled = 15 [json_name = "sitelink_enabled"];
+
+  map<string, string> tags = 16;
+
+  map<string, string> tags_all = 17 [json_name = "tags_all"];
+
+  int64 vlan = 18;
+
+  repeated Timeouts timeouts = 19;
+
+  map<string, string> for_each = 20 [json_name = "for_each"];
+
+  repeated string depends_on = 21 [json_name = "depends_on"];
+
+  int32 count = 22;
+
+  string provider = 23;
+
+  terraform.v1.Lifecycle lifecycle = 24;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

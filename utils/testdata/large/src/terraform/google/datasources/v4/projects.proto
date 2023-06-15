@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.datasources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleProjects version is 0
+message GoogleProjects {
+  string filter = 1;
+
+  string id = 2;
+
+  repeated Projects projects = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+
+  message Projects {
+    // create_time: string
+    string create_time = 1 [json_name = "create_time"];
+
+    // labels: map of string
+    map<string, string> labels = 2;
+
+    // lifecycle_state: string
+    string lifecycle_state = 3 [json_name = "lifecycle_state"];
+
+    // name: string
+    string name = 4;
+
+    // number: string
+    string number = 5;
+
+    // parent: map of string
+    map<string, string> parent = 6;
+
+    // project_id: string
+    string project_id = 7 [json_name = "project_id"];
+  }
+}

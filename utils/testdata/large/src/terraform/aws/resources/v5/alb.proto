@@ -1,0 +1,560 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsAlb version is 0
+message AwsAlb {
+  string arn = 1;
+
+  string arn_suffix = 2 [json_name = "arn_suffix"];
+
+  string customer_owned_ipv4_pool = 3 [json_name = "customer_owned_ipv4_pool"];
+
+  string desync_mitigation_mode = 4 [json_name = "desync_mitigation_mode"];
+
+  string dns_name = 5 [json_name = "dns_name"];
+
+  bool drop_invalid_header_fields = 6 [json_name = "drop_invalid_header_fields"];
+
+  bool enable_cross_zone_load_balancing = 7 [json_name = "enable_cross_zone_load_balancing"];
+
+  bool enable_deletion_protection = 8 [json_name = "enable_deletion_protection"];
+
+  bool enable_http2 = 9 [json_name = "enable_http2"];
+
+  bool enable_tls_version_and_cipher_suite_headers = 10 [
+    json_name = "enable_tls_version_and_cipher_suite_headers"
+  ];
+
+  bool enable_waf_fail_open = 11 [json_name = "enable_waf_fail_open"];
+
+  bool enable_xff_client_port = 12 [json_name = "enable_xff_client_port"];
+
+  string id = 13;
+
+  int64 idle_timeout = 14 [json_name = "idle_timeout"];
+
+  bool internal = 15;
+
+  string ip_address_type = 16 [json_name = "ip_address_type"];
+
+  string load_balancer_type = 17 [json_name = "load_balancer_type"];
+
+  string name = 18;
+
+  string name_prefix = 19 [json_name = "name_prefix"];
+
+  bool preserve_host_header = 20 [json_name = "preserve_host_header"];
+
+  repeated string security_groups = 21 [json_name = "security_groups"];
+
+  repeated string subnets = 22;
+
+  map<string, string> tags = 23;
+
+  map<string, string> tags_all = 24 [json_name = "tags_all"];
+
+  string vpc_id = 25 [json_name = "vpc_id"];
+
+  string xff_header_processing_mode = 26 [json_name = "xff_header_processing_mode"];
+
+  string zone_id = 27 [json_name = "zone_id"];
+
+  AccessLogs access_logs = 28 [json_name = "access_logs"];
+
+  repeated SubnetMapping subnet_mapping = 29 [json_name = "subnet_mapping"];
+
+  repeated Timeouts timeouts = 30;
+
+  map<string, string> for_each = 31 [json_name = "for_each"];
+
+  repeated string depends_on = 32 [json_name = "depends_on"];
+
+  int32 count = 33;
+
+  string provider = 34;
+
+  terraform.v1.Lifecycle lifecycle = 35;
+
+  message AccessLogs {
+    string bucket = 1;
+
+    bool enabled = 2;
+
+    string prefix = 3;
+  }
+
+  message SubnetMapping {
+    string allocation_id = 1 [json_name = "allocation_id"];
+
+    string ipv6_address = 2 [json_name = "ipv6_address"];
+
+    string outpost_id = 3 [json_name = "outpost_id"];
+
+    string private_ipv4_address = 4 [json_name = "private_ipv4_address"];
+
+    string subnet_id = 5 [json_name = "subnet_id"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsAlbListener version is 0
+message AwsAlbListener {
+  string alpn_policy = 1 [json_name = "alpn_policy"];
+
+  string arn = 2;
+
+  string certificate_arn = 3 [json_name = "certificate_arn"];
+
+  string id = 4;
+
+  string load_balancer_arn = 5 [json_name = "load_balancer_arn"];
+
+  int64 port = 6;
+
+  string protocol = 7;
+
+  string ssl_policy = 8 [json_name = "ssl_policy"];
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  repeated DefaultAction default_action = 11 [json_name = "default_action"];
+
+  repeated Timeouts timeouts = 12;
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message DefaultAction {
+    int64 order = 1;
+
+    string target_group_arn = 2 [json_name = "target_group_arn"];
+
+    string type = 3;
+
+    AuthenticateCognito authenticate_cognito = 4 [json_name = "authenticate_cognito"];
+
+    AuthenticateOidc authenticate_oidc = 5 [json_name = "authenticate_oidc"];
+
+    FixedResponse fixed_response = 6 [json_name = "fixed_response"];
+
+    Forward forward = 7;
+
+    Redirect redirect = 8;
+
+    message AuthenticateCognito {
+      map<string, string> authentication_request_extra_params = 1 [json_name = "authentication_request_extra_params"];
+
+      string on_unauthenticated_request = 2 [json_name = "on_unauthenticated_request"];
+
+      string scope = 3;
+
+      string session_cookie_name = 4 [json_name = "session_cookie_name"];
+
+      int64 session_timeout = 5 [json_name = "session_timeout"];
+
+      string user_pool_arn = 6 [json_name = "user_pool_arn"];
+
+      string user_pool_client_id = 7 [json_name = "user_pool_client_id"];
+
+      string user_pool_domain = 8 [json_name = "user_pool_domain"];
+    }
+
+    message AuthenticateOidc {
+      map<string, string> authentication_request_extra_params = 1 [json_name = "authentication_request_extra_params"];
+
+      string authorization_endpoint = 2 [json_name = "authorization_endpoint"];
+
+      string client_id = 3 [json_name = "client_id"];
+
+      string client_secret = 4 [json_name = "client_secret"];
+
+      string issuer = 5;
+
+      string on_unauthenticated_request = 6 [json_name = "on_unauthenticated_request"];
+
+      string scope = 7;
+
+      string session_cookie_name = 8 [json_name = "session_cookie_name"];
+
+      int64 session_timeout = 9 [json_name = "session_timeout"];
+
+      string token_endpoint = 10 [json_name = "token_endpoint"];
+
+      string user_info_endpoint = 11 [json_name = "user_info_endpoint"];
+    }
+
+    message FixedResponse {
+      string content_type = 1 [json_name = "content_type"];
+
+      string message_body = 2 [json_name = "message_body"];
+
+      string status_code = 3 [json_name = "status_code"];
+    }
+
+    message Forward {
+      Stickiness stickiness = 1;
+
+      repeated TargetGroup target_group = 2 [json_name = "target_group"];
+
+      message Stickiness {
+        int64 duration = 1;
+
+        bool enabled = 2;
+      }
+
+      message TargetGroup {
+        string arn = 1;
+
+        int64 weight = 2;
+      }
+    }
+
+    message Redirect {
+      string host = 1;
+
+      string path = 2;
+
+      string port = 3;
+
+      string protocol = 4;
+
+      string query = 5;
+
+      string status_code = 6 [json_name = "status_code"];
+    }
+  }
+
+  message Timeouts {
+    string read = 1;
+  }
+}
+
+// AwsAlbListenerCertificate version is 0
+message AwsAlbListenerCertificate {
+  string certificate_arn = 1 [json_name = "certificate_arn"];
+
+  string id = 2;
+
+  string listener_arn = 3 [json_name = "listener_arn"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsAlbListenerRule version is 0
+message AwsAlbListenerRule {
+  string arn = 1;
+
+  string id = 2;
+
+  string listener_arn = 3 [json_name = "listener_arn"];
+
+  int64 priority = 4;
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  repeated Action action = 7;
+
+  repeated Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Action {
+    int64 order = 1;
+
+    string target_group_arn = 2 [json_name = "target_group_arn"];
+
+    string type = 3;
+
+    AuthenticateCognito authenticate_cognito = 4 [json_name = "authenticate_cognito"];
+
+    AuthenticateOidc authenticate_oidc = 5 [json_name = "authenticate_oidc"];
+
+    FixedResponse fixed_response = 6 [json_name = "fixed_response"];
+
+    Forward forward = 7;
+
+    Redirect redirect = 8;
+
+    message AuthenticateCognito {
+      map<string, string> authentication_request_extra_params = 1 [json_name = "authentication_request_extra_params"];
+
+      string on_unauthenticated_request = 2 [json_name = "on_unauthenticated_request"];
+
+      string scope = 3;
+
+      string session_cookie_name = 4 [json_name = "session_cookie_name"];
+
+      int64 session_timeout = 5 [json_name = "session_timeout"];
+
+      string user_pool_arn = 6 [json_name = "user_pool_arn"];
+
+      string user_pool_client_id = 7 [json_name = "user_pool_client_id"];
+
+      string user_pool_domain = 8 [json_name = "user_pool_domain"];
+    }
+
+    message AuthenticateOidc {
+      map<string, string> authentication_request_extra_params = 1 [json_name = "authentication_request_extra_params"];
+
+      string authorization_endpoint = 2 [json_name = "authorization_endpoint"];
+
+      string client_id = 3 [json_name = "client_id"];
+
+      string client_secret = 4 [json_name = "client_secret"];
+
+      string issuer = 5;
+
+      string on_unauthenticated_request = 6 [json_name = "on_unauthenticated_request"];
+
+      string scope = 7;
+
+      string session_cookie_name = 8 [json_name = "session_cookie_name"];
+
+      int64 session_timeout = 9 [json_name = "session_timeout"];
+
+      string token_endpoint = 10 [json_name = "token_endpoint"];
+
+      string user_info_endpoint = 11 [json_name = "user_info_endpoint"];
+    }
+
+    message FixedResponse {
+      string content_type = 1 [json_name = "content_type"];
+
+      string message_body = 2 [json_name = "message_body"];
+
+      string status_code = 3 [json_name = "status_code"];
+    }
+
+    message Forward {
+      Stickiness stickiness = 1;
+
+      repeated TargetGroup target_group = 2 [json_name = "target_group"];
+
+      message Stickiness {
+        int64 duration = 1;
+
+        bool enabled = 2;
+      }
+
+      message TargetGroup {
+        string arn = 1;
+
+        int64 weight = 2;
+      }
+    }
+
+    message Redirect {
+      string host = 1;
+
+      string path = 2;
+
+      string port = 3;
+
+      string protocol = 4;
+
+      string query = 5;
+
+      string status_code = 6 [json_name = "status_code"];
+    }
+  }
+
+  message Condition {
+    HostHeader host_header = 1 [json_name = "host_header"];
+
+    HttpHeader http_header = 2 [json_name = "http_header"];
+
+    HttpRequestMethod http_request_method = 3 [json_name = "http_request_method"];
+
+    PathPattern path_pattern = 4 [json_name = "path_pattern"];
+
+    repeated QueryString query_string = 5 [json_name = "query_string"];
+
+    SourceIp source_ip = 6 [json_name = "source_ip"];
+
+    message HostHeader {
+      repeated string values = 1;
+    }
+
+    message HttpHeader {
+      string http_header_name = 1 [json_name = "http_header_name"];
+
+      repeated string values = 2;
+    }
+
+    message HttpRequestMethod {
+      repeated string values = 1;
+    }
+
+    message PathPattern {
+      repeated string values = 1;
+    }
+
+    message QueryString {
+      string key = 1;
+
+      string value = 2;
+    }
+
+    message SourceIp {
+      repeated string values = 1;
+    }
+  }
+}
+
+// AwsAlbTargetGroup version is 0
+message AwsAlbTargetGroup {
+  string arn = 1;
+
+  string arn_suffix = 2 [json_name = "arn_suffix"];
+
+  bool connection_termination = 3 [json_name = "connection_termination"];
+
+  string deregistration_delay = 4 [json_name = "deregistration_delay"];
+
+  string id = 5;
+
+  string ip_address_type = 6 [json_name = "ip_address_type"];
+
+  bool lambda_multi_value_headers_enabled = 7 [json_name = "lambda_multi_value_headers_enabled"];
+
+  string load_balancing_algorithm_type = 8 [json_name = "load_balancing_algorithm_type"];
+
+  string load_balancing_cross_zone_enabled = 9 [json_name = "load_balancing_cross_zone_enabled"];
+
+  string name = 10;
+
+  string name_prefix = 11 [json_name = "name_prefix"];
+
+  int64 port = 12;
+
+  string preserve_client_ip = 13 [json_name = "preserve_client_ip"];
+
+  string protocol = 14;
+
+  string protocol_version = 15 [json_name = "protocol_version"];
+
+  bool proxy_protocol_v2 = 16 [json_name = "proxy_protocol_v2"];
+
+  int64 slow_start = 17 [json_name = "slow_start"];
+
+  map<string, string> tags = 18;
+
+  map<string, string> tags_all = 19 [json_name = "tags_all"];
+
+  string target_type = 20 [json_name = "target_type"];
+
+  string vpc_id = 21 [json_name = "vpc_id"];
+
+  HealthCheck health_check = 22 [json_name = "health_check"];
+
+  Stickiness stickiness = 23;
+
+  repeated TargetFailover target_failover = 24 [json_name = "target_failover"];
+
+  map<string, string> for_each = 25 [json_name = "for_each"];
+
+  repeated string depends_on = 26 [json_name = "depends_on"];
+
+  int32 count = 27;
+
+  string provider = 28;
+
+  terraform.v1.Lifecycle lifecycle = 29;
+
+  message HealthCheck {
+    bool enabled = 1;
+
+    int64 healthy_threshold = 2 [json_name = "healthy_threshold"];
+
+    int64 interval = 3;
+
+    string matcher = 4;
+
+    string path = 5;
+
+    string port = 6;
+
+    string protocol = 7;
+
+    int64 timeout = 8;
+
+    int64 unhealthy_threshold = 9 [json_name = "unhealthy_threshold"];
+  }
+
+  message Stickiness {
+    int64 cookie_duration = 1 [json_name = "cookie_duration"];
+
+    string cookie_name = 2 [json_name = "cookie_name"];
+
+    bool enabled = 3;
+
+    string type = 4;
+  }
+
+  message TargetFailover {
+    string on_deregistration = 1 [json_name = "on_deregistration"];
+
+    string on_unhealthy = 2 [json_name = "on_unhealthy"];
+  }
+}
+
+// AwsAlbTargetGroupAttachment version is 0
+message AwsAlbTargetGroupAttachment {
+  string availability_zone = 1 [json_name = "availability_zone"];
+
+  string id = 2;
+
+  int64 port = 3;
+
+  string target_group_arn = 4 [json_name = "target_group_arn"];
+
+  string target_id = 5 [json_name = "target_id"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}

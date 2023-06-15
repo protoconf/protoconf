@@ -1,0 +1,204 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsBackupFramework version is 0
+message AwsBackupFramework {
+  string arn = 1;
+
+  repeated Control control = 2;
+
+  string creation_time = 3 [json_name = "creation_time"];
+
+  string deployment_status = 4 [json_name = "deployment_status"];
+
+  string description = 5;
+
+  string id = 6;
+
+  string name = 7;
+
+  string status = 8;
+
+  map<string, string> tags = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Control {
+    // input_parameter: set of object
+    repeated InputParameter input_parameter = 1 [json_name = "input_parameter"];
+
+    // name: string
+    string name = 2;
+
+    // scope: list of object
+    repeated Scope scope = 3;
+
+    message InputParameter {
+      // name: string
+      string name = 1;
+
+      // value: string
+      string value = 2;
+    }
+
+    message Scope {
+      // compliance_resource_ids: set of string
+      repeated string compliance_resource_ids = 1 [json_name = "compliance_resource_ids"];
+
+      // compliance_resource_types: set of string
+      repeated string compliance_resource_types = 2 [json_name = "compliance_resource_types"];
+
+      // tags: map of string
+      map<string, string> tags = 3;
+    }
+  }
+}
+
+// AwsBackupPlan version is 0
+message AwsBackupPlan {
+  string arn = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  string plan_id = 4 [json_name = "plan_id"];
+
+  map<string, string> tags = 5;
+
+  string version = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsBackupReportPlan version is 0
+message AwsBackupReportPlan {
+  string arn = 1;
+
+  string creation_time = 2 [json_name = "creation_time"];
+
+  string deployment_status = 3 [json_name = "deployment_status"];
+
+  string description = 4;
+
+  string id = 5;
+
+  string name = 6;
+
+  repeated ReportDeliveryChannel report_delivery_channel = 7 [json_name = "report_delivery_channel"];
+
+  repeated ReportSetting report_setting = 8 [json_name = "report_setting"];
+
+  map<string, string> tags = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message ReportDeliveryChannel {
+    // formats: set of string
+    repeated string formats = 1;
+
+    // s3_bucket_name: string
+    string s3_bucket_name = 2 [json_name = "s3_bucket_name"];
+
+    // s3_key_prefix: string
+    string s3_key_prefix = 3 [json_name = "s3_key_prefix"];
+  }
+
+  message ReportSetting {
+    // accounts: set of string
+    repeated string accounts = 1;
+
+    // framework_arns: set of string
+    repeated string framework_arns = 2 [json_name = "framework_arns"];
+
+    // number_of_frameworks: number
+    int64 number_of_frameworks = 3 [json_name = "number_of_frameworks"];
+
+    // organization_units: set of string
+    repeated string organization_units = 4 [json_name = "organization_units"];
+
+    // regions: set of string
+    repeated string regions = 5;
+
+    // report_template: string
+    string report_template = 6 [json_name = "report_template"];
+  }
+}
+
+// AwsBackupSelection version is 0
+message AwsBackupSelection {
+  string iam_role_arn = 1 [json_name = "iam_role_arn"];
+
+  string id = 2;
+
+  string name = 3;
+
+  string plan_id = 4 [json_name = "plan_id"];
+
+  repeated string resources = 5;
+
+  string selection_id = 6 [json_name = "selection_id"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsBackupVault version is 0
+message AwsBackupVault {
+  string arn = 1;
+
+  string id = 2;
+
+  string kms_key_arn = 3 [json_name = "kms_key_arn"];
+
+  string name = 4;
+
+  int64 recovery_points = 5 [json_name = "recovery_points"];
+
+  map<string, string> tags = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}

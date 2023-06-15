@@ -1,0 +1,1143 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleApigeeAddonsConfig version is 0
+message GoogleApigeeAddonsConfig {
+  string id = 1;
+
+  // Name of the Apigee organization.
+  string org = 2;
+
+  AddonsConfig addons_config = 3 [json_name = "addons_config"];
+
+  repeated Timeouts timeouts = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message AddonsConfig {
+    AdvancedApiOpsConfig advanced_api_ops_config = 1 [json_name = "advanced_api_ops_config"];
+
+    ApiSecurityConfig api_security_config = 2 [json_name = "api_security_config"];
+
+    ConnectorsPlatformConfig connectors_platform_config = 3 [json_name = "connectors_platform_config"];
+
+    IntegrationConfig integration_config = 4 [json_name = "integration_config"];
+
+    MonetizationConfig monetization_config = 5 [json_name = "monetization_config"];
+
+    message AdvancedApiOpsConfig {
+      // Flag that specifies whether the Advanced API Ops add-on is enabled.
+      bool enabled = 1;
+    }
+
+    message ApiSecurityConfig {
+      // Flag that specifies whether the Advanced API Ops add-on is enabled.
+      bool enabled = 1;
+
+      // Flag that specifies whether the Advanced API Ops add-on is enabled.
+      string expires_at = 2 [json_name = "expires_at"];
+    }
+
+    message ConnectorsPlatformConfig {
+      // Flag that specifies whether the Advanced API Ops add-on is enabled.
+      bool enabled = 1;
+
+      // Flag that specifies whether the Advanced API Ops add-on is enabled.
+      string expires_at = 2 [json_name = "expires_at"];
+    }
+
+    message IntegrationConfig {
+      // Flag that specifies whether the Advanced API Ops add-on is enabled.
+      bool enabled = 1;
+    }
+
+    message MonetizationConfig {
+      // Flag that specifies whether the Advanced API Ops add-on is enabled.
+      bool enabled = 1;
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleApigeeEndpointAttachment version is 0
+message GoogleApigeeEndpointAttachment {
+  // State of the endpoint attachment connection to the service attachment.
+  string connection_state = 1 [json_name = "connection_state"];
+
+  // ID of the endpoint attachment.
+  string endpoint_attachment_id = 2 [json_name = "endpoint_attachment_id"];
+
+  // Host that can be used in either HTTP Target Endpoint directly, or as the host in Target Server.
+  string host = 3;
+
+  string id = 4;
+
+  // Location of the endpoint attachment.
+  string location = 5;
+
+  // Name of the Endpoint Attachment in the following format:
+  // organizations/{organization}/endpointAttachments/{endpointAttachment}.
+  string name = 6;
+
+  // The Apigee Organization associated with the Apigee instance,
+  // in the format 'organizations/{{org_name}}'.
+  string org_id = 7 [json_name = "org_id"];
+
+  // Format: projects/*/regions/*/serviceAttachments/*
+  string service_attachment = 8 [json_name = "service_attachment"];
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// GoogleApigeeEnvKeystore version is 0
+message GoogleApigeeEnvKeystore {
+  // Aliases in this keystore.
+  repeated string aliases = 1;
+
+  // The Apigee environment group associated with the Apigee environment,
+  // in the format 'organizations/{{org_name}}/environments/{{env_name}}'.
+  string env_id = 2 [json_name = "env_id"];
+
+  string id = 3;
+
+  // The name of the newly created keystore.
+  string name = 4;
+
+  repeated Timeouts timeouts = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// GoogleApigeeEnvReferences version is 0
+message GoogleApigeeEnvReferences {
+  // Optional. A human-readable description of this reference.
+  string description = 1;
+
+  // The Apigee environment group associated with the Apigee environment,
+  // in the format 'organizations/{{org_name}}/environments/{{env_name}}'.
+  string env_id = 2 [json_name = "env_id"];
+
+  string id = 3;
+
+  // Required. The resource id of this reference. Values must match the regular expression [\w\s-.]+.
+  string name = 4;
+
+  // Required. The id of the resource to which this reference refers. Must be the id of a resource that exists in the parent environment and is of the given resourceType.
+  string refers = 5;
+
+  // The type of resource referred to by this reference. Valid values are 'KeyStore' or 'TrustStore'.
+  string resource_type = 6 [json_name = "resource_type"];
+
+  repeated Timeouts timeouts = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// GoogleApigeeEnvgroup version is 0
+message GoogleApigeeEnvgroup {
+  // Hostnames of the environment group.
+  repeated string hostnames = 1;
+
+  string id = 2;
+
+  // The resource ID of the environment group.
+  string name = 3;
+
+  // The Apigee Organization associated with the Apigee environment group,
+  // in the format 'organizations/{{org_name}}'.
+  string org_id = 4 [json_name = "org_id"];
+
+  repeated Timeouts timeouts = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleApigeeEnvgroupAttachment version is 0
+message GoogleApigeeEnvgroupAttachment {
+  // The Apigee environment group associated with the Apigee environment,
+  // in the format 'organizations/{{org_name}}/envgroups/{{envgroup_name}}'.
+  string envgroup_id = 1 [json_name = "envgroup_id"];
+
+  // The resource ID of the environment.
+  string environment = 2;
+
+  string id = 3;
+
+  // The name of the newly created  attachment (output parameter).
+  string name = 4;
+
+  repeated Timeouts timeouts = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// GoogleApigeeEnvironment version is 0
+message GoogleApigeeEnvironment {
+  // Optional. API Proxy type supported by the environment. The type can be set when creating
+  // the Environment and cannot be changed. Possible values: ["API_PROXY_TYPE_UNSPECIFIED", "PROGRAMMABLE", "CONFIGURABLE"]
+  string api_proxy_type = 1 [json_name = "api_proxy_type"];
+
+  // Optional. Deployment type supported by the environment. The deployment type can be
+  // set when creating the environment and cannot be changed. When you enable archive
+  // deployment, you will be prevented from performing a subset of actions within the
+  // environment, including:
+  // Managing the deployment of API proxy or shared flow revisions;
+  // Creating, updating, or deleting resource files;
+  // Creating, updating, or deleting target servers. Possible values: ["DEPLOYMENT_TYPE_UNSPECIFIED", "PROXY", "ARCHIVE"]
+  string deployment_type = 2 [json_name = "deployment_type"];
+
+  // Description of the environment.
+  string description = 3;
+
+  // Display name of the environment.
+  string display_name = 4 [json_name = "display_name"];
+
+  string id = 5;
+
+  // The resource ID of the environment.
+  string name = 6;
+
+  // The Apigee Organization associated with the Apigee environment,
+  // in the format 'organizations/{{org_name}}'.
+  string org_id = 7 [json_name = "org_id"];
+
+  NodeConfig node_config = 8 [json_name = "node_config"];
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message NodeConfig {
+    // The current total number of gateway nodes that each environment currently has across
+    // all instances.
+    string current_aggregate_node_count = 1 [json_name = "current_aggregate_node_count"];
+
+    // The maximum total number of gateway nodes that the is reserved for all instances that
+    // has the specified environment. If not specified, the default is determined by the
+    // recommended maximum number of nodes for that gateway.
+    string max_node_count = 2 [json_name = "max_node_count"];
+
+    // The minimum total number of gateway nodes that the is reserved for all instances that
+    // has the specified environment. If not specified, the default is determined by the
+    // recommended minimum number of nodes for that gateway.
+    string min_node_count = 3 [json_name = "min_node_count"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleApigeeEnvironmentIamBinding version is 0
+message GoogleApigeeEnvironmentIamBinding {
+  string env_id = 1 [json_name = "env_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  repeated string members = 4;
+
+  string org_id = 5 [json_name = "org_id"];
+
+  string role = 6;
+
+  Condition condition = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleApigeeEnvironmentIamMember version is 0
+message GoogleApigeeEnvironmentIamMember {
+  string env_id = 1 [json_name = "env_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string member = 4;
+
+  string org_id = 5 [json_name = "org_id"];
+
+  string role = 6;
+
+  Condition condition = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleApigeeEnvironmentIamPolicy version is 0
+message GoogleApigeeEnvironmentIamPolicy {
+  string env_id = 1 [json_name = "env_id"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string org_id = 4 [json_name = "org_id"];
+
+  string policy_data = 5 [json_name = "policy_data"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// GoogleApigeeFlowhook version is 0
+message GoogleApigeeFlowhook {
+  // Flag that specifies whether execution should continue if the flow hook throws an exception. Set to true to continue execution. Set to false to stop execution if the flow hook throws an exception. Defaults to true.
+  bool continue_on_error = 1 [json_name = "continue_on_error"];
+
+  // Description of the flow hook.
+  string description = 2;
+
+  // The resource ID of the environment.
+  string environment = 3;
+
+  // Where in the API call flow the flow hook is invoked. Must be one of PreProxyFlowHook, PostProxyFlowHook, PreTargetFlowHook, or PostTargetFlowHook.
+  string flow_hook_point = 4 [json_name = "flow_hook_point"];
+
+  string id = 5;
+
+  // The Apigee Organization associated with the environment
+  string org_id = 6 [json_name = "org_id"];
+
+  // Id of the Sharedflow attaching to a flowhook point.
+  string sharedflow = 7;
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// GoogleApigeeInstance version is 0
+message GoogleApigeeInstance {
+  // Optional. Customer accept list represents the list of projects (id/number) on customer
+  // side that can privately connect to the service attachment. It is an optional field
+  // which the customers can provide during the instance creation. By default, the customer
+  // project associated with the Apigee organization will be included to the list.
+  repeated string consumer_accept_list = 1 [json_name = "consumer_accept_list"];
+
+  // Description of the instance.
+  string description = 2;
+
+  // Customer Managed Encryption Key (CMEK) used for disk and volume encryption. Required for Apigee paid subscriptions only.
+  // Use the following format: 'projects/([^/]+)/locations/([^/]+)/keyRings/([^/]+)/cryptoKeys/([^/]+)'
+  string disk_encryption_key_name = 3 [json_name = "disk_encryption_key_name"];
+
+  // Display name of the instance.
+  string display_name = 4 [json_name = "display_name"];
+
+  // Output only. Hostname or IP address of the exposed Apigee endpoint used by clients to connect to the service.
+  string host = 5;
+
+  string id = 6;
+
+  // IP range represents the customer-provided CIDR block of length 22 that will be used for
+  // the Apigee instance creation. This optional range, if provided, should be freely
+  // available as part of larger named range the customer has allocated to the Service
+  // Networking peering. If this is not provided, Apigee will automatically request for any
+  // available /22 CIDR block from Service Networking. The customer should use this CIDR block
+  // for configuring their firewall needs to allow traffic from Apigee.
+  // Input format: "a.b.c.d/22"
+  string ip_range = 7 [json_name = "ip_range"];
+
+  // Required. Compute Engine location where the instance resides.
+  string location = 8;
+
+  // Resource ID of the instance.
+  string name = 9;
+
+  // The Apigee Organization associated with the Apigee instance,
+  // in the format 'organizations/{{org_name}}'.
+  string org_id = 10 [json_name = "org_id"];
+
+  // The size of the CIDR block range that will be reserved by the instance. For valid values,
+  // see [CidrRange](https://cloud.google.com/apigee/docs/reference/apis/apigee/rest/v1/organizations.instances#CidrRange) on the documentation.
+  string peering_cidr_range = 11 [json_name = "peering_cidr_range"];
+
+  // Output only. Port number of the exposed Apigee endpoint.
+  string port = 12;
+
+  // Output only. Resource name of the service attachment created for the instance in
+  // the format: projects/*/regions/*/serviceAttachments/* Apigee customers can privately
+  // forward traffic to this service attachment using the PSC endpoints.
+  string service_attachment = 13 [json_name = "service_attachment"];
+
+  repeated Timeouts timeouts = 14;
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// GoogleApigeeInstanceAttachment version is 0
+message GoogleApigeeInstanceAttachment {
+  // The resource ID of the environment.
+  string environment = 1;
+
+  string id = 2;
+
+  // The Apigee instance associated with the Apigee environment,
+  // in the format 'organisations/{{org_name}}/instances/{{instance_name}}'.
+  string instance_id = 3 [json_name = "instance_id"];
+
+  // The name of the newly created  attachment (output parameter).
+  string name = 4;
+
+  repeated Timeouts timeouts = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// GoogleApigeeKeystoresAliasesKeyCertFile version is 0
+message GoogleApigeeKeystoresAliasesKeyCertFile {
+  // Alias Name
+  string alias = 1;
+
+  // Cert content
+  string cert = 2;
+
+  // Environment associated with the alias
+  string environment = 3;
+
+  string id = 4;
+
+  // Private Key content, omit if uploading to truststore
+  string key = 5;
+
+  // Keystore Name
+  string keystore = 6;
+
+  // Organization ID associated with the alias
+  string org_id = 7 [json_name = "org_id"];
+
+  // Password for the Private Key if it's encrypted
+  string password = 8;
+
+  // Optional.Type of Alias
+  string type = 9;
+
+  CertsInfo certs_info = 10 [json_name = "certs_info"];
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message CertsInfo {
+    repeated CertInfo cert_info = 1 [json_name = "cert_info"];
+
+    message CertInfo {
+      // X.509 basic constraints extension.
+      string basic_constraints = 1 [json_name = "basic_constraints"];
+
+      // X.509 notAfter validity period in milliseconds since epoch.
+      string expiry_date = 2 [json_name = "expiry_date"];
+
+      // Flag that specifies whether the certificate is valid.
+      // Flag is set to Yes if the certificate is valid, No if expired, or Not yet if not yet valid.
+      string is_valid = 3 [json_name = "is_valid"];
+
+      // X.509 issuer.
+      string issuer = 4;
+
+      // Public key component of the X.509 subject public key info.
+      string public_key = 5 [json_name = "public_key"];
+
+      // X.509 serial number.
+      string serial_number = 6 [json_name = "serial_number"];
+
+      // X.509 signatureAlgorithm.
+      string sig_alg_name = 7 [json_name = "sig_alg_name"];
+
+      // X.509 subject.
+      string subject = 8;
+
+      // X.509 subject alternative names (SANs) extension.
+      repeated string subject_alternative_names = 9 [json_name = "subject_alternative_names"];
+
+      // X.509 notBefore validity period in milliseconds since epoch.
+      string valid_from = 10 [json_name = "valid_from"];
+
+      // X.509 version.
+      int64 version = 11;
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string read = 3;
+
+    string update = 4;
+  }
+}
+
+// GoogleApigeeKeystoresAliasesPkcs12 version is 0
+message GoogleApigeeKeystoresAliasesPkcs12 {
+  // Alias Name
+  string alias = 1;
+
+  // Chain of certificates under this alias.
+  repeated CertsInfo certs_info = 2 [json_name = "certs_info"];
+
+  // Environment associated with the alias
+  string environment = 3;
+
+  // Cert content
+  string file = 4;
+
+  // Hash of the pkcs file
+  string filehash = 5;
+
+  string id = 6;
+
+  // Keystore Name
+  string keystore = 7;
+
+  // Organization ID associated with the alias
+  string org_id = 8 [json_name = "org_id"];
+
+  // Password for the Private Key if it's encrypted
+  string password = 9;
+
+  // Optional.Type of Alias
+  string type = 10;
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message CertsInfo {
+    // cert_info: list of object
+    repeated CertInfo cert_info = 1 [json_name = "cert_info"];
+
+    message CertInfo {
+      // basic_constraints: string
+      string basic_constraints = 1 [json_name = "basic_constraints"];
+
+      // expiry_date: string
+      string expiry_date = 2 [json_name = "expiry_date"];
+
+      // is_valid: string
+      string is_valid = 3 [json_name = "is_valid"];
+
+      // issuer: string
+      string issuer = 4;
+
+      // public_key: string
+      string public_key = 5 [json_name = "public_key"];
+
+      // serial_number: string
+      string serial_number = 6 [json_name = "serial_number"];
+
+      // sig_alg_name: string
+      string sig_alg_name = 7 [json_name = "sig_alg_name"];
+
+      // subject: string
+      string subject = 8;
+
+      // subject_alternative_names: list of string
+      repeated string subject_alternative_names = 9 [json_name = "subject_alternative_names"];
+
+      // valid_from: string
+      string valid_from = 10 [json_name = "valid_from"];
+
+      // version: number
+      int64 version = 11;
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// GoogleApigeeKeystoresAliasesSelfSignedCert version is 0
+message GoogleApigeeKeystoresAliasesSelfSignedCert {
+  // Alias for the key/certificate pair. Values must match the regular expression [\w\s-.]{1,255}.
+  // This must be provided for all formats except selfsignedcert; self-signed certs may specify the alias in either
+  // this parameter or the JSON body.
+  string alias = 1;
+
+  // Validity duration of certificate, in days. Accepts positive non-zero value. Defaults to 365.
+  int64 cert_validity_in_days = 2 [json_name = "cert_validity_in_days"];
+
+  // Chain of certificates under this alias.
+  repeated CertsInfo certs_info = 3 [json_name = "certs_info"];
+
+  // The Apigee environment name
+  string environment = 4;
+
+  string id = 5;
+
+  // Key size. Default and maximum value is 2048 bits.
+  string key_size = 6 [json_name = "key_size"];
+
+  // The Apigee keystore name associated in an Apigee environment
+  string keystore = 7;
+
+  // The Apigee Organization name associated with the Apigee environment
+  string org_id = 8 [json_name = "org_id"];
+
+  // Signature algorithm to generate private key. Valid values are SHA512withRSA, SHA384withRSA, and SHA256withRSA
+  string sig_alg = 9 [json_name = "sig_alg"];
+
+  // Optional.Type of Alias
+  string type = 10;
+
+  Subject subject = 11;
+
+  SubjectAlternativeDnsNames subject_alternative_dns_names = 12 [json_name = "subject_alternative_dns_names"];
+
+  repeated Timeouts timeouts = 13;
+
+  map<string, string> for_each = 14 [json_name = "for_each"];
+
+  repeated string depends_on = 15 [json_name = "depends_on"];
+
+  int32 count = 16;
+
+  string provider = 17;
+
+  terraform.v1.Lifecycle lifecycle = 18;
+
+  message CertsInfo {
+    // cert_info: list of object
+    repeated CertInfo cert_info = 1 [json_name = "cert_info"];
+
+    message CertInfo {
+      // basic_constraints: string
+      string basic_constraints = 1 [json_name = "basic_constraints"];
+
+      // expiry_date: string
+      string expiry_date = 2 [json_name = "expiry_date"];
+
+      // is_valid: string
+      string is_valid = 3 [json_name = "is_valid"];
+
+      // issuer: string
+      string issuer = 4;
+
+      // public_key: string
+      string public_key = 5 [json_name = "public_key"];
+
+      // serial_number: string
+      string serial_number = 6 [json_name = "serial_number"];
+
+      // sig_alg_name: string
+      string sig_alg_name = 7 [json_name = "sig_alg_name"];
+
+      // subject: string
+      string subject = 8;
+
+      // subject_alternative_names: list of string
+      repeated string subject_alternative_names = 9 [json_name = "subject_alternative_names"];
+
+      // valid_from: string
+      string valid_from = 10 [json_name = "valid_from"];
+
+      // version: number
+      int64 version = 11;
+    }
+  }
+
+  message Subject {
+    // Common name of the organization. Maximum length is 64 characters.
+    string common_name = 1 [json_name = "common_name"];
+
+    // Two-letter country code. Example, IN for India, US for United States of America.
+    string country_code = 2 [json_name = "country_code"];
+
+    // Email address. Max 255 characters.
+    string email = 3;
+
+    // City or town name. Maximum length is 128 characters.
+    string locality = 4;
+
+    // Organization name. Maximum length is 64 characters.
+    string org = 5;
+
+    // Organization team name. Maximum length is 64 characters.
+    string org_unit = 6 [json_name = "org_unit"];
+
+    // State or district name. Maximum length is 128 characters.
+    string state = 7;
+  }
+
+  message SubjectAlternativeDnsNames {
+    // Subject Alternative Name
+    string subject_alternative_name = 1 [json_name = "subject_alternative_name"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// GoogleApigeeNatAddress version is 0
+message GoogleApigeeNatAddress {
+  string id = 1;
+
+  // The Apigee instance associated with the Apigee environment,
+  // in the format 'organizations/{{org_name}}/instances/{{instance_name}}'.
+  string instance_id = 2 [json_name = "instance_id"];
+
+  // The allocated NAT IP address.
+  string ip_address = 3 [json_name = "ip_address"];
+
+  // Resource ID of the NAT address.
+  string name = 4;
+
+  // State of the NAT IP address.
+  string state = 5;
+
+  repeated Timeouts timeouts = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// GoogleApigeeOrganization version is 0
+message GoogleApigeeOrganization {
+  // Primary GCP region for analytics data storage. For valid values, see [Create an Apigee organization](https://cloud.google.com/apigee/docs/api-platform/get-started/create-org).
+  string analytics_region = 1 [json_name = "analytics_region"];
+
+  // Compute Engine network used for Service Networking to be peered with Apigee runtime instances.
+  // See [Getting started with the Service Networking API](https://cloud.google.com/service-infrastructure/docs/service-networking/getting-started).
+  // Valid only when 'RuntimeType' is set to CLOUD. The value can be updated only when there are no runtime instances. For example: "default".
+  string authorized_network = 2 [json_name = "authorized_network"];
+
+  // Billing type of the Apigee organization. See [Apigee pricing](https://cloud.google.com/apigee/pricing).
+  string billing_type = 3 [json_name = "billing_type"];
+
+  // Output only. Base64-encoded public certificate for the root CA of the Apigee organization.
+  // Valid only when 'RuntimeType' is CLOUD. A base64-encoded string.
+  string ca_certificate = 4 [json_name = "ca_certificate"];
+
+  // Description of the Apigee organization.
+  string description = 5;
+
+  // The display name of the Apigee organization.
+  string display_name = 6 [json_name = "display_name"];
+
+  string id = 7;
+
+  // Output only. Name of the Apigee organization.
+  string name = 8;
+
+  // The project ID associated with the Apigee organization.
+  string project_id = 9 [json_name = "project_id"];
+
+  // Optional. This setting is applicable only for organizations that are soft-deleted (i.e., BillingType
+  // is not EVALUATION). It controls how long Organization data will be retained after the initial delete
+  // operation completes. During this period, the Organization may be restored to its last known state.
+  // After this period, the Organization will no longer be able to be restored. Default value: "DELETION_RETENTION_UNSPECIFIED" Possible values: ["DELETION_RETENTION_UNSPECIFIED", "MINIMUM"]
+  string retention = 10;
+
+  // Cloud KMS key name used for encrypting the data that is stored and replicated across runtime instances.
+  // Update is not allowed after the organization is created.
+  // If not specified, a Google-Managed encryption key will be used.
+  // Valid only when 'RuntimeType' is CLOUD. For example: 'projects/foo/locations/us/keyRings/bar/cryptoKeys/baz'.
+  string runtime_database_encryption_key_name = 11 [json_name = "runtime_database_encryption_key_name"];
+
+  // Runtime type of the Apigee organization based on the Apigee subscription purchased. Default value: "CLOUD" Possible values: ["CLOUD", "HYBRID"]
+  string runtime_type = 12 [json_name = "runtime_type"];
+
+  // Output only. Subscription type of the Apigee organization.
+  // Valid values include trial (free, limited, and for evaluation purposes only) or paid (full subscription has been purchased).
+  string subscription_type = 13 [json_name = "subscription_type"];
+
+  Properties properties = 14;
+
+  repeated Timeouts timeouts = 15;
+
+  map<string, string> for_each = 16 [json_name = "for_each"];
+
+  repeated string depends_on = 17 [json_name = "depends_on"];
+
+  int32 count = 18;
+
+  string provider = 19;
+
+  terraform.v1.Lifecycle lifecycle = 20;
+
+  message Properties {
+    repeated Property property = 1;
+
+    message Property {
+      // Name of the property.
+      string name = 1;
+
+      // Value of the property.
+      string value = 2;
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleApigeeSharedflow version is 0
+message GoogleApigeeSharedflow {
+  // Path to the config zip bundle
+  string config_bundle = 1 [json_name = "config_bundle"];
+
+  // A hash of local config bundle in string, user needs to use a Terraform Hash function of their choice. A change in hash will trigger an update.
+  string detect_md5hash = 2 [json_name = "detect_md5hash"];
+
+  string id = 3;
+
+  // The id of the most recently created revision for this shared flow.
+  string latest_revision_id = 4 [json_name = "latest_revision_id"];
+
+  // Base 64 MD5 hash of the uploaded config bundle.
+  string md5hash = 5;
+
+  // Metadata describing the shared flow.
+  repeated MetaData meta_data = 6 [json_name = "meta_data"];
+
+  // The ID of the shared flow.
+  string name = 7;
+
+  // The Apigee Organization name associated with the Apigee instance.
+  string org_id = 8 [json_name = "org_id"];
+
+  // A list of revisions of this shared flow.
+  repeated string revision = 9;
+
+  repeated Timeouts timeouts = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message MetaData {
+    // created_at: string
+    string created_at = 1 [json_name = "created_at"];
+
+    // last_modified_at: string
+    string last_modified_at = 2 [json_name = "last_modified_at"];
+
+    // sub_type: string
+    string sub_type = 3 [json_name = "sub_type"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleApigeeSharedflowDeployment version is 0
+message GoogleApigeeSharedflowDeployment {
+  // The resource ID of the environment.
+  string environment = 1;
+
+  string id = 2;
+
+  // The Apigee Organization associated with the Apigee instance
+  string org_id = 3 [json_name = "org_id"];
+
+  // Revision of the Sharedflow to be deployed.
+  string revision = 4;
+
+  // The service account represents the identity of the deployed proxy, and determines what permissions it has. The format must be {ACCOUNT_ID}@{PROJECT}.iam.gserviceaccount.com.
+  string service_account = 5 [json_name = "service_account"];
+
+  // Id of the Sharedflow to be deployed.
+  string sharedflow_id = 6 [json_name = "sharedflow_id"];
+
+  repeated Timeouts timeouts = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleApigeeSyncAuthorization version is 0
+message GoogleApigeeSyncAuthorization {
+  // Entity tag (ETag) used for optimistic concurrency control as a way to help prevent simultaneous updates from overwriting each other.
+  // Used internally during updates.
+  string etag = 1;
+
+  string id = 2;
+
+  // Array of service accounts to grant access to control plane resources, each specified using the following format: 'serviceAccount:service-account-name'.
+  //
+  // The 'service-account-name' is formatted like an email address. For example: my-synchronizer-manager-serviceAccount@my_project_id.iam.gserviceaccount.com
+  //
+  // You might specify multiple service accounts, for example, if you have multiple environments and wish to assign a unique service account to each one.
+  //
+  // The service accounts must have **Apigee Synchronizer Manager** role. See also [Create service accounts](https://cloud.google.com/apigee/docs/hybrid/v1.8/sa-about#create-the-service-accounts).
+  repeated string identities = 3;
+
+  // Name of the Apigee organization.
+  string name = 4;
+
+  repeated Timeouts timeouts = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

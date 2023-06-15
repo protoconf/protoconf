@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsResourcegroupstaggingapiResources version is 0
+message AwsResourcegroupstaggingapiResources {
+  bool exclude_compliant_resources = 1 [json_name = "exclude_compliant_resources"];
+
+  string id = 2;
+
+  bool include_compliance_details = 3 [json_name = "include_compliance_details"];
+
+  repeated string resource_arn_list = 4 [json_name = "resource_arn_list"];
+
+  repeated ResourceTagMappingList resource_tag_mapping_list = 5 [json_name = "resource_tag_mapping_list"];
+
+  repeated string resource_type_filters = 6 [json_name = "resource_type_filters"];
+
+  repeated TagFilter tag_filter = 7 [json_name = "tag_filter"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message ResourceTagMappingList {
+    // compliance_details: list of object
+    repeated ComplianceDetails compliance_details = 1 [json_name = "compliance_details"];
+
+    // resource_arn: string
+    string resource_arn = 2 [json_name = "resource_arn"];
+
+    // tags: map of string
+    map<string, string> tags = 3;
+
+    message ComplianceDetails {
+      // compliance_status: bool
+      bool compliance_status = 1 [json_name = "compliance_status"];
+
+      // keys_with_noncompliant_values: set of string
+      repeated string keys_with_noncompliant_values = 2 [json_name = "keys_with_noncompliant_values"];
+
+      // non_compliant_keys: set of string
+      repeated string non_compliant_keys = 3 [json_name = "non_compliant_keys"];
+    }
+  }
+
+  message TagFilter {
+    string key = 1;
+
+    repeated string values = 2;
+  }
+}

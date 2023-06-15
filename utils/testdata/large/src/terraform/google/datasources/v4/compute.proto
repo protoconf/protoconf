@@ -1,0 +1,4096 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.datasources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleComputeAddress version is 0
+message GoogleComputeAddress {
+  string address = 1;
+
+  string address_type = 2 [json_name = "address_type"];
+
+  string id = 3;
+
+  string name = 4;
+
+  string network = 5;
+
+  string network_tier = 6 [json_name = "network_tier"];
+
+  int64 prefix_length = 7 [json_name = "prefix_length"];
+
+  string project = 8;
+
+  string purpose = 9;
+
+  string region = 10;
+
+  string self_link = 11 [json_name = "self_link"];
+
+  string status = 12;
+
+  string subnetwork = 13;
+
+  string users = 14;
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+}
+
+// GoogleComputeAddresses version is 0
+message GoogleComputeAddresses {
+  repeated Addresses addresses = 1;
+
+  // Filter sets the optional parameter "filter": A filter expression that
+  // filters resources listed in the response. The expression must specify
+  // the field name, an operator, and the value that you want to use for
+  // filtering. The value must be a string, a number, or a boolean. The
+  // operator must be either "=", "!=", ">", "<", "<=", ">=" or ":". For
+  // example, if you are filtering Compute Engine instances, you can
+  // exclude instances named "example-instance" by specifying "name !=
+  // example-instance". The ":" operator can be used with string fields to
+  // match substrings. For non-string fields it is equivalent to the "="
+  // operator. The ":*" comparison can be used to test whether a key has
+  // been defined. For example, to find all objects with "owner" label
+  // use: """ labels.owner:* """ You can also filter nested fields. For
+  // example, you could specify "scheduling.automaticRestart = false" to
+  // include instances only if they are not scheduled for automatic
+  // restarts. You can use filtering on nested fields to filter based on
+  // resource labels. To filter on multiple expressions, provide each
+  // separate expression within parentheses. For example: """
+  // (scheduling.automaticRestart = true) (cpuPlatform = "Intel Skylake")
+  // """ By default, each expression is an "AND" expression. However, you
+  // can include "AND" and "OR" expressions explicitly. For example: """
+  // (cpuPlatform = "Intel Skylake") OR (cpuPlatform = "Intel Broadwell")
+  // AND (scheduling.automaticRestart = true) """
+  string filter = 2;
+
+  string id = 3;
+
+  // The google project in which addresses are listed. Defaults to provider's configuration if missing.
+  string project = 4;
+
+  // Region that should be considered to search addresses. All regions are considered if missing.
+  string region = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message Addresses {
+    // address: string
+    string address = 1;
+
+    // address_type: string
+    string address_type = 2 [json_name = "address_type"];
+
+    // description: string
+    string description = 3;
+
+    // name: string
+    string name = 4;
+
+    // region: string
+    string region = 5;
+
+    // self_link: string
+    string self_link = 6 [json_name = "self_link"];
+
+    // status: string
+    string status = 7;
+  }
+}
+
+// GoogleComputeBackendBucket version is 0
+message GoogleComputeBackendBucket {
+  // Cloud Storage bucket name.
+  string bucket_name = 1 [json_name = "bucket_name"];
+
+  // Cloud CDN configuration for this Backend Bucket.
+  repeated CdnPolicy cdn_policy = 2 [json_name = "cdn_policy"];
+
+  // Compress text responses using Brotli or gzip compression, based on the client's Accept-Encoding header. Possible values: ["AUTOMATIC", "DISABLED"]
+  string compression_mode = 3 [json_name = "compression_mode"];
+
+  // Creation timestamp in RFC3339 text format.
+  string creation_timestamp = 4 [json_name = "creation_timestamp"];
+
+  // Headers that the HTTP/S load balancer should add to proxied responses.
+  repeated string custom_response_headers = 5 [json_name = "custom_response_headers"];
+
+  // An optional textual description of the resource; provided by the
+  // client when the resource is created.
+  string description = 6;
+
+  // The security policy associated with this backend bucket.
+  string edge_security_policy = 7 [json_name = "edge_security_policy"];
+
+  // If true, enable Cloud CDN for this BackendBucket.
+  bool enable_cdn = 8 [json_name = "enable_cdn"];
+
+  string id = 9;
+
+  // Name of the resource. Provided by the client when the resource is
+  // created. The name must be 1-63 characters long, and comply with
+  // RFC1035.  Specifically, the name must be 1-63 characters long and
+  // match the regular expression '[a-z]([-a-z0-9]*[a-z0-9])?' which means
+  // the first character must be a lowercase letter, and all following
+  // characters must be a dash, lowercase letter, or digit, except the
+  // last character, which cannot be a dash.
+  string name = 10;
+
+  string project = 11;
+
+  string self_link = 12 [json_name = "self_link"];
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message CdnPolicy {
+    // bypass_cache_on_request_headers: list of object
+    repeated BypassCacheOnRequestHeaders bypass_cache_on_request_headers = 1 [json_name = "bypass_cache_on_request_headers"];
+
+    // cache_key_policy: list of object
+    repeated CacheKeyPolicy cache_key_policy = 2 [json_name = "cache_key_policy"];
+
+    // cache_mode: string
+    string cache_mode = 3 [json_name = "cache_mode"];
+
+    // client_ttl: number
+    int64 client_ttl = 4 [json_name = "client_ttl"];
+
+    // default_ttl: number
+    int64 default_ttl = 5 [json_name = "default_ttl"];
+
+    // max_ttl: number
+    int64 max_ttl = 6 [json_name = "max_ttl"];
+
+    // negative_caching: bool
+    bool negative_caching = 7 [json_name = "negative_caching"];
+
+    // negative_caching_policy: list of object
+    repeated NegativeCachingPolicy negative_caching_policy = 8 [json_name = "negative_caching_policy"];
+
+    // request_coalescing: bool
+    bool request_coalescing = 9 [json_name = "request_coalescing"];
+
+    // serve_while_stale: number
+    int64 serve_while_stale = 10 [json_name = "serve_while_stale"];
+
+    // signed_url_cache_max_age_sec: number
+    int64 signed_url_cache_max_age_sec = 11 [json_name = "signed_url_cache_max_age_sec"];
+
+    message BypassCacheOnRequestHeaders {
+      // header_name: string
+      string header_name = 1 [json_name = "header_name"];
+    }
+
+    message CacheKeyPolicy {
+      // include_http_headers: list of string
+      repeated string include_http_headers = 1 [json_name = "include_http_headers"];
+
+      // query_string_whitelist: list of string
+      repeated string query_string_whitelist = 2 [json_name = "query_string_whitelist"];
+    }
+
+    message NegativeCachingPolicy {
+      // code: number
+      int64 code = 1;
+
+      // ttl: number
+      int64 ttl = 2;
+    }
+  }
+}
+
+// GoogleComputeBackendService version is 0
+message GoogleComputeBackendService {
+  // Lifetime of cookies in seconds if session_affinity is
+  // GENERATED_COOKIE. If set to 0, the cookie is non-persistent and lasts
+  // only until the end of the browser session (or equivalent). The
+  // maximum allowed value for TTL is one day.
+  //
+  // When the load balancing scheme is INTERNAL, this field is not used.
+  int64 affinity_cookie_ttl_sec = 1 [json_name = "affinity_cookie_ttl_sec"];
+
+  // The set of backends that serve this BackendService.
+  repeated Backend backend = 2;
+
+  // Cloud CDN configuration for this BackendService.
+  repeated CdnPolicy cdn_policy = 3 [json_name = "cdn_policy"];
+
+  // Settings controlling the volume of connections to a backend service. This field
+  // is applicable only when the load_balancing_scheme is set to INTERNAL_SELF_MANAGED.
+  repeated CircuitBreakers circuit_breakers = 4 [json_name = "circuit_breakers"];
+
+  // Compress text responses using Brotli or gzip compression, based on the client's Accept-Encoding header. Possible values: ["AUTOMATIC", "DISABLED"]
+  string compression_mode = 5 [json_name = "compression_mode"];
+
+  // Time for which instance will be drained (not accept new
+  // connections, but still work to finish started).
+  int64 connection_draining_timeout_sec = 6 [json_name = "connection_draining_timeout_sec"];
+
+  // Consistent Hash-based load balancing can be used to provide soft session
+  // affinity based on HTTP headers, cookies or other properties. This load balancing
+  // policy is applicable only for HTTP connections. The affinity to a particular
+  // destination host will be lost when one or more hosts are added/removed from the
+  // destination service. This field specifies parameters that control consistent
+  // hashing. This field only applies if the load_balancing_scheme is set to
+  // INTERNAL_SELF_MANAGED. This field is only applicable when locality_lb_policy is
+  // set to MAGLEV or RING_HASH.
+  repeated ConsistentHash consistent_hash = 7 [json_name = "consistent_hash"];
+
+  // Creation timestamp in RFC3339 text format.
+  string creation_timestamp = 8 [json_name = "creation_timestamp"];
+
+  // Headers that the HTTP/S load balancer should add to proxied
+  // requests.
+  repeated string custom_request_headers = 9 [json_name = "custom_request_headers"];
+
+  // Headers that the HTTP/S load balancer should add to proxied
+  // responses.
+  repeated string custom_response_headers = 10 [json_name = "custom_response_headers"];
+
+  // An optional description of this resource.
+  string description = 11;
+
+  // The resource URL for the edge security policy associated with this backend service.
+  string edge_security_policy = 12 [json_name = "edge_security_policy"];
+
+  // If true, enable Cloud CDN for this BackendService.
+  bool enable_cdn = 13 [json_name = "enable_cdn"];
+
+  // Fingerprint of this resource. A hash of the contents stored in this
+  // object. This field is used in optimistic locking.
+  string fingerprint = 14;
+
+  // The unique identifier for the resource. This identifier is defined by the server.
+  int64 generated_id = 15 [json_name = "generated_id"];
+
+  // The set of URLs to the HttpHealthCheck or HttpsHealthCheck resource
+  // for health checking this BackendService. Currently at most one health
+  // check can be specified.
+  //
+  // A health check must be specified unless the backend service uses an internet
+  // or serverless NEG as a backend.
+  //
+  // For internal load balancing, a URL to a HealthCheck resource must be specified instead.
+  repeated string health_checks = 16 [json_name = "health_checks"];
+
+  // Settings for enabling Cloud Identity Aware Proxy
+  repeated Iap iap = 17;
+
+  string id = 18;
+
+  // Indicates whether the backend service will be used with internal or
+  // external load balancing. A backend service created for one type of
+  // load balancing cannot be used with the other. For more information, refer to
+  // [Choosing a load balancer](https://cloud.google.com/load-balancing/docs/backend-service). Default value: "EXTERNAL" Possible values: ["EXTERNAL", "INTERNAL_SELF_MANAGED", "EXTERNAL_MANAGED"]
+  string load_balancing_scheme = 19 [json_name = "load_balancing_scheme"];
+
+  // A list of locality load balancing policies to be used in order of
+  // preference. Either the policy or the customPolicy field should be set.
+  // Overrides any value set in the localityLbPolicy field.
+  //
+  // localityLbPolicies is only supported when the BackendService is referenced
+  // by a URL Map that is referenced by a target gRPC proxy that has the
+  // validateForProxyless field set to true.
+  repeated LocalityLbPolicies locality_lb_policies = 20 [json_name = "locality_lb_policies"];
+
+  // The load balancing algorithm used within the scope of the locality.
+  // The possible values are:
+  //
+  // * 'ROUND_ROBIN': This is a simple policy in which each healthy backend
+  //                 is selected in round robin order.
+  //
+  // * 'LEAST_REQUEST': An O(1) algorithm which selects two random healthy
+  //                   hosts and picks the host which has fewer active requests.
+  //
+  // * 'RING_HASH': The ring/modulo hash load balancer implements consistent
+  //               hashing to backends. The algorithm has the property that the
+  //               addition/removal of a host from a set of N hosts only affects
+  //               1/N of the requests.
+  //
+  // * 'RANDOM': The load balancer selects a random healthy host.
+  //
+  // * 'ORIGINAL_DESTINATION': Backend host is selected based on the client
+  //                          connection metadata, i.e., connections are opened
+  //                          to the same address as the destination address of
+  //                          the incoming connection before the connection
+  //                          was redirected to the load balancer.
+  //
+  // * 'MAGLEV': used as a drop in replacement for the ring hash load balancer.
+  //            Maglev is not as stable as ring hash but has faster table lookup
+  //            build times and host selection times. For more information about
+  //            Maglev, refer to https://ai.google/research/pubs/pub44824
+  //
+  // * 'WEIGHTED_MAGLEV': Per-instance weighted Load Balancing via health check
+  //                     reported weights. If set, the Backend Service must
+  //                     configure a non legacy HTTP-based Health Check, and
+  //                     health check replies are expected to contain
+  //                     non-standard HTTP response header field
+  //                     X-Load-Balancing-Endpoint-Weight to specify the
+  //                     per-instance weights. If set, Load Balancing is weight
+  //                     based on the per-instance weights reported in the last
+  //                     processed health check replies, as long as every
+  //                     instance either reported a valid weight or had
+  //                     UNAVAILABLE_WEIGHT. Otherwise, Load Balancing remains
+  //                     equal-weight.
+  //
+  //
+  // This field is applicable to either:
+  //
+  // * A regional backend service with the service_protocol set to HTTP, HTTPS, or HTTP2,
+  //  and loadBalancingScheme set to INTERNAL_MANAGED.
+  // * A global backend service with the load_balancing_scheme set to INTERNAL_SELF_MANAGED.
+  // * A regional backend service with loadBalancingScheme set to EXTERNAL (External Network
+  //  Load Balancing). Only MAGLEV and WEIGHTED_MAGLEV values are possible for External
+  //  Network Load Balancing. The default is MAGLEV.
+  //
+  //
+  // If session_affinity is not NONE, and this field is not set to MAGLEV, WEIGHTED_MAGLEV,
+  // or RING_HASH, session affinity settings will not take effect.
+  //
+  // Only ROUND_ROBIN and RING_HASH are supported when the backend service is referenced
+  // by a URL map that is bound to target gRPC proxy that has validate_for_proxyless
+  // field set to true. Possible values: ["ROUND_ROBIN", "LEAST_REQUEST", "RING_HASH", "RANDOM", "ORIGINAL_DESTINATION", "MAGLEV", "WEIGHTED_MAGLEV"]
+  string locality_lb_policy = 21 [json_name = "locality_lb_policy"];
+
+  // This field denotes the logging options for the load balancer traffic served by this backend service.
+  // If logging is enabled, logs will be exported to Stackdriver.
+  repeated LogConfig log_config = 22 [json_name = "log_config"];
+
+  // Name of the resource. Provided by the client when the resource is
+  // created. The name must be 1-63 characters long, and comply with
+  // RFC1035. Specifically, the name must be 1-63 characters long and match
+  // the regular expression '[a-z]([-a-z0-9]*[a-z0-9])?' which means the
+  // first character must be a lowercase letter, and all following
+  // characters must be a dash, lowercase letter, or digit, except the last
+  // character, which cannot be a dash.
+  string name = 23;
+
+  // Settings controlling eviction of unhealthy hosts from the load balancing pool.
+  // This field is applicable only when the load_balancing_scheme is set
+  // to INTERNAL_SELF_MANAGED.
+  repeated OutlierDetection outlier_detection = 24 [json_name = "outlier_detection"];
+
+  // Name of backend port. The same name should appear in the instance
+  // groups referenced by this service. Required when the load balancing
+  // scheme is EXTERNAL.
+  string port_name = 25 [json_name = "port_name"];
+
+  string project = 26;
+
+  // The protocol this BackendService uses to communicate with backends.
+  // The default is HTTP. **NOTE**: HTTP2 is only valid for beta HTTP/2 load balancer
+  // types and may result in errors if used with the GA API. Possible values: ["HTTP", "HTTPS", "HTTP2", "TCP", "SSL", "GRPC"]
+  string protocol = 27;
+
+  // The security policy associated with this backend service.
+  string security_policy = 28 [json_name = "security_policy"];
+
+  // The security settings that apply to this backend service. This field is applicable to either
+  // a regional backend service with the service_protocol set to HTTP, HTTPS, or HTTP2, and
+  // load_balancing_scheme set to INTERNAL_MANAGED; or a global backend service with the
+  // load_balancing_scheme set to INTERNAL_SELF_MANAGED.
+  repeated SecuritySettings security_settings = 29 [json_name = "security_settings"];
+
+  string self_link = 30 [json_name = "self_link"];
+
+  // Type of session affinity to use. The default is NONE. Session affinity is
+  // not applicable if the protocol is UDP. Possible values: ["NONE", "CLIENT_IP", "CLIENT_IP_PORT_PROTO", "CLIENT_IP_PROTO", "GENERATED_COOKIE", "HEADER_FIELD", "HTTP_COOKIE"]
+  string session_affinity = 31 [json_name = "session_affinity"];
+
+  // How many seconds to wait for the backend before considering it a
+  // failed request. Default is 30 seconds. Valid range is [1, 86400].
+  int64 timeout_sec = 32 [json_name = "timeout_sec"];
+
+  map<string, string> for_each = 33 [json_name = "for_each"];
+
+  repeated string depends_on = 34 [json_name = "depends_on"];
+
+  int32 count = 35;
+
+  string provider = 36;
+
+  terraform.v1.Lifecycle lifecycle = 37;
+
+  message Backend {
+    // balancing_mode: string
+    string balancing_mode = 1 [json_name = "balancing_mode"];
+
+    // capacity_scaler: number
+    int64 capacity_scaler = 2 [json_name = "capacity_scaler"];
+
+    // description: string
+    string description = 3;
+
+    // group: string
+    string group = 4;
+
+    // max_connections: number
+    int64 max_connections = 5 [json_name = "max_connections"];
+
+    // max_connections_per_endpoint: number
+    int64 max_connections_per_endpoint = 6 [json_name = "max_connections_per_endpoint"];
+
+    // max_connections_per_instance: number
+    int64 max_connections_per_instance = 7 [json_name = "max_connections_per_instance"];
+
+    // max_rate: number
+    int64 max_rate = 8 [json_name = "max_rate"];
+
+    // max_rate_per_endpoint: number
+    int64 max_rate_per_endpoint = 9 [json_name = "max_rate_per_endpoint"];
+
+    // max_rate_per_instance: number
+    int64 max_rate_per_instance = 10 [json_name = "max_rate_per_instance"];
+
+    // max_utilization: number
+    int64 max_utilization = 11 [json_name = "max_utilization"];
+  }
+
+  message CdnPolicy {
+    // bypass_cache_on_request_headers: list of object
+    repeated BypassCacheOnRequestHeaders bypass_cache_on_request_headers = 1 [json_name = "bypass_cache_on_request_headers"];
+
+    // cache_key_policy: list of object
+    repeated CacheKeyPolicy cache_key_policy = 2 [json_name = "cache_key_policy"];
+
+    // cache_mode: string
+    string cache_mode = 3 [json_name = "cache_mode"];
+
+    // client_ttl: number
+    int64 client_ttl = 4 [json_name = "client_ttl"];
+
+    // default_ttl: number
+    int64 default_ttl = 5 [json_name = "default_ttl"];
+
+    // max_ttl: number
+    int64 max_ttl = 6 [json_name = "max_ttl"];
+
+    // negative_caching: bool
+    bool negative_caching = 7 [json_name = "negative_caching"];
+
+    // negative_caching_policy: list of object
+    repeated NegativeCachingPolicy negative_caching_policy = 8 [json_name = "negative_caching_policy"];
+
+    // serve_while_stale: number
+    int64 serve_while_stale = 9 [json_name = "serve_while_stale"];
+
+    // signed_url_cache_max_age_sec: number
+    int64 signed_url_cache_max_age_sec = 10 [json_name = "signed_url_cache_max_age_sec"];
+
+    message BypassCacheOnRequestHeaders {
+      // header_name: string
+      string header_name = 1 [json_name = "header_name"];
+    }
+
+    message CacheKeyPolicy {
+      // include_host: bool
+      bool include_host = 1 [json_name = "include_host"];
+
+      // include_http_headers: list of string
+      repeated string include_http_headers = 2 [json_name = "include_http_headers"];
+
+      // include_named_cookies: list of string
+      repeated string include_named_cookies = 3 [json_name = "include_named_cookies"];
+
+      // include_protocol: bool
+      bool include_protocol = 4 [json_name = "include_protocol"];
+
+      // include_query_string: bool
+      bool include_query_string = 5 [json_name = "include_query_string"];
+
+      // query_string_blacklist: set of string
+      repeated string query_string_blacklist = 6 [json_name = "query_string_blacklist"];
+
+      // query_string_whitelist: set of string
+      repeated string query_string_whitelist = 7 [json_name = "query_string_whitelist"];
+    }
+
+    message NegativeCachingPolicy {
+      // code: number
+      int64 code = 1;
+
+      // ttl: number
+      int64 ttl = 2;
+    }
+  }
+
+  message CircuitBreakers {
+    // max_connections: number
+    int64 max_connections = 1 [json_name = "max_connections"];
+
+    // max_pending_requests: number
+    int64 max_pending_requests = 2 [json_name = "max_pending_requests"];
+
+    // max_requests: number
+    int64 max_requests = 3 [json_name = "max_requests"];
+
+    // max_requests_per_connection: number
+    int64 max_requests_per_connection = 4 [json_name = "max_requests_per_connection"];
+
+    // max_retries: number
+    int64 max_retries = 5 [json_name = "max_retries"];
+  }
+
+  message ConsistentHash {
+    // http_cookie: list of object
+    repeated HttpCookie http_cookie = 1 [json_name = "http_cookie"];
+
+    // http_header_name: string
+    string http_header_name = 2 [json_name = "http_header_name"];
+
+    // minimum_ring_size: number
+    int64 minimum_ring_size = 3 [json_name = "minimum_ring_size"];
+
+    message HttpCookie {
+      // name: string
+      string name = 1;
+
+      // path: string
+      string path = 2;
+
+      // ttl: list of object
+      repeated Ttl ttl = 3;
+
+      message Ttl {
+        // nanos: number
+        int64 nanos = 1;
+
+        // seconds: number
+        int64 seconds = 2;
+      }
+    }
+  }
+
+  message Iap {
+    // oauth2_client_id: string
+    string oauth2_client_id = 1 [json_name = "oauth2_client_id"];
+
+    // oauth2_client_secret: string
+    string oauth2_client_secret = 2 [json_name = "oauth2_client_secret"];
+
+    // oauth2_client_secret_sha256: string
+    string oauth2_client_secret_sha256 = 3 [json_name = "oauth2_client_secret_sha256"];
+  }
+
+  message LocalityLbPolicies {
+    // custom_policy: list of object
+    repeated CustomPolicy custom_policy = 1 [json_name = "custom_policy"];
+
+    // policy: list of object
+    repeated Policy policy = 2;
+
+    message CustomPolicy {
+      // data: string
+      string data = 1;
+
+      // name: string
+      string name = 2;
+    }
+
+    message Policy {
+      // name: string
+      string name = 1;
+    }
+  }
+
+  message LogConfig {
+    // enable: bool
+    bool enable = 1;
+
+    // sample_rate: number
+    int64 sample_rate = 2 [json_name = "sample_rate"];
+  }
+
+  message OutlierDetection {
+    // base_ejection_time: list of object
+    repeated BaseEjectionTime base_ejection_time = 1 [json_name = "base_ejection_time"];
+
+    // consecutive_errors: number
+    int64 consecutive_errors = 2 [json_name = "consecutive_errors"];
+
+    // consecutive_gateway_failure: number
+    int64 consecutive_gateway_failure = 3 [json_name = "consecutive_gateway_failure"];
+
+    // enforcing_consecutive_errors: number
+    int64 enforcing_consecutive_errors = 4 [json_name = "enforcing_consecutive_errors"];
+
+    // enforcing_consecutive_gateway_failure: number
+    int64 enforcing_consecutive_gateway_failure = 5 [
+      json_name = "enforcing_consecutive_gateway_failure"
+    ];
+
+    // enforcing_success_rate: number
+    int64 enforcing_success_rate = 6 [json_name = "enforcing_success_rate"];
+
+    // interval: list of object
+    repeated Interval interval = 7;
+
+    // max_ejection_percent: number
+    int64 max_ejection_percent = 8 [json_name = "max_ejection_percent"];
+
+    // success_rate_minimum_hosts: number
+    int64 success_rate_minimum_hosts = 9 [json_name = "success_rate_minimum_hosts"];
+
+    // success_rate_request_volume: number
+    int64 success_rate_request_volume = 10 [json_name = "success_rate_request_volume"];
+
+    // success_rate_stdev_factor: number
+    int64 success_rate_stdev_factor = 11 [json_name = "success_rate_stdev_factor"];
+
+    message BaseEjectionTime {
+      // nanos: number
+      int64 nanos = 1;
+
+      // seconds: number
+      int64 seconds = 2;
+    }
+
+    message Interval {
+      // nanos: number
+      int64 nanos = 1;
+
+      // seconds: number
+      int64 seconds = 2;
+    }
+  }
+
+  message SecuritySettings {
+    // client_tls_policy: string
+    string client_tls_policy = 1 [json_name = "client_tls_policy"];
+
+    // subject_alt_names: list of string
+    repeated string subject_alt_names = 2 [json_name = "subject_alt_names"];
+  }
+}
+
+// GoogleComputeDefaultServiceAccount version is 0
+message GoogleComputeDefaultServiceAccount {
+  string display_name = 1 [json_name = "display_name"];
+
+  string email = 2;
+
+  string id = 3;
+
+  string name = 4;
+
+  string project = 5;
+
+  string unique_id = 6 [json_name = "unique_id"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleComputeDisk version is 0
+message GoogleComputeDisk {
+  // Creation timestamp in RFC3339 text format.
+  string creation_timestamp = 1 [json_name = "creation_timestamp"];
+
+  // An optional description of this resource. Provide this property when
+  // you create the resource.
+  string description = 2;
+
+  // Encrypts the disk using a customer-supplied encryption key.
+  //
+  // After you encrypt a disk with a customer-supplied key, you must
+  // provide the same key if you use the disk later (e.g. to create a disk
+  // snapshot or an image, or to attach the disk to a virtual machine).
+  //
+  // Customer-supplied encryption keys do not protect access to metadata of
+  // the disk.
+  //
+  // If you do not provide an encryption key when creating the disk, then
+  // the disk will be encrypted using an automatically generated key and
+  // you do not need to provide a key to use the disk later.
+  repeated DiskEncryptionKey disk_encryption_key = 3 [json_name = "disk_encryption_key"];
+
+  // A list of features to enable on the guest operating system.
+  // Applicable only for bootable disks.
+  repeated GuestOsFeatures guest_os_features = 4 [json_name = "guest_os_features"];
+
+  string id = 5;
+
+  // The image from which to initialize this disk. This can be
+  // one of: the image's 'self_link', 'projects/{project}/global/images/{image}',
+  // 'projects/{project}/global/images/family/{family}', 'global/images/{image}',
+  // 'global/images/family/{family}', 'family/{family}', '{project}/{family}',
+  // '{project}/{image}', '{family}', or '{image}'. If referred by family, the
+  // images names must include the family name. If they don't, use the
+  // [google_compute_image data source](/docs/providers/google/d/compute_image.html).
+  // For instance, the image 'centos-6-v20180104' includes its family name 'centos-6'.
+  // These images can be referred by family name here.
+  string image = 6;
+
+  // The fingerprint used for optimistic locking of this resource.  Used
+  // internally during updates.
+  string label_fingerprint = 7 [json_name = "label_fingerprint"];
+
+  // Labels to apply to this disk.  A list of key->value pairs.
+  map<string, string> labels = 8;
+
+  // Last attach timestamp in RFC3339 text format.
+  string last_attach_timestamp = 9 [json_name = "last_attach_timestamp"];
+
+  // Last detach timestamp in RFC3339 text format.
+  string last_detach_timestamp = 10 [json_name = "last_detach_timestamp"];
+
+  // Any applicable license URI.
+  repeated string licenses = 11;
+
+  // Name of the resource. Provided by the client when the resource is
+  // created. The name must be 1-63 characters long, and comply with
+  // RFC1035. Specifically, the name must be 1-63 characters long and match
+  // the regular expression '[a-z]([-a-z0-9]*[a-z0-9])?' which means the
+  // first character must be a lowercase letter, and all following
+  // characters must be a dash, lowercase letter, or digit, except the last
+  // character, which cannot be a dash.
+  string name = 12;
+
+  // Physical block size of the persistent disk, in bytes. If not present
+  // in a request, a default value is used. Currently supported sizes
+  // are 4096 and 16384, other sizes may be added in the future.
+  // If an unsupported value is requested, the error message will list
+  // the supported values for the caller's project.
+  int64 physical_block_size_bytes = 13 [json_name = "physical_block_size_bytes"];
+
+  string project = 14;
+
+  // Indicates how many IOPS must be provisioned for the disk.
+  int64 provisioned_iops = 15 [json_name = "provisioned_iops"];
+
+  string self_link = 16 [json_name = "self_link"];
+
+  // Size of the persistent disk, specified in GB. You can specify this
+  // field when creating a persistent disk using the 'image' or
+  // 'snapshot' parameter, or specify it alone to create an empty
+  // persistent disk.
+  //
+  // If you specify this field along with 'image' or 'snapshot',
+  // the value must not be less than the size of the image
+  // or the size of the snapshot.
+  //
+  // ~>**NOTE** If you change the size, Terraform updates the disk size
+  // if upsizing is detected but recreates the disk if downsizing is requested.
+  // You can add 'lifecycle.prevent_destroy' in the config to prevent destroying
+  // and recreating.
+  int64 size = 17;
+
+  // The source snapshot used to create this disk. You can provide this as
+  // a partial or full URL to the resource. If the snapshot is in another
+  // project than this disk, you must supply a full URL. For example, the
+  // following are valid values:
+  //
+  // * 'https://www.googleapis.com/compute/v1/projects/project/global/snapshots/snapshot'
+  // * 'projects/project/global/snapshots/snapshot'
+  // * 'global/snapshots/snapshot'
+  // * 'snapshot'
+  string snapshot = 18;
+
+  // The source disk used to create this disk. You can provide this as a partial or full URL to the resource.
+  // For example, the following are valid values:
+  //
+  // * https://www.googleapis.com/compute/v1/projects/{project}/zones/{zone}/disks/{disk}
+  // * https://www.googleapis.com/compute/v1/projects/{project}/regions/{region}/disks/{disk}
+  // * projects/{project}/zones/{zone}/disks/{disk}
+  // * projects/{project}/regions/{region}/disks/{disk}
+  // * zones/{zone}/disks/{disk}
+  // * regions/{region}/disks/{disk}
+  string source_disk = 19 [json_name = "source_disk"];
+
+  // The ID value of the disk used to create this image. This value may
+  // be used to determine whether the image was taken from the current
+  // or a previous instance of a given disk name.
+  string source_disk_id = 20 [json_name = "source_disk_id"];
+
+  // The customer-supplied encryption key of the source image. Required if
+  // the source image is protected by a customer-supplied encryption key.
+  repeated SourceImageEncryptionKey source_image_encryption_key = 21 [json_name = "source_image_encryption_key"];
+
+  // The ID value of the image used to create this disk. This value
+  // identifies the exact image that was used to create this persistent
+  // disk. For example, if you created the persistent disk from an image
+  // that was later deleted and recreated under the same name, the source
+  // image ID would identify the exact version of the image that was used.
+  string source_image_id = 22 [json_name = "source_image_id"];
+
+  // The customer-supplied encryption key of the source snapshot. Required
+  // if the source snapshot is protected by a customer-supplied encryption
+  // key.
+  repeated SourceSnapshotEncryptionKey source_snapshot_encryption_key = 23 [json_name = "source_snapshot_encryption_key"];
+
+  // The unique ID of the snapshot used to create this disk. This value
+  // identifies the exact snapshot that was used to create this persistent
+  // disk. For example, if you created the persistent disk from a snapshot
+  // that was later deleted and recreated under the same name, the source
+  // snapshot ID would identify the exact version of the snapshot that was
+  // used.
+  string source_snapshot_id = 24 [json_name = "source_snapshot_id"];
+
+  // URL of the disk type resource describing which disk type to use to
+  // create the disk. Provide this when creating the disk.
+  string type = 25;
+
+  // Links to the users of the disk (attached instances) in form:
+  // project/zones/zone/instances/instance
+  repeated string users = 26;
+
+  // A reference to the zone where the disk resides.
+  string zone = 27;
+
+  map<string, string> for_each = 28 [json_name = "for_each"];
+
+  repeated string depends_on = 29 [json_name = "depends_on"];
+
+  int32 count = 30;
+
+  string provider = 31;
+
+  terraform.v1.Lifecycle lifecycle = 32;
+
+  message DiskEncryptionKey {
+    // kms_key_self_link: string
+    string kms_key_self_link = 1 [json_name = "kms_key_self_link"];
+
+    // kms_key_service_account: string
+    string kms_key_service_account = 2 [json_name = "kms_key_service_account"];
+
+    // raw_key: string
+    string raw_key = 3 [json_name = "raw_key"];
+
+    // rsa_encrypted_key: string
+    string rsa_encrypted_key = 4 [json_name = "rsa_encrypted_key"];
+
+    // sha256: string
+    string sha256 = 5;
+  }
+
+  message GuestOsFeatures {
+    // type: string
+    string type = 1;
+  }
+
+  message SourceImageEncryptionKey {
+    // kms_key_self_link: string
+    string kms_key_self_link = 1 [json_name = "kms_key_self_link"];
+
+    // kms_key_service_account: string
+    string kms_key_service_account = 2 [json_name = "kms_key_service_account"];
+
+    // raw_key: string
+    string raw_key = 3 [json_name = "raw_key"];
+
+    // sha256: string
+    string sha256 = 4;
+  }
+
+  message SourceSnapshotEncryptionKey {
+    // kms_key_self_link: string
+    string kms_key_self_link = 1 [json_name = "kms_key_self_link"];
+
+    // kms_key_service_account: string
+    string kms_key_service_account = 2 [json_name = "kms_key_service_account"];
+
+    // raw_key: string
+    string raw_key = 3 [json_name = "raw_key"];
+
+    // sha256: string
+    string sha256 = 4;
+  }
+}
+
+// GoogleComputeDiskIamPolicy version is 0
+message GoogleComputeDiskIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  string zone = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleComputeForwardingRule version is 0
+message GoogleComputeForwardingRule {
+  // This field can only be used:
+  // * If 'IPProtocol' is one of TCP, UDP, or SCTP.
+  // * By internal TCP/UDP load balancers, backend service-based network load
+  // balancers, and internal and external protocol forwarding.
+  //
+  //
+  // Set this field to true to allow packets addressed to any port or packets
+  // lacking destination port information (for example, UDP fragments after the
+  // first fragment) to be forwarded to the backends configured with this
+  // forwarding rule.
+  //
+  // The 'ports', 'port_range', and
+  // 'allPorts' fields are mutually exclusive.
+  bool all_ports = 1 [json_name = "all_ports"];
+
+  // This field is used along with the 'backend_service' field for
+  // internal load balancing or with the 'target' field for internal
+  // TargetInstance.
+  //
+  // If the field is set to 'TRUE', clients can access ILB from all
+  // regions.
+  //
+  // Otherwise only allows access from clients in the same region as the
+  // internal load balancer.
+  bool allow_global_access = 2 [json_name = "allow_global_access"];
+
+  // This is used in PSC consumer ForwardingRule to control whether the PSC endpoint can be accessed from another region.
+  bool allow_psc_global_access = 3 [json_name = "allow_psc_global_access"];
+
+  // Identifies the backend service to which the forwarding rule sends traffic.
+  //
+  // Required for Internal TCP/UDP Load Balancing and Network Load Balancing;
+  // must be omitted for all other load balancer types.
+  string backend_service = 4 [json_name = "backend_service"];
+
+  // [Output Only] The URL for the corresponding base Forwarding Rule. By base Forwarding Rule, we mean the Forwarding Rule that has the same IP address, protocol, and port settings with the current Forwarding Rule, but without sourceIPRanges specified. Always empty if the current Forwarding Rule does not have sourceIPRanges specified.
+  string base_forwarding_rule = 5 [json_name = "base_forwarding_rule"];
+
+  // Creation timestamp in RFC3339 text format.
+  string creation_timestamp = 6 [json_name = "creation_timestamp"];
+
+  // An optional description of this resource. Provide this property when
+  // you create the resource.
+  string description = 7;
+
+  string id = 8;
+
+  // IP address for which this forwarding rule accepts traffic. When a client
+  // sends traffic to this IP address, the forwarding rule directs the traffic
+  // to the referenced 'target' or 'backendService'.
+  //
+  // While creating a forwarding rule, specifying an 'IPAddress' is
+  // required under the following circumstances:
+  //
+  // * When the 'target' is set to 'targetGrpcProxy' and
+  // 'validateForProxyless' is set to 'true', the
+  // 'IPAddress' should be set to '0.0.0.0'.
+  // * When the 'target' is a Private Service Connect Google APIs
+  // bundle, you must specify an 'IPAddress'.
+  //
+  //
+  // Otherwise, you can optionally specify an IP address that references an
+  // existing static (reserved) IP address resource. When omitted, Google Cloud
+  // assigns an ephemeral IP address.
+  //
+  // Use one of the following formats to specify an IP address while creating a
+  // forwarding rule:
+  //
+  // * IP address number, as in '100.1.2.3'
+  // * IPv6 address range, as in '2600:1234::/96'
+  // * Full resource URL, as in
+  // 'https://www.googleapis.com/compute/v1/projects/project_id/regions/region/addresses/address-name'
+  // * Partial URL or by name, as in:
+  //  * 'projects/project_id/regions/region/addresses/address-name'
+  //  * 'regions/region/addresses/address-name'
+  //  * 'global/addresses/address-name'
+  //  * 'address-name'
+  //
+  //
+  // The forwarding rule's 'target' or 'backendService',
+  // and in most cases, also the 'loadBalancingScheme', determine the
+  // type of IP address that you can use. For detailed information, see
+  // [IP address
+  // specifications](https://cloud.google.com/load-balancing/docs/forwarding-rule-concepts#ip_address_specifications).
+  //
+  // When reading an 'IPAddress', the API always returns the IP
+  // address number.
+  string ip_address = 9 [json_name = "ip_address"];
+
+  // The IP protocol to which this rule applies.
+  //
+  // For protocol forwarding, valid
+  // options are 'TCP', 'UDP', 'ESP',
+  // 'AH', 'SCTP', 'ICMP' and
+  // 'L3_DEFAULT'.
+  //
+  // The valid IP protocols are different for different load balancing products
+  // as described in [Load balancing
+  // features](https://cloud.google.com/load-balancing/docs/features#protocols_from_the_load_balancer_to_the_backends). Possible values: ["TCP", "UDP", "ESP", "AH", "SCTP", "ICMP", "L3_DEFAULT"]
+  string ip_protocol = 10 [json_name = "ip_protocol"];
+
+  // Indicates whether or not this load balancer can be used as a collector for
+  // packet mirroring. To prevent mirroring loops, instances behind this
+  // load balancer will not have their traffic mirrored even if a
+  // 'PacketMirroring' rule applies to them.
+  //
+  // This can only be set to true for load balancers that have their
+  // 'loadBalancingScheme' set to 'INTERNAL'.
+  bool is_mirroring_collector = 11 [json_name = "is_mirroring_collector"];
+
+  // The fingerprint used for optimistic locking of this resource.  Used
+  // internally during updates.
+  string label_fingerprint = 12 [json_name = "label_fingerprint"];
+
+  // Labels to apply to this forwarding rule.  A list of key->value pairs.
+  map<string, string> labels = 13;
+
+  // Specifies the forwarding rule type.
+  //
+  // For more information about forwarding rules, refer to
+  // [Forwarding rule concepts](https://cloud.google.com/load-balancing/docs/forwarding-rule-concepts). Default value: "EXTERNAL" Possible values: ["EXTERNAL", "EXTERNAL_MANAGED", "INTERNAL", "INTERNAL_MANAGED"]
+  string load_balancing_scheme = 14 [json_name = "load_balancing_scheme"];
+
+  // Name of the resource; provided by the client when the resource is created.
+  // The name must be 1-63 characters long, and comply with
+  // [RFC1035](https://www.ietf.org/rfc/rfc1035.txt).
+  //
+  // Specifically, the name must be 1-63 characters long and match the regular
+  // expression '[a-z]([-a-z0-9]*[a-z0-9])?' which means the first
+  // character must be a lowercase letter, and all following characters must
+  // be a dash, lowercase letter, or digit, except the last character, which
+  // cannot be a dash.
+  //
+  // For Private Service Connect forwarding rules that forward traffic to Google
+  // APIs, the forwarding rule name must be a 1-20 characters string with
+  // lowercase letters and numbers and must start with a letter.
+  string name = 15;
+
+  // This field is not used for external load balancing.
+  //
+  // For Internal TCP/UDP Load Balancing, this field identifies the network that
+  // the load balanced IP should belong to for this Forwarding Rule.
+  // If the subnetwork is specified, the network of the subnetwork will be used.
+  // If neither subnetwork nor this field is specified, the default network will
+  // be used.
+  //
+  // For Private Service Connect forwarding rules that forward traffic to Google
+  // APIs, a network must be provided.
+  string network = 16;
+
+  // This signifies the networking tier used for configuring
+  // this load balancer and can only take the following values:
+  // 'PREMIUM', 'STANDARD'.
+  //
+  // For regional ForwardingRule, the valid values are 'PREMIUM' and
+  // 'STANDARD'. For GlobalForwardingRule, the valid value is
+  // 'PREMIUM'.
+  //
+  // If this field is not specified, it is assumed to be 'PREMIUM'.
+  // If 'IPAddress' is specified, this value must be equal to the
+  // networkTier of the Address. Possible values: ["PREMIUM", "STANDARD"]
+  string network_tier = 17 [json_name = "network_tier"];
+
+  // This field can only be used:
+  //
+  // * If 'IPProtocol' is one of TCP, UDP, or SCTP.
+  // * By backend service-based network load balancers, target pool-based
+  // network load balancers, internal proxy load balancers, external proxy load
+  // balancers, Traffic Director, external protocol forwarding, and Classic VPN.
+  // Some products have restrictions on what ports can be used. See
+  // [port specifications](https://cloud.google.com/load-balancing/docs/forwarding-rule-concepts#port_specifications)
+  // for details.
+  //
+  //
+  // Only packets addressed to ports in the specified range will be forwarded to
+  // the backends configured with this forwarding rule.
+  //
+  // The 'ports' and 'port_range' fields are mutually exclusive.
+  //
+  // For external forwarding rules, two or more forwarding rules cannot use the
+  // same '[IPAddress, IPProtocol]' pair, and cannot have
+  // overlapping 'portRange's.
+  //
+  // For internal forwarding rules within the same VPC network, two or more
+  // forwarding rules cannot use the same '[IPAddress, IPProtocol]'
+  // pair, and cannot have overlapping 'portRange's.
+  string port_range = 18 [json_name = "port_range"];
+
+  // This field can only be used:
+  //
+  // * If 'IPProtocol' is one of TCP, UDP, or SCTP.
+  // * By internal TCP/UDP load balancers, backend service-based network load
+  // balancers, and internal protocol forwarding.
+  //
+  //
+  // You can specify a list of up to five ports by number, separated by commas.
+  // The ports can be contiguous or discontiguous. Only packets addressed to
+  // these ports will be forwarded to the backends configured with this
+  // forwarding rule.
+  //
+  // For external forwarding rules, two or more forwarding rules cannot use the
+  // same '[IPAddress, IPProtocol]' pair, and cannot share any values
+  // defined in 'ports'.
+  //
+  // For internal forwarding rules within the same VPC network, two or more
+  // forwarding rules cannot use the same '[IPAddress, IPProtocol]'
+  // pair, and cannot share any values defined in 'ports'.
+  //
+  // The 'ports' and 'port_range' fields are mutually exclusive.
+  repeated string ports = 19;
+
+  string project = 20;
+
+  // The PSC connection id of the PSC Forwarding Rule.
+  string psc_connection_id = 21 [json_name = "psc_connection_id"];
+
+  // The PSC connection status of the PSC Forwarding Rule. Possible values: 'STATUS_UNSPECIFIED', 'PENDING', 'ACCEPTED', 'REJECTED', 'CLOSED'
+  string psc_connection_status = 22 [json_name = "psc_connection_status"];
+
+  // A reference to the region where the regional forwarding rule resides.
+  //
+  // This field is not applicable to global forwarding rules.
+  string region = 23;
+
+  string self_link = 24 [json_name = "self_link"];
+
+  // Service Directory resources to register this forwarding rule with.
+  //
+  // Currently, only supports a single Service Directory resource.
+  repeated ServiceDirectoryRegistrations service_directory_registrations = 25 [json_name = "service_directory_registrations"];
+
+  // An optional prefix to the service name for this Forwarding Rule.
+  // If specified, will be the first label of the fully qualified service
+  // name.
+  //
+  // The label must be 1-63 characters long, and comply with RFC1035.
+  // Specifically, the label must be 1-63 characters long and match the
+  // regular expression '[a-z]([-a-z0-9]*[a-z0-9])?' which means the first
+  // character must be a lowercase letter, and all following characters
+  // must be a dash, lowercase letter, or digit, except the last
+  // character, which cannot be a dash.
+  //
+  // This field is only used for INTERNAL load balancing.
+  string service_label = 26 [json_name = "service_label"];
+
+  // The internal fully qualified service name for this Forwarding Rule.
+  //
+  // This field is only used for INTERNAL load balancing.
+  string service_name = 27 [json_name = "service_name"];
+
+  // If not empty, this Forwarding Rule will only forward the traffic when the source IP address matches one of the IP addresses or CIDR ranges set here. Note that a Forwarding Rule can only have up to 64 source IP ranges, and this field can only be used with a regional Forwarding Rule whose scheme is EXTERNAL. Each sourceIpRange entry should be either an IP address (for example, 1.2.3.4) or a CIDR range (for example, 1.2.3.0/24).
+  repeated string source_ip_ranges = 28 [json_name = "source_ip_ranges"];
+
+  // This field identifies the subnetwork that the load balanced IP should
+  // belong to for this Forwarding Rule, used in internal load balancing and
+  // network load balancing with IPv6.
+  //
+  // If the network specified is in auto subnet mode, this field is optional.
+  // However, a subnetwork must be specified if the network is in custom subnet
+  // mode or when creating external forwarding rule with IPv6.
+  string subnetwork = 29;
+
+  // The URL of the target resource to receive the matched traffic.  For
+  // regional forwarding rules, this target must be in the same region as the
+  // forwarding rule. For global forwarding rules, this target must be a global
+  // load balancing resource.
+  //
+  // The forwarded traffic must be of a type appropriate to the target object.
+  // *  For load balancers, see the "Target" column in [Port specifications](https://cloud.google.com/load-balancing/docs/forwarding-rule-concepts#ip_address_specifications).
+  // *  For Private Service Connect forwarding rules that forward traffic to Google APIs, provide the name of a supported Google API bundle:
+  //  *  'vpc-sc' - [ APIs that support VPC Service Controls](https://cloud.google.com/vpc-service-controls/docs/supported-products).
+  //  *  'all-apis' - [All supported Google APIs](https://cloud.google.com/vpc/docs/private-service-connect#supported-apis).
+  //
+  //
+  // For Private Service Connect forwarding rules that forward traffic to managed services, the target must be a service attachment.
+  string target = 30;
+
+  map<string, string> for_each = 31 [json_name = "for_each"];
+
+  repeated string depends_on = 32 [json_name = "depends_on"];
+
+  int32 count = 33;
+
+  string provider = 34;
+
+  terraform.v1.Lifecycle lifecycle = 35;
+
+  message ServiceDirectoryRegistrations {
+    // namespace: string
+    string namespace = 1;
+
+    // service: string
+    string service = 2;
+  }
+}
+
+// GoogleComputeGlobalAddress version is 0
+message GoogleComputeGlobalAddress {
+  string address = 1;
+
+  string address_type = 2 [json_name = "address_type"];
+
+  string id = 3;
+
+  string name = 4;
+
+  string network = 5;
+
+  string network_tier = 6 [json_name = "network_tier"];
+
+  int64 prefix_length = 7 [json_name = "prefix_length"];
+
+  string project = 8;
+
+  string purpose = 9;
+
+  string self_link = 10 [json_name = "self_link"];
+
+  string status = 11;
+
+  string subnetwork = 12;
+
+  string users = 13;
+
+  map<string, string> for_each = 14 [json_name = "for_each"];
+
+  repeated string depends_on = 15 [json_name = "depends_on"];
+
+  int32 count = 16;
+
+  string provider = 17;
+
+  terraform.v1.Lifecycle lifecycle = 18;
+}
+
+// GoogleComputeGlobalForwardingRule version is 0
+message GoogleComputeGlobalForwardingRule {
+  // [Output Only] The URL for the corresponding base Forwarding Rule. By base Forwarding Rule, we mean the Forwarding Rule that has the same IP address, protocol, and port settings with the current Forwarding Rule, but without sourceIPRanges specified. Always empty if the current Forwarding Rule does not have sourceIPRanges specified.
+  string base_forwarding_rule = 1 [json_name = "base_forwarding_rule"];
+
+  // An optional description of this resource. Provide this property when
+  // you create the resource.
+  string description = 2;
+
+  string id = 3;
+
+  // IP address for which this forwarding rule accepts traffic. When a client
+  // sends traffic to this IP address, the forwarding rule directs the traffic
+  // to the referenced 'target'.
+  //
+  // While creating a forwarding rule, specifying an 'IPAddress' is
+  // required under the following circumstances:
+  //
+  // * When the 'target' is set to 'targetGrpcProxy' and
+  // 'validateForProxyless' is set to 'true', the
+  // 'IPAddress' should be set to '0.0.0.0'.
+  // * When the 'target' is a Private Service Connect Google APIs
+  // bundle, you must specify an 'IPAddress'.
+  //
+  //
+  // Otherwise, you can optionally specify an IP address that references an
+  // existing static (reserved) IP address resource. When omitted, Google Cloud
+  // assigns an ephemeral IP address.
+  //
+  // Use one of the following formats to specify an IP address while creating a
+  // forwarding rule:
+  //
+  // * IP address number, as in '100.1.2.3'
+  // * IPv6 address range, as in '2600:1234::/96'
+  // * Full resource URL, as in
+  // 'https://www.googleapis.com/compute/v1/projects/project_id/regions/region/addresses/address-name'
+  // * Partial URL or by name, as in:
+  //  * 'projects/project_id/regions/region/addresses/address-name'
+  //  * 'regions/region/addresses/address-name'
+  //  * 'global/addresses/address-name'
+  //  * 'address-name'
+  //
+  //
+  // The forwarding rule's 'target',
+  // and in most cases, also the 'loadBalancingScheme', determine the
+  // type of IP address that you can use. For detailed information, see
+  // [IP address
+  // specifications](https://cloud.google.com/load-balancing/docs/forwarding-rule-concepts#ip_address_specifications).
+  //
+  // When reading an 'IPAddress', the API always returns the IP
+  // address number.
+  string ip_address = 4 [json_name = "ip_address"];
+
+  // The IP protocol to which this rule applies.
+  //
+  // For protocol forwarding, valid
+  // options are 'TCP', 'UDP', 'ESP',
+  // 'AH', 'SCTP', 'ICMP' and
+  // 'L3_DEFAULT'.
+  //
+  // The valid IP protocols are different for different load balancing products
+  // as described in [Load balancing
+  // features](https://cloud.google.com/load-balancing/docs/features#protocols_from_the_load_balancer_to_the_backends). Possible values: ["TCP", "UDP", "ESP", "AH", "SCTP", "ICMP"]
+  string ip_protocol = 5 [json_name = "ip_protocol"];
+
+  // The IP Version that will be used by this global forwarding rule. Possible values: ["IPV4", "IPV6"]
+  string ip_version = 6 [json_name = "ip_version"];
+
+  // The fingerprint used for optimistic locking of this resource.  Used
+  // internally during updates.
+  string label_fingerprint = 7 [json_name = "label_fingerprint"];
+
+  // Labels to apply to this forwarding rule.  A list of key->value pairs.
+  map<string, string> labels = 8;
+
+  // Specifies the forwarding rule type.
+  //
+  // For more information about forwarding rules, refer to
+  // [Forwarding rule concepts](https://cloud.google.com/load-balancing/docs/forwarding-rule-concepts). Default value: "EXTERNAL" Possible values: ["EXTERNAL", "EXTERNAL_MANAGED", "INTERNAL_SELF_MANAGED"]
+  string load_balancing_scheme = 9 [json_name = "load_balancing_scheme"];
+
+  // Opaque filter criteria used by Loadbalancer to restrict routing
+  // configuration to a limited set xDS compliant clients. In their xDS
+  // requests to Loadbalancer, xDS clients present node metadata. If a
+  // match takes place, the relevant routing configuration is made available
+  // to those proxies.
+  //
+  // For each metadataFilter in this list, if its filterMatchCriteria is set
+  // to MATCH_ANY, at least one of the filterLabels must match the
+  // corresponding label provided in the metadata. If its filterMatchCriteria
+  // is set to MATCH_ALL, then all of its filterLabels must match with
+  // corresponding labels in the provided metadata.
+  //
+  // metadataFilters specified here can be overridden by those specified in
+  // the UrlMap that this ForwardingRule references.
+  //
+  // metadataFilters only applies to Loadbalancers that have their
+  // loadBalancingScheme set to INTERNAL_SELF_MANAGED.
+  repeated MetadataFilters metadata_filters = 10 [json_name = "metadata_filters"];
+
+  // Name of the resource; provided by the client when the resource is created.
+  // The name must be 1-63 characters long, and comply with
+  // [RFC1035](https://www.ietf.org/rfc/rfc1035.txt).
+  //
+  // Specifically, the name must be 1-63 characters long and match the regular
+  // expression '[a-z]([-a-z0-9]*[a-z0-9])?' which means the first
+  // character must be a lowercase letter, and all following characters must
+  // be a dash, lowercase letter, or digit, except the last character, which
+  // cannot be a dash.
+  //
+  // For Private Service Connect forwarding rules that forward traffic to Google
+  // APIs, the forwarding rule name must be a 1-20 characters string with
+  // lowercase letters and numbers and must start with a letter.
+  string name = 11;
+
+  // This field is not used for external load balancing.
+  //
+  // For Internal TCP/UDP Load Balancing, this field identifies the network that
+  // the load balanced IP should belong to for this Forwarding Rule.
+  // If the subnetwork is specified, the network of the subnetwork will be used.
+  // If neither subnetwork nor this field is specified, the default network will
+  // be used.
+  //
+  // For Private Service Connect forwarding rules that forward traffic to Google
+  // APIs, a network must be provided.
+  string network = 12;
+
+  // This field can only be used:
+  //
+  // * If 'IPProtocol' is one of TCP, UDP, or SCTP.
+  // * By backend service-based network load balancers, target pool-based
+  // network load balancers, internal proxy load balancers, external proxy load
+  // balancers, Traffic Director, external protocol forwarding, and Classic VPN.
+  // Some products have restrictions on what ports can be used. See
+  // [port specifications](https://cloud.google.com/load-balancing/docs/forwarding-rule-concepts#port_specifications)
+  // for details.
+  //
+  //
+  // * TargetHttpProxy: 80, 8080
+  // * TargetHttpsProxy: 443
+  // * TargetTcpProxy: 25, 43, 110, 143, 195, 443, 465, 587, 700, 993, 995,
+  //                  1883, 5222
+  // * TargetSslProxy: 25, 43, 110, 143, 195, 443, 465, 587, 700, 993, 995,
+  //                  1883, 5222
+  // * TargetVpnGateway: 500, 4500
+  string port_range = 13 [json_name = "port_range"];
+
+  string project = 14;
+
+  // The PSC connection id of the PSC Forwarding Rule.
+  string psc_connection_id = 15 [json_name = "psc_connection_id"];
+
+  // The PSC connection status of the PSC Forwarding Rule. Possible values: 'STATUS_UNSPECIFIED', 'PENDING', 'ACCEPTED', 'REJECTED', 'CLOSED'
+  string psc_connection_status = 16 [json_name = "psc_connection_status"];
+
+  string self_link = 17 [json_name = "self_link"];
+
+  // If not empty, this Forwarding Rule will only forward the traffic when the source IP address matches one of the IP addresses or CIDR ranges set here. Note that a Forwarding Rule can only have up to 64 source IP ranges, and this field can only be used with a regional Forwarding Rule whose scheme is EXTERNAL. Each sourceIpRange entry should be either an IP address (for example, 1.2.3.4) or a CIDR range (for example, 1.2.3.0/24).
+  repeated string source_ip_ranges = 18 [json_name = "source_ip_ranges"];
+
+  // The URL of the target resource to receive the matched traffic.  For
+  // regional forwarding rules, this target must be in the same region as the
+  // forwarding rule. For global forwarding rules, this target must be a global
+  // load balancing resource.
+  //
+  // The forwarded traffic must be of a type appropriate to the target object.
+  // *  For load balancers, see the "Target" column in [Port specifications](https://cloud.google.com/load-balancing/docs/forwarding-rule-concepts#ip_address_specifications).
+  // *  For Private Service Connect forwarding rules that forward traffic to Google APIs, provide the name of a supported Google API bundle:
+  //  *  'vpc-sc' - [ APIs that support VPC Service Controls](https://cloud.google.com/vpc-service-controls/docs/supported-products).
+  //  *  'all-apis' - [All supported Google APIs](https://cloud.google.com/vpc/docs/private-service-connect#supported-apis).
+  //
+  //
+  // For Private Service Connect forwarding rules that forward traffic to managed services, the target must be a service attachment.
+  string target = 19;
+
+  map<string, string> for_each = 20 [json_name = "for_each"];
+
+  repeated string depends_on = 21 [json_name = "depends_on"];
+
+  int32 count = 22;
+
+  string provider = 23;
+
+  terraform.v1.Lifecycle lifecycle = 24;
+
+  message MetadataFilters {
+    // filter_labels: list of object
+    repeated FilterLabels filter_labels = 1 [json_name = "filter_labels"];
+
+    // filter_match_criteria: string
+    string filter_match_criteria = 2 [json_name = "filter_match_criteria"];
+
+    message FilterLabels {
+      // name: string
+      string name = 1;
+
+      // value: string
+      string value = 2;
+    }
+  }
+}
+
+// GoogleComputeHaVpnGateway version is 0
+message GoogleComputeHaVpnGateway {
+  // An optional description of this resource.
+  string description = 1;
+
+  string id = 2;
+
+  // Name of the resource. Provided by the client when the resource is
+  // created. The name must be 1-63 characters long, and comply with
+  // RFC1035.  Specifically, the name must be 1-63 characters long and
+  // match the regular expression '[a-z]([-a-z0-9]*[a-z0-9])?' which means
+  // the first character must be a lowercase letter, and all following
+  // characters must be a dash, lowercase letter, or digit, except the last
+  // character, which cannot be a dash.
+  string name = 3;
+
+  // The network this VPN gateway is accepting traffic for.
+  string network = 4;
+
+  string project = 5;
+
+  // The region this gateway should sit in.
+  string region = 6;
+
+  string self_link = 7 [json_name = "self_link"];
+
+  // The stack type for this VPN gateway to identify the IP protocols that are enabled.
+  // If not specified, IPV4_ONLY will be used. Default value: "IPV4_ONLY" Possible values: ["IPV4_ONLY", "IPV4_IPV6"]
+  string stack_type = 8 [json_name = "stack_type"];
+
+  // A list of interfaces on this VPN gateway.
+  repeated VpnInterfaces vpn_interfaces = 9 [json_name = "vpn_interfaces"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message VpnInterfaces {
+    // id: number
+    int64 id = 1;
+
+    // interconnect_attachment: string
+    string interconnect_attachment = 2 [json_name = "interconnect_attachment"];
+
+    // ip_address: string
+    string ip_address = 3 [json_name = "ip_address"];
+  }
+}
+
+// GoogleComputeHealthCheck version is 0
+message GoogleComputeHealthCheck {
+  // How often (in seconds) to send a health check. The default value is 5
+  // seconds.
+  int64 check_interval_sec = 1 [json_name = "check_interval_sec"];
+
+  // Creation timestamp in RFC3339 text format.
+  string creation_timestamp = 2 [json_name = "creation_timestamp"];
+
+  // An optional description of this resource. Provide this property when
+  // you create the resource.
+  string description = 3;
+
+  // A nested object resource
+  repeated GrpcHealthCheck grpc_health_check = 4 [json_name = "grpc_health_check"];
+
+  // A so-far unhealthy instance will be marked healthy after this many
+  // consecutive successes. The default value is 2.
+  int64 healthy_threshold = 5 [json_name = "healthy_threshold"];
+
+  // A nested object resource
+  repeated Http2HealthCheck http2_health_check = 6 [json_name = "http2_health_check"];
+
+  // A nested object resource
+  repeated HttpHealthCheck http_health_check = 7 [json_name = "http_health_check"];
+
+  // A nested object resource
+  repeated HttpsHealthCheck https_health_check = 8 [json_name = "https_health_check"];
+
+  string id = 9;
+
+  // Configure logging on this health check.
+  repeated LogConfig log_config = 10 [json_name = "log_config"];
+
+  // Name of the resource. Provided by the client when the resource is
+  // created. The name must be 1-63 characters long, and comply with
+  // RFC1035.  Specifically, the name must be 1-63 characters long and
+  // match the regular expression '[a-z]([-a-z0-9]*[a-z0-9])?' which means
+  // the first character must be a lowercase letter, and all following
+  // characters must be a dash, lowercase letter, or digit, except the
+  // last character, which cannot be a dash.
+  string name = 11;
+
+  string project = 12;
+
+  string self_link = 13 [json_name = "self_link"];
+
+  // A nested object resource
+  repeated SslHealthCheck ssl_health_check = 14 [json_name = "ssl_health_check"];
+
+  // A nested object resource
+  repeated TcpHealthCheck tcp_health_check = 15 [json_name = "tcp_health_check"];
+
+  // How long (in seconds) to wait before claiming failure.
+  // The default value is 5 seconds.  It is invalid for timeoutSec to have
+  // greater value than checkIntervalSec.
+  int64 timeout_sec = 16 [json_name = "timeout_sec"];
+
+  // The type of the health check. One of HTTP, HTTPS, TCP, or SSL.
+  string type = 17;
+
+  // A so-far healthy instance will be marked unhealthy after this many
+  // consecutive failures. The default value is 2.
+  int64 unhealthy_threshold = 18 [json_name = "unhealthy_threshold"];
+
+  map<string, string> for_each = 19 [json_name = "for_each"];
+
+  repeated string depends_on = 20 [json_name = "depends_on"];
+
+  int32 count = 21;
+
+  string provider = 22;
+
+  terraform.v1.Lifecycle lifecycle = 23;
+
+  message GrpcHealthCheck {
+    // grpc_service_name: string
+    string grpc_service_name = 1 [json_name = "grpc_service_name"];
+
+    // port: number
+    int64 port = 2;
+
+    // port_name: string
+    string port_name = 3 [json_name = "port_name"];
+
+    // port_specification: string
+    string port_specification = 4 [json_name = "port_specification"];
+  }
+
+  message Http2HealthCheck {
+    // host: string
+    string host = 1;
+
+    // port: number
+    int64 port = 2;
+
+    // port_name: string
+    string port_name = 3 [json_name = "port_name"];
+
+    // port_specification: string
+    string port_specification = 4 [json_name = "port_specification"];
+
+    // proxy_header: string
+    string proxy_header = 5 [json_name = "proxy_header"];
+
+    // request_path: string
+    string request_path = 6 [json_name = "request_path"];
+
+    // response: string
+    string response = 7;
+  }
+
+  message HttpHealthCheck {
+    // host: string
+    string host = 1;
+
+    // port: number
+    int64 port = 2;
+
+    // port_name: string
+    string port_name = 3 [json_name = "port_name"];
+
+    // port_specification: string
+    string port_specification = 4 [json_name = "port_specification"];
+
+    // proxy_header: string
+    string proxy_header = 5 [json_name = "proxy_header"];
+
+    // request_path: string
+    string request_path = 6 [json_name = "request_path"];
+
+    // response: string
+    string response = 7;
+  }
+
+  message HttpsHealthCheck {
+    // host: string
+    string host = 1;
+
+    // port: number
+    int64 port = 2;
+
+    // port_name: string
+    string port_name = 3 [json_name = "port_name"];
+
+    // port_specification: string
+    string port_specification = 4 [json_name = "port_specification"];
+
+    // proxy_header: string
+    string proxy_header = 5 [json_name = "proxy_header"];
+
+    // request_path: string
+    string request_path = 6 [json_name = "request_path"];
+
+    // response: string
+    string response = 7;
+  }
+
+  message LogConfig {
+    // enable: bool
+    bool enable = 1;
+  }
+
+  message SslHealthCheck {
+    // port: number
+    int64 port = 1;
+
+    // port_name: string
+    string port_name = 2 [json_name = "port_name"];
+
+    // port_specification: string
+    string port_specification = 3 [json_name = "port_specification"];
+
+    // proxy_header: string
+    string proxy_header = 4 [json_name = "proxy_header"];
+
+    // request: string
+    string request = 5;
+
+    // response: string
+    string response = 6;
+  }
+
+  message TcpHealthCheck {
+    // port: number
+    int64 port = 1;
+
+    // port_name: string
+    string port_name = 2 [json_name = "port_name"];
+
+    // port_specification: string
+    string port_specification = 3 [json_name = "port_specification"];
+
+    // proxy_header: string
+    string proxy_header = 4 [json_name = "proxy_header"];
+
+    // request: string
+    string request = 5;
+
+    // response: string
+    string response = 6;
+  }
+}
+
+// GoogleComputeImage version is 0
+message GoogleComputeImage {
+  int64 archive_size_bytes = 1 [json_name = "archive_size_bytes"];
+
+  string creation_timestamp = 2 [json_name = "creation_timestamp"];
+
+  string description = 3;
+
+  int64 disk_size_gb = 4 [json_name = "disk_size_gb"];
+
+  string family = 5;
+
+  string filter = 6;
+
+  string id = 7;
+
+  string image_encryption_key_sha256 = 8 [json_name = "image_encryption_key_sha256"];
+
+  string image_id = 9 [json_name = "image_id"];
+
+  string label_fingerprint = 10 [json_name = "label_fingerprint"];
+
+  map<string, string> labels = 11;
+
+  repeated string licenses = 12;
+
+  string name = 13;
+
+  string project = 14;
+
+  string self_link = 15 [json_name = "self_link"];
+
+  string source_disk = 16 [json_name = "source_disk"];
+
+  string source_disk_encryption_key_sha256 = 17 [json_name = "source_disk_encryption_key_sha256"];
+
+  string source_disk_id = 18 [json_name = "source_disk_id"];
+
+  string source_image_id = 19 [json_name = "source_image_id"];
+
+  string status = 20;
+
+  map<string, string> for_each = 21 [json_name = "for_each"];
+
+  repeated string depends_on = 22 [json_name = "depends_on"];
+
+  int32 count = 23;
+
+  string provider = 24;
+
+  terraform.v1.Lifecycle lifecycle = 25;
+}
+
+// GoogleComputeImageIamPolicy version is 0
+message GoogleComputeImageIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string image = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// GoogleComputeInstance version is 0
+message GoogleComputeInstance {
+  // Controls for advanced machine-related behavior features.
+  repeated AdvancedMachineFeatures advanced_machine_features = 1 [json_name = "advanced_machine_features"];
+
+  // If true, allows Terraform to stop the instance to update its properties. If you try to update a property that requires stopping the instance without setting this field, the update will fail.
+  bool allow_stopping_for_update = 2 [json_name = "allow_stopping_for_update"];
+
+  // List of disks attached to the instance
+  repeated AttachedDisk attached_disk = 3 [json_name = "attached_disk"];
+
+  // The boot disk for the instance.
+  repeated BootDisk boot_disk = 4 [json_name = "boot_disk"];
+
+  // Whether sending and receiving of packets with non-matching source or destination IPs is allowed.
+  bool can_ip_forward = 5 [json_name = "can_ip_forward"];
+
+  // The Confidential VM config being used by the instance.  on_host_maintenance has to be set to TERMINATE or this will fail to create.
+  repeated ConfidentialInstanceConfig confidential_instance_config = 6 [json_name = "confidential_instance_config"];
+
+  // The CPU platform used by this instance.
+  string cpu_platform = 7 [json_name = "cpu_platform"];
+
+  // 					Current status of the instance.
+  // 					This could be one of the following values: PROVISIONING, STAGING, RUNNING, STOPPING, SUSPENDING, SUSPENDED, REPAIRING, and TERMINATED.
+  // 					For more information about the status of the instance, see [Instance life cycle](https://cloud.google.com/compute/docs/instances/instance-life-cycle).
+  string current_status = 8 [json_name = "current_status"];
+
+  // Whether deletion protection is enabled on this instance.
+  bool deletion_protection = 9 [json_name = "deletion_protection"];
+
+  // A brief description of the resource.
+  string description = 10;
+
+  // Desired status of the instance. Either "RUNNING" or "TERMINATED".
+  string desired_status = 11 [json_name = "desired_status"];
+
+  // Whether the instance has virtual displays enabled.
+  bool enable_display = 12 [json_name = "enable_display"];
+
+  // List of the type and count of accelerator cards attached to the instance.
+  repeated GuestAccelerator guest_accelerator = 13 [json_name = "guest_accelerator"];
+
+  // A custom hostname for the instance. Must be a fully qualified DNS name and RFC-1035-valid. Valid format is a series of labels 1-63 characters long matching the regular expression [a-z]([-a-z0-9]*[a-z0-9]), concatenated with periods. The entire hostname must not exceed 253 characters. Changing this forces a new resource to be created.
+  string hostname = 14;
+
+  string id = 15;
+
+  // The server-assigned unique identifier of this instance.
+  string instance_id = 16 [json_name = "instance_id"];
+
+  // The unique fingerprint of the labels.
+  string label_fingerprint = 17 [json_name = "label_fingerprint"];
+
+  // A set of key/value label pairs assigned to the instance.
+  map<string, string> labels = 18;
+
+  // The machine type to create.
+  string machine_type = 19 [json_name = "machine_type"];
+
+  // Metadata key/value pairs made available within the instance.
+  map<string, string> metadata = 20;
+
+  // The unique fingerprint of the metadata.
+  string metadata_fingerprint = 21 [json_name = "metadata_fingerprint"];
+
+  // Metadata startup scripts made available within the instance.
+  string metadata_startup_script = 22 [json_name = "metadata_startup_script"];
+
+  // The minimum CPU platform specified for the VM instance.
+  string min_cpu_platform = 23 [json_name = "min_cpu_platform"];
+
+  // The name of the instance. One of name or self_link must be provided.
+  string name = 24;
+
+  // The networks attached to the instance.
+  repeated NetworkInterface network_interface = 25 [json_name = "network_interface"];
+
+  // Configures network performance settings for the instance. If not specified, the instance will be created with its default network performance configuration.
+  repeated NetworkPerformanceConfig network_performance_config = 26 [json_name = "network_performance_config"];
+
+  // The ID of the project in which the resource belongs. If self_link is provided, this value is ignored. If neither self_link nor project are provided, the provider project is used.
+  string project = 27;
+
+  // Specifies the reservations that this instance can consume from.
+  repeated ReservationAffinity reservation_affinity = 28 [json_name = "reservation_affinity"];
+
+  // A list of self_links of resource policies to attach to the instance. Currently a max of 1 resource policy is supported.
+  repeated string resource_policies = 29 [json_name = "resource_policies"];
+
+  // The scheduling strategy being used by the instance.
+  repeated Scheduling scheduling = 30;
+
+  // The scratch disks attached to the instance.
+  repeated ScratchDisk scratch_disk = 31 [json_name = "scratch_disk"];
+
+  // The URI of the created resource.
+  string self_link = 32 [json_name = "self_link"];
+
+  // The service account to attach to the instance.
+  repeated ServiceAccount service_account = 33 [json_name = "service_account"];
+
+  // The shielded vm config being used by the instance.
+  repeated ShieldedInstanceConfig shielded_instance_config = 34 [json_name = "shielded_instance_config"];
+
+  // The list of tags attached to the instance.
+  repeated string tags = 35;
+
+  // The unique fingerprint of the tags.
+  string tags_fingerprint = 36 [json_name = "tags_fingerprint"];
+
+  // The zone of the instance. If self_link is provided, this value is ignored. If neither self_link nor zone are provided, the provider zone is used.
+  string zone = 37;
+
+  map<string, string> for_each = 38 [json_name = "for_each"];
+
+  repeated string depends_on = 39 [json_name = "depends_on"];
+
+  int32 count = 40;
+
+  string provider = 41;
+
+  terraform.v1.Lifecycle lifecycle = 42;
+
+  message AdvancedMachineFeatures {
+    // enable_nested_virtualization: bool
+    bool enable_nested_virtualization = 1 [json_name = "enable_nested_virtualization"];
+
+    // threads_per_core: number
+    int64 threads_per_core = 2 [json_name = "threads_per_core"];
+
+    // visible_core_count: number
+    int64 visible_core_count = 3 [json_name = "visible_core_count"];
+  }
+
+  message AttachedDisk {
+    // device_name: string
+    string device_name = 1 [json_name = "device_name"];
+
+    // disk_encryption_key_raw: string
+    string disk_encryption_key_raw = 2 [json_name = "disk_encryption_key_raw"];
+
+    // disk_encryption_key_sha256: string
+    string disk_encryption_key_sha256 = 3 [json_name = "disk_encryption_key_sha256"];
+
+    // kms_key_self_link: string
+    string kms_key_self_link = 4 [json_name = "kms_key_self_link"];
+
+    // mode: string
+    string mode = 5;
+
+    // source: string
+    string source = 6;
+  }
+
+  message BootDisk {
+    // auto_delete: bool
+    bool auto_delete = 1 [json_name = "auto_delete"];
+
+    // device_name: string
+    string device_name = 2 [json_name = "device_name"];
+
+    // disk_encryption_key_raw: string
+    string disk_encryption_key_raw = 3 [json_name = "disk_encryption_key_raw"];
+
+    // disk_encryption_key_sha256: string
+    string disk_encryption_key_sha256 = 4 [json_name = "disk_encryption_key_sha256"];
+
+    // initialize_params: list of object
+    repeated InitializeParams initialize_params = 5 [json_name = "initialize_params"];
+
+    // kms_key_self_link: string
+    string kms_key_self_link = 6 [json_name = "kms_key_self_link"];
+
+    // mode: string
+    string mode = 7;
+
+    // source: string
+    string source = 8;
+
+    message InitializeParams {
+      // image: string
+      string image = 1;
+
+      // labels: map of string
+      map<string, string> labels = 2;
+
+      // size: number
+      int64 size = 3;
+
+      // type: string
+      string type = 4;
+    }
+  }
+
+  message ConfidentialInstanceConfig {
+    // enable_confidential_compute: bool
+    bool enable_confidential_compute = 1 [json_name = "enable_confidential_compute"];
+  }
+
+  message GuestAccelerator {
+    // count: number
+    int64 count = 1;
+
+    // type: string
+    string type = 2;
+  }
+
+  message NetworkInterface {
+    // access_config: list of object
+    repeated AccessConfig access_config = 1 [json_name = "access_config"];
+
+    // alias_ip_range: list of object
+    repeated AliasIpRange alias_ip_range = 2 [json_name = "alias_ip_range"];
+
+    // ipv6_access_config: list of object
+    repeated Ipv6AccessConfig ipv6_access_config = 3 [json_name = "ipv6_access_config"];
+
+    // ipv6_access_type: string
+    string ipv6_access_type = 4 [json_name = "ipv6_access_type"];
+
+    // name: string
+    string name = 5;
+
+    // network: string
+    string network = 6;
+
+    // network_ip: string
+    string network_ip = 7 [json_name = "network_ip"];
+
+    // nic_type: string
+    string nic_type = 8 [json_name = "nic_type"];
+
+    // queue_count: number
+    int64 queue_count = 9 [json_name = "queue_count"];
+
+    // stack_type: string
+    string stack_type = 10 [json_name = "stack_type"];
+
+    // subnetwork: string
+    string subnetwork = 11;
+
+    // subnetwork_project: string
+    string subnetwork_project = 12 [json_name = "subnetwork_project"];
+
+    message AccessConfig {
+      // nat_ip: string
+      string nat_ip = 1 [json_name = "nat_ip"];
+
+      // network_tier: string
+      string network_tier = 2 [json_name = "network_tier"];
+
+      // public_ptr_domain_name: string
+      string public_ptr_domain_name = 3 [json_name = "public_ptr_domain_name"];
+    }
+
+    message AliasIpRange {
+      // ip_cidr_range: string
+      string ip_cidr_range = 1 [json_name = "ip_cidr_range"];
+
+      // subnetwork_range_name: string
+      string subnetwork_range_name = 2 [json_name = "subnetwork_range_name"];
+    }
+
+    message Ipv6AccessConfig {
+      // external_ipv6: string
+      string external_ipv6 = 1 [json_name = "external_ipv6"];
+
+      // external_ipv6_prefix_length: string
+      string external_ipv6_prefix_length = 2 [json_name = "external_ipv6_prefix_length"];
+
+      // network_tier: string
+      string network_tier = 3 [json_name = "network_tier"];
+
+      // public_ptr_domain_name: string
+      string public_ptr_domain_name = 4 [json_name = "public_ptr_domain_name"];
+    }
+  }
+
+  message NetworkPerformanceConfig {
+    // total_egress_bandwidth_tier: string
+    string total_egress_bandwidth_tier = 1 [json_name = "total_egress_bandwidth_tier"];
+  }
+
+  message ReservationAffinity {
+    // specific_reservation: list of object
+    repeated SpecificReservation specific_reservation = 1 [json_name = "specific_reservation"];
+
+    // type: string
+    string type = 2;
+
+    message SpecificReservation {
+      // key: string
+      string key = 1;
+
+      // values: list of string
+      repeated string values = 2;
+    }
+  }
+
+  message Scheduling {
+    // automatic_restart: bool
+    bool automatic_restart = 1 [json_name = "automatic_restart"];
+
+    // instance_termination_action: string
+    string instance_termination_action = 2 [json_name = "instance_termination_action"];
+
+    // min_node_cpus: number
+    int64 min_node_cpus = 3 [json_name = "min_node_cpus"];
+
+    // node_affinities: set of object
+    repeated NodeAffinities node_affinities = 4 [json_name = "node_affinities"];
+
+    // on_host_maintenance: string
+    string on_host_maintenance = 5 [json_name = "on_host_maintenance"];
+
+    // preemptible: bool
+    bool preemptible = 6;
+
+    // provisioning_model: string
+    string provisioning_model = 7 [json_name = "provisioning_model"];
+
+    message NodeAffinities {
+      // key: string
+      string key = 1;
+
+      // operator: string
+      string operator = 2;
+
+      // values: set of string
+      repeated string values = 3;
+    }
+  }
+
+  message ScratchDisk {
+    // interface: string
+    string interface = 1;
+
+    // size: number
+    int64 size = 2;
+  }
+
+  message ServiceAccount {
+    // email: string
+    string email = 1;
+
+    // scopes: set of string
+    repeated string scopes = 2;
+  }
+
+  message ShieldedInstanceConfig {
+    // enable_integrity_monitoring: bool
+    bool enable_integrity_monitoring = 1 [json_name = "enable_integrity_monitoring"];
+
+    // enable_secure_boot: bool
+    bool enable_secure_boot = 2 [json_name = "enable_secure_boot"];
+
+    // enable_vtpm: bool
+    bool enable_vtpm = 3 [json_name = "enable_vtpm"];
+  }
+}
+
+// GoogleComputeInstanceGroup version is 0
+message GoogleComputeInstanceGroup {
+  string description = 1;
+
+  string id = 2;
+
+  repeated string instances = 3;
+
+  string name = 4;
+
+  repeated NamedPort named_port = 5 [json_name = "named_port"];
+
+  string network = 6;
+
+  string project = 7;
+
+  string self_link = 8 [json_name = "self_link"];
+
+  int64 size = 9;
+
+  string zone = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message NamedPort {
+    // name: string
+    string name = 1;
+
+    // port: number
+    int64 port = 2;
+  }
+}
+
+// GoogleComputeInstanceGroupManager version is 0
+message GoogleComputeInstanceGroupManager {
+  // The autohealing policies for this managed instance group. You can specify only one value.
+  repeated AutoHealingPolicies auto_healing_policies = 1 [json_name = "auto_healing_policies"];
+
+  // The base instance name to use for instances in this group. The value must be a valid RFC1035 name. Supported characters are lowercase letters, numbers, and hyphens (-). Instances are named by appending a hyphen and a random four-character string to the base instance name.
+  string base_instance_name = 2 [json_name = "base_instance_name"];
+
+  // An optional textual description of the instance group manager.
+  string description = 3;
+
+  // The fingerprint of the instance group manager.
+  string fingerprint = 4;
+
+  string id = 5;
+
+  // The full URL of the instance group created by the manager.
+  string instance_group = 6 [json_name = "instance_group"];
+
+  // Pagination behavior of the listManagedInstances API method for this managed instance group. Valid values are: "PAGELESS", "PAGINATED". If PAGELESS (default), Pagination is disabled for the group's listManagedInstances API method. maxResults and pageToken query parameters are ignored and all instances are returned in a single response. If PAGINATED, pagination is enabled, maxResults and pageToken query parameters are respected.
+  string list_managed_instances_results = 7 [json_name = "list_managed_instances_results"];
+
+  // The name of the instance group manager. Must be 1-63 characters long and comply with RFC1035. Supported characters include lowercase letters, numbers, and hyphens.
+  string name = 8;
+
+  // The named port configuration.
+  repeated NamedPort named_port = 9 [json_name = "named_port"];
+
+  string operation = 10;
+
+  // The ID of the project in which the resource belongs. If it is not provided, the provider project is used.
+  string project = 11;
+
+  // The URL of the created resource.
+  string self_link = 12 [json_name = "self_link"];
+
+  // Disks created on the instances that will be preserved on instance delete, update, etc.
+  repeated StatefulDisk stateful_disk = 13 [json_name = "stateful_disk"];
+
+  // The status of this managed instance group.
+  repeated Status status = 14;
+
+  // The full URL of all target pools to which new instances in the group are added. Updating the target pools attribute does not affect existing instances.
+  repeated string target_pools = 15 [json_name = "target_pools"];
+
+  // The target number of running instances for this managed instance group. This value should always be explicitly set unless this resource is attached to an autoscaler, in which case it should never be set. Defaults to 0.
+  int64 target_size = 16 [json_name = "target_size"];
+
+  // The update policy for this managed instance group.
+  repeated UpdatePolicy update_policy = 17 [json_name = "update_policy"];
+
+  // Application versions managed by this instance group. Each version deals with a specific instance template, allowing canary release scenarios.
+  repeated Version version = 18;
+
+  // Whether to wait for all instances to be created/updated before returning. Note that if this is set to true and the operation does not succeed, Terraform will continue trying until it times out.
+  bool wait_for_instances = 19 [json_name = "wait_for_instances"];
+
+  // When used with wait_for_instances specifies the status to wait for. When STABLE is specified this resource will wait until the instances are stable before returning. When UPDATED is set, it will wait for the version target to be reached and any per instance configs to be effective as well as all instances to be stable before returning.
+  string wait_for_instances_status = 20 [json_name = "wait_for_instances_status"];
+
+  // The zone that instances in this group should be created in.
+  string zone = 21;
+
+  map<string, string> for_each = 22 [json_name = "for_each"];
+
+  repeated string depends_on = 23 [json_name = "depends_on"];
+
+  int32 count = 24;
+
+  string provider = 25;
+
+  terraform.v1.Lifecycle lifecycle = 26;
+
+  message AutoHealingPolicies {
+    // health_check: string
+    string health_check = 1 [json_name = "health_check"];
+
+    // initial_delay_sec: number
+    int64 initial_delay_sec = 2 [json_name = "initial_delay_sec"];
+  }
+
+  message NamedPort {
+    // name: string
+    string name = 1;
+
+    // port: number
+    int64 port = 2;
+  }
+
+  message StatefulDisk {
+    // delete_rule: string
+    string delete_rule = 1 [json_name = "delete_rule"];
+
+    // device_name: string
+    string device_name = 2 [json_name = "device_name"];
+  }
+
+  message Status {
+    // is_stable: bool
+    bool is_stable = 1 [json_name = "is_stable"];
+
+    // stateful: list of object
+    repeated Stateful stateful = 2;
+
+    // version_target: list of object
+    repeated VersionTarget version_target = 3 [json_name = "version_target"];
+
+    message Stateful {
+      // has_stateful_config: bool
+      bool has_stateful_config = 1 [json_name = "has_stateful_config"];
+
+      // per_instance_configs: list of object
+      repeated PerInstanceConfigs per_instance_configs = 2 [json_name = "per_instance_configs"];
+
+      message PerInstanceConfigs {
+        // all_effective: bool
+        bool all_effective = 1 [json_name = "all_effective"];
+      }
+    }
+
+    message VersionTarget {
+      // is_reached: bool
+      bool is_reached = 1 [json_name = "is_reached"];
+    }
+  }
+
+  message UpdatePolicy {
+    // max_surge_fixed: number
+    int64 max_surge_fixed = 1 [json_name = "max_surge_fixed"];
+
+    // max_surge_percent: number
+    int64 max_surge_percent = 2 [json_name = "max_surge_percent"];
+
+    // max_unavailable_fixed: number
+    int64 max_unavailable_fixed = 3 [json_name = "max_unavailable_fixed"];
+
+    // max_unavailable_percent: number
+    int64 max_unavailable_percent = 4 [json_name = "max_unavailable_percent"];
+
+    // minimal_action: string
+    string minimal_action = 5 [json_name = "minimal_action"];
+
+    // most_disruptive_allowed_action: string
+    string most_disruptive_allowed_action = 6 [json_name = "most_disruptive_allowed_action"];
+
+    // replacement_method: string
+    string replacement_method = 7 [json_name = "replacement_method"];
+
+    // type: string
+    string type = 8;
+  }
+
+  message Version {
+    // instance_template: string
+    string instance_template = 1 [json_name = "instance_template"];
+
+    // name: string
+    string name = 2;
+
+    // target_size: list of object
+    repeated TargetSize target_size = 3 [json_name = "target_size"];
+
+    message TargetSize {
+      // fixed: number
+      int64 fixed = 1;
+
+      // percent: number
+      int64 percent = 2;
+    }
+  }
+}
+
+// GoogleComputeInstanceIamPolicy version is 0
+message GoogleComputeInstanceIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string instance_name = 3 [json_name = "instance_name"];
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  string zone = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleComputeInstanceSerialPort version is 0
+message GoogleComputeInstanceSerialPort {
+  string contents = 1;
+
+  string id = 2;
+
+  string instance = 3;
+
+  int64 port = 4;
+
+  string project = 5;
+
+  string zone = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleComputeInstanceTemplate version is 0
+message GoogleComputeInstanceTemplate {
+  // Controls for advanced machine-related behavior features.
+  repeated AdvancedMachineFeatures advanced_machine_features = 1 [json_name = "advanced_machine_features"];
+
+  // Whether to allow sending and receiving of packets with non-matching source or destination IPs. This defaults to false.
+  bool can_ip_forward = 2 [json_name = "can_ip_forward"];
+
+  // The Confidential VM config being used by the instance. on_host_maintenance has to be set to TERMINATE or this will fail to create.
+  repeated ConfidentialInstanceConfig confidential_instance_config = 3 [json_name = "confidential_instance_config"];
+
+  // A brief description of this resource.
+  string description = 4;
+
+  // Disks to attach to instances created from this template. This can be specified multiple times for multiple disks.
+  repeated Disk disk = 5;
+
+  string filter = 6;
+
+  // List of the type and count of accelerator cards attached to the instance.
+  repeated GuestAccelerator guest_accelerator = 7 [json_name = "guest_accelerator"];
+
+  string id = 8;
+
+  // A description of the instance.
+  string instance_description = 9 [json_name = "instance_description"];
+
+  // A set of key/value label pairs to assign to instances created from this template,
+  map<string, string> labels = 10;
+
+  // The machine type to create. To create a machine with a custom type (such as extended memory), format the value like custom-VCPUS-MEM_IN_MB like custom-6-20480 for 6 vCPU and 20GB of RAM.
+  string machine_type = 11 [json_name = "machine_type"];
+
+  // Metadata key/value pairs to make available from within instances created from this template.
+  map<string, string> metadata = 12;
+
+  // The unique fingerprint of the metadata.
+  string metadata_fingerprint = 13 [json_name = "metadata_fingerprint"];
+
+  // An alternative to using the startup-script metadata key, mostly to match the compute_instance resource. This replaces the startup-script metadata key on the created instance and thus the two mechanisms are not allowed to be used simultaneously.
+  string metadata_startup_script = 14 [json_name = "metadata_startup_script"];
+
+  // Specifies a minimum CPU platform. Applicable values are the friendly names of CPU platforms, such as Intel Haswell or Intel Skylake.
+  string min_cpu_platform = 15 [json_name = "min_cpu_platform"];
+
+  bool most_recent = 16 [json_name = "most_recent"];
+
+  // The name of the instance template. If you leave this blank, Terraform will auto-generate a unique name.
+  string name = 17;
+
+  // Creates a unique name beginning with the specified prefix. Conflicts with name.
+  string name_prefix = 18 [json_name = "name_prefix"];
+
+  // Networks to attach to instances created from this template. This can be specified multiple times for multiple networks.
+  repeated NetworkInterface network_interface = 19 [json_name = "network_interface"];
+
+  // Configures network performance settings for the instance. If not specified, the instance will be created with its default network performance configuration.
+  repeated NetworkPerformanceConfig network_performance_config = 20 [json_name = "network_performance_config"];
+
+  // The ID of the project in which the resource belongs. If it is not provided, the provider project is used.
+  string project = 21;
+
+  // An instance template is a global resource that is not bound to a zone or a region. However, you can still specify some regional resources in an instance template, which restricts the template to the region where that resource resides. For example, a custom subnetwork resource is tied to a specific region. Defaults to the region of the Provider if no value is given.
+  string region = 22;
+
+  // Specifies the reservations that this instance can consume from.
+  repeated ReservationAffinity reservation_affinity = 23 [json_name = "reservation_affinity"];
+
+  // A list of self_links of resource policies to attach to the instance. Currently a max of 1 resource policy is supported.
+  repeated string resource_policies = 24 [json_name = "resource_policies"];
+
+  // The scheduling strategy to use.
+  repeated Scheduling scheduling = 25;
+
+  // The URI of the created resource.
+  string self_link = 26 [json_name = "self_link"];
+
+  string self_link_unique = 27 [json_name = "self_link_unique"];
+
+  // Service account to attach to the instance.
+  repeated ServiceAccount service_account = 28 [json_name = "service_account"];
+
+  // Enable Shielded VM on this instance. Shielded VM provides verifiable integrity to prevent against malware and rootkits. Defaults to disabled. Note: shielded_instance_config can only be used with boot images with shielded vm support.
+  repeated ShieldedInstanceConfig shielded_instance_config = 29 [json_name = "shielded_instance_config"];
+
+  // Tags to attach to the instance.
+  repeated string tags = 30;
+
+  // The unique fingerprint of the tags.
+  string tags_fingerprint = 31 [json_name = "tags_fingerprint"];
+
+  map<string, string> for_each = 32 [json_name = "for_each"];
+
+  repeated string depends_on = 33 [json_name = "depends_on"];
+
+  int32 count = 34;
+
+  string provider = 35;
+
+  terraform.v1.Lifecycle lifecycle = 36;
+
+  message AdvancedMachineFeatures {
+    // enable_nested_virtualization: bool
+    bool enable_nested_virtualization = 1 [json_name = "enable_nested_virtualization"];
+
+    // threads_per_core: number
+    int64 threads_per_core = 2 [json_name = "threads_per_core"];
+
+    // visible_core_count: number
+    int64 visible_core_count = 3 [json_name = "visible_core_count"];
+  }
+
+  message ConfidentialInstanceConfig {
+    // enable_confidential_compute: bool
+    bool enable_confidential_compute = 1 [json_name = "enable_confidential_compute"];
+  }
+
+  message Disk {
+    // auto_delete: bool
+    bool auto_delete = 1 [json_name = "auto_delete"];
+
+    // boot: bool
+    bool boot = 2;
+
+    // device_name: string
+    string device_name = 3 [json_name = "device_name"];
+
+    // disk_encryption_key: list of object
+    repeated DiskEncryptionKey disk_encryption_key = 4 [json_name = "disk_encryption_key"];
+
+    // disk_name: string
+    string disk_name = 5 [json_name = "disk_name"];
+
+    // disk_size_gb: number
+    int64 disk_size_gb = 6 [json_name = "disk_size_gb"];
+
+    // disk_type: string
+    string disk_type = 7 [json_name = "disk_type"];
+
+    // interface: string
+    string interface = 8;
+
+    // labels: map of string
+    map<string, string> labels = 9;
+
+    // mode: string
+    string mode = 10;
+
+    // resource_policies: list of string
+    repeated string resource_policies = 11 [json_name = "resource_policies"];
+
+    // source: string
+    string source = 12;
+
+    // source_image: string
+    string source_image = 13 [json_name = "source_image"];
+
+    // source_image_encryption_key: list of object
+    repeated SourceImageEncryptionKey source_image_encryption_key = 14 [json_name = "source_image_encryption_key"];
+
+    // source_snapshot: string
+    string source_snapshot = 15 [json_name = "source_snapshot"];
+
+    // source_snapshot_encryption_key: list of object
+    repeated SourceSnapshotEncryptionKey source_snapshot_encryption_key = 16 [json_name = "source_snapshot_encryption_key"];
+
+    // type: string
+    string type = 17;
+
+    message DiskEncryptionKey {
+      // kms_key_self_link: string
+      string kms_key_self_link = 1 [json_name = "kms_key_self_link"];
+    }
+
+    message SourceImageEncryptionKey {
+      // kms_key_self_link: string
+      string kms_key_self_link = 1 [json_name = "kms_key_self_link"];
+
+      // kms_key_service_account: string
+      string kms_key_service_account = 2 [json_name = "kms_key_service_account"];
+    }
+
+    message SourceSnapshotEncryptionKey {
+      // kms_key_self_link: string
+      string kms_key_self_link = 1 [json_name = "kms_key_self_link"];
+
+      // kms_key_service_account: string
+      string kms_key_service_account = 2 [json_name = "kms_key_service_account"];
+    }
+  }
+
+  message GuestAccelerator {
+    // count: number
+    int64 count = 1;
+
+    // type: string
+    string type = 2;
+  }
+
+  message NetworkInterface {
+    // access_config: list of object
+    repeated AccessConfig access_config = 1 [json_name = "access_config"];
+
+    // alias_ip_range: list of object
+    repeated AliasIpRange alias_ip_range = 2 [json_name = "alias_ip_range"];
+
+    // ipv6_access_config: list of object
+    repeated Ipv6AccessConfig ipv6_access_config = 3 [json_name = "ipv6_access_config"];
+
+    // ipv6_access_type: string
+    string ipv6_access_type = 4 [json_name = "ipv6_access_type"];
+
+    // name: string
+    string name = 5;
+
+    // network: string
+    string network = 6;
+
+    // network_ip: string
+    string network_ip = 7 [json_name = "network_ip"];
+
+    // nic_type: string
+    string nic_type = 8 [json_name = "nic_type"];
+
+    // queue_count: number
+    int64 queue_count = 9 [json_name = "queue_count"];
+
+    // stack_type: string
+    string stack_type = 10 [json_name = "stack_type"];
+
+    // subnetwork: string
+    string subnetwork = 11;
+
+    // subnetwork_project: string
+    string subnetwork_project = 12 [json_name = "subnetwork_project"];
+
+    message AccessConfig {
+      // nat_ip: string
+      string nat_ip = 1 [json_name = "nat_ip"];
+
+      // network_tier: string
+      string network_tier = 2 [json_name = "network_tier"];
+
+      // public_ptr_domain_name: string
+      string public_ptr_domain_name = 3 [json_name = "public_ptr_domain_name"];
+    }
+
+    message AliasIpRange {
+      // ip_cidr_range: string
+      string ip_cidr_range = 1 [json_name = "ip_cidr_range"];
+
+      // subnetwork_range_name: string
+      string subnetwork_range_name = 2 [json_name = "subnetwork_range_name"];
+    }
+
+    message Ipv6AccessConfig {
+      // external_ipv6: string
+      string external_ipv6 = 1 [json_name = "external_ipv6"];
+
+      // external_ipv6_prefix_length: string
+      string external_ipv6_prefix_length = 2 [json_name = "external_ipv6_prefix_length"];
+
+      // network_tier: string
+      string network_tier = 3 [json_name = "network_tier"];
+
+      // public_ptr_domain_name: string
+      string public_ptr_domain_name = 4 [json_name = "public_ptr_domain_name"];
+    }
+  }
+
+  message NetworkPerformanceConfig {
+    // total_egress_bandwidth_tier: string
+    string total_egress_bandwidth_tier = 1 [json_name = "total_egress_bandwidth_tier"];
+  }
+
+  message ReservationAffinity {
+    // specific_reservation: list of object
+    repeated SpecificReservation specific_reservation = 1 [json_name = "specific_reservation"];
+
+    // type: string
+    string type = 2;
+
+    message SpecificReservation {
+      // key: string
+      string key = 1;
+
+      // values: list of string
+      repeated string values = 2;
+    }
+  }
+
+  message Scheduling {
+    // automatic_restart: bool
+    bool automatic_restart = 1 [json_name = "automatic_restart"];
+
+    // instance_termination_action: string
+    string instance_termination_action = 2 [json_name = "instance_termination_action"];
+
+    // min_node_cpus: number
+    int64 min_node_cpus = 3 [json_name = "min_node_cpus"];
+
+    // node_affinities: set of object
+    repeated NodeAffinities node_affinities = 4 [json_name = "node_affinities"];
+
+    // on_host_maintenance: string
+    string on_host_maintenance = 5 [json_name = "on_host_maintenance"];
+
+    // preemptible: bool
+    bool preemptible = 6;
+
+    // provisioning_model: string
+    string provisioning_model = 7 [json_name = "provisioning_model"];
+
+    message NodeAffinities {
+      // key: string
+      string key = 1;
+
+      // operator: string
+      string operator = 2;
+
+      // values: set of string
+      repeated string values = 3;
+    }
+  }
+
+  message ServiceAccount {
+    // email: string
+    string email = 1;
+
+    // scopes: set of string
+    repeated string scopes = 2;
+  }
+
+  message ShieldedInstanceConfig {
+    // enable_integrity_monitoring: bool
+    bool enable_integrity_monitoring = 1 [json_name = "enable_integrity_monitoring"];
+
+    // enable_secure_boot: bool
+    bool enable_secure_boot = 2 [json_name = "enable_secure_boot"];
+
+    // enable_vtpm: bool
+    bool enable_vtpm = 3 [json_name = "enable_vtpm"];
+  }
+}
+
+// GoogleComputeLbIpRanges version is 0
+message GoogleComputeLbIpRanges {
+  repeated string http_ssl_tcp_internal = 1 [json_name = "http_ssl_tcp_internal"];
+
+  string id = 2;
+
+  repeated string network = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// GoogleComputeNetwork version is 0
+message GoogleComputeNetwork {
+  string description = 1;
+
+  string gateway_ipv4 = 2 [json_name = "gateway_ipv4"];
+
+  string id = 3;
+
+  string name = 4;
+
+  string project = 5;
+
+  string self_link = 6 [json_name = "self_link"];
+
+  repeated string subnetworks_self_links = 7 [json_name = "subnetworks_self_links"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// GoogleComputeNetworkEndpointGroup version is 0
+message GoogleComputeNetworkEndpointGroup {
+  // The default port used if the port number is not specified in the
+  // network endpoint.
+  int64 default_port = 1 [json_name = "default_port"];
+
+  // An optional description of this resource. Provide this property when
+  // you create the resource.
+  string description = 2;
+
+  string id = 3;
+
+  // Name of the resource; provided by the client when the resource is
+  // created. The name must be 1-63 characters long, and comply with
+  // RFC1035. Specifically, the name must be 1-63 characters long and match
+  // the regular expression '[a-z]([-a-z0-9]*[a-z0-9])?' which means the
+  // first character must be a lowercase letter, and all following
+  // characters must be a dash, lowercase letter, or digit, except the last
+  // character, which cannot be a dash.
+  string name = 4;
+
+  // The network to which all network endpoints in the NEG belong.
+  // Uses "default" project network if unspecified.
+  string network = 5;
+
+  // Type of network endpoints in this network endpoint group.
+  // NON_GCP_PRIVATE_IP_PORT is used for hybrid connectivity network
+  // endpoint groups (see https://cloud.google.com/load-balancing/docs/hybrid).
+  // Note that NON_GCP_PRIVATE_IP_PORT can only be used with Backend Services
+  // that 1) have the following load balancing schemes: EXTERNAL, EXTERNAL_MANAGED,
+  // INTERNAL_MANAGED, and INTERNAL_SELF_MANAGED and 2) support the RATE or
+  // CONNECTION balancing modes.
+  //
+  // Possible values include: GCE_VM_IP, GCE_VM_IP_PORT, and NON_GCP_PRIVATE_IP_PORT. Default value: "GCE_VM_IP_PORT" Possible values: ["GCE_VM_IP", "GCE_VM_IP_PORT", "NON_GCP_PRIVATE_IP_PORT"]
+  string network_endpoint_type = 6 [json_name = "network_endpoint_type"];
+
+  string project = 7;
+
+  string self_link = 8 [json_name = "self_link"];
+
+  // Number of network endpoints in the network endpoint group.
+  int64 size = 9;
+
+  // Optional subnetwork to which all network endpoints in the NEG belong.
+  string subnetwork = 10;
+
+  // Zone where the network endpoint group is located.
+  string zone = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+}
+
+// GoogleComputeNetworkPeering version is 0
+message GoogleComputeNetworkPeering {
+  // Whether to export the custom routes to the peer network. Defaults to false.
+  bool export_custom_routes = 1 [json_name = "export_custom_routes"];
+
+  bool export_subnet_routes_with_public_ip = 2 [json_name = "export_subnet_routes_with_public_ip"];
+
+  string id = 3;
+
+  // Whether to export the custom routes from the peer network. Defaults to false.
+  bool import_custom_routes = 4 [json_name = "import_custom_routes"];
+
+  bool import_subnet_routes_with_public_ip = 5 [json_name = "import_subnet_routes_with_public_ip"];
+
+  // Name of the peering.
+  string name = 6;
+
+  // The primary network of the peering.
+  string network = 7;
+
+  // The peer network in the peering. The peer network may belong to a different project.
+  string peer_network = 8 [json_name = "peer_network"];
+
+  // Which IP version(s) of traffic and routes are allowed to be imported or exported between peer networks. The default value is IPV4_ONLY. Possible values: ["IPV4_ONLY", "IPV4_IPV6"]
+  string stack_type = 9 [json_name = "stack_type"];
+
+  // State for the peering, either ACTIVE or INACTIVE. The peering is ACTIVE when there's a matching configuration in the peer network.
+  string state = 10;
+
+  // Details about the current state of the peering.
+  string state_details = 11 [json_name = "state_details"];
+
+  repeated Timeouts timeouts = 12;
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message Timeouts {
+    string read = 1;
+  }
+}
+
+// GoogleComputeNodeTypes version is 0
+message GoogleComputeNodeTypes {
+  string id = 1;
+
+  repeated string names = 2;
+
+  string project = 3;
+
+  string zone = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// GoogleComputeRegionDiskIamPolicy version is 0
+message GoogleComputeRegionDiskIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  string region = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleComputeRegionInstanceGroup version is 0
+message GoogleComputeRegionInstanceGroup {
+  string id = 1;
+
+  repeated Instances instances = 2;
+
+  string name = 3;
+
+  string project = 4;
+
+  string region = 5;
+
+  string self_link = 6 [json_name = "self_link"];
+
+  int64 size = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Instances {
+    // instance: string
+    string instance = 1;
+
+    // named_ports: list of object
+    repeated NamedPorts named_ports = 2 [json_name = "named_ports"];
+
+    // status: string
+    string status = 3;
+
+    message NamedPorts {
+      // name: string
+      string name = 1;
+
+      // port: number
+      int64 port = 2;
+    }
+  }
+}
+
+// GoogleComputeRegionNetworkEndpointGroup version is 0
+message GoogleComputeRegionNetworkEndpointGroup {
+  // Only valid when networkEndpointType is "SERVERLESS".
+  // Only one of cloud_run, app_engine, cloud_function or serverless_deployment may be set.
+  repeated AppEngine app_engine = 1 [json_name = "app_engine"];
+
+  // Only valid when networkEndpointType is "SERVERLESS".
+  // Only one of cloud_run, app_engine, cloud_function or serverless_deployment may be set.
+  repeated CloudFunction cloud_function = 2 [json_name = "cloud_function"];
+
+  // Only valid when networkEndpointType is "SERVERLESS".
+  // Only one of cloud_run, app_engine, cloud_function or serverless_deployment may be set.
+  repeated CloudRun cloud_run = 3 [json_name = "cloud_run"];
+
+  // An optional description of this resource. Provide this property when
+  // you create the resource.
+  string description = 4;
+
+  string id = 5;
+
+  // Name of the resource; provided by the client when the resource is
+  // created. The name must be 1-63 characters long, and comply with
+  // RFC1035. Specifically, the name must be 1-63 characters long and match
+  // the regular expression '[a-z]([-a-z0-9]*[a-z0-9])?' which means the
+  // first character must be a lowercase letter, and all following
+  // characters must be a dash, lowercase letter, or digit, except the last
+  // character, which cannot be a dash.
+  string name = 6;
+
+  // This field is only used for PSC.
+  // The URL of the network to which all network endpoints in the NEG belong. Uses
+  // "default" project network if unspecified.
+  string network = 7;
+
+  // Type of network endpoints in this network endpoint group. Defaults to SERVERLESS Default value: "SERVERLESS" Possible values: ["SERVERLESS", "PRIVATE_SERVICE_CONNECT"]
+  string network_endpoint_type = 8 [json_name = "network_endpoint_type"];
+
+  string project = 9;
+
+  // The target service url used to set up private service connection to
+  // a Google API or a PSC Producer Service Attachment.
+  string psc_target_service = 10 [json_name = "psc_target_service"];
+
+  // A reference to the region where the Serverless NEGs Reside.
+  string region = 11;
+
+  string self_link = 12 [json_name = "self_link"];
+
+  // This field is only used for PSC.
+  // Optional URL of the subnetwork to which all network endpoints in the NEG belong.
+  string subnetwork = 13;
+
+  map<string, string> for_each = 14 [json_name = "for_each"];
+
+  repeated string depends_on = 15 [json_name = "depends_on"];
+
+  int32 count = 16;
+
+  string provider = 17;
+
+  terraform.v1.Lifecycle lifecycle = 18;
+
+  message AppEngine {
+    // service: string
+    string service = 1;
+
+    // url_mask: string
+    string url_mask = 2 [json_name = "url_mask"];
+
+    // version: string
+    string version = 3;
+  }
+
+  message CloudFunction {
+    // function: string
+    string function = 1;
+
+    // url_mask: string
+    string url_mask = 2 [json_name = "url_mask"];
+  }
+
+  message CloudRun {
+    // service: string
+    string service = 1;
+
+    // tag: string
+    string tag = 2;
+
+    // url_mask: string
+    string url_mask = 3 [json_name = "url_mask"];
+  }
+}
+
+// GoogleComputeRegionSslCertificate version is 0
+message GoogleComputeRegionSslCertificate {
+  // The certificate in PEM format.
+  // The certificate chain must be no greater than 5 certs long.
+  // The chain must include at least one intermediate cert.
+  string certificate = 1;
+
+  // The unique identifier for the resource.
+  int64 certificate_id = 2 [json_name = "certificate_id"];
+
+  // Creation timestamp in RFC3339 text format.
+  string creation_timestamp = 3 [json_name = "creation_timestamp"];
+
+  // An optional description of this resource.
+  string description = 4;
+
+  // Expire time of the certificate in RFC3339 text format.
+  string expire_time = 5 [json_name = "expire_time"];
+
+  string id = 6;
+
+  // Name of the resource. Provided by the client when the resource is
+  // created. The name must be 1-63 characters long, and comply with
+  // RFC1035. Specifically, the name must be 1-63 characters long and match
+  // the regular expression '[a-z]([-a-z0-9]*[a-z0-9])?' which means the
+  // first character must be a lowercase letter, and all following
+  // characters must be a dash, lowercase letter, or digit, except the last
+  // character, which cannot be a dash.
+  //
+  //
+  // These are in the same namespace as the managed SSL certificates.
+  string name = 7;
+
+  // Creates a unique name beginning with the specified prefix. Conflicts with name.
+  string name_prefix = 8 [json_name = "name_prefix"];
+
+  // The write-only private key in PEM format.
+  string private_key = 9 [json_name = "private_key"];
+
+  string project = 10;
+
+  // The Region in which the created regional ssl certificate should reside.
+  // If it is not provided, the provider region is used.
+  string region = 11;
+
+  string self_link = 12 [json_name = "self_link"];
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+}
+
+// GoogleComputeRegions version is 0
+message GoogleComputeRegions {
+  string id = 1;
+
+  repeated string names = 2;
+
+  string project = 3;
+
+  string status = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// GoogleComputeResourcePolicy version is 0
+message GoogleComputeResourcePolicy {
+  // An optional description of this resource. Provide this property when you create the resource.
+  string description = 1;
+
+  // Resource policy for instances used for placement configuration.
+  repeated GroupPlacementPolicy group_placement_policy = 2 [json_name = "group_placement_policy"];
+
+  string id = 3;
+
+  // Resource policy for scheduling instance operations.
+  repeated InstanceSchedulePolicy instance_schedule_policy = 4 [json_name = "instance_schedule_policy"];
+
+  // The name of the resource, provided by the client when initially creating
+  // the resource. The resource name must be 1-63 characters long, and comply
+  // with RFC1035. Specifically, the name must be 1-63 characters long and
+  // match the regular expression '[a-z]([-a-z0-9]*[a-z0-9])'? which means the
+  // first character must be a lowercase letter, and all following characters
+  // must be a dash, lowercase letter, or digit, except the last character,
+  // which cannot be a dash.
+  string name = 5;
+
+  string project = 6;
+
+  // Region where resource policy resides.
+  string region = 7;
+
+  string self_link = 8 [json_name = "self_link"];
+
+  // Policy for creating snapshots of persistent disks.
+  repeated SnapshotSchedulePolicy snapshot_schedule_policy = 9 [json_name = "snapshot_schedule_policy"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message GroupPlacementPolicy {
+    // availability_domain_count: number
+    int64 availability_domain_count = 1 [json_name = "availability_domain_count"];
+
+    // collocation: string
+    string collocation = 2;
+
+    // vm_count: number
+    int64 vm_count = 3 [json_name = "vm_count"];
+  }
+
+  message InstanceSchedulePolicy {
+    // expiration_time: string
+    string expiration_time = 1 [json_name = "expiration_time"];
+
+    // start_time: string
+    string start_time = 2 [json_name = "start_time"];
+
+    // time_zone: string
+    string time_zone = 3 [json_name = "time_zone"];
+
+    // vm_start_schedule: list of object
+    repeated VmStartSchedule vm_start_schedule = 4 [json_name = "vm_start_schedule"];
+
+    // vm_stop_schedule: list of object
+    repeated VmStopSchedule vm_stop_schedule = 5 [json_name = "vm_stop_schedule"];
+
+    message VmStartSchedule {
+      // schedule: string
+      string schedule = 1;
+    }
+
+    message VmStopSchedule {
+      // schedule: string
+      string schedule = 1;
+    }
+  }
+
+  message SnapshotSchedulePolicy {
+    // retention_policy: list of object
+    repeated RetentionPolicy retention_policy = 1 [json_name = "retention_policy"];
+
+    // schedule: list of object
+    repeated Schedule schedule = 2;
+
+    // snapshot_properties: list of object
+    repeated SnapshotProperties snapshot_properties = 3 [json_name = "snapshot_properties"];
+
+    message RetentionPolicy {
+      // max_retention_days: number
+      int64 max_retention_days = 1 [json_name = "max_retention_days"];
+
+      // on_source_disk_delete: string
+      string on_source_disk_delete = 2 [json_name = "on_source_disk_delete"];
+    }
+
+    message Schedule {
+      // daily_schedule: list of object
+      repeated DailySchedule daily_schedule = 1 [json_name = "daily_schedule"];
+
+      // hourly_schedule: list of object
+      repeated HourlySchedule hourly_schedule = 2 [json_name = "hourly_schedule"];
+
+      // weekly_schedule: list of object
+      repeated WeeklySchedule weekly_schedule = 3 [json_name = "weekly_schedule"];
+
+      message DailySchedule {
+        // days_in_cycle: number
+        int64 days_in_cycle = 1 [json_name = "days_in_cycle"];
+
+        // start_time: string
+        string start_time = 2 [json_name = "start_time"];
+      }
+
+      message HourlySchedule {
+        // hours_in_cycle: number
+        int64 hours_in_cycle = 1 [json_name = "hours_in_cycle"];
+
+        // start_time: string
+        string start_time = 2 [json_name = "start_time"];
+      }
+
+      message WeeklySchedule {
+        // day_of_weeks: set of object
+        repeated DayOfWeeks day_of_weeks = 1 [json_name = "day_of_weeks"];
+
+        message DayOfWeeks {
+          // day: string
+          string day = 1;
+
+          // start_time: string
+          string start_time = 2 [json_name = "start_time"];
+        }
+      }
+    }
+
+    message SnapshotProperties {
+      // chain_name: string
+      string chain_name = 1 [json_name = "chain_name"];
+
+      // guest_flush: bool
+      bool guest_flush = 2 [json_name = "guest_flush"];
+
+      // labels: map of string
+      map<string, string> labels = 3;
+
+      // storage_locations: set of string
+      repeated string storage_locations = 4 [json_name = "storage_locations"];
+    }
+  }
+}
+
+// GoogleComputeRouter version is 0
+message GoogleComputeRouter {
+  // BGP information specific to this router.
+  repeated Bgp bgp = 1;
+
+  // Creation timestamp in RFC3339 text format.
+  string creation_timestamp = 2 [json_name = "creation_timestamp"];
+
+  // An optional description of this resource.
+  string description = 3;
+
+  // Indicates if a router is dedicated for use with encrypted VLAN
+  // attachments (interconnectAttachments).
+  bool encrypted_interconnect_router = 4 [json_name = "encrypted_interconnect_router"];
+
+  string id = 5;
+
+  // Name of the resource. The name must be 1-63 characters long, and
+  // comply with RFC1035. Specifically, the name must be 1-63 characters
+  // long and match the regular expression '[a-z]([-a-z0-9]*[a-z0-9])?'
+  // which means the first character must be a lowercase letter, and all
+  // following characters must be a dash, lowercase letter, or digit,
+  // except the last character, which cannot be a dash.
+  string name = 6;
+
+  // A reference to the network to which this router belongs.
+  string network = 7;
+
+  string project = 8;
+
+  // Region where the router resides.
+  string region = 9;
+
+  string self_link = 10 [json_name = "self_link"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Bgp {
+    // advertise_mode: string
+    string advertise_mode = 1 [json_name = "advertise_mode"];
+
+    // advertised_groups: list of string
+    repeated string advertised_groups = 2 [json_name = "advertised_groups"];
+
+    // advertised_ip_ranges: list of object
+    repeated AdvertisedIpRanges advertised_ip_ranges = 3 [json_name = "advertised_ip_ranges"];
+
+    // asn: number
+    int64 asn = 4;
+
+    // keepalive_interval: number
+    int64 keepalive_interval = 5 [json_name = "keepalive_interval"];
+
+    message AdvertisedIpRanges {
+      // description: string
+      string description = 1;
+
+      // range: string
+      string range = 2;
+    }
+  }
+}
+
+// GoogleComputeRouterNat version is 0
+message GoogleComputeRouterNat {
+  // A list of URLs of the IP resources to be drained. These IPs must be
+  // valid static external IPs that have been assigned to the NAT.
+  repeated string drain_nat_ips = 1 [json_name = "drain_nat_ips"];
+
+  // Enable Dynamic Port Allocation.
+  // If minPortsPerVm is set, minPortsPerVm must be set to a power of two greater than or equal to 32.
+  // If minPortsPerVm is not set, a minimum of 32 ports will be allocated to a VM from this NAT config.
+  // If maxPortsPerVm is set, maxPortsPerVm must be set to a power of two greater than minPortsPerVm.
+  // If maxPortsPerVm is not set, a maximum of 65536 ports will be allocated to a VM from this NAT config.
+  //
+  // Mutually exclusive with enableEndpointIndependentMapping.
+  bool enable_dynamic_port_allocation = 2 [json_name = "enable_dynamic_port_allocation"];
+
+  // Specifies if endpoint independent mapping is enabled. This is enabled by default. For more information
+  // see the [official documentation](https://cloud.google.com/nat/docs/overview#specs-rfcs).
+  bool enable_endpoint_independent_mapping = 3 [json_name = "enable_endpoint_independent_mapping"];
+
+  // Timeout (in seconds) for ICMP connections. Defaults to 30s if not set.
+  int64 icmp_idle_timeout_sec = 4 [json_name = "icmp_idle_timeout_sec"];
+
+  string id = 5;
+
+  // Configuration for logging on NAT
+  repeated LogConfig log_config = 6 [json_name = "log_config"];
+
+  // Maximum number of ports allocated to a VM from this NAT.
+  // This field can only be set when enableDynamicPortAllocation is enabled.
+  int64 max_ports_per_vm = 7 [json_name = "max_ports_per_vm"];
+
+  // Minimum number of ports allocated to a VM from this NAT.
+  int64 min_ports_per_vm = 8 [json_name = "min_ports_per_vm"];
+
+  // Name of the NAT service. The name must be 1-63 characters long and
+  // comply with RFC1035.
+  string name = 9;
+
+  // How external IPs should be allocated for this NAT. Valid values are
+  // 'AUTO_ONLY' for only allowing NAT IPs allocated by Google Cloud
+  // Platform, or 'MANUAL_ONLY' for only user-allocated NAT IP addresses. Possible values: ["MANUAL_ONLY", "AUTO_ONLY"]
+  string nat_ip_allocate_option = 10 [json_name = "nat_ip_allocate_option"];
+
+  // Self-links of NAT IPs. Only valid if natIpAllocateOption
+  // is set to MANUAL_ONLY.
+  repeated string nat_ips = 11 [json_name = "nat_ips"];
+
+  string project = 12;
+
+  // Region where the router and NAT reside.
+  string region = 13;
+
+  // The name of the Cloud Router in which this NAT will be configured.
+  string router = 14;
+
+  // A list of rules associated with this NAT.
+  repeated Rules rules = 15;
+
+  // How NAT should be configured per Subnetwork.
+  // If 'ALL_SUBNETWORKS_ALL_IP_RANGES', all of the
+  // IP ranges in every Subnetwork are allowed to Nat.
+  // If 'ALL_SUBNETWORKS_ALL_PRIMARY_IP_RANGES', all of the primary IP
+  // ranges in every Subnetwork are allowed to Nat.
+  // 'LIST_OF_SUBNETWORKS': A list of Subnetworks are allowed to Nat
+  // (specified in the field subnetwork below). Note that if this field
+  // contains ALL_SUBNETWORKS_ALL_IP_RANGES or
+  // ALL_SUBNETWORKS_ALL_PRIMARY_IP_RANGES, then there should not be any
+  // other RouterNat section in any Router for this network in this region. Possible values: ["ALL_SUBNETWORKS_ALL_IP_RANGES", "ALL_SUBNETWORKS_ALL_PRIMARY_IP_RANGES", "LIST_OF_SUBNETWORKS"]
+  string source_subnetwork_ip_ranges_to_nat = 16 [json_name = "source_subnetwork_ip_ranges_to_nat"];
+
+  // One or more subnetwork NAT configurations. Only used if
+  // 'source_subnetwork_ip_ranges_to_nat' is set to 'LIST_OF_SUBNETWORKS'
+  repeated Subnetwork subnetwork = 17;
+
+  // Timeout (in seconds) for TCP established connections.
+  // Defaults to 1200s if not set.
+  int64 tcp_established_idle_timeout_sec = 18 [json_name = "tcp_established_idle_timeout_sec"];
+
+  // Timeout (in seconds) for TCP connections that are in TIME_WAIT state.
+  // Defaults to 120s if not set.
+  int64 tcp_time_wait_timeout_sec = 19 [json_name = "tcp_time_wait_timeout_sec"];
+
+  // Timeout (in seconds) for TCP transitory connections.
+  // Defaults to 30s if not set.
+  int64 tcp_transitory_idle_timeout_sec = 20 [json_name = "tcp_transitory_idle_timeout_sec"];
+
+  // Timeout (in seconds) for UDP connections. Defaults to 30s if not set.
+  int64 udp_idle_timeout_sec = 21 [json_name = "udp_idle_timeout_sec"];
+
+  map<string, string> for_each = 22 [json_name = "for_each"];
+
+  repeated string depends_on = 23 [json_name = "depends_on"];
+
+  int32 count = 24;
+
+  string provider = 25;
+
+  terraform.v1.Lifecycle lifecycle = 26;
+
+  message LogConfig {
+    // enable: bool
+    bool enable = 1;
+
+    // filter: string
+    string filter = 2;
+  }
+
+  message Rules {
+    // action: list of object
+    repeated Action action = 1;
+
+    // description: string
+    string description = 2;
+
+    // match: string
+    string match = 3;
+
+    // rule_number: number
+    int64 rule_number = 4 [json_name = "rule_number"];
+
+    message Action {
+      // source_nat_active_ips: set of string
+      repeated string source_nat_active_ips = 1 [json_name = "source_nat_active_ips"];
+
+      // source_nat_drain_ips: set of string
+      repeated string source_nat_drain_ips = 2 [json_name = "source_nat_drain_ips"];
+    }
+  }
+
+  message Subnetwork {
+    // name: string
+    string name = 1;
+
+    // secondary_ip_range_names: set of string
+    repeated string secondary_ip_range_names = 2 [json_name = "secondary_ip_range_names"];
+
+    // source_ip_ranges_to_nat: set of string
+    repeated string source_ip_ranges_to_nat = 3 [json_name = "source_ip_ranges_to_nat"];
+  }
+}
+
+// GoogleComputeRouterStatus version is 0
+message GoogleComputeRouterStatus {
+  // Best routes for this router's network.
+  repeated BestRoutes best_routes = 1 [json_name = "best_routes"];
+
+  // Best routes learned by this router.
+  repeated BestRoutesForRouter best_routes_for_router = 2 [json_name = "best_routes_for_router"];
+
+  string id = 3;
+
+  // Name of the router to query.
+  string name = 4;
+
+  // URI of the network to which this router belongs.
+  string network = 5;
+
+  // Project ID of the target router.
+  string project = 6;
+
+  // Region of the target router.
+  string region = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message BestRoutes {
+    // description: string
+    string description = 1;
+
+    // dest_range: string
+    string dest_range = 2 [json_name = "dest_range"];
+
+    // name: string
+    string name = 3;
+
+    // network: string
+    string network = 4;
+
+    // next_hop_gateway: string
+    string next_hop_gateway = 5 [json_name = "next_hop_gateway"];
+
+    // next_hop_ilb: string
+    string next_hop_ilb = 6 [json_name = "next_hop_ilb"];
+
+    // next_hop_instance: string
+    string next_hop_instance = 7 [json_name = "next_hop_instance"];
+
+    // next_hop_instance_zone: string
+    string next_hop_instance_zone = 8 [json_name = "next_hop_instance_zone"];
+
+    // next_hop_ip: string
+    string next_hop_ip = 9 [json_name = "next_hop_ip"];
+
+    // next_hop_network: string
+    string next_hop_network = 10 [json_name = "next_hop_network"];
+
+    // next_hop_vpn_tunnel: string
+    string next_hop_vpn_tunnel = 11 [json_name = "next_hop_vpn_tunnel"];
+
+    // priority: number
+    int64 priority = 12;
+
+    // project: string
+    string project = 13;
+
+    // self_link: string
+    string self_link = 14 [json_name = "self_link"];
+
+    // tags: set of string
+    repeated string tags = 15;
+  }
+
+  message BestRoutesForRouter {
+    // description: string
+    string description = 1;
+
+    // dest_range: string
+    string dest_range = 2 [json_name = "dest_range"];
+
+    // name: string
+    string name = 3;
+
+    // network: string
+    string network = 4;
+
+    // next_hop_gateway: string
+    string next_hop_gateway = 5 [json_name = "next_hop_gateway"];
+
+    // next_hop_ilb: string
+    string next_hop_ilb = 6 [json_name = "next_hop_ilb"];
+
+    // next_hop_instance: string
+    string next_hop_instance = 7 [json_name = "next_hop_instance"];
+
+    // next_hop_instance_zone: string
+    string next_hop_instance_zone = 8 [json_name = "next_hop_instance_zone"];
+
+    // next_hop_ip: string
+    string next_hop_ip = 9 [json_name = "next_hop_ip"];
+
+    // next_hop_network: string
+    string next_hop_network = 10 [json_name = "next_hop_network"];
+
+    // next_hop_vpn_tunnel: string
+    string next_hop_vpn_tunnel = 11 [json_name = "next_hop_vpn_tunnel"];
+
+    // priority: number
+    int64 priority = 12;
+
+    // project: string
+    string project = 13;
+
+    // self_link: string
+    string self_link = 14 [json_name = "self_link"];
+
+    // tags: set of string
+    repeated string tags = 15;
+  }
+}
+
+// GoogleComputeSnapshot version is 0
+message GoogleComputeSnapshot {
+  // Creates the new snapshot in the snapshot chain labeled with the
+  // specified name. The chain name must be 1-63 characters long and
+  // comply with RFC1035. This is an uncommon option only for advanced
+  // service owners who needs to create separate snapshot chains, for
+  // example, for chargeback tracking.  When you describe your snapshot
+  // resource, this field is visible only if it has a non-empty value.
+  string chain_name = 1 [json_name = "chain_name"];
+
+  // Creation timestamp in RFC3339 text format.
+  string creation_timestamp = 2 [json_name = "creation_timestamp"];
+
+  // An optional description of this resource.
+  string description = 3;
+
+  // Size of the snapshot, specified in GB.
+  int64 disk_size_gb = 4 [json_name = "disk_size_gb"];
+
+  string filter = 5;
+
+  string id = 6;
+
+  // The fingerprint used for optimistic locking of this resource. Used
+  // internally during updates.
+  string label_fingerprint = 7 [json_name = "label_fingerprint"];
+
+  // Labels to apply to this Snapshot.
+  map<string, string> labels = 8;
+
+  // A list of public visible licenses that apply to this snapshot. This
+  // can be because the original image had licenses attached (such as a
+  // Windows image).  snapshotEncryptionKey nested object Encrypts the
+  // snapshot using a customer-supplied encryption key.
+  repeated string licenses = 9;
+
+  bool most_recent = 10 [json_name = "most_recent"];
+
+  // Name of the resource; provided by the client when the resource is
+  // created. The name must be 1-63 characters long, and comply with
+  // RFC1035. Specifically, the name must be 1-63 characters long and match
+  // the regular expression '[a-z]([-a-z0-9]*[a-z0-9])?' which means the
+  // first character must be a lowercase letter, and all following
+  // characters must be a dash, lowercase letter, or digit, except the last
+  // character, which cannot be a dash.
+  string name = 11;
+
+  string project = 12;
+
+  string self_link = 13 [json_name = "self_link"];
+
+  // Encrypts the snapshot using a customer-supplied encryption key.
+  //
+  // After you encrypt a snapshot using a customer-supplied key, you must
+  // provide the same key if you use the snapshot later. For example, you
+  // must provide the encryption key when you create a disk from the
+  // encrypted snapshot in a future request.
+  //
+  // Customer-supplied encryption keys do not protect access to metadata of
+  // the snapshot.
+  //
+  // If you do not provide an encryption key when creating the snapshot,
+  // then the snapshot will be encrypted using an automatically generated
+  // key and you do not need to provide a key to use the snapshot later.
+  repeated SnapshotEncryptionKey snapshot_encryption_key = 14 [json_name = "snapshot_encryption_key"];
+
+  // The unique identifier for the resource.
+  int64 snapshot_id = 15 [json_name = "snapshot_id"];
+
+  // A reference to the disk used to create this snapshot.
+  string source_disk = 16 [json_name = "source_disk"];
+
+  // The customer-supplied encryption key of the source snapshot. Required
+  // if the source snapshot is protected by a customer-supplied encryption
+  // key.
+  repeated SourceDiskEncryptionKey source_disk_encryption_key = 17 [json_name = "source_disk_encryption_key"];
+
+  // A size of the storage used by the snapshot. As snapshots share
+  // storage, this number is expected to change with snapshot
+  // creation/deletion.
+  int64 storage_bytes = 18 [json_name = "storage_bytes"];
+
+  // Cloud Storage bucket storage location of the snapshot (regional or multi-regional).
+  repeated string storage_locations = 19 [json_name = "storage_locations"];
+
+  // A reference to the zone where the disk is hosted.
+  string zone = 20;
+
+  map<string, string> for_each = 21 [json_name = "for_each"];
+
+  repeated string depends_on = 22 [json_name = "depends_on"];
+
+  int32 count = 23;
+
+  string provider = 24;
+
+  terraform.v1.Lifecycle lifecycle = 25;
+
+  message SnapshotEncryptionKey {
+    // kms_key_self_link: string
+    string kms_key_self_link = 1 [json_name = "kms_key_self_link"];
+
+    // kms_key_service_account: string
+    string kms_key_service_account = 2 [json_name = "kms_key_service_account"];
+
+    // raw_key: string
+    string raw_key = 3 [json_name = "raw_key"];
+
+    // sha256: string
+    string sha256 = 4;
+  }
+
+  message SourceDiskEncryptionKey {
+    // kms_key_service_account: string
+    string kms_key_service_account = 1 [json_name = "kms_key_service_account"];
+
+    // raw_key: string
+    string raw_key = 2 [json_name = "raw_key"];
+  }
+}
+
+// GoogleComputeSnapshotIamPolicy version is 0
+message GoogleComputeSnapshotIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string project = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// GoogleComputeSslCertificate version is 0
+message GoogleComputeSslCertificate {
+  // The certificate in PEM format.
+  // The certificate chain must be no greater than 5 certs long.
+  // The chain must include at least one intermediate cert.
+  string certificate = 1;
+
+  // The unique identifier for the resource.
+  int64 certificate_id = 2 [json_name = "certificate_id"];
+
+  // Creation timestamp in RFC3339 text format.
+  string creation_timestamp = 3 [json_name = "creation_timestamp"];
+
+  // An optional description of this resource.
+  string description = 4;
+
+  // Expire time of the certificate in RFC3339 text format.
+  string expire_time = 5 [json_name = "expire_time"];
+
+  string id = 6;
+
+  // Name of the resource. Provided by the client when the resource is
+  // created. The name must be 1-63 characters long, and comply with
+  // RFC1035. Specifically, the name must be 1-63 characters long and match
+  // the regular expression '[a-z]([-a-z0-9]*[a-z0-9])?' which means the
+  // first character must be a lowercase letter, and all following
+  // characters must be a dash, lowercase letter, or digit, except the last
+  // character, which cannot be a dash.
+  //
+  //
+  // These are in the same namespace as the managed SSL certificates.
+  string name = 7;
+
+  // Creates a unique name beginning with the specified prefix. Conflicts with name.
+  string name_prefix = 8 [json_name = "name_prefix"];
+
+  // The write-only private key in PEM format.
+  string private_key = 9 [json_name = "private_key"];
+
+  string project = 10;
+
+  string self_link = 11 [json_name = "self_link"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+}
+
+// GoogleComputeSslPolicy version is 0
+message GoogleComputeSslPolicy {
+  // Creation timestamp in RFC3339 text format.
+  string creation_timestamp = 1 [json_name = "creation_timestamp"];
+
+  // Profile specifies the set of SSL features that can be used by the
+  // load balancer when negotiating SSL with clients. This can be one of
+  // 'COMPATIBLE', 'MODERN', 'RESTRICTED', or 'CUSTOM'. If using 'CUSTOM',
+  // the set of SSL features to enable must be specified in the
+  // 'customFeatures' field.
+  //
+  // See the [official documentation](https://cloud.google.com/compute/docs/load-balancing/ssl-policies#profilefeaturesupport)
+  // for which ciphers are available to use. **Note**: this argument
+  // *must* be present when using the 'CUSTOM' profile. This argument
+  // *must not* be present when using any other profile.
+  repeated string custom_features = 2 [json_name = "custom_features"];
+
+  // An optional description of this resource.
+  string description = 3;
+
+  // The list of features enabled in the SSL policy.
+  repeated string enabled_features = 4 [json_name = "enabled_features"];
+
+  // Fingerprint of this resource. A hash of the contents stored in this
+  // object. This field is used in optimistic locking.
+  string fingerprint = 5;
+
+  string id = 6;
+
+  // The minimum version of SSL protocol that can be used by the clients
+  // to establish a connection with the load balancer. Default value: "TLS_1_0" Possible values: ["TLS_1_0", "TLS_1_1", "TLS_1_2"]
+  string min_tls_version = 7 [json_name = "min_tls_version"];
+
+  // Name of the resource. Provided by the client when the resource is
+  // created. The name must be 1-63 characters long, and comply with
+  // RFC1035. Specifically, the name must be 1-63 characters long and match
+  // the regular expression '[a-z]([-a-z0-9]*[a-z0-9])?' which means the
+  // first character must be a lowercase letter, and all following
+  // characters must be a dash, lowercase letter, or digit, except the last
+  // character, which cannot be a dash.
+  string name = 8;
+
+  // Profile specifies the set of SSL features that can be used by the
+  // load balancer when negotiating SSL with clients. If using 'CUSTOM',
+  // the set of SSL features to enable must be specified in the
+  // 'customFeatures' field.
+  //
+  // See the [official documentation](https://cloud.google.com/compute/docs/load-balancing/ssl-policies#profilefeaturesupport)
+  // for information on what cipher suites each profile provides. If
+  // 'CUSTOM' is used, the 'custom_features' attribute **must be set**. Default value: "COMPATIBLE" Possible values: ["COMPATIBLE", "MODERN", "RESTRICTED", "CUSTOM"]
+  string profile = 9;
+
+  string project = 10;
+
+  string self_link = 11 [json_name = "self_link"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+}
+
+// GoogleComputeSubnetwork version is 0
+message GoogleComputeSubnetwork {
+  string description = 1;
+
+  string gateway_address = 2 [json_name = "gateway_address"];
+
+  string id = 3;
+
+  string ip_cidr_range = 4 [json_name = "ip_cidr_range"];
+
+  string name = 5;
+
+  string network = 6;
+
+  bool private_ip_google_access = 7 [json_name = "private_ip_google_access"];
+
+  string project = 8;
+
+  string region = 9;
+
+  repeated SecondaryIpRange secondary_ip_range = 10 [json_name = "secondary_ip_range"];
+
+  string self_link = 11 [json_name = "self_link"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message SecondaryIpRange {
+    // ip_cidr_range: string
+    string ip_cidr_range = 1 [json_name = "ip_cidr_range"];
+
+    // range_name: string
+    string range_name = 2 [json_name = "range_name"];
+  }
+}
+
+// GoogleComputeSubnetworkIamPolicy version is 0
+message GoogleComputeSubnetworkIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string policy_data = 3 [json_name = "policy_data"];
+
+  string project = 4;
+
+  string region = 5;
+
+  string subnetwork = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// GoogleComputeVpnGateway version is 0
+message GoogleComputeVpnGateway {
+  string description = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  string network = 4;
+
+  string project = 5;
+
+  string region = 6;
+
+  string self_link = 7 [json_name = "self_link"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// GoogleComputeZones version is 0
+message GoogleComputeZones {
+  string id = 1;
+
+  repeated string names = 2;
+
+  string project = 3;
+
+  string region = 4;
+
+  string status = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}

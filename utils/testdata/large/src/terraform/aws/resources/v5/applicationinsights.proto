@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsApplicationinsightsApplication version is 0
+message AwsApplicationinsightsApplication {
+  string arn = 1;
+
+  bool auto_config_enabled = 2 [json_name = "auto_config_enabled"];
+
+  bool auto_create = 3 [json_name = "auto_create"];
+
+  bool cwe_monitor_enabled = 4 [json_name = "cwe_monitor_enabled"];
+
+  string grouping_type = 5 [json_name = "grouping_type"];
+
+  string id = 6;
+
+  bool ops_center_enabled = 7 [json_name = "ops_center_enabled"];
+
+  string ops_item_sns_topic_arn = 8 [json_name = "ops_item_sns_topic_arn"];
+
+  string resource_group_name = 9 [json_name = "resource_group_name"];
+
+  map<string, string> tags = 10;
+
+  map<string, string> tags_all = 11 [json_name = "tags_all"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+}

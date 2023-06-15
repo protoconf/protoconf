@@ -1,0 +1,214 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsDevicefarmDevicePool version is 0
+message AwsDevicefarmDevicePool {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  int64 max_devices = 4 [json_name = "max_devices"];
+
+  string name = 5;
+
+  string project_arn = 6 [json_name = "project_arn"];
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  string type = 9;
+
+  repeated Rule rule = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Rule {
+    string attribute = 1;
+
+    string operator = 2;
+
+    string value = 3;
+  }
+}
+
+// AwsDevicefarmInstanceProfile version is 0
+message AwsDevicefarmInstanceProfile {
+  string arn = 1;
+
+  string description = 2;
+
+  repeated string exclude_app_packages_from_cleanup = 3 [json_name = "exclude_app_packages_from_cleanup"];
+
+  string id = 4;
+
+  string name = 5;
+
+  bool package_cleanup = 6 [json_name = "package_cleanup"];
+
+  bool reboot_after_use = 7 [json_name = "reboot_after_use"];
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+}
+
+// AwsDevicefarmNetworkProfile version is 0
+message AwsDevicefarmNetworkProfile {
+  string arn = 1;
+
+  string description = 2;
+
+  int64 downlink_bandwidth_bits = 3 [json_name = "downlink_bandwidth_bits"];
+
+  int64 downlink_delay_ms = 4 [json_name = "downlink_delay_ms"];
+
+  int64 downlink_jitter_ms = 5 [json_name = "downlink_jitter_ms"];
+
+  int64 downlink_loss_percent = 6 [json_name = "downlink_loss_percent"];
+
+  string id = 7;
+
+  string name = 8;
+
+  string project_arn = 9 [json_name = "project_arn"];
+
+  map<string, string> tags = 10;
+
+  map<string, string> tags_all = 11 [json_name = "tags_all"];
+
+  string type = 12;
+
+  int64 uplink_bandwidth_bits = 13 [json_name = "uplink_bandwidth_bits"];
+
+  int64 uplink_delay_ms = 14 [json_name = "uplink_delay_ms"];
+
+  int64 uplink_jitter_ms = 15 [json_name = "uplink_jitter_ms"];
+
+  int64 uplink_loss_percent = 16 [json_name = "uplink_loss_percent"];
+
+  map<string, string> for_each = 17 [json_name = "for_each"];
+
+  repeated string depends_on = 18 [json_name = "depends_on"];
+
+  int32 count = 19;
+
+  string provider = 20;
+
+  terraform.v1.Lifecycle lifecycle = 21;
+}
+
+// AwsDevicefarmProject version is 0
+message AwsDevicefarmProject {
+  string arn = 1;
+
+  int64 default_job_timeout_minutes = 2 [json_name = "default_job_timeout_minutes"];
+
+  string id = 3;
+
+  string name = 4;
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsDevicefarmTestGridProject version is 0
+message AwsDevicefarmTestGridProject {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  string name = 4;
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  VpcConfig vpc_config = 7 [json_name = "vpc_config"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message VpcConfig {
+    repeated string security_group_ids = 1 [json_name = "security_group_ids"];
+
+    repeated string subnet_ids = 2 [json_name = "subnet_ids"];
+
+    string vpc_id = 3 [json_name = "vpc_id"];
+  }
+}
+
+// AwsDevicefarmUpload version is 0
+message AwsDevicefarmUpload {
+  string arn = 1;
+
+  string category = 2;
+
+  string content_type = 3 [json_name = "content_type"];
+
+  string id = 4;
+
+  string metadata = 5;
+
+  string name = 6;
+
+  string project_arn = 7 [json_name = "project_arn"];
+
+  string type = 8;
+
+  string url = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+}

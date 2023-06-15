@@ -1,0 +1,475 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsNeptuneCluster version is 0
+message AwsNeptuneCluster {
+  bool allow_major_version_upgrade = 1 [json_name = "allow_major_version_upgrade"];
+
+  bool apply_immediately = 2 [json_name = "apply_immediately"];
+
+  string arn = 3;
+
+  repeated string availability_zones = 4 [json_name = "availability_zones"];
+
+  int64 backup_retention_period = 5 [json_name = "backup_retention_period"];
+
+  string cluster_identifier = 6 [json_name = "cluster_identifier"];
+
+  string cluster_identifier_prefix = 7 [json_name = "cluster_identifier_prefix"];
+
+  repeated string cluster_members = 8 [json_name = "cluster_members"];
+
+  string cluster_resource_id = 9 [json_name = "cluster_resource_id"];
+
+  bool copy_tags_to_snapshot = 10 [json_name = "copy_tags_to_snapshot"];
+
+  bool deletion_protection = 11 [json_name = "deletion_protection"];
+
+  repeated string enable_cloudwatch_logs_exports = 12 [json_name = "enable_cloudwatch_logs_exports"];
+
+  string endpoint = 13;
+
+  string engine = 14;
+
+  string engine_version = 15 [json_name = "engine_version"];
+
+  string final_snapshot_identifier = 16 [json_name = "final_snapshot_identifier"];
+
+  string global_cluster_identifier = 17 [json_name = "global_cluster_identifier"];
+
+  string hosted_zone_id = 18 [json_name = "hosted_zone_id"];
+
+  bool iam_database_authentication_enabled = 19 [json_name = "iam_database_authentication_enabled"];
+
+  repeated string iam_roles = 20 [json_name = "iam_roles"];
+
+  string id = 21;
+
+  string kms_key_arn = 22 [json_name = "kms_key_arn"];
+
+  string neptune_cluster_parameter_group_name = 23 [json_name = "neptune_cluster_parameter_group_name"];
+
+  string neptune_instance_parameter_group_name = 24 [
+    json_name = "neptune_instance_parameter_group_name"
+  ];
+
+  string neptune_subnet_group_name = 25 [json_name = "neptune_subnet_group_name"];
+
+  int64 port = 26;
+
+  string preferred_backup_window = 27 [json_name = "preferred_backup_window"];
+
+  string preferred_maintenance_window = 28 [json_name = "preferred_maintenance_window"];
+
+  string reader_endpoint = 29 [json_name = "reader_endpoint"];
+
+  string replication_source_identifier = 30 [json_name = "replication_source_identifier"];
+
+  bool skip_final_snapshot = 31 [json_name = "skip_final_snapshot"];
+
+  string snapshot_identifier = 32 [json_name = "snapshot_identifier"];
+
+  bool storage_encrypted = 33 [json_name = "storage_encrypted"];
+
+  map<string, string> tags = 34;
+
+  map<string, string> tags_all = 35 [json_name = "tags_all"];
+
+  repeated string vpc_security_group_ids = 36 [json_name = "vpc_security_group_ids"];
+
+  ServerlessV2ScalingConfiguration serverless_v2_scaling_configuration = 37 [json_name = "serverless_v2_scaling_configuration"];
+
+  repeated Timeouts timeouts = 38;
+
+  map<string, string> for_each = 39 [json_name = "for_each"];
+
+  repeated string depends_on = 40 [json_name = "depends_on"];
+
+  int32 count = 41;
+
+  string provider = 42;
+
+  terraform.v1.Lifecycle lifecycle = 43;
+
+  message ServerlessV2ScalingConfiguration {
+    int64 max_capacity = 1 [json_name = "max_capacity"];
+
+    int64 min_capacity = 2 [json_name = "min_capacity"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsNeptuneClusterEndpoint version is 0
+message AwsNeptuneClusterEndpoint {
+  string arn = 1;
+
+  string cluster_endpoint_identifier = 2 [json_name = "cluster_endpoint_identifier"];
+
+  string cluster_identifier = 3 [json_name = "cluster_identifier"];
+
+  string endpoint = 4;
+
+  string endpoint_type = 5 [json_name = "endpoint_type"];
+
+  repeated string excluded_members = 6 [json_name = "excluded_members"];
+
+  string id = 7;
+
+  repeated string static_members = 8 [json_name = "static_members"];
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+}
+
+// AwsNeptuneClusterInstance version is 0
+message AwsNeptuneClusterInstance {
+  string address = 1;
+
+  bool apply_immediately = 2 [json_name = "apply_immediately"];
+
+  string arn = 3;
+
+  bool auto_minor_version_upgrade = 4 [json_name = "auto_minor_version_upgrade"];
+
+  string availability_zone = 5 [json_name = "availability_zone"];
+
+  string cluster_identifier = 6 [json_name = "cluster_identifier"];
+
+  string dbi_resource_id = 7 [json_name = "dbi_resource_id"];
+
+  string endpoint = 8;
+
+  string engine = 9;
+
+  string engine_version = 10 [json_name = "engine_version"];
+
+  string id = 11;
+
+  string identifier = 12;
+
+  string identifier_prefix = 13 [json_name = "identifier_prefix"];
+
+  string instance_class = 14 [json_name = "instance_class"];
+
+  string kms_key_arn = 15 [json_name = "kms_key_arn"];
+
+  string neptune_parameter_group_name = 16 [json_name = "neptune_parameter_group_name"];
+
+  string neptune_subnet_group_name = 17 [json_name = "neptune_subnet_group_name"];
+
+  int64 port = 18;
+
+  string preferred_backup_window = 19 [json_name = "preferred_backup_window"];
+
+  string preferred_maintenance_window = 20 [json_name = "preferred_maintenance_window"];
+
+  int64 promotion_tier = 21 [json_name = "promotion_tier"];
+
+  bool publicly_accessible = 22 [json_name = "publicly_accessible"];
+
+  bool storage_encrypted = 23 [json_name = "storage_encrypted"];
+
+  map<string, string> tags = 24;
+
+  map<string, string> tags_all = 25 [json_name = "tags_all"];
+
+  bool writer = 26;
+
+  repeated Timeouts timeouts = 27;
+
+  map<string, string> for_each = 28 [json_name = "for_each"];
+
+  repeated string depends_on = 29 [json_name = "depends_on"];
+
+  int32 count = 30;
+
+  string provider = 31;
+
+  terraform.v1.Lifecycle lifecycle = 32;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsNeptuneClusterParameterGroup version is 0
+message AwsNeptuneClusterParameterGroup {
+  string arn = 1;
+
+  string description = 2;
+
+  string family = 3;
+
+  string id = 4;
+
+  string name = 5;
+
+  string name_prefix = 6 [json_name = "name_prefix"];
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  repeated Parameter parameter = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Parameter {
+    string apply_method = 1 [json_name = "apply_method"];
+
+    string name = 2;
+
+    string value = 3;
+  }
+}
+
+// AwsNeptuneClusterSnapshot version is 0
+message AwsNeptuneClusterSnapshot {
+  int64 allocated_storage = 1 [json_name = "allocated_storage"];
+
+  repeated string availability_zones = 2 [json_name = "availability_zones"];
+
+  string db_cluster_identifier = 3 [json_name = "db_cluster_identifier"];
+
+  string db_cluster_snapshot_arn = 4 [json_name = "db_cluster_snapshot_arn"];
+
+  string db_cluster_snapshot_identifier = 5 [json_name = "db_cluster_snapshot_identifier"];
+
+  string engine = 6;
+
+  string engine_version = 7 [json_name = "engine_version"];
+
+  string id = 8;
+
+  string kms_key_id = 9 [json_name = "kms_key_id"];
+
+  string license_model = 10 [json_name = "license_model"];
+
+  int64 port = 11;
+
+  string snapshot_type = 12 [json_name = "snapshot_type"];
+
+  string source_db_cluster_snapshot_arn = 13 [json_name = "source_db_cluster_snapshot_arn"];
+
+  string status = 14;
+
+  bool storage_encrypted = 15 [json_name = "storage_encrypted"];
+
+  string vpc_id = 16 [json_name = "vpc_id"];
+
+  repeated Timeouts timeouts = 17;
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+
+  message Timeouts {
+    string create = 1;
+  }
+}
+
+// AwsNeptuneEventSubscription version is 0
+message AwsNeptuneEventSubscription {
+  string arn = 1;
+
+  string customer_aws_id = 2 [json_name = "customer_aws_id"];
+
+  bool enabled = 3;
+
+  repeated string event_categories = 4 [json_name = "event_categories"];
+
+  string id = 5;
+
+  string name = 6;
+
+  string name_prefix = 7 [json_name = "name_prefix"];
+
+  string sns_topic_arn = 8 [json_name = "sns_topic_arn"];
+
+  repeated string source_ids = 9 [json_name = "source_ids"];
+
+  string source_type = 10 [json_name = "source_type"];
+
+  map<string, string> tags = 11;
+
+  map<string, string> tags_all = 12 [json_name = "tags_all"];
+
+  repeated Timeouts timeouts = 13;
+
+  map<string, string> for_each = 14 [json_name = "for_each"];
+
+  repeated string depends_on = 15 [json_name = "depends_on"];
+
+  int32 count = 16;
+
+  string provider = 17;
+
+  terraform.v1.Lifecycle lifecycle = 18;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsNeptuneGlobalCluster version is 0
+message AwsNeptuneGlobalCluster {
+  string arn = 1;
+
+  bool deletion_protection = 2 [json_name = "deletion_protection"];
+
+  string engine = 3;
+
+  string engine_version = 4 [json_name = "engine_version"];
+
+  string global_cluster_identifier = 5 [json_name = "global_cluster_identifier"];
+
+  repeated GlobalClusterMembers global_cluster_members = 6 [json_name = "global_cluster_members"];
+
+  string global_cluster_resource_id = 7 [json_name = "global_cluster_resource_id"];
+
+  string id = 8;
+
+  string source_db_cluster_identifier = 9 [json_name = "source_db_cluster_identifier"];
+
+  string status = 10;
+
+  bool storage_encrypted = 11 [json_name = "storage_encrypted"];
+
+  repeated Timeouts timeouts = 12;
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message GlobalClusterMembers {
+    // db_cluster_arn: string
+    string db_cluster_arn = 1 [json_name = "db_cluster_arn"];
+
+    // is_writer: bool
+    bool is_writer = 2 [json_name = "is_writer"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsNeptuneParameterGroup version is 0
+message AwsNeptuneParameterGroup {
+  string arn = 1;
+
+  string description = 2;
+
+  string family = 3;
+
+  string id = 4;
+
+  string name = 5;
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  repeated Parameter parameter = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Parameter {
+    string apply_method = 1 [json_name = "apply_method"];
+
+    string name = 2;
+
+    string value = 3;
+  }
+}
+
+// AwsNeptuneSubnetGroup version is 0
+message AwsNeptuneSubnetGroup {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  string name = 4;
+
+  string name_prefix = 5 [json_name = "name_prefix"];
+
+  repeated string subnet_ids = 6 [json_name = "subnet_ids"];
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+}

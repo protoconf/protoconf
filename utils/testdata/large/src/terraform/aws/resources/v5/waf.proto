@@ -1,0 +1,438 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsWafByteMatchSet version is 0
+message AwsWafByteMatchSet {
+  string id = 1;
+
+  string name = 2;
+
+  repeated ByteMatchTuples byte_match_tuples = 3 [json_name = "byte_match_tuples"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+
+  message ByteMatchTuples {
+    string positional_constraint = 1 [json_name = "positional_constraint"];
+
+    string target_string = 2 [json_name = "target_string"];
+
+    string text_transformation = 3 [json_name = "text_transformation"];
+
+    FieldToMatch field_to_match = 4 [json_name = "field_to_match"];
+
+    message FieldToMatch {
+      string data = 1;
+
+      string type = 2;
+    }
+  }
+}
+
+// AwsWafGeoMatchSet version is 0
+message AwsWafGeoMatchSet {
+  string arn = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  repeated GeoMatchConstraint geo_match_constraint = 4 [json_name = "geo_match_constraint"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message GeoMatchConstraint {
+    string type = 1;
+
+    string value = 2;
+  }
+}
+
+// AwsWafIpset version is 0
+message AwsWafIpset {
+  string arn = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  repeated IpSetDescriptors ip_set_descriptors = 4 [json_name = "ip_set_descriptors"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message IpSetDescriptors {
+    string type = 1;
+
+    string value = 2;
+  }
+}
+
+// AwsWafRateBasedRule version is 0
+message AwsWafRateBasedRule {
+  string arn = 1;
+
+  string id = 2;
+
+  string metric_name = 3 [json_name = "metric_name"];
+
+  string name = 4;
+
+  string rate_key = 5 [json_name = "rate_key"];
+
+  int64 rate_limit = 6 [json_name = "rate_limit"];
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  repeated Predicates predicates = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Predicates {
+    string data_id = 1 [json_name = "data_id"];
+
+    bool negated = 2;
+
+    string type = 3;
+  }
+}
+
+// AwsWafRegexMatchSet version is 0
+message AwsWafRegexMatchSet {
+  string arn = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  repeated RegexMatchTuple regex_match_tuple = 4 [json_name = "regex_match_tuple"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message RegexMatchTuple {
+    string regex_pattern_set_id = 1 [json_name = "regex_pattern_set_id"];
+
+    string text_transformation = 2 [json_name = "text_transformation"];
+
+    FieldToMatch field_to_match = 3 [json_name = "field_to_match"];
+
+    message FieldToMatch {
+      string data = 1;
+
+      string type = 2;
+    }
+  }
+}
+
+// AwsWafRegexPatternSet version is 0
+message AwsWafRegexPatternSet {
+  string arn = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  repeated string regex_pattern_strings = 4 [json_name = "regex_pattern_strings"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsWafRule version is 0
+message AwsWafRule {
+  string arn = 1;
+
+  string id = 2;
+
+  string metric_name = 3 [json_name = "metric_name"];
+
+  string name = 4;
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  repeated Predicates predicates = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Predicates {
+    string data_id = 1 [json_name = "data_id"];
+
+    bool negated = 2;
+
+    string type = 3;
+  }
+}
+
+// AwsWafRuleGroup version is 0
+message AwsWafRuleGroup {
+  string arn = 1;
+
+  string id = 2;
+
+  string metric_name = 3 [json_name = "metric_name"];
+
+  string name = 4;
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  repeated ActivatedRule activated_rule = 7 [json_name = "activated_rule"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message ActivatedRule {
+    int64 priority = 1;
+
+    string rule_id = 2 [json_name = "rule_id"];
+
+    string type = 3;
+
+    Action action = 4;
+
+    message Action {
+      string type = 1;
+    }
+  }
+}
+
+// AwsWafSizeConstraintSet version is 0
+message AwsWafSizeConstraintSet {
+  string arn = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  repeated SizeConstraints size_constraints = 4 [json_name = "size_constraints"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message SizeConstraints {
+    string comparison_operator = 1 [json_name = "comparison_operator"];
+
+    int64 size = 2;
+
+    string text_transformation = 3 [json_name = "text_transformation"];
+
+    FieldToMatch field_to_match = 4 [json_name = "field_to_match"];
+
+    message FieldToMatch {
+      string data = 1;
+
+      string type = 2;
+    }
+  }
+}
+
+// AwsWafSqlInjectionMatchSet version is 0
+message AwsWafSqlInjectionMatchSet {
+  string id = 1;
+
+  string name = 2;
+
+  repeated SqlInjectionMatchTuples sql_injection_match_tuples = 3 [json_name = "sql_injection_match_tuples"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+
+  message SqlInjectionMatchTuples {
+    string text_transformation = 1 [json_name = "text_transformation"];
+
+    FieldToMatch field_to_match = 2 [json_name = "field_to_match"];
+
+    message FieldToMatch {
+      string data = 1;
+
+      string type = 2;
+    }
+  }
+}
+
+// AwsWafWebAcl version is 0
+message AwsWafWebAcl {
+  string arn = 1;
+
+  string id = 2;
+
+  string metric_name = 3 [json_name = "metric_name"];
+
+  string name = 4;
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  DefaultAction default_action = 7 [json_name = "default_action"];
+
+  LoggingConfiguration logging_configuration = 8 [json_name = "logging_configuration"];
+
+  repeated Rules rules = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message DefaultAction {
+    string type = 1;
+  }
+
+  message LoggingConfiguration {
+    string log_destination = 1 [json_name = "log_destination"];
+
+    RedactedFields redacted_fields = 2 [json_name = "redacted_fields"];
+
+    message RedactedFields {
+      repeated FieldToMatch field_to_match = 1 [json_name = "field_to_match"];
+
+      message FieldToMatch {
+        string data = 1;
+
+        string type = 2;
+      }
+    }
+  }
+
+  message Rules {
+    int64 priority = 1;
+
+    string rule_id = 2 [json_name = "rule_id"];
+
+    string type = 3;
+
+    Action action = 4;
+
+    OverrideAction override_action = 5 [json_name = "override_action"];
+
+    message Action {
+      string type = 1;
+    }
+
+    message OverrideAction {
+      string type = 1;
+    }
+  }
+}
+
+// AwsWafXssMatchSet version is 0
+message AwsWafXssMatchSet {
+  string arn = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  repeated XssMatchTuples xss_match_tuples = 4 [json_name = "xss_match_tuples"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message XssMatchTuples {
+    string text_transformation = 1 [json_name = "text_transformation"];
+
+    FieldToMatch field_to_match = 2 [json_name = "field_to_match"];
+
+    message FieldToMatch {
+      string data = 1;
+
+      string type = 2;
+    }
+  }
+}

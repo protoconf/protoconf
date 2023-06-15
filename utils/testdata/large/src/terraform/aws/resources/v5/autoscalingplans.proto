@@ -1,0 +1,131 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsAutoscalingplansScalingPlan version is 0
+message AwsAutoscalingplansScalingPlan {
+  string id = 1;
+
+  string name = 2;
+
+  int64 scaling_plan_version = 3 [json_name = "scaling_plan_version"];
+
+  ApplicationSource application_source = 4 [json_name = "application_source"];
+
+  repeated ScalingInstruction scaling_instruction = 5 [json_name = "scaling_instruction"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message ApplicationSource {
+    string cloudformation_stack_arn = 1 [json_name = "cloudformation_stack_arn"];
+
+    repeated TagFilter tag_filter = 2 [json_name = "tag_filter"];
+
+    message TagFilter {
+      string key = 1;
+
+      repeated string values = 2;
+    }
+  }
+
+  message ScalingInstruction {
+    bool disable_dynamic_scaling = 1 [json_name = "disable_dynamic_scaling"];
+
+    int64 max_capacity = 2 [json_name = "max_capacity"];
+
+    int64 min_capacity = 3 [json_name = "min_capacity"];
+
+    string predictive_scaling_max_capacity_behavior = 4 [
+      json_name = "predictive_scaling_max_capacity_behavior"
+    ];
+
+    int64 predictive_scaling_max_capacity_buffer = 5 [
+      json_name = "predictive_scaling_max_capacity_buffer"
+    ];
+
+    string predictive_scaling_mode = 6 [json_name = "predictive_scaling_mode"];
+
+    string resource_id = 7 [json_name = "resource_id"];
+
+    string scalable_dimension = 8 [json_name = "scalable_dimension"];
+
+    string scaling_policy_update_behavior = 9 [json_name = "scaling_policy_update_behavior"];
+
+    int64 scheduled_action_buffer_time = 10 [json_name = "scheduled_action_buffer_time"];
+
+    string service_namespace = 11 [json_name = "service_namespace"];
+
+    CustomizedLoadMetricSpecification customized_load_metric_specification = 12 [json_name = "customized_load_metric_specification"];
+
+    PredefinedLoadMetricSpecification predefined_load_metric_specification = 13 [json_name = "predefined_load_metric_specification"];
+
+    repeated TargetTrackingConfiguration target_tracking_configuration = 14 [json_name = "target_tracking_configuration"];
+
+    message CustomizedLoadMetricSpecification {
+      map<string, string> dimensions = 1;
+
+      string metric_name = 2 [json_name = "metric_name"];
+
+      string namespace = 3;
+
+      string statistic = 4;
+
+      string unit = 5;
+    }
+
+    message PredefinedLoadMetricSpecification {
+      string predefined_load_metric_type = 1 [json_name = "predefined_load_metric_type"];
+
+      string resource_label = 2 [json_name = "resource_label"];
+    }
+
+    message TargetTrackingConfiguration {
+      bool disable_scale_in = 1 [json_name = "disable_scale_in"];
+
+      int64 estimated_instance_warmup = 2 [json_name = "estimated_instance_warmup"];
+
+      int64 scale_in_cooldown = 3 [json_name = "scale_in_cooldown"];
+
+      int64 scale_out_cooldown = 4 [json_name = "scale_out_cooldown"];
+
+      int64 target_value = 5 [json_name = "target_value"];
+
+      CustomizedScalingMetricSpecification customized_scaling_metric_specification = 6 [
+        json_name = "customized_scaling_metric_specification"
+      ];
+
+      PredefinedScalingMetricSpecification predefined_scaling_metric_specification = 7 [
+        json_name = "predefined_scaling_metric_specification"
+      ];
+
+      message CustomizedScalingMetricSpecification {
+        map<string, string> dimensions = 1;
+
+        string metric_name = 2 [json_name = "metric_name"];
+
+        string namespace = 3;
+
+        string statistic = 4;
+
+        string unit = 5;
+      }
+
+      message PredefinedScalingMetricSpecification {
+        string predefined_scaling_metric_type = 1 [json_name = "predefined_scaling_metric_type"];
+
+        string resource_label = 2 [json_name = "resource_label"];
+      }
+    }
+  }
+}

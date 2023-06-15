@@ -1,0 +1,299 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleComposerEnvironment version is 0
+message GoogleComposerEnvironment {
+  string id = 1;
+
+  // User-defined labels for this environment. The labels map can contain no more than 64 entries. Entries of the labels map are UTF8 strings that comply with the following restrictions: Label keys must be between 1 and 63 characters long and must conform to the following regular expression: [a-z]([-a-z0-9]*[a-z0-9])?. Label values must be between 0 and 63 characters long and must conform to the regular expression ([a-z]([-a-z0-9]*[a-z0-9])?)?. No more than 64 labels can be associated with a given environment. Both keys and values must be <= 128 bytes in size.
+  map<string, string> labels = 2;
+
+  // Name of the environment.
+  string name = 3;
+
+  // The ID of the project in which the resource belongs. If it is not provided, the provider project is used.
+  string project = 4;
+
+  // The location or Compute Engine region for the environment.
+  string region = 5;
+
+  Config config = 6;
+
+  repeated Timeouts timeouts = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Config {
+    // The URI of the Apache Airflow Web UI hosted within this environment.
+    string airflow_uri = 1 [json_name = "airflow_uri"];
+
+    // The Cloud Storage prefix of the DAGs for this environment. Although Cloud Storage objects reside in a flat namespace, a hierarchical file tree can be simulated using '/'-delimited object name prefixes. DAG objects for this environment reside in a simulated directory with this prefix.
+    string dag_gcs_prefix = 2 [json_name = "dag_gcs_prefix"];
+
+    // The size of the Cloud Composer environment. This field is supported for Cloud Composer environments in versions composer-2.*.*-airflow-*.*.* and newer.
+    string environment_size = 3 [json_name = "environment_size"];
+
+    // The Kubernetes Engine cluster used to run this environment.
+    string gke_cluster = 4 [json_name = "gke_cluster"];
+
+    // The number of nodes in the Kubernetes Engine cluster that will be used to run this environment. This field is supported for Cloud Composer environments in versions composer-1.*.*-airflow-*.*.*.
+    int64 node_count = 5 [json_name = "node_count"];
+
+    DatabaseConfig database_config = 6 [json_name = "database_config"];
+
+    EncryptionConfig encryption_config = 7 [json_name = "encryption_config"];
+
+    MaintenanceWindow maintenance_window = 8 [json_name = "maintenance_window"];
+
+    MasterAuthorizedNetworksConfig master_authorized_networks_config = 9 [json_name = "master_authorized_networks_config"];
+
+    NodeConfig node_config = 10 [json_name = "node_config"];
+
+    PrivateEnvironmentConfig private_environment_config = 11 [json_name = "private_environment_config"];
+
+    RecoveryConfig recovery_config = 12 [json_name = "recovery_config"];
+
+    SoftwareConfig software_config = 13 [json_name = "software_config"];
+
+    WebServerConfig web_server_config = 14 [json_name = "web_server_config"];
+
+    WebServerNetworkAccessControl web_server_network_access_control = 15 [json_name = "web_server_network_access_control"];
+
+    WorkloadsConfig workloads_config = 16 [json_name = "workloads_config"];
+
+    message DatabaseConfig {
+      // Optional. Cloud SQL machine type used by Airflow database. It has to be one of: db-n1-standard-2, db-n1-standard-4, db-n1-standard-8 or db-n1-standard-16. If not specified, db-n1-standard-2 will be used.
+      string machine_type = 1 [json_name = "machine_type"];
+    }
+
+    message EncryptionConfig {
+      // Optional. Customer-managed Encryption Key available through Google's Key Management Service. Cannot be updated.
+      string kms_key_name = 1 [json_name = "kms_key_name"];
+    }
+
+    message MaintenanceWindow {
+      // Maintenance window end time. It is used only to calculate the duration of the maintenance window. The value for end-time must be in the future, relative to 'start_time'.
+      string end_time = 1 [json_name = "end_time"];
+
+      // Maintenance window recurrence. Format is a subset of RFC-5545 (https://tools.ietf.org/html/rfc5545) 'RRULE'. The only allowed values for 'FREQ' field are 'FREQ=DAILY' and 'FREQ=WEEKLY;BYDAY=...'. Example values: 'FREQ=WEEKLY;BYDAY=TU,WE', 'FREQ=DAILY'.
+      string recurrence = 2;
+
+      // Start time of the first recurrence of the maintenance window.
+      string start_time = 3 [json_name = "start_time"];
+    }
+
+    message MasterAuthorizedNetworksConfig {
+      // Whether or not master authorized networks is enabled.
+      bool enabled = 1;
+
+      repeated CidrBlocks cidr_blocks = 2 [json_name = "cidr_blocks"];
+
+      message CidrBlocks {
+        // cidr_block must be specified in CIDR notation.
+        string cidr_block = 1 [json_name = "cidr_block"];
+
+        // display_name is a field for users to identify CIDR blocks.
+        string display_name = 2 [json_name = "display_name"];
+      }
+    }
+
+    message NodeConfig {
+      // The disk size in GB used for node VMs. Minimum size is 20GB. If unspecified, defaults to 100GB. Cannot be updated. This field is supported for Cloud Composer environments in versions composer-1.*.*-airflow-*.*.*.
+      int64 disk_size_gb = 1 [json_name = "disk_size_gb"];
+
+      // Deploys 'ip-masq-agent' daemon set in the GKE cluster and defines nonMasqueradeCIDRs equals to pod IP range so IP masquerading is used for all destination addresses, except between pods traffic. See: https://cloud.google.com/kubernetes-engine/docs/how-to/ip-masquerade-agent
+      bool enable_ip_masq_agent = 2 [json_name = "enable_ip_masq_agent"];
+
+      // Configuration for controlling how IPs are allocated in the GKE cluster. Cannot be updated.
+      repeated IpAllocationPolicy ip_allocation_policy = 3 [json_name = "ip_allocation_policy"];
+
+      // The Compute Engine machine type used for cluster instances, specified as a name or relative resource name. For example: "projects/{project}/zones/{zone}/machineTypes/{machineType}". Must belong to the enclosing environment's project and region/zone. This field is supported for Cloud Composer environments in versions composer-1.*.*-airflow-*.*.*.
+      string machine_type = 4 [json_name = "machine_type"];
+
+      // The Compute Engine machine type used for cluster instances, specified as a name or relative resource name. For example: "projects/{project}/zones/{zone}/machineTypes/{machineType}". Must belong to the enclosing environment's project and region/zone. The network must belong to the environment's project. If unspecified, the "default" network ID in the environment's project is used. If a Custom Subnet Network is provided, subnetwork must also be provided.
+      string network = 5;
+
+      // The set of Google API scopes to be made available on all node VMs. Cannot be updated. If empty, defaults to ["https://www.googleapis.com/auth/cloud-platform"]. This field is supported for Cloud Composer environments in versions composer-1.*.*-airflow-*.*.*.
+      repeated string oauth_scopes = 6 [json_name = "oauth_scopes"];
+
+      // The Google Cloud Platform Service Account to be used by the node VMs. If a service account is not specified, the "default" Compute Engine service account is used. Cannot be updated. If given, note that the service account must have roles/composer.worker for any GCP resources created under the Cloud Composer Environment.
+      string service_account = 7 [json_name = "service_account"];
+
+      // The Compute Engine subnetwork to be used for machine communications, , specified as a self-link, relative resource name (e.g. "projects/{project}/regions/{region}/subnetworks/{subnetwork}"), or by name. If subnetwork is provided, network must also be provided and the subnetwork must belong to the enclosing environment's project and region.
+      string subnetwork = 8;
+
+      // The list of instance tags applied to all node VMs. Tags are used to identify valid sources or targets for network firewalls. Each tag within the list must comply with RFC1035. Cannot be updated.
+      repeated string tags = 9;
+
+      // The Compute Engine zone in which to deploy the VMs running the Apache Airflow software, specified as the zone name or relative resource name (e.g. "projects/{project}/zones/{zone}"). Must belong to the enclosing environment's project and region. This field is supported for Cloud Composer environments in versions composer-1.*.*-airflow-*.*.*.
+      string zone = 10;
+
+      message IpAllocationPolicy {
+        // cluster_ipv4_cidr_block: string
+        string cluster_ipv4_cidr_block = 1 [json_name = "cluster_ipv4_cidr_block"];
+
+        // cluster_secondary_range_name: string
+        string cluster_secondary_range_name = 2 [json_name = "cluster_secondary_range_name"];
+
+        // services_ipv4_cidr_block: string
+        string services_ipv4_cidr_block = 3 [json_name = "services_ipv4_cidr_block"];
+
+        // services_secondary_range_name: string
+        string services_secondary_range_name = 4 [json_name = "services_secondary_range_name"];
+
+        // use_ip_aliases: bool
+        bool use_ip_aliases = 5 [json_name = "use_ip_aliases"];
+      }
+    }
+
+    message PrivateEnvironmentConfig {
+      // When specified, the environment will use Private Service Connect instead of VPC peerings to connect to Cloud SQL in the Tenant Project, and the PSC endpoint in the Customer Project will use an IP address from this subnetwork. This field is supported for Cloud Composer environments in versions composer-2.*.*-airflow-*.*.* and newer.
+      string cloud_composer_connection_subnetwork = 1 [json_name = "cloud_composer_connection_subnetwork"];
+
+      // The CIDR block from which IP range for Cloud Composer Network in tenant project will be reserved. Needs to be disjoint from private_cluster_config.master_ipv4_cidr_block and cloud_sql_ipv4_cidr_block. This field is supported for Cloud Composer environments in versions composer-2.*.*-airflow-*.*.* and newer.
+      string cloud_composer_network_ipv4_cidr_block = 2 [
+        json_name = "cloud_composer_network_ipv4_cidr_block"
+      ];
+
+      // The CIDR block from which IP range in tenant project will be reserved for Cloud SQL. Needs to be disjoint from web_server_ipv4_cidr_block.
+      string cloud_sql_ipv4_cidr_block = 3 [json_name = "cloud_sql_ipv4_cidr_block"];
+
+      // If true, access to the public endpoint of the GKE cluster is denied. If this field is set to true, ip_allocation_policy.use_ip_aliases must be set to true for Cloud Composer environments in versions composer-1.*.*-airflow-*.*.*.
+      bool enable_private_endpoint = 4 [json_name = "enable_private_endpoint"];
+
+      // When enabled, IPs from public (non-RFC1918) ranges can be used for ip_allocation_policy.cluster_ipv4_cidr_block and ip_allocation_policy.service_ipv4_cidr_block.
+      bool enable_privately_used_public_ips = 5 [json_name = "enable_privately_used_public_ips"];
+
+      // The IP range in CIDR notation to use for the hosted master network. This range is used for assigning internal IP addresses to the cluster master or set of masters and to the internal load balancer virtual IP. This range must not overlap with any other ranges in use within the cluster's network. If left blank, the default value of '172.16.0.0/28' is used.
+      string master_ipv4_cidr_block = 6 [json_name = "master_ipv4_cidr_block"];
+
+      // The CIDR block from which IP range for web server will be reserved. Needs to be disjoint from master_ipv4_cidr_block and cloud_sql_ipv4_cidr_block. This field is supported for Cloud Composer environments in versions composer-1.*.*-airflow-*.*.*.
+      string web_server_ipv4_cidr_block = 7 [json_name = "web_server_ipv4_cidr_block"];
+    }
+
+    message RecoveryConfig {
+      ScheduledSnapshotsConfig scheduled_snapshots_config = 1 [json_name = "scheduled_snapshots_config"];
+
+      message ScheduledSnapshotsConfig {
+        // When enabled, Cloud Composer periodically saves snapshots of your environment to a Cloud Storage bucket.
+        bool enabled = 1;
+
+        // Snapshot schedule, in the unix-cron format.
+        string snapshot_creation_schedule = 2 [json_name = "snapshot_creation_schedule"];
+
+        // the URI of a bucket folder where to save the snapshot.
+        string snapshot_location = 3 [json_name = "snapshot_location"];
+
+        // A time zone for the schedule. This value is a time offset and does not take into account daylight saving time changes. Valid values are from UTC-12 to UTC+12. Examples: UTC, UTC-01, UTC+03.
+        string time_zone = 4 [json_name = "time_zone"];
+      }
+    }
+
+    message SoftwareConfig {
+      // Apache Airflow configuration properties to override. Property keys contain the section and property names, separated by a hyphen, for example "core-dags_are_paused_at_creation". Section names must not contain hyphens ("-"), opening square brackets ("["), or closing square brackets ("]"). The property name must not be empty and cannot contain "=" or ";". Section and property names cannot contain characters: "." Apache Airflow configuration property names must be written in snake_case. Property values can contain any character, and can be written in any lower/upper case format. Certain Apache Airflow configuration property values are blacklisted, and cannot be overridden.
+      map<string, string> airflow_config_overrides = 1 [json_name = "airflow_config_overrides"];
+
+      // Additional environment variables to provide to the Apache Airflow scheduler, worker, and webserver processes. Environment variable names must match the regular expression [a-zA-Z_][a-zA-Z0-9_]*. They cannot specify Apache Airflow software configuration overrides (they cannot match the regular expression AIRFLOW__[A-Z0-9_]+__[A-Z0-9_]+), and they cannot match any of the following reserved names: AIRFLOW_HOME C_FORCE_ROOT CONTAINER_NAME DAGS_FOLDER GCP_PROJECT GCS_BUCKET GKE_CLUSTER_NAME SQL_DATABASE SQL_INSTANCE SQL_PASSWORD SQL_PROJECT SQL_REGION SQL_USER.
+      map<string, string> env_variables = 2 [json_name = "env_variables"];
+
+      // The version of the software running in the environment. This encapsulates both the version of Cloud Composer functionality and the version of Apache Airflow. It must match the regular expression composer-([0-9]+(\.[0-9]+\.[0-9]+(-preview\.[0-9]+)?)?|latest)-airflow-([0-9]+(\.[0-9]+(\.[0-9]+)?)?). The Cloud Composer portion of the image version is a full semantic version, or an alias in the form of major version number or 'latest'. The Apache Airflow portion of the image version is a full semantic version that points to one of the supported Apache Airflow versions, or an alias in the form of only major or major.minor versions specified. See documentation for more details and version list.
+      string image_version = 3 [json_name = "image_version"];
+
+      // Custom Python Package Index (PyPI) packages to be installed in the environment. Keys refer to the lowercase package name (e.g. "numpy"). Values are the lowercase extras and version specifier (e.g. "==1.12.0", "[devel,gcp_api]", "[devel]>=1.8.2, <1.9.2"). To specify a package without pinning it to a version specifier, use the empty string as the value.
+      map<string, string> pypi_packages = 4 [json_name = "pypi_packages"];
+
+      // The major version of Python used to run the Apache Airflow scheduler, worker, and webserver processes. Can be set to '2' or '3'. If not specified, the default is '2'. Cannot be updated. This field is supported for Cloud Composer environments in versions composer-1.*.*-airflow-*.*.*. Environments in newer versions always use Python major version 3.
+      string python_version = 5 [json_name = "python_version"];
+
+      // The number of schedulers for Airflow. This field is supported for Cloud Composer environments in versions composer-1.*.*-airflow-2.*.*.
+      int64 scheduler_count = 6 [json_name = "scheduler_count"];
+    }
+
+    message WebServerConfig {
+      // Optional. Machine type on which Airflow web server is running. It has to be one of: composer-n1-webserver-2, composer-n1-webserver-4 or composer-n1-webserver-8. If not specified, composer-n1-webserver-2 will be used. Value custom is returned only in response, if Airflow web server parameters were manually changed to a non-standard values.
+      string machine_type = 1 [json_name = "machine_type"];
+    }
+
+    message WebServerNetworkAccessControl {
+      repeated AllowedIpRange allowed_ip_range = 1 [json_name = "allowed_ip_range"];
+
+      message AllowedIpRange {
+        // A description of this ip range.
+        string description = 1;
+
+        // IP address or range, defined using CIDR notation, of requests that this rule applies to. Examples: 192.168.1.1 or 192.168.0.0/16 or 2001:db8::/32 or 2001:0db8:0000:0042:0000:8a2e:0370:7334. IP range prefixes should be properly truncated. For example, 1.2.3.4/24 should be truncated to 1.2.3.0/24. Similarly, for IPv6, 2001:db8::1/32 should be truncated to 2001:db8::/32.
+        string value = 2;
+      }
+    }
+
+    message WorkloadsConfig {
+      Scheduler scheduler = 1;
+
+      WebServer web_server = 2 [json_name = "web_server"];
+
+      Worker worker = 3;
+
+      message Scheduler {
+        // The number of schedulers.
+        int64 count = 1;
+
+        // CPU request and limit for a single Airflow scheduler replica
+        int64 cpu = 2;
+
+        // Memory (GB) request and limit for a single Airflow scheduler replica.
+        int64 memory_gb = 3 [json_name = "memory_gb"];
+
+        // Storage (GB) request and limit for a single Airflow scheduler replica.
+        int64 storage_gb = 4 [json_name = "storage_gb"];
+      }
+
+      message WebServer {
+        // CPU request and limit for Airflow web server.
+        int64 cpu = 1;
+
+        // Memory (GB) request and limit for Airflow web server.
+        int64 memory_gb = 2 [json_name = "memory_gb"];
+
+        // Storage (GB) request and limit for Airflow web server.
+        int64 storage_gb = 3 [json_name = "storage_gb"];
+      }
+
+      message Worker {
+        // CPU request and limit for a single Airflow worker replica.
+        int64 cpu = 1;
+
+        // Maximum number of workers for autoscaling.
+        int64 max_count = 2 [json_name = "max_count"];
+
+        // Memory (GB) request and limit for a single Airflow worker replica.
+        int64 memory_gb = 3 [json_name = "memory_gb"];
+
+        // Minimum number of workers for autoscaling.
+        int64 min_count = 4 [json_name = "min_count"];
+
+        // Storage (GB) request and limit for a single Airflow worker replica.
+        int64 storage_gb = 5 [json_name = "storage_gb"];
+      }
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

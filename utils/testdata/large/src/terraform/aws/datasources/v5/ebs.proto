@@ -1,0 +1,242 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsEbsDefaultKmsKey version is 0
+message AwsEbsDefaultKmsKey {
+  string id = 1;
+
+  string key_arn = 2 [json_name = "key_arn"];
+
+  repeated Timeouts timeouts = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+
+  message Timeouts {
+    string read = 1;
+  }
+}
+
+// AwsEbsEncryptionByDefault version is 0
+message AwsEbsEncryptionByDefault {
+  bool enabled = 1;
+
+  string id = 2;
+
+  repeated Timeouts timeouts = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+
+  message Timeouts {
+    string read = 1;
+  }
+}
+
+// AwsEbsSnapshot version is 0
+message AwsEbsSnapshot {
+  string arn = 1;
+
+  string data_encryption_key_id = 2 [json_name = "data_encryption_key_id"];
+
+  string description = 3;
+
+  bool encrypted = 4;
+
+  string id = 5;
+
+  string kms_key_id = 6 [json_name = "kms_key_id"];
+
+  bool most_recent = 7 [json_name = "most_recent"];
+
+  string outpost_arn = 8 [json_name = "outpost_arn"];
+
+  string owner_alias = 9 [json_name = "owner_alias"];
+
+  string owner_id = 10 [json_name = "owner_id"];
+
+  repeated string owners = 11;
+
+  repeated string restorable_by_user_ids = 12 [json_name = "restorable_by_user_ids"];
+
+  string snapshot_id = 13 [json_name = "snapshot_id"];
+
+  repeated string snapshot_ids = 14 [json_name = "snapshot_ids"];
+
+  string state = 15;
+
+  string storage_tier = 16 [json_name = "storage_tier"];
+
+  map<string, string> tags = 17;
+
+  string volume_id = 18 [json_name = "volume_id"];
+
+  int64 volume_size = 19 [json_name = "volume_size"];
+
+  repeated Filter filter = 20;
+
+  repeated Timeouts timeouts = 21;
+
+  map<string, string> for_each = 22 [json_name = "for_each"];
+
+  repeated string depends_on = 23 [json_name = "depends_on"];
+
+  int32 count = 24;
+
+  string provider = 25;
+
+  terraform.v1.Lifecycle lifecycle = 26;
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+
+  message Timeouts {
+    string read = 1;
+  }
+}
+
+// AwsEbsSnapshotIds version is 0
+message AwsEbsSnapshotIds {
+  string id = 1;
+
+  repeated string ids = 2;
+
+  repeated string owners = 3;
+
+  repeated string restorable_by_user_ids = 4 [json_name = "restorable_by_user_ids"];
+
+  repeated Filter filter = 5;
+
+  repeated Timeouts timeouts = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+
+  message Timeouts {
+    string read = 1;
+  }
+}
+
+// AwsEbsVolume version is 0
+message AwsEbsVolume {
+  string arn = 1;
+
+  string availability_zone = 2 [json_name = "availability_zone"];
+
+  bool encrypted = 3;
+
+  string id = 4;
+
+  int64 iops = 5;
+
+  string kms_key_id = 6 [json_name = "kms_key_id"];
+
+  bool most_recent = 7 [json_name = "most_recent"];
+
+  bool multi_attach_enabled = 8 [json_name = "multi_attach_enabled"];
+
+  string outpost_arn = 9 [json_name = "outpost_arn"];
+
+  int64 size = 10;
+
+  string snapshot_id = 11 [json_name = "snapshot_id"];
+
+  map<string, string> tags = 12;
+
+  int64 throughput = 13;
+
+  string volume_id = 14 [json_name = "volume_id"];
+
+  string volume_type = 15 [json_name = "volume_type"];
+
+  repeated Filter filter = 16;
+
+  repeated Timeouts timeouts = 17;
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+
+  message Timeouts {
+    string read = 1;
+  }
+}
+
+// AwsEbsVolumes version is 0
+message AwsEbsVolumes {
+  string id = 1;
+
+  repeated string ids = 2;
+
+  map<string, string> tags = 3;
+
+  repeated Filter filter = 4;
+
+  repeated Timeouts timeouts = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+
+  message Timeouts {
+    string read = 1;
+  }
+}

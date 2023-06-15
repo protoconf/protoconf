@@ -1,0 +1,715 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsIamAccessKey version is 0
+message AwsIamAccessKey {
+  string create_date = 1 [json_name = "create_date"];
+
+  string encrypted_secret = 2 [json_name = "encrypted_secret"];
+
+  string encrypted_ses_smtp_password_v4 = 3 [json_name = "encrypted_ses_smtp_password_v4"];
+
+  string id = 4;
+
+  string key_fingerprint = 5 [json_name = "key_fingerprint"];
+
+  string pgp_key = 6 [json_name = "pgp_key"];
+
+  string secret = 7;
+
+  string ses_smtp_password_v4 = 8 [json_name = "ses_smtp_password_v4"];
+
+  string status = 9;
+
+  string user = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+}
+
+// AwsIamAccountAlias version is 0
+message AwsIamAccountAlias {
+  string account_alias = 1 [json_name = "account_alias"];
+
+  string id = 2;
+
+  map<string, string> for_each = 3 [json_name = "for_each"];
+
+  repeated string depends_on = 4 [json_name = "depends_on"];
+
+  int32 count = 5;
+
+  string provider = 6;
+
+  terraform.v1.Lifecycle lifecycle = 7;
+}
+
+// AwsIamAccountPasswordPolicy version is 0
+message AwsIamAccountPasswordPolicy {
+  bool allow_users_to_change_password = 1 [json_name = "allow_users_to_change_password"];
+
+  bool expire_passwords = 2 [json_name = "expire_passwords"];
+
+  bool hard_expiry = 3 [json_name = "hard_expiry"];
+
+  string id = 4;
+
+  int64 max_password_age = 5 [json_name = "max_password_age"];
+
+  int64 minimum_password_length = 6 [json_name = "minimum_password_length"];
+
+  int64 password_reuse_prevention = 7 [json_name = "password_reuse_prevention"];
+
+  bool require_lowercase_characters = 8 [json_name = "require_lowercase_characters"];
+
+  bool require_numbers = 9 [json_name = "require_numbers"];
+
+  bool require_symbols = 10 [json_name = "require_symbols"];
+
+  bool require_uppercase_characters = 11 [json_name = "require_uppercase_characters"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+}
+
+// AwsIamGroup version is 0
+message AwsIamGroup {
+  string arn = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  string path = 4;
+
+  string unique_id = 5 [json_name = "unique_id"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsIamGroupMembership version is 0
+message AwsIamGroupMembership {
+  string group = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  repeated string users = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsIamGroupPolicy version is 0
+message AwsIamGroupPolicy {
+  string group = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  string name_prefix = 4 [json_name = "name_prefix"];
+
+  string policy = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsIamGroupPolicyAttachment version is 0
+message AwsIamGroupPolicyAttachment {
+  string group = 1;
+
+  string id = 2;
+
+  string policy_arn = 3 [json_name = "policy_arn"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsIamInstanceProfile version is 0
+message AwsIamInstanceProfile {
+  string arn = 1;
+
+  string create_date = 2 [json_name = "create_date"];
+
+  string id = 3;
+
+  string name = 4;
+
+  string name_prefix = 5 [json_name = "name_prefix"];
+
+  string path = 6;
+
+  string role = 7;
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  string unique_id = 10 [json_name = "unique_id"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+}
+
+// AwsIamOpenidConnectProvider version is 0
+message AwsIamOpenidConnectProvider {
+  string arn = 1;
+
+  repeated string client_id_list = 2 [json_name = "client_id_list"];
+
+  string id = 3;
+
+  map<string, string> tags = 4;
+
+  map<string, string> tags_all = 5 [json_name = "tags_all"];
+
+  repeated string thumbprint_list = 6 [json_name = "thumbprint_list"];
+
+  string url = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsIamPolicy version is 0
+message AwsIamPolicy {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  string name = 4;
+
+  string name_prefix = 5 [json_name = "name_prefix"];
+
+  string path = 6;
+
+  string policy = 7;
+
+  string policy_id = 8 [json_name = "policy_id"];
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+}
+
+// AwsIamPolicyAttachment version is 0
+message AwsIamPolicyAttachment {
+  repeated string groups = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  string policy_arn = 4 [json_name = "policy_arn"];
+
+  repeated string roles = 5;
+
+  repeated string users = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsIamRole version is 0
+message AwsIamRole {
+  string arn = 1;
+
+  string assume_role_policy = 2 [json_name = "assume_role_policy"];
+
+  string create_date = 3 [json_name = "create_date"];
+
+  string description = 4;
+
+  bool force_detach_policies = 5 [json_name = "force_detach_policies"];
+
+  string id = 6;
+
+  repeated string managed_policy_arns = 7 [json_name = "managed_policy_arns"];
+
+  int64 max_session_duration = 8 [json_name = "max_session_duration"];
+
+  string name = 9;
+
+  string name_prefix = 10 [json_name = "name_prefix"];
+
+  string path = 11;
+
+  string permissions_boundary = 12 [json_name = "permissions_boundary"];
+
+  map<string, string> tags = 13;
+
+  map<string, string> tags_all = 14 [json_name = "tags_all"];
+
+  string unique_id = 15 [json_name = "unique_id"];
+
+  repeated InlinePolicy inline_policy = 16 [json_name = "inline_policy"];
+
+  map<string, string> for_each = 17 [json_name = "for_each"];
+
+  repeated string depends_on = 18 [json_name = "depends_on"];
+
+  int32 count = 19;
+
+  string provider = 20;
+
+  terraform.v1.Lifecycle lifecycle = 21;
+
+  message InlinePolicy {
+    string name = 1;
+
+    string policy = 2;
+  }
+}
+
+// AwsIamRolePolicy version is 0
+message AwsIamRolePolicy {
+  string id = 1;
+
+  string name = 2;
+
+  string name_prefix = 3 [json_name = "name_prefix"];
+
+  string policy = 4;
+
+  string role = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsIamRolePolicyAttachment version is 0
+message AwsIamRolePolicyAttachment {
+  string id = 1;
+
+  string policy_arn = 2 [json_name = "policy_arn"];
+
+  string role = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsIamSamlProvider version is 0
+message AwsIamSamlProvider {
+  string arn = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  string saml_metadata_document = 4 [json_name = "saml_metadata_document"];
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  string valid_until = 7 [json_name = "valid_until"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsIamServerCertificate version is 0
+message AwsIamServerCertificate {
+  string arn = 1;
+
+  string certificate_body = 2 [json_name = "certificate_body"];
+
+  string certificate_chain = 3 [json_name = "certificate_chain"];
+
+  string expiration = 4;
+
+  string id = 5;
+
+  string name = 6;
+
+  string name_prefix = 7 [json_name = "name_prefix"];
+
+  string path = 8;
+
+  string private_key = 9 [json_name = "private_key"];
+
+  map<string, string> tags = 10;
+
+  map<string, string> tags_all = 11 [json_name = "tags_all"];
+
+  string upload_date = 12 [json_name = "upload_date"];
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+}
+
+// AwsIamServiceLinkedRole version is 0
+message AwsIamServiceLinkedRole {
+  string arn = 1;
+
+  string aws_service_name = 2 [json_name = "aws_service_name"];
+
+  string create_date = 3 [json_name = "create_date"];
+
+  string custom_suffix = 4 [json_name = "custom_suffix"];
+
+  string description = 5;
+
+  string id = 6;
+
+  string name = 7;
+
+  string path = 8;
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  string unique_id = 11 [json_name = "unique_id"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+}
+
+// AwsIamServiceSpecificCredential version is 0
+message AwsIamServiceSpecificCredential {
+  string id = 1;
+
+  string service_name = 2 [json_name = "service_name"];
+
+  string service_password = 3 [json_name = "service_password"];
+
+  string service_specific_credential_id = 4 [json_name = "service_specific_credential_id"];
+
+  string service_user_name = 5 [json_name = "service_user_name"];
+
+  string status = 6;
+
+  string user_name = 7 [json_name = "user_name"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsIamSigningCertificate version is 0
+message AwsIamSigningCertificate {
+  string certificate_body = 1 [json_name = "certificate_body"];
+
+  string certificate_id = 2 [json_name = "certificate_id"];
+
+  string id = 3;
+
+  string status = 4;
+
+  string user_name = 5 [json_name = "user_name"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsIamUser version is 0
+message AwsIamUser {
+  string arn = 1;
+
+  // Delete user even if it has non-Terraform-managed IAM access keys, login profile or MFA devices
+  bool force_destroy = 2 [json_name = "force_destroy"];
+
+  string id = 3;
+
+  string name = 4;
+
+  string path = 5;
+
+  string permissions_boundary = 6 [json_name = "permissions_boundary"];
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  string unique_id = 9 [json_name = "unique_id"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+}
+
+// AwsIamUserGroupMembership version is 0
+message AwsIamUserGroupMembership {
+  repeated string groups = 1;
+
+  string id = 2;
+
+  string user = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsIamUserLoginProfile version is 0
+message AwsIamUserLoginProfile {
+  string encrypted_password = 1 [json_name = "encrypted_password"];
+
+  string id = 2;
+
+  string key_fingerprint = 3 [json_name = "key_fingerprint"];
+
+  string password = 4;
+
+  int64 password_length = 5 [json_name = "password_length"];
+
+  bool password_reset_required = 6 [json_name = "password_reset_required"];
+
+  string pgp_key = 7 [json_name = "pgp_key"];
+
+  string user = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+}
+
+// AwsIamUserPolicy version is 0
+message AwsIamUserPolicy {
+  string id = 1;
+
+  string name = 2;
+
+  string name_prefix = 3 [json_name = "name_prefix"];
+
+  string policy = 4;
+
+  string user = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsIamUserPolicyAttachment version is 0
+message AwsIamUserPolicyAttachment {
+  string id = 1;
+
+  string policy_arn = 2 [json_name = "policy_arn"];
+
+  string user = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsIamUserSshKey version is 0
+message AwsIamUserSshKey {
+  string encoding = 1;
+
+  string fingerprint = 2;
+
+  string id = 3;
+
+  string public_key = 4 [json_name = "public_key"];
+
+  string ssh_public_key_id = 5 [json_name = "ssh_public_key_id"];
+
+  string status = 6;
+
+  string username = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsIamVirtualMfaDevice version is 0
+message AwsIamVirtualMfaDevice {
+  string arn = 1;
+
+  string base_32_string_seed = 2 [json_name = "base_32_string_seed"];
+
+  string id = 3;
+
+  string path = 4;
+
+  string qr_code_png = 5 [json_name = "qr_code_png"];
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  string virtual_mfa_device_name = 8 [json_name = "virtual_mfa_device_name"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+}

@@ -1,0 +1,984 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsCloudwatchCompositeAlarm version is 0
+message AwsCloudwatchCompositeAlarm {
+  bool actions_enabled = 1 [json_name = "actions_enabled"];
+
+  repeated string alarm_actions = 2 [json_name = "alarm_actions"];
+
+  string alarm_description = 3 [json_name = "alarm_description"];
+
+  string alarm_name = 4 [json_name = "alarm_name"];
+
+  string alarm_rule = 5 [json_name = "alarm_rule"];
+
+  string arn = 6;
+
+  string id = 7;
+
+  repeated string insufficient_data_actions = 8 [json_name = "insufficient_data_actions"];
+
+  repeated string ok_actions = 9 [json_name = "ok_actions"];
+
+  map<string, string> tags = 10;
+
+  map<string, string> tags_all = 11 [json_name = "tags_all"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+}
+
+// AwsCloudwatchDashboard version is 0
+message AwsCloudwatchDashboard {
+  string dashboard_arn = 1 [json_name = "dashboard_arn"];
+
+  string dashboard_body = 2 [json_name = "dashboard_body"];
+
+  string dashboard_name = 3 [json_name = "dashboard_name"];
+
+  string id = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsCloudwatchEventApiDestination version is 0
+message AwsCloudwatchEventApiDestination {
+  string arn = 1;
+
+  string connection_arn = 2 [json_name = "connection_arn"];
+
+  string description = 3;
+
+  string http_method = 4 [json_name = "http_method"];
+
+  string id = 5;
+
+  string invocation_endpoint = 6 [json_name = "invocation_endpoint"];
+
+  int64 invocation_rate_limit_per_second = 7 [json_name = "invocation_rate_limit_per_second"];
+
+  string name = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+}
+
+// AwsCloudwatchEventArchive version is 0
+message AwsCloudwatchEventArchive {
+  string arn = 1;
+
+  string description = 2;
+
+  string event_pattern = 3 [json_name = "event_pattern"];
+
+  string event_source_arn = 4 [json_name = "event_source_arn"];
+
+  string id = 5;
+
+  string name = 6;
+
+  int64 retention_days = 7 [json_name = "retention_days"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsCloudwatchEventBus version is 0
+message AwsCloudwatchEventBus {
+  string arn = 1;
+
+  string event_source_name = 2 [json_name = "event_source_name"];
+
+  string id = 3;
+
+  string name = 4;
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsCloudwatchEventBusPolicy version is 0
+message AwsCloudwatchEventBusPolicy {
+  string event_bus_name = 1 [json_name = "event_bus_name"];
+
+  string id = 2;
+
+  string policy = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsCloudwatchEventConnection version is 0
+message AwsCloudwatchEventConnection {
+  string arn = 1;
+
+  string authorization_type = 2 [json_name = "authorization_type"];
+
+  string description = 3;
+
+  string id = 4;
+
+  string name = 5;
+
+  string secret_arn = 6 [json_name = "secret_arn"];
+
+  AuthParameters auth_parameters = 7 [json_name = "auth_parameters"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message AuthParameters {
+    ApiKey api_key = 1 [json_name = "api_key"];
+
+    Basic basic = 2;
+
+    InvocationHttpParameters invocation_http_parameters = 3 [json_name = "invocation_http_parameters"];
+
+    Oauth oauth = 4;
+
+    message ApiKey {
+      string key = 1;
+
+      string value = 2;
+    }
+
+    message Basic {
+      string password = 1;
+
+      string username = 2;
+    }
+
+    message InvocationHttpParameters {
+      repeated Body body = 1;
+
+      repeated Header header = 2;
+
+      repeated QueryString query_string = 3 [json_name = "query_string"];
+
+      message Body {
+        bool is_value_secret = 1 [json_name = "is_value_secret"];
+
+        string key = 2;
+
+        string value = 3;
+      }
+
+      message Header {
+        bool is_value_secret = 1 [json_name = "is_value_secret"];
+
+        string key = 2;
+
+        string value = 3;
+      }
+
+      message QueryString {
+        bool is_value_secret = 1 [json_name = "is_value_secret"];
+
+        string key = 2;
+
+        string value = 3;
+      }
+    }
+
+    message Oauth {
+      string authorization_endpoint = 1 [json_name = "authorization_endpoint"];
+
+      string http_method = 2 [json_name = "http_method"];
+
+      ClientParameters client_parameters = 3 [json_name = "client_parameters"];
+
+      OauthHttpParameters oauth_http_parameters = 4 [json_name = "oauth_http_parameters"];
+
+      message ClientParameters {
+        string client_id = 1 [json_name = "client_id"];
+
+        string client_secret = 2 [json_name = "client_secret"];
+      }
+
+      message OauthHttpParameters {
+        repeated Body body = 1;
+
+        repeated Header header = 2;
+
+        repeated QueryString query_string = 3 [json_name = "query_string"];
+
+        message Body {
+          bool is_value_secret = 1 [json_name = "is_value_secret"];
+
+          string key = 2;
+
+          string value = 3;
+        }
+
+        message Header {
+          bool is_value_secret = 1 [json_name = "is_value_secret"];
+
+          string key = 2;
+
+          string value = 3;
+        }
+
+        message QueryString {
+          bool is_value_secret = 1 [json_name = "is_value_secret"];
+
+          string key = 2;
+
+          string value = 3;
+        }
+      }
+    }
+  }
+}
+
+// AwsCloudwatchEventEndpoint version is 0
+message AwsCloudwatchEventEndpoint {
+  string arn = 1;
+
+  string description = 2;
+
+  string endpoint_url = 3 [json_name = "endpoint_url"];
+
+  string id = 4;
+
+  string name = 5;
+
+  string role_arn = 6 [json_name = "role_arn"];
+
+  repeated EventBus event_bus = 7 [json_name = "event_bus"];
+
+  ReplicationConfig replication_config = 8 [json_name = "replication_config"];
+
+  RoutingConfig routing_config = 9 [json_name = "routing_config"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message EventBus {
+    string event_bus_arn = 1 [json_name = "event_bus_arn"];
+  }
+
+  message ReplicationConfig {
+    string state = 1;
+  }
+
+  message RoutingConfig {
+    FailoverConfig failover_config = 1 [json_name = "failover_config"];
+
+    message FailoverConfig {
+      Primary primary = 1;
+
+      Secondary secondary = 2;
+
+      message Primary {
+        string health_check = 1 [json_name = "health_check"];
+      }
+
+      message Secondary {
+        string route = 1;
+      }
+    }
+  }
+}
+
+// AwsCloudwatchEventPermission version is 0
+message AwsCloudwatchEventPermission {
+  string action = 1;
+
+  string event_bus_name = 2 [json_name = "event_bus_name"];
+
+  string id = 3;
+
+  string principal = 4;
+
+  string statement_id = 5 [json_name = "statement_id"];
+
+  Condition condition = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Condition {
+    string key = 1;
+
+    string type = 2;
+
+    string value = 3;
+  }
+}
+
+// AwsCloudwatchEventRule version is 0
+message AwsCloudwatchEventRule {
+  string arn = 1;
+
+  string description = 2;
+
+  string event_bus_name = 3 [json_name = "event_bus_name"];
+
+  string event_pattern = 4 [json_name = "event_pattern"];
+
+  string id = 5;
+
+  bool is_enabled = 6 [json_name = "is_enabled"];
+
+  string name = 7;
+
+  string name_prefix = 8 [json_name = "name_prefix"];
+
+  string role_arn = 9 [json_name = "role_arn"];
+
+  string schedule_expression = 10 [json_name = "schedule_expression"];
+
+  map<string, string> tags = 11;
+
+  map<string, string> tags_all = 12 [json_name = "tags_all"];
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+}
+
+// AwsCloudwatchEventTarget version is 1
+message AwsCloudwatchEventTarget {
+  string arn = 1;
+
+  string event_bus_name = 2 [json_name = "event_bus_name"];
+
+  string id = 3;
+
+  string input = 4;
+
+  string input_path = 5 [json_name = "input_path"];
+
+  string role_arn = 6 [json_name = "role_arn"];
+
+  string rule = 7;
+
+  string target_id = 8 [json_name = "target_id"];
+
+  BatchTarget batch_target = 9 [json_name = "batch_target"];
+
+  DeadLetterConfig dead_letter_config = 10 [json_name = "dead_letter_config"];
+
+  EcsTarget ecs_target = 11 [json_name = "ecs_target"];
+
+  HttpTarget http_target = 12 [json_name = "http_target"];
+
+  InputTransformer input_transformer = 13 [json_name = "input_transformer"];
+
+  KinesisTarget kinesis_target = 14 [json_name = "kinesis_target"];
+
+  RedshiftTarget redshift_target = 15 [json_name = "redshift_target"];
+
+  RetryPolicy retry_policy = 16 [json_name = "retry_policy"];
+
+  repeated RunCommandTargets run_command_targets = 17 [json_name = "run_command_targets"];
+
+  SqsTarget sqs_target = 18 [json_name = "sqs_target"];
+
+  map<string, string> for_each = 19 [json_name = "for_each"];
+
+  repeated string depends_on = 20 [json_name = "depends_on"];
+
+  int32 count = 21;
+
+  string provider = 22;
+
+  terraform.v1.Lifecycle lifecycle = 23;
+
+  message BatchTarget {
+    int64 array_size = 1 [json_name = "array_size"];
+
+    int64 job_attempts = 2 [json_name = "job_attempts"];
+
+    string job_definition = 3 [json_name = "job_definition"];
+
+    string job_name = 4 [json_name = "job_name"];
+  }
+
+  message DeadLetterConfig {
+    string arn = 1;
+  }
+
+  message EcsTarget {
+    bool enable_ecs_managed_tags = 1 [json_name = "enable_ecs_managed_tags"];
+
+    bool enable_execute_command = 2 [json_name = "enable_execute_command"];
+
+    string group = 3;
+
+    string launch_type = 4 [json_name = "launch_type"];
+
+    string platform_version = 5 [json_name = "platform_version"];
+
+    string propagate_tags = 6 [json_name = "propagate_tags"];
+
+    map<string, string> tags = 7;
+
+    int64 task_count = 8 [json_name = "task_count"];
+
+    string task_definition_arn = 9 [json_name = "task_definition_arn"];
+
+    repeated CapacityProviderStrategy capacity_provider_strategy = 10 [json_name = "capacity_provider_strategy"];
+
+    NetworkConfiguration network_configuration = 11 [json_name = "network_configuration"];
+
+    repeated OrderedPlacementStrategy ordered_placement_strategy = 12 [json_name = "ordered_placement_strategy"];
+
+    repeated PlacementConstraint placement_constraint = 13 [json_name = "placement_constraint"];
+
+    message CapacityProviderStrategy {
+      int64 base = 1;
+
+      string capacity_provider = 2 [json_name = "capacity_provider"];
+
+      int64 weight = 3;
+    }
+
+    message NetworkConfiguration {
+      bool assign_public_ip = 1 [json_name = "assign_public_ip"];
+
+      repeated string security_groups = 2 [json_name = "security_groups"];
+
+      repeated string subnets = 3;
+    }
+
+    message OrderedPlacementStrategy {
+      string field = 1;
+
+      string type = 2;
+    }
+
+    message PlacementConstraint {
+      string expression = 1;
+
+      string type = 2;
+    }
+  }
+
+  message HttpTarget {
+    map<string, string> header_parameters = 1 [json_name = "header_parameters"];
+
+    repeated string path_parameter_values = 2 [json_name = "path_parameter_values"];
+
+    map<string, string> query_string_parameters = 3 [json_name = "query_string_parameters"];
+  }
+
+  message InputTransformer {
+    map<string, string> input_paths = 1 [json_name = "input_paths"];
+
+    string input_template = 2 [json_name = "input_template"];
+  }
+
+  message KinesisTarget {
+    string partition_key_path = 1 [json_name = "partition_key_path"];
+  }
+
+  message RedshiftTarget {
+    string database = 1;
+
+    string db_user = 2 [json_name = "db_user"];
+
+    string secrets_manager_arn = 3 [json_name = "secrets_manager_arn"];
+
+    string sql = 4;
+
+    string statement_name = 5 [json_name = "statement_name"];
+
+    bool with_event = 6 [json_name = "with_event"];
+  }
+
+  message RetryPolicy {
+    int64 maximum_event_age_in_seconds = 1 [json_name = "maximum_event_age_in_seconds"];
+
+    int64 maximum_retry_attempts = 2 [json_name = "maximum_retry_attempts"];
+  }
+
+  message RunCommandTargets {
+    string key = 1;
+
+    repeated string values = 2;
+  }
+
+  message SqsTarget {
+    string message_group_id = 1 [json_name = "message_group_id"];
+  }
+}
+
+// AwsCloudwatchLogDataProtectionPolicy version is 0
+message AwsCloudwatchLogDataProtectionPolicy {
+  string id = 1;
+
+  string log_group_name = 2 [json_name = "log_group_name"];
+
+  string policy_document = 3 [json_name = "policy_document"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsCloudwatchLogDestination version is 0
+message AwsCloudwatchLogDestination {
+  string arn = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  string role_arn = 4 [json_name = "role_arn"];
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  string target_arn = 7 [json_name = "target_arn"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsCloudwatchLogDestinationPolicy version is 0
+message AwsCloudwatchLogDestinationPolicy {
+  string access_policy = 1 [json_name = "access_policy"];
+
+  string destination_name = 2 [json_name = "destination_name"];
+
+  bool force_update = 3 [json_name = "force_update"];
+
+  string id = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsCloudwatchLogGroup version is 0
+message AwsCloudwatchLogGroup {
+  string arn = 1;
+
+  string id = 2;
+
+  string kms_key_id = 3 [json_name = "kms_key_id"];
+
+  string name = 4;
+
+  string name_prefix = 5 [json_name = "name_prefix"];
+
+  int64 retention_in_days = 6 [json_name = "retention_in_days"];
+
+  bool skip_destroy = 7 [json_name = "skip_destroy"];
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+}
+
+// AwsCloudwatchLogMetricFilter version is 0
+message AwsCloudwatchLogMetricFilter {
+  string id = 1;
+
+  string log_group_name = 2 [json_name = "log_group_name"];
+
+  string name = 3;
+
+  string pattern = 4;
+
+  MetricTransformation metric_transformation = 5 [json_name = "metric_transformation"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message MetricTransformation {
+    string default_value = 1 [json_name = "default_value"];
+
+    map<string, string> dimensions = 2;
+
+    string name = 3;
+
+    string namespace = 4;
+
+    string unit = 5;
+
+    string value = 6;
+  }
+}
+
+// AwsCloudwatchLogResourcePolicy version is 0
+message AwsCloudwatchLogResourcePolicy {
+  string id = 1;
+
+  string policy_document = 2 [json_name = "policy_document"];
+
+  string policy_name = 3 [json_name = "policy_name"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsCloudwatchLogStream version is 0
+message AwsCloudwatchLogStream {
+  string arn = 1;
+
+  string id = 2;
+
+  string log_group_name = 3 [json_name = "log_group_name"];
+
+  string name = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsCloudwatchLogSubscriptionFilter version is 0
+message AwsCloudwatchLogSubscriptionFilter {
+  string destination_arn = 1 [json_name = "destination_arn"];
+
+  string distribution = 2;
+
+  string filter_pattern = 3 [json_name = "filter_pattern"];
+
+  string id = 4;
+
+  string log_group_name = 5 [json_name = "log_group_name"];
+
+  string name = 6;
+
+  string role_arn = 7 [json_name = "role_arn"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsCloudwatchMetricAlarm version is 1
+message AwsCloudwatchMetricAlarm {
+  bool actions_enabled = 1 [json_name = "actions_enabled"];
+
+  repeated string alarm_actions = 2 [json_name = "alarm_actions"];
+
+  string alarm_description = 3 [json_name = "alarm_description"];
+
+  string alarm_name = 4 [json_name = "alarm_name"];
+
+  string arn = 5;
+
+  string comparison_operator = 6 [json_name = "comparison_operator"];
+
+  int64 datapoints_to_alarm = 7 [json_name = "datapoints_to_alarm"];
+
+  map<string, string> dimensions = 8;
+
+  string evaluate_low_sample_count_percentiles = 9 [
+    json_name = "evaluate_low_sample_count_percentiles"
+  ];
+
+  int64 evaluation_periods = 10 [json_name = "evaluation_periods"];
+
+  string extended_statistic = 11 [json_name = "extended_statistic"];
+
+  string id = 12;
+
+  repeated string insufficient_data_actions = 13 [json_name = "insufficient_data_actions"];
+
+  string metric_name = 14 [json_name = "metric_name"];
+
+  string namespace = 15;
+
+  repeated string ok_actions = 16 [json_name = "ok_actions"];
+
+  int64 period = 17;
+
+  string statistic = 18;
+
+  map<string, string> tags = 19;
+
+  map<string, string> tags_all = 20 [json_name = "tags_all"];
+
+  int64 threshold = 21;
+
+  string threshold_metric_id = 22 [json_name = "threshold_metric_id"];
+
+  string treat_missing_data = 23 [json_name = "treat_missing_data"];
+
+  string unit = 24;
+
+  repeated MetricQuery metric_query = 25 [json_name = "metric_query"];
+
+  map<string, string> for_each = 26 [json_name = "for_each"];
+
+  repeated string depends_on = 27 [json_name = "depends_on"];
+
+  int32 count = 28;
+
+  string provider = 29;
+
+  terraform.v1.Lifecycle lifecycle = 30;
+
+  message MetricQuery {
+    string account_id = 1 [json_name = "account_id"];
+
+    string expression = 2;
+
+    string id = 3;
+
+    string label = 4;
+
+    int64 period = 5;
+
+    bool return_data = 6 [json_name = "return_data"];
+
+    Metric metric = 7;
+
+    message Metric {
+      map<string, string> dimensions = 1;
+
+      string metric_name = 2 [json_name = "metric_name"];
+
+      string namespace = 3;
+
+      int64 period = 4;
+
+      string stat = 5;
+
+      string unit = 6;
+    }
+  }
+}
+
+// AwsCloudwatchMetricStream version is 0
+message AwsCloudwatchMetricStream {
+  string arn = 1;
+
+  string creation_date = 2 [json_name = "creation_date"];
+
+  string firehose_arn = 3 [json_name = "firehose_arn"];
+
+  string id = 4;
+
+  bool include_linked_accounts_metrics = 5 [json_name = "include_linked_accounts_metrics"];
+
+  string last_update_date = 6 [json_name = "last_update_date"];
+
+  string name = 7;
+
+  string name_prefix = 8 [json_name = "name_prefix"];
+
+  string output_format = 9 [json_name = "output_format"];
+
+  string role_arn = 10 [json_name = "role_arn"];
+
+  string state = 11;
+
+  map<string, string> tags = 12;
+
+  map<string, string> tags_all = 13 [json_name = "tags_all"];
+
+  repeated ExcludeFilter exclude_filter = 14 [json_name = "exclude_filter"];
+
+  repeated IncludeFilter include_filter = 15 [json_name = "include_filter"];
+
+  repeated StatisticsConfiguration statistics_configuration = 16 [json_name = "statistics_configuration"];
+
+  repeated Timeouts timeouts = 17;
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+
+  message ExcludeFilter {
+    repeated string metric_names = 1 [json_name = "metric_names"];
+
+    string namespace = 2;
+  }
+
+  message IncludeFilter {
+    repeated string metric_names = 1 [json_name = "metric_names"];
+
+    string namespace = 2;
+  }
+
+  message StatisticsConfiguration {
+    repeated string additional_statistics = 1 [json_name = "additional_statistics"];
+
+    repeated IncludeMetric include_metric = 2 [json_name = "include_metric"];
+
+    message IncludeMetric {
+      string metric_name = 1 [json_name = "metric_name"];
+
+      string namespace = 2;
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsCloudwatchQueryDefinition version is 0
+message AwsCloudwatchQueryDefinition {
+  string id = 1;
+
+  repeated string log_group_names = 2 [json_name = "log_group_names"];
+
+  string name = 3;
+
+  string query_definition_id = 4 [json_name = "query_definition_id"];
+
+  string query_string = 5 [json_name = "query_string"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}

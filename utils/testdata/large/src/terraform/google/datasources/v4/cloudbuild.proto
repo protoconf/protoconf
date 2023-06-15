@@ -1,0 +1,530 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.datasources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleCloudbuildTrigger version is 0
+message GoogleCloudbuildTrigger {
+  // Configuration for manual approval to start a build invocation of this BuildTrigger.
+  // Builds created by this trigger will require approval before they execute.
+  // Any user with a Cloud Build Approver role for the project can approve a build.
+  repeated ApprovalConfig approval_config = 1 [json_name = "approval_config"];
+
+  // BitbucketServerTriggerConfig describes the configuration of a trigger that creates a build whenever a Bitbucket Server event is received.
+  repeated BitbucketServerTriggerConfig bitbucket_server_trigger_config = 2 [json_name = "bitbucket_server_trigger_config"];
+
+  // Contents of the build template. Either a filename or build template must be provided.
+  repeated Build build = 3;
+
+  // Time when the trigger was created.
+  string create_time = 4 [json_name = "create_time"];
+
+  // Human-readable description of the trigger.
+  string description = 5;
+
+  // Whether the trigger is disabled or not. If true, the trigger will never result in a build.
+  bool disabled = 6;
+
+  // Path, from the source root, to a file whose contents is used for the template.
+  // Either a filename or build template must be provided. Set this only when using trigger_template or github.
+  // When using Pub/Sub, Webhook or Manual set the file name using git_file_source instead.
+  string filename = 7;
+
+  // A Common Expression Language string. Used only with Pub/Sub and Webhook.
+  string filter = 8;
+
+  // The file source describing the local or remote Build template.
+  repeated GitFileSource git_file_source = 9 [json_name = "git_file_source"];
+
+  // Describes the configuration of a trigger that creates a build whenever a GitHub event is received.
+  //
+  // One of 'trigger_template', 'github', 'pubsub_config' or 'webhook_config' must be provided.
+  repeated Github github = 10;
+
+  string id = 11;
+
+  // ignoredFiles and includedFiles are file glob matches using https://golang.org/pkg/path/filepath/#Match
+  // extended with support for '**'.
+  //
+  // If ignoredFiles and changed files are both empty, then they are not
+  // used to determine whether or not to trigger a build.
+  //
+  // If ignoredFiles is not empty, then we ignore any files that match any
+  // of the ignored_file globs. If the change has no files that are outside
+  // of the ignoredFiles globs, then we do not trigger a build.
+  repeated string ignored_files = 12 [json_name = "ignored_files"];
+
+  // Build logs will be sent back to GitHub as part of the checkrun
+  // result.  Values can be INCLUDE_BUILD_LOGS_UNSPECIFIED or
+  // INCLUDE_BUILD_LOGS_WITH_STATUS Possible values: ["INCLUDE_BUILD_LOGS_UNSPECIFIED", "INCLUDE_BUILD_LOGS_WITH_STATUS"]
+  string include_build_logs = 13 [json_name = "include_build_logs"];
+
+  // ignoredFiles and includedFiles are file glob matches using https://golang.org/pkg/path/filepath/#Match
+  // extended with support for '**'.
+  //
+  // If any of the files altered in the commit pass the ignoredFiles filter
+  // and includedFiles is empty, then as far as this filter is concerned, we
+  // should trigger the build.
+  //
+  // If any of the files altered in the commit pass the ignoredFiles filter
+  // and includedFiles is not empty, then we make sure that at least one of
+  // those files matches a includedFiles glob. If not, then we do not trigger
+  // a build.
+  repeated string included_files = 14 [json_name = "included_files"];
+
+  // The [Cloud Build location](https://cloud.google.com/build/docs/locations) for the trigger.
+  // If not specified, "global" is used.
+  string location = 15;
+
+  // Name of the trigger. Must be unique within the project.
+  string name = 16;
+
+  string project = 17;
+
+  // PubsubConfig describes the configuration of a trigger that creates
+  // a build whenever a Pub/Sub message is published.
+  //
+  // One of 'trigger_template', 'github', 'pubsub_config' 'webhook_config' or 'source_to_build' must be provided.
+  repeated PubsubConfig pubsub_config = 18 [json_name = "pubsub_config"];
+
+  // The service account used for all user-controlled operations including
+  // triggers.patch, triggers.run, builds.create, and builds.cancel.
+  //
+  // If no service account is set, then the standard Cloud Build service account
+  // ([PROJECT_NUM]@system.gserviceaccount.com) will be used instead.
+  //
+  // Format: projects/{PROJECT_ID}/serviceAccounts/{ACCOUNT_ID_OR_EMAIL}
+  string service_account = 19 [json_name = "service_account"];
+
+  // The repo and ref of the repository from which to build.
+  // This field is used only for those triggers that do not respond to SCM events.
+  // Triggers that respond to such events build source at whatever commit caused the event.
+  // This field is currently only used by Webhook, Pub/Sub, Manual, and Cron triggers.
+  //
+  // One of 'trigger_template', 'github', 'pubsub_config' 'webhook_config' or 'source_to_build' must be provided.
+  repeated SourceToBuild source_to_build = 20 [json_name = "source_to_build"];
+
+  // Substitutions data for Build resource.
+  map<string, string> substitutions = 21;
+
+  // Tags for annotation of a BuildTrigger
+  repeated string tags = 22;
+
+  // The unique identifier for the trigger.
+  string trigger_id = 23 [json_name = "trigger_id"];
+
+  // Template describing the types of source changes to trigger a build.
+  //
+  // Branch and tag names in trigger templates are interpreted as regular
+  // expressions. Any branch or tag change that matches that regular
+  // expression will trigger a build.
+  //
+  // One of 'trigger_template', 'github', 'pubsub_config', 'webhook_config' or 'source_to_build' must be provided.
+  repeated TriggerTemplate trigger_template = 24 [json_name = "trigger_template"];
+
+  // WebhookConfig describes the configuration of a trigger that creates
+  // a build whenever a webhook is sent to a trigger's webhook URL.
+  //
+  // One of 'trigger_template', 'github', 'pubsub_config' 'webhook_config' or 'source_to_build' must be provided.
+  repeated WebhookConfig webhook_config = 25 [json_name = "webhook_config"];
+
+  map<string, string> for_each = 26 [json_name = "for_each"];
+
+  repeated string depends_on = 27 [json_name = "depends_on"];
+
+  int32 count = 28;
+
+  string provider = 29;
+
+  terraform.v1.Lifecycle lifecycle = 30;
+
+  message ApprovalConfig {
+    // approval_required: bool
+    bool approval_required = 1 [json_name = "approval_required"];
+  }
+
+  message BitbucketServerTriggerConfig {
+    // bitbucket_server_config_resource: string
+    string bitbucket_server_config_resource = 1 [json_name = "bitbucket_server_config_resource"];
+
+    // project_key: string
+    string project_key = 2 [json_name = "project_key"];
+
+    // pull_request: list of object
+    repeated PullRequest pull_request = 3 [json_name = "pull_request"];
+
+    // push: list of object
+    repeated Push push = 4;
+
+    // repo_slug: string
+    string repo_slug = 5 [json_name = "repo_slug"];
+
+    message PullRequest {
+      // branch: string
+      string branch = 1;
+
+      // comment_control: string
+      string comment_control = 2 [json_name = "comment_control"];
+
+      // invert_regex: bool
+      bool invert_regex = 3 [json_name = "invert_regex"];
+    }
+
+    message Push {
+      // branch: string
+      string branch = 1;
+
+      // invert_regex: bool
+      bool invert_regex = 2 [json_name = "invert_regex"];
+
+      // tag: string
+      string tag = 3;
+    }
+  }
+
+  message Build {
+    // artifacts: list of object
+    repeated Artifacts artifacts = 1;
+
+    // available_secrets: list of object
+    repeated AvailableSecrets available_secrets = 2 [json_name = "available_secrets"];
+
+    // images: list of string
+    repeated string images = 3;
+
+    // logs_bucket: string
+    string logs_bucket = 4 [json_name = "logs_bucket"];
+
+    // options: list of object
+    repeated Options options = 5;
+
+    // queue_ttl: string
+    string queue_ttl = 6 [json_name = "queue_ttl"];
+
+    // secret: list of object
+    repeated Secret secret = 7;
+
+    // source: list of object
+    repeated Source source = 8;
+
+    // step: list of object
+    repeated Step step = 9;
+
+    // substitutions: map of string
+    map<string, string> substitutions = 10;
+
+    // tags: list of string
+    repeated string tags = 11;
+
+    // timeout: string
+    string timeout = 12;
+
+    message Artifacts {
+      // images: list of string
+      repeated string images = 1;
+
+      // objects: list of object
+      repeated Objects objects = 2;
+
+      message Objects {
+        // location: string
+        string location = 1;
+
+        // paths: list of string
+        repeated string paths = 2;
+
+        // timing: list of object
+        repeated Timing timing = 3;
+
+        message Timing {
+          // end_time: string
+          string end_time = 1 [json_name = "end_time"];
+
+          // start_time: string
+          string start_time = 2 [json_name = "start_time"];
+        }
+      }
+    }
+
+    message AvailableSecrets {
+      // secret_manager: list of object
+      repeated SecretManager secret_manager = 1 [json_name = "secret_manager"];
+
+      message SecretManager {
+        // env: string
+        string env = 1;
+
+        // version_name: string
+        string version_name = 2 [json_name = "version_name"];
+      }
+    }
+
+    message Options {
+      // disk_size_gb: number
+      int64 disk_size_gb = 1 [json_name = "disk_size_gb"];
+
+      // dynamic_substitutions: bool
+      bool dynamic_substitutions = 2 [json_name = "dynamic_substitutions"];
+
+      // env: list of string
+      repeated string env = 3;
+
+      // log_streaming_option: string
+      string log_streaming_option = 4 [json_name = "log_streaming_option"];
+
+      // logging: string
+      string logging = 5;
+
+      // machine_type: string
+      string machine_type = 6 [json_name = "machine_type"];
+
+      // requested_verify_option: string
+      string requested_verify_option = 7 [json_name = "requested_verify_option"];
+
+      // secret_env: list of string
+      repeated string secret_env = 8 [json_name = "secret_env"];
+
+      // source_provenance_hash: list of string
+      repeated string source_provenance_hash = 9 [json_name = "source_provenance_hash"];
+
+      // substitution_option: string
+      string substitution_option = 10 [json_name = "substitution_option"];
+
+      // volumes: list of object
+      repeated Volumes volumes = 11;
+
+      // worker_pool: string
+      string worker_pool = 12 [json_name = "worker_pool"];
+
+      message Volumes {
+        // name: string
+        string name = 1;
+
+        // path: string
+        string path = 2;
+      }
+    }
+
+    message Secret {
+      // kms_key_name: string
+      string kms_key_name = 1 [json_name = "kms_key_name"];
+
+      // secret_env: map of string
+      map<string, string> secret_env = 2 [json_name = "secret_env"];
+    }
+
+    message Source {
+      // repo_source: list of object
+      repeated RepoSource repo_source = 1 [json_name = "repo_source"];
+
+      // storage_source: list of object
+      repeated StorageSource storage_source = 2 [json_name = "storage_source"];
+
+      message RepoSource {
+        // branch_name: string
+        string branch_name = 1 [json_name = "branch_name"];
+
+        // commit_sha: string
+        string commit_sha = 2 [json_name = "commit_sha"];
+
+        // dir: string
+        string dir = 3;
+
+        // invert_regex: bool
+        bool invert_regex = 4 [json_name = "invert_regex"];
+
+        // project_id: string
+        string project_id = 5 [json_name = "project_id"];
+
+        // repo_name: string
+        string repo_name = 6 [json_name = "repo_name"];
+
+        // substitutions: map of string
+        map<string, string> substitutions = 7;
+
+        // tag_name: string
+        string tag_name = 8 [json_name = "tag_name"];
+      }
+
+      message StorageSource {
+        // bucket: string
+        string bucket = 1;
+
+        // generation: string
+        string generation = 2;
+
+        // object: string
+        string object = 3;
+      }
+    }
+
+    message Step {
+      // allow_exit_codes: list of number
+      repeated int64 allow_exit_codes = 1 [json_name = "allow_exit_codes"];
+
+      // allow_failure: bool
+      bool allow_failure = 2 [json_name = "allow_failure"];
+
+      // args: list of string
+      repeated string args = 3;
+
+      // dir: string
+      string dir = 4;
+
+      // entrypoint: string
+      string entrypoint = 5;
+
+      // env: list of string
+      repeated string env = 6;
+
+      // id: string
+      string id = 7;
+
+      // name: string
+      string name = 8;
+
+      // script: string
+      string script = 9;
+
+      // secret_env: list of string
+      repeated string secret_env = 10 [json_name = "secret_env"];
+
+      // timeout: string
+      string timeout = 11;
+
+      // timing: string
+      string timing = 12;
+
+      // volumes: list of object
+      repeated Volumes volumes = 13;
+
+      // wait_for: list of string
+      repeated string wait_for = 14 [json_name = "wait_for"];
+
+      message Volumes {
+        // name: string
+        string name = 1;
+
+        // path: string
+        string path = 2;
+      }
+    }
+  }
+
+  message GitFileSource {
+    // github_enterprise_config: string
+    string github_enterprise_config = 1 [json_name = "github_enterprise_config"];
+
+    // path: string
+    string path = 2;
+
+    // repo_type: string
+    string repo_type = 3 [json_name = "repo_type"];
+
+    // revision: string
+    string revision = 4;
+
+    // uri: string
+    string uri = 5;
+  }
+
+  message Github {
+    // enterprise_config_resource_name: string
+    string enterprise_config_resource_name = 1 [json_name = "enterprise_config_resource_name"];
+
+    // name: string
+    string name = 2;
+
+    // owner: string
+    string owner = 3;
+
+    // pull_request: list of object
+    repeated PullRequest pull_request = 4 [json_name = "pull_request"];
+
+    // push: list of object
+    repeated Push push = 5;
+
+    message PullRequest {
+      // branch: string
+      string branch = 1;
+
+      // comment_control: string
+      string comment_control = 2 [json_name = "comment_control"];
+
+      // invert_regex: bool
+      bool invert_regex = 3 [json_name = "invert_regex"];
+    }
+
+    message Push {
+      // branch: string
+      string branch = 1;
+
+      // invert_regex: bool
+      bool invert_regex = 2 [json_name = "invert_regex"];
+
+      // tag: string
+      string tag = 3;
+    }
+  }
+
+  message PubsubConfig {
+    // service_account_email: string
+    string service_account_email = 1 [json_name = "service_account_email"];
+
+    // state: string
+    string state = 2;
+
+    // subscription: string
+    string subscription = 3;
+
+    // topic: string
+    string topic = 4;
+  }
+
+  message SourceToBuild {
+    // github_enterprise_config: string
+    string github_enterprise_config = 1 [json_name = "github_enterprise_config"];
+
+    // ref: string
+    string ref = 2;
+
+    // repo_type: string
+    string repo_type = 3 [json_name = "repo_type"];
+
+    // uri: string
+    string uri = 4;
+  }
+
+  message TriggerTemplate {
+    // branch_name: string
+    string branch_name = 1 [json_name = "branch_name"];
+
+    // commit_sha: string
+    string commit_sha = 2 [json_name = "commit_sha"];
+
+    // dir: string
+    string dir = 3;
+
+    // invert_regex: bool
+    bool invert_regex = 4 [json_name = "invert_regex"];
+
+    // project_id: string
+    string project_id = 5 [json_name = "project_id"];
+
+    // repo_name: string
+    string repo_name = 6 [json_name = "repo_name"];
+
+    // tag_name: string
+    string tag_name = 7 [json_name = "tag_name"];
+  }
+
+  message WebhookConfig {
+    // secret: string
+    string secret = 1;
+
+    // state: string
+    string state = 2;
+  }
+}

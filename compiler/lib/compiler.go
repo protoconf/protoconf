@@ -179,7 +179,9 @@ func (c *Compiler) writeConfig(message *dynamic.Message, filename string) error 
 		Value:     any,
 	}
 
-	jsonData, err := protojson.MarshalOptions{Resolver: c.parser.LocalResolver}.Marshal(protoconfValue)
+	jsonData, err := protojson.MarshalOptions{
+		Resolver: c.parser.LocalResolver,
+	}.Marshal(protoconfValue)
 	if err != nil {
 		return fmt.Errorf("error marshaling ProtoconfValue to JSON, value=%v, err: %v", protoconfValue, err)
 	}

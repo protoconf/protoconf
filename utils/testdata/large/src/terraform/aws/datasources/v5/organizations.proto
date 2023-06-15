@@ -1,0 +1,319 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsOrganizationsDelegatedAdministrators version is 0
+message AwsOrganizationsDelegatedAdministrators {
+  repeated DelegatedAdministrators delegated_administrators = 1 [json_name = "delegated_administrators"];
+
+  string id = 2;
+
+  string service_principal = 3 [json_name = "service_principal"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+
+  message DelegatedAdministrators {
+    // arn: string
+    string arn = 1;
+
+    // delegation_enabled_date: string
+    string delegation_enabled_date = 2 [json_name = "delegation_enabled_date"];
+
+    // email: string
+    string email = 3;
+
+    // id: string
+    string id = 4;
+
+    // joined_method: string
+    string joined_method = 5 [json_name = "joined_method"];
+
+    // joined_timestamp: string
+    string joined_timestamp = 6 [json_name = "joined_timestamp"];
+
+    // name: string
+    string name = 7;
+
+    // status: string
+    string status = 8;
+  }
+}
+
+// AwsOrganizationsDelegatedServices version is 0
+message AwsOrganizationsDelegatedServices {
+  string account_id = 1 [json_name = "account_id"];
+
+  repeated DelegatedServices delegated_services = 2 [json_name = "delegated_services"];
+
+  string id = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+
+  message DelegatedServices {
+    // delegation_enabled_date: string
+    string delegation_enabled_date = 1 [json_name = "delegation_enabled_date"];
+
+    // service_principal: string
+    string service_principal = 2 [json_name = "service_principal"];
+  }
+}
+
+// AwsOrganizationsOrganization version is 0
+message AwsOrganizationsOrganization {
+  repeated Accounts accounts = 1;
+
+  string arn = 2;
+
+  repeated string aws_service_access_principals = 3 [json_name = "aws_service_access_principals"];
+
+  repeated string enabled_policy_types = 4 [json_name = "enabled_policy_types"];
+
+  string feature_set = 5 [json_name = "feature_set"];
+
+  string id = 6;
+
+  string master_account_arn = 7 [json_name = "master_account_arn"];
+
+  string master_account_email = 8 [json_name = "master_account_email"];
+
+  string master_account_id = 9 [json_name = "master_account_id"];
+
+  repeated NonMasterAccounts non_master_accounts = 10 [json_name = "non_master_accounts"];
+
+  repeated Roots roots = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message Accounts {
+    // arn: string
+    string arn = 1;
+
+    // email: string
+    string email = 2;
+
+    // id: string
+    string id = 3;
+
+    // name: string
+    string name = 4;
+
+    // status: string
+    string status = 5;
+  }
+
+  message NonMasterAccounts {
+    // arn: string
+    string arn = 1;
+
+    // email: string
+    string email = 2;
+
+    // id: string
+    string id = 3;
+
+    // name: string
+    string name = 4;
+
+    // status: string
+    string status = 5;
+  }
+
+  message Roots {
+    // arn: string
+    string arn = 1;
+
+    // id: string
+    string id = 2;
+
+    // name: string
+    string name = 3;
+
+    // policy_types: list of object
+    repeated PolicyTypes policy_types = 4 [json_name = "policy_types"];
+
+    message PolicyTypes {
+      // status: string
+      string status = 1;
+
+      // type: string
+      string type = 2;
+    }
+  }
+}
+
+// AwsOrganizationsOrganizationalUnitChildAccounts version is 0
+message AwsOrganizationsOrganizationalUnitChildAccounts {
+  repeated Accounts accounts = 1;
+
+  string id = 2;
+
+  string parent_id = 3 [json_name = "parent_id"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+
+  message Accounts {
+    // arn: string
+    string arn = 1;
+
+    // email: string
+    string email = 2;
+
+    // id: string
+    string id = 3;
+
+    // name: string
+    string name = 4;
+
+    // status: string
+    string status = 5;
+  }
+}
+
+// AwsOrganizationsOrganizationalUnitDescendantAccounts version is 0
+message AwsOrganizationsOrganizationalUnitDescendantAccounts {
+  repeated Accounts accounts = 1;
+
+  string id = 2;
+
+  string parent_id = 3 [json_name = "parent_id"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+
+  message Accounts {
+    // arn: string
+    string arn = 1;
+
+    // email: string
+    string email = 2;
+
+    // id: string
+    string id = 3;
+
+    // name: string
+    string name = 4;
+
+    // status: string
+    string status = 5;
+  }
+}
+
+// AwsOrganizationsOrganizationalUnits version is 0
+message AwsOrganizationsOrganizationalUnits {
+  repeated Children children = 1;
+
+  string id = 2;
+
+  string parent_id = 3 [json_name = "parent_id"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+
+  message Children {
+    // arn: string
+    string arn = 1;
+
+    // id: string
+    string id = 2;
+
+    // name: string
+    string name = 3;
+  }
+}
+
+// AwsOrganizationsPolicy version is 0
+message AwsOrganizationsPolicy {
+  string arn = 1;
+
+  bool aws_managed = 2 [json_name = "aws_managed"];
+
+  string content = 3;
+
+  string description = 4;
+
+  string id = 5;
+
+  string name = 6;
+
+  string policy_id = 7 [json_name = "policy_id"];
+
+  string type = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+}
+
+// AwsOrganizationsResourceTags version is 0
+message AwsOrganizationsResourceTags {
+  string id = 1;
+
+  string resource_id = 2 [json_name = "resource_id"];
+
+  map<string, string> tags = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}

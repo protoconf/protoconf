@@ -1,0 +1,621 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsLambdaAlias version is 0
+message AwsLambdaAlias {
+  string arn = 1;
+
+  string description = 2;
+
+  string function_name = 3 [json_name = "function_name"];
+
+  string function_version = 4 [json_name = "function_version"];
+
+  string id = 5;
+
+  string invoke_arn = 6 [json_name = "invoke_arn"];
+
+  string name = 7;
+
+  RoutingConfig routing_config = 8 [json_name = "routing_config"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message RoutingConfig {
+    map<string, string> additional_version_weights = 1 [json_name = "additional_version_weights"];
+  }
+}
+
+// AwsLambdaCodeSigningConfig version is 0
+message AwsLambdaCodeSigningConfig {
+  string arn = 1;
+
+  string config_id = 2 [json_name = "config_id"];
+
+  string description = 3;
+
+  string id = 4;
+
+  string last_modified = 5 [json_name = "last_modified"];
+
+  AllowedPublishers allowed_publishers = 6 [json_name = "allowed_publishers"];
+
+  Policies policies = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message AllowedPublishers {
+    repeated string signing_profile_version_arns = 1 [json_name = "signing_profile_version_arns"];
+  }
+
+  message Policies {
+    string untrusted_artifact_on_deployment = 1 [json_name = "untrusted_artifact_on_deployment"];
+  }
+}
+
+// AwsLambdaEventSourceMapping version is 0
+message AwsLambdaEventSourceMapping {
+  int64 batch_size = 1 [json_name = "batch_size"];
+
+  bool bisect_batch_on_function_error = 2 [json_name = "bisect_batch_on_function_error"];
+
+  bool enabled = 3;
+
+  string event_source_arn = 4 [json_name = "event_source_arn"];
+
+  string function_arn = 5 [json_name = "function_arn"];
+
+  string function_name = 6 [json_name = "function_name"];
+
+  repeated string function_response_types = 7 [json_name = "function_response_types"];
+
+  string id = 8;
+
+  string last_modified = 9 [json_name = "last_modified"];
+
+  string last_processing_result = 10 [json_name = "last_processing_result"];
+
+  int64 maximum_batching_window_in_seconds = 11 [json_name = "maximum_batching_window_in_seconds"];
+
+  int64 maximum_record_age_in_seconds = 12 [json_name = "maximum_record_age_in_seconds"];
+
+  int64 maximum_retry_attempts = 13 [json_name = "maximum_retry_attempts"];
+
+  int64 parallelization_factor = 14 [json_name = "parallelization_factor"];
+
+  repeated string queues = 15;
+
+  string starting_position = 16 [json_name = "starting_position"];
+
+  string starting_position_timestamp = 17 [json_name = "starting_position_timestamp"];
+
+  string state = 18;
+
+  string state_transition_reason = 19 [json_name = "state_transition_reason"];
+
+  repeated string topics = 20;
+
+  int64 tumbling_window_in_seconds = 21 [json_name = "tumbling_window_in_seconds"];
+
+  string uuid = 22;
+
+  AmazonManagedKafkaEventSourceConfig amazon_managed_kafka_event_source_config = 23 [
+    json_name = "amazon_managed_kafka_event_source_config"
+  ];
+
+  DestinationConfig destination_config = 24 [json_name = "destination_config"];
+
+  DocumentDbEventSourceConfig document_db_event_source_config = 25 [json_name = "document_db_event_source_config"];
+
+  FilterCriteria filter_criteria = 26 [json_name = "filter_criteria"];
+
+  ScalingConfig scaling_config = 27 [json_name = "scaling_config"];
+
+  SelfManagedEventSource self_managed_event_source = 28 [json_name = "self_managed_event_source"];
+
+  SelfManagedKafkaEventSourceConfig self_managed_kafka_event_source_config = 29 [
+    json_name = "self_managed_kafka_event_source_config"
+  ];
+
+  repeated SourceAccessConfiguration source_access_configuration = 30 [json_name = "source_access_configuration"];
+
+  map<string, string> for_each = 31 [json_name = "for_each"];
+
+  repeated string depends_on = 32 [json_name = "depends_on"];
+
+  int32 count = 33;
+
+  string provider = 34;
+
+  terraform.v1.Lifecycle lifecycle = 35;
+
+  message AmazonManagedKafkaEventSourceConfig {
+    string consumer_group_id = 1 [json_name = "consumer_group_id"];
+  }
+
+  message DestinationConfig {
+    OnFailure on_failure = 1 [json_name = "on_failure"];
+
+    message OnFailure {
+      string destination_arn = 1 [json_name = "destination_arn"];
+    }
+  }
+
+  message DocumentDbEventSourceConfig {
+    string collection_name = 1 [json_name = "collection_name"];
+
+    string database_name = 2 [json_name = "database_name"];
+
+    string full_document = 3 [json_name = "full_document"];
+  }
+
+  message FilterCriteria {
+    repeated Filter filter = 1;
+
+    message Filter {
+      string pattern = 1;
+    }
+  }
+
+  message ScalingConfig {
+    int64 maximum_concurrency = 1 [json_name = "maximum_concurrency"];
+  }
+
+  message SelfManagedEventSource {
+    map<string, string> endpoints = 1;
+  }
+
+  message SelfManagedKafkaEventSourceConfig {
+    string consumer_group_id = 1 [json_name = "consumer_group_id"];
+  }
+
+  message SourceAccessConfiguration {
+    string type = 1;
+
+    string uri = 2;
+  }
+}
+
+// AwsLambdaFunction version is 0
+message AwsLambdaFunction {
+  repeated string architectures = 1;
+
+  string arn = 2;
+
+  string code_signing_config_arn = 3 [json_name = "code_signing_config_arn"];
+
+  string description = 4;
+
+  string filename = 5;
+
+  string function_name = 6 [json_name = "function_name"];
+
+  string handler = 7;
+
+  string id = 8;
+
+  string image_uri = 9 [json_name = "image_uri"];
+
+  string invoke_arn = 10 [json_name = "invoke_arn"];
+
+  string kms_key_arn = 11 [json_name = "kms_key_arn"];
+
+  string last_modified = 12 [json_name = "last_modified"];
+
+  repeated string layers = 13;
+
+  int64 memory_size = 14 [json_name = "memory_size"];
+
+  string package_type = 15 [json_name = "package_type"];
+
+  bool publish = 16;
+
+  string qualified_arn = 17 [json_name = "qualified_arn"];
+
+  string qualified_invoke_arn = 18 [json_name = "qualified_invoke_arn"];
+
+  bool replace_security_groups_on_destroy = 19 [json_name = "replace_security_groups_on_destroy"];
+
+  repeated string replacement_security_group_ids = 20 [json_name = "replacement_security_group_ids"];
+
+  int64 reserved_concurrent_executions = 21 [json_name = "reserved_concurrent_executions"];
+
+  string role = 22;
+
+  string runtime = 23;
+
+  string s3_bucket = 24 [json_name = "s3_bucket"];
+
+  string s3_key = 25 [json_name = "s3_key"];
+
+  string s3_object_version = 26 [json_name = "s3_object_version"];
+
+  string signing_job_arn = 27 [json_name = "signing_job_arn"];
+
+  string signing_profile_version_arn = 28 [json_name = "signing_profile_version_arn"];
+
+  bool skip_destroy = 29 [json_name = "skip_destroy"];
+
+  string source_code_hash = 30 [json_name = "source_code_hash"];
+
+  int64 source_code_size = 31 [json_name = "source_code_size"];
+
+  map<string, string> tags = 32;
+
+  map<string, string> tags_all = 33 [json_name = "tags_all"];
+
+  int64 timeout = 34;
+
+  string version = 35;
+
+  DeadLetterConfig dead_letter_config = 36 [json_name = "dead_letter_config"];
+
+  Environment environment = 37;
+
+  EphemeralStorage ephemeral_storage = 38 [json_name = "ephemeral_storage"];
+
+  FileSystemConfig file_system_config = 39 [json_name = "file_system_config"];
+
+  ImageConfig image_config = 40 [json_name = "image_config"];
+
+  SnapStart snap_start = 41 [json_name = "snap_start"];
+
+  repeated Timeouts timeouts = 42;
+
+  TracingConfig tracing_config = 43 [json_name = "tracing_config"];
+
+  VpcConfig vpc_config = 44 [json_name = "vpc_config"];
+
+  map<string, string> for_each = 45 [json_name = "for_each"];
+
+  repeated string depends_on = 46 [json_name = "depends_on"];
+
+  int32 count = 47;
+
+  string provider = 48;
+
+  terraform.v1.Lifecycle lifecycle = 49;
+
+  message DeadLetterConfig {
+    string target_arn = 1 [json_name = "target_arn"];
+  }
+
+  message Environment {
+    map<string, string> variables = 1;
+  }
+
+  message EphemeralStorage {
+    int64 size = 1;
+  }
+
+  message FileSystemConfig {
+    string arn = 1;
+
+    string local_mount_path = 2 [json_name = "local_mount_path"];
+  }
+
+  message ImageConfig {
+    repeated string command = 1;
+
+    repeated string entry_point = 2 [json_name = "entry_point"];
+
+    string working_directory = 3 [json_name = "working_directory"];
+  }
+
+  message SnapStart {
+    string apply_on = 1 [json_name = "apply_on"];
+
+    string optimization_status = 2 [json_name = "optimization_status"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+
+  message TracingConfig {
+    string mode = 1;
+  }
+
+  message VpcConfig {
+    repeated string security_group_ids = 1 [json_name = "security_group_ids"];
+
+    repeated string subnet_ids = 2 [json_name = "subnet_ids"];
+
+    string vpc_id = 3 [json_name = "vpc_id"];
+  }
+}
+
+// AwsLambdaFunctionEventInvokeConfig version is 0
+message AwsLambdaFunctionEventInvokeConfig {
+  string function_name = 1 [json_name = "function_name"];
+
+  string id = 2;
+
+  int64 maximum_event_age_in_seconds = 3 [json_name = "maximum_event_age_in_seconds"];
+
+  int64 maximum_retry_attempts = 4 [json_name = "maximum_retry_attempts"];
+
+  string qualifier = 5;
+
+  DestinationConfig destination_config = 6 [json_name = "destination_config"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message DestinationConfig {
+    OnFailure on_failure = 1 [json_name = "on_failure"];
+
+    OnSuccess on_success = 2 [json_name = "on_success"];
+
+    message OnFailure {
+      string destination = 1;
+    }
+
+    message OnSuccess {
+      string destination = 1;
+    }
+  }
+}
+
+// AwsLambdaFunctionUrl version is 0
+message AwsLambdaFunctionUrl {
+  string authorization_type = 1 [json_name = "authorization_type"];
+
+  string function_arn = 2 [json_name = "function_arn"];
+
+  string function_name = 3 [json_name = "function_name"];
+
+  string function_url = 4 [json_name = "function_url"];
+
+  string id = 5;
+
+  string invoke_mode = 6 [json_name = "invoke_mode"];
+
+  string qualifier = 7;
+
+  string url_id = 8 [json_name = "url_id"];
+
+  Cors cors = 9;
+
+  repeated Timeouts timeouts = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Cors {
+    bool allow_credentials = 1 [json_name = "allow_credentials"];
+
+    repeated string allow_headers = 2 [json_name = "allow_headers"];
+
+    repeated string allow_methods = 3 [json_name = "allow_methods"];
+
+    repeated string allow_origins = 4 [json_name = "allow_origins"];
+
+    repeated string expose_headers = 5 [json_name = "expose_headers"];
+
+    int64 max_age = 6 [json_name = "max_age"];
+  }
+
+  message Timeouts {
+    string create = 1;
+  }
+}
+
+// AwsLambdaInvocation version is 0
+message AwsLambdaInvocation {
+  string function_name = 1 [json_name = "function_name"];
+
+  string id = 2;
+
+  string input = 3;
+
+  string lifecycle_scope = 4 [json_name = "lifecycle_scope"];
+
+  string qualifier = 5;
+
+  string result = 6;
+
+  string terraform_key = 7 [json_name = "terraform_key"];
+
+  map<string, string> triggers = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+}
+
+// AwsLambdaLayerVersion version is 0
+message AwsLambdaLayerVersion {
+  string arn = 1;
+
+  repeated string compatible_architectures = 2 [json_name = "compatible_architectures"];
+
+  repeated string compatible_runtimes = 3 [json_name = "compatible_runtimes"];
+
+  string created_date = 4 [json_name = "created_date"];
+
+  string description = 5;
+
+  string filename = 6;
+
+  string id = 7;
+
+  string layer_arn = 8 [json_name = "layer_arn"];
+
+  string layer_name = 9 [json_name = "layer_name"];
+
+  string license_info = 10 [json_name = "license_info"];
+
+  string s3_bucket = 11 [json_name = "s3_bucket"];
+
+  string s3_key = 12 [json_name = "s3_key"];
+
+  string s3_object_version = 13 [json_name = "s3_object_version"];
+
+  string signing_job_arn = 14 [json_name = "signing_job_arn"];
+
+  string signing_profile_version_arn = 15 [json_name = "signing_profile_version_arn"];
+
+  bool skip_destroy = 16 [json_name = "skip_destroy"];
+
+  string source_code_hash = 17 [json_name = "source_code_hash"];
+
+  int64 source_code_size = 18 [json_name = "source_code_size"];
+
+  string version = 19;
+
+  map<string, string> for_each = 20 [json_name = "for_each"];
+
+  repeated string depends_on = 21 [json_name = "depends_on"];
+
+  int32 count = 22;
+
+  string provider = 23;
+
+  terraform.v1.Lifecycle lifecycle = 24;
+}
+
+// AwsLambdaLayerVersionPermission version is 0
+message AwsLambdaLayerVersionPermission {
+  string action = 1;
+
+  string id = 2;
+
+  string layer_name = 3 [json_name = "layer_name"];
+
+  string organization_id = 4 [json_name = "organization_id"];
+
+  string policy = 5;
+
+  string principal = 6;
+
+  string revision_id = 7 [json_name = "revision_id"];
+
+  bool skip_destroy = 8 [json_name = "skip_destroy"];
+
+  string statement_id = 9 [json_name = "statement_id"];
+
+  int64 version_number = 10 [json_name = "version_number"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+}
+
+// AwsLambdaPermission version is 0
+message AwsLambdaPermission {
+  string action = 1;
+
+  string event_source_token = 2 [json_name = "event_source_token"];
+
+  string function_name = 3 [json_name = "function_name"];
+
+  string function_url_auth_type = 4 [json_name = "function_url_auth_type"];
+
+  string id = 5;
+
+  string principal = 6;
+
+  string principal_org_id = 7 [json_name = "principal_org_id"];
+
+  string qualifier = 8;
+
+  string source_account = 9 [json_name = "source_account"];
+
+  string source_arn = 10 [json_name = "source_arn"];
+
+  string statement_id = 11 [json_name = "statement_id"];
+
+  string statement_id_prefix = 12 [json_name = "statement_id_prefix"];
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+}
+
+// AwsLambdaProvisionedConcurrencyConfig version is 0
+message AwsLambdaProvisionedConcurrencyConfig {
+  string function_name = 1 [json_name = "function_name"];
+
+  string id = 2;
+
+  int64 provisioned_concurrent_executions = 3 [json_name = "provisioned_concurrent_executions"];
+
+  string qualifier = 4;
+
+  bool skip_destroy = 5 [json_name = "skip_destroy"];
+
+  repeated Timeouts timeouts = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Timeouts {
+    string create = 1;
+
+    string update = 2;
+  }
+}

@@ -1,0 +1,102 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsAvailabilityZone version is 0
+message AwsAvailabilityZone {
+  bool all_availability_zones = 1 [json_name = "all_availability_zones"];
+
+  string group_name = 2 [json_name = "group_name"];
+
+  string id = 3;
+
+  string name = 4;
+
+  string name_suffix = 5 [json_name = "name_suffix"];
+
+  string network_border_group = 6 [json_name = "network_border_group"];
+
+  string opt_in_status = 7 [json_name = "opt_in_status"];
+
+  string parent_zone_id = 8 [json_name = "parent_zone_id"];
+
+  string parent_zone_name = 9 [json_name = "parent_zone_name"];
+
+  string region = 10;
+
+  string state = 11;
+
+  string zone_id = 12 [json_name = "zone_id"];
+
+  string zone_type = 13 [json_name = "zone_type"];
+
+  repeated Filter filter = 14;
+
+  repeated Timeouts timeouts = 15;
+
+  map<string, string> for_each = 16 [json_name = "for_each"];
+
+  repeated string depends_on = 17 [json_name = "depends_on"];
+
+  int32 count = 18;
+
+  string provider = 19;
+
+  terraform.v1.Lifecycle lifecycle = 20;
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+
+  message Timeouts {
+    string read = 1;
+  }
+}
+
+// AwsAvailabilityZones version is 0
+message AwsAvailabilityZones {
+  bool all_availability_zones = 1 [json_name = "all_availability_zones"];
+
+  repeated string exclude_names = 2 [json_name = "exclude_names"];
+
+  repeated string exclude_zone_ids = 3 [json_name = "exclude_zone_ids"];
+
+  repeated string group_names = 4 [json_name = "group_names"];
+
+  string id = 5;
+
+  repeated string names = 6;
+
+  string state = 7;
+
+  repeated string zone_ids = 8 [json_name = "zone_ids"];
+
+  repeated Filter filter = 9;
+
+  repeated Timeouts timeouts = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+
+  message Timeouts {
+    string read = 1;
+  }
+}

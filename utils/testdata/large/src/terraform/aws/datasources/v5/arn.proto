@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsArn version is 0
+message AwsArn {
+  string account = 1;
+
+  string arn = 2;
+
+  string id = 3;
+
+  string partition = 4;
+
+  string region = 5;
+
+  string resource = 6;
+
+  string service = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}

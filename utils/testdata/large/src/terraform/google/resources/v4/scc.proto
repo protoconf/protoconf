@@ -1,0 +1,283 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleSccMuteConfig version is 0
+message GoogleSccMuteConfig {
+  // The time at which the mute config was created. This field is set by
+  // the server and will be ignored if provided on config creation.
+  string create_time = 1 [json_name = "create_time"];
+
+  // A description of the mute config.
+  string description = 2;
+
+  // An expression that defines the filter to apply across create/update
+  // events of findings. While creating a filter string, be mindful of
+  // the scope in which the mute configuration is being created. E.g.,
+  // If a filter contains project = X but is created under the
+  // project = Y scope, it might not match any findings.
+  string filter = 3;
+
+  string id = 4;
+
+  // Email address of the user who last edited the mute config. This
+  // field is set by the server and will be ignored if provided on
+  // config creation or update.
+  string most_recent_editor = 5 [json_name = "most_recent_editor"];
+
+  // Unique identifier provided by the client within the parent scope.
+  string mute_config_id = 6 [json_name = "mute_config_id"];
+
+  // Name of the mute config. Its format is
+  // organizations/{organization}/muteConfigs/{configId},
+  // folders/{folder}/muteConfigs/{configId},
+  // or projects/{project}/muteConfigs/{configId}
+  string name = 7;
+
+  // Resource name of the new mute configs's parent. Its format is
+  // "organizations/[organization_id]", "folders/[folder_id]", or
+  // "projects/[project_id]".
+  string parent = 8;
+
+  // Output only. The most recent time at which the mute config was
+  // updated. This field is set by the server and will be ignored if
+  // provided on config creation or update.
+  string update_time = 9 [json_name = "update_time"];
+
+  repeated Timeouts timeouts = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleSccNotificationConfig version is 0
+message GoogleSccNotificationConfig {
+  // This must be unique within the organization.
+  string config_id = 1 [json_name = "config_id"];
+
+  // The description of the notification config (max of 1024 characters).
+  string description = 2;
+
+  string id = 3;
+
+  // The resource name of this notification config, in the format
+  // 'organizations/{{organization}}/notificationConfigs/{{config_id}}'.
+  string name = 4;
+
+  // The organization whose Cloud Security Command Center the Notification
+  // Config lives in.
+  string organization = 5;
+
+  // The Pub/Sub topic to send notifications to. Its format is
+  // "projects/[project_id]/topics/[topic]".
+  string pubsub_topic = 6 [json_name = "pubsub_topic"];
+
+  // The service account that needs "pubsub.topics.publish" permission to
+  // publish to the Pub/Sub topic.
+  string service_account = 7 [json_name = "service_account"];
+
+  StreamingConfig streaming_config = 8 [json_name = "streaming_config"];
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message StreamingConfig {
+    // Expression that defines the filter to apply across create/update
+    // events of assets or findings as specified by the event type. The
+    // expression is a list of zero or more restrictions combined via
+    // logical operators AND and OR. Parentheses are supported, and OR
+    // has higher precedence than AND.
+    //
+    // Restrictions have the form <field> <operator> <value> and may have
+    // a - character in front of them to indicate negation. The fields
+    // map to those defined in the corresponding resource.
+    //
+    // The supported operators are:
+    //
+    // * = for all value types.
+    // * >, <, >=, <= for integer values.
+    // * :, meaning substring matching, for strings.
+    //
+    // The supported value types are:
+    //
+    // * string literals in quotes.
+    // * integer literals without quotes.
+    // * boolean literals true and false without quotes.
+    //
+    // See
+    // [Filtering notifications](https://cloud.google.com/security-command-center/docs/how-to-api-filter-notifications)
+    // for information on how to write a filter.
+    string filter = 1;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleSccSource version is 0
+message GoogleSccSource {
+  // The description of the source (max of 1024 characters).
+  string description = 1;
+
+  // The source’s display name. A source’s display name must be unique
+  // amongst its siblings, for example, two sources with the same parent
+  // can't share the same display name. The display name must start and end
+  // with a letter or digit, may contain letters, digits, spaces, hyphens,
+  // and underscores, and can be no longer than 32 characters.
+  string display_name = 2 [json_name = "display_name"];
+
+  string id = 3;
+
+  // The resource name of this source, in the format
+  // 'organizations/{{organization}}/sources/{{source}}'.
+  string name = 4;
+
+  // The organization whose Cloud Security Command Center the Source
+  // lives in.
+  string organization = 5;
+
+  repeated Timeouts timeouts = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleSccSourceIamBinding version is 0
+message GoogleSccSourceIamBinding {
+  string etag = 1;
+
+  string id = 2;
+
+  repeated string members = 3;
+
+  string organization = 4;
+
+  string role = 5;
+
+  string source = 6;
+
+  Condition condition = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleSccSourceIamMember version is 0
+message GoogleSccSourceIamMember {
+  string etag = 1;
+
+  string id = 2;
+
+  string member = 3;
+
+  string organization = 4;
+
+  string role = 5;
+
+  string source = 6;
+
+  Condition condition = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleSccSourceIamPolicy version is 0
+message GoogleSccSourceIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  string organization = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  string source = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}

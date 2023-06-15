@@ -1,0 +1,142 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsKeyspacesKeyspace version is 0
+message AwsKeyspacesKeyspace {
+  string arn = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  map<string, string> tags = 4;
+
+  map<string, string> tags_all = 5 [json_name = "tags_all"];
+
+  repeated Timeouts timeouts = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsKeyspacesTable version is 0
+message AwsKeyspacesTable {
+  string arn = 1;
+
+  int64 default_time_to_live = 2 [json_name = "default_time_to_live"];
+
+  string id = 3;
+
+  string keyspace_name = 4 [json_name = "keyspace_name"];
+
+  string table_name = 5 [json_name = "table_name"];
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  CapacitySpecification capacity_specification = 8 [json_name = "capacity_specification"];
+
+  Comment comment = 9;
+
+  EncryptionSpecification encryption_specification = 10 [json_name = "encryption_specification"];
+
+  PointInTimeRecovery point_in_time_recovery = 11 [json_name = "point_in_time_recovery"];
+
+  SchemaDefinition schema_definition = 12 [json_name = "schema_definition"];
+
+  repeated Timeouts timeouts = 13;
+
+  Ttl ttl = 14;
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+
+  message CapacitySpecification {
+    int64 read_capacity_units = 1 [json_name = "read_capacity_units"];
+
+    string throughput_mode = 2 [json_name = "throughput_mode"];
+
+    int64 write_capacity_units = 3 [json_name = "write_capacity_units"];
+  }
+
+  message Comment {
+    string message = 1;
+  }
+
+  message EncryptionSpecification {
+    string kms_key_identifier = 1 [json_name = "kms_key_identifier"];
+
+    string type = 2;
+  }
+
+  message PointInTimeRecovery {
+    string status = 1;
+  }
+
+  message SchemaDefinition {
+    repeated ClusteringKey clustering_key = 1 [json_name = "clustering_key"];
+
+    repeated Column column = 2;
+
+    repeated PartitionKey partition_key = 3 [json_name = "partition_key"];
+
+    repeated StaticColumn static_column = 4 [json_name = "static_column"];
+
+    message ClusteringKey {
+      string name = 1;
+
+      string order_by = 2 [json_name = "order_by"];
+    }
+
+    message Column {
+      string name = 1;
+
+      string type = 2;
+    }
+
+    message PartitionKey {
+      string name = 1;
+    }
+
+    message StaticColumn {
+      string name = 1;
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+
+  message Ttl {
+    string status = 1;
+  }
+}

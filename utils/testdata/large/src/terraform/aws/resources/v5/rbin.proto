@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsRbinRule version is 0
+message AwsRbinRule {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  string lock_end_time = 4 [json_name = "lock_end_time"];
+
+  string lock_state = 5 [json_name = "lock_state"];
+
+  string resource_type = 6 [json_name = "resource_type"];
+
+  string status = 7;
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  LockConfiguration lock_configuration = 10 [json_name = "lock_configuration"];
+
+  repeated ResourceTags resource_tags = 11 [json_name = "resource_tags"];
+
+  RetentionPeriod retention_period = 12 [json_name = "retention_period"];
+
+  repeated Timeouts timeouts = 13;
+
+  map<string, string> for_each = 14 [json_name = "for_each"];
+
+  repeated string depends_on = 15 [json_name = "depends_on"];
+
+  int32 count = 16;
+
+  string provider = 17;
+
+  terraform.v1.Lifecycle lifecycle = 18;
+
+  message LockConfiguration {
+    UnlockDelay unlock_delay = 1 [json_name = "unlock_delay"];
+
+    message UnlockDelay {
+      string unlock_delay_unit = 1 [json_name = "unlock_delay_unit"];
+
+      int64 unlock_delay_value = 2 [json_name = "unlock_delay_value"];
+    }
+  }
+
+  message ResourceTags {
+    string resource_tag_key = 1 [json_name = "resource_tag_key"];
+
+    string resource_tag_value = 2 [json_name = "resource_tag_value"];
+  }
+
+  message RetentionPeriod {
+    string retention_period_unit = 1 [json_name = "retention_period_unit"];
+
+    int64 retention_period_value = 2 [json_name = "retention_period_value"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

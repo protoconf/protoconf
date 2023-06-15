@@ -1,0 +1,166 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsMwaaEnvironment version is 0
+message AwsMwaaEnvironment {
+  map<string, string> airflow_configuration_options = 1 [json_name = "airflow_configuration_options"];
+
+  string airflow_version = 2 [json_name = "airflow_version"];
+
+  string arn = 3;
+
+  string created_at = 4 [json_name = "created_at"];
+
+  string dag_s3_path = 5 [json_name = "dag_s3_path"];
+
+  string environment_class = 6 [json_name = "environment_class"];
+
+  string execution_role_arn = 7 [json_name = "execution_role_arn"];
+
+  string id = 8;
+
+  string kms_key = 9 [json_name = "kms_key"];
+
+  repeated LastUpdated last_updated = 10 [json_name = "last_updated"];
+
+  int64 max_workers = 11 [json_name = "max_workers"];
+
+  int64 min_workers = 12 [json_name = "min_workers"];
+
+  string name = 13;
+
+  string plugins_s3_object_version = 14 [json_name = "plugins_s3_object_version"];
+
+  string plugins_s3_path = 15 [json_name = "plugins_s3_path"];
+
+  string requirements_s3_object_version = 16 [json_name = "requirements_s3_object_version"];
+
+  string requirements_s3_path = 17 [json_name = "requirements_s3_path"];
+
+  int64 schedulers = 18;
+
+  string service_role_arn = 19 [json_name = "service_role_arn"];
+
+  string source_bucket_arn = 20 [json_name = "source_bucket_arn"];
+
+  string startup_script_s3_object_version = 21 [json_name = "startup_script_s3_object_version"];
+
+  string startup_script_s3_path = 22 [json_name = "startup_script_s3_path"];
+
+  string status = 23;
+
+  map<string, string> tags = 24;
+
+  map<string, string> tags_all = 25 [json_name = "tags_all"];
+
+  string webserver_access_mode = 26 [json_name = "webserver_access_mode"];
+
+  string webserver_url = 27 [json_name = "webserver_url"];
+
+  string weekly_maintenance_window_start = 28 [json_name = "weekly_maintenance_window_start"];
+
+  LoggingConfiguration logging_configuration = 29 [json_name = "logging_configuration"];
+
+  NetworkConfiguration network_configuration = 30 [json_name = "network_configuration"];
+
+  repeated Timeouts timeouts = 31;
+
+  map<string, string> for_each = 32 [json_name = "for_each"];
+
+  repeated string depends_on = 33 [json_name = "depends_on"];
+
+  int32 count = 34;
+
+  string provider = 35;
+
+  terraform.v1.Lifecycle lifecycle = 36;
+
+  message LastUpdated {
+    // created_at: string
+    string created_at = 1 [json_name = "created_at"];
+
+    // error: list of object
+    repeated Error error = 2;
+
+    // status: string
+    string status = 3;
+
+    message Error {
+      // error_code: string
+      string error_code = 1 [json_name = "error_code"];
+
+      // error_message: string
+      string error_message = 2 [json_name = "error_message"];
+    }
+  }
+
+  message LoggingConfiguration {
+    DagProcessingLogs dag_processing_logs = 1 [json_name = "dag_processing_logs"];
+
+    SchedulerLogs scheduler_logs = 2 [json_name = "scheduler_logs"];
+
+    TaskLogs task_logs = 3 [json_name = "task_logs"];
+
+    WebserverLogs webserver_logs = 4 [json_name = "webserver_logs"];
+
+    WorkerLogs worker_logs = 5 [json_name = "worker_logs"];
+
+    message DagProcessingLogs {
+      string cloud_watch_log_group_arn = 1 [json_name = "cloud_watch_log_group_arn"];
+
+      bool enabled = 2;
+
+      string log_level = 3 [json_name = "log_level"];
+    }
+
+    message SchedulerLogs {
+      string cloud_watch_log_group_arn = 1 [json_name = "cloud_watch_log_group_arn"];
+
+      bool enabled = 2;
+
+      string log_level = 3 [json_name = "log_level"];
+    }
+
+    message TaskLogs {
+      string cloud_watch_log_group_arn = 1 [json_name = "cloud_watch_log_group_arn"];
+
+      bool enabled = 2;
+
+      string log_level = 3 [json_name = "log_level"];
+    }
+
+    message WebserverLogs {
+      string cloud_watch_log_group_arn = 1 [json_name = "cloud_watch_log_group_arn"];
+
+      bool enabled = 2;
+
+      string log_level = 3 [json_name = "log_level"];
+    }
+
+    message WorkerLogs {
+      string cloud_watch_log_group_arn = 1 [json_name = "cloud_watch_log_group_arn"];
+
+      bool enabled = 2;
+
+      string log_level = 3 [json_name = "log_level"];
+    }
+  }
+
+  message NetworkConfiguration {
+    repeated string security_group_ids = 1 [json_name = "security_group_ids"];
+
+    repeated string subnet_ids = 2 [json_name = "subnet_ids"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

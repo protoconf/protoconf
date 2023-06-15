@@ -1,0 +1,500 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsLaunchConfiguration version is 0
+message AwsLaunchConfiguration {
+  string arn = 1;
+
+  bool associate_public_ip_address = 2 [json_name = "associate_public_ip_address"];
+
+  bool ebs_optimized = 3 [json_name = "ebs_optimized"];
+
+  bool enable_monitoring = 4 [json_name = "enable_monitoring"];
+
+  string iam_instance_profile = 5 [json_name = "iam_instance_profile"];
+
+  string id = 6;
+
+  string image_id = 7 [json_name = "image_id"];
+
+  string instance_type = 8 [json_name = "instance_type"];
+
+  string key_name = 9 [json_name = "key_name"];
+
+  string name = 10;
+
+  string name_prefix = 11 [json_name = "name_prefix"];
+
+  string placement_tenancy = 12 [json_name = "placement_tenancy"];
+
+  repeated string security_groups = 13 [json_name = "security_groups"];
+
+  string spot_price = 14 [json_name = "spot_price"];
+
+  string user_data = 15 [json_name = "user_data"];
+
+  string user_data_base64 = 16 [json_name = "user_data_base64"];
+
+  repeated EbsBlockDevice ebs_block_device = 17 [json_name = "ebs_block_device"];
+
+  repeated EphemeralBlockDevice ephemeral_block_device = 18 [json_name = "ephemeral_block_device"];
+
+  MetadataOptions metadata_options = 19 [json_name = "metadata_options"];
+
+  RootBlockDevice root_block_device = 20 [json_name = "root_block_device"];
+
+  map<string, string> for_each = 21 [json_name = "for_each"];
+
+  repeated string depends_on = 22 [json_name = "depends_on"];
+
+  int32 count = 23;
+
+  string provider = 24;
+
+  terraform.v1.Lifecycle lifecycle = 25;
+
+  message EbsBlockDevice {
+    bool delete_on_termination = 1 [json_name = "delete_on_termination"];
+
+    string device_name = 2 [json_name = "device_name"];
+
+    bool encrypted = 3;
+
+    int64 iops = 4;
+
+    bool no_device = 5 [json_name = "no_device"];
+
+    string snapshot_id = 6 [json_name = "snapshot_id"];
+
+    int64 throughput = 7;
+
+    int64 volume_size = 8 [json_name = "volume_size"];
+
+    string volume_type = 9 [json_name = "volume_type"];
+  }
+
+  message EphemeralBlockDevice {
+    string device_name = 1 [json_name = "device_name"];
+
+    bool no_device = 2 [json_name = "no_device"];
+
+    string virtual_name = 3 [json_name = "virtual_name"];
+  }
+
+  message MetadataOptions {
+    string http_endpoint = 1 [json_name = "http_endpoint"];
+
+    int64 http_put_response_hop_limit = 2 [json_name = "http_put_response_hop_limit"];
+
+    string http_tokens = 3 [json_name = "http_tokens"];
+  }
+
+  message RootBlockDevice {
+    bool delete_on_termination = 1 [json_name = "delete_on_termination"];
+
+    bool encrypted = 2;
+
+    int64 iops = 3;
+
+    int64 throughput = 4;
+
+    int64 volume_size = 5 [json_name = "volume_size"];
+
+    string volume_type = 6 [json_name = "volume_type"];
+  }
+}
+
+// AwsLaunchTemplate version is 0
+message AwsLaunchTemplate {
+  string arn = 1;
+
+  int64 default_version = 2 [json_name = "default_version"];
+
+  string description = 3;
+
+  bool disable_api_stop = 4 [json_name = "disable_api_stop"];
+
+  bool disable_api_termination = 5 [json_name = "disable_api_termination"];
+
+  string ebs_optimized = 6 [json_name = "ebs_optimized"];
+
+  string id = 7;
+
+  string image_id = 8 [json_name = "image_id"];
+
+  string instance_initiated_shutdown_behavior = 9 [json_name = "instance_initiated_shutdown_behavior"];
+
+  string instance_type = 10 [json_name = "instance_type"];
+
+  string kernel_id = 11 [json_name = "kernel_id"];
+
+  string key_name = 12 [json_name = "key_name"];
+
+  int64 latest_version = 13 [json_name = "latest_version"];
+
+  string name = 14;
+
+  string name_prefix = 15 [json_name = "name_prefix"];
+
+  string ram_disk_id = 16 [json_name = "ram_disk_id"];
+
+  repeated string security_group_names = 17 [json_name = "security_group_names"];
+
+  map<string, string> tags = 18;
+
+  map<string, string> tags_all = 19 [json_name = "tags_all"];
+
+  bool update_default_version = 20 [json_name = "update_default_version"];
+
+  string user_data = 21 [json_name = "user_data"];
+
+  repeated string vpc_security_group_ids = 22 [json_name = "vpc_security_group_ids"];
+
+  repeated BlockDeviceMappings block_device_mappings = 23 [json_name = "block_device_mappings"];
+
+  CapacityReservationSpecification capacity_reservation_specification = 24 [json_name = "capacity_reservation_specification"];
+
+  CpuOptions cpu_options = 25 [json_name = "cpu_options"];
+
+  CreditSpecification credit_specification = 26 [json_name = "credit_specification"];
+
+  repeated ElasticGpuSpecifications elastic_gpu_specifications = 27 [json_name = "elastic_gpu_specifications"];
+
+  ElasticInferenceAccelerator elastic_inference_accelerator = 28 [json_name = "elastic_inference_accelerator"];
+
+  EnclaveOptions enclave_options = 29 [json_name = "enclave_options"];
+
+  HibernationOptions hibernation_options = 30 [json_name = "hibernation_options"];
+
+  IamInstanceProfile iam_instance_profile = 31 [json_name = "iam_instance_profile"];
+
+  InstanceMarketOptions instance_market_options = 32 [json_name = "instance_market_options"];
+
+  InstanceRequirements instance_requirements = 33 [json_name = "instance_requirements"];
+
+  repeated LicenseSpecification license_specification = 34 [json_name = "license_specification"];
+
+  MaintenanceOptions maintenance_options = 35 [json_name = "maintenance_options"];
+
+  MetadataOptions metadata_options = 36 [json_name = "metadata_options"];
+
+  Monitoring monitoring = 37;
+
+  repeated NetworkInterfaces network_interfaces = 38 [json_name = "network_interfaces"];
+
+  Placement placement = 39;
+
+  PrivateDnsNameOptions private_dns_name_options = 40 [json_name = "private_dns_name_options"];
+
+  repeated TagSpecifications tag_specifications = 41 [json_name = "tag_specifications"];
+
+  map<string, string> for_each = 42 [json_name = "for_each"];
+
+  repeated string depends_on = 43 [json_name = "depends_on"];
+
+  int32 count = 44;
+
+  string provider = 45;
+
+  terraform.v1.Lifecycle lifecycle = 46;
+
+  message BlockDeviceMappings {
+    string device_name = 1 [json_name = "device_name"];
+
+    string no_device = 2 [json_name = "no_device"];
+
+    string virtual_name = 3 [json_name = "virtual_name"];
+
+    Ebs ebs = 4;
+
+    message Ebs {
+      string delete_on_termination = 1 [json_name = "delete_on_termination"];
+
+      string encrypted = 2;
+
+      int64 iops = 3;
+
+      string kms_key_id = 4 [json_name = "kms_key_id"];
+
+      string snapshot_id = 5 [json_name = "snapshot_id"];
+
+      int64 throughput = 6;
+
+      int64 volume_size = 7 [json_name = "volume_size"];
+
+      string volume_type = 8 [json_name = "volume_type"];
+    }
+  }
+
+  message CapacityReservationSpecification {
+    string capacity_reservation_preference = 1 [json_name = "capacity_reservation_preference"];
+
+    CapacityReservationTarget capacity_reservation_target = 2 [json_name = "capacity_reservation_target"];
+
+    message CapacityReservationTarget {
+      string capacity_reservation_id = 1 [json_name = "capacity_reservation_id"];
+
+      string capacity_reservation_resource_group_arn = 2 [
+        json_name = "capacity_reservation_resource_group_arn"
+      ];
+    }
+  }
+
+  message CpuOptions {
+    string amd_sev_snp = 1 [json_name = "amd_sev_snp"];
+
+    int64 core_count = 2 [json_name = "core_count"];
+
+    int64 threads_per_core = 3 [json_name = "threads_per_core"];
+  }
+
+  message CreditSpecification {
+    string cpu_credits = 1 [json_name = "cpu_credits"];
+  }
+
+  message ElasticGpuSpecifications {
+    string type = 1;
+  }
+
+  message ElasticInferenceAccelerator {
+    string type = 1;
+  }
+
+  message EnclaveOptions {
+    bool enabled = 1;
+  }
+
+  message HibernationOptions {
+    bool configured = 1;
+  }
+
+  message IamInstanceProfile {
+    string arn = 1;
+
+    string name = 2;
+  }
+
+  message InstanceMarketOptions {
+    string market_type = 1 [json_name = "market_type"];
+
+    SpotOptions spot_options = 2 [json_name = "spot_options"];
+
+    message SpotOptions {
+      int64 block_duration_minutes = 1 [json_name = "block_duration_minutes"];
+
+      string instance_interruption_behavior = 2 [json_name = "instance_interruption_behavior"];
+
+      string max_price = 3 [json_name = "max_price"];
+
+      string spot_instance_type = 4 [json_name = "spot_instance_type"];
+
+      string valid_until = 5 [json_name = "valid_until"];
+    }
+  }
+
+  message InstanceRequirements {
+    repeated string accelerator_manufacturers = 1 [json_name = "accelerator_manufacturers"];
+
+    repeated string accelerator_names = 2 [json_name = "accelerator_names"];
+
+    repeated string accelerator_types = 3 [json_name = "accelerator_types"];
+
+    repeated string allowed_instance_types = 4 [json_name = "allowed_instance_types"];
+
+    string bare_metal = 5 [json_name = "bare_metal"];
+
+    string burstable_performance = 6 [json_name = "burstable_performance"];
+
+    repeated string cpu_manufacturers = 7 [json_name = "cpu_manufacturers"];
+
+    repeated string excluded_instance_types = 8 [json_name = "excluded_instance_types"];
+
+    repeated string instance_generations = 9 [json_name = "instance_generations"];
+
+    string local_storage = 10 [json_name = "local_storage"];
+
+    repeated string local_storage_types = 11 [json_name = "local_storage_types"];
+
+    int64 on_demand_max_price_percentage_over_lowest_price = 12 [
+      json_name = "on_demand_max_price_percentage_over_lowest_price"
+    ];
+
+    bool require_hibernate_support = 13 [json_name = "require_hibernate_support"];
+
+    int64 spot_max_price_percentage_over_lowest_price = 14 [
+      json_name = "spot_max_price_percentage_over_lowest_price"
+    ];
+
+    AcceleratorCount accelerator_count = 15 [json_name = "accelerator_count"];
+
+    AcceleratorTotalMemoryMib accelerator_total_memory_mib = 16 [json_name = "accelerator_total_memory_mib"];
+
+    BaselineEbsBandwidthMbps baseline_ebs_bandwidth_mbps = 17 [json_name = "baseline_ebs_bandwidth_mbps"];
+
+    MemoryGibPerVcpu memory_gib_per_vcpu = 18 [json_name = "memory_gib_per_vcpu"];
+
+    MemoryMib memory_mib = 19 [json_name = "memory_mib"];
+
+    NetworkBandwidthGbps network_bandwidth_gbps = 20 [json_name = "network_bandwidth_gbps"];
+
+    NetworkInterfaceCount network_interface_count = 21 [json_name = "network_interface_count"];
+
+    TotalLocalStorageGb total_local_storage_gb = 22 [json_name = "total_local_storage_gb"];
+
+    VcpuCount vcpu_count = 23 [json_name = "vcpu_count"];
+
+    message AcceleratorCount {
+      int64 max = 1;
+
+      int64 min = 2;
+    }
+
+    message AcceleratorTotalMemoryMib {
+      int64 max = 1;
+
+      int64 min = 2;
+    }
+
+    message BaselineEbsBandwidthMbps {
+      int64 max = 1;
+
+      int64 min = 2;
+    }
+
+    message MemoryGibPerVcpu {
+      int64 max = 1;
+
+      int64 min = 2;
+    }
+
+    message MemoryMib {
+      int64 max = 1;
+
+      int64 min = 2;
+    }
+
+    message NetworkBandwidthGbps {
+      int64 max = 1;
+
+      int64 min = 2;
+    }
+
+    message NetworkInterfaceCount {
+      int64 max = 1;
+
+      int64 min = 2;
+    }
+
+    message TotalLocalStorageGb {
+      int64 max = 1;
+
+      int64 min = 2;
+    }
+
+    message VcpuCount {
+      int64 max = 1;
+
+      int64 min = 2;
+    }
+  }
+
+  message LicenseSpecification {
+    string license_configuration_arn = 1 [json_name = "license_configuration_arn"];
+  }
+
+  message MaintenanceOptions {
+    string auto_recovery = 1 [json_name = "auto_recovery"];
+  }
+
+  message MetadataOptions {
+    string http_endpoint = 1 [json_name = "http_endpoint"];
+
+    string http_protocol_ipv6 = 2 [json_name = "http_protocol_ipv6"];
+
+    int64 http_put_response_hop_limit = 3 [json_name = "http_put_response_hop_limit"];
+
+    string http_tokens = 4 [json_name = "http_tokens"];
+
+    string instance_metadata_tags = 5 [json_name = "instance_metadata_tags"];
+  }
+
+  message Monitoring {
+    bool enabled = 1;
+  }
+
+  message NetworkInterfaces {
+    string associate_carrier_ip_address = 1 [json_name = "associate_carrier_ip_address"];
+
+    string associate_public_ip_address = 2 [json_name = "associate_public_ip_address"];
+
+    string delete_on_termination = 3 [json_name = "delete_on_termination"];
+
+    string description = 4;
+
+    int64 device_index = 5 [json_name = "device_index"];
+
+    string interface_type = 6 [json_name = "interface_type"];
+
+    int64 ipv4_address_count = 7 [json_name = "ipv4_address_count"];
+
+    repeated string ipv4_addresses = 8 [json_name = "ipv4_addresses"];
+
+    int64 ipv4_prefix_count = 9 [json_name = "ipv4_prefix_count"];
+
+    repeated string ipv4_prefixes = 10 [json_name = "ipv4_prefixes"];
+
+    int64 ipv6_address_count = 11 [json_name = "ipv6_address_count"];
+
+    repeated string ipv6_addresses = 12 [json_name = "ipv6_addresses"];
+
+    int64 ipv6_prefix_count = 13 [json_name = "ipv6_prefix_count"];
+
+    repeated string ipv6_prefixes = 14 [json_name = "ipv6_prefixes"];
+
+    int64 network_card_index = 15 [json_name = "network_card_index"];
+
+    string network_interface_id = 16 [json_name = "network_interface_id"];
+
+    string private_ip_address = 17 [json_name = "private_ip_address"];
+
+    repeated string security_groups = 18 [json_name = "security_groups"];
+
+    string subnet_id = 19 [json_name = "subnet_id"];
+  }
+
+  message Placement {
+    string affinity = 1;
+
+    string availability_zone = 2 [json_name = "availability_zone"];
+
+    string group_name = 3 [json_name = "group_name"];
+
+    string host_id = 4 [json_name = "host_id"];
+
+    string host_resource_group_arn = 5 [json_name = "host_resource_group_arn"];
+
+    int64 partition_number = 6 [json_name = "partition_number"];
+
+    string spread_domain = 7 [json_name = "spread_domain"];
+
+    string tenancy = 8;
+  }
+
+  message PrivateDnsNameOptions {
+    bool enable_resource_name_dns_a_record = 1 [json_name = "enable_resource_name_dns_a_record"];
+
+    bool enable_resource_name_dns_aaaa_record = 2 [json_name = "enable_resource_name_dns_aaaa_record"];
+
+    string hostname_type = 3 [json_name = "hostname_type"];
+  }
+
+  message TagSpecifications {
+    string resource_type = 1 [json_name = "resource_type"];
+
+    map<string, string> tags = 2;
+  }
+}

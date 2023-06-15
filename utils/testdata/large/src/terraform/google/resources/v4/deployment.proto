@@ -1,0 +1,106 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleDeploymentManagerDeployment version is 0
+message GoogleDeploymentManagerDeployment {
+  // Set the policy to use for creating new resources. Only used on
+  // create and update. Valid values are 'CREATE_OR_ACQUIRE' (default) or
+  // 'ACQUIRE'. If set to 'ACQUIRE' and resources do not already exist,
+  // the deployment will fail. Note that updating this field does not
+  // actually affect the deployment, just how it is updated. Default value: "CREATE_OR_ACQUIRE" Possible values: ["ACQUIRE", "CREATE_OR_ACQUIRE"]
+  string create_policy = 1 [json_name = "create_policy"];
+
+  // Set the policy to use for deleting new resources on update/delete.
+  // Valid values are 'DELETE' (default) or 'ABANDON'. If 'DELETE',
+  // resource is deleted after removal from Deployment Manager. If
+  // 'ABANDON', the resource is only removed from Deployment Manager
+  // and is not actually deleted. Note that updating this field does not
+  // actually change the deployment, just how it is updated. Default value: "DELETE" Possible values: ["ABANDON", "DELETE"]
+  string delete_policy = 2 [json_name = "delete_policy"];
+
+  // Unique identifier for deployment. Output only.
+  string deployment_id = 3 [json_name = "deployment_id"];
+
+  // Optional user-provided description of deployment.
+  string description = 4;
+
+  string id = 5;
+
+  // Output only. URL of the manifest representing the last manifest that
+  // was successfully deployed.
+  string manifest = 6;
+
+  // Unique name for the deployment
+  string name = 7;
+
+  // If set to true, a deployment is created with "shell" resources
+  // that are not actually instantiated. This allows you to preview a
+  // deployment. It can be updated to false to actually deploy
+  // with real resources.
+  // ~>**NOTE:** Deployment Manager does not allow update
+  // of a deployment in preview (unless updating to preview=false). Thus,
+  // Terraform will force-recreate deployments if either preview is updated
+  // to true or if other fields are updated while preview is true.
+  bool preview = 8;
+
+  string project = 9;
+
+  // Output only. Server defined URL for the resource.
+  string self_link = 10 [json_name = "self_link"];
+
+  repeated Labels labels = 11;
+
+  Target target = 12;
+
+  repeated Timeouts timeouts = 13;
+
+  map<string, string> for_each = 14 [json_name = "for_each"];
+
+  repeated string depends_on = 15 [json_name = "depends_on"];
+
+  int32 count = 16;
+
+  string provider = 17;
+
+  terraform.v1.Lifecycle lifecycle = 18;
+
+  message Labels {
+    // Key for label.
+    string key = 1;
+
+    // Value of label.
+    string value = 2;
+  }
+
+  message Target {
+    Config config = 1;
+
+    repeated Imports imports = 2;
+
+    message Config {
+      // The full YAML contents of your configuration file.
+      string content = 1;
+    }
+
+    message Imports {
+      // The full contents of the template that you want to import.
+      string content = 1;
+
+      // The name of the template to import, as declared in the YAML
+      // configuration.
+      string name = 2;
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

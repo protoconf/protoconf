@@ -1,0 +1,139 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.datasources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleFolder version is 0
+message GoogleFolder {
+  string create_time = 1 [json_name = "create_time"];
+
+  string display_name = 2 [json_name = "display_name"];
+
+  string folder = 3;
+
+  string folder_id = 4 [json_name = "folder_id"];
+
+  string id = 5;
+
+  string lifecycle_state = 6 [json_name = "lifecycle_state"];
+
+  bool lookup_organization = 7 [json_name = "lookup_organization"];
+
+  string name = 8;
+
+  string organization = 9;
+
+  string parent = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+}
+
+// GoogleFolderIamPolicy version is 0
+message GoogleFolderIamPolicy {
+  string etag = 1;
+
+  string folder = 2;
+
+  string id = 3;
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// GoogleFolderOrganizationPolicy version is 0
+message GoogleFolderOrganizationPolicy {
+  // A boolean policy is a constraint that is either enforced or not.
+  repeated BooleanPolicy boolean_policy = 1 [json_name = "boolean_policy"];
+
+  // The name of the Constraint the Policy is configuring, for example, serviceuser.services.
+  string constraint = 2;
+
+  // The etag of the organization policy. etag is used for optimistic concurrency control as a way to help prevent simultaneous updates of a policy from overwriting each other.
+  string etag = 3;
+
+  // The resource name of the folder to set the policy for. Its format is folders/{folder_id}.
+  string folder = 4;
+
+  string id = 5;
+
+  // A policy that can define specific values that are allowed or denied for the given constraint. It can also be used to allow or deny all values.
+  repeated ListPolicy list_policy = 6 [json_name = "list_policy"];
+
+  // A restore policy is a constraint to restore the default policy.
+  repeated RestorePolicy restore_policy = 7 [json_name = "restore_policy"];
+
+  // The timestamp in RFC3339 UTC "Zulu" format, accurate to nanoseconds, representing when the variable was last updated. Example: "2016-10-09T12:33:37.578138407Z".
+  string update_time = 8 [json_name = "update_time"];
+
+  // Version of the Policy. Default version is 0.
+  int64 version = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message BooleanPolicy {
+    // enforced: bool
+    bool enforced = 1;
+  }
+
+  message ListPolicy {
+    // allow: list of object
+    repeated Allow allow = 1;
+
+    // deny: list of object
+    repeated Deny deny = 2;
+
+    // inherit_from_parent: bool
+    bool inherit_from_parent = 3 [json_name = "inherit_from_parent"];
+
+    // suggested_value: string
+    string suggested_value = 4 [json_name = "suggested_value"];
+
+    message Allow {
+      // all: bool
+      bool all = 1;
+
+      // values: set of string
+      repeated string values = 2;
+    }
+
+    message Deny {
+      // all: bool
+      bool all = 1;
+
+      // values: set of string
+      repeated string values = 2;
+    }
+  }
+
+  message RestorePolicy {
+    // default: bool
+    bool default = 1;
+  }
+}

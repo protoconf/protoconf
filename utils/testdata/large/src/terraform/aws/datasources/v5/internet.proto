@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsInternetGateway version is 0
+message AwsInternetGateway {
+  string arn = 1;
+
+  repeated Attachments attachments = 2;
+
+  string id = 3;
+
+  string internet_gateway_id = 4 [json_name = "internet_gateway_id"];
+
+  string owner_id = 5 [json_name = "owner_id"];
+
+  map<string, string> tags = 6;
+
+  repeated Filter filter = 7;
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Attachments {
+    // state: string
+    string state = 1;
+
+    // vpc_id: string
+    string vpc_id = 2 [json_name = "vpc_id"];
+  }
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+
+  message Timeouts {
+    string read = 1;
+  }
+}

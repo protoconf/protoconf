@@ -1,0 +1,85 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsSubnet version is 0
+message AwsSubnet {
+  string arn = 1;
+
+  bool assign_ipv6_address_on_creation = 2 [json_name = "assign_ipv6_address_on_creation"];
+
+  string availability_zone = 3 [json_name = "availability_zone"];
+
+  string availability_zone_id = 4 [json_name = "availability_zone_id"];
+
+  int64 available_ip_address_count = 5 [json_name = "available_ip_address_count"];
+
+  string cidr_block = 6 [json_name = "cidr_block"];
+
+  string customer_owned_ipv4_pool = 7 [json_name = "customer_owned_ipv4_pool"];
+
+  bool default_for_az = 8 [json_name = "default_for_az"];
+
+  bool enable_dns64 = 9 [json_name = "enable_dns64"];
+
+  int64 enable_lni_at_device_index = 10 [json_name = "enable_lni_at_device_index"];
+
+  bool enable_resource_name_dns_a_record_on_launch = 11 [
+    json_name = "enable_resource_name_dns_a_record_on_launch"
+  ];
+
+  bool enable_resource_name_dns_aaaa_record_on_launch = 12 [
+    json_name = "enable_resource_name_dns_aaaa_record_on_launch"
+  ];
+
+  string id = 13;
+
+  string ipv6_cidr_block = 14 [json_name = "ipv6_cidr_block"];
+
+  string ipv6_cidr_block_association_id = 15 [json_name = "ipv6_cidr_block_association_id"];
+
+  bool ipv6_native = 16 [json_name = "ipv6_native"];
+
+  bool map_customer_owned_ip_on_launch = 17 [json_name = "map_customer_owned_ip_on_launch"];
+
+  bool map_public_ip_on_launch = 18 [json_name = "map_public_ip_on_launch"];
+
+  string outpost_arn = 19 [json_name = "outpost_arn"];
+
+  string owner_id = 20 [json_name = "owner_id"];
+
+  string private_dns_hostname_type_on_launch = 21 [json_name = "private_dns_hostname_type_on_launch"];
+
+  string state = 22;
+
+  map<string, string> tags = 23;
+
+  string vpc_id = 24 [json_name = "vpc_id"];
+
+  repeated Filter filter = 25;
+
+  repeated Timeouts timeouts = 26;
+
+  map<string, string> for_each = 27 [json_name = "for_each"];
+
+  repeated string depends_on = 28 [json_name = "depends_on"];
+
+  int32 count = 29;
+
+  string provider = 30;
+
+  terraform.v1.Lifecycle lifecycle = 31;
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+
+  message Timeouts {
+    string read = 1;
+  }
+}

@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package terraform.v1;
+
+message MetaFields {
+  repeated string depends_on = 1 [json_name = "depends_on"];
+
+  int32 count = 2;
+
+  string provider = 3;
+}
+
+message Lifecycle {
+  bool create_before_destroy = 1 [json_name = "create_before_destroy"];
+
+  bool prevent_destroy = 2 [json_name = "prevent_destroy"];
+
+  repeated string ignore_changes = 3 [json_name = "ignore_changes"];
+}

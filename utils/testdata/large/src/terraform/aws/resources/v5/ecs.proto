@@ -1,0 +1,618 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsEcsAccountSettingDefault version is 0
+message AwsEcsAccountSettingDefault {
+  string id = 1;
+
+  string name = 2;
+
+  string principal_arn = 3 [json_name = "principal_arn"];
+
+  string value = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsEcsCapacityProvider version is 0
+message AwsEcsCapacityProvider {
+  string arn = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  map<string, string> tags = 4;
+
+  map<string, string> tags_all = 5 [json_name = "tags_all"];
+
+  AutoScalingGroupProvider auto_scaling_group_provider = 6 [json_name = "auto_scaling_group_provider"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message AutoScalingGroupProvider {
+    string auto_scaling_group_arn = 1 [json_name = "auto_scaling_group_arn"];
+
+    string managed_termination_protection = 2 [json_name = "managed_termination_protection"];
+
+    ManagedScaling managed_scaling = 3 [json_name = "managed_scaling"];
+
+    message ManagedScaling {
+      int64 instance_warmup_period = 1 [json_name = "instance_warmup_period"];
+
+      int64 maximum_scaling_step_size = 2 [json_name = "maximum_scaling_step_size"];
+
+      int64 minimum_scaling_step_size = 3 [json_name = "minimum_scaling_step_size"];
+
+      string status = 4;
+
+      int64 target_capacity = 5 [json_name = "target_capacity"];
+    }
+  }
+}
+
+// AwsEcsCluster version is 0
+message AwsEcsCluster {
+  string arn = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  map<string, string> tags = 4;
+
+  map<string, string> tags_all = 5 [json_name = "tags_all"];
+
+  Configuration configuration = 6;
+
+  ServiceConnectDefaults service_connect_defaults = 7 [json_name = "service_connect_defaults"];
+
+  repeated Setting setting = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Configuration {
+    ExecuteCommandConfiguration execute_command_configuration = 1 [json_name = "execute_command_configuration"];
+
+    message ExecuteCommandConfiguration {
+      string kms_key_id = 1 [json_name = "kms_key_id"];
+
+      string logging = 2;
+
+      LogConfiguration log_configuration = 3 [json_name = "log_configuration"];
+
+      message LogConfiguration {
+        bool cloud_watch_encryption_enabled = 1 [json_name = "cloud_watch_encryption_enabled"];
+
+        string cloud_watch_log_group_name = 2 [json_name = "cloud_watch_log_group_name"];
+
+        bool s3_bucket_encryption_enabled = 3 [json_name = "s3_bucket_encryption_enabled"];
+
+        string s3_bucket_name = 4 [json_name = "s3_bucket_name"];
+
+        string s3_key_prefix = 5 [json_name = "s3_key_prefix"];
+      }
+    }
+  }
+
+  message ServiceConnectDefaults {
+    string namespace = 1;
+  }
+
+  message Setting {
+    string name = 1;
+
+    string value = 2;
+  }
+}
+
+// AwsEcsClusterCapacityProviders version is 0
+message AwsEcsClusterCapacityProviders {
+  repeated string capacity_providers = 1 [json_name = "capacity_providers"];
+
+  string cluster_name = 2 [json_name = "cluster_name"];
+
+  string id = 3;
+
+  repeated DefaultCapacityProviderStrategy default_capacity_provider_strategy = 4 [json_name = "default_capacity_provider_strategy"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message DefaultCapacityProviderStrategy {
+    int64 base = 1;
+
+    string capacity_provider = 2 [json_name = "capacity_provider"];
+
+    int64 weight = 3;
+  }
+}
+
+// AwsEcsService version is 0
+message AwsEcsService {
+  string cluster = 1;
+
+  int64 deployment_maximum_percent = 2 [json_name = "deployment_maximum_percent"];
+
+  int64 deployment_minimum_healthy_percent = 3 [json_name = "deployment_minimum_healthy_percent"];
+
+  int64 desired_count = 4 [json_name = "desired_count"];
+
+  bool enable_ecs_managed_tags = 5 [json_name = "enable_ecs_managed_tags"];
+
+  bool enable_execute_command = 6 [json_name = "enable_execute_command"];
+
+  bool force_new_deployment = 7 [json_name = "force_new_deployment"];
+
+  int64 health_check_grace_period_seconds = 8 [json_name = "health_check_grace_period_seconds"];
+
+  string iam_role = 9 [json_name = "iam_role"];
+
+  string id = 10;
+
+  string launch_type = 11 [json_name = "launch_type"];
+
+  string name = 12;
+
+  string platform_version = 13 [json_name = "platform_version"];
+
+  string propagate_tags = 14 [json_name = "propagate_tags"];
+
+  string scheduling_strategy = 15 [json_name = "scheduling_strategy"];
+
+  map<string, string> tags = 16;
+
+  map<string, string> tags_all = 17 [json_name = "tags_all"];
+
+  string task_definition = 18 [json_name = "task_definition"];
+
+  map<string, string> triggers = 19;
+
+  bool wait_for_steady_state = 20 [json_name = "wait_for_steady_state"];
+
+  Alarms alarms = 21;
+
+  repeated CapacityProviderStrategy capacity_provider_strategy = 22 [json_name = "capacity_provider_strategy"];
+
+  DeploymentCircuitBreaker deployment_circuit_breaker = 23 [json_name = "deployment_circuit_breaker"];
+
+  DeploymentController deployment_controller = 24 [json_name = "deployment_controller"];
+
+  repeated LoadBalancer load_balancer = 25 [json_name = "load_balancer"];
+
+  NetworkConfiguration network_configuration = 26 [json_name = "network_configuration"];
+
+  repeated OrderedPlacementStrategy ordered_placement_strategy = 27 [json_name = "ordered_placement_strategy"];
+
+  repeated PlacementConstraints placement_constraints = 28 [json_name = "placement_constraints"];
+
+  ServiceConnectConfiguration service_connect_configuration = 29 [json_name = "service_connect_configuration"];
+
+  ServiceRegistries service_registries = 30 [json_name = "service_registries"];
+
+  repeated Timeouts timeouts = 31;
+
+  map<string, string> for_each = 32 [json_name = "for_each"];
+
+  repeated string depends_on = 33 [json_name = "depends_on"];
+
+  int32 count = 34;
+
+  string provider = 35;
+
+  terraform.v1.Lifecycle lifecycle = 36;
+
+  message Alarms {
+    repeated string alarm_names = 1 [json_name = "alarm_names"];
+
+    bool enable = 2;
+
+    bool rollback = 3;
+  }
+
+  message CapacityProviderStrategy {
+    int64 base = 1;
+
+    string capacity_provider = 2 [json_name = "capacity_provider"];
+
+    int64 weight = 3;
+  }
+
+  message DeploymentCircuitBreaker {
+    bool enable = 1;
+
+    bool rollback = 2;
+  }
+
+  message DeploymentController {
+    string type = 1;
+  }
+
+  message LoadBalancer {
+    string container_name = 1 [json_name = "container_name"];
+
+    int64 container_port = 2 [json_name = "container_port"];
+
+    string elb_name = 3 [json_name = "elb_name"];
+
+    string target_group_arn = 4 [json_name = "target_group_arn"];
+  }
+
+  message NetworkConfiguration {
+    bool assign_public_ip = 1 [json_name = "assign_public_ip"];
+
+    repeated string security_groups = 2 [json_name = "security_groups"];
+
+    repeated string subnets = 3;
+  }
+
+  message OrderedPlacementStrategy {
+    string field = 1;
+
+    string type = 2;
+  }
+
+  message PlacementConstraints {
+    string expression = 1;
+
+    string type = 2;
+  }
+
+  message ServiceConnectConfiguration {
+    bool enabled = 1;
+
+    string namespace = 2;
+
+    LogConfiguration log_configuration = 3 [json_name = "log_configuration"];
+
+    repeated Service service = 4;
+
+    message LogConfiguration {
+      string log_driver = 1 [json_name = "log_driver"];
+
+      map<string, string> options = 2;
+
+      repeated SecretOption secret_option = 3 [json_name = "secret_option"];
+
+      message SecretOption {
+        string name = 1;
+
+        string value_from = 2 [json_name = "value_from"];
+      }
+    }
+
+    message Service {
+      string discovery_name = 1 [json_name = "discovery_name"];
+
+      int64 ingress_port_override = 2 [json_name = "ingress_port_override"];
+
+      string port_name = 3 [json_name = "port_name"];
+
+      ClientAlias client_alias = 4 [json_name = "client_alias"];
+
+      message ClientAlias {
+        string dns_name = 1 [json_name = "dns_name"];
+
+        int64 port = 2;
+      }
+    }
+  }
+
+  message ServiceRegistries {
+    string container_name = 1 [json_name = "container_name"];
+
+    int64 container_port = 2 [json_name = "container_port"];
+
+    int64 port = 3;
+
+    string registry_arn = 4 [json_name = "registry_arn"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsEcsTag version is 0
+message AwsEcsTag {
+  string id = 1;
+
+  string key = 2;
+
+  string resource_arn = 3 [json_name = "resource_arn"];
+
+  string value = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsEcsTaskDefinition version is 1
+message AwsEcsTaskDefinition {
+  string arn = 1;
+
+  string arn_without_revision = 2 [json_name = "arn_without_revision"];
+
+  string container_definitions = 3 [json_name = "container_definitions"];
+
+  string cpu = 4;
+
+  string execution_role_arn = 5 [json_name = "execution_role_arn"];
+
+  string family = 6;
+
+  string id = 7;
+
+  string ipc_mode = 8 [json_name = "ipc_mode"];
+
+  string memory = 9;
+
+  string network_mode = 10 [json_name = "network_mode"];
+
+  string pid_mode = 11 [json_name = "pid_mode"];
+
+  repeated string requires_compatibilities = 12 [json_name = "requires_compatibilities"];
+
+  int64 revision = 13;
+
+  bool skip_destroy = 14 [json_name = "skip_destroy"];
+
+  map<string, string> tags = 15;
+
+  map<string, string> tags_all = 16 [json_name = "tags_all"];
+
+  string task_role_arn = 17 [json_name = "task_role_arn"];
+
+  EphemeralStorage ephemeral_storage = 18 [json_name = "ephemeral_storage"];
+
+  repeated InferenceAccelerator inference_accelerator = 19 [json_name = "inference_accelerator"];
+
+  repeated PlacementConstraints placement_constraints = 20 [json_name = "placement_constraints"];
+
+  ProxyConfiguration proxy_configuration = 21 [json_name = "proxy_configuration"];
+
+  RuntimePlatform runtime_platform = 22 [json_name = "runtime_platform"];
+
+  repeated Volume volume = 23;
+
+  map<string, string> for_each = 24 [json_name = "for_each"];
+
+  repeated string depends_on = 25 [json_name = "depends_on"];
+
+  int32 count = 26;
+
+  string provider = 27;
+
+  terraform.v1.Lifecycle lifecycle = 28;
+
+  message EphemeralStorage {
+    int64 size_in_gib = 1 [json_name = "size_in_gib"];
+  }
+
+  message InferenceAccelerator {
+    string device_name = 1 [json_name = "device_name"];
+
+    string device_type = 2 [json_name = "device_type"];
+  }
+
+  message PlacementConstraints {
+    string expression = 1;
+
+    string type = 2;
+  }
+
+  message ProxyConfiguration {
+    string container_name = 1 [json_name = "container_name"];
+
+    map<string, string> properties = 2;
+
+    string type = 3;
+  }
+
+  message RuntimePlatform {
+    string cpu_architecture = 1 [json_name = "cpu_architecture"];
+
+    string operating_system_family = 2 [json_name = "operating_system_family"];
+  }
+
+  message Volume {
+    string host_path = 1 [json_name = "host_path"];
+
+    string name = 2;
+
+    DockerVolumeConfiguration docker_volume_configuration = 3 [json_name = "docker_volume_configuration"];
+
+    EfsVolumeConfiguration efs_volume_configuration = 4 [json_name = "efs_volume_configuration"];
+
+    FsxWindowsFileServerVolumeConfiguration fsx_windows_file_server_volume_configuration = 5 [
+      json_name = "fsx_windows_file_server_volume_configuration"
+    ];
+
+    message DockerVolumeConfiguration {
+      bool autoprovision = 1;
+
+      string driver = 2;
+
+      map<string, string> driver_opts = 3 [json_name = "driver_opts"];
+
+      map<string, string> labels = 4;
+
+      string scope = 5;
+    }
+
+    message EfsVolumeConfiguration {
+      string file_system_id = 1 [json_name = "file_system_id"];
+
+      string root_directory = 2 [json_name = "root_directory"];
+
+      string transit_encryption = 3 [json_name = "transit_encryption"];
+
+      int64 transit_encryption_port = 4 [json_name = "transit_encryption_port"];
+
+      AuthorizationConfig authorization_config = 5 [json_name = "authorization_config"];
+
+      message AuthorizationConfig {
+        string access_point_id = 1 [json_name = "access_point_id"];
+
+        string iam = 2;
+      }
+    }
+
+    message FsxWindowsFileServerVolumeConfiguration {
+      string file_system_id = 1 [json_name = "file_system_id"];
+
+      string root_directory = 2 [json_name = "root_directory"];
+
+      AuthorizationConfig authorization_config = 3 [json_name = "authorization_config"];
+
+      message AuthorizationConfig {
+        string credentials_parameter = 1 [json_name = "credentials_parameter"];
+
+        string domain = 2;
+      }
+    }
+  }
+}
+
+// AwsEcsTaskSet version is 0
+message AwsEcsTaskSet {
+  string arn = 1;
+
+  string cluster = 2;
+
+  string external_id = 3 [json_name = "external_id"];
+
+  bool force_delete = 4 [json_name = "force_delete"];
+
+  string id = 5;
+
+  string launch_type = 6 [json_name = "launch_type"];
+
+  string platform_version = 7 [json_name = "platform_version"];
+
+  string service = 8;
+
+  string stability_status = 9 [json_name = "stability_status"];
+
+  string status = 10;
+
+  map<string, string> tags = 11;
+
+  map<string, string> tags_all = 12 [json_name = "tags_all"];
+
+  string task_definition = 13 [json_name = "task_definition"];
+
+  string task_set_id = 14 [json_name = "task_set_id"];
+
+  bool wait_until_stable = 15 [json_name = "wait_until_stable"];
+
+  string wait_until_stable_timeout = 16 [json_name = "wait_until_stable_timeout"];
+
+  repeated CapacityProviderStrategy capacity_provider_strategy = 17 [json_name = "capacity_provider_strategy"];
+
+  repeated LoadBalancer load_balancer = 18 [json_name = "load_balancer"];
+
+  NetworkConfiguration network_configuration = 19 [json_name = "network_configuration"];
+
+  Scale scale = 20;
+
+  ServiceRegistries service_registries = 21 [json_name = "service_registries"];
+
+  map<string, string> for_each = 22 [json_name = "for_each"];
+
+  repeated string depends_on = 23 [json_name = "depends_on"];
+
+  int32 count = 24;
+
+  string provider = 25;
+
+  terraform.v1.Lifecycle lifecycle = 26;
+
+  message CapacityProviderStrategy {
+    int64 base = 1;
+
+    string capacity_provider = 2 [json_name = "capacity_provider"];
+
+    int64 weight = 3;
+  }
+
+  message LoadBalancer {
+    string container_name = 1 [json_name = "container_name"];
+
+    int64 container_port = 2 [json_name = "container_port"];
+
+    string load_balancer_name = 3 [json_name = "load_balancer_name"];
+
+    string target_group_arn = 4 [json_name = "target_group_arn"];
+  }
+
+  message NetworkConfiguration {
+    bool assign_public_ip = 1 [json_name = "assign_public_ip"];
+
+    repeated string security_groups = 2 [json_name = "security_groups"];
+
+    repeated string subnets = 3;
+  }
+
+  message Scale {
+    string unit = 1;
+
+    int64 value = 2;
+  }
+
+  message ServiceRegistries {
+    string container_name = 1 [json_name = "container_name"];
+
+    int64 container_port = 2 [json_name = "container_port"];
+
+    int64 port = 3;
+
+    string registry_arn = 4 [json_name = "registry_arn"];
+  }
+}

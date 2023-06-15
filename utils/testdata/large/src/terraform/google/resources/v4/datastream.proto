@@ -1,0 +1,856 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleDatastreamConnectionProfile version is 0
+message GoogleDatastreamConnectionProfile {
+  // The connection profile identifier.
+  string connection_profile_id = 1 [json_name = "connection_profile_id"];
+
+  // Display name.
+  string display_name = 2 [json_name = "display_name"];
+
+  string id = 3;
+
+  // Labels.
+  map<string, string> labels = 4;
+
+  // The name of the location this connection profile is located in.
+  string location = 5;
+
+  // The resource's name.
+  string name = 6;
+
+  string project = 7;
+
+  BigqueryProfile bigquery_profile = 8 [json_name = "bigquery_profile"];
+
+  ForwardSshConnectivity forward_ssh_connectivity = 9 [json_name = "forward_ssh_connectivity"];
+
+  GcsProfile gcs_profile = 10 [json_name = "gcs_profile"];
+
+  MysqlProfile mysql_profile = 11 [json_name = "mysql_profile"];
+
+  OracleProfile oracle_profile = 12 [json_name = "oracle_profile"];
+
+  PostgresqlProfile postgresql_profile = 13 [json_name = "postgresql_profile"];
+
+  PrivateConnectivity private_connectivity = 14 [json_name = "private_connectivity"];
+
+  repeated Timeouts timeouts = 15;
+
+  map<string, string> for_each = 16 [json_name = "for_each"];
+
+  repeated string depends_on = 17 [json_name = "depends_on"];
+
+  int32 count = 18;
+
+  string provider = 19;
+
+  terraform.v1.Lifecycle lifecycle = 20;
+
+  message BigqueryProfile {
+  }
+
+  message ForwardSshConnectivity {
+    // Hostname for the SSH tunnel.
+    string hostname = 1;
+
+    // SSH password.
+    string password = 2;
+
+    // Port for the SSH tunnel.
+    int64 port = 3;
+
+    // SSH private key.
+    string private_key = 4 [json_name = "private_key"];
+
+    // Username for the SSH tunnel.
+    string username = 5;
+  }
+
+  message GcsProfile {
+    // The Cloud Storage bucket name.
+    string bucket = 1;
+
+    // The root path inside the Cloud Storage bucket.
+    string root_path = 2 [json_name = "root_path"];
+  }
+
+  message MysqlProfile {
+    // Hostname for the MySQL connection.
+    string hostname = 1;
+
+    // Password for the MySQL connection.
+    string password = 2;
+
+    // Port for the MySQL connection.
+    int64 port = 3;
+
+    // Username for the MySQL connection.
+    string username = 4;
+
+    SslConfig ssl_config = 5 [json_name = "ssl_config"];
+
+    message SslConfig {
+      // PEM-encoded certificate of the CA that signed the source database
+      // server's certificate.
+      string ca_certificate = 1 [json_name = "ca_certificate"];
+
+      // Indicates whether the clientKey field is set.
+      bool ca_certificate_set = 2 [json_name = "ca_certificate_set"];
+
+      // PEM-encoded certificate that will be used by the replica to
+      // authenticate against the source database server. If this field
+      // is used then the 'clientKey' and the 'caCertificate' fields are
+      // mandatory.
+      string client_certificate = 3 [json_name = "client_certificate"];
+
+      // Indicates whether the clientCertificate field is set.
+      bool client_certificate_set = 4 [json_name = "client_certificate_set"];
+
+      // PEM-encoded private key associated with the Client Certificate.
+      // If this field is used then the 'client_certificate' and the
+      // 'ca_certificate' fields are mandatory.
+      string client_key = 5 [json_name = "client_key"];
+
+      // Indicates whether the clientKey field is set.
+      bool client_key_set = 6 [json_name = "client_key_set"];
+    }
+  }
+
+  message OracleProfile {
+    // Connection string attributes
+    map<string, string> connection_attributes = 1 [json_name = "connection_attributes"];
+
+    // Database for the Oracle connection.
+    string database_service = 2 [json_name = "database_service"];
+
+    // Hostname for the Oracle connection.
+    string hostname = 3;
+
+    // Password for the Oracle connection.
+    string password = 4;
+
+    // Port for the Oracle connection.
+    int64 port = 5;
+
+    // Username for the Oracle connection.
+    string username = 6;
+  }
+
+  message PostgresqlProfile {
+    // Database for the PostgreSQL connection.
+    string database = 1;
+
+    // Hostname for the PostgreSQL connection.
+    string hostname = 2;
+
+    // Password for the PostgreSQL connection.
+    string password = 3;
+
+    // Port for the PostgreSQL connection.
+    int64 port = 4;
+
+    // Username for the PostgreSQL connection.
+    string username = 5;
+  }
+
+  message PrivateConnectivity {
+    // A reference to a private connection resource. Format: 'projects/{project}/locations/{location}/privateConnections/{name}'
+    string private_connection = 1 [json_name = "private_connection"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleDatastreamPrivateConnection version is 0
+message GoogleDatastreamPrivateConnection {
+  // Display name.
+  string display_name = 1 [json_name = "display_name"];
+
+  // The PrivateConnection error in case of failure.
+  repeated Error error = 2;
+
+  string id = 3;
+
+  // Labels.
+  map<string, string> labels = 4;
+
+  // The name of the location this private connection is located in.
+  string location = 5;
+
+  // The resource's name.
+  string name = 6;
+
+  // The private connectivity identifier.
+  string private_connection_id = 7 [json_name = "private_connection_id"];
+
+  string project = 8;
+
+  // State of the PrivateConnection.
+  string state = 9;
+
+  repeated Timeouts timeouts = 10;
+
+  VpcPeeringConfig vpc_peering_config = 11 [json_name = "vpc_peering_config"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message Error {
+    // details: map of string
+    map<string, string> details = 1;
+
+    // message: string
+    string message = 2;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+
+  message VpcPeeringConfig {
+    // A free subnet for peering. (CIDR of /29)
+    string subnet = 1;
+
+    // Fully qualified name of the VPC that Datastream will peer to.
+    // Format: projects/{project}/global/{networks}/{name}
+    string vpc = 2;
+  }
+}
+
+// GoogleDatastreamStream version is 0
+message GoogleDatastreamStream {
+  // A reference to a KMS encryption key. If provided, it will be used to encrypt the data. If left blank, data
+  // will be encrypted using an internal Stream-specific encryption key provisioned through KMS.
+  string customer_managed_encryption_key = 1 [json_name = "customer_managed_encryption_key"];
+
+  // Desired state of the Stream. Set this field to 'RUNNING' to start the stream, and 'PAUSED' to pause the stream.
+  string desired_state = 2 [json_name = "desired_state"];
+
+  // Display name.
+  string display_name = 3 [json_name = "display_name"];
+
+  string id = 4;
+
+  // Labels.
+  map<string, string> labels = 5;
+
+  // The name of the location this stream is located in.
+  string location = 6;
+
+  // The stream's name.
+  string name = 7;
+
+  string project = 8;
+
+  // The state of the stream.
+  string state = 9;
+
+  // The stream identifier.
+  string stream_id = 10 [json_name = "stream_id"];
+
+  BackfillAll backfill_all = 11 [json_name = "backfill_all"];
+
+  BackfillNone backfill_none = 12 [json_name = "backfill_none"];
+
+  DestinationConfig destination_config = 13 [json_name = "destination_config"];
+
+  SourceConfig source_config = 14 [json_name = "source_config"];
+
+  repeated Timeouts timeouts = 15;
+
+  map<string, string> for_each = 16 [json_name = "for_each"];
+
+  repeated string depends_on = 17 [json_name = "depends_on"];
+
+  int32 count = 18;
+
+  string provider = 19;
+
+  terraform.v1.Lifecycle lifecycle = 20;
+
+  message BackfillAll {
+    MysqlExcludedObjects mysql_excluded_objects = 1 [json_name = "mysql_excluded_objects"];
+
+    OracleExcludedObjects oracle_excluded_objects = 2 [json_name = "oracle_excluded_objects"];
+
+    PostgresqlExcludedObjects postgresql_excluded_objects = 3 [json_name = "postgresql_excluded_objects"];
+
+    message MysqlExcludedObjects {
+      repeated MysqlDatabases mysql_databases = 1 [json_name = "mysql_databases"];
+
+      message MysqlDatabases {
+        // Database name.
+        string database = 1;
+
+        repeated MysqlTables mysql_tables = 2 [json_name = "mysql_tables"];
+
+        message MysqlTables {
+          // Table name.
+          string table = 1;
+
+          repeated MysqlColumns mysql_columns = 2 [json_name = "mysql_columns"];
+
+          message MysqlColumns {
+            // Column collation.
+            string collation = 1;
+
+            // Column name.
+            string column = 2;
+
+            // The MySQL data type. Full data types list can be found here:
+            // https://dev.mysql.com/doc/refman/8.0/en/data-types.html
+            string data_type = 3 [json_name = "data_type"];
+
+            // Column length.
+            int64 length = 4;
+
+            // Whether or not the column can accept a null value.
+            bool nullable = 5;
+
+            // The ordinal position of the column in the table.
+            int64 ordinal_position = 6 [json_name = "ordinal_position"];
+
+            // Whether or not the column represents a primary key.
+            bool primary_key = 7 [json_name = "primary_key"];
+          }
+        }
+      }
+    }
+
+    message OracleExcludedObjects {
+      repeated OracleSchemas oracle_schemas = 1 [json_name = "oracle_schemas"];
+
+      message OracleSchemas {
+        // Schema name.
+        string schema = 1;
+
+        repeated OracleTables oracle_tables = 2 [json_name = "oracle_tables"];
+
+        message OracleTables {
+          // Table name.
+          string table = 1;
+
+          repeated OracleColumns oracle_columns = 2 [json_name = "oracle_columns"];
+
+          message OracleColumns {
+            // Column name.
+            string column = 1;
+
+            // The Oracle data type. Full data types list can be found here:
+            // https://docs.oracle.com/en/database/oracle/oracle-database/21/sqlrf/Data-Types.html
+            string data_type = 2 [json_name = "data_type"];
+
+            // Column encoding.
+            string encoding = 3;
+
+            // Column length.
+            int64 length = 4;
+
+            // Whether or not the column can accept a null value.
+            bool nullable = 5;
+
+            // The ordinal position of the column in the table.
+            int64 ordinal_position = 6 [json_name = "ordinal_position"];
+
+            // Column precision.
+            int64 precision = 7;
+
+            // Whether or not the column represents a primary key.
+            bool primary_key = 8 [json_name = "primary_key"];
+
+            // Column scale.
+            int64 scale = 9;
+          }
+        }
+      }
+    }
+
+    message PostgresqlExcludedObjects {
+      repeated PostgresqlSchemas postgresql_schemas = 1 [json_name = "postgresql_schemas"];
+
+      message PostgresqlSchemas {
+        // Database name.
+        string schema = 1;
+
+        repeated PostgresqlTables postgresql_tables = 2 [json_name = "postgresql_tables"];
+
+        message PostgresqlTables {
+          // Table name.
+          string table = 1;
+
+          repeated PostgresqlColumns postgresql_columns = 2 [json_name = "postgresql_columns"];
+
+          message PostgresqlColumns {
+            // Column name.
+            string column = 1;
+
+            // The PostgreSQL data type. Full data types list can be found here:
+            // https://www.postgresql.org/docs/current/datatype.html
+            string data_type = 2 [json_name = "data_type"];
+
+            // Column length.
+            int64 length = 3;
+
+            // Whether or not the column can accept a null value.
+            bool nullable = 4;
+
+            // The ordinal position of the column in the table.
+            int64 ordinal_position = 5 [json_name = "ordinal_position"];
+
+            // Column precision.
+            int64 precision = 6;
+
+            // Whether or not the column represents a primary key.
+            bool primary_key = 7 [json_name = "primary_key"];
+
+            // Column scale.
+            int64 scale = 8;
+          }
+        }
+      }
+    }
+  }
+
+  message BackfillNone {
+  }
+
+  message DestinationConfig {
+    // Destination connection profile resource. Format: projects/{project}/locations/{location}/connectionProfiles/{name}
+    string destination_connection_profile = 1 [json_name = "destination_connection_profile"];
+
+    BigqueryDestinationConfig bigquery_destination_config = 2 [json_name = "bigquery_destination_config"];
+
+    GcsDestinationConfig gcs_destination_config = 3 [json_name = "gcs_destination_config"];
+
+    message BigqueryDestinationConfig {
+      // The guaranteed data freshness (in seconds) when querying tables created by the stream.
+      // Editing this field will only affect new tables created in the future, but existing tables
+      // will not be impacted. Lower values mean that queries will return fresher data, but may result in higher cost.
+      // A duration in seconds with up to nine fractional digits, terminated by 's'. Example: "3.5s". Defaults to 900s.
+      string data_freshness = 1 [json_name = "data_freshness"];
+
+      SingleTargetDataset single_target_dataset = 2 [json_name = "single_target_dataset"];
+
+      SourceHierarchyDatasets source_hierarchy_datasets = 3 [json_name = "source_hierarchy_datasets"];
+
+      message SingleTargetDataset {
+        // Dataset ID in the format projects/{project}/datasets/{dataset_id} or
+        // {project}:{dataset_id}
+        string dataset_id = 1 [json_name = "dataset_id"];
+      }
+
+      message SourceHierarchyDatasets {
+        DatasetTemplate dataset_template = 1 [json_name = "dataset_template"];
+
+        message DatasetTemplate {
+          // If supplied, every created dataset will have its name prefixed by the provided value.
+          // The prefix and name will be separated by an underscore. i.e. _.
+          string dataset_id_prefix = 1 [json_name = "dataset_id_prefix"];
+
+          // Describes the Cloud KMS encryption key that will be used to protect destination BigQuery
+          // table. The BigQuery Service Account associated with your project requires access to this
+          // encryption key. i.e. projects/{project}/locations/{location}/keyRings/{key_ring}/cryptoKeys/{cryptoKey}.
+          // See https://cloud.google.com/bigquery/docs/customer-managed-encryption for more information.
+          string kms_key_name = 2 [json_name = "kms_key_name"];
+
+          // The geographic location where the dataset should reside.
+          // See https://cloud.google.com/bigquery/docs/locations for supported locations.
+          string location = 3;
+        }
+      }
+    }
+
+    message GcsDestinationConfig {
+      // The maximum duration for which new events are added before a file is closed and a new file is created.
+      // A duration in seconds with up to nine fractional digits, terminated by 's'. Example: "3.5s". Defaults to 900s.
+      string file_rotation_interval = 1 [json_name = "file_rotation_interval"];
+
+      // The maximum file size to be saved in the bucket.
+      int64 file_rotation_mb = 2 [json_name = "file_rotation_mb"];
+
+      // Path inside the Cloud Storage bucket to write data to.
+      string path = 3;
+
+      AvroFileFormat avro_file_format = 4 [json_name = "avro_file_format"];
+
+      JsonFileFormat json_file_format = 5 [json_name = "json_file_format"];
+
+      message AvroFileFormat {
+      }
+
+      message JsonFileFormat {
+        // Compression of the loaded JSON file. Possible values: ["NO_COMPRESSION", "GZIP"]
+        string compression = 1;
+
+        // The schema file format along JSON data files. Possible values: ["NO_SCHEMA_FILE", "AVRO_SCHEMA_FILE"]
+        string schema_file_format = 2 [json_name = "schema_file_format"];
+      }
+    }
+  }
+
+  message SourceConfig {
+    // Source connection profile resource. Format: projects/{project}/locations/{location}/connectionProfiles/{name}
+    string source_connection_profile = 1 [json_name = "source_connection_profile"];
+
+    MysqlSourceConfig mysql_source_config = 2 [json_name = "mysql_source_config"];
+
+    OracleSourceConfig oracle_source_config = 3 [json_name = "oracle_source_config"];
+
+    PostgresqlSourceConfig postgresql_source_config = 4 [json_name = "postgresql_source_config"];
+
+    message MysqlSourceConfig {
+      // Maximum number of concurrent backfill tasks. The number should be non negative.
+      // If not set (or set to 0), the system's default value will be used.
+      int64 max_concurrent_backfill_tasks = 1 [json_name = "max_concurrent_backfill_tasks"];
+
+      // Maximum number of concurrent CDC tasks. The number should be non negative.
+      // If not set (or set to 0), the system's default value will be used.
+      int64 max_concurrent_cdc_tasks = 2 [json_name = "max_concurrent_cdc_tasks"];
+
+      ExcludeObjects exclude_objects = 3 [json_name = "exclude_objects"];
+
+      IncludeObjects include_objects = 4 [json_name = "include_objects"];
+
+      message ExcludeObjects {
+        repeated MysqlDatabases mysql_databases = 1 [json_name = "mysql_databases"];
+
+        message MysqlDatabases {
+          // Database name.
+          string database = 1;
+
+          repeated MysqlTables mysql_tables = 2 [json_name = "mysql_tables"];
+
+          message MysqlTables {
+            // Table name.
+            string table = 1;
+
+            repeated MysqlColumns mysql_columns = 2 [json_name = "mysql_columns"];
+
+            message MysqlColumns {
+              // Column collation.
+              string collation = 1;
+
+              // Column name.
+              string column = 2;
+
+              // The MySQL data type. Full data types list can be found here:
+              // https://dev.mysql.com/doc/refman/8.0/en/data-types.html
+              string data_type = 3 [json_name = "data_type"];
+
+              // Column length.
+              int64 length = 4;
+
+              // Whether or not the column can accept a null value.
+              bool nullable = 5;
+
+              // The ordinal position of the column in the table.
+              int64 ordinal_position = 6 [json_name = "ordinal_position"];
+
+              // Whether or not the column represents a primary key.
+              bool primary_key = 7 [json_name = "primary_key"];
+            }
+          }
+        }
+      }
+
+      message IncludeObjects {
+        repeated MysqlDatabases mysql_databases = 1 [json_name = "mysql_databases"];
+
+        message MysqlDatabases {
+          // Database name.
+          string database = 1;
+
+          repeated MysqlTables mysql_tables = 2 [json_name = "mysql_tables"];
+
+          message MysqlTables {
+            // Table name.
+            string table = 1;
+
+            repeated MysqlColumns mysql_columns = 2 [json_name = "mysql_columns"];
+
+            message MysqlColumns {
+              // Column collation.
+              string collation = 1;
+
+              // Column name.
+              string column = 2;
+
+              // The MySQL data type. Full data types list can be found here:
+              // https://dev.mysql.com/doc/refman/8.0/en/data-types.html
+              string data_type = 3 [json_name = "data_type"];
+
+              // Column length.
+              int64 length = 4;
+
+              // Whether or not the column can accept a null value.
+              bool nullable = 5;
+
+              // The ordinal position of the column in the table.
+              int64 ordinal_position = 6 [json_name = "ordinal_position"];
+
+              // Whether or not the column represents a primary key.
+              bool primary_key = 7 [json_name = "primary_key"];
+            }
+          }
+        }
+      }
+    }
+
+    message OracleSourceConfig {
+      // Maximum number of concurrent backfill tasks. The number should be non negative.
+      // If not set (or set to 0), the system's default value will be used.
+      int64 max_concurrent_backfill_tasks = 1 [json_name = "max_concurrent_backfill_tasks"];
+
+      // Maximum number of concurrent CDC tasks. The number should be non negative.
+      // If not set (or set to 0), the system's default value will be used.
+      int64 max_concurrent_cdc_tasks = 2 [json_name = "max_concurrent_cdc_tasks"];
+
+      DropLargeObjects drop_large_objects = 3 [json_name = "drop_large_objects"];
+
+      ExcludeObjects exclude_objects = 4 [json_name = "exclude_objects"];
+
+      IncludeObjects include_objects = 5 [json_name = "include_objects"];
+
+      StreamLargeObjects stream_large_objects = 6 [json_name = "stream_large_objects"];
+
+      message DropLargeObjects {
+      }
+
+      message ExcludeObjects {
+        repeated OracleSchemas oracle_schemas = 1 [json_name = "oracle_schemas"];
+
+        message OracleSchemas {
+          // Schema name.
+          string schema = 1;
+
+          repeated OracleTables oracle_tables = 2 [json_name = "oracle_tables"];
+
+          message OracleTables {
+            // Table name.
+            string table = 1;
+
+            repeated OracleColumns oracle_columns = 2 [json_name = "oracle_columns"];
+
+            message OracleColumns {
+              // Column name.
+              string column = 1;
+
+              // The Oracle data type. Full data types list can be found here:
+              // https://docs.oracle.com/en/database/oracle/oracle-database/21/sqlrf/Data-Types.html
+              string data_type = 2 [json_name = "data_type"];
+
+              // Column encoding.
+              string encoding = 3;
+
+              // Column length.
+              int64 length = 4;
+
+              // Whether or not the column can accept a null value.
+              bool nullable = 5;
+
+              // The ordinal position of the column in the table.
+              int64 ordinal_position = 6 [json_name = "ordinal_position"];
+
+              // Column precision.
+              int64 precision = 7;
+
+              // Whether or not the column represents a primary key.
+              bool primary_key = 8 [json_name = "primary_key"];
+
+              // Column scale.
+              int64 scale = 9;
+            }
+          }
+        }
+      }
+
+      message IncludeObjects {
+        repeated OracleSchemas oracle_schemas = 1 [json_name = "oracle_schemas"];
+
+        message OracleSchemas {
+          // Schema name.
+          string schema = 1;
+
+          repeated OracleTables oracle_tables = 2 [json_name = "oracle_tables"];
+
+          message OracleTables {
+            // Table name.
+            string table = 1;
+
+            repeated OracleColumns oracle_columns = 2 [json_name = "oracle_columns"];
+
+            message OracleColumns {
+              // Column name.
+              string column = 1;
+
+              // The Oracle data type. Full data types list can be found here:
+              // https://docs.oracle.com/en/database/oracle/oracle-database/21/sqlrf/Data-Types.html
+              string data_type = 2 [json_name = "data_type"];
+
+              // Column encoding.
+              string encoding = 3;
+
+              // Column length.
+              int64 length = 4;
+
+              // Whether or not the column can accept a null value.
+              bool nullable = 5;
+
+              // The ordinal position of the column in the table.
+              int64 ordinal_position = 6 [json_name = "ordinal_position"];
+
+              // Column precision.
+              int64 precision = 7;
+
+              // Whether or not the column represents a primary key.
+              bool primary_key = 8 [json_name = "primary_key"];
+
+              // Column scale.
+              int64 scale = 9;
+            }
+          }
+        }
+      }
+
+      message StreamLargeObjects {
+      }
+    }
+
+    message PostgresqlSourceConfig {
+      // Maximum number of concurrent backfill tasks. The number should be non
+      // negative. If not set (or set to 0), the system's default value will be used.
+      int64 max_concurrent_backfill_tasks = 1 [json_name = "max_concurrent_backfill_tasks"];
+
+      // The name of the publication that includes the set of all tables
+      // that are defined in the stream's include_objects.
+      string publication = 2;
+
+      // The name of the logical replication slot that's configured with
+      // the pgoutput plugin.
+      string replication_slot = 3 [json_name = "replication_slot"];
+
+      ExcludeObjects exclude_objects = 4 [json_name = "exclude_objects"];
+
+      IncludeObjects include_objects = 5 [json_name = "include_objects"];
+
+      message ExcludeObjects {
+        repeated PostgresqlSchemas postgresql_schemas = 1 [json_name = "postgresql_schemas"];
+
+        message PostgresqlSchemas {
+          // Database name.
+          string schema = 1;
+
+          repeated PostgresqlTables postgresql_tables = 2 [json_name = "postgresql_tables"];
+
+          message PostgresqlTables {
+            // Table name.
+            string table = 1;
+
+            repeated PostgresqlColumns postgresql_columns = 2 [json_name = "postgresql_columns"];
+
+            message PostgresqlColumns {
+              // Column name.
+              string column = 1;
+
+              // The PostgreSQL data type. Full data types list can be found here:
+              // https://www.postgresql.org/docs/current/datatype.html
+              string data_type = 2 [json_name = "data_type"];
+
+              // Column length.
+              int64 length = 3;
+
+              // Whether or not the column can accept a null value.
+              bool nullable = 4;
+
+              // The ordinal position of the column in the table.
+              int64 ordinal_position = 5 [json_name = "ordinal_position"];
+
+              // Column precision.
+              int64 precision = 6;
+
+              // Whether or not the column represents a primary key.
+              bool primary_key = 7 [json_name = "primary_key"];
+
+              // Column scale.
+              int64 scale = 8;
+            }
+          }
+        }
+      }
+
+      message IncludeObjects {
+        repeated PostgresqlSchemas postgresql_schemas = 1 [json_name = "postgresql_schemas"];
+
+        message PostgresqlSchemas {
+          // Database name.
+          string schema = 1;
+
+          repeated PostgresqlTables postgresql_tables = 2 [json_name = "postgresql_tables"];
+
+          message PostgresqlTables {
+            // Table name.
+            string table = 1;
+
+            repeated PostgresqlColumns postgresql_columns = 2 [json_name = "postgresql_columns"];
+
+            message PostgresqlColumns {
+              // Column name.
+              string column = 1;
+
+              // The PostgreSQL data type. Full data types list can be found here:
+              // https://www.postgresql.org/docs/current/datatype.html
+              string data_type = 2 [json_name = "data_type"];
+
+              // Column length.
+              int64 length = 3;
+
+              // Whether or not the column can accept a null value.
+              bool nullable = 4;
+
+              // The ordinal position of the column in the table.
+              int64 ordinal_position = 5 [json_name = "ordinal_position"];
+
+              // Column precision.
+              int64 precision = 6;
+
+              // Whether or not the column represents a primary key.
+              bool primary_key = 7 [json_name = "primary_key"];
+
+              // Column scale.
+              int64 scale = 8;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

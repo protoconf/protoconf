@@ -1,0 +1,368 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleCloudfunctions2Function version is 0
+message GoogleCloudfunctions2Function {
+  // User-provided description of a function.
+  string description = 1;
+
+  // The environment the function is hosted on.
+  string environment = 2;
+
+  string id = 3;
+
+  // A set of key/value label pairs associated with this Cloud Function.
+  map<string, string> labels = 4;
+
+  // The location of this cloud function.
+  string location = 5;
+
+  // A user-defined name of the function. Function names must
+  // be unique globally and match pattern 'projects/*/locations/*/functions/*'.
+  string name = 6;
+
+  string project = 7;
+
+  // Describes the current state of the function.
+  string state = 8;
+
+  // The last update timestamp of a Cloud Function.
+  string update_time = 9 [json_name = "update_time"];
+
+  BuildConfig build_config = 10 [json_name = "build_config"];
+
+  EventTrigger event_trigger = 11 [json_name = "event_trigger"];
+
+  ServiceConfig service_config = 12 [json_name = "service_config"];
+
+  repeated Timeouts timeouts = 13;
+
+  map<string, string> for_each = 14 [json_name = "for_each"];
+
+  repeated string depends_on = 15 [json_name = "depends_on"];
+
+  int32 count = 16;
+
+  string provider = 17;
+
+  terraform.v1.Lifecycle lifecycle = 18;
+
+  message BuildConfig {
+    // The Cloud Build name of the latest successful
+    // deployment of the function.
+    string build = 1;
+
+    // User managed repository created in Artifact Registry optionally with a customer managed encryption key.
+    string docker_repository = 2 [json_name = "docker_repository"];
+
+    // The name of the function (as defined in source code) that will be executed.
+    // Defaults to the resource name suffix, if not specified. For backward
+    // compatibility, if function with given name is not found, then the system
+    // will try to use function named "function". For Node.js this is name of a
+    // function exported by the module specified in source_location.
+    string entry_point = 3 [json_name = "entry_point"];
+
+    // User-provided build-time environment variables for the function.
+    map<string, string> environment_variables = 4 [json_name = "environment_variables"];
+
+    // The runtime in which to run the function. Required when deploying a new
+    // function, optional when updating an existing function.
+    string runtime = 5;
+
+    // Name of the Cloud Build Custom Worker Pool that should be used to build the function.
+    string worker_pool = 6 [json_name = "worker_pool"];
+
+    Source source = 7;
+
+    message Source {
+      RepoSource repo_source = 1 [json_name = "repo_source"];
+
+      StorageSource storage_source = 2 [json_name = "storage_source"];
+
+      message RepoSource {
+        // Regex matching branches to build.
+        string branch_name = 1 [json_name = "branch_name"];
+
+        // Regex matching tags to build.
+        string commit_sha = 2 [json_name = "commit_sha"];
+
+        // Directory, relative to the source root, in which to run the build.
+        string dir = 3;
+
+        // Only trigger a build if the revision regex does
+        // NOT match the revision regex.
+        bool invert_regex = 4 [json_name = "invert_regex"];
+
+        // ID of the project that owns the Cloud Source Repository. If omitted, the
+        // project ID requesting the build is assumed.
+        string project_id = 5 [json_name = "project_id"];
+
+        // Name of the Cloud Source Repository.
+        string repo_name = 6 [json_name = "repo_name"];
+
+        // Regex matching tags to build.
+        string tag_name = 7 [json_name = "tag_name"];
+      }
+
+      message StorageSource {
+        // Google Cloud Storage bucket containing the source
+        string bucket = 1;
+
+        // Google Cloud Storage generation for the object. If the generation
+        // is omitted, the latest generation will be used.
+        int64 generation = 2;
+
+        // Google Cloud Storage object containing the source.
+        string object = 3;
+      }
+    }
+  }
+
+  message EventTrigger {
+    // Required. The type of event to observe.
+    string event_type = 1 [json_name = "event_type"];
+
+    // The name of a Pub/Sub topic in the same project that will be used
+    // as the transport topic for the event delivery.
+    string pubsub_topic = 2 [json_name = "pubsub_topic"];
+
+    // Describes the retry policy in case of function's execution failure.
+    // Retried execution is charged as any other execution. Possible values: ["RETRY_POLICY_UNSPECIFIED", "RETRY_POLICY_DO_NOT_RETRY", "RETRY_POLICY_RETRY"]
+    string retry_policy = 3 [json_name = "retry_policy"];
+
+    // The email of the service account for this function.
+    string service_account_email = 4 [json_name = "service_account_email"];
+
+    // Output only. The resource name of the Eventarc trigger.
+    string trigger = 5;
+
+    // The region that the trigger will be in. The trigger will only receive
+    // events originating in this region. It can be the same
+    // region as the function, a different region or multi-region, or the global
+    // region. If not provided, defaults to the same region as the function.
+    string trigger_region = 6 [json_name = "trigger_region"];
+
+    repeated EventFilters event_filters = 7 [json_name = "event_filters"];
+
+    message EventFilters {
+      // 'Required. The name of a CloudEvents attribute.
+      // Currently, only a subset of attributes are supported for filtering. Use the 'gcloud eventarc providers describe' command to learn more about events and their attributes.
+      // Do not filter for the 'type' attribute here, as this is already achieved by the resource's 'event_type' attribute.
+      string attribute = 1;
+
+      // Optional. The operator used for matching the events with the value of
+      // the filter. If not specified, only events that have an exact key-value
+      // pair specified in the filter are matched.
+      // The only allowed value is 'match-path-pattern'.
+      // [See documentation on path patterns here](https://cloud.google.com/eventarc/docs/path-patterns)'
+      string operator = 2;
+
+      // Required. The value for the attribute.
+      // If the operator field is set as 'match-path-pattern', this value can be a path pattern instead of an exact value.
+      string value = 3;
+    }
+  }
+
+  message ServiceConfig {
+    // Whether 100% of traffic is routed to the latest revision. Defaults to true.
+    bool all_traffic_on_latest_revision = 1 [json_name = "all_traffic_on_latest_revision"];
+
+    // The number of CPUs used in a single container instance. Default value is calculated from available memory.
+    string available_cpu = 2 [json_name = "available_cpu"];
+
+    // The amount of memory available for a function.
+    // Defaults to 256M. Supported units are k, M, G, Mi, Gi. If no unit is
+    // supplied the value is interpreted as bytes.
+    string available_memory = 3 [json_name = "available_memory"];
+
+    // Environment variables that shall be available during function execution.
+    map<string, string> environment_variables = 4 [json_name = "environment_variables"];
+
+    // URIs of the Service deployed
+    string gcf_uri = 5 [json_name = "gcf_uri"];
+
+    // Available ingress settings. Defaults to "ALLOW_ALL" if unspecified. Default value: "ALLOW_ALL" Possible values: ["ALLOW_ALL", "ALLOW_INTERNAL_ONLY", "ALLOW_INTERNAL_AND_GCLB"]
+    string ingress_settings = 6 [json_name = "ingress_settings"];
+
+    // The limit on the maximum number of function instances that may coexist at a
+    // given time.
+    int64 max_instance_count = 7 [json_name = "max_instance_count"];
+
+    // Sets the maximum number of concurrent requests that each instance can receive. Defaults to 1.
+    int64 max_instance_request_concurrency = 8 [json_name = "max_instance_request_concurrency"];
+
+    // The limit on the minimum number of function instances that may coexist at a
+    // given time.
+    int64 min_instance_count = 9 [json_name = "min_instance_count"];
+
+    // Name of the service associated with a Function.
+    string service = 10;
+
+    // The email of the service account for this function.
+    string service_account_email = 11 [json_name = "service_account_email"];
+
+    // The function execution timeout. Execution is considered failed and
+    // can be terminated if the function is not completed at the end of the
+    // timeout period. Defaults to 60 seconds.
+    int64 timeout_seconds = 12 [json_name = "timeout_seconds"];
+
+    // URI of the Service deployed.
+    string uri = 13;
+
+    // The Serverless VPC Access connector that this cloud function can connect to.
+    string vpc_connector = 14 [json_name = "vpc_connector"];
+
+    // Available egress settings. Possible values: ["VPC_CONNECTOR_EGRESS_SETTINGS_UNSPECIFIED", "PRIVATE_RANGES_ONLY", "ALL_TRAFFIC"]
+    string vpc_connector_egress_settings = 15 [json_name = "vpc_connector_egress_settings"];
+
+    repeated SecretEnvironmentVariables secret_environment_variables = 16 [json_name = "secret_environment_variables"];
+
+    repeated SecretVolumes secret_volumes = 17 [json_name = "secret_volumes"];
+
+    message SecretEnvironmentVariables {
+      // Name of the environment variable.
+      string key = 1;
+
+      // Project identifier (preferrably project number but can also be the project ID) of the project that contains the secret. If not set, it will be populated with the function's project assuming that the secret exists in the same project as of the function.
+      string project_id = 2 [json_name = "project_id"];
+
+      // Name of the secret in secret manager (not the full resource name).
+      string secret = 3;
+
+      // Version of the secret (version number or the string 'latest'). It is recommended to use a numeric version for secret environment variables as any updates to the secret value is not reflected until new instances start.
+      string version = 4;
+    }
+
+    message SecretVolumes {
+      // The path within the container to mount the secret volume. For example, setting the mountPath as /etc/secrets would mount the secret value files under the /etc/secrets directory. This directory will also be completely shadowed and unavailable to mount any other secrets. Recommended mount path: /etc/secrets
+      string mount_path = 1 [json_name = "mount_path"];
+
+      // Project identifier (preferrably project number but can also be the project ID) of the project that contains the secret. If not set, it will be populated with the function's project assuming that the secret exists in the same project as of the function.
+      string project_id = 2 [json_name = "project_id"];
+
+      // Name of the secret in secret manager (not the full resource name).
+      string secret = 3;
+
+      repeated Versions versions = 4;
+
+      message Versions {
+        // Relative path of the file under the mount path where the secret value for this version will be fetched and made available. For example, setting the mountPath as '/etc/secrets' and path as secret_foo would mount the secret value file at /etc/secrets/secret_foo.
+        string path = 1;
+
+        // Version of the secret (version number or the string 'latest'). It is preferable to use latest version with secret volumes as secret value changes are reflected immediately.
+        string version = 2;
+      }
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleCloudfunctions2FunctionIamBinding version is 0
+message GoogleCloudfunctions2FunctionIamBinding {
+  string cloud_function = 1 [json_name = "cloud_function"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string location = 4;
+
+  repeated string members = 5;
+
+  string project = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleCloudfunctions2FunctionIamMember version is 0
+message GoogleCloudfunctions2FunctionIamMember {
+  string cloud_function = 1 [json_name = "cloud_function"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string location = 4;
+
+  string member = 5;
+
+  string project = 6;
+
+  string role = 7;
+
+  Condition condition = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Condition {
+    string description = 1;
+
+    string expression = 2;
+
+    string title = 3;
+  }
+}
+
+// GoogleCloudfunctions2FunctionIamPolicy version is 0
+message GoogleCloudfunctions2FunctionIamPolicy {
+  string cloud_function = 1 [json_name = "cloud_function"];
+
+  string etag = 2;
+
+  string id = 3;
+
+  string location = 4;
+
+  string policy_data = 5 [json_name = "policy_data"];
+
+  string project = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}

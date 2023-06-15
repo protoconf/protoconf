@@ -1,0 +1,267 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsCodedeployApp version is 0
+message AwsCodedeployApp {
+  string application_id = 1 [json_name = "application_id"];
+
+  string arn = 2;
+
+  string compute_platform = 3 [json_name = "compute_platform"];
+
+  string github_account_name = 4 [json_name = "github_account_name"];
+
+  string id = 5;
+
+  bool linked_to_github = 6 [json_name = "linked_to_github"];
+
+  string name = 7;
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+}
+
+// AwsCodedeployDeploymentConfig version is 0
+message AwsCodedeployDeploymentConfig {
+  string compute_platform = 1 [json_name = "compute_platform"];
+
+  string deployment_config_id = 2 [json_name = "deployment_config_id"];
+
+  string deployment_config_name = 3 [json_name = "deployment_config_name"];
+
+  string id = 4;
+
+  MinimumHealthyHosts minimum_healthy_hosts = 5 [json_name = "minimum_healthy_hosts"];
+
+  TrafficRoutingConfig traffic_routing_config = 6 [json_name = "traffic_routing_config"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message MinimumHealthyHosts {
+    string type = 1;
+
+    int64 value = 2;
+  }
+
+  message TrafficRoutingConfig {
+    string type = 1;
+
+    TimeBasedCanary time_based_canary = 2 [json_name = "time_based_canary"];
+
+    TimeBasedLinear time_based_linear = 3 [json_name = "time_based_linear"];
+
+    message TimeBasedCanary {
+      int64 interval = 1;
+
+      int64 percentage = 2;
+    }
+
+    message TimeBasedLinear {
+      int64 interval = 1;
+
+      int64 percentage = 2;
+    }
+  }
+}
+
+// AwsCodedeployDeploymentGroup version is 0
+message AwsCodedeployDeploymentGroup {
+  string app_name = 1 [json_name = "app_name"];
+
+  string arn = 2;
+
+  repeated string autoscaling_groups = 3 [json_name = "autoscaling_groups"];
+
+  string compute_platform = 4 [json_name = "compute_platform"];
+
+  string deployment_config_name = 5 [json_name = "deployment_config_name"];
+
+  string deployment_group_id = 6 [json_name = "deployment_group_id"];
+
+  string deployment_group_name = 7 [json_name = "deployment_group_name"];
+
+  string id = 8;
+
+  string service_role_arn = 9 [json_name = "service_role_arn"];
+
+  map<string, string> tags = 10;
+
+  map<string, string> tags_all = 11 [json_name = "tags_all"];
+
+  AlarmConfiguration alarm_configuration = 12 [json_name = "alarm_configuration"];
+
+  AutoRollbackConfiguration auto_rollback_configuration = 13 [json_name = "auto_rollback_configuration"];
+
+  BlueGreenDeploymentConfig blue_green_deployment_config = 14 [json_name = "blue_green_deployment_config"];
+
+  DeploymentStyle deployment_style = 15 [json_name = "deployment_style"];
+
+  repeated Ec2TagFilter ec2_tag_filter = 16 [json_name = "ec2_tag_filter"];
+
+  repeated Ec2TagSet ec2_tag_set = 17 [json_name = "ec2_tag_set"];
+
+  EcsService ecs_service = 18 [json_name = "ecs_service"];
+
+  LoadBalancerInfo load_balancer_info = 19 [json_name = "load_balancer_info"];
+
+  repeated OnPremisesInstanceTagFilter on_premises_instance_tag_filter = 20 [json_name = "on_premises_instance_tag_filter"];
+
+  repeated TriggerConfiguration trigger_configuration = 21 [json_name = "trigger_configuration"];
+
+  map<string, string> for_each = 22 [json_name = "for_each"];
+
+  repeated string depends_on = 23 [json_name = "depends_on"];
+
+  int32 count = 24;
+
+  string provider = 25;
+
+  terraform.v1.Lifecycle lifecycle = 26;
+
+  message AlarmConfiguration {
+    repeated string alarms = 1;
+
+    bool enabled = 2;
+
+    bool ignore_poll_alarm_failure = 3 [json_name = "ignore_poll_alarm_failure"];
+  }
+
+  message AutoRollbackConfiguration {
+    bool enabled = 1;
+
+    repeated string events = 2;
+  }
+
+  message BlueGreenDeploymentConfig {
+    DeploymentReadyOption deployment_ready_option = 1 [json_name = "deployment_ready_option"];
+
+    GreenFleetProvisioningOption green_fleet_provisioning_option = 2 [json_name = "green_fleet_provisioning_option"];
+
+    TerminateBlueInstancesOnDeploymentSuccess terminate_blue_instances_on_deployment_success = 3 [
+      json_name = "terminate_blue_instances_on_deployment_success"
+    ];
+
+    message DeploymentReadyOption {
+      string action_on_timeout = 1 [json_name = "action_on_timeout"];
+
+      int64 wait_time_in_minutes = 2 [json_name = "wait_time_in_minutes"];
+    }
+
+    message GreenFleetProvisioningOption {
+      string action = 1;
+    }
+
+    message TerminateBlueInstancesOnDeploymentSuccess {
+      string action = 1;
+
+      int64 termination_wait_time_in_minutes = 2 [json_name = "termination_wait_time_in_minutes"];
+    }
+  }
+
+  message DeploymentStyle {
+    string deployment_option = 1 [json_name = "deployment_option"];
+
+    string deployment_type = 2 [json_name = "deployment_type"];
+  }
+
+  message Ec2TagFilter {
+    string key = 1;
+
+    string type = 2;
+
+    string value = 3;
+  }
+
+  message Ec2TagSet {
+    repeated Ec2TagFilter ec2_tag_filter = 1 [json_name = "ec2_tag_filter"];
+
+    message Ec2TagFilter {
+      string key = 1;
+
+      string type = 2;
+
+      string value = 3;
+    }
+  }
+
+  message EcsService {
+    string cluster_name = 1 [json_name = "cluster_name"];
+
+    string service_name = 2 [json_name = "service_name"];
+  }
+
+  message LoadBalancerInfo {
+    repeated ElbInfo elb_info = 1 [json_name = "elb_info"];
+
+    repeated TargetGroupInfo target_group_info = 2 [json_name = "target_group_info"];
+
+    TargetGroupPairInfo target_group_pair_info = 3 [json_name = "target_group_pair_info"];
+
+    message ElbInfo {
+      string name = 1;
+    }
+
+    message TargetGroupInfo {
+      string name = 1;
+    }
+
+    message TargetGroupPairInfo {
+      ProdTrafficRoute prod_traffic_route = 1 [json_name = "prod_traffic_route"];
+
+      repeated TargetGroup target_group = 2 [json_name = "target_group"];
+
+      TestTrafficRoute test_traffic_route = 3 [json_name = "test_traffic_route"];
+
+      message ProdTrafficRoute {
+        repeated string listener_arns = 1 [json_name = "listener_arns"];
+      }
+
+      message TargetGroup {
+        string name = 1;
+      }
+
+      message TestTrafficRoute {
+        repeated string listener_arns = 1 [json_name = "listener_arns"];
+      }
+    }
+  }
+
+  message OnPremisesInstanceTagFilter {
+    string key = 1;
+
+    string type = 2;
+
+    string value = 3;
+  }
+
+  message TriggerConfiguration {
+    repeated string trigger_events = 1 [json_name = "trigger_events"];
+
+    string trigger_name = 2 [json_name = "trigger_name"];
+
+    string trigger_target_arn = 3 [json_name = "trigger_target_arn"];
+  }
+}

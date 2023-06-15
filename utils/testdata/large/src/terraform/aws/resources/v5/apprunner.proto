@@ -1,0 +1,371 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsApprunnerAutoScalingConfigurationVersion version is 0
+message AwsApprunnerAutoScalingConfigurationVersion {
+  string arn = 1;
+
+  string auto_scaling_configuration_name = 2 [json_name = "auto_scaling_configuration_name"];
+
+  int64 auto_scaling_configuration_revision = 3 [json_name = "auto_scaling_configuration_revision"];
+
+  string id = 4;
+
+  bool latest = 5;
+
+  int64 max_concurrency = 6 [json_name = "max_concurrency"];
+
+  int64 max_size = 7 [json_name = "max_size"];
+
+  int64 min_size = 8 [json_name = "min_size"];
+
+  string status = 9;
+
+  map<string, string> tags = 10;
+
+  map<string, string> tags_all = 11 [json_name = "tags_all"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+}
+
+// AwsApprunnerConnection version is 0
+message AwsApprunnerConnection {
+  string arn = 1;
+
+  string connection_name = 2 [json_name = "connection_name"];
+
+  string id = 3;
+
+  string provider_type = 4 [json_name = "provider_type"];
+
+  string status = 5;
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsApprunnerCustomDomainAssociation version is 0
+message AwsApprunnerCustomDomainAssociation {
+  repeated CertificateValidationRecords certificate_validation_records = 1 [json_name = "certificate_validation_records"];
+
+  string dns_target = 2 [json_name = "dns_target"];
+
+  string domain_name = 3 [json_name = "domain_name"];
+
+  bool enable_www_subdomain = 4 [json_name = "enable_www_subdomain"];
+
+  string id = 5;
+
+  string service_arn = 6 [json_name = "service_arn"];
+
+  string status = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message CertificateValidationRecords {
+    // name: string
+    string name = 1;
+
+    // status: string
+    string status = 2;
+
+    // type: string
+    string type = 3;
+
+    // value: string
+    string value = 4;
+  }
+}
+
+// AwsApprunnerObservabilityConfiguration version is 0
+message AwsApprunnerObservabilityConfiguration {
+  string arn = 1;
+
+  string id = 2;
+
+  bool latest = 3;
+
+  string observability_configuration_name = 4 [json_name = "observability_configuration_name"];
+
+  int64 observability_configuration_revision = 5 [json_name = "observability_configuration_revision"];
+
+  string status = 6;
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  TraceConfiguration trace_configuration = 9 [json_name = "trace_configuration"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message TraceConfiguration {
+    string vendor = 1;
+  }
+}
+
+// AwsApprunnerService version is 0
+message AwsApprunnerService {
+  string arn = 1;
+
+  string auto_scaling_configuration_arn = 2 [json_name = "auto_scaling_configuration_arn"];
+
+  string id = 3;
+
+  string service_id = 4 [json_name = "service_id"];
+
+  string service_name = 5 [json_name = "service_name"];
+
+  string service_url = 6 [json_name = "service_url"];
+
+  string status = 7;
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  EncryptionConfiguration encryption_configuration = 10 [json_name = "encryption_configuration"];
+
+  HealthCheckConfiguration health_check_configuration = 11 [json_name = "health_check_configuration"];
+
+  InstanceConfiguration instance_configuration = 12 [json_name = "instance_configuration"];
+
+  NetworkConfiguration network_configuration = 13 [json_name = "network_configuration"];
+
+  ObservabilityConfiguration observability_configuration = 14 [json_name = "observability_configuration"];
+
+  SourceConfiguration source_configuration = 15 [json_name = "source_configuration"];
+
+  map<string, string> for_each = 16 [json_name = "for_each"];
+
+  repeated string depends_on = 17 [json_name = "depends_on"];
+
+  int32 count = 18;
+
+  string provider = 19;
+
+  terraform.v1.Lifecycle lifecycle = 20;
+
+  message EncryptionConfiguration {
+    string kms_key = 1 [json_name = "kms_key"];
+  }
+
+  message HealthCheckConfiguration {
+    int64 healthy_threshold = 1 [json_name = "healthy_threshold"];
+
+    int64 interval = 2;
+
+    string path = 3;
+
+    string protocol = 4;
+
+    int64 timeout = 5;
+
+    int64 unhealthy_threshold = 6 [json_name = "unhealthy_threshold"];
+  }
+
+  message InstanceConfiguration {
+    string cpu = 1;
+
+    string instance_role_arn = 2 [json_name = "instance_role_arn"];
+
+    string memory = 3;
+  }
+
+  message NetworkConfiguration {
+    EgressConfiguration egress_configuration = 1 [json_name = "egress_configuration"];
+
+    IngressConfiguration ingress_configuration = 2 [json_name = "ingress_configuration"];
+
+    message EgressConfiguration {
+      string egress_type = 1 [json_name = "egress_type"];
+
+      string vpc_connector_arn = 2 [json_name = "vpc_connector_arn"];
+    }
+
+    message IngressConfiguration {
+      bool is_publicly_accessible = 1 [json_name = "is_publicly_accessible"];
+    }
+  }
+
+  message ObservabilityConfiguration {
+    string observability_configuration_arn = 1 [json_name = "observability_configuration_arn"];
+
+    bool observability_enabled = 2 [json_name = "observability_enabled"];
+  }
+
+  message SourceConfiguration {
+    bool auto_deployments_enabled = 1 [json_name = "auto_deployments_enabled"];
+
+    AuthenticationConfiguration authentication_configuration = 2 [json_name = "authentication_configuration"];
+
+    CodeRepository code_repository = 3 [json_name = "code_repository"];
+
+    ImageRepository image_repository = 4 [json_name = "image_repository"];
+
+    message AuthenticationConfiguration {
+      string access_role_arn = 1 [json_name = "access_role_arn"];
+
+      string connection_arn = 2 [json_name = "connection_arn"];
+    }
+
+    message CodeRepository {
+      string repository_url = 1 [json_name = "repository_url"];
+
+      CodeConfiguration code_configuration = 2 [json_name = "code_configuration"];
+
+      SourceCodeVersion source_code_version = 3 [json_name = "source_code_version"];
+
+      message CodeConfiguration {
+        string configuration_source = 1 [json_name = "configuration_source"];
+
+        CodeConfigurationValues code_configuration_values = 2 [json_name = "code_configuration_values"];
+
+        message CodeConfigurationValues {
+          string build_command = 1 [json_name = "build_command"];
+
+          string port = 2;
+
+          string runtime = 3;
+
+          map<string, string> runtime_environment_secrets = 4 [json_name = "runtime_environment_secrets"];
+
+          map<string, string> runtime_environment_variables = 5 [json_name = "runtime_environment_variables"];
+
+          string start_command = 6 [json_name = "start_command"];
+        }
+      }
+
+      message SourceCodeVersion {
+        string type = 1;
+
+        string value = 2;
+      }
+    }
+
+    message ImageRepository {
+      string image_identifier = 1 [json_name = "image_identifier"];
+
+      string image_repository_type = 2 [json_name = "image_repository_type"];
+
+      ImageConfiguration image_configuration = 3 [json_name = "image_configuration"];
+
+      message ImageConfiguration {
+        string port = 1;
+
+        map<string, string> runtime_environment_secrets = 2 [json_name = "runtime_environment_secrets"];
+
+        map<string, string> runtime_environment_variables = 3 [json_name = "runtime_environment_variables"];
+
+        string start_command = 4 [json_name = "start_command"];
+      }
+    }
+  }
+}
+
+// AwsApprunnerVpcConnector version is 0
+message AwsApprunnerVpcConnector {
+  string arn = 1;
+
+  string id = 2;
+
+  repeated string security_groups = 3 [json_name = "security_groups"];
+
+  string status = 4;
+
+  repeated string subnets = 5;
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  string vpc_connector_name = 8 [json_name = "vpc_connector_name"];
+
+  int64 vpc_connector_revision = 9 [json_name = "vpc_connector_revision"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+}
+
+// AwsApprunnerVpcIngressConnection version is 0
+message AwsApprunnerVpcIngressConnection {
+  string arn = 1;
+
+  string domain_name = 2 [json_name = "domain_name"];
+
+  string id = 3;
+
+  string name = 4;
+
+  string service_arn = 5 [json_name = "service_arn"];
+
+  string status = 6;
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  IngressVpcConfiguration ingress_vpc_configuration = 9 [json_name = "ingress_vpc_configuration"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message IngressVpcConfiguration {
+    string vpc_endpoint_id = 1 [json_name = "vpc_endpoint_id"];
+
+    string vpc_id = 2 [json_name = "vpc_id"];
+  }
+}

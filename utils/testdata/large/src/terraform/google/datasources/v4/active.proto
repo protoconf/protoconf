@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.datasources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleActiveFolder version is 0
+message GoogleActiveFolder {
+  string display_name = 1 [json_name = "display_name"];
+
+  string id = 2;
+
+  string name = 3;
+
+  string parent = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}

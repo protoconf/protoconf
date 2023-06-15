@@ -1,0 +1,440 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsSesActiveReceiptRuleSet version is 0
+message AwsSesActiveReceiptRuleSet {
+  string arn = 1;
+
+  string id = 2;
+
+  string rule_set_name = 3 [json_name = "rule_set_name"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsSesConfigurationSet version is 0
+message AwsSesConfigurationSet {
+  string arn = 1;
+
+  string id = 2;
+
+  string last_fresh_start = 3 [json_name = "last_fresh_start"];
+
+  string name = 4;
+
+  bool reputation_metrics_enabled = 5 [json_name = "reputation_metrics_enabled"];
+
+  bool sending_enabled = 6 [json_name = "sending_enabled"];
+
+  DeliveryOptions delivery_options = 7 [json_name = "delivery_options"];
+
+  TrackingOptions tracking_options = 8 [json_name = "tracking_options"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message DeliveryOptions {
+    string tls_policy = 1 [json_name = "tls_policy"];
+  }
+
+  message TrackingOptions {
+    string custom_redirect_domain = 1 [json_name = "custom_redirect_domain"];
+  }
+}
+
+// AwsSesDomainDkim version is 0
+message AwsSesDomainDkim {
+  repeated string dkim_tokens = 1 [json_name = "dkim_tokens"];
+
+  string domain = 2;
+
+  string id = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsSesDomainIdentity version is 0
+message AwsSesDomainIdentity {
+  string arn = 1;
+
+  string domain = 2;
+
+  string id = 3;
+
+  string verification_token = 4 [json_name = "verification_token"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsSesDomainIdentityVerification version is 0
+message AwsSesDomainIdentityVerification {
+  string arn = 1;
+
+  string domain = 2;
+
+  string id = 3;
+
+  repeated Timeouts timeouts = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+
+  message Timeouts {
+    string create = 1;
+  }
+}
+
+// AwsSesDomainMailFrom version is 0
+message AwsSesDomainMailFrom {
+  string behavior_on_mx_failure = 1 [json_name = "behavior_on_mx_failure"];
+
+  string domain = 2;
+
+  string id = 3;
+
+  string mail_from_domain = 4 [json_name = "mail_from_domain"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsSesEmailIdentity version is 0
+message AwsSesEmailIdentity {
+  string arn = 1;
+
+  string email = 2;
+
+  string id = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsSesEventDestination version is 0
+message AwsSesEventDestination {
+  string arn = 1;
+
+  string configuration_set_name = 2 [json_name = "configuration_set_name"];
+
+  bool enabled = 3;
+
+  string id = 4;
+
+  repeated string matching_types = 5 [json_name = "matching_types"];
+
+  string name = 6;
+
+  repeated CloudwatchDestination cloudwatch_destination = 7 [json_name = "cloudwatch_destination"];
+
+  KinesisDestination kinesis_destination = 8 [json_name = "kinesis_destination"];
+
+  SnsDestination sns_destination = 9 [json_name = "sns_destination"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message CloudwatchDestination {
+    string default_value = 1 [json_name = "default_value"];
+
+    string dimension_name = 2 [json_name = "dimension_name"];
+
+    string value_source = 3 [json_name = "value_source"];
+  }
+
+  message KinesisDestination {
+    string role_arn = 1 [json_name = "role_arn"];
+
+    string stream_arn = 2 [json_name = "stream_arn"];
+  }
+
+  message SnsDestination {
+    string topic_arn = 1 [json_name = "topic_arn"];
+  }
+}
+
+// AwsSesIdentityNotificationTopic version is 0
+message AwsSesIdentityNotificationTopic {
+  string id = 1;
+
+  string identity = 2;
+
+  bool include_original_headers = 3 [json_name = "include_original_headers"];
+
+  string notification_type = 4 [json_name = "notification_type"];
+
+  string topic_arn = 5 [json_name = "topic_arn"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsSesIdentityPolicy version is 0
+message AwsSesIdentityPolicy {
+  string id = 1;
+
+  string identity = 2;
+
+  string name = 3;
+
+  string policy = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsSesReceiptFilter version is 0
+message AwsSesReceiptFilter {
+  string arn = 1;
+
+  string cidr = 2;
+
+  string id = 3;
+
+  string name = 4;
+
+  string policy = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsSesReceiptRule version is 0
+message AwsSesReceiptRule {
+  string after = 1;
+
+  string arn = 2;
+
+  bool enabled = 3;
+
+  string id = 4;
+
+  string name = 5;
+
+  repeated string recipients = 6;
+
+  string rule_set_name = 7 [json_name = "rule_set_name"];
+
+  bool scan_enabled = 8 [json_name = "scan_enabled"];
+
+  string tls_policy = 9 [json_name = "tls_policy"];
+
+  repeated AddHeaderAction add_header_action = 10 [json_name = "add_header_action"];
+
+  repeated BounceAction bounce_action = 11 [json_name = "bounce_action"];
+
+  repeated LambdaAction lambda_action = 12 [json_name = "lambda_action"];
+
+  repeated S3Action s3_action = 13 [json_name = "s3_action"];
+
+  repeated SnsAction sns_action = 14 [json_name = "sns_action"];
+
+  repeated StopAction stop_action = 15 [json_name = "stop_action"];
+
+  repeated WorkmailAction workmail_action = 16 [json_name = "workmail_action"];
+
+  map<string, string> for_each = 17 [json_name = "for_each"];
+
+  repeated string depends_on = 18 [json_name = "depends_on"];
+
+  int32 count = 19;
+
+  string provider = 20;
+
+  terraform.v1.Lifecycle lifecycle = 21;
+
+  message AddHeaderAction {
+    string header_name = 1 [json_name = "header_name"];
+
+    string header_value = 2 [json_name = "header_value"];
+
+    int64 position = 3;
+  }
+
+  message BounceAction {
+    string message = 1;
+
+    int64 position = 2;
+
+    string sender = 3;
+
+    string smtp_reply_code = 4 [json_name = "smtp_reply_code"];
+
+    string status_code = 5 [json_name = "status_code"];
+
+    string topic_arn = 6 [json_name = "topic_arn"];
+  }
+
+  message LambdaAction {
+    string function_arn = 1 [json_name = "function_arn"];
+
+    string invocation_type = 2 [json_name = "invocation_type"];
+
+    int64 position = 3;
+
+    string topic_arn = 4 [json_name = "topic_arn"];
+  }
+
+  message S3Action {
+    string bucket_name = 1 [json_name = "bucket_name"];
+
+    string kms_key_arn = 2 [json_name = "kms_key_arn"];
+
+    string object_key_prefix = 3 [json_name = "object_key_prefix"];
+
+    int64 position = 4;
+
+    string topic_arn = 5 [json_name = "topic_arn"];
+  }
+
+  message SnsAction {
+    string encoding = 1;
+
+    int64 position = 2;
+
+    string topic_arn = 3 [json_name = "topic_arn"];
+  }
+
+  message StopAction {
+    int64 position = 1;
+
+    string scope = 2;
+
+    string topic_arn = 3 [json_name = "topic_arn"];
+  }
+
+  message WorkmailAction {
+    string organization_arn = 1 [json_name = "organization_arn"];
+
+    int64 position = 2;
+
+    string topic_arn = 3 [json_name = "topic_arn"];
+  }
+}
+
+// AwsSesReceiptRuleSet version is 0
+message AwsSesReceiptRuleSet {
+  string arn = 1;
+
+  string id = 2;
+
+  string rule_set_name = 3 [json_name = "rule_set_name"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsSesTemplate version is 0
+message AwsSesTemplate {
+  string arn = 1;
+
+  string html = 2;
+
+  string id = 3;
+
+  string name = 4;
+
+  string subject = 5;
+
+  string text = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}

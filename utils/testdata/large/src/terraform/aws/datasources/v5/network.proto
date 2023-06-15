@@ -1,0 +1,176 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsNetworkAcls version is 0
+message AwsNetworkAcls {
+  string id = 1;
+
+  repeated string ids = 2;
+
+  map<string, string> tags = 3;
+
+  string vpc_id = 4 [json_name = "vpc_id"];
+
+  repeated Filter filter = 5;
+
+  repeated Timeouts timeouts = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+
+  message Timeouts {
+    string read = 1;
+  }
+}
+
+// AwsNetworkInterface version is 0
+message AwsNetworkInterface {
+  string arn = 1;
+
+  repeated Association association = 2;
+
+  repeated Attachment attachment = 3;
+
+  string availability_zone = 4 [json_name = "availability_zone"];
+
+  string description = 5;
+
+  string id = 6;
+
+  string interface_type = 7 [json_name = "interface_type"];
+
+  repeated string ipv6_addresses = 8 [json_name = "ipv6_addresses"];
+
+  string mac_address = 9 [json_name = "mac_address"];
+
+  string outpost_arn = 10 [json_name = "outpost_arn"];
+
+  string owner_id = 11 [json_name = "owner_id"];
+
+  string private_dns_name = 12 [json_name = "private_dns_name"];
+
+  string private_ip = 13 [json_name = "private_ip"];
+
+  repeated string private_ips = 14 [json_name = "private_ips"];
+
+  string requester_id = 15 [json_name = "requester_id"];
+
+  repeated string security_groups = 16 [json_name = "security_groups"];
+
+  string subnet_id = 17 [json_name = "subnet_id"];
+
+  map<string, string> tags = 18;
+
+  string vpc_id = 19 [json_name = "vpc_id"];
+
+  repeated Filter filter = 20;
+
+  repeated Timeouts timeouts = 21;
+
+  map<string, string> for_each = 22 [json_name = "for_each"];
+
+  repeated string depends_on = 23 [json_name = "depends_on"];
+
+  int32 count = 24;
+
+  string provider = 25;
+
+  terraform.v1.Lifecycle lifecycle = 26;
+
+  message Association {
+    // allocation_id: string
+    string allocation_id = 1 [json_name = "allocation_id"];
+
+    // association_id: string
+    string association_id = 2 [json_name = "association_id"];
+
+    // carrier_ip: string
+    string carrier_ip = 3 [json_name = "carrier_ip"];
+
+    // customer_owned_ip: string
+    string customer_owned_ip = 4 [json_name = "customer_owned_ip"];
+
+    // ip_owner_id: string
+    string ip_owner_id = 5 [json_name = "ip_owner_id"];
+
+    // public_dns_name: string
+    string public_dns_name = 6 [json_name = "public_dns_name"];
+
+    // public_ip: string
+    string public_ip = 7 [json_name = "public_ip"];
+  }
+
+  message Attachment {
+    // attachment_id: string
+    string attachment_id = 1 [json_name = "attachment_id"];
+
+    // device_index: number
+    int64 device_index = 2 [json_name = "device_index"];
+
+    // instance_id: string
+    string instance_id = 3 [json_name = "instance_id"];
+
+    // instance_owner_id: string
+    string instance_owner_id = 4 [json_name = "instance_owner_id"];
+  }
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+
+  message Timeouts {
+    string read = 1;
+  }
+}
+
+// AwsNetworkInterfaces version is 0
+message AwsNetworkInterfaces {
+  string id = 1;
+
+  repeated string ids = 2;
+
+  map<string, string> tags = 3;
+
+  repeated Filter filter = 4;
+
+  repeated Timeouts timeouts = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+
+  message Timeouts {
+    string read = 1;
+  }
+}

@@ -9,7 +9,7 @@ def main():
         fail()
     return TestMessage(
         stringValue=recovered.stringValue,
-        any_field=TestMessage(stringValue="test_any"),
+        any_field=any.new(TestMessage(stringValue="test_any")),
         any_repeated=[TestMessage(stringValue="test_any_repeated")],
         any_map={"hello": any.new(TestMessage(stringValue="test_any_map"))}
     )

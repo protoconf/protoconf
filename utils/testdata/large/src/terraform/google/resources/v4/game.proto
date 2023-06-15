@@ -1,0 +1,345 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleGameServicesGameServerCluster version is 0
+message GoogleGameServicesGameServerCluster {
+  // Required. The resource name of the game server cluster
+  string cluster_id = 1 [json_name = "cluster_id"];
+
+  // Human readable description of the cluster.
+  string description = 2;
+
+  string id = 3;
+
+  // The labels associated with this game server cluster. Each label is a
+  // key-value pair.
+  map<string, string> labels = 4;
+
+  // Location of the Cluster.
+  string location = 5;
+
+  // The resource id of the game server cluster, eg:
+  //
+  // 'projects/{project_id}/locations/{location}/realms/{realm_id}/gameServerClusters/{cluster_id}'.
+  // For example,
+  //
+  // 'projects/my-project/locations/{location}/realms/zanzibar/gameServerClusters/my-onprem-cluster'.
+  string name = 6;
+
+  string project = 7;
+
+  // The realm id of the game server realm.
+  string realm_id = 8 [json_name = "realm_id"];
+
+  ConnectionInfo connection_info = 9 [json_name = "connection_info"];
+
+  repeated Timeouts timeouts = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message ConnectionInfo {
+    // Namespace designated on the game server cluster where the game server
+    // instances will be created. The namespace existence will be validated
+    // during creation.
+    string namespace = 1;
+
+    GkeClusterReference gke_cluster_reference = 2 [json_name = "gke_cluster_reference"];
+
+    message GkeClusterReference {
+      // The full or partial name of a GKE cluster, using one of the following
+      // forms:
+      //
+      // * 'projects/{project_id}/locations/{location}/clusters/{cluster_id}'
+      // * 'locations/{location}/clusters/{cluster_id}'
+      // * '{cluster_id}'
+      //
+      // If project and location are not specified, the project and location of the
+      // GameServerCluster resource are used to generate the full name of the
+      // GKE cluster.
+      string cluster = 1;
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleGameServicesGameServerConfig version is 0
+message GoogleGameServicesGameServerConfig {
+  // A unique id for the deployment config.
+  string config_id = 1 [json_name = "config_id"];
+
+  // A unique id for the deployment.
+  string deployment_id = 2 [json_name = "deployment_id"];
+
+  // The description of the game server config.
+  string description = 3;
+
+  string id = 4;
+
+  // The labels associated with this game server config. Each label is a
+  // key-value pair.
+  map<string, string> labels = 5;
+
+  // Location of the Deployment.
+  string location = 6;
+
+  // The resource name of the game server config, in the form:
+  //
+  // 'projects/{project_id}/locations/{location}/gameServerDeployments/{deployment_id}/configs/{config_id}'.
+  string name = 7;
+
+  string project = 8;
+
+  repeated FleetConfigs fleet_configs = 9 [json_name = "fleet_configs"];
+
+  repeated ScalingConfigs scaling_configs = 10 [json_name = "scaling_configs"];
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message FleetConfigs {
+    // The fleet spec, which is sent to Agones to configure fleet.
+    // The spec can be passed as inline json but it is recommended to use a file reference
+    // instead. File references can contain the json or yaml format of the fleet spec. Eg:
+    //
+    // * fleet_spec = jsonencode(yamldecode(file("fleet_configs.yaml")))
+    // * fleet_spec = file("fleet_configs.json")
+    //
+    // The format of the spec can be found :
+    // 'https://agones.dev/site/docs/reference/fleet/'.
+    string fleet_spec = 1 [json_name = "fleet_spec"];
+
+    // The name of the FleetConfig.
+    string name = 2;
+  }
+
+  message ScalingConfigs {
+    // Fleet autoscaler spec, which is sent to Agones.
+    // Example spec can be found :
+    // https://agones.dev/site/docs/reference/fleetautoscaler/
+    string fleet_autoscaler_spec = 1 [json_name = "fleet_autoscaler_spec"];
+
+    // The name of the ScalingConfig
+    string name = 2;
+
+    repeated Schedules schedules = 3;
+
+    repeated Selectors selectors = 4;
+
+    message Schedules {
+      // The duration for the cron job event. The duration of the event is effective
+      // after the cron job's start time.
+      //
+      // A duration in seconds with up to nine fractional digits, terminated by 's'. Example: "3.5s".
+      string cron_job_duration = 1 [json_name = "cron_job_duration"];
+
+      // The cron definition of the scheduled event. See
+      // https://en.wikipedia.org/wiki/Cron. Cron spec specifies the local time as
+      // defined by the realm.
+      string cron_spec = 2 [json_name = "cron_spec"];
+
+      // The end time of the event.
+      //
+      // A timestamp in RFC3339 UTC "Zulu" format, accurate to nanoseconds. Example: "2014-10-02T15:01:23.045123456Z".
+      string end_time = 3 [json_name = "end_time"];
+
+      // The start time of the event.
+      //
+      // A timestamp in RFC3339 UTC "Zulu" format, accurate to nanoseconds. Example: "2014-10-02T15:01:23.045123456Z".
+      string start_time = 4 [json_name = "start_time"];
+    }
+
+    message Selectors {
+      // Set of labels to group by.
+      map<string, string> labels = 1;
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// GoogleGameServicesGameServerDeployment version is 0
+message GoogleGameServicesGameServerDeployment {
+  // A unique id for the deployment.
+  string deployment_id = 1 [json_name = "deployment_id"];
+
+  // Human readable description of the game server deployment.
+  string description = 2;
+
+  string id = 3;
+
+  // The labels associated with this game server deployment. Each label is a
+  // key-value pair.
+  map<string, string> labels = 4;
+
+  // Location of the Deployment.
+  string location = 5;
+
+  // The resource id of the game server deployment, eg:
+  //
+  // 'projects/{project_id}/locations/{location}/gameServerDeployments/{deployment_id}'.
+  // For example,
+  //
+  // 'projects/my-project/locations/{location}/gameServerDeployments/my-deployment'.
+  string name = 6;
+
+  string project = 7;
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleGameServicesGameServerDeploymentRollout version is 0
+message GoogleGameServicesGameServerDeploymentRollout {
+  // This field points to the game server config that is
+  // applied by default to all realms and clusters. For example,
+  //
+  // 'projects/my-project/locations/global/gameServerDeployments/my-game/configs/my-config'.
+  string default_game_server_config = 1 [json_name = "default_game_server_config"];
+
+  // The deployment to rollout the new config to. Only 1 rollout must be associated with each deployment.
+  string deployment_id = 2 [json_name = "deployment_id"];
+
+  string id = 3;
+
+  // The resource id of the game server deployment
+  //
+  // eg: 'projects/my-project/locations/global/gameServerDeployments/my-deployment/rollout'.
+  string name = 4;
+
+  string project = 5;
+
+  repeated GameServerConfigOverrides game_server_config_overrides = 6 [json_name = "game_server_config_overrides"];
+
+  repeated Timeouts timeouts = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message GameServerConfigOverrides {
+    // Version of the configuration.
+    string config_version = 1 [json_name = "config_version"];
+
+    RealmsSelector realms_selector = 2 [json_name = "realms_selector"];
+
+    message RealmsSelector {
+      // List of realms to match against.
+      repeated string realms = 1;
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleGameServicesRealm version is 0
+message GoogleGameServicesRealm {
+  // Human readable description of the realm.
+  string description = 1;
+
+  // ETag of the resource.
+  string etag = 2;
+
+  string id = 3;
+
+  // The labels associated with this realm. Each label is a key-value pair.
+  map<string, string> labels = 4;
+
+  // Location of the Realm.
+  string location = 5;
+
+  // The resource id of the realm, of the form:
+  // 'projects/{project_id}/locations/{location}/realms/{realm_id}'. For
+  // example, 'projects/my-project/locations/{location}/realms/my-realm'.
+  string name = 6;
+
+  string project = 7;
+
+  // GCP region of the Realm.
+  string realm_id = 8 [json_name = "realm_id"];
+
+  // Required. Time zone where all realm-specific policies are evaluated. The value of
+  // this field must be from the IANA time zone database:
+  // https://www.iana.org/time-zones.
+  string time_zone = 9 [json_name = "time_zone"];
+
+  repeated Timeouts timeouts = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

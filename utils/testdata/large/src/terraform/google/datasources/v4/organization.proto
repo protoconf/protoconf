@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.datasources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleOrganization version is 0
+message GoogleOrganization {
+  string create_time = 1 [json_name = "create_time"];
+
+  string directory_customer_id = 2 [json_name = "directory_customer_id"];
+
+  string domain = 3;
+
+  string id = 4;
+
+  string lifecycle_state = 5 [json_name = "lifecycle_state"];
+
+  string name = 6;
+
+  string org_id = 7 [json_name = "org_id"];
+
+  string organization = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+}
+
+// GoogleOrganizationIamPolicy version is 0
+message GoogleOrganizationIamPolicy {
+  string etag = 1;
+
+  string id = 2;
+
+  // The numeric ID of the organization in which you want to manage the audit logging config.
+  string org_id = 3 [json_name = "org_id"];
+
+  string policy_data = 4 [json_name = "policy_data"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}

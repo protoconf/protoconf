@@ -1,0 +1,199 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsChimesdkmediapipelinesMediaInsightsPipelineConfiguration version is 0
+message AwsChimesdkmediapipelinesMediaInsightsPipelineConfiguration {
+  string arn = 1;
+
+  string id = 2;
+
+  string name = 3;
+
+  string resource_access_role_arn = 4 [json_name = "resource_access_role_arn"];
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  repeated Elements elements = 7;
+
+  RealTimeAlertConfiguration real_time_alert_configuration = 8 [json_name = "real_time_alert_configuration"];
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Elements {
+    string type = 1;
+
+    AmazonTranscribeCallAnalyticsProcessorConfiguration amazon_transcribe_call_analytics_processor_configuration = 2 [
+      json_name = "amazon_transcribe_call_analytics_processor_configuration"
+    ];
+
+    AmazonTranscribeProcessorConfiguration amazon_transcribe_processor_configuration = 3 [
+      json_name = "amazon_transcribe_processor_configuration"
+    ];
+
+    KinesisDataStreamSinkConfiguration kinesis_data_stream_sink_configuration = 4 [
+      json_name = "kinesis_data_stream_sink_configuration"
+    ];
+
+    LambdaFunctionSinkConfiguration lambda_function_sink_configuration = 5 [json_name = "lambda_function_sink_configuration"];
+
+    S3RecordingSinkConfiguration s3_recording_sink_configuration = 6 [json_name = "s3_recording_sink_configuration"];
+
+    SnsTopicSinkConfiguration sns_topic_sink_configuration = 7 [json_name = "sns_topic_sink_configuration"];
+
+    SqsQueueSinkConfiguration sqs_queue_sink_configuration = 8 [json_name = "sqs_queue_sink_configuration"];
+
+    VoiceAnalyticsProcessorConfiguration voice_analytics_processor_configuration = 9 [
+      json_name = "voice_analytics_processor_configuration"
+    ];
+
+    message AmazonTranscribeCallAnalyticsProcessorConfiguration {
+      repeated string call_analytics_stream_categories = 1 [json_name = "call_analytics_stream_categories"];
+
+      string content_identification_type = 2 [json_name = "content_identification_type"];
+
+      string content_redaction_type = 3 [json_name = "content_redaction_type"];
+
+      bool enable_partial_results_stabilization = 4 [json_name = "enable_partial_results_stabilization"];
+
+      bool filter_partial_results = 5 [json_name = "filter_partial_results"];
+
+      string language_code = 6 [json_name = "language_code"];
+
+      string language_model_name = 7 [json_name = "language_model_name"];
+
+      string partial_results_stability = 8 [json_name = "partial_results_stability"];
+
+      string pii_entity_types = 9 [json_name = "pii_entity_types"];
+
+      string vocabulary_filter_method = 10 [json_name = "vocabulary_filter_method"];
+
+      string vocabulary_filter_name = 11 [json_name = "vocabulary_filter_name"];
+
+      string vocabulary_name = 12 [json_name = "vocabulary_name"];
+
+      PostCallAnalyticsSettings post_call_analytics_settings = 13 [json_name = "post_call_analytics_settings"];
+
+      message PostCallAnalyticsSettings {
+        string content_redaction_output = 1 [json_name = "content_redaction_output"];
+
+        string data_access_role_arn = 2 [json_name = "data_access_role_arn"];
+
+        string output_encryption_kms_key_id = 3 [json_name = "output_encryption_kms_key_id"];
+
+        string output_location = 4 [json_name = "output_location"];
+      }
+    }
+
+    message AmazonTranscribeProcessorConfiguration {
+      string content_identification_type = 1 [json_name = "content_identification_type"];
+
+      string content_redaction_type = 2 [json_name = "content_redaction_type"];
+
+      bool enable_partial_results_stabilization = 3 [json_name = "enable_partial_results_stabilization"];
+
+      bool filter_partial_results = 4 [json_name = "filter_partial_results"];
+
+      string language_code = 5 [json_name = "language_code"];
+
+      string language_model_name = 6 [json_name = "language_model_name"];
+
+      string partial_results_stability = 7 [json_name = "partial_results_stability"];
+
+      string pii_entity_types = 8 [json_name = "pii_entity_types"];
+
+      bool show_speaker_label = 9 [json_name = "show_speaker_label"];
+
+      string vocabulary_filter_method = 10 [json_name = "vocabulary_filter_method"];
+
+      string vocabulary_filter_name = 11 [json_name = "vocabulary_filter_name"];
+
+      string vocabulary_name = 12 [json_name = "vocabulary_name"];
+    }
+
+    message KinesisDataStreamSinkConfiguration {
+      string insights_target = 1 [json_name = "insights_target"];
+    }
+
+    message LambdaFunctionSinkConfiguration {
+      string insights_target = 1 [json_name = "insights_target"];
+    }
+
+    message S3RecordingSinkConfiguration {
+      string destination = 1;
+    }
+
+    message SnsTopicSinkConfiguration {
+      string insights_target = 1 [json_name = "insights_target"];
+    }
+
+    message SqsQueueSinkConfiguration {
+      string insights_target = 1 [json_name = "insights_target"];
+    }
+
+    message VoiceAnalyticsProcessorConfiguration {
+      string speaker_search_status = 1 [json_name = "speaker_search_status"];
+
+      string voice_tone_analysis_status = 2 [json_name = "voice_tone_analysis_status"];
+    }
+  }
+
+  message RealTimeAlertConfiguration {
+    bool disabled = 1;
+
+    repeated Rules rules = 2;
+
+    message Rules {
+      string type = 1;
+
+      IssueDetectionConfiguration issue_detection_configuration = 2 [json_name = "issue_detection_configuration"];
+
+      KeywordMatchConfiguration keyword_match_configuration = 3 [json_name = "keyword_match_configuration"];
+
+      SentimentConfiguration sentiment_configuration = 4 [json_name = "sentiment_configuration"];
+
+      message IssueDetectionConfiguration {
+        string rule_name = 1 [json_name = "rule_name"];
+      }
+
+      message KeywordMatchConfiguration {
+        repeated string keywords = 1;
+
+        bool negate = 2;
+
+        string rule_name = 3 [json_name = "rule_name"];
+      }
+
+      message SentimentConfiguration {
+        string rule_name = 1 [json_name = "rule_name"];
+
+        string sentiment_type = 2 [json_name = "sentiment_type"];
+
+        int64 time_period = 3 [json_name = "time_period"];
+      }
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

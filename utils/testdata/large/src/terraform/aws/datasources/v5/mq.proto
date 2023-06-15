@@ -1,0 +1,203 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsMqBroker version is 0
+message AwsMqBroker {
+  string arn = 1;
+
+  string authentication_strategy = 2 [json_name = "authentication_strategy"];
+
+  bool auto_minor_version_upgrade = 3 [json_name = "auto_minor_version_upgrade"];
+
+  string broker_id = 4 [json_name = "broker_id"];
+
+  string broker_name = 5 [json_name = "broker_name"];
+
+  repeated Configuration configuration = 6;
+
+  string deployment_mode = 7 [json_name = "deployment_mode"];
+
+  repeated EncryptionOptions encryption_options = 8 [json_name = "encryption_options"];
+
+  string engine_type = 9 [json_name = "engine_type"];
+
+  string engine_version = 10 [json_name = "engine_version"];
+
+  string host_instance_type = 11 [json_name = "host_instance_type"];
+
+  string id = 12;
+
+  repeated Instances instances = 13;
+
+  repeated LdapServerMetadata ldap_server_metadata = 14 [json_name = "ldap_server_metadata"];
+
+  repeated Logs logs = 15;
+
+  repeated MaintenanceWindowStartTime maintenance_window_start_time = 16 [json_name = "maintenance_window_start_time"];
+
+  bool publicly_accessible = 17 [json_name = "publicly_accessible"];
+
+  repeated string security_groups = 18 [json_name = "security_groups"];
+
+  string storage_type = 19 [json_name = "storage_type"];
+
+  repeated string subnet_ids = 20 [json_name = "subnet_ids"];
+
+  map<string, string> tags = 21;
+
+  repeated User user = 22;
+
+  map<string, string> for_each = 23 [json_name = "for_each"];
+
+  repeated string depends_on = 24 [json_name = "depends_on"];
+
+  int32 count = 25;
+
+  string provider = 26;
+
+  terraform.v1.Lifecycle lifecycle = 27;
+
+  message Configuration {
+    // id: string
+    string id = 1;
+
+    // revision: number
+    int64 revision = 2;
+  }
+
+  message EncryptionOptions {
+    // kms_key_id: string
+    string kms_key_id = 1 [json_name = "kms_key_id"];
+
+    // use_aws_owned_key: bool
+    bool use_aws_owned_key = 2 [json_name = "use_aws_owned_key"];
+  }
+
+  message Instances {
+    // console_url: string
+    string console_url = 1 [json_name = "console_url"];
+
+    // endpoints: list of string
+    repeated string endpoints = 2;
+
+    // ip_address: string
+    string ip_address = 3 [json_name = "ip_address"];
+  }
+
+  message LdapServerMetadata {
+    // hosts: list of string
+    repeated string hosts = 1;
+
+    // role_base: string
+    string role_base = 2 [json_name = "role_base"];
+
+    // role_name: string
+    string role_name = 3 [json_name = "role_name"];
+
+    // role_search_matching: string
+    string role_search_matching = 4 [json_name = "role_search_matching"];
+
+    // role_search_subtree: bool
+    bool role_search_subtree = 5 [json_name = "role_search_subtree"];
+
+    // service_account_password: string
+    string service_account_password = 6 [json_name = "service_account_password"];
+
+    // service_account_username: string
+    string service_account_username = 7 [json_name = "service_account_username"];
+
+    // user_base: string
+    string user_base = 8 [json_name = "user_base"];
+
+    // user_role_name: string
+    string user_role_name = 9 [json_name = "user_role_name"];
+
+    // user_search_matching: string
+    string user_search_matching = 10 [json_name = "user_search_matching"];
+
+    // user_search_subtree: bool
+    bool user_search_subtree = 11 [json_name = "user_search_subtree"];
+  }
+
+  message Logs {
+    // audit: string
+    string audit = 1;
+
+    // general: bool
+    bool general = 2;
+  }
+
+  message MaintenanceWindowStartTime {
+    // day_of_week: string
+    string day_of_week = 1 [json_name = "day_of_week"];
+
+    // time_of_day: string
+    string time_of_day = 2 [json_name = "time_of_day"];
+
+    // time_zone: string
+    string time_zone = 3 [json_name = "time_zone"];
+  }
+
+  message User {
+    // console_access: bool
+    bool console_access = 1 [json_name = "console_access"];
+
+    // groups: set of string
+    repeated string groups = 2;
+
+    // username: string
+    string username = 3;
+  }
+}
+
+// AwsMqBrokerInstanceTypeOfferings version is 0
+message AwsMqBrokerInstanceTypeOfferings {
+  repeated BrokerInstanceOptions broker_instance_options = 1 [json_name = "broker_instance_options"];
+
+  string engine_type = 2 [json_name = "engine_type"];
+
+  string host_instance_type = 3 [json_name = "host_instance_type"];
+
+  string id = 4;
+
+  string storage_type = 5 [json_name = "storage_type"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message BrokerInstanceOptions {
+    // availability_zones: set of object
+    repeated AvailabilityZones availability_zones = 1 [json_name = "availability_zones"];
+
+    // engine_type: string
+    string engine_type = 2 [json_name = "engine_type"];
+
+    // host_instance_type: string
+    string host_instance_type = 3 [json_name = "host_instance_type"];
+
+    // storage_type: string
+    string storage_type = 4 [json_name = "storage_type"];
+
+    // supported_deployment_modes: set of string
+    repeated string supported_deployment_modes = 5 [json_name = "supported_deployment_modes"];
+
+    // supported_engine_versions: list of string
+    repeated string supported_engine_versions = 6 [json_name = "supported_engine_versions"];
+
+    message AvailabilityZones {
+      // name: string
+      string name = 1;
+    }
+  }
+}

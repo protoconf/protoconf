@@ -1,0 +1,544 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleIdentityPlatformConfig version is 0
+message GoogleIdentityPlatformConfig {
+  // Whether anonymous users will be auto-deleted after a period of 30 days
+  bool autodelete_anonymous_users = 1 [json_name = "autodelete_anonymous_users"];
+
+  string id = 2;
+
+  // The name of the Config resource
+  string name = 3;
+
+  string project = 4;
+
+  repeated Timeouts timeouts = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleIdentityPlatformDefaultSupportedIdpConfig version is 0
+message GoogleIdentityPlatformDefaultSupportedIdpConfig {
+  // OAuth client ID
+  string client_id = 1 [json_name = "client_id"];
+
+  // OAuth client secret
+  string client_secret = 2 [json_name = "client_secret"];
+
+  // If this IDP allows the user to sign in
+  bool enabled = 3;
+
+  string id = 4;
+
+  // ID of the IDP. Possible values include:
+  //
+  // * 'apple.com'
+  //
+  // * 'facebook.com'
+  //
+  // * 'gc.apple.com'
+  //
+  // * 'github.com'
+  //
+  // * 'google.com'
+  //
+  // * 'linkedin.com'
+  //
+  // * 'microsoft.com'
+  //
+  // * 'playgames.google.com'
+  //
+  // * 'twitter.com'
+  //
+  // * 'yahoo.com'
+  string idp_id = 5 [json_name = "idp_id"];
+
+  // The name of the DefaultSupportedIdpConfig resource
+  string name = 6;
+
+  string project = 7;
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleIdentityPlatformInboundSamlConfig version is 0
+message GoogleIdentityPlatformInboundSamlConfig {
+  // Human friendly display name.
+  string display_name = 1 [json_name = "display_name"];
+
+  // If this config allows users to sign in with the provider.
+  bool enabled = 2;
+
+  string id = 3;
+
+  // The name of the InboundSamlConfig resource. Must start with 'saml.' and can only have alphanumeric characters,
+  // hyphens, underscores or periods. The part after 'saml.' must also start with a lowercase letter, end with an
+  // alphanumeric character, and have at least 2 characters.
+  string name = 4;
+
+  string project = 5;
+
+  IdpConfig idp_config = 6 [json_name = "idp_config"];
+
+  SpConfig sp_config = 7 [json_name = "sp_config"];
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message IdpConfig {
+    // Unique identifier for all SAML entities
+    string idp_entity_id = 1 [json_name = "idp_entity_id"];
+
+    // Indicates if outbounding SAMLRequest should be signed.
+    bool sign_request = 2 [json_name = "sign_request"];
+
+    // URL to send Authentication request to.
+    string sso_url = 3 [json_name = "sso_url"];
+
+    repeated IdpCertificates idp_certificates = 4 [json_name = "idp_certificates"];
+
+    message IdpCertificates {
+      // The IdP's x509 certificate.
+      string x509_certificate = 1 [json_name = "x509_certificate"];
+    }
+  }
+
+  message SpConfig {
+    // Callback URI where responses from IDP are handled. Must start with 'https://'.
+    string callback_uri = 1 [json_name = "callback_uri"];
+
+    // The IDP's certificate data to verify the signature in the SAMLResponse issued by the IDP.
+    repeated SpCertificates sp_certificates = 2 [json_name = "sp_certificates"];
+
+    // Unique identifier for all SAML entities.
+    string sp_entity_id = 3 [json_name = "sp_entity_id"];
+
+    message SpCertificates {
+      // x509_certificate: string
+      string x509_certificate = 1 [json_name = "x509_certificate"];
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleIdentityPlatformOauthIdpConfig version is 0
+message GoogleIdentityPlatformOauthIdpConfig {
+  // The client id of an OAuth client.
+  string client_id = 1 [json_name = "client_id"];
+
+  // The client secret of the OAuth client, to enable OIDC code flow.
+  string client_secret = 2 [json_name = "client_secret"];
+
+  // Human friendly display name.
+  string display_name = 3 [json_name = "display_name"];
+
+  // If this config allows users to sign in with the provider.
+  bool enabled = 4;
+
+  string id = 5;
+
+  // For OIDC Idps, the issuer identifier.
+  string issuer = 6;
+
+  // The name of the OauthIdpConfig. Must start with 'oidc.'.
+  string name = 7;
+
+  string project = 8;
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleIdentityPlatformProjectDefaultConfig version is 0
+message GoogleIdentityPlatformProjectDefaultConfig {
+  string id = 1;
+
+  // The name of the Config resource. Example: "projects/my-awesome-project/config"
+  string name = 2;
+
+  string project = 3;
+
+  SignIn sign_in = 4 [json_name = "sign_in"];
+
+  repeated Timeouts timeouts = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message SignIn {
+    // Whether to allow more than one account to have the same email.
+    bool allow_duplicate_emails = 1 [json_name = "allow_duplicate_emails"];
+
+    // Output only. Hash config information.
+    repeated HashConfig hash_config = 2 [json_name = "hash_config"];
+
+    Anonymous anonymous = 3;
+
+    Email email = 4;
+
+    PhoneNumber phone_number = 5 [json_name = "phone_number"];
+
+    message HashConfig {
+      // algorithm: string
+      string algorithm = 1;
+
+      // memory_cost: number
+      int64 memory_cost = 2 [json_name = "memory_cost"];
+
+      // rounds: number
+      int64 rounds = 3;
+
+      // salt_separator: string
+      string salt_separator = 4 [json_name = "salt_separator"];
+
+      // signer_key: string
+      string signer_key = 5 [json_name = "signer_key"];
+    }
+
+    message Anonymous {
+      // Whether anonymous user auth is enabled for the project or not.
+      bool enabled = 1;
+    }
+
+    message Email {
+      // Whether email auth is enabled for the project or not.
+      bool enabled = 1;
+
+      // Whether a password is required for email auth or not. If true, both an email and
+      // password must be provided to sign in. If false, a user may sign in via either
+      // email/password or email link.
+      bool password_required = 2 [json_name = "password_required"];
+    }
+
+    message PhoneNumber {
+      // Whether phone number auth is enabled for the project or not.
+      bool enabled = 1;
+
+      // A map of <test phone number, fake code> that can be used for phone auth testing.
+      map<string, string> test_phone_numbers = 2 [json_name = "test_phone_numbers"];
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleIdentityPlatformTenant version is 0
+message GoogleIdentityPlatformTenant {
+  // Whether to allow email/password user authentication.
+  bool allow_password_signup = 1 [json_name = "allow_password_signup"];
+
+  // Whether authentication is disabled for the tenant. If true, the users under
+  // the disabled tenant are not allowed to sign-in. Admins of the disabled tenant
+  // are not able to manage its users.
+  bool disable_auth = 2 [json_name = "disable_auth"];
+
+  // Human friendly display name of the tenant.
+  string display_name = 3 [json_name = "display_name"];
+
+  // Whether to enable email link user authentication.
+  bool enable_email_link_signin = 4 [json_name = "enable_email_link_signin"];
+
+  string id = 5;
+
+  // The name of the tenant that is generated by the server
+  string name = 6;
+
+  string project = 7;
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleIdentityPlatformTenantDefaultSupportedIdpConfig version is 0
+message GoogleIdentityPlatformTenantDefaultSupportedIdpConfig {
+  // OAuth client ID
+  string client_id = 1 [json_name = "client_id"];
+
+  // OAuth client secret
+  string client_secret = 2 [json_name = "client_secret"];
+
+  // If this IDP allows the user to sign in
+  bool enabled = 3;
+
+  string id = 4;
+
+  // ID of the IDP. Possible values include:
+  //
+  // * 'apple.com'
+  //
+  // * 'facebook.com'
+  //
+  // * 'gc.apple.com'
+  //
+  // * 'github.com'
+  //
+  // * 'google.com'
+  //
+  // * 'linkedin.com'
+  //
+  // * 'microsoft.com'
+  //
+  // * 'playgames.google.com'
+  //
+  // * 'twitter.com'
+  //
+  // * 'yahoo.com'
+  string idp_id = 5 [json_name = "idp_id"];
+
+  // The name of the default supported IDP config resource
+  string name = 6;
+
+  string project = 7;
+
+  // The name of the tenant where this DefaultSupportedIdpConfig resource exists
+  string tenant = 8;
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleIdentityPlatformTenantInboundSamlConfig version is 0
+message GoogleIdentityPlatformTenantInboundSamlConfig {
+  // Human friendly display name.
+  string display_name = 1 [json_name = "display_name"];
+
+  // If this config allows users to sign in with the provider.
+  bool enabled = 2;
+
+  string id = 3;
+
+  // The name of the InboundSamlConfig resource. Must start with 'saml.' and can only have alphanumeric characters,
+  // hyphens, underscores or periods. The part after 'saml.' must also start with a lowercase letter, end with an
+  // alphanumeric character, and have at least 2 characters.
+  string name = 4;
+
+  string project = 5;
+
+  // The name of the tenant where this inbound SAML config resource exists
+  string tenant = 6;
+
+  IdpConfig idp_config = 7 [json_name = "idp_config"];
+
+  SpConfig sp_config = 8 [json_name = "sp_config"];
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message IdpConfig {
+    // Unique identifier for all SAML entities
+    string idp_entity_id = 1 [json_name = "idp_entity_id"];
+
+    // Indicates if outbounding SAMLRequest should be signed.
+    bool sign_request = 2 [json_name = "sign_request"];
+
+    // URL to send Authentication request to.
+    string sso_url = 3 [json_name = "sso_url"];
+
+    repeated IdpCertificates idp_certificates = 4 [json_name = "idp_certificates"];
+
+    message IdpCertificates {
+      // The x509 certificate
+      string x509_certificate = 1 [json_name = "x509_certificate"];
+    }
+  }
+
+  message SpConfig {
+    // Callback URI where responses from IDP are handled. Must start with 'https://'.
+    string callback_uri = 1 [json_name = "callback_uri"];
+
+    // The IDP's certificate data to verify the signature in the SAMLResponse issued by the IDP.
+    repeated SpCertificates sp_certificates = 2 [json_name = "sp_certificates"];
+
+    // Unique identifier for all SAML entities.
+    string sp_entity_id = 3 [json_name = "sp_entity_id"];
+
+    message SpCertificates {
+      // x509_certificate: string
+      string x509_certificate = 1 [json_name = "x509_certificate"];
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleIdentityPlatformTenantOauthIdpConfig version is 0
+message GoogleIdentityPlatformTenantOauthIdpConfig {
+  // The client id of an OAuth client.
+  string client_id = 1 [json_name = "client_id"];
+
+  // The client secret of the OAuth client, to enable OIDC code flow.
+  string client_secret = 2 [json_name = "client_secret"];
+
+  // Human friendly display name.
+  string display_name = 3 [json_name = "display_name"];
+
+  // If this config allows users to sign in with the provider.
+  bool enabled = 4;
+
+  string id = 5;
+
+  // For OIDC Idps, the issuer identifier.
+  string issuer = 6;
+
+  // The name of the OauthIdpConfig. Must start with 'oidc.'.
+  string name = 7;
+
+  string project = 8;
+
+  // The name of the tenant where this OIDC IDP configuration resource exists
+  string tenant = 9;
+
+  repeated Timeouts timeouts = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

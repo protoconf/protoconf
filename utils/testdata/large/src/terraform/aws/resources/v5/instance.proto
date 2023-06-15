@@ -1,0 +1,285 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsInstance version is 1
+message AwsInstance {
+  string ami = 1;
+
+  string arn = 2;
+
+  bool associate_public_ip_address = 3 [json_name = "associate_public_ip_address"];
+
+  string availability_zone = 4 [json_name = "availability_zone"];
+
+  int64 cpu_core_count = 5 [json_name = "cpu_core_count"];
+
+  int64 cpu_threads_per_core = 6 [json_name = "cpu_threads_per_core"];
+
+  bool disable_api_stop = 7 [json_name = "disable_api_stop"];
+
+  bool disable_api_termination = 8 [json_name = "disable_api_termination"];
+
+  bool ebs_optimized = 9 [json_name = "ebs_optimized"];
+
+  bool get_password_data = 10 [json_name = "get_password_data"];
+
+  bool hibernation = 11;
+
+  string host_id = 12 [json_name = "host_id"];
+
+  string host_resource_group_arn = 13 [json_name = "host_resource_group_arn"];
+
+  string iam_instance_profile = 14 [json_name = "iam_instance_profile"];
+
+  string id = 15;
+
+  string instance_initiated_shutdown_behavior = 16 [json_name = "instance_initiated_shutdown_behavior"];
+
+  string instance_lifecycle = 17 [json_name = "instance_lifecycle"];
+
+  string instance_state = 18 [json_name = "instance_state"];
+
+  string instance_type = 19 [json_name = "instance_type"];
+
+  int64 ipv6_address_count = 20 [json_name = "ipv6_address_count"];
+
+  repeated string ipv6_addresses = 21 [json_name = "ipv6_addresses"];
+
+  string key_name = 22 [json_name = "key_name"];
+
+  bool monitoring = 23;
+
+  string outpost_arn = 24 [json_name = "outpost_arn"];
+
+  string password_data = 25 [json_name = "password_data"];
+
+  string placement_group = 26 [json_name = "placement_group"];
+
+  int64 placement_partition_number = 27 [json_name = "placement_partition_number"];
+
+  string primary_network_interface_id = 28 [json_name = "primary_network_interface_id"];
+
+  string private_dns = 29 [json_name = "private_dns"];
+
+  string private_ip = 30 [json_name = "private_ip"];
+
+  string public_dns = 31 [json_name = "public_dns"];
+
+  string public_ip = 32 [json_name = "public_ip"];
+
+  repeated string secondary_private_ips = 33 [json_name = "secondary_private_ips"];
+
+  repeated string security_groups = 34 [json_name = "security_groups"];
+
+  bool source_dest_check = 35 [json_name = "source_dest_check"];
+
+  string spot_instance_request_id = 36 [json_name = "spot_instance_request_id"];
+
+  string subnet_id = 37 [json_name = "subnet_id"];
+
+  map<string, string> tags = 38;
+
+  map<string, string> tags_all = 39 [json_name = "tags_all"];
+
+  string tenancy = 40;
+
+  string user_data = 41 [json_name = "user_data"];
+
+  string user_data_base64 = 42 [json_name = "user_data_base64"];
+
+  bool user_data_replace_on_change = 43 [json_name = "user_data_replace_on_change"];
+
+  map<string, string> volume_tags = 44 [json_name = "volume_tags"];
+
+  repeated string vpc_security_group_ids = 45 [json_name = "vpc_security_group_ids"];
+
+  CapacityReservationSpecification capacity_reservation_specification = 46 [json_name = "capacity_reservation_specification"];
+
+  CpuOptions cpu_options = 47 [json_name = "cpu_options"];
+
+  CreditSpecification credit_specification = 48 [json_name = "credit_specification"];
+
+  repeated EbsBlockDevice ebs_block_device = 49 [json_name = "ebs_block_device"];
+
+  EnclaveOptions enclave_options = 50 [json_name = "enclave_options"];
+
+  repeated EphemeralBlockDevice ephemeral_block_device = 51 [json_name = "ephemeral_block_device"];
+
+  InstanceMarketOptions instance_market_options = 52 [json_name = "instance_market_options"];
+
+  LaunchTemplate launch_template = 53 [json_name = "launch_template"];
+
+  MaintenanceOptions maintenance_options = 54 [json_name = "maintenance_options"];
+
+  MetadataOptions metadata_options = 55 [json_name = "metadata_options"];
+
+  repeated NetworkInterface network_interface = 56 [json_name = "network_interface"];
+
+  PrivateDnsNameOptions private_dns_name_options = 57 [json_name = "private_dns_name_options"];
+
+  RootBlockDevice root_block_device = 58 [json_name = "root_block_device"];
+
+  repeated Timeouts timeouts = 59;
+
+  map<string, string> for_each = 60 [json_name = "for_each"];
+
+  repeated string depends_on = 61 [json_name = "depends_on"];
+
+  int32 count = 62;
+
+  string provider = 63;
+
+  terraform.v1.Lifecycle lifecycle = 64;
+
+  message CapacityReservationSpecification {
+    string capacity_reservation_preference = 1 [json_name = "capacity_reservation_preference"];
+
+    CapacityReservationTarget capacity_reservation_target = 2 [json_name = "capacity_reservation_target"];
+
+    message CapacityReservationTarget {
+      string capacity_reservation_id = 1 [json_name = "capacity_reservation_id"];
+
+      string capacity_reservation_resource_group_arn = 2 [
+        json_name = "capacity_reservation_resource_group_arn"
+      ];
+    }
+  }
+
+  message CpuOptions {
+    string amd_sev_snp = 1 [json_name = "amd_sev_snp"];
+
+    int64 core_count = 2 [json_name = "core_count"];
+
+    int64 threads_per_core = 3 [json_name = "threads_per_core"];
+  }
+
+  message CreditSpecification {
+    string cpu_credits = 1 [json_name = "cpu_credits"];
+  }
+
+  message EbsBlockDevice {
+    bool delete_on_termination = 1 [json_name = "delete_on_termination"];
+
+    string device_name = 2 [json_name = "device_name"];
+
+    bool encrypted = 3;
+
+    int64 iops = 4;
+
+    string kms_key_id = 5 [json_name = "kms_key_id"];
+
+    string snapshot_id = 6 [json_name = "snapshot_id"];
+
+    map<string, string> tags = 7;
+
+    int64 throughput = 8;
+
+    string volume_id = 9 [json_name = "volume_id"];
+
+    int64 volume_size = 10 [json_name = "volume_size"];
+
+    string volume_type = 11 [json_name = "volume_type"];
+  }
+
+  message EnclaveOptions {
+    bool enabled = 1;
+  }
+
+  message EphemeralBlockDevice {
+    string device_name = 1 [json_name = "device_name"];
+
+    bool no_device = 2 [json_name = "no_device"];
+
+    string virtual_name = 3 [json_name = "virtual_name"];
+  }
+
+  message InstanceMarketOptions {
+    string market_type = 1 [json_name = "market_type"];
+
+    SpotOptions spot_options = 2 [json_name = "spot_options"];
+
+    message SpotOptions {
+      string instance_interruption_behavior = 1 [json_name = "instance_interruption_behavior"];
+
+      string max_price = 2 [json_name = "max_price"];
+
+      string spot_instance_type = 3 [json_name = "spot_instance_type"];
+
+      string valid_until = 4 [json_name = "valid_until"];
+    }
+  }
+
+  message LaunchTemplate {
+    string id = 1;
+
+    string name = 2;
+
+    string version = 3;
+  }
+
+  message MaintenanceOptions {
+    string auto_recovery = 1 [json_name = "auto_recovery"];
+  }
+
+  message MetadataOptions {
+    string http_endpoint = 1 [json_name = "http_endpoint"];
+
+    int64 http_put_response_hop_limit = 2 [json_name = "http_put_response_hop_limit"];
+
+    string http_tokens = 3 [json_name = "http_tokens"];
+
+    string instance_metadata_tags = 4 [json_name = "instance_metadata_tags"];
+  }
+
+  message NetworkInterface {
+    bool delete_on_termination = 1 [json_name = "delete_on_termination"];
+
+    int64 device_index = 2 [json_name = "device_index"];
+
+    int64 network_card_index = 3 [json_name = "network_card_index"];
+
+    string network_interface_id = 4 [json_name = "network_interface_id"];
+  }
+
+  message PrivateDnsNameOptions {
+    bool enable_resource_name_dns_a_record = 1 [json_name = "enable_resource_name_dns_a_record"];
+
+    bool enable_resource_name_dns_aaaa_record = 2 [json_name = "enable_resource_name_dns_aaaa_record"];
+
+    string hostname_type = 3 [json_name = "hostname_type"];
+  }
+
+  message RootBlockDevice {
+    bool delete_on_termination = 1 [json_name = "delete_on_termination"];
+
+    string device_name = 2 [json_name = "device_name"];
+
+    bool encrypted = 3;
+
+    int64 iops = 4;
+
+    string kms_key_id = 5 [json_name = "kms_key_id"];
+
+    map<string, string> tags = 6;
+
+    int64 throughput = 7;
+
+    string volume_id = 8 [json_name = "volume_id"];
+
+    int64 volume_size = 9 [json_name = "volume_size"];
+
+    string volume_type = 10 [json_name = "volume_type"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

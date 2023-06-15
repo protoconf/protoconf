@@ -1,0 +1,528 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsRoute53DelegationSet version is 0
+message AwsRoute53DelegationSet {
+  string arn = 1;
+
+  string caller_reference = 2 [json_name = "caller_reference"];
+
+  string id = 3;
+
+  repeated string name_servers = 4 [json_name = "name_servers"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsRoute53ResolverEndpoint version is 0
+message AwsRoute53ResolverEndpoint {
+  string arn = 1;
+
+  string direction = 2;
+
+  string id = 3;
+
+  repeated string ip_addresses = 4 [json_name = "ip_addresses"];
+
+  string name = 5;
+
+  string resolver_endpoint_id = 6 [json_name = "resolver_endpoint_id"];
+
+  string status = 7;
+
+  string vpc_id = 8 [json_name = "vpc_id"];
+
+  repeated Filter filter = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+}
+
+// AwsRoute53ResolverFirewallConfig version is 0
+message AwsRoute53ResolverFirewallConfig {
+  string firewall_fail_open = 1 [json_name = "firewall_fail_open"];
+
+  string id = 2;
+
+  string owner_id = 3 [json_name = "owner_id"];
+
+  string resource_id = 4 [json_name = "resource_id"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsRoute53ResolverFirewallDomainList version is 0
+message AwsRoute53ResolverFirewallDomainList {
+  string arn = 1;
+
+  string creation_time = 2 [json_name = "creation_time"];
+
+  string creator_request_id = 3 [json_name = "creator_request_id"];
+
+  int64 domain_count = 4 [json_name = "domain_count"];
+
+  string firewall_domain_list_id = 5 [json_name = "firewall_domain_list_id"];
+
+  string id = 6;
+
+  string managed_owner_name = 7 [json_name = "managed_owner_name"];
+
+  string modification_time = 8 [json_name = "modification_time"];
+
+  string name = 9;
+
+  string status = 10;
+
+  string status_message = 11 [json_name = "status_message"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+}
+
+// AwsRoute53ResolverFirewallRuleGroup version is 0
+message AwsRoute53ResolverFirewallRuleGroup {
+  string arn = 1;
+
+  string creation_time = 2 [json_name = "creation_time"];
+
+  string creator_request_id = 3 [json_name = "creator_request_id"];
+
+  string firewall_rule_group_id = 4 [json_name = "firewall_rule_group_id"];
+
+  string id = 5;
+
+  string modification_time = 6 [json_name = "modification_time"];
+
+  string name = 7;
+
+  string owner_id = 8 [json_name = "owner_id"];
+
+  int64 rule_count = 9 [json_name = "rule_count"];
+
+  string share_status = 10 [json_name = "share_status"];
+
+  string status = 11;
+
+  string status_message = 12 [json_name = "status_message"];
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+}
+
+// AwsRoute53ResolverFirewallRuleGroupAssociation version is 0
+message AwsRoute53ResolverFirewallRuleGroupAssociation {
+  string arn = 1;
+
+  string creation_time = 2 [json_name = "creation_time"];
+
+  string creator_request_id = 3 [json_name = "creator_request_id"];
+
+  string firewall_rule_group_association_id = 4 [json_name = "firewall_rule_group_association_id"];
+
+  string firewall_rule_group_id = 5 [json_name = "firewall_rule_group_id"];
+
+  string id = 6;
+
+  string managed_owner_name = 7 [json_name = "managed_owner_name"];
+
+  string modification_time = 8 [json_name = "modification_time"];
+
+  string mutation_protection = 9 [json_name = "mutation_protection"];
+
+  string name = 10;
+
+  int64 priority = 11;
+
+  string status = 12;
+
+  string status_message = 13 [json_name = "status_message"];
+
+  string vpc_id = 14 [json_name = "vpc_id"];
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+}
+
+// AwsRoute53ResolverFirewallRules version is 0
+message AwsRoute53ResolverFirewallRules {
+  string action = 1;
+
+  string firewall_rule_group_id = 2 [json_name = "firewall_rule_group_id"];
+
+  repeated FirewallRules firewall_rules = 3 [json_name = "firewall_rules"];
+
+  string id = 4;
+
+  int64 priority = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message FirewallRules {
+    // action: string
+    string action = 1;
+
+    // block_override_dns_type: string
+    string block_override_dns_type = 2 [json_name = "block_override_dns_type"];
+
+    // block_override_domain: string
+    string block_override_domain = 3 [json_name = "block_override_domain"];
+
+    // block_override_ttl: number
+    int64 block_override_ttl = 4 [json_name = "block_override_ttl"];
+
+    // block_response: string
+    string block_response = 5 [json_name = "block_response"];
+
+    // creation_time: string
+    string creation_time = 6 [json_name = "creation_time"];
+
+    // creator_request_id: string
+    string creator_request_id = 7 [json_name = "creator_request_id"];
+
+    // firewall_domain_list_id: string
+    string firewall_domain_list_id = 8 [json_name = "firewall_domain_list_id"];
+
+    // firewall_rule_group_id: string
+    string firewall_rule_group_id = 9 [json_name = "firewall_rule_group_id"];
+
+    // modification_time: string
+    string modification_time = 10 [json_name = "modification_time"];
+
+    // name: string
+    string name = 11;
+
+    // priority: number
+    int64 priority = 12;
+  }
+}
+
+// AwsRoute53ResolverQueryLogConfig version is 0
+message AwsRoute53ResolverQueryLogConfig {
+  string arn = 1;
+
+  string destination_arn = 2 [json_name = "destination_arn"];
+
+  string id = 3;
+
+  string name = 4;
+
+  string owner_id = 5 [json_name = "owner_id"];
+
+  string resolver_query_log_config_id = 6 [json_name = "resolver_query_log_config_id"];
+
+  string share_status = 7 [json_name = "share_status"];
+
+  map<string, string> tags = 8;
+
+  repeated Filter filter = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Filter {
+    string name = 1;
+
+    repeated string values = 2;
+  }
+}
+
+// AwsRoute53ResolverRule version is 0
+message AwsRoute53ResolverRule {
+  string arn = 1;
+
+  string domain_name = 2 [json_name = "domain_name"];
+
+  string id = 3;
+
+  string name = 4;
+
+  string owner_id = 5 [json_name = "owner_id"];
+
+  string resolver_endpoint_id = 6 [json_name = "resolver_endpoint_id"];
+
+  string resolver_rule_id = 7 [json_name = "resolver_rule_id"];
+
+  string rule_type = 8 [json_name = "rule_type"];
+
+  string share_status = 9 [json_name = "share_status"];
+
+  map<string, string> tags = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+}
+
+// AwsRoute53ResolverRules version is 0
+message AwsRoute53ResolverRules {
+  string id = 1;
+
+  string name_regex = 2 [json_name = "name_regex"];
+
+  string owner_id = 3 [json_name = "owner_id"];
+
+  string resolver_endpoint_id = 4 [json_name = "resolver_endpoint_id"];
+
+  repeated string resolver_rule_ids = 5 [json_name = "resolver_rule_ids"];
+
+  string rule_type = 6 [json_name = "rule_type"];
+
+  string share_status = 7 [json_name = "share_status"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsRoute53TrafficPolicyDocument version is 0
+message AwsRoute53TrafficPolicyDocument {
+  string id = 1;
+
+  string json = 2;
+
+  string record_type = 3 [json_name = "record_type"];
+
+  string start_endpoint = 4 [json_name = "start_endpoint"];
+
+  string start_rule = 5 [json_name = "start_rule"];
+
+  string version = 6;
+
+  repeated Endpoint endpoint = 7;
+
+  repeated Rule rule = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Endpoint {
+    string id = 1;
+
+    string region = 2;
+
+    string type = 3;
+
+    string value = 4;
+  }
+
+  message Rule {
+    string id = 1;
+
+    string type = 2;
+
+    repeated GeoProximityLocation geo_proximity_location = 3 [json_name = "geo_proximity_location"];
+
+    repeated Items items = 4;
+
+    repeated Location location = 5;
+
+    Primary primary = 6;
+
+    repeated Region region = 7;
+
+    Secondary secondary = 8;
+
+    message GeoProximityLocation {
+      string bias = 1;
+
+      string endpoint_reference = 2 [json_name = "endpoint_reference"];
+
+      bool evaluate_target_health = 3 [json_name = "evaluate_target_health"];
+
+      string health_check = 4 [json_name = "health_check"];
+
+      string latitude = 5;
+
+      string longitude = 6;
+
+      string region = 7;
+
+      string rule_reference = 8 [json_name = "rule_reference"];
+    }
+
+    message Items {
+      string endpoint_reference = 1 [json_name = "endpoint_reference"];
+
+      string health_check = 2 [json_name = "health_check"];
+    }
+
+    message Location {
+      string continent = 1;
+
+      string country = 2;
+
+      string endpoint_reference = 3 [json_name = "endpoint_reference"];
+
+      bool evaluate_target_health = 4 [json_name = "evaluate_target_health"];
+
+      string health_check = 5 [json_name = "health_check"];
+
+      bool is_default = 6 [json_name = "is_default"];
+
+      string rule_reference = 7 [json_name = "rule_reference"];
+
+      string subdivision = 8;
+    }
+
+    message Primary {
+      string endpoint_reference = 1 [json_name = "endpoint_reference"];
+
+      bool evaluate_target_health = 2 [json_name = "evaluate_target_health"];
+
+      string health_check = 3 [json_name = "health_check"];
+
+      string rule_reference = 4 [json_name = "rule_reference"];
+    }
+
+    message Region {
+      string endpoint_reference = 1 [json_name = "endpoint_reference"];
+
+      bool evaluate_target_health = 2 [json_name = "evaluate_target_health"];
+
+      string health_check = 3 [json_name = "health_check"];
+
+      string region = 4;
+
+      string rule_reference = 5 [json_name = "rule_reference"];
+    }
+
+    message Secondary {
+      string endpoint_reference = 1 [json_name = "endpoint_reference"];
+
+      bool evaluate_target_health = 2 [json_name = "evaluate_target_health"];
+
+      string health_check = 3 [json_name = "health_check"];
+
+      string rule_reference = 4 [json_name = "rule_reference"];
+    }
+  }
+}
+
+// AwsRoute53Zone version is 0
+message AwsRoute53Zone {
+  string arn = 1;
+
+  string caller_reference = 2 [json_name = "caller_reference"];
+
+  string comment = 3;
+
+  string id = 4;
+
+  string linked_service_description = 5 [json_name = "linked_service_description"];
+
+  string linked_service_principal = 6 [json_name = "linked_service_principal"];
+
+  string name = 7;
+
+  repeated string name_servers = 8 [json_name = "name_servers"];
+
+  string primary_name_server = 9 [json_name = "primary_name_server"];
+
+  bool private_zone = 10 [json_name = "private_zone"];
+
+  int64 resource_record_set_count = 11 [json_name = "resource_record_set_count"];
+
+  map<string, string> tags = 12;
+
+  string vpc_id = 13 [json_name = "vpc_id"];
+
+  string zone_id = 14 [json_name = "zone_id"];
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+}

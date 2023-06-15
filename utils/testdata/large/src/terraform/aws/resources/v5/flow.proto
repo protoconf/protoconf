@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsFlowLog version is 0
+message AwsFlowLog {
+  string arn = 1;
+
+  string deliver_cross_account_role = 2 [json_name = "deliver_cross_account_role"];
+
+  string eni_id = 3 [json_name = "eni_id"];
+
+  string iam_role_arn = 4 [json_name = "iam_role_arn"];
+
+  string id = 5;
+
+  string log_destination = 6 [json_name = "log_destination"];
+
+  string log_destination_type = 7 [json_name = "log_destination_type"];
+
+  string log_format = 8 [json_name = "log_format"];
+
+  string log_group_name = 9 [json_name = "log_group_name"];
+
+  int64 max_aggregation_interval = 10 [json_name = "max_aggregation_interval"];
+
+  string subnet_id = 11 [json_name = "subnet_id"];
+
+  map<string, string> tags = 12;
+
+  map<string, string> tags_all = 13 [json_name = "tags_all"];
+
+  string traffic_type = 14 [json_name = "traffic_type"];
+
+  string transit_gateway_attachment_id = 15 [json_name = "transit_gateway_attachment_id"];
+
+  string transit_gateway_id = 16 [json_name = "transit_gateway_id"];
+
+  string vpc_id = 17 [json_name = "vpc_id"];
+
+  DestinationOptions destination_options = 18 [json_name = "destination_options"];
+
+  map<string, string> for_each = 19 [json_name = "for_each"];
+
+  repeated string depends_on = 20 [json_name = "depends_on"];
+
+  int32 count = 21;
+
+  string provider = 22;
+
+  terraform.v1.Lifecycle lifecycle = 23;
+
+  message DestinationOptions {
+    string file_format = 1 [json_name = "file_format"];
+
+    bool hive_compatible_partitions = 2 [json_name = "hive_compatible_partitions"];
+
+    bool per_hour_partition = 3 [json_name = "per_hour_partition"];
+  }
+}

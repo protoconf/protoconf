@@ -1,0 +1,237 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsMskconnectConnector version is 0
+message AwsMskconnectConnector {
+  string arn = 1;
+
+  map<string, string> connector_configuration = 2 [json_name = "connector_configuration"];
+
+  string description = 3;
+
+  string id = 4;
+
+  string kafkaconnect_version = 5 [json_name = "kafkaconnect_version"];
+
+  string name = 6;
+
+  string service_execution_role_arn = 7 [json_name = "service_execution_role_arn"];
+
+  string version = 8;
+
+  Capacity capacity = 9;
+
+  KafkaCluster kafka_cluster = 10 [json_name = "kafka_cluster"];
+
+  KafkaClusterClientAuthentication kafka_cluster_client_authentication = 11 [json_name = "kafka_cluster_client_authentication"];
+
+  KafkaClusterEncryptionInTransit kafka_cluster_encryption_in_transit = 12 [json_name = "kafka_cluster_encryption_in_transit"];
+
+  LogDelivery log_delivery = 13 [json_name = "log_delivery"];
+
+  repeated Plugin plugin = 14;
+
+  repeated Timeouts timeouts = 15;
+
+  WorkerConfiguration worker_configuration = 16 [json_name = "worker_configuration"];
+
+  map<string, string> for_each = 17 [json_name = "for_each"];
+
+  repeated string depends_on = 18 [json_name = "depends_on"];
+
+  int32 count = 19;
+
+  string provider = 20;
+
+  terraform.v1.Lifecycle lifecycle = 21;
+
+  message Capacity {
+    Autoscaling autoscaling = 1;
+
+    ProvisionedCapacity provisioned_capacity = 2 [json_name = "provisioned_capacity"];
+
+    message Autoscaling {
+      int64 max_worker_count = 1 [json_name = "max_worker_count"];
+
+      int64 mcu_count = 2 [json_name = "mcu_count"];
+
+      int64 min_worker_count = 3 [json_name = "min_worker_count"];
+
+      ScaleInPolicy scale_in_policy = 4 [json_name = "scale_in_policy"];
+
+      ScaleOutPolicy scale_out_policy = 5 [json_name = "scale_out_policy"];
+
+      message ScaleInPolicy {
+        int64 cpu_utilization_percentage = 1 [json_name = "cpu_utilization_percentage"];
+      }
+
+      message ScaleOutPolicy {
+        int64 cpu_utilization_percentage = 1 [json_name = "cpu_utilization_percentage"];
+      }
+    }
+
+    message ProvisionedCapacity {
+      int64 mcu_count = 1 [json_name = "mcu_count"];
+
+      int64 worker_count = 2 [json_name = "worker_count"];
+    }
+  }
+
+  message KafkaCluster {
+    ApacheKafkaCluster apache_kafka_cluster = 1 [json_name = "apache_kafka_cluster"];
+
+    message ApacheKafkaCluster {
+      string bootstrap_servers = 1 [json_name = "bootstrap_servers"];
+
+      Vpc vpc = 2;
+
+      message Vpc {
+        repeated string security_groups = 1 [json_name = "security_groups"];
+
+        repeated string subnets = 2;
+      }
+    }
+  }
+
+  message KafkaClusterClientAuthentication {
+    string authentication_type = 1 [json_name = "authentication_type"];
+  }
+
+  message KafkaClusterEncryptionInTransit {
+    string encryption_type = 1 [json_name = "encryption_type"];
+  }
+
+  message LogDelivery {
+    WorkerLogDelivery worker_log_delivery = 1 [json_name = "worker_log_delivery"];
+
+    message WorkerLogDelivery {
+      CloudwatchLogs cloudwatch_logs = 1 [json_name = "cloudwatch_logs"];
+
+      Firehose firehose = 2;
+
+      S3 s3 = 3;
+
+      message CloudwatchLogs {
+        bool enabled = 1;
+
+        string log_group = 2 [json_name = "log_group"];
+      }
+
+      message Firehose {
+        string delivery_stream = 1 [json_name = "delivery_stream"];
+
+        bool enabled = 2;
+      }
+
+      message S3 {
+        string bucket = 1;
+
+        bool enabled = 2;
+
+        string prefix = 3;
+      }
+    }
+  }
+
+  message Plugin {
+    CustomPlugin custom_plugin = 1 [json_name = "custom_plugin"];
+
+    message CustomPlugin {
+      string arn = 1;
+
+      int64 revision = 2;
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+
+  message WorkerConfiguration {
+    string arn = 1;
+
+    int64 revision = 2;
+  }
+}
+
+// AwsMskconnectCustomPlugin version is 0
+message AwsMskconnectCustomPlugin {
+  string arn = 1;
+
+  string content_type = 2 [json_name = "content_type"];
+
+  string description = 3;
+
+  string id = 4;
+
+  int64 latest_revision = 5 [json_name = "latest_revision"];
+
+  string name = 6;
+
+  string state = 7;
+
+  Location location = 8;
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Location {
+    S3 s3 = 1;
+
+    message S3 {
+      string bucket_arn = 1 [json_name = "bucket_arn"];
+
+      string file_key = 2 [json_name = "file_key"];
+
+      string object_version = 3 [json_name = "object_version"];
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsMskconnectWorkerConfiguration version is 0
+message AwsMskconnectWorkerConfiguration {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  int64 latest_revision = 4 [json_name = "latest_revision"];
+
+  string name = 5;
+
+  string properties_file_content = 6 [json_name = "properties_file_content"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}

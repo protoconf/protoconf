@@ -1,0 +1,243 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleFirestoreDatabase version is 0
+message GoogleFirestoreDatabase {
+  // The App Engine integration mode to use for this database. Possible values: ["ENABLED", "DISABLED"]
+  string app_engine_integration_mode = 1 [json_name = "app_engine_integration_mode"];
+
+  // The concurrency control mode to use for this database. Possible values: ["OPTIMISTIC", "PESSIMISTIC", "OPTIMISTIC_WITH_ENTITY_GROUPS"]
+  string concurrency_mode = 2 [json_name = "concurrency_mode"];
+
+  // The timestamp at which this database was created.
+  string create_time = 3 [json_name = "create_time"];
+
+  // This checksum is computed by the server based on the value of other fields,
+  // and may be sent on update and delete requests to ensure the client has an
+  // up-to-date value before proceeding.
+  string etag = 4;
+
+  string id = 5;
+
+  // Output only. The keyPrefix for this database.
+  // This keyPrefix is used, in combination with the project id ("~") to construct the application id
+  // that is returned from the Cloud Datastore APIs in Google App Engine first generation runtimes.
+  // This value may be empty in which case the appid to use for URL-encoded keys is the project_id (eg: foo instead of v~foo).
+  string key_prefix = 6 [json_name = "key_prefix"];
+
+  // The location of the database. Available databases are listed at
+  // https://cloud.google.com/firestore/docs/locations.
+  string location_id = 7 [json_name = "location_id"];
+
+  // The ID to use for the database, which will become the final
+  // component of the database's resource name. This value should be 4-63
+  // characters. Valid characters are /[a-z][0-9]-/ with first character
+  // a letter and the last a letter or a number. Must not be
+  // UUID-like /[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}/.
+  // "(default)" database id is also valid.
+  string name = 8;
+
+  string project = 9;
+
+  // The type of the database.
+  // See https://cloud.google.com/datastore/docs/firestore-or-datastore
+  // for information about how to choose. Possible values: ["FIRESTORE_NATIVE", "DATASTORE_MODE"]
+  string type = 10;
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleFirestoreDocument version is 0
+message GoogleFirestoreDocument {
+  // The collection ID, relative to database. For example: chatrooms or chatrooms/my-document/private-messages.
+  string collection = 1;
+
+  // Creation timestamp in RFC3339 format.
+  string create_time = 2 [json_name = "create_time"];
+
+  // The Firestore database id. Defaults to '"(default)"'.
+  string database = 3;
+
+  // The client-assigned document ID to use for this document during creation.
+  string document_id = 4 [json_name = "document_id"];
+
+  // The document's [fields](https://cloud.google.com/firestore/docs/reference/rest/v1/projects.databases.documents) formated as a json string.
+  string fields = 5;
+
+  string id = 6;
+
+  // A server defined name for this index. Format:
+  // 'projects/{{project_id}}/databases/{{database_id}}/documents/{{path}}/{{document_id}}'
+  string name = 7;
+
+  // A relative path to the collection this document exists within
+  string path = 8;
+
+  string project = 9;
+
+  // Last update timestamp in RFC3339 format.
+  string update_time = 10 [json_name = "update_time"];
+
+  repeated Timeouts timeouts = 11;
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleFirestoreField version is 0
+message GoogleFirestoreField {
+  // The id of the collection group to configure.
+  string collection = 1;
+
+  // The Firestore database id. Defaults to '"(default)"'.
+  string database = 2;
+
+  // The id of the field to configure.
+  string field = 3;
+
+  string id = 4;
+
+  // The name of this field. Format:
+  // 'projects/{{project}}/databases/{{database}}/collectionGroups/{{collection}}/fields/{{field}}'
+  string name = 5;
+
+  string project = 6;
+
+  IndexConfig index_config = 7 [json_name = "index_config"];
+
+  repeated Timeouts timeouts = 8;
+
+  TtlConfig ttl_config = 9 [json_name = "ttl_config"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message IndexConfig {
+    repeated Indexes indexes = 1;
+
+    message Indexes {
+      // Indicates that this field supports operations on arrayValues. Only one of 'order' and 'arrayConfig' can
+      // be specified. Possible values: ["CONTAINS"]
+      string array_config = 1 [json_name = "array_config"];
+
+      // Indicates that this field supports ordering by the specified order or comparing using =, <, <=, >, >=, !=.
+      // Only one of 'order' and 'arrayConfig' can be specified. Possible values: ["ASCENDING", "DESCENDING"]
+      string order = 2;
+
+      // The scope at which a query is run. Collection scoped queries require you specify
+      // the collection at query time. Collection group scope allows queries across all
+      // collections with the same id. Default value: "COLLECTION" Possible values: ["COLLECTION", "COLLECTION_GROUP"]
+      string query_scope = 3 [json_name = "query_scope"];
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+
+  message TtlConfig {
+    // The state of the TTL configuration.
+    string state = 1;
+  }
+}
+
+// GoogleFirestoreIndex version is 0
+message GoogleFirestoreIndex {
+  // The collection being indexed.
+  string collection = 1;
+
+  // The Firestore database id. Defaults to '"(default)"'.
+  string database = 2;
+
+  string id = 3;
+
+  // A server defined name for this index. Format:
+  // 'projects/{{project}}/databases/{{database}}/collectionGroups/{{collection}}/indexes/{{server_generated_id}}'
+  string name = 4;
+
+  string project = 5;
+
+  // The scope at which a query is run. Default value: "COLLECTION" Possible values: ["COLLECTION", "COLLECTION_GROUP"]
+  string query_scope = 6 [json_name = "query_scope"];
+
+  repeated Fields fields = 7;
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Fields {
+    // Indicates that this field supports operations on arrayValues. Only one of 'order' and 'arrayConfig' can
+    // be specified. Possible values: ["CONTAINS"]
+    string array_config = 1 [json_name = "array_config"];
+
+    // Name of the field.
+    string field_path = 2 [json_name = "field_path"];
+
+    // Indicates that this field supports ordering by the specified order or comparing using =, <, <=, >, >=.
+    // Only one of 'order' and 'arrayConfig' can be specified. Possible values: ["ASCENDING", "DESCENDING"]
+    string order = 3;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}

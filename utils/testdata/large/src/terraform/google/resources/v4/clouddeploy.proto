@@ -1,0 +1,234 @@
+syntax = "proto3";
+
+// Provider: google 4.69.1
+package terraform.google.resources.v4;
+
+import "terraform/v1/meta.proto";
+
+// GoogleClouddeployDeliveryPipeline version is 0
+message GoogleClouddeployDeliveryPipeline {
+  // User annotations. These attributes can only be set and used by the user, and not by Google Cloud Deploy. See https://google.aip.dev/128#annotations for more details such as format and size limitations.
+  map<string, string> annotations = 1;
+
+  // Output only. Information around the state of the Delivery Pipeline.
+  repeated Condition condition = 2;
+
+  // Output only. Time at which the pipeline was created.
+  string create_time = 3 [json_name = "create_time"];
+
+  // Description of the `DeliveryPipeline`. Max length is 255 characters.
+  string description = 4;
+
+  // This checksum is computed by the server based on the value of other fields, and may be sent on update and delete requests to ensure the client has an up-to-date value before proceeding.
+  string etag = 5;
+
+  string id = 6;
+
+  // Labels are attributes that can be set and used by both the user and by Google Cloud Deploy. Labels must meet the following constraints: * Keys and values can contain only lowercase letters, numeric characters, underscores, and dashes. * All characters must use UTF-8 encoding, and international characters are allowed. * Keys must start with a lowercase letter or international character. * Each resource is limited to a maximum of 64 labels. Both keys and values are additionally constrained to be <= 128 bytes.
+  map<string, string> labels = 7;
+
+  // The location for the resource
+  string location = 8;
+
+  // Name of the `DeliveryPipeline`. Format is [a-z][a-z0-9\-]{0,62}.
+  string name = 9;
+
+  // The project for the resource
+  string project = 10;
+
+  // When suspended, no new releases or rollouts can be created, but in-progress ones will complete.
+  bool suspended = 11;
+
+  // Output only. Unique identifier of the `DeliveryPipeline`.
+  string uid = 12;
+
+  // Output only. Most recent time at which the pipeline was updated.
+  string update_time = 13 [json_name = "update_time"];
+
+  SerialPipeline serial_pipeline = 14 [json_name = "serial_pipeline"];
+
+  repeated Timeouts timeouts = 15;
+
+  map<string, string> for_each = 16 [json_name = "for_each"];
+
+  repeated string depends_on = 17 [json_name = "depends_on"];
+
+  int32 count = 18;
+
+  string provider = 19;
+
+  terraform.v1.Lifecycle lifecycle = 20;
+
+  message Condition {
+    // pipeline_ready_condition: list of object
+    repeated PipelineReadyCondition pipeline_ready_condition = 1 [json_name = "pipeline_ready_condition"];
+
+    // targets_present_condition: list of object
+    repeated TargetsPresentCondition targets_present_condition = 2 [json_name = "targets_present_condition"];
+
+    // targets_type_condition: list of object
+    repeated TargetsTypeCondition targets_type_condition = 3 [json_name = "targets_type_condition"];
+
+    message PipelineReadyCondition {
+      // status: bool
+      bool status = 1;
+
+      // update_time: string
+      string update_time = 2 [json_name = "update_time"];
+    }
+
+    message TargetsPresentCondition {
+      // missing_targets: list of string
+      repeated string missing_targets = 1 [json_name = "missing_targets"];
+
+      // status: bool
+      bool status = 2;
+
+      // update_time: string
+      string update_time = 3 [json_name = "update_time"];
+    }
+
+    message TargetsTypeCondition {
+      // error_details: string
+      string error_details = 1 [json_name = "error_details"];
+
+      // status: bool
+      bool status = 2;
+    }
+  }
+
+  message SerialPipeline {
+    repeated Stages stages = 1;
+
+    message Stages {
+      // Skaffold profiles to use when rendering the manifest for this stage's `Target`.
+      repeated string profiles = 1;
+
+      // The target_id to which this stage points. This field refers exclusively to the last segment of a target name. For example, this field would just be `my-target` (rather than `projects/project/locations/location/targets/my-target`). The location of the `Target` is inferred to be the same as the location of the `DeliveryPipeline` that contains this `Stage`.
+      string target_id = 2 [json_name = "target_id"];
+
+      Strategy strategy = 3;
+
+      message Strategy {
+        Standard standard = 1;
+
+        message Standard {
+          // Whether to verify a deployment.
+          bool verify = 1;
+        }
+      }
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// GoogleClouddeployTarget version is 0
+message GoogleClouddeployTarget {
+  // Optional. User annotations. These attributes can only be set and used by the user, and not by Google Cloud Deploy. See https://google.aip.dev/128#annotations for more details such as format and size limitations.
+  map<string, string> annotations = 1;
+
+  // Output only. Time at which the `Target` was created.
+  string create_time = 2 [json_name = "create_time"];
+
+  // Optional. Description of the `Target`. Max length is 255 characters.
+  string description = 3;
+
+  // Optional. This checksum is computed by the server based on the value of other fields, and may be sent on update and delete requests to ensure the client has an up-to-date value before proceeding.
+  string etag = 4;
+
+  string id = 5;
+
+  // Optional. Labels are attributes that can be set and used by both the user and by Google Cloud Deploy. Labels must meet the following constraints: * Keys and values can contain only lowercase letters, numeric characters, underscores, and dashes. * All characters must use UTF-8 encoding, and international characters are allowed. * Keys must start with a lowercase letter or international character. * Each resource is limited to a maximum of 64 labels. Both keys and values are additionally constrained to be <= 128 bytes.
+  map<string, string> labels = 6;
+
+  // The location for the resource
+  string location = 7;
+
+  // Name of the `Target`. Format is [a-z][a-z0-9\-]{0,62}.
+  string name = 8;
+
+  // The project for the resource
+  string project = 9;
+
+  // Optional. Whether or not the `Target` requires approval.
+  bool require_approval = 10 [json_name = "require_approval"];
+
+  // Output only. Resource id of the `Target`.
+  string target_id = 11 [json_name = "target_id"];
+
+  // Output only. Unique identifier of the `Target`.
+  string uid = 12;
+
+  // Output only. Most recent time at which the `Target` was updated.
+  string update_time = 13 [json_name = "update_time"];
+
+  AnthosCluster anthos_cluster = 14 [json_name = "anthos_cluster"];
+
+  repeated ExecutionConfigs execution_configs = 15 [json_name = "execution_configs"];
+
+  Gke gke = 16;
+
+  Run run = 17;
+
+  repeated Timeouts timeouts = 18;
+
+  map<string, string> for_each = 19 [json_name = "for_each"];
+
+  repeated string depends_on = 20 [json_name = "depends_on"];
+
+  int32 count = 21;
+
+  string provider = 22;
+
+  terraform.v1.Lifecycle lifecycle = 23;
+
+  message AnthosCluster {
+    // Membership of the GKE Hub-registered cluster to which to apply the Skaffold configuration. Format is `projects/{project}/locations/{location}/memberships/{membership_name}`.
+    string membership = 1;
+  }
+
+  message ExecutionConfigs {
+    // Optional. Cloud Storage location in which to store execution outputs. This can either be a bucket ("gs://my-bucket") or a path within a bucket ("gs://my-bucket/my-dir"). If unspecified, a default bucket located in the same region will be used.
+    string artifact_storage = 1 [json_name = "artifact_storage"];
+
+    // Optional. Execution timeout for a Cloud Build Execution. This must be between 10m and 24h in seconds format. If unspecified, a default timeout of 1h is used.
+    string execution_timeout = 2 [json_name = "execution_timeout"];
+
+    // Optional. Google service account to use for execution. If unspecified, the project execution service account (-compute@developer.gserviceaccount.com) is used.
+    string service_account = 3 [json_name = "service_account"];
+
+    // Required. Usages when this configuration should be applied.
+    repeated string usages = 4;
+
+    // Optional. The resource name of the `WorkerPool`, with the format `projects/{project}/locations/{location}/workerPools/{worker_pool}`. If this optional field is unspecified, the default Cloud Build pool will be used.
+    string worker_pool = 5 [json_name = "worker_pool"];
+  }
+
+  message Gke {
+    // Information specifying a GKE Cluster. Format is `projects/{project_id}/locations/{location_id}/clusters/{cluster_id}.
+    string cluster = 1;
+
+    // Optional. If true, `cluster` is accessed using the private IP address of the control plane endpoint. Otherwise, the default IP address of the control plane endpoint is used. The default IP address is the private IP address for clusters with private control-plane endpoints and the public IP address otherwise. Only specify this option when `cluster` is a [private GKE cluster](https://cloud.google.com/kubernetes-engine/docs/concepts/private-cluster-concept).
+    bool internal_ip = 2 [json_name = "internal_ip"];
+  }
+
+  message Run {
+    // Required. The location where the Cloud Run Service should be located. Format is `projects/{project}/locations/{location}`.
+    string location = 1;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}

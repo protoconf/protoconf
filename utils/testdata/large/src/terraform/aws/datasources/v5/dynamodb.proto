@@ -1,0 +1,160 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsDynamodbTable version is 0
+message AwsDynamodbTable {
+  string arn = 1;
+
+  repeated Attribute attribute = 2;
+
+  string billing_mode = 3 [json_name = "billing_mode"];
+
+  bool deletion_protection_enabled = 4 [json_name = "deletion_protection_enabled"];
+
+  repeated GlobalSecondaryIndex global_secondary_index = 5 [json_name = "global_secondary_index"];
+
+  string hash_key = 6 [json_name = "hash_key"];
+
+  string id = 7;
+
+  repeated LocalSecondaryIndex local_secondary_index = 8 [json_name = "local_secondary_index"];
+
+  string name = 9;
+
+  repeated PointInTimeRecovery point_in_time_recovery = 10 [json_name = "point_in_time_recovery"];
+
+  string range_key = 11 [json_name = "range_key"];
+
+  int64 read_capacity = 12 [json_name = "read_capacity"];
+
+  repeated Replica replica = 13;
+
+  string stream_arn = 14 [json_name = "stream_arn"];
+
+  bool stream_enabled = 15 [json_name = "stream_enabled"];
+
+  string stream_label = 16 [json_name = "stream_label"];
+
+  string stream_view_type = 17 [json_name = "stream_view_type"];
+
+  string table_class = 18 [json_name = "table_class"];
+
+  map<string, string> tags = 19;
+
+  repeated Ttl ttl = 20;
+
+  int64 write_capacity = 21 [json_name = "write_capacity"];
+
+  ServerSideEncryption server_side_encryption = 22 [json_name = "server_side_encryption"];
+
+  map<string, string> for_each = 23 [json_name = "for_each"];
+
+  repeated string depends_on = 24 [json_name = "depends_on"];
+
+  int32 count = 25;
+
+  string provider = 26;
+
+  terraform.v1.Lifecycle lifecycle = 27;
+
+  message Attribute {
+    // name: string
+    string name = 1;
+
+    // type: string
+    string type = 2;
+  }
+
+  message GlobalSecondaryIndex {
+    // hash_key: string
+    string hash_key = 1 [json_name = "hash_key"];
+
+    // name: string
+    string name = 2;
+
+    // non_key_attributes: list of string
+    repeated string non_key_attributes = 3 [json_name = "non_key_attributes"];
+
+    // projection_type: string
+    string projection_type = 4 [json_name = "projection_type"];
+
+    // range_key: string
+    string range_key = 5 [json_name = "range_key"];
+
+    // read_capacity: number
+    int64 read_capacity = 6 [json_name = "read_capacity"];
+
+    // write_capacity: number
+    int64 write_capacity = 7 [json_name = "write_capacity"];
+  }
+
+  message LocalSecondaryIndex {
+    // name: string
+    string name = 1;
+
+    // non_key_attributes: list of string
+    repeated string non_key_attributes = 2 [json_name = "non_key_attributes"];
+
+    // projection_type: string
+    string projection_type = 3 [json_name = "projection_type"];
+
+    // range_key: string
+    string range_key = 4 [json_name = "range_key"];
+  }
+
+  message PointInTimeRecovery {
+    // enabled: bool
+    bool enabled = 1;
+  }
+
+  message Replica {
+    // kms_key_arn: string
+    string kms_key_arn = 1 [json_name = "kms_key_arn"];
+
+    // region_name: string
+    string region_name = 2 [json_name = "region_name"];
+  }
+
+  message Ttl {
+    // attribute_name: string
+    string attribute_name = 1 [json_name = "attribute_name"];
+
+    // enabled: bool
+    bool enabled = 2;
+  }
+
+  message ServerSideEncryption {
+    bool enabled = 1;
+
+    string kms_key_arn = 2 [json_name = "kms_key_arn"];
+  }
+}
+
+// AwsDynamodbTableItem version is 0
+message AwsDynamodbTableItem {
+  map<string, string> expression_attribute_names = 1 [json_name = "expression_attribute_names"];
+
+  string id = 2;
+
+  string item = 3;
+
+  string key = 4;
+
+  string projection_expression = 5 [json_name = "projection_expression"];
+
+  string table_name = 6 [json_name = "table_name"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}

@@ -1,0 +1,2782 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsEc2AvailabilityZoneGroup version is 0
+message AwsEc2AvailabilityZoneGroup {
+  string group_name = 1 [json_name = "group_name"];
+
+  string id = 2;
+
+  string opt_in_status = 3 [json_name = "opt_in_status"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsEc2CapacityReservation version is 0
+message AwsEc2CapacityReservation {
+  string arn = 1;
+
+  string availability_zone = 2 [json_name = "availability_zone"];
+
+  bool ebs_optimized = 3 [json_name = "ebs_optimized"];
+
+  string end_date = 4 [json_name = "end_date"];
+
+  string end_date_type = 5 [json_name = "end_date_type"];
+
+  bool ephemeral_storage = 6 [json_name = "ephemeral_storage"];
+
+  string id = 7;
+
+  int64 instance_count = 8 [json_name = "instance_count"];
+
+  string instance_match_criteria = 9 [json_name = "instance_match_criteria"];
+
+  string instance_platform = 10 [json_name = "instance_platform"];
+
+  string instance_type = 11 [json_name = "instance_type"];
+
+  string outpost_arn = 12 [json_name = "outpost_arn"];
+
+  string owner_id = 13 [json_name = "owner_id"];
+
+  string placement_group_arn = 14 [json_name = "placement_group_arn"];
+
+  map<string, string> tags = 15;
+
+  map<string, string> tags_all = 16 [json_name = "tags_all"];
+
+  string tenancy = 17;
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+}
+
+// AwsEc2CarrierGateway version is 0
+message AwsEc2CarrierGateway {
+  string arn = 1;
+
+  string id = 2;
+
+  string owner_id = 3 [json_name = "owner_id"];
+
+  map<string, string> tags = 4;
+
+  map<string, string> tags_all = 5 [json_name = "tags_all"];
+
+  string vpc_id = 6 [json_name = "vpc_id"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsEc2ClientVpnAuthorizationRule version is 0
+message AwsEc2ClientVpnAuthorizationRule {
+  string access_group_id = 1 [json_name = "access_group_id"];
+
+  bool authorize_all_groups = 2 [json_name = "authorize_all_groups"];
+
+  string client_vpn_endpoint_id = 3 [json_name = "client_vpn_endpoint_id"];
+
+  string description = 4;
+
+  string id = 5;
+
+  string target_network_cidr = 6 [json_name = "target_network_cidr"];
+
+  repeated Timeouts timeouts = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsEc2ClientVpnEndpoint version is 0
+message AwsEc2ClientVpnEndpoint {
+  string arn = 1;
+
+  string client_cidr_block = 2 [json_name = "client_cidr_block"];
+
+  string description = 3;
+
+  string dns_name = 4 [json_name = "dns_name"];
+
+  repeated string dns_servers = 5 [json_name = "dns_servers"];
+
+  string id = 6;
+
+  repeated string security_group_ids = 7 [json_name = "security_group_ids"];
+
+  string self_service_portal = 8 [json_name = "self_service_portal"];
+
+  string server_certificate_arn = 9 [json_name = "server_certificate_arn"];
+
+  int64 session_timeout_hours = 10 [json_name = "session_timeout_hours"];
+
+  bool split_tunnel = 11 [json_name = "split_tunnel"];
+
+  map<string, string> tags = 12;
+
+  map<string, string> tags_all = 13 [json_name = "tags_all"];
+
+  string transport_protocol = 14 [json_name = "transport_protocol"];
+
+  string vpc_id = 15 [json_name = "vpc_id"];
+
+  int64 vpn_port = 16 [json_name = "vpn_port"];
+
+  repeated AuthenticationOptions authentication_options = 17 [json_name = "authentication_options"];
+
+  ClientConnectOptions client_connect_options = 18 [json_name = "client_connect_options"];
+
+  ClientLoginBannerOptions client_login_banner_options = 19 [json_name = "client_login_banner_options"];
+
+  ConnectionLogOptions connection_log_options = 20 [json_name = "connection_log_options"];
+
+  map<string, string> for_each = 21 [json_name = "for_each"];
+
+  repeated string depends_on = 22 [json_name = "depends_on"];
+
+  int32 count = 23;
+
+  string provider = 24;
+
+  terraform.v1.Lifecycle lifecycle = 25;
+
+  message AuthenticationOptions {
+    string active_directory_id = 1 [json_name = "active_directory_id"];
+
+    string root_certificate_chain_arn = 2 [json_name = "root_certificate_chain_arn"];
+
+    string saml_provider_arn = 3 [json_name = "saml_provider_arn"];
+
+    string self_service_saml_provider_arn = 4 [json_name = "self_service_saml_provider_arn"];
+
+    string type = 5;
+  }
+
+  message ClientConnectOptions {
+    bool enabled = 1;
+
+    string lambda_function_arn = 2 [json_name = "lambda_function_arn"];
+  }
+
+  message ClientLoginBannerOptions {
+    string banner_text = 1 [json_name = "banner_text"];
+
+    bool enabled = 2;
+  }
+
+  message ConnectionLogOptions {
+    string cloudwatch_log_group = 1 [json_name = "cloudwatch_log_group"];
+
+    string cloudwatch_log_stream = 2 [json_name = "cloudwatch_log_stream"];
+
+    bool enabled = 3;
+  }
+}
+
+// AwsEc2ClientVpnNetworkAssociation version is 0
+message AwsEc2ClientVpnNetworkAssociation {
+  string association_id = 1 [json_name = "association_id"];
+
+  string client_vpn_endpoint_id = 2 [json_name = "client_vpn_endpoint_id"];
+
+  string id = 3;
+
+  string subnet_id = 4 [json_name = "subnet_id"];
+
+  string vpc_id = 5 [json_name = "vpc_id"];
+
+  repeated Timeouts timeouts = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsEc2ClientVpnRoute version is 0
+message AwsEc2ClientVpnRoute {
+  string client_vpn_endpoint_id = 1 [json_name = "client_vpn_endpoint_id"];
+
+  string description = 2;
+
+  string destination_cidr_block = 3 [json_name = "destination_cidr_block"];
+
+  string id = 4;
+
+  string origin = 5;
+
+  string target_vpc_subnet_id = 6 [json_name = "target_vpc_subnet_id"];
+
+  string type = 7;
+
+  repeated Timeouts timeouts = 8;
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsEc2Fleet version is 0
+message AwsEc2Fleet {
+  string arn = 1;
+
+  string context = 2;
+
+  string excess_capacity_termination_policy = 3 [json_name = "excess_capacity_termination_policy"];
+
+  string fleet_state = 4 [json_name = "fleet_state"];
+
+  int64 fulfilled_capacity = 5 [json_name = "fulfilled_capacity"];
+
+  int64 fulfilled_on_demand_capacity = 6 [json_name = "fulfilled_on_demand_capacity"];
+
+  string id = 7;
+
+  bool replace_unhealthy_instances = 8 [json_name = "replace_unhealthy_instances"];
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  bool terminate_instances = 11 [json_name = "terminate_instances"];
+
+  bool terminate_instances_with_expiration = 12 [json_name = "terminate_instances_with_expiration"];
+
+  string type = 13;
+
+  string valid_from = 14 [json_name = "valid_from"];
+
+  string valid_until = 15 [json_name = "valid_until"];
+
+  repeated FleetInstanceSet fleet_instance_set = 16 [json_name = "fleet_instance_set"];
+
+  repeated LaunchTemplateConfig launch_template_config = 17 [json_name = "launch_template_config"];
+
+  OnDemandOptions on_demand_options = 18 [json_name = "on_demand_options"];
+
+  SpotOptions spot_options = 19 [json_name = "spot_options"];
+
+  TargetCapacitySpecification target_capacity_specification = 20 [json_name = "target_capacity_specification"];
+
+  repeated Timeouts timeouts = 21;
+
+  map<string, string> for_each = 22 [json_name = "for_each"];
+
+  repeated string depends_on = 23 [json_name = "depends_on"];
+
+  int32 count = 24;
+
+  string provider = 25;
+
+  terraform.v1.Lifecycle lifecycle = 26;
+
+  message FleetInstanceSet {
+    repeated string instance_ids = 1 [json_name = "instance_ids"];
+
+    string instance_type = 2 [json_name = "instance_type"];
+
+    string lifecycle = 3;
+
+    string platform = 4;
+  }
+
+  message LaunchTemplateConfig {
+    LaunchTemplateSpecification launch_template_specification = 1 [json_name = "launch_template_specification"];
+
+    repeated Override override = 2;
+
+    message LaunchTemplateSpecification {
+      string launch_template_id = 1 [json_name = "launch_template_id"];
+
+      string launch_template_name = 2 [json_name = "launch_template_name"];
+
+      string version = 3;
+    }
+
+    message Override {
+      string availability_zone = 1 [json_name = "availability_zone"];
+
+      string instance_type = 2 [json_name = "instance_type"];
+
+      string max_price = 3 [json_name = "max_price"];
+
+      int64 priority = 4;
+
+      string subnet_id = 5 [json_name = "subnet_id"];
+
+      int64 weighted_capacity = 6 [json_name = "weighted_capacity"];
+
+      InstanceRequirements instance_requirements = 7 [json_name = "instance_requirements"];
+
+      message InstanceRequirements {
+        repeated string accelerator_manufacturers = 1 [json_name = "accelerator_manufacturers"];
+
+        repeated string accelerator_names = 2 [json_name = "accelerator_names"];
+
+        repeated string accelerator_types = 3 [json_name = "accelerator_types"];
+
+        repeated string allowed_instance_types = 4 [json_name = "allowed_instance_types"];
+
+        string bare_metal = 5 [json_name = "bare_metal"];
+
+        string burstable_performance = 6 [json_name = "burstable_performance"];
+
+        repeated string cpu_manufacturers = 7 [json_name = "cpu_manufacturers"];
+
+        repeated string excluded_instance_types = 8 [json_name = "excluded_instance_types"];
+
+        repeated string instance_generations = 9 [json_name = "instance_generations"];
+
+        string local_storage = 10 [json_name = "local_storage"];
+
+        repeated string local_storage_types = 11 [json_name = "local_storage_types"];
+
+        int64 on_demand_max_price_percentage_over_lowest_price = 12 [
+          json_name = "on_demand_max_price_percentage_over_lowest_price"
+        ];
+
+        bool require_hibernate_support = 13 [json_name = "require_hibernate_support"];
+
+        int64 spot_max_price_percentage_over_lowest_price = 14 [
+          json_name = "spot_max_price_percentage_over_lowest_price"
+        ];
+
+        AcceleratorCount accelerator_count = 15 [json_name = "accelerator_count"];
+
+        AcceleratorTotalMemoryMib accelerator_total_memory_mib = 16 [json_name = "accelerator_total_memory_mib"];
+
+        BaselineEbsBandwidthMbps baseline_ebs_bandwidth_mbps = 17 [json_name = "baseline_ebs_bandwidth_mbps"];
+
+        MemoryGibPerVcpu memory_gib_per_vcpu = 18 [json_name = "memory_gib_per_vcpu"];
+
+        MemoryMib memory_mib = 19 [json_name = "memory_mib"];
+
+        NetworkBandwidthGbps network_bandwidth_gbps = 20 [json_name = "network_bandwidth_gbps"];
+
+        NetworkInterfaceCount network_interface_count = 21 [json_name = "network_interface_count"];
+
+        TotalLocalStorageGb total_local_storage_gb = 22 [json_name = "total_local_storage_gb"];
+
+        VcpuCount vcpu_count = 23 [json_name = "vcpu_count"];
+
+        message AcceleratorCount {
+          int64 max = 1;
+
+          int64 min = 2;
+        }
+
+        message AcceleratorTotalMemoryMib {
+          int64 max = 1;
+
+          int64 min = 2;
+        }
+
+        message BaselineEbsBandwidthMbps {
+          int64 max = 1;
+
+          int64 min = 2;
+        }
+
+        message MemoryGibPerVcpu {
+          int64 max = 1;
+
+          int64 min = 2;
+        }
+
+        message MemoryMib {
+          int64 max = 1;
+
+          int64 min = 2;
+        }
+
+        message NetworkBandwidthGbps {
+          int64 max = 1;
+
+          int64 min = 2;
+        }
+
+        message NetworkInterfaceCount {
+          int64 max = 1;
+
+          int64 min = 2;
+        }
+
+        message TotalLocalStorageGb {
+          int64 max = 1;
+
+          int64 min = 2;
+        }
+
+        message VcpuCount {
+          int64 max = 1;
+
+          int64 min = 2;
+        }
+      }
+    }
+  }
+
+  message OnDemandOptions {
+    string allocation_strategy = 1 [json_name = "allocation_strategy"];
+
+    string max_total_price = 2 [json_name = "max_total_price"];
+
+    int64 min_target_capacity = 3 [json_name = "min_target_capacity"];
+
+    bool single_availability_zone = 4 [json_name = "single_availability_zone"];
+
+    bool single_instance_type = 5 [json_name = "single_instance_type"];
+  }
+
+  message SpotOptions {
+    string allocation_strategy = 1 [json_name = "allocation_strategy"];
+
+    string instance_interruption_behavior = 2 [json_name = "instance_interruption_behavior"];
+
+    int64 instance_pools_to_use_count = 3 [json_name = "instance_pools_to_use_count"];
+
+    MaintenanceStrategies maintenance_strategies = 4 [json_name = "maintenance_strategies"];
+
+    message MaintenanceStrategies {
+      CapacityRebalance capacity_rebalance = 1 [json_name = "capacity_rebalance"];
+
+      message CapacityRebalance {
+        string replacement_strategy = 1 [json_name = "replacement_strategy"];
+
+        int64 termination_delay = 2 [json_name = "termination_delay"];
+      }
+    }
+  }
+
+  message TargetCapacitySpecification {
+    string default_target_capacity_type = 1 [json_name = "default_target_capacity_type"];
+
+    int64 on_demand_target_capacity = 2 [json_name = "on_demand_target_capacity"];
+
+    int64 spot_target_capacity = 3 [json_name = "spot_target_capacity"];
+
+    string target_capacity_unit_type = 4 [json_name = "target_capacity_unit_type"];
+
+    int64 total_target_capacity = 5 [json_name = "total_target_capacity"];
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsEc2Host version is 0
+message AwsEc2Host {
+  string arn = 1;
+
+  string auto_placement = 2 [json_name = "auto_placement"];
+
+  string availability_zone = 3 [json_name = "availability_zone"];
+
+  string host_recovery = 4 [json_name = "host_recovery"];
+
+  string id = 5;
+
+  string instance_family = 6 [json_name = "instance_family"];
+
+  string instance_type = 7 [json_name = "instance_type"];
+
+  string outpost_arn = 8 [json_name = "outpost_arn"];
+
+  string owner_id = 9 [json_name = "owner_id"];
+
+  map<string, string> tags = 10;
+
+  map<string, string> tags_all = 11 [json_name = "tags_all"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+}
+
+// AwsEc2InstanceState version is 0
+message AwsEc2InstanceState {
+  bool force = 1;
+
+  string id = 2;
+
+  string instance_id = 3 [json_name = "instance_id"];
+
+  string state = 4;
+
+  repeated Timeouts timeouts = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsEc2LocalGatewayRoute version is 0
+message AwsEc2LocalGatewayRoute {
+  string destination_cidr_block = 1 [json_name = "destination_cidr_block"];
+
+  string id = 2;
+
+  string local_gateway_route_table_id = 3 [json_name = "local_gateway_route_table_id"];
+
+  string local_gateway_virtual_interface_group_id = 4 [
+    json_name = "local_gateway_virtual_interface_group_id"
+  ];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsEc2LocalGatewayRouteTableVpcAssociation version is 0
+message AwsEc2LocalGatewayRouteTableVpcAssociation {
+  string id = 1;
+
+  string local_gateway_id = 2 [json_name = "local_gateway_id"];
+
+  string local_gateway_route_table_id = 3 [json_name = "local_gateway_route_table_id"];
+
+  map<string, string> tags = 4;
+
+  map<string, string> tags_all = 5 [json_name = "tags_all"];
+
+  string vpc_id = 6 [json_name = "vpc_id"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsEc2ManagedPrefixList version is 0
+message AwsEc2ManagedPrefixList {
+  string address_family = 1 [json_name = "address_family"];
+
+  string arn = 2;
+
+  string id = 3;
+
+  int64 max_entries = 4 [json_name = "max_entries"];
+
+  string name = 5;
+
+  string owner_id = 6 [json_name = "owner_id"];
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  int64 version = 9;
+
+  repeated Entry entry = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Entry {
+    string cidr = 1;
+
+    string description = 2;
+  }
+}
+
+// AwsEc2ManagedPrefixListEntry version is 0
+message AwsEc2ManagedPrefixListEntry {
+  string cidr = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  string prefix_list_id = 4 [json_name = "prefix_list_id"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsEc2NetworkInsightsAnalysis version is 0
+message AwsEc2NetworkInsightsAnalysis {
+  repeated AlternatePathHints alternate_path_hints = 1 [json_name = "alternate_path_hints"];
+
+  string arn = 2;
+
+  repeated Explanations explanations = 3;
+
+  repeated string filter_in_arns = 4 [json_name = "filter_in_arns"];
+
+  repeated ForwardPathComponents forward_path_components = 5 [json_name = "forward_path_components"];
+
+  string id = 6;
+
+  string network_insights_path_id = 7 [json_name = "network_insights_path_id"];
+
+  bool path_found = 8 [json_name = "path_found"];
+
+  repeated ReturnPathComponents return_path_components = 9 [json_name = "return_path_components"];
+
+  string start_date = 10 [json_name = "start_date"];
+
+  string status = 11;
+
+  string status_message = 12 [json_name = "status_message"];
+
+  map<string, string> tags = 13;
+
+  map<string, string> tags_all = 14 [json_name = "tags_all"];
+
+  bool wait_for_completion = 15 [json_name = "wait_for_completion"];
+
+  string warning_message = 16 [json_name = "warning_message"];
+
+  map<string, string> for_each = 17 [json_name = "for_each"];
+
+  repeated string depends_on = 18 [json_name = "depends_on"];
+
+  int32 count = 19;
+
+  string provider = 20;
+
+  terraform.v1.Lifecycle lifecycle = 21;
+
+  message AlternatePathHints {
+    // component_arn: string
+    string component_arn = 1 [json_name = "component_arn"];
+
+    // component_id: string
+    string component_id = 2 [json_name = "component_id"];
+  }
+
+  message Explanations {
+    // acl: list of object
+    repeated Acl acl = 1;
+
+    // acl_rule: list of object
+    repeated AclRule acl_rule = 2 [json_name = "acl_rule"];
+
+    // address: string
+    string address = 3;
+
+    // addresses: list of string
+    repeated string addresses = 4;
+
+    // attached_to: list of object
+    repeated AttachedTo attached_to = 5 [json_name = "attached_to"];
+
+    // availability_zones: list of string
+    repeated string availability_zones = 6 [json_name = "availability_zones"];
+
+    // cidrs: list of string
+    repeated string cidrs = 7;
+
+    // classic_load_balancer_listener: list of object
+    repeated ClassicLoadBalancerListener classic_load_balancer_listener = 8 [json_name = "classic_load_balancer_listener"];
+
+    // component: list of object
+    repeated Component component = 9;
+
+    // customer_gateway: list of object
+    repeated CustomerGateway customer_gateway = 10 [json_name = "customer_gateway"];
+
+    // destination: list of object
+    repeated Destination destination = 11;
+
+    // destination_vpc: list of object
+    repeated DestinationVpc destination_vpc = 12 [json_name = "destination_vpc"];
+
+    // direction: string
+    string direction = 13;
+
+    // elastic_load_balancer_listener: list of object
+    repeated ElasticLoadBalancerListener elastic_load_balancer_listener = 14 [json_name = "elastic_load_balancer_listener"];
+
+    // explanation_code: string
+    string explanation_code = 15 [json_name = "explanation_code"];
+
+    // ingress_route_table: list of object
+    repeated IngressRouteTable ingress_route_table = 16 [json_name = "ingress_route_table"];
+
+    // internet_gateway: list of object
+    repeated InternetGateway internet_gateway = 17 [json_name = "internet_gateway"];
+
+    // load_balancer_arn: string
+    string load_balancer_arn = 18 [json_name = "load_balancer_arn"];
+
+    // load_balancer_listener_port: number
+    int64 load_balancer_listener_port = 19 [json_name = "load_balancer_listener_port"];
+
+    // load_balancer_target_group: list of object
+    repeated LoadBalancerTargetGroup load_balancer_target_group = 20 [json_name = "load_balancer_target_group"];
+
+    // load_balancer_target_groups: list of object
+    repeated LoadBalancerTargetGroups load_balancer_target_groups = 21 [json_name = "load_balancer_target_groups"];
+
+    // load_balancer_target_port: number
+    int64 load_balancer_target_port = 22 [json_name = "load_balancer_target_port"];
+
+    // missing_component: string
+    string missing_component = 23 [json_name = "missing_component"];
+
+    // nat_gateway: list of object
+    repeated NatGateway nat_gateway = 24 [json_name = "nat_gateway"];
+
+    // network_interface: list of object
+    repeated NetworkInterface network_interface = 25 [json_name = "network_interface"];
+
+    // packet_field: string
+    string packet_field = 26 [json_name = "packet_field"];
+
+    // port: number
+    int64 port = 27;
+
+    // port_ranges: list of object
+    repeated PortRanges port_ranges = 28 [json_name = "port_ranges"];
+
+    // prefix_list: list of object
+    repeated PrefixList prefix_list = 29 [json_name = "prefix_list"];
+
+    // protocols: list of string
+    repeated string protocols = 30;
+
+    // route_table: list of object
+    repeated RouteTable route_table = 31 [json_name = "route_table"];
+
+    // route_table_route: list of object
+    repeated RouteTableRoute route_table_route = 32 [json_name = "route_table_route"];
+
+    // security_group: list of object
+    repeated SecurityGroup security_group = 33 [json_name = "security_group"];
+
+    // security_group_rule: list of object
+    repeated SecurityGroupRule security_group_rule = 34 [json_name = "security_group_rule"];
+
+    // security_groups: list of object
+    repeated SecurityGroups security_groups = 35 [json_name = "security_groups"];
+
+    // source_vpc: list of object
+    repeated SourceVpc source_vpc = 36 [json_name = "source_vpc"];
+
+    // state: string
+    string state = 37;
+
+    // subnet: list of object
+    repeated Subnet subnet = 38;
+
+    // subnet_route_table: list of object
+    repeated SubnetRouteTable subnet_route_table = 39 [json_name = "subnet_route_table"];
+
+    // transit_gateway: list of object
+    repeated TransitGateway transit_gateway = 40 [json_name = "transit_gateway"];
+
+    // transit_gateway_attachment: list of object
+    repeated TransitGatewayAttachment transit_gateway_attachment = 41 [json_name = "transit_gateway_attachment"];
+
+    // transit_gateway_route_table: list of object
+    repeated TransitGatewayRouteTable transit_gateway_route_table = 42 [json_name = "transit_gateway_route_table"];
+
+    // transit_gateway_route_table_route: list of object
+    repeated TransitGatewayRouteTableRoute transit_gateway_route_table_route = 43 [json_name = "transit_gateway_route_table_route"];
+
+    // vpc: list of object
+    repeated Vpc vpc = 44;
+
+    // vpc_endpoint: list of object
+    repeated VpcEndpoint vpc_endpoint = 45 [json_name = "vpc_endpoint"];
+
+    // vpc_peering_connection: list of object
+    repeated VpcPeeringConnection vpc_peering_connection = 46 [json_name = "vpc_peering_connection"];
+
+    // vpn_connection: list of object
+    repeated VpnConnection vpn_connection = 47 [json_name = "vpn_connection"];
+
+    // vpn_gateway: list of object
+    repeated VpnGateway vpn_gateway = 48 [json_name = "vpn_gateway"];
+
+    message Acl {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message AclRule {
+      // cidr: string
+      string cidr = 1;
+
+      // egress: bool
+      bool egress = 2;
+
+      // port_range: list of object
+      repeated PortRange port_range = 3 [json_name = "port_range"];
+
+      // protocol: string
+      string protocol = 4;
+
+      // rule_action: string
+      string rule_action = 5 [json_name = "rule_action"];
+
+      // rule_number: number
+      int64 rule_number = 6 [json_name = "rule_number"];
+
+      message PortRange {
+        // from: number
+        int64 from = 1;
+
+        // to: number
+        int64 to = 2;
+      }
+    }
+
+    message AttachedTo {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message ClassicLoadBalancerListener {
+      // instance_port: number
+      int64 instance_port = 1 [json_name = "instance_port"];
+
+      // load_balancer_port: number
+      int64 load_balancer_port = 2 [json_name = "load_balancer_port"];
+    }
+
+    message Component {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message CustomerGateway {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message Destination {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message DestinationVpc {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message ElasticLoadBalancerListener {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message IngressRouteTable {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message InternetGateway {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message LoadBalancerTargetGroup {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message LoadBalancerTargetGroups {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message NatGateway {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message NetworkInterface {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message PortRanges {
+      // from: number
+      int64 from = 1;
+
+      // to: number
+      int64 to = 2;
+    }
+
+    message PrefixList {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message RouteTable {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message RouteTableRoute {
+      // destination_cidr: string
+      string destination_cidr = 1 [json_name = "destination_cidr"];
+
+      // destination_prefix_list_id: string
+      string destination_prefix_list_id = 2 [json_name = "destination_prefix_list_id"];
+
+      // egress_only_internet_gateway_id: string
+      string egress_only_internet_gateway_id = 3 [json_name = "egress_only_internet_gateway_id"];
+
+      // gateway_id: string
+      string gateway_id = 4 [json_name = "gateway_id"];
+
+      // instance_id: string
+      string instance_id = 5 [json_name = "instance_id"];
+
+      // nat_gateway_id: string
+      string nat_gateway_id = 6 [json_name = "nat_gateway_id"];
+
+      // network_interface_id: string
+      string network_interface_id = 7 [json_name = "network_interface_id"];
+
+      // origin: string
+      string origin = 8;
+
+      // transit_gateway_id: string
+      string transit_gateway_id = 9 [json_name = "transit_gateway_id"];
+
+      // vpc_peering_connection_id: string
+      string vpc_peering_connection_id = 10 [json_name = "vpc_peering_connection_id"];
+    }
+
+    message SecurityGroup {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message SecurityGroupRule {
+      // cidr: string
+      string cidr = 1;
+
+      // direction: string
+      string direction = 2;
+
+      // port_range: list of object
+      repeated PortRange port_range = 3 [json_name = "port_range"];
+
+      // prefix_list_id: string
+      string prefix_list_id = 4 [json_name = "prefix_list_id"];
+
+      // protocol: string
+      string protocol = 5;
+
+      // security_group_id: string
+      string security_group_id = 6 [json_name = "security_group_id"];
+
+      message PortRange {
+        // from: number
+        int64 from = 1;
+
+        // to: number
+        int64 to = 2;
+      }
+    }
+
+    message SecurityGroups {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message SourceVpc {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message Subnet {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message SubnetRouteTable {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message TransitGateway {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message TransitGatewayAttachment {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message TransitGatewayRouteTable {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message TransitGatewayRouteTableRoute {
+      // attachment_id: string
+      string attachment_id = 1 [json_name = "attachment_id"];
+
+      // destination_cidr: string
+      string destination_cidr = 2 [json_name = "destination_cidr"];
+
+      // prefix_list_id: string
+      string prefix_list_id = 3 [json_name = "prefix_list_id"];
+
+      // resource_id: string
+      string resource_id = 4 [json_name = "resource_id"];
+
+      // resource_type: string
+      string resource_type = 5 [json_name = "resource_type"];
+
+      // route_origin: string
+      string route_origin = 6 [json_name = "route_origin"];
+
+      // state: string
+      string state = 7;
+    }
+
+    message Vpc {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message VpcEndpoint {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message VpcPeeringConnection {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message VpnConnection {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message VpnGateway {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+  }
+
+  message ForwardPathComponents {
+    // acl_rule: list of object
+    repeated AclRule acl_rule = 1 [json_name = "acl_rule"];
+
+    // additional_details: list of object
+    repeated AdditionalDetails additional_details = 2 [json_name = "additional_details"];
+
+    // attached_to: list of object
+    repeated AttachedTo attached_to = 3 [json_name = "attached_to"];
+
+    // component: list of object
+    repeated Component component = 4;
+
+    // destination_vpc: list of object
+    repeated DestinationVpc destination_vpc = 5 [json_name = "destination_vpc"];
+
+    // inbound_header: list of object
+    repeated InboundHeader inbound_header = 6 [json_name = "inbound_header"];
+
+    // outbound_header: list of object
+    repeated OutboundHeader outbound_header = 7 [json_name = "outbound_header"];
+
+    // route_table_route: list of object
+    repeated RouteTableRoute route_table_route = 8 [json_name = "route_table_route"];
+
+    // security_group_rule: list of object
+    repeated SecurityGroupRule security_group_rule = 9 [json_name = "security_group_rule"];
+
+    // sequence_number: number
+    int64 sequence_number = 10 [json_name = "sequence_number"];
+
+    // source_vpc: list of object
+    repeated SourceVpc source_vpc = 11 [json_name = "source_vpc"];
+
+    // subnet: list of object
+    repeated Subnet subnet = 12;
+
+    // transit_gateway: list of object
+    repeated TransitGateway transit_gateway = 13 [json_name = "transit_gateway"];
+
+    // transit_gateway_route_table_route: list of object
+    repeated TransitGatewayRouteTableRoute transit_gateway_route_table_route = 14 [json_name = "transit_gateway_route_table_route"];
+
+    // vpc: list of object
+    repeated Vpc vpc = 15;
+
+    message AclRule {
+      // cidr: string
+      string cidr = 1;
+
+      // egress: bool
+      bool egress = 2;
+
+      // port_range: list of object
+      repeated PortRange port_range = 3 [json_name = "port_range"];
+
+      // protocol: string
+      string protocol = 4;
+
+      // rule_action: string
+      string rule_action = 5 [json_name = "rule_action"];
+
+      // rule_number: number
+      int64 rule_number = 6 [json_name = "rule_number"];
+
+      message PortRange {
+        // from: number
+        int64 from = 1;
+
+        // to: number
+        int64 to = 2;
+      }
+    }
+
+    message AdditionalDetails {
+      // additional_detail_type: string
+      string additional_detail_type = 1 [json_name = "additional_detail_type"];
+
+      // component: list of object
+      repeated Component component = 2;
+
+      message Component {
+        // arn: string
+        string arn = 1;
+
+        // id: string
+        string id = 2;
+
+        // name: string
+        string name = 3;
+      }
+    }
+
+    message AttachedTo {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message Component {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message DestinationVpc {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message InboundHeader {
+      // destination_addresses: list of string
+      repeated string destination_addresses = 1 [json_name = "destination_addresses"];
+
+      // destination_port_ranges: list of object
+      repeated DestinationPortRanges destination_port_ranges = 2 [json_name = "destination_port_ranges"];
+
+      // protocol: string
+      string protocol = 3;
+
+      // source_addresses: list of string
+      repeated string source_addresses = 4 [json_name = "source_addresses"];
+
+      // source_port_ranges: list of object
+      repeated SourcePortRanges source_port_ranges = 5 [json_name = "source_port_ranges"];
+
+      message DestinationPortRanges {
+        // from: number
+        int64 from = 1;
+
+        // to: number
+        int64 to = 2;
+      }
+
+      message SourcePortRanges {
+        // from: number
+        int64 from = 1;
+
+        // to: number
+        int64 to = 2;
+      }
+    }
+
+    message OutboundHeader {
+      // destination_addresses: list of string
+      repeated string destination_addresses = 1 [json_name = "destination_addresses"];
+
+      // destination_port_ranges: list of object
+      repeated DestinationPortRanges destination_port_ranges = 2 [json_name = "destination_port_ranges"];
+
+      // protocol: string
+      string protocol = 3;
+
+      // source_addresses: list of string
+      repeated string source_addresses = 4 [json_name = "source_addresses"];
+
+      // source_port_ranges: list of object
+      repeated SourcePortRanges source_port_ranges = 5 [json_name = "source_port_ranges"];
+
+      message DestinationPortRanges {
+        // from: number
+        int64 from = 1;
+
+        // to: number
+        int64 to = 2;
+      }
+
+      message SourcePortRanges {
+        // from: number
+        int64 from = 1;
+
+        // to: number
+        int64 to = 2;
+      }
+    }
+
+    message RouteTableRoute {
+      // destination_cidr: string
+      string destination_cidr = 1 [json_name = "destination_cidr"];
+
+      // destination_prefix_list_id: string
+      string destination_prefix_list_id = 2 [json_name = "destination_prefix_list_id"];
+
+      // egress_only_internet_gateway_id: string
+      string egress_only_internet_gateway_id = 3 [json_name = "egress_only_internet_gateway_id"];
+
+      // gateway_id: string
+      string gateway_id = 4 [json_name = "gateway_id"];
+
+      // instance_id: string
+      string instance_id = 5 [json_name = "instance_id"];
+
+      // nat_gateway_id: string
+      string nat_gateway_id = 6 [json_name = "nat_gateway_id"];
+
+      // network_interface_id: string
+      string network_interface_id = 7 [json_name = "network_interface_id"];
+
+      // origin: string
+      string origin = 8;
+
+      // transit_gateway_id: string
+      string transit_gateway_id = 9 [json_name = "transit_gateway_id"];
+
+      // vpc_peering_connection_id: string
+      string vpc_peering_connection_id = 10 [json_name = "vpc_peering_connection_id"];
+    }
+
+    message SecurityGroupRule {
+      // cidr: string
+      string cidr = 1;
+
+      // direction: string
+      string direction = 2;
+
+      // port_range: list of object
+      repeated PortRange port_range = 3 [json_name = "port_range"];
+
+      // prefix_list_id: string
+      string prefix_list_id = 4 [json_name = "prefix_list_id"];
+
+      // protocol: string
+      string protocol = 5;
+
+      // security_group_id: string
+      string security_group_id = 6 [json_name = "security_group_id"];
+
+      message PortRange {
+        // from: number
+        int64 from = 1;
+
+        // to: number
+        int64 to = 2;
+      }
+    }
+
+    message SourceVpc {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message Subnet {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message TransitGateway {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message TransitGatewayRouteTableRoute {
+      // attachment_id: string
+      string attachment_id = 1 [json_name = "attachment_id"];
+
+      // destination_cidr: string
+      string destination_cidr = 2 [json_name = "destination_cidr"];
+
+      // prefix_list_id: string
+      string prefix_list_id = 3 [json_name = "prefix_list_id"];
+
+      // resource_id: string
+      string resource_id = 4 [json_name = "resource_id"];
+
+      // resource_type: string
+      string resource_type = 5 [json_name = "resource_type"];
+
+      // route_origin: string
+      string route_origin = 6 [json_name = "route_origin"];
+
+      // state: string
+      string state = 7;
+    }
+
+    message Vpc {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+  }
+
+  message ReturnPathComponents {
+    // acl_rule: list of object
+    repeated AclRule acl_rule = 1 [json_name = "acl_rule"];
+
+    // additional_details: list of object
+    repeated AdditionalDetails additional_details = 2 [json_name = "additional_details"];
+
+    // attached_to: list of object
+    repeated AttachedTo attached_to = 3 [json_name = "attached_to"];
+
+    // component: list of object
+    repeated Component component = 4;
+
+    // destination_vpc: list of object
+    repeated DestinationVpc destination_vpc = 5 [json_name = "destination_vpc"];
+
+    // inbound_header: list of object
+    repeated InboundHeader inbound_header = 6 [json_name = "inbound_header"];
+
+    // outbound_header: list of object
+    repeated OutboundHeader outbound_header = 7 [json_name = "outbound_header"];
+
+    // route_table_route: list of object
+    repeated RouteTableRoute route_table_route = 8 [json_name = "route_table_route"];
+
+    // security_group_rule: list of object
+    repeated SecurityGroupRule security_group_rule = 9 [json_name = "security_group_rule"];
+
+    // sequence_number: number
+    int64 sequence_number = 10 [json_name = "sequence_number"];
+
+    // source_vpc: list of object
+    repeated SourceVpc source_vpc = 11 [json_name = "source_vpc"];
+
+    // subnet: list of object
+    repeated Subnet subnet = 12;
+
+    // transit_gateway: list of object
+    repeated TransitGateway transit_gateway = 13 [json_name = "transit_gateway"];
+
+    // transit_gateway_route_table_route: list of object
+    repeated TransitGatewayRouteTableRoute transit_gateway_route_table_route = 14 [json_name = "transit_gateway_route_table_route"];
+
+    // vpc: list of object
+    repeated Vpc vpc = 15;
+
+    message AclRule {
+      // cidr: string
+      string cidr = 1;
+
+      // egress: bool
+      bool egress = 2;
+
+      // port_range: list of object
+      repeated PortRange port_range = 3 [json_name = "port_range"];
+
+      // protocol: string
+      string protocol = 4;
+
+      // rule_action: string
+      string rule_action = 5 [json_name = "rule_action"];
+
+      // rule_number: number
+      int64 rule_number = 6 [json_name = "rule_number"];
+
+      message PortRange {
+        // from: number
+        int64 from = 1;
+
+        // to: number
+        int64 to = 2;
+      }
+    }
+
+    message AdditionalDetails {
+      // additional_detail_type: string
+      string additional_detail_type = 1 [json_name = "additional_detail_type"];
+
+      // component: list of object
+      repeated Component component = 2;
+
+      message Component {
+        // arn: string
+        string arn = 1;
+
+        // id: string
+        string id = 2;
+
+        // name: string
+        string name = 3;
+      }
+    }
+
+    message AttachedTo {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message Component {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message DestinationVpc {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message InboundHeader {
+      // destination_addresses: list of string
+      repeated string destination_addresses = 1 [json_name = "destination_addresses"];
+
+      // destination_port_ranges: list of object
+      repeated DestinationPortRanges destination_port_ranges = 2 [json_name = "destination_port_ranges"];
+
+      // protocol: string
+      string protocol = 3;
+
+      // source_addresses: list of string
+      repeated string source_addresses = 4 [json_name = "source_addresses"];
+
+      // source_port_ranges: list of object
+      repeated SourcePortRanges source_port_ranges = 5 [json_name = "source_port_ranges"];
+
+      message DestinationPortRanges {
+        // from: number
+        int64 from = 1;
+
+        // to: number
+        int64 to = 2;
+      }
+
+      message SourcePortRanges {
+        // from: number
+        int64 from = 1;
+
+        // to: number
+        int64 to = 2;
+      }
+    }
+
+    message OutboundHeader {
+      // destination_addresses: list of string
+      repeated string destination_addresses = 1 [json_name = "destination_addresses"];
+
+      // destination_port_ranges: list of object
+      repeated DestinationPortRanges destination_port_ranges = 2 [json_name = "destination_port_ranges"];
+
+      // protocol: string
+      string protocol = 3;
+
+      // source_addresses: list of string
+      repeated string source_addresses = 4 [json_name = "source_addresses"];
+
+      // source_port_ranges: list of object
+      repeated SourcePortRanges source_port_ranges = 5 [json_name = "source_port_ranges"];
+
+      message DestinationPortRanges {
+        // from: number
+        int64 from = 1;
+
+        // to: number
+        int64 to = 2;
+      }
+
+      message SourcePortRanges {
+        // from: number
+        int64 from = 1;
+
+        // to: number
+        int64 to = 2;
+      }
+    }
+
+    message RouteTableRoute {
+      // destination_cidr: string
+      string destination_cidr = 1 [json_name = "destination_cidr"];
+
+      // destination_prefix_list_id: string
+      string destination_prefix_list_id = 2 [json_name = "destination_prefix_list_id"];
+
+      // egress_only_internet_gateway_id: string
+      string egress_only_internet_gateway_id = 3 [json_name = "egress_only_internet_gateway_id"];
+
+      // gateway_id: string
+      string gateway_id = 4 [json_name = "gateway_id"];
+
+      // instance_id: string
+      string instance_id = 5 [json_name = "instance_id"];
+
+      // nat_gateway_id: string
+      string nat_gateway_id = 6 [json_name = "nat_gateway_id"];
+
+      // network_interface_id: string
+      string network_interface_id = 7 [json_name = "network_interface_id"];
+
+      // origin: string
+      string origin = 8;
+
+      // transit_gateway_id: string
+      string transit_gateway_id = 9 [json_name = "transit_gateway_id"];
+
+      // vpc_peering_connection_id: string
+      string vpc_peering_connection_id = 10 [json_name = "vpc_peering_connection_id"];
+    }
+
+    message SecurityGroupRule {
+      // cidr: string
+      string cidr = 1;
+
+      // direction: string
+      string direction = 2;
+
+      // port_range: list of object
+      repeated PortRange port_range = 3 [json_name = "port_range"];
+
+      // prefix_list_id: string
+      string prefix_list_id = 4 [json_name = "prefix_list_id"];
+
+      // protocol: string
+      string protocol = 5;
+
+      // security_group_id: string
+      string security_group_id = 6 [json_name = "security_group_id"];
+
+      message PortRange {
+        // from: number
+        int64 from = 1;
+
+        // to: number
+        int64 to = 2;
+      }
+    }
+
+    message SourceVpc {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message Subnet {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message TransitGateway {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+
+    message TransitGatewayRouteTableRoute {
+      // attachment_id: string
+      string attachment_id = 1 [json_name = "attachment_id"];
+
+      // destination_cidr: string
+      string destination_cidr = 2 [json_name = "destination_cidr"];
+
+      // prefix_list_id: string
+      string prefix_list_id = 3 [json_name = "prefix_list_id"];
+
+      // resource_id: string
+      string resource_id = 4 [json_name = "resource_id"];
+
+      // resource_type: string
+      string resource_type = 5 [json_name = "resource_type"];
+
+      // route_origin: string
+      string route_origin = 6 [json_name = "route_origin"];
+
+      // state: string
+      string state = 7;
+    }
+
+    message Vpc {
+      // arn: string
+      string arn = 1;
+
+      // id: string
+      string id = 2;
+
+      // name: string
+      string name = 3;
+    }
+  }
+}
+
+// AwsEc2NetworkInsightsPath version is 0
+message AwsEc2NetworkInsightsPath {
+  string arn = 1;
+
+  string destination = 2;
+
+  string destination_ip = 3 [json_name = "destination_ip"];
+
+  int64 destination_port = 4 [json_name = "destination_port"];
+
+  string id = 5;
+
+  string protocol = 6;
+
+  string source = 7;
+
+  string source_ip = 8 [json_name = "source_ip"];
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+}
+
+// AwsEc2SerialConsoleAccess version is 0
+message AwsEc2SerialConsoleAccess {
+  bool enabled = 1;
+
+  string id = 2;
+
+  map<string, string> for_each = 3 [json_name = "for_each"];
+
+  repeated string depends_on = 4 [json_name = "depends_on"];
+
+  int32 count = 5;
+
+  string provider = 6;
+
+  terraform.v1.Lifecycle lifecycle = 7;
+}
+
+// AwsEc2SubnetCidrReservation version is 0
+message AwsEc2SubnetCidrReservation {
+  string cidr_block = 1 [json_name = "cidr_block"];
+
+  string description = 2;
+
+  string id = 3;
+
+  string owner_id = 4 [json_name = "owner_id"];
+
+  string reservation_type = 5 [json_name = "reservation_type"];
+
+  string subnet_id = 6 [json_name = "subnet_id"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsEc2Tag version is 0
+message AwsEc2Tag {
+  string id = 1;
+
+  string key = 2;
+
+  string resource_id = 3 [json_name = "resource_id"];
+
+  string value = 4;
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsEc2TrafficMirrorFilter version is 0
+message AwsEc2TrafficMirrorFilter {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  repeated string network_services = 4 [json_name = "network_services"];
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsEc2TrafficMirrorFilterRule version is 0
+message AwsEc2TrafficMirrorFilterRule {
+  string arn = 1;
+
+  string description = 2;
+
+  string destination_cidr_block = 3 [json_name = "destination_cidr_block"];
+
+  string id = 4;
+
+  int64 protocol = 5;
+
+  string rule_action = 6 [json_name = "rule_action"];
+
+  int64 rule_number = 7 [json_name = "rule_number"];
+
+  string source_cidr_block = 8 [json_name = "source_cidr_block"];
+
+  string traffic_direction = 9 [json_name = "traffic_direction"];
+
+  string traffic_mirror_filter_id = 10 [json_name = "traffic_mirror_filter_id"];
+
+  DestinationPortRange destination_port_range = 11 [json_name = "destination_port_range"];
+
+  SourcePortRange source_port_range = 12 [json_name = "source_port_range"];
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message DestinationPortRange {
+    int64 from_port = 1 [json_name = "from_port"];
+
+    int64 to_port = 2 [json_name = "to_port"];
+  }
+
+  message SourcePortRange {
+    int64 from_port = 1 [json_name = "from_port"];
+
+    int64 to_port = 2 [json_name = "to_port"];
+  }
+}
+
+// AwsEc2TrafficMirrorSession version is 0
+message AwsEc2TrafficMirrorSession {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  string network_interface_id = 4 [json_name = "network_interface_id"];
+
+  string owner_id = 5 [json_name = "owner_id"];
+
+  int64 packet_length = 6 [json_name = "packet_length"];
+
+  int64 session_number = 7 [json_name = "session_number"];
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  string traffic_mirror_filter_id = 10 [json_name = "traffic_mirror_filter_id"];
+
+  string traffic_mirror_target_id = 11 [json_name = "traffic_mirror_target_id"];
+
+  int64 virtual_network_id = 12 [json_name = "virtual_network_id"];
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+}
+
+// AwsEc2TrafficMirrorTarget version is 0
+message AwsEc2TrafficMirrorTarget {
+  string arn = 1;
+
+  string description = 2;
+
+  string gateway_load_balancer_endpoint_id = 3 [json_name = "gateway_load_balancer_endpoint_id"];
+
+  string id = 4;
+
+  string network_interface_id = 5 [json_name = "network_interface_id"];
+
+  string network_load_balancer_arn = 6 [json_name = "network_load_balancer_arn"];
+
+  string owner_id = 7 [json_name = "owner_id"];
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+}
+
+// AwsEc2TransitGateway version is 0
+message AwsEc2TransitGateway {
+  int64 amazon_side_asn = 1 [json_name = "amazon_side_asn"];
+
+  string arn = 2;
+
+  string association_default_route_table_id = 3 [json_name = "association_default_route_table_id"];
+
+  string auto_accept_shared_attachments = 4 [json_name = "auto_accept_shared_attachments"];
+
+  string default_route_table_association = 5 [json_name = "default_route_table_association"];
+
+  string default_route_table_propagation = 6 [json_name = "default_route_table_propagation"];
+
+  string description = 7;
+
+  string dns_support = 8 [json_name = "dns_support"];
+
+  string id = 9;
+
+  string multicast_support = 10 [json_name = "multicast_support"];
+
+  string owner_id = 11 [json_name = "owner_id"];
+
+  string propagation_default_route_table_id = 12 [json_name = "propagation_default_route_table_id"];
+
+  map<string, string> tags = 13;
+
+  map<string, string> tags_all = 14 [json_name = "tags_all"];
+
+  repeated string transit_gateway_cidr_blocks = 15 [json_name = "transit_gateway_cidr_blocks"];
+
+  string vpn_ecmp_support = 16 [json_name = "vpn_ecmp_support"];
+
+  repeated Timeouts timeouts = 17;
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsEc2TransitGatewayConnect version is 0
+message AwsEc2TransitGatewayConnect {
+  string id = 1;
+
+  string protocol = 2;
+
+  map<string, string> tags = 3;
+
+  map<string, string> tags_all = 4 [json_name = "tags_all"];
+
+  bool transit_gateway_default_route_table_association = 5 [
+    json_name = "transit_gateway_default_route_table_association"
+  ];
+
+  bool transit_gateway_default_route_table_propagation = 6 [
+    json_name = "transit_gateway_default_route_table_propagation"
+  ];
+
+  string transit_gateway_id = 7 [json_name = "transit_gateway_id"];
+
+  string transport_attachment_id = 8 [json_name = "transport_attachment_id"];
+
+  repeated Timeouts timeouts = 9;
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+
+    string update = 3;
+  }
+}
+
+// AwsEc2TransitGatewayConnectPeer version is 0
+message AwsEc2TransitGatewayConnectPeer {
+  string arn = 1;
+
+  string bgp_asn = 2 [json_name = "bgp_asn"];
+
+  string bgp_peer_address = 3 [json_name = "bgp_peer_address"];
+
+  repeated string bgp_transit_gateway_addresses = 4 [json_name = "bgp_transit_gateway_addresses"];
+
+  string id = 5;
+
+  repeated string inside_cidr_blocks = 6 [json_name = "inside_cidr_blocks"];
+
+  string peer_address = 7 [json_name = "peer_address"];
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  string transit_gateway_address = 10 [json_name = "transit_gateway_address"];
+
+  string transit_gateway_attachment_id = 11 [json_name = "transit_gateway_attachment_id"];
+
+  repeated Timeouts timeouts = 12;
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsEc2TransitGatewayMulticastDomain version is 0
+message AwsEc2TransitGatewayMulticastDomain {
+  string arn = 1;
+
+  string auto_accept_shared_associations = 2 [json_name = "auto_accept_shared_associations"];
+
+  string id = 3;
+
+  string igmpv2_support = 4 [json_name = "igmpv2_support"];
+
+  string owner_id = 5 [json_name = "owner_id"];
+
+  string static_sources_support = 6 [json_name = "static_sources_support"];
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  string transit_gateway_id = 9 [json_name = "transit_gateway_id"];
+
+  repeated Timeouts timeouts = 10;
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsEc2TransitGatewayMulticastDomainAssociation version is 0
+message AwsEc2TransitGatewayMulticastDomainAssociation {
+  string id = 1;
+
+  string subnet_id = 2 [json_name = "subnet_id"];
+
+  string transit_gateway_attachment_id = 3 [json_name = "transit_gateway_attachment_id"];
+
+  string transit_gateway_multicast_domain_id = 4 [json_name = "transit_gateway_multicast_domain_id"];
+
+  repeated Timeouts timeouts = 5;
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsEc2TransitGatewayMulticastGroupMember version is 0
+message AwsEc2TransitGatewayMulticastGroupMember {
+  string group_ip_address = 1 [json_name = "group_ip_address"];
+
+  string id = 2;
+
+  string network_interface_id = 3 [json_name = "network_interface_id"];
+
+  string transit_gateway_multicast_domain_id = 4 [json_name = "transit_gateway_multicast_domain_id"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsEc2TransitGatewayMulticastGroupSource version is 0
+message AwsEc2TransitGatewayMulticastGroupSource {
+  string group_ip_address = 1 [json_name = "group_ip_address"];
+
+  string id = 2;
+
+  string network_interface_id = 3 [json_name = "network_interface_id"];
+
+  string transit_gateway_multicast_domain_id = 4 [json_name = "transit_gateway_multicast_domain_id"];
+
+  map<string, string> for_each = 5 [json_name = "for_each"];
+
+  repeated string depends_on = 6 [json_name = "depends_on"];
+
+  int32 count = 7;
+
+  string provider = 8;
+
+  terraform.v1.Lifecycle lifecycle = 9;
+}
+
+// AwsEc2TransitGatewayPeeringAttachment version is 0
+message AwsEc2TransitGatewayPeeringAttachment {
+  string id = 1;
+
+  string peer_account_id = 2 [json_name = "peer_account_id"];
+
+  string peer_region = 3 [json_name = "peer_region"];
+
+  string peer_transit_gateway_id = 4 [json_name = "peer_transit_gateway_id"];
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  string transit_gateway_id = 7 [json_name = "transit_gateway_id"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsEc2TransitGatewayPeeringAttachmentAccepter version is 0
+message AwsEc2TransitGatewayPeeringAttachmentAccepter {
+  string id = 1;
+
+  string peer_account_id = 2 [json_name = "peer_account_id"];
+
+  string peer_region = 3 [json_name = "peer_region"];
+
+  string peer_transit_gateway_id = 4 [json_name = "peer_transit_gateway_id"];
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  string transit_gateway_attachment_id = 7 [json_name = "transit_gateway_attachment_id"];
+
+  string transit_gateway_id = 8 [json_name = "transit_gateway_id"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+}
+
+// AwsEc2TransitGatewayPolicyTable version is 0
+message AwsEc2TransitGatewayPolicyTable {
+  string arn = 1;
+
+  string id = 2;
+
+  string state = 3;
+
+  map<string, string> tags = 4;
+
+  map<string, string> tags_all = 5 [json_name = "tags_all"];
+
+  string transit_gateway_id = 6 [json_name = "transit_gateway_id"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsEc2TransitGatewayPolicyTableAssociation version is 0
+message AwsEc2TransitGatewayPolicyTableAssociation {
+  string id = 1;
+
+  string resource_id = 2 [json_name = "resource_id"];
+
+  string resource_type = 3 [json_name = "resource_type"];
+
+  string transit_gateway_attachment_id = 4 [json_name = "transit_gateway_attachment_id"];
+
+  string transit_gateway_policy_table_id = 5 [json_name = "transit_gateway_policy_table_id"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsEc2TransitGatewayPrefixListReference version is 0
+message AwsEc2TransitGatewayPrefixListReference {
+  bool blackhole = 1;
+
+  string id = 2;
+
+  string prefix_list_id = 3 [json_name = "prefix_list_id"];
+
+  string prefix_list_owner_id = 4 [json_name = "prefix_list_owner_id"];
+
+  string transit_gateway_attachment_id = 5 [json_name = "transit_gateway_attachment_id"];
+
+  string transit_gateway_route_table_id = 6 [json_name = "transit_gateway_route_table_id"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsEc2TransitGatewayRoute version is 0
+message AwsEc2TransitGatewayRoute {
+  bool blackhole = 1;
+
+  string destination_cidr_block = 2 [json_name = "destination_cidr_block"];
+
+  string id = 3;
+
+  string transit_gateway_attachment_id = 4 [json_name = "transit_gateway_attachment_id"];
+
+  string transit_gateway_route_table_id = 5 [json_name = "transit_gateway_route_table_id"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsEc2TransitGatewayRouteTable version is 0
+message AwsEc2TransitGatewayRouteTable {
+  string arn = 1;
+
+  bool default_association_route_table = 2 [json_name = "default_association_route_table"];
+
+  bool default_propagation_route_table = 3 [json_name = "default_propagation_route_table"];
+
+  string id = 4;
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  string transit_gateway_id = 7 [json_name = "transit_gateway_id"];
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+}
+
+// AwsEc2TransitGatewayRouteTableAssociation version is 0
+message AwsEc2TransitGatewayRouteTableAssociation {
+  string id = 1;
+
+  bool replace_existing_association = 2 [json_name = "replace_existing_association"];
+
+  string resource_id = 3 [json_name = "resource_id"];
+
+  string resource_type = 4 [json_name = "resource_type"];
+
+  string transit_gateway_attachment_id = 5 [json_name = "transit_gateway_attachment_id"];
+
+  string transit_gateway_route_table_id = 6 [json_name = "transit_gateway_route_table_id"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsEc2TransitGatewayRouteTablePropagation version is 0
+message AwsEc2TransitGatewayRouteTablePropagation {
+  string id = 1;
+
+  string resource_id = 2 [json_name = "resource_id"];
+
+  string resource_type = 3 [json_name = "resource_type"];
+
+  string transit_gateway_attachment_id = 4 [json_name = "transit_gateway_attachment_id"];
+
+  string transit_gateway_route_table_id = 5 [json_name = "transit_gateway_route_table_id"];
+
+  map<string, string> for_each = 6 [json_name = "for_each"];
+
+  repeated string depends_on = 7 [json_name = "depends_on"];
+
+  int32 count = 8;
+
+  string provider = 9;
+
+  terraform.v1.Lifecycle lifecycle = 10;
+}
+
+// AwsEc2TransitGatewayVpcAttachment version is 0
+message AwsEc2TransitGatewayVpcAttachment {
+  string appliance_mode_support = 1 [json_name = "appliance_mode_support"];
+
+  string dns_support = 2 [json_name = "dns_support"];
+
+  string id = 3;
+
+  string ipv6_support = 4 [json_name = "ipv6_support"];
+
+  repeated string subnet_ids = 5 [json_name = "subnet_ids"];
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  bool transit_gateway_default_route_table_association = 8 [
+    json_name = "transit_gateway_default_route_table_association"
+  ];
+
+  bool transit_gateway_default_route_table_propagation = 9 [
+    json_name = "transit_gateway_default_route_table_propagation"
+  ];
+
+  string transit_gateway_id = 10 [json_name = "transit_gateway_id"];
+
+  string vpc_id = 11 [json_name = "vpc_id"];
+
+  string vpc_owner_id = 12 [json_name = "vpc_owner_id"];
+
+  map<string, string> for_each = 13 [json_name = "for_each"];
+
+  repeated string depends_on = 14 [json_name = "depends_on"];
+
+  int32 count = 15;
+
+  string provider = 16;
+
+  terraform.v1.Lifecycle lifecycle = 17;
+}
+
+// AwsEc2TransitGatewayVpcAttachmentAccepter version is 0
+message AwsEc2TransitGatewayVpcAttachmentAccepter {
+  string appliance_mode_support = 1 [json_name = "appliance_mode_support"];
+
+  string dns_support = 2 [json_name = "dns_support"];
+
+  string id = 3;
+
+  string ipv6_support = 4 [json_name = "ipv6_support"];
+
+  repeated string subnet_ids = 5 [json_name = "subnet_ids"];
+
+  map<string, string> tags = 6;
+
+  map<string, string> tags_all = 7 [json_name = "tags_all"];
+
+  string transit_gateway_attachment_id = 8 [json_name = "transit_gateway_attachment_id"];
+
+  bool transit_gateway_default_route_table_association = 9 [
+    json_name = "transit_gateway_default_route_table_association"
+  ];
+
+  bool transit_gateway_default_route_table_propagation = 10 [
+    json_name = "transit_gateway_default_route_table_propagation"
+  ];
+
+  string transit_gateway_id = 11 [json_name = "transit_gateway_id"];
+
+  string vpc_id = 12 [json_name = "vpc_id"];
+
+  string vpc_owner_id = 13 [json_name = "vpc_owner_id"];
+
+  map<string, string> for_each = 14 [json_name = "for_each"];
+
+  repeated string depends_on = 15 [json_name = "depends_on"];
+
+  int32 count = 16;
+
+  string provider = 17;
+
+  terraform.v1.Lifecycle lifecycle = 18;
+}

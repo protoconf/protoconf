@@ -1,0 +1,281 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsS3AccountPublicAccessBlock version is 0
+message AwsS3AccountPublicAccessBlock {
+  string account_id = 1 [json_name = "account_id"];
+
+  bool block_public_acls = 2 [json_name = "block_public_acls"];
+
+  bool block_public_policy = 3 [json_name = "block_public_policy"];
+
+  string id = 4;
+
+  bool ignore_public_acls = 5 [json_name = "ignore_public_acls"];
+
+  bool restrict_public_buckets = 6 [json_name = "restrict_public_buckets"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsS3Bucket version is 0
+message AwsS3Bucket {
+  string arn = 1;
+
+  string bucket = 2;
+
+  string bucket_domain_name = 3 [json_name = "bucket_domain_name"];
+
+  string bucket_regional_domain_name = 4 [json_name = "bucket_regional_domain_name"];
+
+  string hosted_zone_id = 5 [json_name = "hosted_zone_id"];
+
+  string id = 6;
+
+  string region = 7;
+
+  string website_domain = 8 [json_name = "website_domain"];
+
+  string website_endpoint = 9 [json_name = "website_endpoint"];
+
+  map<string, string> for_each = 10 [json_name = "for_each"];
+
+  repeated string depends_on = 11 [json_name = "depends_on"];
+
+  int32 count = 12;
+
+  string provider = 13;
+
+  terraform.v1.Lifecycle lifecycle = 14;
+}
+
+// AwsS3BucketObject version is 0
+message AwsS3BucketObject {
+  string body = 1;
+
+  string bucket = 2;
+
+  bool bucket_key_enabled = 3 [json_name = "bucket_key_enabled"];
+
+  string cache_control = 4 [json_name = "cache_control"];
+
+  string content_disposition = 5 [json_name = "content_disposition"];
+
+  string content_encoding = 6 [json_name = "content_encoding"];
+
+  string content_language = 7 [json_name = "content_language"];
+
+  int64 content_length = 8 [json_name = "content_length"];
+
+  string content_type = 9 [json_name = "content_type"];
+
+  string etag = 10;
+
+  string expiration = 11;
+
+  string expires = 12;
+
+  string id = 13;
+
+  string key = 14;
+
+  string last_modified = 15 [json_name = "last_modified"];
+
+  map<string, string> metadata = 16;
+
+  string object_lock_legal_hold_status = 17 [json_name = "object_lock_legal_hold_status"];
+
+  string object_lock_mode = 18 [json_name = "object_lock_mode"];
+
+  string object_lock_retain_until_date = 19 [json_name = "object_lock_retain_until_date"];
+
+  string range = 20;
+
+  string server_side_encryption = 21 [json_name = "server_side_encryption"];
+
+  string sse_kms_key_id = 22 [json_name = "sse_kms_key_id"];
+
+  string storage_class = 23 [json_name = "storage_class"];
+
+  map<string, string> tags = 24;
+
+  string version_id = 25 [json_name = "version_id"];
+
+  string website_redirect_location = 26 [json_name = "website_redirect_location"];
+
+  map<string, string> for_each = 27 [json_name = "for_each"];
+
+  repeated string depends_on = 28 [json_name = "depends_on"];
+
+  int32 count = 29;
+
+  string provider = 30;
+
+  terraform.v1.Lifecycle lifecycle = 31;
+}
+
+// AwsS3BucketObjects version is 0
+message AwsS3BucketObjects {
+  string bucket = 1;
+
+  repeated string common_prefixes = 2 [json_name = "common_prefixes"];
+
+  string delimiter = 3;
+
+  string encoding_type = 4 [json_name = "encoding_type"];
+
+  bool fetch_owner = 5 [json_name = "fetch_owner"];
+
+  string id = 6;
+
+  repeated string keys = 7;
+
+  int64 max_keys = 8 [json_name = "max_keys"];
+
+  repeated string owners = 9;
+
+  string prefix = 10;
+
+  string start_after = 11 [json_name = "start_after"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+}
+
+// AwsS3BucketPolicy version is 0
+message AwsS3BucketPolicy {
+  string bucket = 1;
+
+  string id = 2;
+
+  string policy = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsS3Object version is 0
+message AwsS3Object {
+  string body = 1;
+
+  string bucket = 2;
+
+  bool bucket_key_enabled = 3 [json_name = "bucket_key_enabled"];
+
+  string cache_control = 4 [json_name = "cache_control"];
+
+  string content_disposition = 5 [json_name = "content_disposition"];
+
+  string content_encoding = 6 [json_name = "content_encoding"];
+
+  string content_language = 7 [json_name = "content_language"];
+
+  int64 content_length = 8 [json_name = "content_length"];
+
+  string content_type = 9 [json_name = "content_type"];
+
+  string etag = 10;
+
+  string expiration = 11;
+
+  string expires = 12;
+
+  string id = 13;
+
+  string key = 14;
+
+  string last_modified = 15 [json_name = "last_modified"];
+
+  map<string, string> metadata = 16;
+
+  string object_lock_legal_hold_status = 17 [json_name = "object_lock_legal_hold_status"];
+
+  string object_lock_mode = 18 [json_name = "object_lock_mode"];
+
+  string object_lock_retain_until_date = 19 [json_name = "object_lock_retain_until_date"];
+
+  string range = 20;
+
+  string server_side_encryption = 21 [json_name = "server_side_encryption"];
+
+  string sse_kms_key_id = 22 [json_name = "sse_kms_key_id"];
+
+  string storage_class = 23 [json_name = "storage_class"];
+
+  map<string, string> tags = 24;
+
+  string version_id = 25 [json_name = "version_id"];
+
+  string website_redirect_location = 26 [json_name = "website_redirect_location"];
+
+  map<string, string> for_each = 27 [json_name = "for_each"];
+
+  repeated string depends_on = 28 [json_name = "depends_on"];
+
+  int32 count = 29;
+
+  string provider = 30;
+
+  terraform.v1.Lifecycle lifecycle = 31;
+}
+
+// AwsS3Objects version is 0
+message AwsS3Objects {
+  string bucket = 1;
+
+  repeated string common_prefixes = 2 [json_name = "common_prefixes"];
+
+  string delimiter = 3;
+
+  string encoding_type = 4 [json_name = "encoding_type"];
+
+  bool fetch_owner = 5 [json_name = "fetch_owner"];
+
+  string id = 6;
+
+  repeated string keys = 7;
+
+  int64 max_keys = 8 [json_name = "max_keys"];
+
+  repeated string owners = 9;
+
+  string prefix = 10;
+
+  string start_after = 11 [json_name = "start_after"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+}

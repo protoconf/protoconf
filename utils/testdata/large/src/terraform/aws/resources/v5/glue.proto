@@ -1,0 +1,1163 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.resources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsGlueCatalogDatabase version is 0
+message AwsGlueCatalogDatabase {
+  string arn = 1;
+
+  string catalog_id = 2 [json_name = "catalog_id"];
+
+  string description = 3;
+
+  string id = 4;
+
+  string location_uri = 5 [json_name = "location_uri"];
+
+  string name = 6;
+
+  map<string, string> parameters = 7;
+
+  map<string, string> tags = 8;
+
+  map<string, string> tags_all = 9 [json_name = "tags_all"];
+
+  repeated CreateTableDefaultPermission create_table_default_permission = 10 [json_name = "create_table_default_permission"];
+
+  TargetDatabase target_database = 11 [json_name = "target_database"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message CreateTableDefaultPermission {
+    repeated string permissions = 1;
+
+    Principal principal = 2;
+
+    message Principal {
+      string data_lake_principal_identifier = 1 [json_name = "data_lake_principal_identifier"];
+    }
+  }
+
+  message TargetDatabase {
+    string catalog_id = 1 [json_name = "catalog_id"];
+
+    string database_name = 2 [json_name = "database_name"];
+  }
+}
+
+// AwsGlueCatalogTable version is 0
+message AwsGlueCatalogTable {
+  string arn = 1;
+
+  string catalog_id = 2 [json_name = "catalog_id"];
+
+  string database_name = 3 [json_name = "database_name"];
+
+  string description = 4;
+
+  string id = 5;
+
+  string name = 6;
+
+  string owner = 7;
+
+  map<string, string> parameters = 8;
+
+  int64 retention = 9;
+
+  string table_type = 10 [json_name = "table_type"];
+
+  string view_expanded_text = 11 [json_name = "view_expanded_text"];
+
+  string view_original_text = 12 [json_name = "view_original_text"];
+
+  repeated PartitionIndex partition_index = 13 [json_name = "partition_index"];
+
+  repeated PartitionKeys partition_keys = 14 [json_name = "partition_keys"];
+
+  StorageDescriptor storage_descriptor = 15 [json_name = "storage_descriptor"];
+
+  TargetTable target_table = 16 [json_name = "target_table"];
+
+  map<string, string> for_each = 17 [json_name = "for_each"];
+
+  repeated string depends_on = 18 [json_name = "depends_on"];
+
+  int32 count = 19;
+
+  string provider = 20;
+
+  terraform.v1.Lifecycle lifecycle = 21;
+
+  message PartitionIndex {
+    string index_name = 1 [json_name = "index_name"];
+
+    string index_status = 2 [json_name = "index_status"];
+
+    repeated string keys = 3;
+  }
+
+  message PartitionKeys {
+    string comment = 1;
+
+    string name = 2;
+
+    string type = 3;
+  }
+
+  message StorageDescriptor {
+    repeated string bucket_columns = 1 [json_name = "bucket_columns"];
+
+    bool compressed = 2;
+
+    string input_format = 3 [json_name = "input_format"];
+
+    string location = 4;
+
+    int64 number_of_buckets = 5 [json_name = "number_of_buckets"];
+
+    string output_format = 6 [json_name = "output_format"];
+
+    map<string, string> parameters = 7;
+
+    bool stored_as_sub_directories = 8 [json_name = "stored_as_sub_directories"];
+
+    repeated Columns columns = 9;
+
+    SchemaReference schema_reference = 10 [json_name = "schema_reference"];
+
+    SerDeInfo ser_de_info = 11 [json_name = "ser_de_info"];
+
+    SkewedInfo skewed_info = 12 [json_name = "skewed_info"];
+
+    repeated SortColumns sort_columns = 13 [json_name = "sort_columns"];
+
+    message Columns {
+      string comment = 1;
+
+      string name = 2;
+
+      map<string, string> parameters = 3;
+
+      string type = 4;
+    }
+
+    message SchemaReference {
+      string schema_version_id = 1 [json_name = "schema_version_id"];
+
+      int64 schema_version_number = 2 [json_name = "schema_version_number"];
+
+      SchemaId schema_id = 3 [json_name = "schema_id"];
+
+      message SchemaId {
+        string registry_name = 1 [json_name = "registry_name"];
+
+        string schema_arn = 2 [json_name = "schema_arn"];
+
+        string schema_name = 3 [json_name = "schema_name"];
+      }
+    }
+
+    message SerDeInfo {
+      string name = 1;
+
+      map<string, string> parameters = 2;
+
+      string serialization_library = 3 [json_name = "serialization_library"];
+    }
+
+    message SkewedInfo {
+      repeated string skewed_column_names = 1 [json_name = "skewed_column_names"];
+
+      map<string, string> skewed_column_value_location_maps = 2 [json_name = "skewed_column_value_location_maps"];
+
+      repeated string skewed_column_values = 3 [json_name = "skewed_column_values"];
+    }
+
+    message SortColumns {
+      string column = 1;
+
+      int64 sort_order = 2 [json_name = "sort_order"];
+    }
+  }
+
+  message TargetTable {
+    string catalog_id = 1 [json_name = "catalog_id"];
+
+    string database_name = 2 [json_name = "database_name"];
+
+    string name = 3;
+  }
+}
+
+// AwsGlueClassifier version is 0
+message AwsGlueClassifier {
+  string id = 1;
+
+  string name = 2;
+
+  CsvClassifier csv_classifier = 3 [json_name = "csv_classifier"];
+
+  GrokClassifier grok_classifier = 4 [json_name = "grok_classifier"];
+
+  JsonClassifier json_classifier = 5 [json_name = "json_classifier"];
+
+  XmlClassifier xml_classifier = 6 [json_name = "xml_classifier"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message CsvClassifier {
+    bool allow_single_column = 1 [json_name = "allow_single_column"];
+
+    string contains_header = 2 [json_name = "contains_header"];
+
+    bool custom_datatype_configured = 3 [json_name = "custom_datatype_configured"];
+
+    repeated string custom_datatypes = 4 [json_name = "custom_datatypes"];
+
+    string delimiter = 5;
+
+    bool disable_value_trimming = 6 [json_name = "disable_value_trimming"];
+
+    repeated string header = 7;
+
+    string quote_symbol = 8 [json_name = "quote_symbol"];
+  }
+
+  message GrokClassifier {
+    string classification = 1;
+
+    string custom_patterns = 2 [json_name = "custom_patterns"];
+
+    string grok_pattern = 3 [json_name = "grok_pattern"];
+  }
+
+  message JsonClassifier {
+    string json_path = 1 [json_name = "json_path"];
+  }
+
+  message XmlClassifier {
+    string classification = 1;
+
+    string row_tag = 2 [json_name = "row_tag"];
+  }
+}
+
+// AwsGlueConnection version is 0
+message AwsGlueConnection {
+  string arn = 1;
+
+  string catalog_id = 2 [json_name = "catalog_id"];
+
+  map<string, string> connection_properties = 3 [json_name = "connection_properties"];
+
+  string connection_type = 4 [json_name = "connection_type"];
+
+  string description = 5;
+
+  string id = 6;
+
+  repeated string match_criteria = 7 [json_name = "match_criteria"];
+
+  string name = 8;
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  PhysicalConnectionRequirements physical_connection_requirements = 11 [json_name = "physical_connection_requirements"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message PhysicalConnectionRequirements {
+    string availability_zone = 1 [json_name = "availability_zone"];
+
+    repeated string security_group_id_list = 2 [json_name = "security_group_id_list"];
+
+    string subnet_id = 3 [json_name = "subnet_id"];
+  }
+}
+
+// AwsGlueCrawler version is 0
+message AwsGlueCrawler {
+  string arn = 1;
+
+  repeated string classifiers = 2;
+
+  string configuration = 3;
+
+  string database_name = 4 [json_name = "database_name"];
+
+  string description = 5;
+
+  string id = 6;
+
+  string name = 7;
+
+  string role = 8;
+
+  string schedule = 9;
+
+  string security_configuration = 10 [json_name = "security_configuration"];
+
+  string table_prefix = 11 [json_name = "table_prefix"];
+
+  map<string, string> tags = 12;
+
+  map<string, string> tags_all = 13 [json_name = "tags_all"];
+
+  repeated CatalogTarget catalog_target = 14 [json_name = "catalog_target"];
+
+  repeated DeltaTarget delta_target = 15 [json_name = "delta_target"];
+
+  repeated DynamodbTarget dynamodb_target = 16 [json_name = "dynamodb_target"];
+
+  repeated JdbcTarget jdbc_target = 17 [json_name = "jdbc_target"];
+
+  LakeFormationConfiguration lake_formation_configuration = 18 [json_name = "lake_formation_configuration"];
+
+  LineageConfiguration lineage_configuration = 19 [json_name = "lineage_configuration"];
+
+  repeated MongodbTarget mongodb_target = 20 [json_name = "mongodb_target"];
+
+  RecrawlPolicy recrawl_policy = 21 [json_name = "recrawl_policy"];
+
+  repeated S3Target s3_target = 22 [json_name = "s3_target"];
+
+  SchemaChangePolicy schema_change_policy = 23 [json_name = "schema_change_policy"];
+
+  map<string, string> for_each = 24 [json_name = "for_each"];
+
+  repeated string depends_on = 25 [json_name = "depends_on"];
+
+  int32 count = 26;
+
+  string provider = 27;
+
+  terraform.v1.Lifecycle lifecycle = 28;
+
+  message CatalogTarget {
+    string connection_name = 1 [json_name = "connection_name"];
+
+    string database_name = 2 [json_name = "database_name"];
+
+    string dlq_event_queue_arn = 3 [json_name = "dlq_event_queue_arn"];
+
+    string event_queue_arn = 4 [json_name = "event_queue_arn"];
+
+    repeated string tables = 5;
+  }
+
+  message DeltaTarget {
+    string connection_name = 1 [json_name = "connection_name"];
+
+    bool create_native_delta_table = 2 [json_name = "create_native_delta_table"];
+
+    repeated string delta_tables = 3 [json_name = "delta_tables"];
+
+    bool write_manifest = 4 [json_name = "write_manifest"];
+  }
+
+  message DynamodbTarget {
+    string path = 1;
+
+    bool scan_all = 2 [json_name = "scan_all"];
+
+    int64 scan_rate = 3 [json_name = "scan_rate"];
+  }
+
+  message JdbcTarget {
+    string connection_name = 1 [json_name = "connection_name"];
+
+    repeated string enable_additional_metadata = 2 [json_name = "enable_additional_metadata"];
+
+    repeated string exclusions = 3;
+
+    string path = 4;
+  }
+
+  message LakeFormationConfiguration {
+    string account_id = 1 [json_name = "account_id"];
+
+    bool use_lake_formation_credentials = 2 [json_name = "use_lake_formation_credentials"];
+  }
+
+  message LineageConfiguration {
+    string crawler_lineage_settings = 1 [json_name = "crawler_lineage_settings"];
+  }
+
+  message MongodbTarget {
+    string connection_name = 1 [json_name = "connection_name"];
+
+    string path = 2;
+
+    bool scan_all = 3 [json_name = "scan_all"];
+  }
+
+  message RecrawlPolicy {
+    string recrawl_behavior = 1 [json_name = "recrawl_behavior"];
+  }
+
+  message S3Target {
+    string connection_name = 1 [json_name = "connection_name"];
+
+    string dlq_event_queue_arn = 2 [json_name = "dlq_event_queue_arn"];
+
+    string event_queue_arn = 3 [json_name = "event_queue_arn"];
+
+    repeated string exclusions = 4;
+
+    string path = 5;
+
+    int64 sample_size = 6 [json_name = "sample_size"];
+  }
+
+  message SchemaChangePolicy {
+    string delete_behavior = 1 [json_name = "delete_behavior"];
+
+    string update_behavior = 2 [json_name = "update_behavior"];
+  }
+}
+
+// AwsGlueDataCatalogEncryptionSettings version is 0
+message AwsGlueDataCatalogEncryptionSettings {
+  string catalog_id = 1 [json_name = "catalog_id"];
+
+  string id = 2;
+
+  DataCatalogEncryptionSettings data_catalog_encryption_settings = 3 [json_name = "data_catalog_encryption_settings"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+
+  message DataCatalogEncryptionSettings {
+    ConnectionPasswordEncryption connection_password_encryption = 1 [json_name = "connection_password_encryption"];
+
+    EncryptionAtRest encryption_at_rest = 2 [json_name = "encryption_at_rest"];
+
+    message ConnectionPasswordEncryption {
+      string aws_kms_key_id = 1 [json_name = "aws_kms_key_id"];
+
+      bool return_connection_password_encrypted = 2 [json_name = "return_connection_password_encrypted"];
+    }
+
+    message EncryptionAtRest {
+      string catalog_encryption_mode = 1 [json_name = "catalog_encryption_mode"];
+
+      string sse_aws_kms_key_id = 2 [json_name = "sse_aws_kms_key_id"];
+    }
+  }
+}
+
+// AwsGlueDataQualityRuleset version is 0
+message AwsGlueDataQualityRuleset {
+  string arn = 1;
+
+  string created_on = 2 [json_name = "created_on"];
+
+  string description = 3;
+
+  string id = 4;
+
+  string last_modified_on = 5 [json_name = "last_modified_on"];
+
+  string name = 6;
+
+  string recommendation_run_id = 7 [json_name = "recommendation_run_id"];
+
+  string ruleset = 8;
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  TargetTable target_table = 11 [json_name = "target_table"];
+
+  map<string, string> for_each = 12 [json_name = "for_each"];
+
+  repeated string depends_on = 13 [json_name = "depends_on"];
+
+  int32 count = 14;
+
+  string provider = 15;
+
+  terraform.v1.Lifecycle lifecycle = 16;
+
+  message TargetTable {
+    string database_name = 1 [json_name = "database_name"];
+
+    string table_name = 2 [json_name = "table_name"];
+  }
+}
+
+// AwsGlueDevEndpoint version is 0
+message AwsGlueDevEndpoint {
+  map<string, string> arguments = 1;
+
+  string arn = 2;
+
+  string availability_zone = 3 [json_name = "availability_zone"];
+
+  string extra_jars_s3_path = 4 [json_name = "extra_jars_s3_path"];
+
+  string extra_python_libs_s3_path = 5 [json_name = "extra_python_libs_s3_path"];
+
+  string failure_reason = 6 [json_name = "failure_reason"];
+
+  string glue_version = 7 [json_name = "glue_version"];
+
+  string id = 8;
+
+  string name = 9;
+
+  int64 number_of_nodes = 10 [json_name = "number_of_nodes"];
+
+  int64 number_of_workers = 11 [json_name = "number_of_workers"];
+
+  string private_address = 12 [json_name = "private_address"];
+
+  string public_address = 13 [json_name = "public_address"];
+
+  string public_key = 14 [json_name = "public_key"];
+
+  repeated string public_keys = 15 [json_name = "public_keys"];
+
+  string role_arn = 16 [json_name = "role_arn"];
+
+  string security_configuration = 17 [json_name = "security_configuration"];
+
+  repeated string security_group_ids = 18 [json_name = "security_group_ids"];
+
+  string status = 19;
+
+  string subnet_id = 20 [json_name = "subnet_id"];
+
+  map<string, string> tags = 21;
+
+  map<string, string> tags_all = 22 [json_name = "tags_all"];
+
+  string vpc_id = 23 [json_name = "vpc_id"];
+
+  string worker_type = 24 [json_name = "worker_type"];
+
+  string yarn_endpoint_address = 25 [json_name = "yarn_endpoint_address"];
+
+  int64 zeppelin_remote_spark_interpreter_port = 26 [
+    json_name = "zeppelin_remote_spark_interpreter_port"
+  ];
+
+  map<string, string> for_each = 27 [json_name = "for_each"];
+
+  repeated string depends_on = 28 [json_name = "depends_on"];
+
+  int32 count = 29;
+
+  string provider = 30;
+
+  terraform.v1.Lifecycle lifecycle = 31;
+}
+
+// AwsGlueJob version is 0
+message AwsGlueJob {
+  string arn = 1;
+
+  repeated string connections = 2;
+
+  map<string, string> default_arguments = 3 [json_name = "default_arguments"];
+
+  string description = 4;
+
+  string execution_class = 5 [json_name = "execution_class"];
+
+  string glue_version = 6 [json_name = "glue_version"];
+
+  string id = 7;
+
+  int64 max_capacity = 8 [json_name = "max_capacity"];
+
+  int64 max_retries = 9 [json_name = "max_retries"];
+
+  string name = 10;
+
+  map<string, string> non_overridable_arguments = 11 [json_name = "non_overridable_arguments"];
+
+  int64 number_of_workers = 12 [json_name = "number_of_workers"];
+
+  string role_arn = 13 [json_name = "role_arn"];
+
+  string security_configuration = 14 [json_name = "security_configuration"];
+
+  map<string, string> tags = 15;
+
+  map<string, string> tags_all = 16 [json_name = "tags_all"];
+
+  int64 timeout = 17;
+
+  string worker_type = 18 [json_name = "worker_type"];
+
+  Command command = 19;
+
+  ExecutionProperty execution_property = 20 [json_name = "execution_property"];
+
+  NotificationProperty notification_property = 21 [json_name = "notification_property"];
+
+  map<string, string> for_each = 22 [json_name = "for_each"];
+
+  repeated string depends_on = 23 [json_name = "depends_on"];
+
+  int32 count = 24;
+
+  string provider = 25;
+
+  terraform.v1.Lifecycle lifecycle = 26;
+
+  message Command {
+    string name = 1;
+
+    string python_version = 2 [json_name = "python_version"];
+
+    string script_location = 3 [json_name = "script_location"];
+  }
+
+  message ExecutionProperty {
+    int64 max_concurrent_runs = 1 [json_name = "max_concurrent_runs"];
+  }
+
+  message NotificationProperty {
+    int64 notify_delay_after = 1 [json_name = "notify_delay_after"];
+  }
+}
+
+// AwsGlueMlTransform version is 0
+message AwsGlueMlTransform {
+  string arn = 1;
+
+  string description = 2;
+
+  string glue_version = 3 [json_name = "glue_version"];
+
+  string id = 4;
+
+  int64 label_count = 5 [json_name = "label_count"];
+
+  int64 max_capacity = 6 [json_name = "max_capacity"];
+
+  int64 max_retries = 7 [json_name = "max_retries"];
+
+  string name = 8;
+
+  int64 number_of_workers = 9 [json_name = "number_of_workers"];
+
+  string role_arn = 10 [json_name = "role_arn"];
+
+  repeated Schema schema = 11;
+
+  map<string, string> tags = 12;
+
+  map<string, string> tags_all = 13 [json_name = "tags_all"];
+
+  int64 timeout = 14;
+
+  string worker_type = 15 [json_name = "worker_type"];
+
+  repeated InputRecordTables input_record_tables = 16 [json_name = "input_record_tables"];
+
+  Parameters parameters = 17;
+
+  map<string, string> for_each = 18 [json_name = "for_each"];
+
+  repeated string depends_on = 19 [json_name = "depends_on"];
+
+  int32 count = 20;
+
+  string provider = 21;
+
+  terraform.v1.Lifecycle lifecycle = 22;
+
+  message Schema {
+    // data_type: string
+    string data_type = 1 [json_name = "data_type"];
+
+    // name: string
+    string name = 2;
+  }
+
+  message InputRecordTables {
+    string catalog_id = 1 [json_name = "catalog_id"];
+
+    string connection_name = 2 [json_name = "connection_name"];
+
+    string database_name = 3 [json_name = "database_name"];
+
+    string table_name = 4 [json_name = "table_name"];
+  }
+
+  message Parameters {
+    string transform_type = 1 [json_name = "transform_type"];
+
+    FindMatchesParameters find_matches_parameters = 2 [json_name = "find_matches_parameters"];
+
+    message FindMatchesParameters {
+      int64 accuracy_cost_trade_off = 1 [json_name = "accuracy_cost_trade_off"];
+
+      bool enforce_provided_labels = 2 [json_name = "enforce_provided_labels"];
+
+      int64 precision_recall_trade_off = 3 [json_name = "precision_recall_trade_off"];
+
+      string primary_key_column_name = 4 [json_name = "primary_key_column_name"];
+    }
+  }
+}
+
+// AwsGluePartition version is 0
+message AwsGluePartition {
+  string catalog_id = 1 [json_name = "catalog_id"];
+
+  string creation_time = 2 [json_name = "creation_time"];
+
+  string database_name = 3 [json_name = "database_name"];
+
+  string id = 4;
+
+  string last_accessed_time = 5 [json_name = "last_accessed_time"];
+
+  string last_analyzed_time = 6 [json_name = "last_analyzed_time"];
+
+  map<string, string> parameters = 7;
+
+  repeated string partition_values = 8 [json_name = "partition_values"];
+
+  string table_name = 9 [json_name = "table_name"];
+
+  StorageDescriptor storage_descriptor = 10 [json_name = "storage_descriptor"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message StorageDescriptor {
+    repeated string bucket_columns = 1 [json_name = "bucket_columns"];
+
+    bool compressed = 2;
+
+    string input_format = 3 [json_name = "input_format"];
+
+    string location = 4;
+
+    int64 number_of_buckets = 5 [json_name = "number_of_buckets"];
+
+    string output_format = 6 [json_name = "output_format"];
+
+    map<string, string> parameters = 7;
+
+    bool stored_as_sub_directories = 8 [json_name = "stored_as_sub_directories"];
+
+    repeated Columns columns = 9;
+
+    SerDeInfo ser_de_info = 10 [json_name = "ser_de_info"];
+
+    SkewedInfo skewed_info = 11 [json_name = "skewed_info"];
+
+    repeated SortColumns sort_columns = 12 [json_name = "sort_columns"];
+
+    message Columns {
+      string comment = 1;
+
+      string name = 2;
+
+      string type = 3;
+    }
+
+    message SerDeInfo {
+      string name = 1;
+
+      map<string, string> parameters = 2;
+
+      string serialization_library = 3 [json_name = "serialization_library"];
+    }
+
+    message SkewedInfo {
+      repeated string skewed_column_names = 1 [json_name = "skewed_column_names"];
+
+      map<string, string> skewed_column_value_location_maps = 2 [json_name = "skewed_column_value_location_maps"];
+
+      repeated string skewed_column_values = 3 [json_name = "skewed_column_values"];
+    }
+
+    message SortColumns {
+      string column = 1;
+
+      int64 sort_order = 2 [json_name = "sort_order"];
+    }
+  }
+}
+
+// AwsGluePartitionIndex version is 0
+message AwsGluePartitionIndex {
+  string catalog_id = 1 [json_name = "catalog_id"];
+
+  string database_name = 2 [json_name = "database_name"];
+
+  string id = 3;
+
+  string table_name = 4 [json_name = "table_name"];
+
+  PartitionIndex partition_index = 5 [json_name = "partition_index"];
+
+  repeated Timeouts timeouts = 6;
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+
+  message PartitionIndex {
+    string index_name = 1 [json_name = "index_name"];
+
+    string index_status = 2 [json_name = "index_status"];
+
+    repeated string keys = 3;
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsGlueRegistry version is 0
+message AwsGlueRegistry {
+  string arn = 1;
+
+  string description = 2;
+
+  string id = 3;
+
+  string registry_name = 4 [json_name = "registry_name"];
+
+  map<string, string> tags = 5;
+
+  map<string, string> tags_all = 6 [json_name = "tags_all"];
+
+  map<string, string> for_each = 7 [json_name = "for_each"];
+
+  repeated string depends_on = 8 [json_name = "depends_on"];
+
+  int32 count = 9;
+
+  string provider = 10;
+
+  terraform.v1.Lifecycle lifecycle = 11;
+}
+
+// AwsGlueResourcePolicy version is 0
+message AwsGlueResourcePolicy {
+  string enable_hybrid = 1 [json_name = "enable_hybrid"];
+
+  string id = 2;
+
+  string policy = 3;
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+}
+
+// AwsGlueSchema version is 0
+message AwsGlueSchema {
+  string arn = 1;
+
+  string compatibility = 2;
+
+  string data_format = 3 [json_name = "data_format"];
+
+  string description = 4;
+
+  string id = 5;
+
+  int64 latest_schema_version = 6 [json_name = "latest_schema_version"];
+
+  int64 next_schema_version = 7 [json_name = "next_schema_version"];
+
+  string registry_arn = 8 [json_name = "registry_arn"];
+
+  string registry_name = 9 [json_name = "registry_name"];
+
+  int64 schema_checkpoint = 10 [json_name = "schema_checkpoint"];
+
+  string schema_definition = 11 [json_name = "schema_definition"];
+
+  string schema_name = 12 [json_name = "schema_name"];
+
+  map<string, string> tags = 13;
+
+  map<string, string> tags_all = 14 [json_name = "tags_all"];
+
+  map<string, string> for_each = 15 [json_name = "for_each"];
+
+  repeated string depends_on = 16 [json_name = "depends_on"];
+
+  int32 count = 17;
+
+  string provider = 18;
+
+  terraform.v1.Lifecycle lifecycle = 19;
+}
+
+// AwsGlueSecurityConfiguration version is 0
+message AwsGlueSecurityConfiguration {
+  string id = 1;
+
+  string name = 2;
+
+  EncryptionConfiguration encryption_configuration = 3 [json_name = "encryption_configuration"];
+
+  map<string, string> for_each = 4 [json_name = "for_each"];
+
+  repeated string depends_on = 5 [json_name = "depends_on"];
+
+  int32 count = 6;
+
+  string provider = 7;
+
+  terraform.v1.Lifecycle lifecycle = 8;
+
+  message EncryptionConfiguration {
+    CloudwatchEncryption cloudwatch_encryption = 1 [json_name = "cloudwatch_encryption"];
+
+    JobBookmarksEncryption job_bookmarks_encryption = 2 [json_name = "job_bookmarks_encryption"];
+
+    S3Encryption s3_encryption = 3 [json_name = "s3_encryption"];
+
+    message CloudwatchEncryption {
+      string cloudwatch_encryption_mode = 1 [json_name = "cloudwatch_encryption_mode"];
+
+      string kms_key_arn = 2 [json_name = "kms_key_arn"];
+    }
+
+    message JobBookmarksEncryption {
+      string job_bookmarks_encryption_mode = 1 [json_name = "job_bookmarks_encryption_mode"];
+
+      string kms_key_arn = 2 [json_name = "kms_key_arn"];
+    }
+
+    message S3Encryption {
+      string kms_key_arn = 1 [json_name = "kms_key_arn"];
+
+      string s3_encryption_mode = 2 [json_name = "s3_encryption_mode"];
+    }
+  }
+}
+
+// AwsGlueTrigger version is 0
+message AwsGlueTrigger {
+  string arn = 1;
+
+  string description = 2;
+
+  bool enabled = 3;
+
+  string id = 4;
+
+  string name = 5;
+
+  string schedule = 6;
+
+  bool start_on_creation = 7 [json_name = "start_on_creation"];
+
+  string state = 8;
+
+  map<string, string> tags = 9;
+
+  map<string, string> tags_all = 10 [json_name = "tags_all"];
+
+  string type = 11;
+
+  string workflow_name = 12 [json_name = "workflow_name"];
+
+  repeated Actions actions = 13;
+
+  repeated EventBatchingCondition event_batching_condition = 14 [json_name = "event_batching_condition"];
+
+  Predicate predicate = 15;
+
+  repeated Timeouts timeouts = 16;
+
+  map<string, string> for_each = 17 [json_name = "for_each"];
+
+  repeated string depends_on = 18 [json_name = "depends_on"];
+
+  int32 count = 19;
+
+  string provider = 20;
+
+  terraform.v1.Lifecycle lifecycle = 21;
+
+  message Actions {
+    map<string, string> arguments = 1;
+
+    string crawler_name = 2 [json_name = "crawler_name"];
+
+    string job_name = 3 [json_name = "job_name"];
+
+    string security_configuration = 4 [json_name = "security_configuration"];
+
+    int64 timeout = 5;
+
+    NotificationProperty notification_property = 6 [json_name = "notification_property"];
+
+    message NotificationProperty {
+      int64 notify_delay_after = 1 [json_name = "notify_delay_after"];
+    }
+  }
+
+  message EventBatchingCondition {
+    int64 batch_size = 1 [json_name = "batch_size"];
+
+    int64 batch_window = 2 [json_name = "batch_window"];
+  }
+
+  message Predicate {
+    string logical = 1;
+
+    repeated Conditions conditions = 2;
+
+    message Conditions {
+      string crawl_state = 1 [json_name = "crawl_state"];
+
+      string crawler_name = 2 [json_name = "crawler_name"];
+
+      string job_name = 3 [json_name = "job_name"];
+
+      string logical_operator = 4 [json_name = "logical_operator"];
+
+      string state = 5;
+    }
+  }
+
+  message Timeouts {
+    string create = 1;
+
+    string delete = 2;
+  }
+}
+
+// AwsGlueUserDefinedFunction version is 0
+message AwsGlueUserDefinedFunction {
+  string arn = 1;
+
+  string catalog_id = 2 [json_name = "catalog_id"];
+
+  string class_name = 3 [json_name = "class_name"];
+
+  string create_time = 4 [json_name = "create_time"];
+
+  string database_name = 5 [json_name = "database_name"];
+
+  string id = 6;
+
+  string name = 7;
+
+  string owner_name = 8 [json_name = "owner_name"];
+
+  string owner_type = 9 [json_name = "owner_type"];
+
+  repeated ResourceUris resource_uris = 10 [json_name = "resource_uris"];
+
+  map<string, string> for_each = 11 [json_name = "for_each"];
+
+  repeated string depends_on = 12 [json_name = "depends_on"];
+
+  int32 count = 13;
+
+  string provider = 14;
+
+  terraform.v1.Lifecycle lifecycle = 15;
+
+  message ResourceUris {
+    string resource_type = 1 [json_name = "resource_type"];
+
+    string uri = 2;
+  }
+}
+
+// AwsGlueWorkflow version is 0
+message AwsGlueWorkflow {
+  string arn = 1;
+
+  map<string, string> default_run_properties = 2 [json_name = "default_run_properties"];
+
+  string description = 3;
+
+  string id = 4;
+
+  int64 max_concurrent_runs = 5 [json_name = "max_concurrent_runs"];
+
+  string name = 6;
+
+  map<string, string> tags = 7;
+
+  map<string, string> tags_all = 8 [json_name = "tags_all"];
+
+  map<string, string> for_each = 9 [json_name = "for_each"];
+
+  repeated string depends_on = 10 [json_name = "depends_on"];
+
+  int32 count = 11;
+
+  string provider = 12;
+
+  terraform.v1.Lifecycle lifecycle = 13;
+}

@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+// Provider: aws 5.2.0
+package terraform.aws.datasources.v5;
+
+import "terraform/v1/meta.proto";
+
+// AwsAppintegrationsEventIntegration version is 0
+message AwsAppintegrationsEventIntegration {
+  string arn = 1;
+
+  string description = 2;
+
+  repeated EventFilter event_filter = 3 [json_name = "event_filter"];
+
+  string eventbridge_bus = 4 [json_name = "eventbridge_bus"];
+
+  string id = 5;
+
+  string name = 6;
+
+  map<string, string> tags = 7;
+
+  map<string, string> for_each = 8 [json_name = "for_each"];
+
+  repeated string depends_on = 9 [json_name = "depends_on"];
+
+  int32 count = 10;
+
+  string provider = 11;
+
+  terraform.v1.Lifecycle lifecycle = 12;
+
+  message EventFilter {
+    // source: string
+    string source = 1;
+  }
+}

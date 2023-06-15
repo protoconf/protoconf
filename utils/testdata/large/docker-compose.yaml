@@ -1,0 +1,63 @@
+x-variables:
+    flag_initial_cluster_token: &flag_initial_cluster_token '--initial-cluster-token=mys3cr3ttok3n'
+    common_settings: &common_settings
+        image: quay.io/coreos/etcd:v3.5.9
+        entrypoint: /usr/local/bin/etcd
+        ports:
+            - 2379
+
+services:
+    etcd-1:
+        <<: *common_settings
+        ports:
+          - "2379:2379"
+        command:
+            - '--name=etcd-1'
+            - '--initial-advertise-peer-urls=http://etcd-1:2380'
+            - '--listen-peer-urls=http://0.0.0.0:2380'
+            - '--listen-client-urls=http://0.0.0.0:2379'
+            - '--advertise-client-urls=http://etcd-1:2379'
+            - '--heartbeat-interval=250'
+            - '--election-timeout=1250'
+            - '--initial-cluster=etcd-1=http://etcd-1:2380,etcd-2=http://etcd-2:2380,etcd-3=http://etcd-3:2380'
+            - '--initial-cluster-state=new'
+            - *flag_initial_cluster_token
+        volumes:
+            - etcd1:/etcd_data
+
+    etcd-2:
+        <<: *common_settings
+        command:
+            - '--name=etcd-2'
+            - '--initial-advertise-peer-urls=http://etcd-2:2380'
+            - '--listen-peer-urls=http://0.0.0.0:2380'
+            - '--listen-client-urls=http://0.0.0.0:2379'
+            - '--advertise-client-urls=http://etcd-2:2379'
+            - '--heartbeat-interval=250'
+            - '--election-timeout=1250'
+            - '--initial-cluster=etcd-1=http://etcd-1:2380,etcd-2=http://etcd-2:2380,etcd-3=http://etcd-3:2380'
+            - '--initial-cluster-state=new'
+            - *flag_initial_cluster_token
+        volumes:
+            - etcd2:/etcd_data
+
+    etcd-3:
+        <<: *common_settings
+        command:
+            - '--name=etcd-3'
+            - '--initial-advertise-peer-urls=http://etcd-3:2380'
+            - '--listen-peer-urls=http://0.0.0.0:2380'
+            - '--listen-client-urls=http://0.0.0.0:2379'
+            - '--advertise-client-urls=http://etcd-3:2379'
+            - '--heartbeat-interval=250'
+            - '--election-timeout=1250'
+            - '--initial-cluster=etcd-1=http://etcd-1:2380,etcd-2=http://etcd-2:2380,etcd-3=http://etcd-3:2380'
+            - '--initial-cluster-state=new'
+            - *flag_initial_cluster_token
+        volumes:
+            - etcd3:/etcd_data
+
+volumes:
+    etcd1:
+    etcd2:
+    etcd3:
