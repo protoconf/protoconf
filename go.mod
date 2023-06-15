@@ -25,7 +25,7 @@ require (
 	github.com/sajari/fuzzy v1.0.0
 	github.com/smintz/starlarkobject v0.0.0-20221130044148-40067250eba0
 	github.com/stretchr/testify v1.8.4
-	go.starlark.net v0.0.0-20230525235612-a134d8f9ddca
+	go.starlark.net v0.0.0-20230612165344-9532f5667272
 	go.uber.org/zap v1.24.0
 	golang.org/x/net v0.10.0
 	golang.org/x/sync v0.2.0
