@@ -223,6 +223,14 @@ func LoadLocalProtoFilesFast(root string) (*protoregistry.Files, error) {
 		return nil, fmt.Errorf("parser: %v", err)
 	}
 	fds := &descriptorpb.FileDescriptorSet{File: descriptors}
+	protoregistry.GlobalFiles.RangeFiles(func(fd protoreflect.FileDescriptor) bool {
+		if strings.HasPrefix(fd.Path(), "google") {
+			fds.File = append(fds.File,
+				protodesc.ToFileDescriptorProto(fd),
+			)
+		}
+		return true
+	})
 	fileoptions := &protodesc.FileOptions{AllowUnresolvable: true}
 	protoFiles, err := fileoptions.NewFiles(fds)
 	if err != nil {
