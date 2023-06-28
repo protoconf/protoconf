@@ -7,7 +7,7 @@ require (
 	buf.build/gen/go/bufbuild/reflect/protocolbuffers/go v1.30.0-20230614163729-bd7f6aa5126c.1
 	github.com/Masterminds/sprig/v3 v3.2.3
 	github.com/bgentry/go-netrc v0.0.0-20140422174119-9fd32a8b3d3d
-	github.com/bufbuild/connect-go v1.8.0
+	github.com/bufbuild/connect-go v1.9.0
 	github.com/fsnotify/fsnotify v1.6.0
 	github.com/ghodss/yaml v1.0.0
 	github.com/golang/protobuf v1.5.3
@@ -31,7 +31,7 @@ require (
 	golang.org/x/net v0.11.0
 	golang.org/x/sync v0.3.0
 	google.golang.org/grpc v1.56.1
-	google.golang.org/protobuf v1.30.0
+	google.golang.org/protobuf v1.31.0
 )
 
 require (
