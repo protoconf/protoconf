@@ -1,0 +1,1 @@
+load("mutable:bad_proto_file", "value")

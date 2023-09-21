@@ -1,0 +1,1 @@
+load("mutable:bad_json", "value")
