@@ -5,12 +5,9 @@ import (
 	"hash/fnv"
 	"sort"
 
-	"github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/ptypes"
 	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/dynamic"
 	"github.com/pkg/errors"
-	"github.com/sajari/fuzzy"
 	"go.starlark.net/starlark"
 	"go.starlark.net/syntax"
 )
@@ -107,13 +104,7 @@ func (msg *starProtoMessage) Attr(name string) (starlark.Value, error) {
 	}
 	field := msg.desc.FindFieldByName(name)
 	if field == nil {
-		model := fuzzy.NewModel()
-		model.Train(msg.AttrNames())
-		suggestions := model.Suggestions(name, false)
-		if len(suggestions) == 0 {
-			suggestions = msg.AttrNames()
-		}
-		return nil, fmt.Errorf("InternalError: field %s not found in message %s, did you mean %v?", name, msg.desc.GetName(), suggestions)
+		return nil, starlark.NoSuchAttrError(fmt.Sprintf("field %s not found in message %s", name, msg.desc.GetFullyQualifiedName()))
 	}
 
 	val := &fieldValue{
@@ -147,9 +138,7 @@ func (msg *starProtoMessage) SetKey(name starlark.Value, star starlark.Value) er
 func (msg *starProtoMessage) SetField(name string, star starlark.Value) error {
 	field := msg.desc.FindFieldByName(name)
 	if field == nil {
-		model := fuzzy.NewModel()
-		model.Train(msg.AttrNames())
-		return fmt.Errorf("InternalError: field %s not found in message %s, did you mean %v?", name, msg.desc.GetName(), model.Suggestions(name, false))
+		return starlark.NoSuchAttrError(fmt.Sprintf("cannot set field %s not found in message %s", name, msg.desc.GetFullyQualifiedName()))
 	}
 
 	val, err := valueFromStarlark(field, star)
@@ -169,33 +158,7 @@ func (msg *starProtoMessage) SetField(name string, star starlark.Value) error {
 		delete(msg.attrCache, name)
 	}
 
-	e := msg.msg.TrySetField(field, val)
-	if e != nil {
-		switch v := val.(type) {
-		case []interface{}:
-			for _, x := range v {
-				if rv, ok := x.(proto.Message); ok {
-					m, err := ptypes.MarshalAny(rv)
-					if err != nil {
-						return err
-
-					}
-					err = msg.msg.TryAddRepeatedField(field, m)
-					if err != nil {
-						return errors.Wrapf(err, "failed to add repeated google.protobuf.Any %v (%T)", m, m)
-					}
-				}
-			}
-			return nil
-		case *dynamic.Message:
-			m, err := ptypes.MarshalAny(v)
-			if err != nil {
-				return err
-			}
-			return msg.msg.TrySetField(field, m)
-		}
-	}
-	return e
+	return msg.msg.TrySetField(field, val)
 }
 
 var (

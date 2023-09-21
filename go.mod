@@ -19,11 +19,9 @@ require (
 	github.com/kvtools/zookeeper v1.0.2
 	github.com/mitchellh/cli v1.1.5
 	github.com/pelletier/go-toml v1.9.5
-	github.com/pelletier/go-toml/v2 v2.0.8
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.16.0
 	github.com/qri-io/starlib v0.5.0
-	github.com/sajari/fuzzy v1.0.0
 	github.com/smintz/starlarkobject v0.0.0-20221130044148-40067250eba0
 	github.com/stretchr/testify v1.8.4
 	go.starlark.net v0.0.0-20230612165344-9532f5667272
@@ -80,7 +78,6 @@ require (
 	github.com/prometheus/client_model v0.4.0 // indirect
 	github.com/prometheus/common v0.44.0 // indirect
 	github.com/prometheus/procfs v0.10.1 // indirect
-	github.com/rogpeppe/go-internal v1.10.0 // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect
 	github.com/spf13/cast v1.5.1 // indirect
 	go.etcd.io/etcd/api/v3 v3.5.9 // indirect
