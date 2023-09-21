@@ -214,6 +214,9 @@ func (c *Compiler) runConfig(filename string) (starlark.Value, *config, error) {
 
 	mainOutput, err := configFile.main()
 	if err != nil {
+		if evalError, ok := err.(*starlark.EvalError); ok {
+			return nil, nil, fmt.Errorf("\n%s", evalError.Backtrace())
+		}
 		return nil, nil, fmt.Errorf("error evaluating %s:\n    %v", configFile.filename, err)
 	}
 
