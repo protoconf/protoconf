@@ -46,11 +46,6 @@ type Compiler struct {
 	parser          *parser.Parser
 }
 
-func (c *Compiler) DisableWriting() error {
-	c.disableWriting = true
-	return nil
-}
-
 func (c *Compiler) CompileFile(filename string) error {
 	multiConfig := false
 	if strings.HasSuffix(filename, consts.ConfigExtension) {
@@ -166,9 +161,6 @@ func (c *Compiler) writeOutput(message *dynamic.Message, filename string) error 
 }
 
 func (c *Compiler) writeConfig(message *dynamic.Message, filename string) error {
-	if c.disableWriting {
-		return nil
-	}
 	any, err := ptypes.MarshalAny(message)
 	if err != nil {
 		return fmt.Errorf("error marshaling proto to Any, message=%s", message)
