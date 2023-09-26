@@ -20,6 +20,7 @@ require (
 	github.com/kvtools/zookeeper v1.0.2
 	github.com/mitchellh/cli v1.1.5
 	github.com/pelletier/go-toml v1.9.5
+	github.com/pelletier/go-toml/v2 v2.1.0
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.16.0
 	github.com/protoconf/libprotoconf v0.1.0
