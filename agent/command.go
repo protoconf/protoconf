@@ -4,9 +4,11 @@ import (
 	"bytes"
 	"context"
 	"flag"
+	"fmt"
 	"log"
 	"net"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/mitchellh/cli"
@@ -140,6 +142,17 @@ func Command() (cli.Command, error) {
 		case "store":
 			f.Usage = "Key-value store type\n" + f.Usage
 		}
+	})
+	c.flag.Func("config-file", "Agent configuration file (available formats: json, jsonnet, yaml, pb)", func(filename string) error {
+		b, err := os.ReadFile(filename)
+		if err != nil {
+			return fmt.Errorf("failed to read config file: %v", err)
+		}
+		err = lpc.Unmarshal(filename, b)
+		if err != nil {
+			return fmt.Errorf("failed to parse config file: %v", err)
+		}
+		return nil
 	})
 
 	return c, nil
