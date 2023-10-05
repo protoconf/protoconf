@@ -2,6 +2,7 @@ syntax = "proto3";
 package v1;
 
 option java_package = "com.protoconf.agent.api.v1";
+option go_package = "github.com/protoconf/protoconf/agent/api/proto/v1;protoconfservice";
 
 import "google/protobuf/any.proto";
 
