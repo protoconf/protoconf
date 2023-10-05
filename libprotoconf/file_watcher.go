@@ -150,3 +150,5 @@ func (w *fileWatcher) Close() {
 	w.closeWatchers()
 	w.fsnotifyWatcher.Close()
 }
+
+func (w *fileWatcher) Ping() error { return nil }

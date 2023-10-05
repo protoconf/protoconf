@@ -7,6 +7,7 @@ import (
 // Watcher enables getting updates on protoconf paths
 type Watcher interface {
 	Watch(path string, stopCh <-chan struct{}) (<-chan Result, error)
+	Ping() error
 	Close()
 }
 

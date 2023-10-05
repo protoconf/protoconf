@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/avast/retry-go"
 	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	protoconfservice "github.com/protoconf/protoconf/agent/api/proto/v1"
@@ -29,11 +30,19 @@ func (logger) Log(items ...interface{}) error {
 	return nil
 }
 
-func defaultServers(fromConfig []string, defaultString string) string {
-	if len(fromConfig) > 0 {
-		return strings.Join(fromConfig, ",")
+func defaultServers(config *protoconf_agent_config.AgentConfig) string {
+	if len(config.Servers) > 0 {
+		return strings.Join(config.Servers, ",")
 	}
-	return defaultString
+	switch config.Store {
+	case protoconf_agent_config.AgentConfig_consul:
+		return "127.0.0.1:8500"
+	case protoconf_agent_config.AgentConfig_etcd:
+		return consts.EtcdDefaultAddress
+	case protoconf_agent_config.AgentConfig_zookeeper:
+		return consts.ZookeeperDefaultAddress
+	}
+	return ""
 }
 
 func RunAgent(config *protoconf_agent_config.AgentConfig) int {
@@ -45,20 +54,28 @@ func RunAgent(config *protoconf_agent_config.AgentConfig) int {
 		log.Printf("Using dev mode, watching directory protoconf_root=\"%s\"", config.DevRoot)
 		agentServer.watcher, err = libprotoconf.NewFileWatcher(config.DevRoot)
 	} else {
-		log.Printf("Connecting to %s at \"%s\", config path prefix=\"%s\"", config.Store, config.Servers, config.Prefix)
+		log.Printf("Connecting to %s at \"%s\", config path prefix=\"%s\"", config.Store, defaultServers(config), config.Prefix)
 		if config.Store == protoconf_agent_config.AgentConfig_consul {
-			agentServer.watcher, err = libprotoconf.NewKVWatcher(libprotoconf.Consul, defaultServers(config.Servers, "127.0.0.1:8500"), config.Prefix)
+			agentServer.watcher, err = libprotoconf.NewKVWatcher(libprotoconf.Consul, defaultServers(config), config.Prefix)
 		} else if config.Store == protoconf_agent_config.AgentConfig_zookeeper {
-			agentServer.watcher, err = libprotoconf.NewKVWatcher(libprotoconf.Zookeeper, defaultServers(config.Servers, consts.ZookeeperDefaultAddress), config.Prefix)
+			agentServer.watcher, err = libprotoconf.NewKVWatcher(libprotoconf.Zookeeper, defaultServers(config), config.Prefix)
 		} else if config.Store == protoconf_agent_config.AgentConfig_etcd {
-			agentServer.watcher, err = libprotoconf.NewKVWatcher(libprotoconf.Etcd, defaultServers(config.Servers, consts.EtcdDefaultAddress), config.Prefix)
+			agentServer.watcher, err = libprotoconf.NewKVWatcher(libprotoconf.Etcd, defaultServers(config), config.Prefix)
 		} else {
 			log.Fatalf("Unknown key-value store %s", config.Store)
 		}
 	}
-
 	if err != nil {
 		log.Printf("Error setting up Protoconf err=%s", err)
+		return 1
+	}
+
+	log.Printf("checking connection to store (type: %s, servers: %s)", config.Store, defaultServers(config))
+	err = retry.Do(func() error {
+		return agentServer.watcher.Ping()
+	})
+	if err != nil {
+		log.Println(err)
 		return 1
 	}
 
@@ -93,7 +110,7 @@ func RunAgent(config *protoconf_agent_config.AgentConfig) int {
 			&http.Server{Addr: config.HttpAddress},
 		},
 	},
-		Logger: &logger{},
+	// Logger: &logger{},
 	})
 	if err != nil {
 		log.Printf("Error serving gRPC, err=%s", err)
