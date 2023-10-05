@@ -30,9 +30,9 @@ require (
 	github.com/stretchr/testify v1.8.4
 	go.starlark.net v0.0.0-20230925163745-10651d5192ab
 	go.uber.org/zap v1.24.0
-	golang.org/x/net v0.11.0
+	golang.org/x/net v0.12.0
 	golang.org/x/sync v0.3.0
-	google.golang.org/grpc v1.57.0
+	google.golang.org/grpc v1.58.2
 	google.golang.org/protobuf v1.31.0
 )
 
