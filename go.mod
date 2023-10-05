@@ -50,8 +50,11 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dustmop/soup v1.1.2-0.20190516214245-38228baa104e // indirect
 	github.com/fatih/color v1.15.0 // indirect
+	github.com/go-logr/logr v1.2.4 // indirect
+	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-zookeeper/zk v1.0.3 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
+	github.com/google/go-jsonnet v0.20.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/hashicorp/consul/api v1.21.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
@@ -78,6 +81,7 @@ require (
 	github.com/prometheus/client_model v0.4.0 // indirect
 	github.com/prometheus/common v0.44.0 // indirect
 	github.com/prometheus/procfs v0.10.1 // indirect
+	github.com/protoconf/libprotoconf v0.0.0-20211017074511-4cffcc3620de // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect
 	github.com/spf13/cast v1.5.1 // indirect
 	go.etcd.io/etcd/api/v3 v3.5.9 // indirect
@@ -94,6 +98,7 @@ require (
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20230530153820-e85fd2cbaebc // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
+	sigs.k8s.io/yaml v1.3.0 // indirect
 )
 
 replace github.com/hashicorp/consul v0.0.0-20171026175957-610f3c86a089 => github.com/hashicorp/consul v1.8.1
