@@ -4,8 +4,15 @@ package protoconf.agent.config.v1;
 
 option go_package = "github.com/protoconf/protoconf/agent/config/v1;protoconf_agent_config";
 
+// Protoconf agent configuration guide.
 message AgentConfig {
+    // Configures the address which the gRPC server will bind to.
+    // For example: "0.0.0.0:4300"
     string grpc_address = 1 [json_name = "grpc-address"];
+
+    // Configures the address which the HTTP admin server will bind to.
+    // For example: "0.0.0.0:4390"
+    // This admin server return metrics under `/metrics`
     string http_address = 2 [json_name = "http-address"];
     string dev_root = 3 [json_name = "dev"];
     StoreType store = 4;

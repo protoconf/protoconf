@@ -69,12 +69,18 @@ func (AgentConfig_StoreType) EnumDescriptor() ([]byte, []int) {
 	return file_agent_config_proto_rawDescGZIP(), []int{0, 0}
 }
 
+// Protoconf agent configuration guide.
 type AgentConfig struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	GrpcAddress string                 `protobuf:"bytes,1,opt,name=grpc_address,json=grpc-address,proto3" json:"grpc_address,omitempty"`
+	// Configures the address which the gRPC server will bind to.
+	// For example: "0.0.0.0:4300"
+	GrpcAddress string `protobuf:"bytes,1,opt,name=grpc_address,json=grpc-address,proto3" json:"grpc_address,omitempty"`
+	// Configures the address which the HTTP admin server will bind to.
+	// For example: "0.0.0.0:4390"
+	// This admin server return metrics under `/metrics`
 	HttpAddress string                 `protobuf:"bytes,2,opt,name=http_address,json=http-address,proto3" json:"http_address,omitempty"`
 	DevRoot     string                 `protobuf:"bytes,3,opt,name=dev_root,json=dev,proto3" json:"dev_root,omitempty"`
 	Store       AgentConfig_StoreType  `protobuf:"varint,4,opt,name=store,proto3,enum=protoconf.agent.config.v1.AgentConfig_StoreType" json:"store,omitempty"`

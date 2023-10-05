@@ -93,7 +93,7 @@ func (w *libkvWatcher) Watch(pathNoPrefix string, stopCh <-chan struct{}) (<-cha
 					watchCh <- Result{nil, fmt.Errorf("error decoding config path=%s value=%s err=%s", path, kVPair.Value, err)}
 				}
 				if err = proto.Unmarshal(data, protoconfValue); err != nil {
-					watchCh <- Result{nil, fmt.Errorf("error unmarshaling config path=%s value=%s err=%s", path, kVPair.Value, err)}
+					watchCh <- Result{nil, fmt.Errorf("error unmarshal config path=%s value=%s err=%s", path, kVPair.Value, err)}
 					return
 				}
 
@@ -110,4 +110,9 @@ func (w *libkvWatcher) Watch(pathNoPrefix string, stopCh <-chan struct{}) (<-cha
 
 func (w *libkvWatcher) Close() {
 	w.store.Close()
+}
+
+func (w *libkvWatcher) Ping() error {
+	_, err := w.store.Exists(context.Background(), "/ping", &store.ReadOptions{})
+	return err
 }
