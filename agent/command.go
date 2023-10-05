@@ -2,28 +2,15 @@ package agent
 
 import (
 	"bytes"
-	"context"
 	"flag"
 	"fmt"
-	"log"
-	"net"
-	"net/http"
 	"os"
-	"strings"
 
 	"github.com/mitchellh/cli"
-
-	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"google.golang.org/protobuf/proto"
 
 	configtool "github.com/protoconf/libprotoconf"
-	protoconfservice "github.com/protoconf/protoconf/agent/api/proto/v1"
 	protoconf_agent_config "github.com/protoconf/protoconf/agent/config/v1"
-	"github.com/protoconf/protoconf/consts"
-	"github.com/protoconf/protoconf/libprotoconf"
-
-	"golang.org/x/sync/errgroup"
-	"google.golang.org/grpc"
 )
 
 type cliCommand struct {
@@ -33,71 +20,7 @@ type cliCommand struct {
 
 func (c *cliCommand) Run(args []string) int {
 	c.flag.Parse(args)
-	config := c.config
-
-	log.Printf("Starting Protoconf agent at \"%s\", version %s", config.GrpcAddress, consts.Version)
-
-	agentServer := &server{}
-	var err error
-	if config.DevRoot != "" {
-		log.Printf("Using dev mode, watching directory protoconf_root=\"%s\"", config.DevRoot)
-		agentServer.watcher, err = libprotoconf.NewFileWatcher(config.DevRoot)
-	} else {
-		log.Printf("Connecting to %s at \"%s\", config path prefix=\"%s\"", config.Store, config.Servers, config.Prefix)
-		if config.Store == protoconf_agent_config.AgentConfig_consul {
-			agentServer.watcher, err = libprotoconf.NewKVWatcher(libprotoconf.Consul, strings.Join(config.Servers, ","), config.Prefix)
-		} else if config.Store == protoconf_agent_config.AgentConfig_zookeeper {
-			var address string
-			if len(config.Servers) > 0 {
-				address = strings.Join(config.Servers, ",")
-			} else {
-				address = consts.ZookeeperDefaultAddress
-			}
-			agentServer.watcher, err = libprotoconf.NewKVWatcher(libprotoconf.Zookeeper, address, config.Prefix)
-		} else if config.Store == protoconf_agent_config.AgentConfig_etcd {
-			var address string
-			if len(config.Servers) > 0 {
-				address = strings.Join(config.Servers, ",")
-			} else {
-				address = consts.EtcdDefaultAddress
-			}
-			agentServer.watcher, err = libprotoconf.NewKVWatcher(libprotoconf.Etcd, address, config.Prefix)
-		} else {
-			log.Fatalf("Unknown key-value store %s", config.Store)
-		}
-	}
-
-	if err != nil {
-		log.Printf("Error setting up Protoconf err=%s", err)
-		return 1
-	}
-
-	defer agentServer.watcher.Close()
-
-	listener, err := net.Listen("tcp", config.GrpcAddress)
-	if err != nil {
-		log.Printf("Error listening on address=\"%s\" err=%s", config.GrpcAddress, err)
-		return 1
-	}
-
-	rpcServer := grpc.NewServer(
-		grpc.StreamInterceptor(grpc_prometheus.StreamServerInterceptor),
-		grpc.UnaryInterceptor(grpc_prometheus.UnaryServerInterceptor),
-	)
-	protoconfservice.RegisterProtoconfServiceServer(rpcServer, agentServer)
-	grpc_prometheus.Register(rpcServer)
-	http.Handle("/metrics", promhttp.Handler())
-	log.Println("Protoconf agent running")
-	g, _ := errgroup.WithContext(context.TODO())
-	g.Go(func() error { return rpcServer.Serve(listener) })
-	g.Go(func() error { return http.ListenAndServe(config.HttpAddress, nil) })
-	err = g.Wait()
-	if err != nil {
-		log.Printf("Error serving gRPC, err=%s", err)
-		return 1
-	}
-
-	return 0
+	return RunAgent(c.config)
 }
 
 func (c *cliCommand) Help() string {
@@ -119,7 +42,6 @@ func Command() (cli.Command, error) {
 		config: &protoconf_agent_config.AgentConfig{
 			GrpcAddress: ":4300",
 			HttpAddress: ":4380",
-			Servers:     []string{"127.0.0.1:8500"},
 		}}
 	lpc := configtool.NewConfig(c.config)
 	lpc.SetEnvKeyPrefix("PROTOCONF_AGENT")
@@ -148,10 +70,13 @@ func Command() (cli.Command, error) {
 		if err != nil {
 			return fmt.Errorf("failed to read config file: %v", err)
 		}
+		orig := proto.Clone(c.config)
 		err = lpc.Unmarshal(filename, b)
 		if err != nil {
 			return fmt.Errorf("failed to parse config file: %v", err)
 		}
+		proto.Merge(orig, c.config)
+		c.config, _ = orig.(*protoconf_agent_config.AgentConfig)
 		return nil
 	})
 
