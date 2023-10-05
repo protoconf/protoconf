@@ -13,8 +13,8 @@ message AgentConfig {
     string prefix = 6;
 
     bool insecure = 7;
-    TLSConfig tls_config = 8;
-    TLSConfig client_tls = 9;
+    TLSConfig tls_config = 8 [json_name = "tls-config"];
+    TLSConfig store_tls = 9 [json_name = "store-tls"];
 
     enum StoreType {
         consul = 0;
@@ -24,16 +24,16 @@ message AgentConfig {
 
     message TLSConfig {
         oneof key {
-            string key_text = 1;
-            string key_file = 2;
+            string key_text = 1 [json_name = "key-text"];
+            string key_file = 2 [json_name = "key-file"];
         }
         oneof cert {
-            string cert_text = 3;
-            string cert_file = 4;
+            string cert_text = 3 [json_name = "cert-text"];
+            string cert_file = 4 [json_name = "cert-file"];
         }
         oneof ca {
-            string ca_text = 5;
-            string ca_file = 6;
+            string ca_text = 5 [json_name = "ca-text"];
+            string ca_file = 6 [json_name = "ca-file"];
         }
     } 
 }

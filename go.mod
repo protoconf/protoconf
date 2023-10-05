@@ -81,7 +81,7 @@ require (
 	github.com/prometheus/client_model v0.4.0 // indirect
 	github.com/prometheus/common v0.44.0 // indirect
 	github.com/prometheus/procfs v0.10.1 // indirect
-	github.com/protoconf/libprotoconf v0.0.0-20211017074511-4cffcc3620de // indirect
+	github.com/protoconf/libprotoconf v0.1.0 // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect
 	github.com/spf13/cast v1.5.1 // indirect
 	go.etcd.io/etcd/api/v3 v3.5.9 // indirect

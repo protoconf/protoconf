@@ -299,6 +299,8 @@ github.com/prometheus/procfs v0.10.1 h1:kYK1Va/YMlutzCGazswoHKo//tZVlFpKYh+Pymzi
 github.com/prometheus/procfs v0.10.1/go.mod h1:nwNm2aOCAYw8uTR/9bWRREkZFxAUcWzPHWJq+XBB/FM=
 github.com/protoconf/libprotoconf v0.0.0-20211017074511-4cffcc3620de h1:lfWOezApDeynrIY38AouCegSmku27LTyMSntRU8kmt0=
 github.com/protoconf/libprotoconf v0.0.0-20211017074511-4cffcc3620de/go.mod h1:17+zlBLHB+LpAxBqspUHK2MLmpBbHq4A6wkZ7iagW1E=
+github.com/protoconf/libprotoconf v0.1.0 h1:Bb8GV6CU3DTPlpf2AuP34JRk9B6C+KNkT9CQ8IorTgE=
+github.com/protoconf/libprotoconf v0.1.0/go.mod h1:17+zlBLHB+LpAxBqspUHK2MLmpBbHq4A6wkZ7iagW1E=
 github.com/qri-io/starlib v0.5.0 h1:NlveoBAhO6mNgM7+JpM9QlHh3/3pOtOiH6iXaqSdVK0=
 github.com/qri-io/starlib v0.5.0/go.mod h1:FpVumyB2CMrKIrjf39fAi4uydYWVvnWEvXEOwfzZRHY=
 github.com/rogpeppe/go-internal v1.10.0 h1:TMyTOH3F/DB16zRVcYyreMH6GnZZrwQVAoYjRBZyWFQ=
