@@ -13,7 +13,7 @@ require (
 	github.com/ghodss/yaml v1.0.0
 	github.com/golang/protobuf v1.5.3
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
-	github.com/jhump/protoreflect v1.15.1
+	github.com/jhump/protoreflect v1.15.3
 	github.com/kvtools/consul v1.0.2
 	github.com/kvtools/etcdv3 v1.0.2
 	github.com/kvtools/valkeyrie v1.0.0
@@ -49,7 +49,7 @@ require (
 	github.com/armon/go-radix v1.0.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bgentry/speakeasy v0.1.0 // indirect
-	github.com/bufbuild/protocompile v0.5.1 // indirect
+	github.com/bufbuild/protocompile v0.6.0 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/chzyer/readline v1.5.1 // indirect
 	github.com/coreos/go-semver v0.3.1 // indirect
