@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	buf.build/gen/go/bufbuild/reflect/bufbuild/connect-go v1.8.0-20230627113514-3943db27b83c.1
-	buf.build/gen/go/bufbuild/reflect/protocolbuffers/go v1.30.0-20230627113514-3943db27b83c.1
+	buf.build/gen/go/bufbuild/reflect/protocolbuffers/go v1.30.0-20230822193137-310c9c4845dd.1
 	github.com/Masterminds/sprig/v3 v3.2.3
 	github.com/avast/retry-go v3.0.0+incompatible
 	github.com/bgentry/go-netrc v0.0.0-20140422174119-9fd32a8b3d3d
