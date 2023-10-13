@@ -26,7 +26,7 @@ require (
 	github.com/protoconf/libprotoconf v0.1.0
 	github.com/qri-io/starlib v0.5.0
 	github.com/smintz/starlarkobject v0.0.0-20221130044148-40067250eba0
-	github.com/stephenafamo/orchestra v0.0.0-20221122233638-c6ea527f65e7
+	github.com/stephenafamo/orchestra v0.0.0-20231013090236-eabf3e1285a4
 	github.com/stretchr/testify v1.8.4
 	go.starlark.net v0.0.0-20230925163745-10651d5192ab
 	go.uber.org/zap v1.26.0
