@@ -106,9 +106,11 @@ func RunAgent(config *protoconf_agent_config.AgentConfig) int {
 			log.Println("protoconf agent stopped")
 			return err
 		}),
-		"http": &orchestra.ServerPlayer{
-			&http.Server{Addr: config.HttpAddress},
-		},
+		"http": orchestra.NewServerPlayer(
+			orchestra.WithHTTPServer(
+				&http.Server{Addr: config.HttpAddress},
+			),
+		),
 	},
 	// Logger: &logger{},
 	})
