@@ -324,6 +324,12 @@ github.com/prometheus/procfs v0.11.1 h1:xRC8Iq1yyca5ypa9n1EZnWZkt7dwcoRPQwX/5gwa
 github.com/prometheus/procfs v0.11.1/go.mod h1:eesXgaPo1q7lBpVMoMy0ZOFTth9hBn4W/y0/p/ScXhY=
 github.com/protoconf/libprotoconf v0.1.0 h1:Bb8GV6CU3DTPlpf2AuP34JRk9B6C+KNkT9CQ8IorTgE=
 github.com/protoconf/libprotoconf v0.1.0/go.mod h1:17+zlBLHB+LpAxBqspUHK2MLmpBbHq4A6wkZ7iagW1E=
+github.com/protoconf/proto-validate-reflect v0.1.0 h1:hYXOBN6KydfSMXFRUwbOFGXtV6AvT5EmurP9+TsJKmg=
+github.com/protoconf/proto-validate-reflect v0.1.0/go.mod h1:zkk1Po2sSn/jsg3YcUNBqb9+p/cIb0xBu0bZDhqqy1g=
+github.com/protoconf/proto-validate-reflect v0.1.1 h1:E/4BFDxEw3GfdSSk4r3GSR3VGH2EBAeIMTQWmhbU/mQ=
+github.com/protoconf/proto-validate-reflect v0.1.1/go.mod h1:zkk1Po2sSn/jsg3YcUNBqb9+p/cIb0xBu0bZDhqqy1g=
+github.com/protoconf/proto-validate-reflect v0.1.2 h1:VsFN7VW/ygK0cplDw6MTLoav4oZNzFh3RHmZiridGLw=
+github.com/protoconf/proto-validate-reflect v0.1.2/go.mod h1:zkk1Po2sSn/jsg3YcUNBqb9+p/cIb0xBu0bZDhqqy1g=
 github.com/pseudomuto/protoc-gen-doc v1.5.1 h1:Ah259kcrio7Ix1Rhb6u8FCaOkzf9qRBqXnvAufg061w=
 github.com/pseudomuto/protoc-gen-doc v1.5.1/go.mod h1:XpMKYg6zkcpgfpCfQ8GcWBDRtRxOmMR5w7pz4Xo+dYM=
 github.com/pseudomuto/protokit v0.2.1 h1:kCYpE3thoR6Esm0CUvd5xbrDTOZPvQPTDeyXpZfrJdk=
