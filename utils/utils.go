@@ -17,6 +17,7 @@ import (
 	"github.com/bufbuild/connect-go"
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
+	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/desc/protoparse"
 	"github.com/jhump/protoreflect/dynamic"
 	"github.com/protoconf/protoconf/consts"
@@ -56,8 +57,17 @@ func ReadConfig(protoconfRoot string, configName string) (*protoconfvalue.Protoc
 }
 
 func LocalResolver(protoconfRoot string) *protoregistry.Types {
+	return localLinkedResolver(protoconfRoot, false)
+}
+
+func LocalLinkedResolver(protoconfRoot string) *protoregistry.Types {
+	return localLinkedResolver(protoconfRoot, true)
+}
+
+func localLinkedResolver(protoconfRoot string, link bool) *protoregistry.Types {
+
 	localTypes := new(protoregistry.Types)
-	localFiles, err := LoadLocalProtoFiles(protoconfRoot)
+	localFiles, err := LoadLocalProtoFiles(protoconfRoot, link)
 	if err != nil {
 		log.Fatal("LocalResolver:", err)
 	}
@@ -192,18 +202,34 @@ func find(root, ext string) []string {
 	return a
 }
 
-func LoadLocalProtoFiles(root string) (*protoregistry.Files, error) {
+func LoadLocalProtoFiles(root string, link bool) (*protoregistry.Files, error) {
 	rootPath := filepath.Join(root, consts.SrcPath)
 	files := find(rootPath, ".proto")
 	parser := &protoparse.Parser{
 		ImportPaths:                     []string{rootPath},
 		InterpretOptionsInUnlinkedFiles: true,
+		LookupImport:                    desc.LoadFileDescriptor,
 	}
-	descriptors, err := parser.ParseFilesButDoNotLink(files...)
-	if err != nil {
-		return nil, fmt.Errorf("parser: %v", err)
+	fds := &descriptorpb.FileDescriptorSet{File: []*descriptorpb.FileDescriptorProto{}}
+
+	if link == true {
+		descriptors, err := parser.ParseFiles(files...)
+		if err != nil {
+			return nil, fmt.Errorf("parser: %v", err)
+		}
+		for _, fd := range descriptors {
+			fds.File = append(fds.File, fd.AsFileDescriptorProto())
+		}
+
+	} else {
+		descriptors, err := parser.ParseFilesButDoNotLink(files...)
+		if err != nil {
+			return nil, fmt.Errorf("parser: %v", err)
+		}
+		fds.File = descriptors
+
 	}
-	fds := &descriptorpb.FileDescriptorSet{File: descriptors}
+
 	protoregistry.GlobalFiles.RangeFiles(func(fd protoreflect.FileDescriptor) bool {
 		if strings.HasPrefix(fd.Path(), "google") {
 			fds.File = append(fds.File,

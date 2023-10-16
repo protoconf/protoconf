@@ -13,7 +13,7 @@ type Parser struct {
 
 func NewParser(protoconfRoot string) *Parser {
 	p := &Parser{
-		LocalResolver: utils.LocalResolver(protoconfRoot),
+		LocalResolver: utils.LocalLinkedResolver(protoconfRoot),
 	}
 	return p
 }

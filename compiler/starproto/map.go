@@ -46,7 +46,6 @@ func (m *protoMap) Truth() starlark.Bool                               { return 
 
 func (m *protoMap) Type() string {
 	return fmt.Sprintf("map<%s, %s>", typeName(m.field.desc.GetMapKeyType()), typeName(m.field.desc.GetMapValueType()))
-
 }
 
 func (m *protoMap) CompareSameType(op syntax.Token, y starlark.Value, depth int) (bool, error) {

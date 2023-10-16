@@ -15,6 +15,7 @@ func Test(t *testing.T) {
 	}
 	t.Log("Test results written to", dir)
 	c.MaterializedDir = dir
+	assert.Error(t, c.CompileFile("validator_ext.pconf"))
 	assert.NoError(t, c.CompileFile("test.pconf"))
 	assert.Error(t, c.CompileFile("validator_test.pconf"))
 	assert.Error(t, c.CompileFile("validator_repeated_test.pconf"))

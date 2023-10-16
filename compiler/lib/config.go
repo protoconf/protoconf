@@ -6,8 +6,11 @@ import (
 	pbproto "github.com/golang/protobuf/proto"
 	dpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/jhump/protoreflect/dynamic"
+	proto_validate_reflect "github.com/protoconf/proto-validate-reflect"
 	"github.com/protoconf/protoconf/compiler/starproto"
 	"go.starlark.net/starlark"
+	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/types/dynamicpb"
 )
 
 type config struct {
@@ -48,6 +51,13 @@ func (c *config) validate(value interface{}) error {
 
 	if message == nil {
 		return nil
+	}
+
+	pbmsg := dynamicpb.NewMessage(message.GetMessageDescriptor().UnwrapMessage())
+	b, _ := message.Marshal()
+	proto.Unmarshal(b, pbmsg)
+	if ok, err := proto_validate_reflect.ValidateDynamic(pbmsg); !ok {
+		return err
 	}
 
 	if validator, ok := c.validators[message.GetMessageDescriptor().GetFullyQualifiedName()]; ok {

@@ -21,18 +21,18 @@ func BenchmarkFindLarge(b *testing.B) {
 
 func BenchmarkLoadLocalProtoFilesEmpty(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		LoadLocalProtoFiles("testdata/empty")
+		LoadLocalProtoFiles("testdata/empty", false)
 	}
 }
 
 func BenchmarkLoadLocalProtoFilesSmall(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		LoadLocalProtoFiles("testdata/small")
+		LoadLocalProtoFiles("testdata/small", false)
 	}
 }
 
 func BenchmarkLoadLocalProtoFilesLarge(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		LoadLocalProtoFiles("testdata/large")
+		LoadLocalProtoFiles("testdata/large", false)
 	}
 }
