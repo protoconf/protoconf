@@ -1,0 +1,8 @@
+load("test.proto", "TestMessage")
+
+def main():
+    return {
+        "one.json":TestMessage(stringValue="one"), 
+        "two.yaml":TestMessage(stringValue="two"),
+        "three.toml":TestMessage(stringValue="three")
+    }
