@@ -1,22 +1,14 @@
 package utils
 
 import (
-	"context"
 	"fmt"
 	"io/fs"
 	"log"
-	"net/http"
 	"os"
-	"os/user"
 	"path/filepath"
 	"strings"
 
-	"buf.build/gen/go/bufbuild/reflect/bufbuild/connect-go/buf/reflect/v1beta1/reflectv1beta1connect"
-	reflectv1beta1 "buf.build/gen/go/bufbuild/reflect/protocolbuffers/go/buf/reflect/v1beta1"
-	"github.com/bgentry/go-netrc/netrc"
-	"github.com/bufbuild/connect-go"
 	"github.com/golang/protobuf/jsonpb"
-	"github.com/golang/protobuf/proto"
 	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/desc/protoparse"
 	"github.com/jhump/protoreflect/dynamic"
@@ -107,87 +99,6 @@ func LoadAnyResolver(rootPath string, parseFiles ...string) (jsonpb.AnyResolver,
 	return dynamic.AnyResolver(nil, descriptors...), nil
 }
 
-// ReplaceProtoBytes replaces the information inside a proto serialized byte array
-func ReplaceProtoBytes(protoBytes []byte, pos int, length int, replacement []byte) ([]byte, error) {
-	cb := newCodedBuffer(protoBytes)
-	ret := &codedBuffer{}
-
-	for {
-		start := cb.index
-		_, wireType, err := cb.decodeTagAndWireType()
-		if err != nil {
-			return nil, err
-		}
-
-		dataStart := cb.index
-		if err = unmarshalUnknownField(wireType, cb); err != nil {
-			return nil, err
-		}
-		end := cb.index
-
-		if (wireType != proto.WireBytes && wireType != proto.WireStartGroup) || end < pos {
-			ret.buf = append(ret.buf, cb.buf[start:end]...)
-			ret.index = len(ret.buf)
-			continue
-		}
-
-		cb.index = dataStart
-		oldLength, err := cb.decodeVarint()
-		if err != nil {
-			return nil, err
-		}
-
-		var newBytes []byte
-		if cb.index == pos {
-			if wireType != proto.WireBytes {
-				return nil, fmt.Errorf("expecting wire type bytes got=%d", wireType)
-			}
-			if int(oldLength) != length {
-				return nil, fmt.Errorf("expecting length=%d got=%d", length, oldLength)
-			}
-			newBytes = replacement
-		} else {
-			newBytes, err = ReplaceProtoBytes(cb.buf[cb.index:cb.index+int(oldLength)], pos-cb.index, length, replacement)
-			if err != nil {
-				return nil, err
-			}
-		}
-		ret.buf = append(ret.buf, cb.buf[start:dataStart]...)
-		ret.index = len(ret.buf)
-		if err = ret.encodeRawBytes(newBytes); err != nil {
-			return nil, err
-		}
-		ret.buf = append(ret.buf, cb.buf[end:]...)
-		ret.index = len(ret.buf)
-		return ret.buf, nil
-	}
-}
-
-func LoadRemoteDescriptorsFromBuf(ctx context.Context, repo string) (*descriptorpb.FileDescriptorSet, error) {
-	usr, err := user.Current()
-	if err != nil {
-		return nil, err
-	}
-	n, err := netrc.ParseFile(filepath.Join(usr.HomeDir, ".netrc"))
-	if err != nil {
-		return nil, err
-	}
-	token := n.FindMachine("go.buf.build").Password
-	client := reflectv1beta1connect.NewFileDescriptorSetServiceClient(
-		http.DefaultClient,
-		"https://api.buf.build",
-	)
-	request := connect.NewRequest(&reflectv1beta1.GetFileDescriptorSetRequest{
-		Module: repo,
-	})
-	request.Header().Set("Authorization", fmt.Sprintf("Bearer %s", token))
-	fds, err := client.GetFileDescriptorSet(ctx, request)
-	if err != nil {
-		return nil, err
-	}
-	return fds.Msg.FileDescriptorSet, err
-}
-
 func find(root, ext string) []string {
 	var a []string
 	filepath.WalkDir(root, func(s string, d fs.DirEntry, e error) error {
@@ -212,7 +123,7 @@ func LoadLocalProtoFiles(root string, link bool) (*protoregistry.Files, error) {
 	}
 	fds := &descriptorpb.FileDescriptorSet{File: []*descriptorpb.FileDescriptorProto{}}
 
-	if link == true {
+	if link {
 		descriptors, err := parser.ParseFiles(files...)
 		if err != nil {
 			return nil, fmt.Errorf("parser: %v", err)
