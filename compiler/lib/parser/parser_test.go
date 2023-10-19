@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	_ "github.com/protoconf/proto-validate-reflect/validate"
+	"github.com/protoconf/protoconf/utils/testdata"
 )
 
 func TestParser_ParseFilesX(t *testing.T) {
@@ -21,12 +22,12 @@ func TestParser_ParseFilesX(t *testing.T) {
 	}{
 		{
 			name:   "test",
-			fields: fields{"../testdata"},
+			fields: fields{testdata.SmallTestDir()},
 			args:   args{filenames: []string{"test.proto"}},
 		},
 		{
 			name:    "test not found",
-			fields:  fields{"../testdata"},
+			fields:  fields{testdata.SmallTestDir()},
 			args:    args{filenames: []string{"test1.proto"}},
 			wantErr: true,
 		},

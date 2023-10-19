@@ -12,6 +12,8 @@ import (
 	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/desc/protoparse"
 	"github.com/jhump/protoreflect/dynamic"
+
+	_ "github.com/protoconf/proto-validate-reflect/validate"
 	"github.com/protoconf/protoconf/consts"
 	protoconfvalue "github.com/protoconf/protoconf/datatypes/proto/v1"
 	"google.golang.org/protobuf/encoding/protojson"

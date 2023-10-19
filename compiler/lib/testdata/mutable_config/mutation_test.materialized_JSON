@@ -1,7 +1,0 @@
-{
-  "protoFile": "test.proto",
-  "value": {
-    "@type": "type.googleapis.com/TestMessage",
-    "stringValue": "hello"
-  }
-}

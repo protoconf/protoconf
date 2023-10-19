@@ -1,8 +1,0 @@
-load("test.proto", "MessageWithSubMessage")
-
-
-def main():
-    m = MessageWithSubMessage()
-    if m.sub:
-        fail("message type is not NoneType")
-    return m

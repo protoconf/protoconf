@@ -1,21 +1,16 @@
 package lib
 
 import (
-	"os"
 	"testing"
 
+	proto_validate_reflect "github.com/protoconf/proto-validate-reflect"
+	"github.com/protoconf/protoconf/utils/testdata"
 	assert "github.com/stretchr/testify/require"
 )
 
 func Test(t *testing.T) {
-	c := NewCompiler("testdata", true)
-	dir, err := os.MkdirTemp("", "compiler_output")
-	if err != nil {
-		t.Fatal("cannot create tmpdir", err)
-	}
-	t.Log("Test results written to", dir)
-	c.MaterializedDir = dir
-	assert.Error(t, c.CompileFile("validator_ext.pconf"))
+	c := NewCompiler(testdata.SmallTestDir(), true)
+	assert.ErrorAs(t, c.CompileFile("validator_ext.pconf"), &proto_validate_reflect.ErrorInvalidEmail)
 	assert.NoError(t, c.CompileFile("test.pconf"))
 	assert.Error(t, c.CompileFile("validator_test.pconf"))
 	assert.Error(t, c.CompileFile("validator_repeated_test.pconf"))

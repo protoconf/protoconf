@@ -1,5 +1,0 @@
-load("//test.proto", "ValidateMe")
-
-
-def main():
-    return ValidateMe()

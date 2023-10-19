@@ -12,13 +12,12 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/golang/protobuf/jsonpb"
-	"github.com/jhump/protoreflect/desc/protoparse"
-	"github.com/jhump/protoreflect/dynamic"
 	"github.com/mitchellh/cli"
 	"github.com/protoconf/protoconf/consts"
 	protoconfmutation "github.com/protoconf/protoconf/server/api/proto/v1"
+	"github.com/protoconf/protoconf/utils"
 	"google.golang.org/grpc"
+	"google.golang.org/protobuf/encoding/protojson"
 )
 
 type cliCommand struct{}
@@ -106,19 +105,11 @@ func (s server) MutateConfig(ctx context.Context, in *protoconfmutation.ConfigMu
 	log.Printf("Mutating path=%s", in.Path)
 	filename := filepath.Join(s.protoconfRoot, consts.MutableConfigPath, filepath.Clean(in.Path)+consts.CompiledConfigExtension)
 
-	parser := &protoparse.Parser{ImportPaths: []string{filepath.Join(s.protoconfRoot, consts.SrcPath)}}
-	descriptors, err := parser.ParseFiles(in.Value.ProtoFile)
-	if err != nil {
-		return nil, logError(fmt.Errorf("error parsing proto file, file=%s err=%v", in.Value.ProtoFile, err))
-	}
-
-	anyResolver := dynamic.AnyResolver(nil, descriptors[0])
-	m := &jsonpb.Marshaler{AnyResolver: anyResolver, Indent: "  "}
-	jsonData, err := m.MarshalToString(in.Value)
+	resolver := utils.LocalResolver(filepath.Join(s.protoconfRoot, consts.SrcPath))
+	jsonData, err := protojson.MarshalOptions{Resolver: resolver, Multiline: true}.Marshal(in.Value)
 	if err != nil {
 		return nil, logError(fmt.Errorf("error marshaling ProtoconfValue to JSON, value=%s", in.Value))
 	}
-	jsonData += "\n"
 
 	if s.config.preMutationScript != "" {
 		if err := runScript(s.config.preMutationScript, in.ScriptMetadata); err != nil {

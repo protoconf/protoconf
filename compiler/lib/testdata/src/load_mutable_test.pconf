@@ -1,4 +1,0 @@
-load("mutable:mutation_test", "value")
-
-def main():
-    return value
