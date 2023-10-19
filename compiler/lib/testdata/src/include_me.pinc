@@ -1,6 +1,0 @@
-load("//test.proto", "TestMessage")
-
-TEST_CONST=TestMessage(stringValue="I'm a test const")
-
-def testFunc(s="default"):
-    return TestMessage(stringValue="I got a string: %s" % s)

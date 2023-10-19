@@ -1,4 +1,6 @@
 load("test.proto", "TestMessage")
+load("re.star", "re")
 
 def main() :
+    print("im here")
     return TestMessage()

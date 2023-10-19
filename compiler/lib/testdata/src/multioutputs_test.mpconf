@@ -1,4 +1,0 @@
-load("test.proto", "TestMessage")
-
-def main():
-    return {"one":TestMessage(stringValue="one"), "two":TestMessage(stringValue="two")}

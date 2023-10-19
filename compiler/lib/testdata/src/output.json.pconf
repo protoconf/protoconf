@@ -1,4 +1,0 @@
-load("test.proto", "TestMessage")
-
-def main() :
-    return TestMessage()

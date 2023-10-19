@@ -1,7 +1,0 @@
-load("//test.proto", "TestMessage")
-
-
-def main():
-    g = TestMessage(stringValue="hello")
-    myset = set([g])
-    return g

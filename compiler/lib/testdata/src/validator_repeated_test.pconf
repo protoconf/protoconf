@@ -1,8 +1,0 @@
-load("//test.proto", "ValidateMe")
-
-
-def main():
-    """
-    This shall pass the notempty string but fail the repeated string
-    """
-    return ValidateMe(notempty="notempty")

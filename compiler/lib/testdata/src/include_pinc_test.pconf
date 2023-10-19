@@ -1,4 +1,0 @@
-load("//include_me.pinc", "TEST_CONST", "testFunc")
-
-def main():
-    return testFunc(TEST_CONST.stringValue)
