@@ -27,6 +27,7 @@ message AgentConfig {
         consul = 0;
         etcd = 1;
         zookeeper = 2;
+        file = 3;
     }
 
     message TLSConfig {

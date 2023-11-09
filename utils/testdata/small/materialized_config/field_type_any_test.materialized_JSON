@@ -1,0 +1,23 @@
+{
+  "protoFile": "test.proto",
+  "value": {
+    "@type": "type.googleapis.com/TestMessage",
+    "stringValue": "recovered_from_any",
+    "anyField": {
+      "@type": "type.googleapis.com/TestMessage",
+      "stringValue": "test_any"
+    },
+    "anyRepeated": [
+      {
+        "@type": "type.googleapis.com/TestMessage",
+        "stringValue": "test_any_repeated"
+      }
+    ],
+    "anyMap": {
+      "hello": {
+        "@type": "type.googleapis.com/TestMessage",
+        "stringValue": "test_any_map"
+      }
+    }
+  }
+}

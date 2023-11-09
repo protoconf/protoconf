@@ -1,0 +1,13 @@
+{
+  "protoFile": "test.proto",
+  "value": {
+    "@type": "type.googleapis.com/ValidateMe",
+    "notempty": "notempty",
+    "validateMap": {
+      "hello": "world"
+    },
+    "repeatedString": [
+      "hello"
+    ]
+  }
+}

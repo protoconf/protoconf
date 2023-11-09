@@ -6,16 +6,22 @@ import (
 	"log"
 	"net"
 	"net/http"
-	"strings"
+	"os"
+	"syscall"
 
-	"github.com/avast/retry-go"
 	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
+	"github.com/kvtools/consul"
+	"github.com/kvtools/etcdv3"
+	"github.com/kvtools/valkeyrie/store"
+	"github.com/kvtools/zookeeper"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	protoconfservice "github.com/protoconf/protoconf/agent/api/proto/v1"
 	protoconf_agent_config "github.com/protoconf/protoconf/agent/config/v1"
+	"github.com/protoconf/protoconf/agent/filekv"
 	"github.com/protoconf/protoconf/consts"
 	"github.com/protoconf/protoconf/libprotoconf"
 	"github.com/stephenafamo/orchestra"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
 
@@ -24,62 +30,60 @@ type server struct {
 	protoconfservice.ProtoconfServiceServer
 }
 
-type logger struct{}
-
-func (logger) Log(items ...interface{}) error {
-	return nil
-}
-
-func defaultServers(config *protoconf_agent_config.AgentConfig) string {
+func defaultServers(config *protoconf_agent_config.AgentConfig) []string {
 	if len(config.Servers) > 0 {
-		return strings.Join(config.Servers, ",")
+		return config.Servers
 	}
 	switch config.Store {
 	case protoconf_agent_config.AgentConfig_consul:
-		return "127.0.0.1:8500"
+		return []string{"127.0.0.1:8500"}
 	case protoconf_agent_config.AgentConfig_etcd:
-		return consts.EtcdDefaultAddress
+		return []string{consts.EtcdDefaultAddress}
 	case protoconf_agent_config.AgentConfig_zookeeper:
-		return consts.ZookeeperDefaultAddress
+		return []string{consts.ZookeeperDefaultAddress}
 	}
-	return ""
+	return []string{}
 }
 
 func RunAgent(config *protoconf_agent_config.AgentConfig) int {
-	log.Printf("Starting Protoconf agent at \"%s\", version %s", config.GrpcAddress, consts.Version)
-
-	agentServer := &server{}
 	var err error
+	var store store.Store
+	logger, err := zap.NewDevelopment()
+	if err != nil {
+		log.Fatalf("failed to create logger: %v", err)
+	}
+	logger.Info("Starting Protoconf agent", zap.String("address", config.GrpcAddress), zap.String("version", consts.Version))
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	if config.DevRoot != "" {
-		log.Printf("Using dev mode, watching directory protoconf_root=\"%s\"", config.DevRoot)
-		agentServer.watcher, err = libprotoconf.NewFileWatcher(config.DevRoot)
+		logger.Info("Using dev mode", zap.String("root", config.DevRoot))
+		store, err = filekv.New(ctx, []string{}, &filekv.Config{ProtoconfRoot: config.DevRoot})
+		config.Prefix = consts.CompiledConfigPath
+		config.Store = protoconf_agent_config.AgentConfig_file
 	} else {
-		log.Printf("Connecting to %s at \"%s\", config path prefix=\"%s\"", config.Store, defaultServers(config), config.Prefix)
+		logger.Info("Connecting to store", zap.Any("type", config.Store), zap.Any("servers", defaultServers(config)), zap.String("prefix", config.Prefix))
 		if config.Store == protoconf_agent_config.AgentConfig_consul {
-			agentServer.watcher, err = libprotoconf.NewKVWatcher(libprotoconf.Consul, defaultServers(config), config.Prefix)
+			store, err = consul.New(ctx, defaultServers(config), &consul.Config{})
 		} else if config.Store == protoconf_agent_config.AgentConfig_zookeeper {
-			agentServer.watcher, err = libprotoconf.NewKVWatcher(libprotoconf.Zookeeper, defaultServers(config), config.Prefix)
+			store, err = zookeeper.New(ctx, defaultServers(config), &zookeeper.Config{})
 		} else if config.Store == protoconf_agent_config.AgentConfig_etcd {
-			agentServer.watcher, err = libprotoconf.NewKVWatcher(libprotoconf.Etcd, defaultServers(config), config.Prefix)
+			store, err = etcdv3.New(ctx, defaultServers(config), &etcdv3.Config{})
 		} else {
 			log.Fatalf("Unknown key-value store %s", config.Store)
 		}
 	}
 	if err != nil {
-		log.Printf("Error setting up Protoconf err=%s", err)
+		logger.Error("Error setting config store", zap.Error(err))
 		return 1
 	}
+	agent, err := NewProtoconfKVAgent(store, config)
+	agent.Logger = logger
 
-	log.Printf("checking connection to store (type: %s, servers: %s)", config.Store, defaultServers(config))
-	err = retry.Do(func() error {
-		return agentServer.watcher.Ping()
-	})
 	if err != nil {
-		log.Println(err)
+		logger.Error("Error setting up Protoconf agent", zap.Error(err))
 		return 1
 	}
-
-	defer agentServer.watcher.Close()
 
 	listener, err := net.Listen("tcp", config.GrpcAddress)
 	if err != nil {
@@ -91,7 +95,7 @@ func RunAgent(config *protoconf_agent_config.AgentConfig) int {
 		grpc.StreamInterceptor(grpc_prometheus.StreamServerInterceptor),
 		grpc.UnaryInterceptor(grpc_prometheus.UnaryServerInterceptor),
 	)
-	protoconfservice.RegisterProtoconfServiceServer(rpcServer, agentServer)
+	protoconfservice.RegisterProtoconfServiceServer(rpcServer, agent)
 	grpc_prometheus.Register(rpcServer)
 	http.Handle("/metrics", promhttp.Handler())
 
@@ -101,9 +105,9 @@ func RunAgent(config *protoconf_agent_config.AgentConfig) int {
 				<-ctx.Done()
 				rpcServer.Stop()
 			}()
-			log.Println("starting protoconf agent")
+			logger.Info("starting protoconf agent")
 			err = rpcServer.Serve(listener)
-			log.Println("protoconf agent stopped")
+			logger.Info("protoconf agent stopped")
 			return err
 		}),
 		"http": orchestra.NewServerPlayer(
@@ -112,8 +116,7 @@ func RunAgent(config *protoconf_agent_config.AgentConfig) int {
 			),
 		),
 	},
-	// Logger: &logger{},
-	})
+	}, os.Interrupt, syscall.SIGTERM)
 	if err != nil {
 		log.Printf("Error serving gRPC, err=%s", err)
 		return 1

@@ -12,6 +12,7 @@ message ConfigSubscriptionRequest {
 
 message ConfigUpdate {
     google.protobuf.Any value = 1;
+    string error =2;
 }
 
 service ProtoconfService{
