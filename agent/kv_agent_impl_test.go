@@ -3,8 +3,12 @@ package agent
 import (
 	"context"
 	"encoding/base64"
+	"fmt"
+	"io"
 	"log"
+	"log/slog"
 	"net"
+	"path/filepath"
 	"testing"
 
 	"github.com/kvtools/valkeyrie/store"
@@ -18,6 +22,7 @@ import (
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/anypb"
 	"google.golang.org/protobuf/types/known/structpb"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func newAny(msg proto.Message) *anypb.Any {
@@ -146,6 +151,61 @@ func TestProtoconfKVAgent_SubscribeForConfig(t *testing.T) {
 			// 	t.Errorf("ProtoconfKVAgent.SubscribeForConfig() error = %v, wantErr %v", err, tt.wantErr)
 			// }
 		})
+	}
+}
+
+func protoB64Bytes(msg proto.Message) []byte {
+	b, _ := proto.Marshal(msg)
+	return []byte(base64.StdEncoding.EncodeToString(b))
+}
+
+func BenchmarkProtoconfAgent(b *testing.B) {
+	storeClient, _ := dummykv.New(context.Background(), []string{}, &dummykv.Config{})
+	agent, _ := NewProtoconfKVAgent(storeClient, &protoconf_agent_config.AgentConfig{})
+	agent.Logger = slog.New(slog.NewTextHandler(io.Discard, &slog.HandlerOptions{}))
+	client, closer := testServer(context.Background(), agent)
+	defer closer()
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	path := "root"
+	for i := 0; i < b.N; i++ {
+		localPath := filepath.Join(path, fmt.Sprintf("%d", i))
+		rootWatcher, _ := client.SubscribeForConfig(ctx, &protoconfservice.ConfigSubscriptionRequest{Path: path})
+		watcher, _ := client.SubscribeForConfig(ctx, &protoconfservice.ConfigSubscriptionRequest{Path: localPath})
+		go func() {
+			counter := 0
+			for {
+				update, err := rootWatcher.Recv()
+				counter++
+				b.Log(counter, update, err)
+				if err != nil {
+					break
+				}
+			}
+		}()
+		go func() {
+			update, err := watcher.Recv()
+			b.Log(localPath, update, err)
+		}()
+		err := storeClient.Put(
+			context.Background(),
+			path,
+			protoB64Bytes(&protoconfvalue.ProtoconfValue{Value: newAny(timestamppb.Now())}),
+			&store.WriteOptions{},
+		)
+		if err != nil {
+			b.Fail()
+		}
+		err = storeClient.Put(
+			context.Background(),
+			localPath,
+			protoB64Bytes(&protoconfvalue.ProtoconfValue{Value: newAny(timestamppb.Now())}),
+			&store.WriteOptions{},
+		)
+		if err != nil {
+			b.Fail()
+		}
 	}
 }
 
