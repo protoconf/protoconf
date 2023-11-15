@@ -4,21 +4,21 @@ import (
 	"context"
 	"encoding/base64"
 	"errors"
+	"log/slog"
 	"path"
 
 	"github.com/kvtools/valkeyrie/store"
 	protoconfservice "github.com/protoconf/protoconf/agent/api/proto/v1"
 	protoconf_agent_config "github.com/protoconf/protoconf/agent/config/v1"
 	protoconfvalue "github.com/protoconf/protoconf/datatypes/proto/v1"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
+	"google.golang.org/grpc/peer"
 	"google.golang.org/protobuf/proto"
 )
 
 type ProtoconfKVAgent struct {
 	store  store.Store
 	config *protoconf_agent_config.AgentConfig
-	Logger *zap.Logger
+	Logger *slog.Logger
 	protoconfservice.ProtoconfServiceServer
 }
 
@@ -27,13 +27,17 @@ func NewProtoconfKVAgent(store store.Store, config *protoconf_agent_config.Agent
 	if err != nil {
 		return nil, errors.Join(errors.New("store is not available"), err)
 	}
-	logger := zap.New(zapcore.NewNopCore())
+	logger := slog.Default()
 	return &ProtoconfKVAgent{store: store, config: config, Logger: logger}, nil
 }
 
 func (s *ProtoconfKVAgent) SubscribeForConfig(request *protoconfservice.ConfigSubscriptionRequest, srv protoconfservice.ProtoconfService_SubscribeForConfigServer) error {
 	ctx := srv.Context()
-	logger := s.Logger.With(zap.String("key", request.Path))
+
+	logger := s.Logger.With(slog.String("key", request.Path))
+	if peer, ok := peer.FromContext(ctx); ok {
+		logger = logger.With(slog.Any("peer_addr", peer.Addr))
+	}
 	logger.Info("got watch request")
 	kvPairCh, err := s.store.Watch(ctx, path.Join(s.config.Prefix, request.Path), &store.ReadOptions{})
 	if err != nil {
@@ -69,7 +73,7 @@ func (s *ProtoconfKVAgent) SubscribeForConfig(request *protoconfservice.ConfigSu
 			}
 			logger.Info("config update sent")
 		case <-ctx.Done():
-			logger.Info("client stopped watching", zap.Error(ctx.Err()))
+			logger.Info("client stopped watching", slog.Any("error", ctx.Err()))
 			return nil
 		}
 	}

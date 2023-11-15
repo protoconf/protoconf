@@ -1,6 +1,8 @@
 module github.com/protoconf/protoconf
 
-go 1.19
+go 1.21
+
+toolchain go1.21.3
 
 require (
 	buf.build/gen/go/bufbuild/reflect/bufbuild/connect-go v1.8.0-20230627113514-3943db27b83c.1
@@ -26,7 +28,7 @@ require (
 	github.com/protoconf/libprotoconf v0.1.0
 	github.com/qri-io/starlib v0.5.0
 	github.com/smintz/starlarkobject v0.0.0-20221130044148-40067250eba0
-	github.com/stephenafamo/orchestra v0.0.0-20231013090236-eabf3e1285a4
+	github.com/stephenafamo/orchestra v0.0.0-20231108160920-01f91190d9dd
 	github.com/stretchr/testify v1.8.4
 	go.starlark.net v0.0.0-20230925163745-10651d5192ab
 	go.uber.org/zap v1.26.0

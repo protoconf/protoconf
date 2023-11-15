@@ -23,6 +23,10 @@ message AgentConfig {
     TLSConfig tls_config = 8 [json_name = "tls-config"];
     TLSConfig store_tls = 9 [json_name = "store-tls"];
 
+    bool log_as_json = 10 [json_name = "log-as-json"];
+    LogLevel log_level = 11 [json_name = "log-level"];
+    bool log_source = 12 [json_name = "log-source"];
+
     enum StoreType {
         consul = 0;
         etcd = 1;
@@ -30,6 +34,12 @@ message AgentConfig {
         file = 3;
     }
 
+    enum LogLevel {
+        INFO = 0;
+        DEBUG = -4;
+        WARN = 4;
+        ERROR = 8;
+    }
     message TLSConfig {
         oneof key {
             string key_text = 1 [json_name = "key-text"];

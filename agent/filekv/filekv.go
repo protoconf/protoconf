@@ -107,7 +107,6 @@ func (s Store) Watch(ctx context.Context, key string, opts *store.ReadOptions) (
 	}
 
 	absPath := filepath.Join(s.protoconfRoot, key+consts.CompiledConfigExtension)
-	log.Println(absPath)
 	fsCh := make(chan struct{})
 	if err := s.addWatch(absPath, fsCh); err != nil {
 		return nil, err
