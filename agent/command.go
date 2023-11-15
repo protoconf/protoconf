@@ -19,7 +19,11 @@ type cliCommand struct {
 }
 
 func (c *cliCommand) Run(args []string) int {
-	c.flag.Parse(args)
+	err := c.flag.Parse(args)
+	if err != nil {
+		fmt.Fprint(os.Stderr, "failed to parse flags", err)
+		return 2
+	}
 	return RunAgent(c.config)
 }
 
@@ -46,7 +50,9 @@ func Command() (cli.Command, error) {
 	lpc := configtool.NewConfig(c.config)
 	lpc.SetEnvKeyPrefix("PROTOCONF_AGENT")
 	lpc.Environment()
-	c.flag = lpc.DefaultFlagSet()
+	c.flag = flag.NewFlagSet(string(c.config.ProtoReflect().Descriptor().FullName()), flag.ContinueOnError)
+	lpc.PopulateFlagSet(c.flag)
+
 	c.flag.VisitAll(func(f *flag.Flag) {
 		switch f.Name {
 		case "dev":

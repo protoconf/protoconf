@@ -2,6 +2,7 @@ package agent
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"log/slog"
 	"net"
@@ -57,7 +58,7 @@ func RunAgent(config *protoconf_agent_config.AgentConfig) int {
 	if err != nil {
 		log.Fatalf("failed to create logger: %v", err)
 	}
-	logger.Info("Starting Protoconf agent", slog.String("address", config.GrpcAddress), slog.String("version", consts.Version))
+	logger.Info("Starting Protoconf agent", slog.String("address", config.GrpcAddress), slog.String("version", consts.Version), slog.String("http-address", config.HttpAddress))
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -75,7 +76,7 @@ func RunAgent(config *protoconf_agent_config.AgentConfig) int {
 		} else if config.Store == protoconf_agent_config.AgentConfig_etcd {
 			store, err = etcdv3.New(ctx, defaultServers(config), &etcdv3.Config{})
 		} else {
-			log.Fatalf("Unknown key-value store %s", config.Store)
+			err = fmt.Errorf("unknown key-value store %s", config.Store)
 		}
 	}
 	if err != nil {
@@ -83,12 +84,12 @@ func RunAgent(config *protoconf_agent_config.AgentConfig) int {
 		return 1
 	}
 	agent, err := NewProtoconfKVAgent(store, config)
-	agent.Logger = logger
 
 	if err != nil {
 		logger.Error("Error setting up Protoconf agent", slog.Any("error", err))
 		return 1
 	}
+	agent.Logger = logger
 
 	listener, err := net.Listen("tcp", config.GrpcAddress)
 	if err != nil {
@@ -102,7 +103,8 @@ func RunAgent(config *protoconf_agent_config.AgentConfig) int {
 	)
 	protoconfservice.RegisterProtoconfServiceServer(rpcServer, agent)
 	grpc_prometheus.Register(rpcServer)
-	http.Handle("/metrics", promhttp.Handler())
+	mux := http.NewServeMux()
+	mux.Handle("/metrics", promhttp.Handler())
 
 	err = orchestra.PlayUntilSignal(&orchestra.Conductor{Players: map[string]orchestra.Player{
 		"grpc": orchestra.PlayerFunc(func(ctx context.Context) error {
@@ -116,7 +118,7 @@ func RunAgent(config *protoconf_agent_config.AgentConfig) int {
 			return err
 		}),
 		"http": orchestra.NewServerPlayer(
-			&http.Server{Addr: config.HttpAddress},
+			&http.Server{Addr: config.HttpAddress, Handler: mux},
 		),
 	},
 		Logger: orchestra.LoggerFromSlog(slog.LevelInfo, logger),
