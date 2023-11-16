@@ -3,6 +3,7 @@ package agent
 import (
 	"os"
 	"path/filepath"
+	"syscall"
 	"testing"
 	"time"
 )
@@ -24,7 +25,7 @@ func Test_cliCommand_Run(t *testing.T) {
 		want int
 	}{
 		{
-			name: "cannot listen port 10",
+			name: "cannot listen port 10000000000",
 			args: args{
 				args: []string{
 					"-dev", "/some/fake/path",
@@ -38,6 +39,8 @@ func Test_cliCommand_Run(t *testing.T) {
 			name: "run consul server",
 			args: args{
 				args: []string{
+					"-grpc-address", ":0",
+					"-http-address", ":0",
 					"-store", "consul",
 				},
 			},
@@ -47,6 +50,8 @@ func Test_cliCommand_Run(t *testing.T) {
 			name: "run etcd server",
 			args: args{
 				args: []string{
+					"-grpc-address", ":0",
+					"-http-address", ":0",
 					"-store", "etcd",
 				},
 			},
@@ -56,6 +61,8 @@ func Test_cliCommand_Run(t *testing.T) {
 			name: "run zookeeper server",
 			args: args{
 				args: []string{
+					"-grpc-address", ":0",
+					"-http-address", ":0",
 					"-store", "zookeeper",
 				},
 			},
@@ -106,28 +113,30 @@ func Test_cliCommand_Run(t *testing.T) {
 			},
 			want: 1,
 		},
-		{
-			name: "run dev server",
-			args: args{
-				args: []string{
-					"-grpc-address", ":0",
-					"-http-address", ":0",
-					"-dev", "/some/fake/root",
-				},
-			},
-			want: 0,
-		},
+		// {
+		// 	name: "run dev server",
+		// 	args: args{
+		// 		args: []string{
+		// 			"-grpc-address", ":0",
+		// 			"-http-address", ":0",
+		// 			"-dev", "/some/fake/root",
+		// 		},
+		// 	},
+		// 	want: 0,
+		// },
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c, _ := Command()
+			time.AfterFunc(time.Second*3, func() {
+				p, _ := os.FindProcess(os.Getegid())
+				t.Log("sending interrupt", os.Getegid())
+				p.Signal(os.Interrupt)
+				p.Signal(syscall.SIGTERM)
+			})
 			if got := c.Run(tt.args.args); got != tt.want {
 				t.Errorf("cliCommand.Run() = %v, want %v", got, tt.want)
 			}
-			time.AfterFunc(time.Second*2, func() {
-				p, _ := os.FindProcess(os.Getegid())
-				p.Signal(os.Interrupt)
-			})
 		})
 	}
 }

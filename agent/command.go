@@ -2,8 +2,10 @@ package agent
 
 import (
 	"bytes"
+	"context"
 	"flag"
 	"fmt"
+	"log/slog"
 	"os"
 
 	"github.com/mitchellh/cli"
@@ -24,7 +26,11 @@ func (c *cliCommand) Run(args []string) int {
 		fmt.Fprint(os.Stderr, "failed to parse flags", err)
 		return 2
 	}
-	return RunAgent(c.config)
+	if err := RunAgent(context.Background(), c.config); err != nil {
+		slog.Default().Error("error", err)
+		return 1
+	}
+	return 0
 }
 
 func (c *cliCommand) Help() string {

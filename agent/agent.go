@@ -2,12 +2,13 @@ package agent
 
 import (
 	"context"
+	"errors"
 	"fmt"
-	"log"
 	"log/slog"
 	"net"
 	"net/http"
 	"os"
+	"os/signal"
 	"syscall"
 
 	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
@@ -39,7 +40,7 @@ func defaultServers(config *protoconf_agent_config.AgentConfig) []string {
 	return []string{}
 }
 
-func RunAgent(config *protoconf_agent_config.AgentConfig) int {
+func RunAgent(ctx context.Context, config *protoconf_agent_config.AgentConfig) error {
 	var err error
 	var store store.Store
 
@@ -56,10 +57,10 @@ func RunAgent(config *protoconf_agent_config.AgentConfig) int {
 
 	logger := slog.New(loggerHandler)
 	if err != nil {
-		log.Fatalf("failed to create logger: %v", err)
+		return errors.Join(errors.New("failed to create logger"), err)
 	}
-	logger.Info("Starting Protoconf agent", slog.String("address", config.GrpcAddress), slog.String("version", consts.Version), slog.String("http-address", config.HttpAddress))
-	ctx, cancel := context.WithCancel(context.Background())
+	logger.Info("Starting Protoconf agent", slog.String("address", config.GrpcAddress), slog.String("version", consts.Version), slog.String("http-address", config.HttpAddress), slog.Int("pid", os.Getgid()))
+	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
 	if config.DevRoot != "" {
@@ -80,21 +81,18 @@ func RunAgent(config *protoconf_agent_config.AgentConfig) int {
 		}
 	}
 	if err != nil {
-		logger.Error("Error setting config store", slog.Any("error", err))
-		return 1
+		return errors.Join(errors.New("error setting config store"), err)
 	}
 	agent, err := NewProtoconfKVAgent(store, config)
 
 	if err != nil {
-		logger.Error("Error setting up Protoconf agent", slog.Any("error", err))
-		return 1
+		return errors.Join(errors.New("error setting up protoconf agent"), err)
 	}
 	agent.Logger = logger
 
 	listener, err := net.Listen("tcp", config.GrpcAddress)
 	if err != nil {
-		log.Printf("Error listening on address=\"%s\" err=%s", config.GrpcAddress, err)
-		return 1
+		return errors.Join(errors.New("error creating listener"), err)
 	}
 
 	rpcServer := grpc.NewServer(
@@ -106,10 +104,11 @@ func RunAgent(config *protoconf_agent_config.AgentConfig) int {
 	mux := http.NewServeMux()
 	mux.Handle("/metrics", promhttp.Handler())
 
-	err = orchestra.PlayUntilSignal(&orchestra.Conductor{Players: map[string]orchestra.Player{
+	err = playUntilSignal(ctx, &orchestra.Conductor{Players: map[string]orchestra.Player{
 		"grpc": orchestra.PlayerFunc(func(ctx context.Context) error {
 			go func() {
 				<-ctx.Done()
+				logger.Info("stopping grpc server")
 				rpcServer.Stop()
 			}()
 			logger.Info("starting protoconf agent")
@@ -124,9 +123,15 @@ func RunAgent(config *protoconf_agent_config.AgentConfig) int {
 		Logger: orchestra.LoggerFromSlog(slog.LevelInfo, logger),
 	}, os.Interrupt, syscall.SIGTERM)
 	if err != nil {
-		log.Printf("Error serving gRPC, err=%s", err)
-		return 1
+		return errors.Join(errors.New("error serving protoconf agent"), err)
 	}
 
-	return 0
+	return nil
+}
+
+func playUntilSignal(ctx context.Context, p orchestra.Player, sig ...os.Signal) error {
+	ctx, cancel := signal.NotifyContext(ctx, sig...)
+	defer cancel()
+
+	return p.Play(ctx)
 }
