@@ -3,169 +3,135 @@ package agent
 import (
 	"context"
 	"errors"
-	"log"
+	"fmt"
+	"log/slog"
 	"net"
 	"net/http"
-	"strings"
+	"os"
+	"os/signal"
+	"syscall"
 
-	"github.com/avast/retry-go"
 	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
+	"github.com/kvtools/consul"
+	"github.com/kvtools/etcdv3"
+	"github.com/kvtools/valkeyrie/store"
+	"github.com/kvtools/zookeeper"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	protoconfservice "github.com/protoconf/protoconf/agent/api/proto/v1"
 	protoconf_agent_config "github.com/protoconf/protoconf/agent/config/v1"
+	"github.com/protoconf/protoconf/agent/filekv"
 	"github.com/protoconf/protoconf/consts"
-	"github.com/protoconf/protoconf/libprotoconf"
 	"github.com/stephenafamo/orchestra"
 	"google.golang.org/grpc"
 )
 
-type server struct {
-	watcher libprotoconf.Watcher
-	protoconfservice.ProtoconfServiceServer
-}
-
-type logger struct{}
-
-func (logger) Log(items ...interface{}) error {
-	return nil
-}
-
-func defaultServers(config *protoconf_agent_config.AgentConfig) string {
+func defaultServers(config *protoconf_agent_config.AgentConfig) []string {
 	if len(config.Servers) > 0 {
-		return strings.Join(config.Servers, ",")
+		return config.Servers
 	}
 	switch config.Store {
 	case protoconf_agent_config.AgentConfig_consul:
-		return "127.0.0.1:8500"
+		return []string{"127.0.0.1:8500"}
 	case protoconf_agent_config.AgentConfig_etcd:
-		return consts.EtcdDefaultAddress
+		return []string{consts.EtcdDefaultAddress}
 	case protoconf_agent_config.AgentConfig_zookeeper:
-		return consts.ZookeeperDefaultAddress
+		return []string{consts.ZookeeperDefaultAddress}
 	}
-	return ""
+	return []string{}
 }
 
-func RunAgent(config *protoconf_agent_config.AgentConfig) int {
-	log.Printf("Starting Protoconf agent at \"%s\", version %s", config.GrpcAddress, consts.Version)
-
-	agentServer := &server{}
+func RunAgent(ctx context.Context, config *protoconf_agent_config.AgentConfig) error {
 	var err error
-	if config.DevRoot != "" {
-		log.Printf("Using dev mode, watching directory protoconf_root=\"%s\"", config.DevRoot)
-		agentServer.watcher, err = libprotoconf.NewFileWatcher(config.DevRoot)
+	var store store.Store
+
+	var loggerHandler slog.Handler
+	loggerHandlerOptions := &slog.HandlerOptions{
+		Level:     slog.Level(config.LogLevel),
+		AddSource: config.LogSource,
+	}
+	if config.LogAsJson {
+		loggerHandler = slog.NewJSONHandler(os.Stderr, loggerHandlerOptions)
 	} else {
-		log.Printf("Connecting to %s at \"%s\", config path prefix=\"%s\"", config.Store, defaultServers(config), config.Prefix)
+		loggerHandler = slog.NewTextHandler(os.Stderr, loggerHandlerOptions)
+	}
+
+	logger := slog.New(loggerHandler)
+	if err != nil {
+		return errors.Join(errors.New("failed to create logger"), err)
+	}
+	logger.Info("Starting Protoconf agent", slog.String("address", config.GrpcAddress), slog.String("version", consts.Version), slog.String("http-address", config.HttpAddress), slog.Int("pid", os.Getgid()))
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	if config.DevRoot != "" {
+		logger.Info("Using dev mode", slog.String("root", config.DevRoot))
+		store, err = filekv.New(ctx, []string{}, &filekv.Config{ProtoconfRoot: config.DevRoot})
+		config.Prefix = consts.CompiledConfigPath
+		config.Store = protoconf_agent_config.AgentConfig_file
+	} else {
+		logger.Info("Connecting to store", slog.Any("type", config.Store), slog.Any("servers", defaultServers(config)), slog.String("prefix", config.Prefix))
 		if config.Store == protoconf_agent_config.AgentConfig_consul {
-			agentServer.watcher, err = libprotoconf.NewKVWatcher(libprotoconf.Consul, defaultServers(config), config.Prefix)
+			store, err = consul.New(ctx, defaultServers(config), &consul.Config{})
 		} else if config.Store == protoconf_agent_config.AgentConfig_zookeeper {
-			agentServer.watcher, err = libprotoconf.NewKVWatcher(libprotoconf.Zookeeper, defaultServers(config), config.Prefix)
+			store, err = zookeeper.New(ctx, defaultServers(config), &zookeeper.Config{})
 		} else if config.Store == protoconf_agent_config.AgentConfig_etcd {
-			agentServer.watcher, err = libprotoconf.NewKVWatcher(libprotoconf.Etcd, defaultServers(config), config.Prefix)
+			store, err = etcdv3.New(ctx, defaultServers(config), &etcdv3.Config{})
 		} else {
-			log.Fatalf("Unknown key-value store %s", config.Store)
+			err = fmt.Errorf("unknown key-value store %s", config.Store)
 		}
 	}
 	if err != nil {
-		log.Printf("Error setting up Protoconf err=%s", err)
-		return 1
+		return errors.Join(errors.New("error setting config store"), err)
 	}
+	agent, err := NewProtoconfKVAgent(store, config)
 
-	log.Printf("checking connection to store (type: %s, servers: %s)", config.Store, defaultServers(config))
-	err = retry.Do(func() error {
-		return agentServer.watcher.Ping()
-	})
 	if err != nil {
-		log.Println(err)
-		return 1
+		return errors.Join(errors.New("error setting up protoconf agent"), err)
 	}
-
-	defer agentServer.watcher.Close()
+	agent.Logger = logger
 
 	listener, err := net.Listen("tcp", config.GrpcAddress)
 	if err != nil {
-		log.Printf("Error listening on address=\"%s\" err=%s", config.GrpcAddress, err)
-		return 1
+		return errors.Join(errors.New("error creating listener"), err)
 	}
 
 	rpcServer := grpc.NewServer(
 		grpc.StreamInterceptor(grpc_prometheus.StreamServerInterceptor),
 		grpc.UnaryInterceptor(grpc_prometheus.UnaryServerInterceptor),
 	)
-	protoconfservice.RegisterProtoconfServiceServer(rpcServer, agentServer)
+	protoconfservice.RegisterProtoconfServiceServer(rpcServer, agent)
 	grpc_prometheus.Register(rpcServer)
-	http.Handle("/metrics", promhttp.Handler())
+	mux := http.NewServeMux()
+	mux.Handle("/metrics", promhttp.Handler())
 
-	err = orchestra.PlayUntilSignal(&orchestra.Conductor{Players: map[string]orchestra.Player{
+	err = playUntilSignal(ctx, &orchestra.Conductor{Players: map[string]orchestra.Player{
 		"grpc": orchestra.PlayerFunc(func(ctx context.Context) error {
 			go func() {
 				<-ctx.Done()
+				logger.Info("stopping grpc server")
 				rpcServer.Stop()
 			}()
-			log.Println("starting protoconf agent")
+			logger.Info("starting protoconf agent")
 			err = rpcServer.Serve(listener)
-			log.Println("protoconf agent stopped")
+			logger.Info("protoconf agent stopped")
 			return err
 		}),
 		"http": orchestra.NewServerPlayer(
-			orchestra.WithHTTPServer(
-				&http.Server{Addr: config.HttpAddress},
-			),
+			&http.Server{Addr: config.HttpAddress, Handler: mux},
 		),
 	},
-	// Logger: &logger{},
-	})
+		Logger: orchestra.LoggerFromSlog(slog.LevelInfo, logger),
+	}, os.Interrupt, syscall.SIGTERM)
 	if err != nil {
-		log.Printf("Error serving gRPC, err=%s", err)
-		return 1
+		return errors.Join(errors.New("error serving protoconf agent"), err)
 	}
 
-	return 0
+	return nil
 }
 
-func (s server) SubscribeForConfig(request *protoconfservice.ConfigSubscriptionRequest, srv protoconfservice.ProtoconfService_SubscribeForConfigServer) error {
-	path := request.GetPath()
-	log.Printf("Watching path=%s", path)
+func playUntilSignal(ctx context.Context, p orchestra.Player, sig ...os.Signal) error {
+	ctx, cancel := signal.NotifyContext(ctx, sig...)
+	defer cancel()
 
-	stopCh := make(chan struct{})
-	watchCh, err := s.watcher.Watch(path, stopCh)
-	if err != nil {
-		return err
-	}
-
-	defer func() {
-		select {
-		case stopCh <- struct{}{}:
-		default:
-		}
-		close(stopCh)
-	}()
-
-	ctx := srv.Context()
-	for {
-		select {
-		case <-ctx.Done():
-			log.Printf("Client stopped watching path=%s", path)
-			return ctx.Err()
-		case config, ok := <-watchCh:
-			if !ok {
-				log.Printf("Watch channel closed for path=%s", path)
-				return errors.New("watch channel closed")
-			}
-
-			if config.Error != nil {
-				log.Printf("Error watching config, path=%s err=%s", path, config.Error)
-				return config.Error
-			}
-
-			log.Printf("Sending update on path=%s", path)
-			resp := protoconfservice.ConfigUpdate{Value: config.Value}
-			go func() {
-				if err := srv.Send(&resp); err != nil {
-					log.Printf("Error sending config update, path=%s srv=%s err=%s", path, srv, err)
-				} else {
-					log.Printf("Update sent successfully path=%s", path)
-				}
-			}()
-		}
-	}
+	return p.Play(ctx)
 }

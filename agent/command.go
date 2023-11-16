@@ -2,8 +2,10 @@ package agent
 
 import (
 	"bytes"
+	"context"
 	"flag"
 	"fmt"
+	"log/slog"
 	"os"
 
 	"github.com/mitchellh/cli"
@@ -19,8 +21,16 @@ type cliCommand struct {
 }
 
 func (c *cliCommand) Run(args []string) int {
-	c.flag.Parse(args)
-	return RunAgent(c.config)
+	err := c.flag.Parse(args)
+	if err != nil {
+		fmt.Fprint(os.Stderr, "failed to parse flags", err)
+		return 2
+	}
+	if err := RunAgent(context.Background(), c.config); err != nil {
+		slog.Default().Error("error", err)
+		return 1
+	}
+	return 0
 }
 
 func (c *cliCommand) Help() string {
@@ -46,7 +56,9 @@ func Command() (cli.Command, error) {
 	lpc := configtool.NewConfig(c.config)
 	lpc.SetEnvKeyPrefix("PROTOCONF_AGENT")
 	lpc.Environment()
-	c.flag = lpc.DefaultFlagSet()
+	c.flag = flag.NewFlagSet(string(c.config.ProtoReflect().Descriptor().FullName()), flag.ContinueOnError)
+	lpc.PopulateFlagSet(c.flag)
+
 	c.flag.VisitAll(func(f *flag.Flag) {
 		switch f.Name {
 		case "dev":
