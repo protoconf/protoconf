@@ -23,7 +23,7 @@ require (
 	github.com/protoconf/proto-validate-reflect v0.1.2
 	github.com/qri-io/starlib v0.5.0
 	github.com/smintz/starlarkobject v0.0.0-20221130044148-40067250eba0
-	github.com/stephenafamo/orchestra v0.0.0-20231108160920-01f91190d9dd
+	github.com/stephenafamo/orchestra v0.1.0
 	github.com/stretchr/testify v1.8.4
 	go.starlark.net v0.0.0-20230925163745-10651d5192ab
 	go.uber.org/zap v1.26.0
