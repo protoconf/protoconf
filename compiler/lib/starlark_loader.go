@@ -29,11 +29,12 @@ type cacheEntry struct {
 }
 
 type starlarkLoader struct {
-	cache      map[string]*cacheEntry
-	Modules    starlark.StringDict
-	mutableDir string
-	srcDir     string
-	parser     *parser.Parser
+	cache         map[string]*cacheEntry
+	Modules       starlark.StringDict
+	mutableDir    string
+	srcDir        string
+	parser        *parser.Parser
+	moduleService *ModuleService
 }
 
 func (l *starlarkLoader) loadConfig(moduleName string) (starlark.StringDict, map[string]*starlark.Function, error) {
@@ -56,6 +57,11 @@ func (l *starlarkLoader) loadConfig(moduleName string) (starlark.StringDict, map
 }
 
 func (l *starlarkLoader) Load(thread *starlark.Thread, moduleName string) (starlark.StringDict, error) {
+	metadata := ParseModulePath(moduleName)
+	if metadata != nil && metadata.Repo != "" {
+		return l.moduleService.Load(thread, moduleName)
+	}
+
 	if moduleName == "any.star" {
 		return starlark.StringDict{"any": starproto.AnyModule}, nil
 	}
@@ -171,7 +177,7 @@ func (l *starlarkLoader) loadMutable(modulePath string) (starlark.StringDict, er
 	protoconfValue := &pc.ProtoconfValue{}
 	um := jsonpb.Unmarshaler{AnyResolver: anyResolver}
 	if err = um.Unmarshal(io.NopCloser(bytes.NewReader(jsonData)), protoconfValue); err != nil {
-		return nil, fmt.Errorf("error unmarshaling, err=%s", err)
+		return nil, fmt.Errorf("error unmarshal, err=%s", err)
 	}
 
 	name, err := ptypes.AnyMessageName(protoconfValue.Value)

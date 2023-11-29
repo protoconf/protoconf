@@ -3,6 +3,7 @@ package parser
 import (
 	"github.com/jhump/protoreflect/desc"
 	"github.com/protoconf/protoconf/utils"
+	"github.com/scylladb/go-set/strset"
 	"google.golang.org/protobuf/reflect/protoregistry"
 )
 
@@ -11,9 +12,10 @@ type Parser struct {
 	LocalResolver *protoregistry.Types
 }
 
-func NewParser(protoconfRoot string) *Parser {
+func NewParser(protoconfRoot ...string) *Parser {
+
 	p := &Parser{
-		LocalResolver: utils.LocalLinkedResolver(protoconfRoot),
+		LocalResolver: utils.LocalLinkedResolver(strset.New(protoconfRoot...).List()...),
 	}
 	return p
 }

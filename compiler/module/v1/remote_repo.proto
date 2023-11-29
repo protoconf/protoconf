@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package protoconf.compiler.module.v1;
+
+option go_package = "github.com/protoconf/protoconf/compiler/module/v1;module";
+
+message RemoteRepo {
+    string name = 1;
+    string url = 2;
+    oneof pin {
+        string tag = 3;
+        string branch = 4;
+        string commit = 5;
+        string checksum = 6; // How to validate the integrity of a file if url leads to an archive
+    }
+    string source_path = 7;
+    repeated string additional_proto_dirs = 8;
+    map<string,RemoteRepo> deps = 9;
+    string integrity = 10;
+    string getter_url = 11;
+}

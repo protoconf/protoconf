@@ -2,6 +2,7 @@ package lib
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -29,21 +30,33 @@ func NewCompiler(protoconfRoot string, verboseLogging bool) *Compiler {
 	resolve.AllowGlobalReassign = true // allow reassignment to top-level names; also, allow if/for/while at top-level
 	resolve.AllowRecursion = true      // allow while statements and recursive functions
 
+	ms := NewModuleService(protoconfRoot)
 	return &Compiler{
 		protoconfRoot:   protoconfRoot,
 		verboseLogging:  verboseLogging,
-		disableWriting:  false,
 		MaterializedDir: filepath.Join(protoconfRoot, consts.CompiledConfigPath),
-		parser:          parser.NewParser(protoconfRoot),
+		parser:          parser.NewParser(append([]string{protoconfRoot}, ms.GetProtoPaths()...)...),
+		moduleService:   ms,
 	}
 }
 
 type Compiler struct {
 	protoconfRoot   string
 	verboseLogging  bool
-	disableWriting  bool
 	MaterializedDir string
 	parser          *parser.Parser
+	moduleService   *ModuleService
+}
+
+func (c *Compiler) SyncModules(ctx context.Context) error {
+	c.moduleService.LoadFromLockFile()
+	err := c.moduleService.Sync(ctx)
+	if err != nil {
+		return err
+	}
+	c.parser = parser.NewParser(append([]string{c.protoconfRoot}, c.moduleService.GetProtoPaths()...)...)
+	return nil
+
 }
 
 func (c *Compiler) CompileFile(filename string) error {
@@ -231,11 +244,14 @@ func (c *Compiler) load(filename string) (*config, error) {
 }
 
 func (c *Compiler) GetLoader() *starlarkLoader {
+	modules := getModules()
+	modules["remote_repo"] = starlark.NewBuiltin("remote_repo", c.moduleService.Add)
 	return &starlarkLoader{
-		cache:      make(map[string]*cacheEntry),
-		Modules:    getModules(),
-		mutableDir: filepath.Join(c.protoconfRoot, consts.MutableConfigPath),
-		srcDir:     filepath.Join(c.protoconfRoot, consts.SrcPath),
-		parser:     c.parser,
+		cache:         make(map[string]*cacheEntry),
+		Modules:       modules,
+		mutableDir:    filepath.Join(c.protoconfRoot, consts.MutableConfigPath),
+		srcDir:        filepath.Join(c.protoconfRoot, consts.SrcPath),
+		parser:        c.parser,
+		moduleService: c.moduleService,
 	}
 }

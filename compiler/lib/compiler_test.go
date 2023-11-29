@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"context"
 	"testing"
 
 	proto_validate_reflect "github.com/protoconf/proto-validate-reflect"
@@ -10,6 +11,9 @@ import (
 
 func Test(t *testing.T) {
 	c := NewCompiler(testdata.SmallTestDir(), true)
+	assert.NoError(t, c.moduleService.Init(context.Background(), "init.pinc"))
+	assert.NoError(t, c.SyncModules(context.Background()))
+	assert.NoError(t, c.CompileFile("load_remote.pconf"))
 	assert.ErrorAs(t, c.CompileFile("validator_ext.pconf"), &proto_validate_reflect.ErrorInvalidEmail)
 	assert.NoError(t, c.CompileFile("test.pconf"))
 	assert.Error(t, c.CompileFile("validator_test.pconf"))

@@ -1,0 +1,4 @@
+terraform_repo=remote_repo(
+    url="github.com/protoconf/protoconf-terraform//example",
+    tag="v0.1.4",
+)

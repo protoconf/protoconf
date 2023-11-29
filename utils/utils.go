@@ -50,18 +50,18 @@ func ReadConfig(protoconfRoot string, configName string) (*protoconfvalue.Protoc
 
 }
 
-func LocalResolver(protoconfRoot string) *protoregistry.Types {
-	return localLinkedResolver(protoconfRoot, false)
+func LocalResolver(protoconfRoot ...string) *protoregistry.Types {
+	return localLinkedResolver(false, protoconfRoot...)
 }
 
-func LocalLinkedResolver(protoconfRoot string) *protoregistry.Types {
-	return localLinkedResolver(protoconfRoot, true)
+func LocalLinkedResolver(protoconfRoot ...string) *protoregistry.Types {
+	return localLinkedResolver(true, protoconfRoot...)
 }
 
-func localLinkedResolver(protoconfRoot string, link bool) *protoregistry.Types {
+func localLinkedResolver(link bool, protoconfRoot ...string) *protoregistry.Types {
 
 	localTypes := new(protoregistry.Types)
-	localFiles, err := LoadLocalProtoFiles(protoconfRoot, link)
+	localFiles, err := LoadLocalProtoFiles(link, protoconfRoot...)
 	if err != nil {
 		log.Fatal("LocalResolver:", err)
 	}
@@ -115,11 +115,14 @@ func find(root, ext string) []string {
 	return a
 }
 
-func LoadLocalProtoFiles(root string, link bool) (*protoregistry.Files, error) {
-	rootPath := filepath.Join(root, consts.SrcPath)
+func LoadLocalProtoFiles(link bool, protoPaths ...string) (*protoregistry.Files, error) {
+	rootPath := filepath.Join(protoPaths[0], consts.SrcPath)
 	files := find(rootPath, ".proto")
+	for _, protoPath := range protoPaths[1:] {
+		files = append(files, find(protoPath, ".proto")...)
+	}
 	parser := &protoparse.Parser{
-		ImportPaths:                     []string{rootPath},
+		ImportPaths:                     append([]string{rootPath}, protoPaths...),
 		InterpretOptionsInUnlinkedFiles: true,
 		LookupImport:                    desc.LoadFileDescriptor,
 	}

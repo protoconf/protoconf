@@ -27,19 +27,19 @@ func BenchmarkFindLarge(b *testing.B) {
 
 func BenchmarkLoadLocalProtoFilesEmpty(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		LoadLocalProtoFiles("testdata/empty", false)
+		LoadLocalProtoFiles(false, "testdata/empty")
 	}
 }
 
 func BenchmarkLoadLocalProtoFilesSmall(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		LoadLocalProtoFiles("testdata/small", false)
+		LoadLocalProtoFiles(false, "testdata/small")
 	}
 }
 
 func BenchmarkLoadLocalProtoFilesLarge(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		LoadLocalProtoFiles("testdata/large", false)
+		LoadLocalProtoFiles(false, "testdata/large")
 	}
 }
 
@@ -127,7 +127,7 @@ func TestLoadLocalProtoFiles(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := LoadLocalProtoFiles(tt.args.root, tt.args.link)
+			_, err := LoadLocalProtoFiles(tt.args.link, tt.args.root)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("LoadLocalProtoFiles() error = %v, wantErr %v", err, tt.wantErr)
 				return
