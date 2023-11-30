@@ -1,5 +1,5 @@
 load("@terraform_repo//terraform/v1/terraform.proto", "Terraform")
 
 def main():
-    print(Terraform)
+    print(Terraform())
     return Terraform()

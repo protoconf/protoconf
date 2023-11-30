@@ -5,7 +5,7 @@ package protoconf.compiler.module.v1;
 option go_package = "github.com/protoconf/protoconf/compiler/module/v1;module";
 
 message RemoteRepo {
-    string name = 1;
+    string label = 1;
     string url = 2;
     oneof pin {
         string tag = 3;
@@ -18,4 +18,10 @@ message RemoteRepo {
     map<string,RemoteRepo> deps = 9;
     string integrity = 10;
     string getter_url = 11;
+}
+
+message ModuleServiceConfig {
+    string protoconf_path = 1;
+    string cache_dir = 2;
+    string lock_file = 3;
 }

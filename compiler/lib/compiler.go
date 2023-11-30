@@ -54,6 +54,8 @@ func (c *Compiler) SyncModules(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
+	files := c.moduleService.GetProtoPaths()
+	log.Println(files)
 	c.parser = parser.NewParser(append([]string{c.protoconfRoot}, c.moduleService.GetProtoPaths()...)...)
 	return nil
 

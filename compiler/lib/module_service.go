@@ -2,6 +2,8 @@ package lib
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"io"
@@ -10,6 +12,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"sort"
 	"strings"
 	"sync"
 
@@ -17,6 +20,7 @@ import (
 	"github.com/hashicorp/go-getter"
 	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/dynamic"
+	"github.com/mitchellh/cli"
 	"github.com/protoconf/protoconf/compiler/module/v1"
 	"github.com/protoconf/protoconf/compiler/starproto"
 	"github.com/protoconf/protoconf/consts"
@@ -26,24 +30,50 @@ import (
 	"google.golang.org/protobuf/encoding/prototext"
 )
 
-const lockFile = `protoconf.lock`
-const cacheDir = `.protoconf_cache`
-
 type ModuleService struct {
-	protoconfRoot string
-	head          *module.RemoteRepo
-	groupLock     *sync.Map
-	mutex         sync.RWMutex
+	Config    *module.ModuleServiceConfig
+	head      *module.RemoteRepo
+	groupLock *sync.Map
+	mutex     sync.RWMutex
 }
 
 func NewModuleService(protoconfRoot string) *ModuleService {
+	const lockFile = `protoconf.lock`
+	const cacheDir = `.protoconf_cache`
+	config := &module.ModuleServiceConfig{
+		ProtoconfPath: protoconfRoot,
+		CacheDir:      cacheDir,
+		LockFile:      lockFile,
+	}
 	return &ModuleService{
-		protoconfRoot: protoconfRoot,
-		mutex:         sync.RWMutex{},
-		groupLock:     &sync.Map{},
+		Config:    config,
+		mutex:     sync.RWMutex{},
+		groupLock: &sync.Map{},
 		head: &module.RemoteRepo{
 			Deps: map[string]*module.RemoteRepo{},
 		}}
+}
+
+func (m *ModuleService) getProtoconfPath() string {
+	path, err := filepath.Abs(m.Config.ProtoconfPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return path
+}
+
+func (m *ModuleService) getCacheDir() string {
+	if filepath.IsAbs(m.Config.CacheDir) {
+		return m.Config.CacheDir
+	}
+	return filepath.Join(m.getProtoconfPath(), m.Config.CacheDir)
+}
+
+func (m *ModuleService) getLockFile() string {
+	if filepath.IsAbs(m.Config.LockFile) {
+		return m.Config.LockFile
+	}
+	return filepath.Join(m.getProtoconfPath(), m.Config.LockFile)
 }
 
 func (m *ModuleService) GetProtoPaths() []string {
@@ -54,7 +84,7 @@ func (m *ModuleService) GetProtoPaths() []string {
 func (m *ModuleService) protoPaths(r *module.RemoteRepo, input []string) []string {
 	for _, path := range append(r.AdditionalProtoDirs, r.SourcePath) {
 		if path != "" {
-			input = append(input, filepath.Join(m.protoconfRoot, cacheDir, r.Name, path))
+			input = append(input, filepath.Join(m.getCacheDir(), r.Label, path))
 		}
 	}
 	for _, dep := range r.Deps {
@@ -65,11 +95,11 @@ func (m *ModuleService) protoPaths(r *module.RemoteRepo, input []string) []strin
 }
 
 func (m *ModuleService) Init(ctx context.Context, initFiles ...string) error {
-	os.MkdirAll(filepath.Join(m.protoconfRoot, cacheDir), 0755)
+	os.MkdirAll(m.getCacheDir(), 0755)
 	grp, _ := errgroup.WithContext(ctx)
 	thread := &starlark.Thread{}
 	for _, file := range initFiles {
-		filePath := filepath.Join(m.protoconfRoot, consts.SrcPath, file)
+		filePath := filepath.Join(m.getProtoconfPath(), consts.SrcPath, file)
 		grp.Go(func() error {
 			b, err := os.ReadFile(filePath)
 			if err != nil {
@@ -79,7 +109,15 @@ func (m *ModuleService) Init(ctx context.Context, initFiles ...string) error {
 			for name, v := range locals {
 				dyn, _ := starproto.ToProtoMessage(v)
 				msg := &module.RemoteRepo{}
-				dyn.ConvertTo(msg)
+				originalGetterUrl := ""
+				if msgTmp, ok := m.head.Deps[name]; ok {
+					originalGetterUrl = msg.GetterUrl
+					msg = msgTmp
+				}
+				dyn.MergeInto(msg)
+				if originalGetterUrl != msg.GetterUrl {
+					msg.Integrity = ""
+				}
 				m.mutex.Lock()
 				m.head.Deps[name] = msg
 				m.mutex.Unlock()
@@ -95,6 +133,10 @@ func (m *ModuleService) Init(ctx context.Context, initFiles ...string) error {
 }
 
 func (m *ModuleService) Add(t *starlark.Thread, fn *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
+	ui := &cli.BasicUi{
+		ErrorWriter: os.Stderr,
+		Writer:      os.Stderr,
+	}
 	d, _ := desc.LoadMessageDescriptorForMessage(&module.RemoteRepo{})
 	starMsg, _ := starproto.NewMessageType(d).(starlark.Callable)
 
@@ -118,6 +160,9 @@ func (m *ModuleService) Add(t *starlark.Thread, fn *starlark.Builtin, args starl
 		return nil, errors.Join(errors.New("failed to parse repo url"), err)
 	}
 	query := u.Query()
+	if strings.HasPrefix(detectedUrl, "git::") && !query.Has("depth") {
+		query.Set("depth", "0")
+	}
 	switch x := remoteRepo.Pin.(type) {
 	case *module.RemoteRepo_Branch:
 		query.Set("ref", x.Branch)
@@ -127,16 +172,24 @@ func (m *ModuleService) Add(t *starlark.Thread, fn *starlark.Builtin, args starl
 		query.Set("ref", x.Tag)
 	case *module.RemoteRepo_Checksum:
 		query.Set("checksum", x.Checksum)
+	default:
+		ui.Error(fmt.Sprintf("Warning! Please provide on of: tag, branch, commit or checksum for remote_repo url: %s", remoteRepo.Url))
+
 	}
 	u.RawQuery = query.Encode()
 
 	remoteRepo.GetterUrl = u.String()
-	if remoteRepo.Name == "" {
+	if remoteRepo.Label == "" {
 		sanitized := strings.TrimPrefix(remoteRepo.GetterUrl, "git::")
 		parsedSanitized, _ := url.Parse(sanitized)
-		remoteRepo.Name = label.ImportPathToBazelRepoName(filepath.Join(parsedSanitized.Hostname(), strings.TrimSuffix(filepath.Join(strings.Split(parsedSanitized.Path, "/")[:3]...), ".git")))
+		remoteRepo.Label = label.ImportPathToBazelRepoName(
+			filepath.Join(
+				parsedSanitized.Hostname(),
+				strings.TrimSuffix(filepath.Join(strings.Split(parsedSanitized.Path, "/")[:3]...), ".git"),
+				parsedSanitized.Query().Get("ref"),
+			),
+		)
 	}
-	m.head.Deps[remoteRepo.Name] = remoteRepo
 
 	dynamicMsg, _ := dynamic.AsDynamicMessage(remoteRepo)
 	return starproto.NewStarProtoMessage(dynamicMsg), nil
@@ -145,7 +198,7 @@ func (m *ModuleService) Add(t *starlark.Thread, fn *starlark.Builtin, args starl
 func (m *ModuleService) Load(thread *starlark.Thread, moduleName string) (starlark.StringDict, error) {
 	metadata := ParseModulePath(moduleName)
 
-	moduleRoot := filepath.Join(m.protoconfRoot, cacheDir, m.head.Deps[metadata.Repo].Name)
+	moduleRoot := filepath.Join(m.getCacheDir(), m.head.Deps[metadata.Repo].Label)
 	c := NewCompiler(moduleRoot, false)
 	return c.GetLoader().Load(thread, metadata.Filepath)
 }
@@ -155,11 +208,11 @@ func (m *ModuleService) Lock() error {
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(filepath.Join(m.protoconfRoot, lockFile), b, 0644)
+	return os.WriteFile(filepath.Join(m.getLockFile()), b, 0644)
 }
 
 func (m *ModuleService) LoadFromLockFile() error {
-	b, err := os.ReadFile(filepath.Join(m.protoconfRoot, lockFile))
+	b, err := os.ReadFile(filepath.Join(m.getLockFile()))
 	if err != nil {
 		return nil
 	}
@@ -171,19 +224,66 @@ func (m *ModuleService) getLocker(label string) *sync.Mutex {
 	locker, _ := item.(*sync.Mutex)
 	return locker
 }
-func (m *ModuleService) Download(ctx context.Context, r *module.RemoteRepo) error {
-	repoCacheDir := filepath.Join(m.protoconfRoot, cacheDir, r.Name)
-	label := r.Name
 
-	if r, ok := m.head.Deps[label]; ok {
-		h, err := dirhash.HashDir(repoCacheDir, "", dirhash.DefaultHash)
-		if err != nil && !errors.Is(err, os.ErrNotExist) {
-			log.Println(err)
-		}
-		if r.Integrity != "" && h == r.Integrity {
-			return nil
-		}
+var ErrorRemoteRepoNoIntegrityInfo = errors.New("missing integrity data")
+var ErrorRemoteRepoNotDownloaded = errors.New("remote repo not in local cache")
+var ErrorRemoteRepoValidationFailed = errors.New("failed to validate integrity")
+
+func (m *ModuleService) Validate(r *module.RemoteRepo) (string, error) {
+	if r.Integrity == "" {
+		return "", ErrorRemoteRepoNoIntegrityInfo
 	}
+	repoCacheDir := filepath.Join(m.getCacheDir(), r.Label)
+	h, err := dirhash.HashDir(repoCacheDir, "", hash1)
+	if errors.Is(err, os.ErrNotExist) {
+		return "", ErrorRemoteRepoNotDownloaded
+	}
+	if r.Integrity != "dummy" && r.Integrity != h {
+		return "", errors.Join(
+			ErrorRemoteRepoValidationFailed,
+			fmt.Errorf("%s(%s): %s (expected: %s)", r.Label, r.Pin, h, r.Integrity),
+		)
+	}
+	return h, nil
+}
+
+func hash1(files []string, open func(string) (io.ReadCloser, error)) (string, error) {
+	h := sha256.New()
+	files = append([]string(nil), files...)
+	sort.Strings(files)
+	for _, file := range files {
+		if strings.HasPrefix(file, ".git") {
+			continue
+		}
+		if strings.Contains(file, "\n") {
+			return "", errors.New("dirhash: filenames with newlines are not supported")
+		}
+		r, err := open(file)
+		if err != nil {
+			return "", err
+		}
+		hf := sha256.New()
+		_, err = io.Copy(hf, r)
+		r.Close()
+		if err != nil {
+			return "", err
+		}
+		fmt.Fprintf(h, "%x  %s\n", hf.Sum(nil), file)
+	}
+	return "h1:" + base64.StdEncoding.EncodeToString(h.Sum(nil)), nil
+}
+
+func (m *ModuleService) Download(ctx context.Context, r *module.RemoteRepo) error {
+	switch _, integrityErr := m.Validate(r); {
+	case integrityErr == nil:
+		return nil
+	case errors.Is(integrityErr, ErrorRemoteRepoValidationFailed):
+		return integrityErr
+	case errors.Is(integrityErr, ErrorRemoteRepoNoIntegrityInfo):
+		r.Integrity = "dummy"
+	}
+	repoCacheDir := filepath.Join(m.getCacheDir(), r.Label)
+	label := r.Label
 
 	locker := m.getLocker(label)
 	locker.Lock()
@@ -192,17 +292,8 @@ func (m *ModuleService) Download(ctx context.Context, r *module.RemoteRepo) erro
 	if err != nil {
 		return err
 	}
-	h, err := dirhash.HashDir(repoCacheDir, "", dirhash.DefaultHash)
-	if err != nil {
-		return err
-	}
-	if r.Integrity == "" {
-		r.Integrity = h
-	}
-	if r.Integrity == h {
-		return nil
-	}
-	return fmt.Errorf("bad checksum for module %s, got: %s, expected: %s", r.Name, h, r.Integrity)
+	r.Integrity, err = m.Validate(r)
+	return err
 
 }
 
@@ -226,7 +317,8 @@ func (ModuleService) TrackProgress(src string, currentSize, totalSize int64, str
 	return stream
 }
 
-var loadMatcherRegex = regexp.MustCompile(`(?P<repo>@([^//]+|\.)|)(?P<filepath>(//|).*(?P<ext>(.proto|.pinc|.pconf|.mpconf|.star)))`)
+// var loadMatcherRegex = regexp.MustCompile(`(?P<repo>@([^//]+|\.)|)(?P<filepath>(//|).*(?P<ext>(.proto|.pinc|.pconf|.mpconf|.star)))`)
+var loadMatcherRegex = regexp.MustCompile(`((?P<repo>(@[^//]+|\.)|))(?P<filepath>(//|).*(?P<ext>(.proto|.pinc|.pconf|.mpconf|.star)))`)
 
 type ModulePath struct {
 	Repo     string
