@@ -3,6 +3,7 @@ package lib
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -224,7 +225,7 @@ func (l *starlarkLoader) loadProto(modulePath string) (starlark.StringDict, erro
 func (l *starlarkLoader) loadStarlark(thread *starlark.Thread, modulePath string) (starlark.StringDict, error) {
 	reader, err := openFile(filepath.Join(l.srcDir, modulePath))
 	if err != nil {
-		return nil, err
+		return nil, errors.Join(errors.New("cannot load starlark file"), err)
 	}
 	defer reader.Close()
 	moduleSource, err := io.ReadAll(reader)

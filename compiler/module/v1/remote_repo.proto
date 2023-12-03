@@ -18,6 +18,7 @@ message RemoteRepo {
     map<string,RemoteRepo> deps = 9;
     string integrity = 10;
     string getter_url = 11;
+    string file_descriptor_set_sum = 12;
 }
 
 message ModuleServiceConfig {

@@ -2,3 +2,7 @@ terraform_repo=remote_repo(
     url="github.com/protoconf/protoconf-terraform//example",
     tag="v0.1.4",
 )
+vizceral_repo=remote_repo(
+  url="github.com/protoconf/protoconf-vizceral",
+  commit="642552b",
+)

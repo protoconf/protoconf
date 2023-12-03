@@ -50,9 +50,9 @@ func (c *modInitCommand) Help() string {
 }
 
 func (c *modInitCommand) Run(args []string) int {
-	ms := lib.NewModuleService(".")
-	ms.LoadFromLockFile()
-	err := ms.Init(context.Background(), "init.pinc")
+	c.ui.Info(c.ms.Config.String())
+	c.ms.LoadFromLockFile()
+	err := c.ms.Init(context.Background(), "init.pinc")
 	if err != nil {
 		c.ui.Error(err.Error())
 		return 1

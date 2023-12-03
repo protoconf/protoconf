@@ -24,10 +24,12 @@ import (
 	"github.com/protoconf/protoconf/compiler/module/v1"
 	"github.com/protoconf/protoconf/compiler/starproto"
 	"github.com/protoconf/protoconf/consts"
+	"github.com/protoconf/protoconf/utils"
 	"go.starlark.net/starlark"
 	"golang.org/x/mod/sumdb/dirhash"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/protobuf/encoding/prototext"
+	"google.golang.org/protobuf/reflect/protoregistry"
 )
 
 type ModuleService struct {
@@ -51,7 +53,8 @@ func NewModuleService(protoconfRoot string) *ModuleService {
 		groupLock: &sync.Map{},
 		head: &module.RemoteRepo{
 			Deps: map[string]*module.RemoteRepo{},
-		}}
+		},
+	}
 }
 
 func (m *ModuleService) getProtoconfPath() string {
@@ -200,6 +203,7 @@ func (m *ModuleService) Load(thread *starlark.Thread, moduleName string) (starla
 
 	moduleRoot := filepath.Join(m.getCacheDir(), m.head.Deps[metadata.Repo].Label)
 	c := NewCompiler(moduleRoot, false)
+	thread.Load = c.GetLoader().Load
 	return c.GetLoader().Load(thread, metadata.Filepath)
 }
 
@@ -287,7 +291,7 @@ func (m *ModuleService) Download(ctx context.Context, r *module.RemoteRepo) erro
 
 	locker := m.getLocker(label)
 	locker.Lock()
-	err := getter.GetAny(repoCacheDir, r.GetterUrl, getter.WithContext(ctx), getter.WithProgress(m))
+	err := getter.GetAny(repoCacheDir, r.GetterUrl, getter.WithContext(ctx))
 	locker.Unlock()
 	if err != nil {
 		return err
@@ -297,12 +301,46 @@ func (m *ModuleService) Download(ctx context.Context, r *module.RemoteRepo) erro
 
 }
 
+func (m *ModuleService) GenFileDescriptorSet(r *module.RemoteRepo) error {
+	registry := utils.NewDescriptorRegistry()
+	files := m.protoPaths(r, []string{})
+	log.Println("GenFileDescriptorSet", r.Label, files)
+	err := registry.Import(utils.Parse, files...)
+	if err != nil {
+		return err
+	}
+
+	h, err := registry.Store(filepath.Join(m.getCacheDir(), r.Label+".fds"))
+	r.FileDescriptorSetSum = h
+	return err
+}
+
+func (m *ModuleService) LoadFileDescriptrSet(r *module.RemoteRepo) error {
+	registry := utils.NewDescriptorRegistry()
+	return registry.Load(filepath.Join(m.getCacheDir(), r.Label+".fds"), r.FileDescriptorSetSum)
+}
+
+func (m *ModuleService) GetProtoFilesRegistry() *protoregistry.Files {
+	registry := utils.NewDescriptorRegistry()
+	for _, dep := range m.head.Deps {
+		registry.Load(filepath.Join(m.getCacheDir(), dep.Label+".fds"), dep.FileDescriptorSetSum)
+	}
+	registry.Import(utils.Parse, filepath.Join(m.getProtoconfPath(), consts.SrcPath))
+	return registry.GetFilesResolver()
+
+}
+
 func (m *ModuleService) Sync(ctx context.Context) error {
 	grp, _ := errgroup.WithContext(ctx)
 	for _, r := range m.head.Deps {
 		remoteRepo := r
 		grp.Go(func() error {
-			return m.Download(ctx, remoteRepo)
+			err := m.Download(ctx, remoteRepo)
+			if err != nil {
+				return err
+			}
+			return m.GenFileDescriptorSet(remoteRepo)
+
 		})
 	}
 	err := grp.Wait()
@@ -312,12 +350,6 @@ func (m *ModuleService) Sync(ctx context.Context) error {
 	return m.Lock()
 }
 
-func (ModuleService) TrackProgress(src string, currentSize, totalSize int64, stream io.ReadCloser) io.ReadCloser {
-	log.Println(src, currentSize, totalSize)
-	return stream
-}
-
-// var loadMatcherRegex = regexp.MustCompile(`(?P<repo>@([^//]+|\.)|)(?P<filepath>(//|).*(?P<ext>(.proto|.pinc|.pconf|.mpconf|.star)))`)
 var loadMatcherRegex = regexp.MustCompile(`((?P<repo>(@[^//]+|\.)|))(?P<filepath>(//|).*(?P<ext>(.proto|.pinc|.pconf|.mpconf|.star)))`)
 
 type ModulePath struct {

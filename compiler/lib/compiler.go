@@ -31,12 +31,14 @@ func NewCompiler(protoconfRoot string, verboseLogging bool) *Compiler {
 	resolve.AllowRecursion = true      // allow while statements and recursive functions
 
 	ms := NewModuleService(protoconfRoot)
+
 	return &Compiler{
 		protoconfRoot:   protoconfRoot,
 		verboseLogging:  verboseLogging,
 		MaterializedDir: filepath.Join(protoconfRoot, consts.CompiledConfigPath),
-		parser:          parser.NewParser(append([]string{protoconfRoot}, ms.GetProtoPaths()...)...),
-		moduleService:   ms,
+		// parser:          parser.NewParser(append([]string{filepath.Join(protoconfRoot, consts.SrcPath)}, ms.GetProtoPaths()...)...),
+		parser:        parser.NewParser(ms.GetProtoFilesRegistry()),
+		moduleService: ms,
 	}
 }
 
@@ -56,7 +58,7 @@ func (c *Compiler) SyncModules(ctx context.Context) error {
 	}
 	files := c.moduleService.GetProtoPaths()
 	log.Println(files)
-	c.parser = parser.NewParser(append([]string{c.protoconfRoot}, c.moduleService.GetProtoPaths()...)...)
+	c.parser = parser.NewParser(c.moduleService.GetProtoFilesRegistry())
 	return nil
 
 }
