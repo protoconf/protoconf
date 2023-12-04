@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"log/slog"
 	"net"
 	"os"
 	"os/exec"
@@ -19,6 +20,8 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/encoding/protojson"
 )
+
+var logger = slog.Default()
 
 type cliCommand struct{}
 
@@ -55,22 +58,21 @@ func (c *cliCommand) Run(args []string) int {
 	protoconfRoot := strings.TrimSpace(flags.Args()[0])
 	protoconfServer := &ProtoconfMutationServer{config: config, protoconfRoot: protoconfRoot}
 
-	log.Printf("Starting Protoconf server at \"%s\", version %s", config.grpcAddress, consts.Version)
-	log.Printf("Config: protoconf_root=\"%s\" pre-mutation-script=\"%s\" post-mutation-script=\"%s\"", protoconfRoot, config.preMutationScript, config.postMutationScript)
+	logger.Info("starting protoconf server", "address", config.grpcAddress, "version", consts.Version, "root", protoconfRoot, "pre", config.preMutationScript, "post", config.postMutationScript)
 
 	listener, err := net.Listen("tcp", config.grpcAddress)
 	if err != nil {
-		log.Printf("Error listening on address=%s err=%s", config.grpcAddress, err)
+		logger.Error("error listening", err)
 		return 1
 	}
 
 	rpcServer := grpc.NewServer()
 	protoconfmutation.RegisterProtoconfMutationServiceServer(rpcServer, protoconfServer)
 
-	log.Println("Protoconf server running")
+	logger.Info("protoconf server running")
 	err = rpcServer.Serve(listener)
 	if err != nil {
-		log.Printf("Error serving gRPC, err=%s", err)
+		logger.Error("Error serving gRPC, err=%s", err)
 		return 1
 	}
 

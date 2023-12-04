@@ -154,7 +154,7 @@ func (m *ModuleService) Add(t *starlark.Thread, fn *starlark.Builtin, args starl
 		return nil, err
 	}
 
-	detectedUrl, err := getter.Detect(remoteRepo.Url, ".", getter.Detectors)
+	detectedUrl, err := getter.Detect(remoteRepo.Url, m.getProtoconfPath(), getter.Detectors)
 	if err != nil {
 		return nil, errors.Join(errors.New("not a valid repo url"), err)
 	}
@@ -314,7 +314,7 @@ func (m *ModuleService) GenFileDescriptorSet(r *module.RemoteRepo) error {
 	return err
 }
 
-func (m *ModuleService) LoadFileDescriptrSet(r *module.RemoteRepo) error {
+func (m *ModuleService) LoadFileDescriptorSet(r *module.RemoteRepo) error {
 	registry := utils.NewDescriptorRegistry()
 	return registry.Load(filepath.Join(m.getCacheDir(), r.Label+".fds"), r.FileDescriptorSetSum)
 }
@@ -343,7 +343,6 @@ func (m *ModuleService) Sync(ctx context.Context) error {
 				return err
 			}
 			return m.GenFileDescriptorSet(remoteRepo)
-
 		})
 	}
 	err := grp.Wait()
