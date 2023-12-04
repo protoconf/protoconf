@@ -155,6 +155,15 @@ func (d *DescriptorRegistry) Load(path, checksum string) error {
 	return nil
 }
 
+func (d *DescriptorRegistry) ReadConfig(filename string, msg proto.Message) error {
+	configReader, err := os.ReadFile(filename)
+	if err != nil {
+		return err
+	}
+	return protojson.UnmarshalOptions{Resolver: d.GetTypesResolver()}.Unmarshal(configReader, msg)
+
+}
+
 // ReadConfig reads a materialized config
 func ReadConfig(protoconfRoot string, configName string) (*protoconfvalue.ProtoconfValue, error) {
 	filename := filepath.Join(protoconfRoot, consts.CompiledConfigPath, configName+consts.CompiledConfigExtension)

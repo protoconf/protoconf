@@ -320,15 +320,19 @@ func (m *ModuleService) LoadFileDescriptrSet(r *module.RemoteRepo) error {
 }
 
 func (m *ModuleService) GetProtoFilesRegistry() *protoregistry.Files {
+	return m.GetProtoRegistry().GetFilesResolver()
+
+}
+
+func (m *ModuleService) GetProtoRegistry() *utils.DescriptorRegistry {
 	registry := utils.NewDescriptorRegistry()
 	for _, dep := range m.head.Deps {
 		registry.Load(filepath.Join(m.getCacheDir(), dep.Label+".fds"), dep.FileDescriptorSetSum)
 	}
 	registry.Import(utils.Parse, filepath.Join(m.getProtoconfPath(), consts.SrcPath))
-	return registry.GetFilesResolver()
+	return registry
 
 }
-
 func (m *ModuleService) Sync(ctx context.Context) error {
 	grp, _ := errgroup.WithContext(ctx)
 	for _, r := range m.head.Deps {

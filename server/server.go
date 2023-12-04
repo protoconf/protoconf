@@ -53,7 +53,7 @@ func (c *cliCommand) Run(args []string) int {
 	}
 
 	protoconfRoot := strings.TrimSpace(flags.Args()[0])
-	protoconfServer := &server{config: config, protoconfRoot: protoconfRoot}
+	protoconfServer := &ProtoconfMutationServer{config: config, protoconfRoot: protoconfRoot}
 
 	log.Printf("Starting Protoconf server at \"%s\", version %s", config.grpcAddress, consts.Version)
 	log.Printf("Config: protoconf_root=\"%s\" pre-mutation-script=\"%s\" post-mutation-script=\"%s\"", protoconfRoot, config.preMutationScript, config.postMutationScript)
@@ -96,12 +96,16 @@ func Command() (cli.Command, error) {
 	return &cliCommand{}, nil
 }
 
-type server struct {
+type ProtoconfMutationServer struct {
 	config        *cliConfig
 	protoconfRoot string
 }
 
-func (s server) MutateConfig(ctx context.Context, in *protoconfmutation.ConfigMutationRequest) (*protoconfmutation.ConfigMutationResponse, error) {
+func NewProtoconfMutationServer(protoconfRoot string) *ProtoconfMutationServer {
+	return &ProtoconfMutationServer{protoconfRoot: protoconfRoot, config: &cliConfig{}}
+}
+
+func (s ProtoconfMutationServer) MutateConfig(ctx context.Context, in *protoconfmutation.ConfigMutationRequest) (*protoconfmutation.ConfigMutationResponse, error) {
 	log.Printf("Mutating path=%s", in.Path)
 	filename := filepath.Join(s.protoconfRoot, consts.MutableConfigPath, filepath.Clean(in.Path)+consts.CompiledConfigExtension)
 

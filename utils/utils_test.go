@@ -72,7 +72,7 @@ func TestReadConfig(t *testing.T) {
 		{
 			name: "config not found",
 			args: args{
-				protoconfRoot: "testdata/large",
+				protoconfRoot: "testdata/large/src",
 				configName:    "example/not_found",
 			},
 			wantErr: true,

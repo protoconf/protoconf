@@ -39,7 +39,7 @@ func NewCompiler(protoconfRoot string, verboseLogging bool) *Compiler {
 		MaterializedDir: filepath.Join(protoconfRoot, consts.CompiledConfigPath),
 		// parser:          parser.NewParser(append([]string{filepath.Join(protoconfRoot, consts.SrcPath)}, ms.GetProtoPaths()...)...),
 		parser:        parser.NewParser(ms.GetProtoFilesRegistry()),
-		moduleService: ms,
+		ModuleService: ms,
 	}
 }
 
@@ -48,18 +48,18 @@ type Compiler struct {
 	verboseLogging  bool
 	MaterializedDir string
 	parser          *parser.Parser
-	moduleService   *ModuleService
+	ModuleService   *ModuleService
 }
 
 func (c *Compiler) SyncModules(ctx context.Context) error {
-	c.moduleService.LoadFromLockFile()
-	err := c.moduleService.Sync(ctx)
+	c.ModuleService.LoadFromLockFile()
+	err := c.ModuleService.Sync(ctx)
 	if err != nil {
 		return err
 	}
-	files := c.moduleService.GetProtoPaths()
+	files := c.ModuleService.GetProtoPaths()
 	log.Println(files)
-	c.parser = parser.NewParser(c.moduleService.GetProtoFilesRegistry())
+	c.parser = parser.NewParser(c.ModuleService.GetProtoFilesRegistry())
 	return nil
 
 }
@@ -262,13 +262,13 @@ func (c *Compiler) load(filename string) (*config, error) {
 
 func (c *Compiler) GetLoader() *starlarkLoader {
 	modules := getModules()
-	modules["remote_repo"] = starlark.NewBuiltin("remote_repo", c.moduleService.Add)
+	modules["remote_repo"] = starlark.NewBuiltin("remote_repo", c.ModuleService.Add)
 	return &starlarkLoader{
 		cache:         make(map[string]*cacheEntry),
 		Modules:       modules,
 		mutableDir:    filepath.Join(c.protoconfRoot, consts.MutableConfigPath),
 		srcDir:        filepath.Join(c.protoconfRoot, consts.SrcPath),
 		parser:        c.parser,
-		moduleService: c.moduleService,
+		moduleService: c.ModuleService,
 	}
 }

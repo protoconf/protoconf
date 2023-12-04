@@ -1,8 +1,12 @@
 package parser
 
 import (
+	"os"
+
 	"github.com/jhump/protoreflect/desc"
 	"github.com/protoconf/protoconf/utils"
+	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/reflect/protoregistry"
 )
@@ -46,4 +50,13 @@ func (p *Parser) ParseFilesX(filenames ...string) (results []*desc.FileDescripto
 
 	}
 	return results, nil
+}
+
+func (p *Parser) ReadConfig(filename string, msg proto.Message) error {
+	configReader, err := os.ReadFile(filename)
+	if err != nil {
+		return err
+	}
+	return protojson.UnmarshalOptions{Resolver: p.LocalResolver}.Unmarshal(configReader, msg)
+
 }
