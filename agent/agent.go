@@ -8,7 +8,6 @@ import (
 	"net"
 	"net/http"
 	"os"
-	"os/signal"
 	"syscall"
 
 	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
@@ -56,10 +55,7 @@ func RunAgent(ctx context.Context, config *protoconf_agent_config.AgentConfig) e
 	}
 
 	logger := slog.New(loggerHandler)
-	if err != nil {
-		return errors.Join(errors.New("failed to create logger"), err)
-	}
-	logger.Info("Starting Protoconf agent", slog.String("address", config.GrpcAddress), slog.String("version", consts.Version), slog.String("http-address", config.HttpAddress), slog.Int("pid", os.Getgid()))
+	logger.Info("Starting Protoconf agent", slog.String("address", config.GrpcAddress), slog.String("version", consts.Version), slog.String("http-address", config.HttpAddress), slog.Int("pid", os.Getpid()))
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
@@ -104,17 +100,15 @@ func RunAgent(ctx context.Context, config *protoconf_agent_config.AgentConfig) e
 	mux := http.NewServeMux()
 	mux.Handle("/metrics", promhttp.Handler())
 
-	err = playUntilSignal(ctx, &orchestra.Conductor{Players: map[string]orchestra.Player{
+	err = orchestra.PlayUntilSignal(ctx, &orchestra.Conductor{Players: map[string]orchestra.Player{
 		"grpc": orchestra.PlayerFunc(func(ctx context.Context) error {
-			go func() {
-				<-ctx.Done()
+			context.AfterFunc(ctx, func() {
 				logger.Info("stopping grpc server")
 				rpcServer.Stop()
-			}()
+			})
 			logger.Info("starting protoconf agent")
-			err = rpcServer.Serve(listener)
-			logger.Info("protoconf agent stopped")
-			return err
+			defer logger.Info("protoconf agent stopped")
+			return rpcServer.Serve(listener)
 		}),
 		"http": orchestra.NewServerPlayer(
 			&http.Server{Addr: config.HttpAddress, Handler: mux},
@@ -127,11 +121,4 @@ func RunAgent(ctx context.Context, config *protoconf_agent_config.AgentConfig) e
 	}
 
 	return nil
-}
-
-func playUntilSignal(ctx context.Context, p orchestra.Player, sig ...os.Signal) error {
-	ctx, cancel := signal.NotifyContext(ctx, sig...)
-	defer cancel()
-
-	return p.Play(ctx)
 }
