@@ -304,7 +304,6 @@ func (m *ModuleService) Download(ctx context.Context, r *module.RemoteRepo) erro
 func (m *ModuleService) GenFileDescriptorSet(r *module.RemoteRepo) error {
 	registry := utils.NewDescriptorRegistry()
 	files := m.protoPaths(r, []string{})
-	log.Println("GenFileDescriptorSet", r.Label, files)
 	err := registry.Import(utils.Parse, files...)
 	if err != nil {
 		return err

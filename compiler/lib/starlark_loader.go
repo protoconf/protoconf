@@ -140,6 +140,11 @@ func (l *starlarkLoader) loadInner(thread *starlark.Thread, modulePath string) (
 	return l.loadStarlark(thread, modulePath)
 }
 
+var (
+	ErrLoadMutable = errors.New("error opening mutable config file")
+	ErrReadMutable = errors.New("error reading from mutable config file")
+)
+
 func (l *starlarkLoader) loadMutable(modulePath string) (starlark.StringDict, error) {
 	filename := filepath.Join(
 		l.mutableDir,
@@ -148,13 +153,13 @@ func (l *starlarkLoader) loadMutable(modulePath string) (starlark.StringDict, er
 
 	configReader, err := openFile(filename)
 	if err != nil {
-		return nil, fmt.Errorf("error opening mutable config file, file=%s, err=%s", filename, err)
+		return nil, errors.Join(ErrLoadMutable, fmt.Errorf("file=%s", filename), err)
 	}
 	defer configReader.Close()
 
 	jsonData, err := io.ReadAll(configReader)
 	if err != nil {
-		return nil, fmt.Errorf("error reading from mutable config file, file=%s, err=%s", filename, err)
+		return nil, errors.Join(ErrReadMutable, fmt.Errorf("file=%s", filename), err)
 	}
 
 	type configJSONType struct {
@@ -206,7 +211,6 @@ func (l *starlarkLoader) loadMutable(modulePath string) (starlark.StringDict, er
 }
 
 func (l *starlarkLoader) loadProto(modulePath string) (starlark.StringDict, error) {
-	//parser := &protoparse.Parser{ImportPaths: []string{l.srcDir}, Accessor: l.protoAccessor}
 	descriptors, err := l.parser.ParseFilesX(modulePath)
 	if err != nil {
 		return nil, fmt.Errorf("error parsing proto file, file=%s err=%v", modulePath, err)
