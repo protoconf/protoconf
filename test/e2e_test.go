@@ -81,6 +81,21 @@ func Test(t *testing.T) {
 	if !proto.Equal(devConfigValue.Value, mutationValue) {
 		t.Errorf("expected \n%s, got \n%s", mutationValue, devConfigValue.Value)
 	}
+
+	devWatcher.CloseSend()
+	err = c.CompileFile("load_remote_with_load_local.pconf")
+	assert.NoError(t, err)
+	err = c.CompileFile("load_remote.pconf")
+	assert.NoError(t, err)
+	// devWatcher, err = devAgentClient.SubscribeForConfig(ctx, &protoconfservice.ConfigSubscriptionRequest{Path: "load_remote_with_load_local"})
+	devWatcher, err = devAgentClient.SubscribeForConfig(ctx, &protoconfservice.ConfigSubscriptionRequest{Path: "load_remote"})
+	assert.NoError(t, err)
+	devConfigValue, err = devWatcher.Recv()
+	assert.NoError(t, err)
+	expected = &anypb.Any{TypeUrl: "type.googleapis.com/terraform.v1.Terraform"}
+	if !proto.Equal(devConfigValue.Value, expected) {
+		t.Errorf("expected \n%s, got \n%s", expected, devConfigValue.Value)
+	}
 }
 
 type regServer func(s *grpc.Server)

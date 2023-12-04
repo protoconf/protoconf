@@ -66,12 +66,14 @@ func New(ctx context.Context, endpoints []string, options *Config) (*Store, erro
 	if err != nil {
 		return nil, err
 	}
+	ms := lib.NewModuleService(absRoot)
+	ms.LoadFromLockFile()
 
 	watcher := &Store{
 		fsnotifyWatcher: fsnotifyWatcher,
 		protoconfRoot:   absRoot,
 		watches:         make(map[string]([]chan struct{})),
-		parser:          parser.NewParser(lib.NewModuleService(absRoot).GetProtoFilesRegistry()),
+		parser:          parser.NewParser(ms.GetProtoFilesRegistry()),
 	}
 
 	go watcher.readEvents()
