@@ -14,7 +14,6 @@ func TestCompiler_CompileFile(t *testing.T) {
 		name    string
 		wantErr error
 	}{
-		// TODO: Add test cases.
 		{"load_remote_with_load_local.pconf", nil},
 		{"load_remote.pconf", nil},
 		{"validator_ext.pconf", ErrInvalidConfig},

@@ -33,10 +33,10 @@ import (
 )
 
 type ModuleService struct {
-	Config    *module.ModuleServiceConfig
-	head      *module.RemoteRepo
-	groupLock *sync.Map
-	mutex     sync.RWMutex
+	Config      *module.ModuleServiceConfig
+	head        *module.RemoteRepo
+	mutex       sync.RWMutex
+	downloadMux *sync.Mutex
 }
 
 func NewModuleService(protoconfRoot string) *ModuleService {
@@ -48,9 +48,9 @@ func NewModuleService(protoconfRoot string) *ModuleService {
 		LockFile:      lockFile,
 	}
 	return &ModuleService{
-		Config:    config,
-		mutex:     sync.RWMutex{},
-		groupLock: &sync.Map{},
+		Config:      config,
+		mutex:       sync.RWMutex{},
+		downloadMux: &sync.Mutex{},
 		head: &module.RemoteRepo{
 			Deps: map[string]*module.RemoteRepo{},
 		},
@@ -200,8 +200,15 @@ func (m *ModuleService) Add(t *starlark.Thread, fn *starlark.Builtin, args starl
 
 func (m *ModuleService) Load(thread *starlark.Thread, moduleName string) (starlark.StringDict, error) {
 	metadata := ParseModulePath(moduleName)
+	if metadata == nil {
+		return nil, errors.New("could not parse module path")
+	}
+	repo, ok := m.head.Deps[metadata.Repo]
+	if !ok {
+		return nil, errors.New("repo does not exist in workspace")
+	}
 
-	moduleRoot := filepath.Join(m.getCacheDir(), m.head.Deps[metadata.Repo].Label)
+	moduleRoot := filepath.Join(m.getCacheDir(), repo.Label)
 	c := NewCompiler(moduleRoot, false)
 	thread.Load = c.GetLoader().Load
 	return c.GetLoader().Load(thread, metadata.Filepath)
@@ -221,12 +228,6 @@ func (m *ModuleService) LoadFromLockFile() error {
 		return nil
 	}
 	return prototext.Unmarshal(b, m.head)
-}
-
-func (m *ModuleService) getLocker(label string) *sync.Mutex {
-	item, _ := m.groupLock.LoadOrStore(label, &sync.Mutex{})
-	locker, _ := item.(*sync.Mutex)
-	return locker
 }
 
 var ErrorRemoteRepoNoIntegrityInfo = errors.New("missing integrity data")
@@ -287,12 +288,10 @@ func (m *ModuleService) Download(ctx context.Context, r *module.RemoteRepo) erro
 		r.Integrity = "dummy"
 	}
 	repoCacheDir := filepath.Join(m.getCacheDir(), r.Label)
-	label := r.Label
 
-	locker := m.getLocker(label)
-	locker.Lock()
+	m.downloadMux.Lock()
 	err := getter.GetAny(repoCacheDir, r.GetterUrl, getter.WithContext(ctx))
-	locker.Unlock()
+	m.downloadMux.Unlock()
 	if err != nil {
 		return err
 	}
@@ -304,7 +303,7 @@ func (m *ModuleService) Download(ctx context.Context, r *module.RemoteRepo) erro
 func (m *ModuleService) GenFileDescriptorSet(r *module.RemoteRepo) error {
 	registry := utils.NewDescriptorRegistry()
 	files := m.protoPaths(r, []string{})
-	err := registry.Import(utils.Parse, files...)
+	err := registry.Import(utils.ParseFilesButDoNotLink, files...)
 	if err != nil {
 		return err
 	}
@@ -312,11 +311,6 @@ func (m *ModuleService) GenFileDescriptorSet(r *module.RemoteRepo) error {
 	h, err := registry.Store(filepath.Join(m.getCacheDir(), r.Label+".fds"))
 	r.FileDescriptorSetSum = h
 	return err
-}
-
-func (m *ModuleService) LoadFileDescriptorSet(r *module.RemoteRepo) error {
-	registry := utils.NewDescriptorRegistry()
-	return registry.Load(filepath.Join(m.getCacheDir(), r.Label+".fds"), r.FileDescriptorSetSum)
 }
 
 func (m *ModuleService) GetProtoFilesRegistry() *protoregistry.Files {
