@@ -1,9 +1,15 @@
 package utils
 
 import (
+	"os"
+	"path/filepath"
 	"testing"
 
+	_ "github.com/protoconf/proto-validate-reflect/validate"
+	"github.com/protoconf/protoconf/consts"
 	protoconfvalue "github.com/protoconf/protoconf/datatypes/proto/v1"
+	"github.com/protoconf/protoconf/utils/testdata"
+	"github.com/stretchr/testify/require"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -133,4 +139,30 @@ func TestLoadLocalProtoFiles(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestNewDescriptorRegistry(t *testing.T) {
+	registry := NewDescriptorRegistry()
+	largePath := filepath.Join(testdata.LargeTestDir(), consts.SrcPath)
+	err := registry.Import(Parse, largePath)
+	require.NoError(t, err)
+
+	files := registry.GetFilesResolver()
+	_, err = files.FindFileByPath("terraform/v1/terraform.proto")
+	require.NoError(t, err)
+
+	types := registry.GetTypesResolver(files)
+	_, err = types.FindMessageByName("terraform.v1.Terraform")
+	require.NoError(t, err)
+
+	storeFile := filepath.Join(os.TempDir(), "data.fds")
+	h, err := registry.Store(storeFile)
+	require.NoError(t, err)
+
+	newReg := NewDescriptorRegistry()
+	err = newReg.Load(storeFile, "baddd")
+	require.Error(t, err)
+	err = newReg.Load(storeFile, h)
+	require.NoError(t, err)
+
 }
