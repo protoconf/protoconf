@@ -5,14 +5,17 @@ import (
 	"log"
 	"net"
 	"testing"
+	"time"
 
 	"github.com/protoconf/protoconf/agent"
 	protoconfservice "github.com/protoconf/protoconf/agent/api/proto/v1"
 	protoconf_agent_config "github.com/protoconf/protoconf/agent/config/v1"
+	"github.com/protoconf/protoconf/agent/dummykv"
 	"github.com/protoconf/protoconf/agent/filekv"
 	"github.com/protoconf/protoconf/compiler/lib"
 	"github.com/protoconf/protoconf/consts"
 	v1 "github.com/protoconf/protoconf/datatypes/proto/v1"
+	"github.com/protoconf/protoconf/inserter"
 	"github.com/protoconf/protoconf/server"
 	protoconfmutation "github.com/protoconf/protoconf/server/api/proto/v1"
 	"github.com/protoconf/protoconf/utils/testdata"
@@ -31,10 +34,12 @@ func Test(t *testing.T) {
 	// Init
 	protoconfRoot := testdata.SmallTestDir()
 	c := lib.NewCompiler(protoconfRoot, false)
-	assert.NoError(t, c.ModuleService.Init(ctx, "init.pinc"))
-	assert.NoError(t, c.SyncModules(ctx))
+	t.Run("mod tidy", func(t *testing.T) {
+		assert.NoError(t, c.ModuleService.Init(ctx, "init.pinc"))
+		assert.NoError(t, c.SyncModules(ctx))
+	})
 
-	// Load dev agent
+	// Create dev agent
 	devConfig := &protoconf_agent_config.AgentConfig{
 		Prefix: consts.CompiledConfigPath,
 		Store:  protoconf_agent_config.AgentConfig_file,
@@ -56,46 +61,130 @@ func Test(t *testing.T) {
 		devMutationClient = protoconfmutation.NewProtoconfMutationServiceClient(conn)
 	})
 	defer devCloser()
-	devWatcher, err := devAgentClient.SubscribeForConfig(ctx, &protoconfservice.ConfigSubscriptionRequest{Path: "load_mutable_test"})
 	assert.NoError(t, err)
 
-	devConfigValue, err := devWatcher.Recv()
+	// Create production agent
+	prodStore, err := dummykv.New(ctx, []string{}, &dummykv.Config{})
 	assert.NoError(t, err)
-	expected := &anypb.Any{TypeUrl: "type.googleapis.com/TestMessage", Value: []byte("\n\x05hello")}
-	if !proto.Equal(devConfigValue.Value, expected) {
-		t.Errorf("expected \n%s, got \n%s", expected, devConfigValue.Value)
-	}
-	mutationValue := &anypb.Any{TypeUrl: "type.googleapis.com/TestMessage", Value: []byte("\n\x05world")}
-	_, err = devMutationClient.MutateConfig(ctx, &protoconfmutation.ConfigMutationRequest{
-		Path: "mutation_test", Value: &v1.ProtoconfValue{
-			ProtoFile: "test.proto",
-			Value:     mutationValue,
-		},
+	prodAgentServer, err := agent.NewProtoconfKVAgent(prodStore, &protoconf_agent_config.AgentConfig{})
+	assert.NoError(t, err)
+	var prodAgentClient protoconfservice.ProtoconfServiceClient
+	prodCloser := testServer(ctx, func(s *grpc.Server) {
+		protoconfservice.RegisterProtoconfServiceServer(s, prodAgentServer)
+	}, func(conn *grpc.ClientConn) {
+		prodAgentClient = protoconfservice.NewProtoconfServiceClient(conn)
 	})
-	assert.NoError(t, err)
-	err = c.CompileFile("load_mutable_test.pconf")
-	assert.NoError(t, err)
+	defer prodCloser()
 
-	devConfigValue, err = devWatcher.Recv()
+	// Get first message from materialized_configs
+	devWatcher, err := devAgentClient.SubscribeForConfig(ctx, &protoconfservice.ConfigSubscriptionRequest{Path: "load_mutable_test"})
+	expected := &anypb.Any{TypeUrl: "type.googleapis.com/TestMessage", Value: []byte("\n\x05hello")}
+	t.Run("get first message on devClient", func(t *testing.T) {
+		assert.NoError(t, err)
+
+		devConfigValue, err := devWatcher.Recv()
+		assert.NoError(t, err)
+		if !proto.Equal(devConfigValue.Value, expected) {
+			t.Errorf("expected \n%s, got \n%s", expected, devConfigValue.Value)
+		}
+	})
+
+	tCtx, _ := context.WithTimeout(ctx, 60*time.Second)
+	prodWatcher, err := prodAgentClient.SubscribeForConfig(tCtx, &protoconfservice.ConfigSubscriptionRequest{Path: "load_mutable_test"})
 	assert.NoError(t, err)
-	if !proto.Equal(devConfigValue.Value, mutationValue) {
-		t.Errorf("expected \n%s, got \n%s", mutationValue, devConfigValue.Value)
-	}
+	// Get first message from prodStore
+	t.Run("get first message on prodClient", func(t *testing.T) {
+		t.Run("insert to prodStore", func(t *testing.T) {
+			err = inserter.InsertConfig("load_mutable_test"+consts.CompiledConfigExtension, protoconfRoot, prodStore, "")
+			assert.NoError(t, err)
+		})
+		prodConfigValue, err := prodWatcher.Recv()
+		assert.NoError(t, err)
+		if err != nil {
+			return
+		}
+
+		if !proto.Equal(prodConfigValue.Value, expected) {
+			t.Errorf("expected \n%s, got \n%s", expected, prodConfigValue.Value)
+		}
+	})
+	// Change config via mutation rpc
+	mutationValue := &anypb.Any{TypeUrl: "type.googleapis.com/TestMessage", Value: []byte("\n\x05world")}
+	t.Run("change config via mutation rpc", func(t *testing.T) {
+		_, err = devMutationClient.MutateConfig(ctx, &protoconfmutation.ConfigMutationRequest{
+			Path: "mutation_test", Value: &v1.ProtoconfValue{
+				ProtoFile: "test.proto",
+				Value:     mutationValue,
+			},
+		})
+		assert.NoError(t, err)
+	})
+
+	// Compile after mutation
+	t.Run("compile after mutation", func(t *testing.T) {
+		err = c.CompileFile("load_mutable_test.pconf")
+		assert.NoError(t, err)
+	})
+
+	// fetch update from watcher and validate the value after mutation
+	t.Run("fetch update on devClient", func(t *testing.T) {
+		devConfigValue, err := devWatcher.Recv()
+		assert.NoError(t, err)
+		if !proto.Equal(devConfigValue.Value, mutationValue) {
+			t.Errorf("expected \n%s, got \n%s", mutationValue, devConfigValue.Value)
+		}
+
+	})
 
 	devWatcher.CloseSend()
+
+	t.Run("get update on prodClient", func(t *testing.T) {
+		t.Run("insert to prodStore", func(t *testing.T) {
+			err = inserter.InsertConfig("load_mutable_test"+consts.CompiledConfigExtension, protoconfRoot, prodStore, "")
+			assert.NoError(t, err)
+		})
+		prodConfigValue, err := prodWatcher.Recv()
+		assert.NoError(t, err)
+		if err != nil {
+			return
+		}
+
+		if !proto.Equal(prodConfigValue.Value, mutationValue) {
+			t.Errorf("expected \n%s, got \n%s", mutationValue, prodConfigValue.Value)
+		}
+	})
+	prodWatcher.CloseSend()
 	err = c.CompileFile("load_remote_with_load_local.pconf")
 	assert.NoError(t, err)
 	err = c.CompileFile("load_remote.pconf")
 	assert.NoError(t, err)
 	// devWatcher, err = devAgentClient.SubscribeForConfig(ctx, &protoconfservice.ConfigSubscriptionRequest{Path: "load_remote_with_load_local"})
-	devWatcher, err = devAgentClient.SubscribeForConfig(ctx, &protoconfservice.ConfigSubscriptionRequest{Path: "load_remote"})
-	assert.NoError(t, err)
-	devConfigValue, err = devWatcher.Recv()
-	assert.NoError(t, err)
-	expected = &anypb.Any{TypeUrl: "type.googleapis.com/terraform.v1.Terraform"}
-	if !proto.Equal(devConfigValue.Value, expected) {
-		t.Errorf("expected \n%s, got \n%s", expected, devConfigValue.Value)
-	}
+	t.Run("load_remote on dev", func(t *testing.T) {
+		devWatcher, err = devAgentClient.SubscribeForConfig(ctx, &protoconfservice.ConfigSubscriptionRequest{Path: "load_remote"})
+		assert.NoError(t, err)
+		devConfigValue, err := devWatcher.Recv()
+		assert.NoError(t, err)
+		expected = &anypb.Any{TypeUrl: "type.googleapis.com/terraform.v1.Terraform"}
+		if !proto.Equal(devConfigValue.Value, expected) {
+			t.Errorf("expected \n%s, got \n%s", expected, devConfigValue.Value)
+		}
+		devWatcher.CloseSend()
+	})
+	t.Run("load_remote prod", func(t *testing.T) {
+		watcher, err := prodAgentClient.SubscribeForConfig(tCtx, &protoconfservice.ConfigSubscriptionRequest{Path: "load_remote"})
+		assert.NoError(t, err)
+		t.Run("insert load_remote to prod", func(t *testing.T) {
+			err = inserter.InsertConfig("load_remote"+consts.CompiledConfigExtension, protoconfRoot, prodStore, "")
+			assert.NoError(t, err)
+		})
+		value, err := watcher.Recv()
+		assert.NoError(t, err)
+		expected = &anypb.Any{TypeUrl: "type.googleapis.com/terraform.v1.Terraform"}
+		if !proto.Equal(value.Value, expected) {
+			t.Errorf("expected \n%s, got \n%s", expected, value.Value)
+		}
+		watcher.CloseSend()
+	})
 }
 
 type regServer func(s *grpc.Server)

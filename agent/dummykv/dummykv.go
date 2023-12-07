@@ -4,6 +4,9 @@ package dummykv
 
 import (
 	"context"
+	"fmt"
+	"log/slog"
+	"sync"
 
 	"github.com/kvtools/valkeyrie"
 	"github.com/kvtools/valkeyrie/store"
@@ -35,29 +38,51 @@ func newStore(ctx context.Context, endpoints []string, options valkeyrie.Config)
 // Store implements the store.Store interface.
 // TODO implement me.
 type Store struct {
-	channel chan *store.KVPair
+	channels map[string][]chan *store.KVPair
+	store    *sync.Map
+	mux      *sync.RWMutex
 }
 
 // New creates a new Example client.
 // TODO implement me.
 func New(ctx context.Context, endpoints []string, options *Config) (*Store, error) {
-	channel := make(chan *store.KVPair)
+	channel := make(map[string][]chan *store.KVPair)
 	return &Store{
-		channel: channel,
+		channels: channel,
+		store:    &sync.Map{},
+		mux:      &sync.RWMutex{},
 	}, nil
 }
 
 // Put a value at the specified key.
-func (s Store) Put(ctx context.Context, key string, value []byte, opts *store.WriteOptions) error {
-	s.channel <- &store.KVPair{Key: key, Value: value}
-	return nil
+func (s *Store) Put(ctx context.Context, key string, value []byte, opts *store.WriteOptions) error {
+	kv := &store.KVPair{Key: key, Value: value}
+	s.store.Store(key, kv)
+	go func() {
+		locker := s.mux.RLocker()
+		locker.Lock()
+		defer locker.Unlock()
+		if channels, ok := s.channels[key]; ok {
+			for _, ch := range channels {
+				go func(ch chan *store.KVPair) {
+					ch <- kv
+				}(ch)
+			}
+		}
 
+	}()
+	return nil
 }
 
 // Get a value given its key.
 func (s Store) Get(ctx context.Context, key string, opts *store.ReadOptions) (*store.KVPair, error) {
-	// TODO implement me
-	panic("implement me")
+	if val, ok := s.store.Load(key); ok {
+		switch x := val.(type) {
+		case *store.KVPair:
+			return x, nil
+		}
+	}
+	return nil, fmt.Errorf("could not find key %s", key)
 }
 
 // Delete the value at the specified key.
@@ -75,7 +100,17 @@ func (s Store) Exists(ctx context.Context, key string, opts *store.ReadOptions) 
 // Watch for changes on a key.
 func (s Store) Watch(ctx context.Context, key string, opts *store.ReadOptions) (<-chan *store.KVPair, error) {
 	// TODO implement me
-	return s.channel, nil
+	slog.Default().Info("dummykv watch", "key", key, "ctx", ctx)
+	ch := make(chan *store.KVPair)
+	s.channels[key] = append(s.channels[key], ch)
+
+	if current, err := s.Get(ctx, key, opts); err == nil {
+		go func(ch chan *store.KVPair) {
+			ch <- current
+		}(ch)
+	}
+
+	return ch, nil
 }
 
 // WatchTree watches for changes on child nodes under a given directory.

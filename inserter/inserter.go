@@ -20,8 +20,10 @@ import (
 	"github.com/kvtools/zookeeper"
 	"github.com/mitchellh/cli"
 	"github.com/protoconf/protoconf/command"
+	"github.com/protoconf/protoconf/compiler/lib"
+	"github.com/protoconf/protoconf/compiler/lib/parser"
 	"github.com/protoconf/protoconf/consts"
-	"github.com/protoconf/protoconf/utils"
+	v1 "github.com/protoconf/protoconf/datatypes/proto/v1"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -106,7 +108,7 @@ func (c *cliCommand) Run(args []string) int {
 		wg := &sync.WaitGroup{}
 		path := flags.Args()[1]
 		configName := filepath.ToSlash(strings.TrimSpace(path))
-		if err := insertConfig(configName, protoconfRoot, kvStore, kVConfig.Prefix); err != nil {
+		if err := InsertConfig(configName, protoconfRoot, kvStore, kVConfig.Prefix); err != nil {
 			log.Printf("Error inserting config %s, err=%s", configName, err)
 		}
 		for i := 1; i < flags.NArg(); i++ {
@@ -116,7 +118,7 @@ func (c *cliCommand) Run(args []string) int {
 				log.Print(path)
 
 				configName := filepath.ToSlash(strings.TrimSpace(path))
-				if err := insertConfig(configName, protoconfRoot, kvStore, kVConfig.Prefix); err != nil {
+				if err := InsertConfig(configName, protoconfRoot, kvStore, kVConfig.Prefix); err != nil {
 					log.Printf("Error inserting config %s, err=%s", configName, err)
 				}
 			}(flags.Args()[i])
@@ -146,14 +148,19 @@ func Command() (cli.Command, error) {
 	return &cliCommand{}, nil
 }
 
-func insertConfig(configFile string, protoconfRoot string, kvStore store.Store, prefix string) error {
+func InsertConfig(configFile string, protoconfRoot string, kvStore store.Store, prefix string) error {
 	now := time.Now()
 	if !strings.HasSuffix(configFile, consts.CompiledConfigExtension) {
 		return fmt.Errorf("config must be a %s file, file=%s", consts.CompiledConfigExtension, configFile)
 	}
 	configName := strings.TrimSuffix(configFile, consts.CompiledConfigExtension)
 
-	protoconfValue, err := utils.ReadConfig(protoconfRoot, configName)
+	ms := lib.NewModuleService(protoconfRoot)
+	ms.LoadFromLockFile()
+	parser := parser.NewParser(ms.GetProtoFilesRegistry())
+
+	protoconfValue := &v1.ProtoconfValue{}
+	err := parser.ReadConfig(filepath.Join(protoconfRoot, consts.CompiledConfigPath, configFile), protoconfValue)
 	if err != nil {
 		return err
 	}
