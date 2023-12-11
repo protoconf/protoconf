@@ -114,11 +114,16 @@ func (m *ModuleService) Init(ctx context.Context, initFiles ...string) error {
 				msg := &module.RemoteRepo{}
 				originalGetterUrl := ""
 				if msgTmp, ok := m.head.Deps[name]; ok {
-					originalGetterUrl = msg.GetterUrl
+					originalGetterUrl = msgTmp.GetterUrl
 					msg = msgTmp
 				}
+
+				// Arrays must be reseted before merge
+				msg.AdditionalProtoDirs = []string{}
+				msg.ExcludeFileRegexps = []string{}
 				dyn.MergeInto(msg)
-				if originalGetterUrl != msg.GetterUrl {
+				if !strings.EqualFold(originalGetterUrl, msg.GetterUrl) {
+					log.Println(originalGetterUrl, msg.GetterUrl)
 					msg.Integrity = ""
 				}
 				m.mutex.Lock()
@@ -303,7 +308,13 @@ func (m *ModuleService) Download(ctx context.Context, r *module.RemoteRepo) erro
 func (m *ModuleService) GenFileDescriptorSet(r *module.RemoteRepo) error {
 	registry := utils.NewDescriptorRegistry()
 	files := m.protoPaths(r, []string{})
-	err := registry.Import(utils.ParseFilesButDoNotLink, files...)
+	excludes := []*regexp.Regexp{}
+	for _, str := range r.ExcludeFileRegexps {
+		newRe := regexp.MustCompile(str)
+		excludes = append(excludes, newRe)
+	}
+
+	err := registry.Import(utils.ParseFilesButDoNotLink, excludes, files...)
 	if err != nil {
 		return err
 	}
@@ -323,7 +334,7 @@ func (m *ModuleService) GetProtoRegistry() *utils.DescriptorRegistry {
 	for _, dep := range m.head.Deps {
 		registry.Load(filepath.Join(m.getCacheDir(), dep.Label+".fds"), dep.FileDescriptorSetSum)
 	}
-	registry.Import(utils.Parse, filepath.Join(m.getProtoconfPath(), consts.SrcPath))
+	registry.Import(utils.Parse, []*regexp.Regexp{}, filepath.Join(m.getProtoconfPath(), consts.SrcPath))
 	return registry
 
 }

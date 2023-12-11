@@ -2,6 +2,7 @@ package parser
 
 import (
 	"path/filepath"
+	"regexp"
 	"testing"
 
 	_ "github.com/protoconf/proto-validate-reflect/validate"
@@ -39,7 +40,7 @@ func TestParser_ParseFilesX(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			dr := utils.NewDescriptorRegistry()
-			dr.Import(utils.Parse, tt.fields.protoconfRoot)
+			dr.Import(utils.Parse, []*regexp.Regexp{}, tt.fields.protoconfRoot)
 			p := NewParser(dr.GetFilesResolver())
 			_, err := p.ParseFilesX(tt.args.filenames...)
 			if (err != nil) != tt.wantErr {

@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"regexp"
 	"sort"
 	"strings"
 
@@ -105,12 +106,23 @@ func (d *DescriptorRegistry) GetTypesResolver(regs ...*protoregistry.Files) *pro
 	return localTypes
 }
 
-func (d *DescriptorRegistry) Import(parse ParserFunc, paths ...string) error {
+func (d *DescriptorRegistry) Import(parse ParserFunc, excludes []*regexp.Regexp, paths ...string) error {
 	files := []string{}
 	for _, path := range paths {
 
 		localFiles := find(path, ".proto")
 		for _, f := range localFiles {
+			skip := false
+			for _, r := range excludes {
+				if r.MatchString(f) {
+					skip = true
+				}
+			}
+			if skip {
+				continue
+			}
+			log.Println("adding", path, f)
+
 			files = append(files, strings.TrimPrefix(strings.TrimPrefix(f, path), "/"))
 		}
 	}

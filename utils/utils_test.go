@@ -3,6 +3,7 @@ package utils
 import (
 	"os"
 	"path/filepath"
+	"regexp"
 	"testing"
 
 	_ "github.com/protoconf/proto-validate-reflect/validate"
@@ -144,7 +145,7 @@ func TestLoadLocalProtoFiles(t *testing.T) {
 func TestNewDescriptorRegistry(t *testing.T) {
 	registry := NewDescriptorRegistry()
 	largePath := filepath.Join(testdata.LargeTestDir(), consts.SrcPath)
-	err := registry.Import(Parse, largePath)
+	err := registry.Import(Parse, []*regexp.Regexp{}, largePath)
 	require.NoError(t, err)
 
 	files := registry.GetFilesResolver()
