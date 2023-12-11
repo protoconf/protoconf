@@ -66,6 +66,7 @@ func Test(t *testing.T) {
 	// Create production agent
 	prodStore, err := dummykv.New(ctx, []string{}, &dummykv.Config{})
 	assert.NoError(t, err)
+	inserter := inserter.NewProtoconfInserter(protoconfRoot, prodStore)
 	prodAgentServer, err := agent.NewProtoconfKVAgent(prodStore, &protoconf_agent_config.AgentConfig{})
 	assert.NoError(t, err)
 	var prodAgentClient protoconfservice.ProtoconfServiceClient
@@ -95,7 +96,7 @@ func Test(t *testing.T) {
 	// Get first message from prodStore
 	t.Run("get first message on prodClient", func(t *testing.T) {
 		t.Run("insert to prodStore", func(t *testing.T) {
-			err = inserter.InsertConfig("load_mutable_test"+consts.CompiledConfigExtension, protoconfRoot, prodStore, "")
+			err = inserter.InsertConfig("load_mutable_test" + consts.CompiledConfigExtension)
 			assert.NoError(t, err)
 		})
 		prodConfigValue, err := prodWatcher.Recv()
@@ -140,7 +141,7 @@ func Test(t *testing.T) {
 
 	t.Run("get update on prodClient", func(t *testing.T) {
 		t.Run("insert to prodStore", func(t *testing.T) {
-			err = inserter.InsertConfig("load_mutable_test"+consts.CompiledConfigExtension, protoconfRoot, prodStore, "")
+			err = inserter.InsertConfig("load_mutable_test" + consts.CompiledConfigExtension)
 			assert.NoError(t, err)
 		})
 		prodConfigValue, err := prodWatcher.Recv()
@@ -174,7 +175,7 @@ func Test(t *testing.T) {
 		watcher, err := prodAgentClient.SubscribeForConfig(tCtx, &protoconfservice.ConfigSubscriptionRequest{Path: "load_remote"})
 		assert.NoError(t, err)
 		t.Run("insert load_remote to prod", func(t *testing.T) {
-			err = inserter.InsertConfig("load_remote"+consts.CompiledConfigExtension, protoconfRoot, prodStore, "")
+			err = inserter.InsertConfig("load_remote" + consts.CompiledConfigExtension)
 			assert.NoError(t, err)
 		})
 		value, err := watcher.Recv()
