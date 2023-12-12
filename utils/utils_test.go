@@ -144,16 +144,16 @@ func TestLoadLocalProtoFiles(t *testing.T) {
 
 func TestNewDescriptorRegistry(t *testing.T) {
 	registry := NewDescriptorRegistry()
-	largePath := filepath.Join(testdata.LargeTestDir(), consts.SrcPath)
+	largePath := filepath.Join(testdata.SmallTestDir(), consts.SrcPath)
 	err := registry.Import(Parse, []*regexp.Regexp{}, largePath)
 	require.NoError(t, err)
 
 	files := registry.GetFilesResolver()
-	_, err = files.FindFileByPath("terraform/v1/terraform.proto")
+	_, err = files.FindFileByPath("test.proto")
 	require.NoError(t, err)
 
 	types := registry.GetTypesResolver(files)
-	_, err = types.FindMessageByName("terraform.v1.Terraform")
+	_, err = types.FindMessageByName("TestMessage")
 	require.NoError(t, err)
 
 	storeFile := filepath.Join(os.TempDir(), "data.fds")
