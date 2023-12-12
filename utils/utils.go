@@ -121,7 +121,6 @@ func (d *DescriptorRegistry) Import(parse ParserFunc, excludes []*regexp.Regexp,
 			if skip {
 				continue
 			}
-			log.Println("adding", path, f)
 
 			files = append(files, strings.TrimPrefix(strings.TrimPrefix(f, path), "/"))
 		}

@@ -123,7 +123,6 @@ func (m *ModuleService) Init(ctx context.Context, initFiles ...string) error {
 				msg.ExcludeFileRegexps = []string{}
 				dyn.MergeInto(msg)
 				if !strings.EqualFold(originalGetterUrl, msg.GetterUrl) {
-					log.Println(originalGetterUrl, msg.GetterUrl)
 					msg.Integrity = ""
 				}
 				m.mutex.Lock()
@@ -179,7 +178,7 @@ func (m *ModuleService) Add(t *starlark.Thread, fn *starlark.Builtin, args starl
 	case *module.RemoteRepo_Tag:
 		query.Set("ref", x.Tag)
 	case *module.RemoteRepo_Checksum:
-		query.Set("checksum", x.Checksum)
+		query.Set("checkassum", x.Checksum)
 	default:
 		ui.Error(fmt.Sprintf("Warning! Please provide on of: tag, branch, commit or checksum for remote_repo url: %s", remoteRepo.Url))
 

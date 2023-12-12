@@ -99,10 +99,11 @@ func (s Store) Exists(ctx context.Context, key string, opts *store.ReadOptions) 
 
 // Watch for changes on a key.
 func (s Store) Watch(ctx context.Context, key string, opts *store.ReadOptions) (<-chan *store.KVPair, error) {
-	// TODO implement me
 	slog.Default().Info("dummykv watch", "key", key, "ctx", ctx)
 	ch := make(chan *store.KVPair)
+	s.mux.Lock()
 	s.channels[key] = append(s.channels[key], ch)
+	s.mux.Unlock()
 
 	if current, err := s.Get(ctx, key, opts); err == nil {
 		go func(ch chan *store.KVPair) {

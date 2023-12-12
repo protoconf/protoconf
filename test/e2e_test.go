@@ -20,6 +20,7 @@ import (
 	protoconfmutation "github.com/protoconf/protoconf/server/api/proto/v1"
 	"github.com/protoconf/protoconf/utils/testdata"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/test/bufconn"
@@ -173,13 +174,13 @@ func Test(t *testing.T) {
 	})
 	t.Run("load_remote prod", func(t *testing.T) {
 		watcher, err := prodAgentClient.SubscribeForConfig(tCtx, &protoconfservice.ConfigSubscriptionRequest{Path: "load_remote"})
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		t.Run("insert load_remote to prod", func(t *testing.T) {
 			err = inserter.InsertConfig("load_remote" + consts.CompiledConfigExtension)
-			assert.NoError(t, err)
+			require.NoError(t, err)
 		})
 		value, err := watcher.Recv()
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		expected = &anypb.Any{TypeUrl: "type.googleapis.com/terraform.v1.Terraform"}
 		if !proto.Equal(value.Value, expected) {
 			t.Errorf("expected \n%s, got \n%s", expected, value.Value)
