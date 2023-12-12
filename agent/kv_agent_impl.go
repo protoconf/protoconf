@@ -51,7 +51,7 @@ func (s *ProtoconfKVAgent) SubscribeForConfig(request *protoconfservice.ConfigSu
 			data, err := base64.StdEncoding.DecodeString(string(kvPair.Value))
 			if err != nil {
 				srv.Send(&protoconfservice.ConfigUpdate{
-					Error: err.Error(),
+					Error: "failed to decode data from config store, expected base64 encoded value",
 				})
 				logger.Error(err.Error())
 				// return err
@@ -59,7 +59,7 @@ func (s *ProtoconfKVAgent) SubscribeForConfig(request *protoconfservice.ConfigSu
 			err = proto.Unmarshal(data, result)
 			if err != nil {
 				srv.Send(&protoconfservice.ConfigUpdate{
-					Error: err.Error(),
+					Error: "failed to unmarshal data received from config store",
 				})
 				logger.Error(err.Error())
 				// return err

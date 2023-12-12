@@ -32,6 +32,7 @@ func NewCompiler(protoconfRoot string, verboseLogging bool) *Compiler {
 	resolve.AllowRecursion = true      // allow while statements and recursive functions
 
 	ms := NewModuleService(protoconfRoot)
+	ms.LoadFromLockFile()
 
 	return &Compiler{
 		protoconfRoot:   protoconfRoot,

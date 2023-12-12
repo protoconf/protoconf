@@ -21,6 +21,7 @@ import (
 	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/dynamic"
 	"github.com/mitchellh/cli"
+	"github.com/protoconf/protoconf/compiler/lib/parser"
 	"github.com/protoconf/protoconf/compiler/module/v1"
 	"github.com/protoconf/protoconf/compiler/starproto"
 	"github.com/protoconf/protoconf/consts"
@@ -178,7 +179,7 @@ func (m *ModuleService) Add(t *starlark.Thread, fn *starlark.Builtin, args starl
 	case *module.RemoteRepo_Tag:
 		query.Set("ref", x.Tag)
 	case *module.RemoteRepo_Checksum:
-		query.Set("checkassum", x.Checksum)
+		query.Set("checksum", x.Checksum)
 	default:
 		ui.Error(fmt.Sprintf("Warning! Please provide on of: tag, branch, commit or checksum for remote_repo url: %s", remoteRepo.Url))
 
@@ -214,6 +215,7 @@ func (m *ModuleService) Load(thread *starlark.Thread, moduleName string) (starla
 
 	moduleRoot := filepath.Join(m.getCacheDir(), repo.Label)
 	c := NewCompiler(moduleRoot, false)
+	c.parser = parser.NewParser(m.GetProtoFilesRegistry())
 	thread.Load = c.GetLoader().Load
 	return c.GetLoader().Load(thread, metadata.Filepath)
 }

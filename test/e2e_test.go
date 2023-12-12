@@ -151,9 +151,9 @@ func Test(t *testing.T) {
 			return
 		}
 
-		if !proto.Equal(prodConfigValue.Value, mutationValue) {
-			t.Errorf("expected \n%s, got \n%s", mutationValue, prodConfigValue.Value)
-		}
+		require.Truef(t, proto.Equal(prodConfigValue.Value, mutationValue),
+			"expected \n%s, got \n%s", mutationValue, prodConfigValue.Value)
+
 	})
 	prodWatcher.CloseSend()
 	err = c.CompileFile("load_remote_with_load_local.pconf")
@@ -173,7 +173,8 @@ func Test(t *testing.T) {
 		devWatcher.CloseSend()
 	})
 	t.Run("load_remote prod", func(t *testing.T) {
-		watcher, err := prodAgentClient.SubscribeForConfig(tCtx, &protoconfservice.ConfigSubscriptionRequest{Path: "load_remote"})
+		newCtx, _ := context.WithTimeout(ctx, 10*time.Second)
+		watcher, err := prodAgentClient.SubscribeForConfig(newCtx, &protoconfservice.ConfigSubscriptionRequest{Path: "load_remote"})
 		require.NoError(t, err)
 		t.Run("insert load_remote to prod", func(t *testing.T) {
 			err = inserter.InsertConfig("load_remote" + consts.CompiledConfigExtension)

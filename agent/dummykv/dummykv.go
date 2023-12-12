@@ -35,10 +35,48 @@ func newStore(ctx context.Context, endpoints []string, options valkeyrie.Config)
 	return New(ctx, endpoints, cfg)
 }
 
+type pubSub struct {
+	topics *sync.Map
+}
+
+func newPubSub() *pubSub {
+	return &pubSub{
+		topics: &sync.Map{},
+	}
+}
+
+func (p *pubSub) Publish(kv *store.KVPair) {
+	result, ok := p.topics.Load(kv.Key)
+	if ok {
+		switch x := result.(type) {
+		case []chan *store.KVPair:
+			for _, ch := range x {
+				go func(ch chan *store.KVPair) {
+					ch <- kv
+				}(ch)
+			}
+		}
+	}
+}
+
+func (p *pubSub) Channel(key string) chan *store.KVPair {
+	ch := make(chan *store.KVPair)
+	arr := []chan *store.KVPair{ch}
+	result, ok := p.topics.Load(key)
+	if ok {
+		switch x := result.(type) {
+		case []chan *store.KVPair:
+			arr = append(arr, x...)
+		}
+	}
+	p.topics.Store(key, arr)
+	return ch
+}
+
 // Store implements the store.Store interface.
 // TODO implement me.
 type Store struct {
-	channels map[string][]chan *store.KVPair
+	channels *pubSub
 	store    *sync.Map
 	mux      *sync.RWMutex
 }
@@ -46,9 +84,8 @@ type Store struct {
 // New creates a new Example client.
 // TODO implement me.
 func New(ctx context.Context, endpoints []string, options *Config) (*Store, error) {
-	channel := make(map[string][]chan *store.KVPair)
 	return &Store{
-		channels: channel,
+		channels: newPubSub(),
 		store:    &sync.Map{},
 		mux:      &sync.RWMutex{},
 	}, nil
@@ -58,19 +95,7 @@ func New(ctx context.Context, endpoints []string, options *Config) (*Store, erro
 func (s *Store) Put(ctx context.Context, key string, value []byte, opts *store.WriteOptions) error {
 	kv := &store.KVPair{Key: key, Value: value}
 	s.store.Store(key, kv)
-	go func() {
-		locker := s.mux.RLocker()
-		locker.Lock()
-		defer locker.Unlock()
-		if channels, ok := s.channels[key]; ok {
-			for _, ch := range channels {
-				go func(ch chan *store.KVPair) {
-					ch <- kv
-				}(ch)
-			}
-		}
-
-	}()
+	go s.channels.Publish(kv)
 	return nil
 }
 
@@ -100,10 +125,7 @@ func (s Store) Exists(ctx context.Context, key string, opts *store.ReadOptions) 
 // Watch for changes on a key.
 func (s Store) Watch(ctx context.Context, key string, opts *store.ReadOptions) (<-chan *store.KVPair, error) {
 	slog.Default().Info("dummykv watch", "key", key, "ctx", ctx)
-	ch := make(chan *store.KVPair)
-	s.mux.Lock()
-	s.channels[key] = append(s.channels[key], ch)
-	s.mux.Unlock()
+	ch := s.channels.Channel(key)
 
 	if current, err := s.Get(ctx, key, opts); err == nil {
 		go func(ch chan *store.KVPair) {
