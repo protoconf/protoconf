@@ -47,7 +47,7 @@ func TestCompiler_CompileFile(t *testing.T) {
 		{"mutable_bad_proto_filename_err.pconf", ErrLoadStarlark},
 	}
 	c := NewCompiler(testdata.SmallTestDir(), false)
-	assert.NoError(t, c.ModuleService.Init(context.Background(), "init.pinc"))
+	assert.NoError(t, c.ModuleService.Init(context.Background(), "CONFIGSPACE"))
 	assert.NoError(t, c.SyncModules(context.Background()))
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

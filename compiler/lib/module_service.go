@@ -103,7 +103,7 @@ func (m *ModuleService) Init(ctx context.Context, initFiles ...string) error {
 	grp, _ := errgroup.WithContext(ctx)
 	thread := &starlark.Thread{}
 	for _, file := range initFiles {
-		filePath := filepath.Join(m.getProtoconfPath(), consts.SrcPath, file)
+		filePath := filepath.Join(m.getProtoconfPath(), file)
 		grp.Go(func() error {
 			b, err := os.ReadFile(filePath)
 			if err != nil {

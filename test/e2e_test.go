@@ -36,7 +36,7 @@ func Test(t *testing.T) {
 	protoconfRoot := testdata.SmallTestDir()
 	c := lib.NewCompiler(protoconfRoot, false)
 	t.Run("mod tidy", func(t *testing.T) {
-		assert.NoError(t, c.ModuleService.Init(ctx, "init.pinc"))
+		assert.NoError(t, c.ModuleService.Init(ctx, "CONFIGSPACE"))
 		assert.NoError(t, c.SyncModules(ctx))
 	})
 

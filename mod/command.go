@@ -52,7 +52,7 @@ func (c *modInitCommand) Help() string {
 func (c *modInitCommand) Run(args []string) int {
 	c.ui.Info(c.ms.Config.String())
 	c.ms.LoadFromLockFile()
-	err := c.ms.Init(context.Background(), "init.pinc")
+	err := c.ms.Init(context.Background(), "CONFIGSPACE")
 	if err != nil {
 		c.ui.Error(err.Error())
 		return 1
@@ -130,7 +130,7 @@ func (c *modTidyCommand) Run(args []string) int {
 		c.ui.Error(err.Error())
 		return 1
 	}
-	err = c.ms.Init(context.Background(), "init.pinc")
+	err = c.ms.Init(context.Background(), "CONFIGSPACE")
 	if err != nil {
 		c.ui.Error(err.Error())
 		return 1
