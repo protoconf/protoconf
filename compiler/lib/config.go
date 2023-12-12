@@ -78,7 +78,7 @@ func (c *config) validate(value interface{}) error {
 			starproto.NewStarProtoMessage(message),
 		})
 		if _, err := starlark.Call(thread, validator, args, nil); err != nil {
-			return err
+			return errors.Join(ErrInvalidConfig, err)
 		}
 	}
 

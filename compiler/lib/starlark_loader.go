@@ -21,7 +21,6 @@ import (
 	"github.com/qri-io/starlib"
 	"go.starlark.net/starlark"
 	"google.golang.org/protobuf/reflect/protoreflect"
-	"google.golang.org/protobuf/reflect/protoregistry"
 )
 
 type cacheEntry struct {
@@ -101,7 +100,7 @@ func (l *starlarkLoader) loadValidators() (map[string]*starlark.Function, error)
 	validators := make(map[string]*starlark.Function)
 
 	l.Modules["add_validator"] = starlark.NewBuiltin("add_validator", starAddValidator(&validators))
-	protoregistry.GlobalFiles.RangeFiles(func(fd protoreflect.FileDescriptor) bool {
+	l.parser.FilesResolver.RangeFiles(func(fd protoreflect.FileDescriptor) bool {
 		protoFile := fd.Path()
 		validatorFile := protoFile + consts.ValidatorExtensionSuffix
 		validatorAbsPath := filepath.Join(l.srcDir, validatorFile)
