@@ -74,7 +74,7 @@ func (c *cliCommand) Run(args []string) int {
 
 	protoconfRoot := strings.TrimSpace(flags.Args()[0])
 	compiler := compilerlib.NewCompiler(protoconfRoot, config.verboseLogging)
-	log.Println(compiler.SyncModules(context.Background()))
+	compiler.SyncModules(context.Background())
 
 	if config.repl {
 		REPL(compiler)

@@ -124,10 +124,8 @@ func Test_server_MutateConfig(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			s := ProtoconfMutationServer{
-				config:        tt.fields.config,
-				protoconfRoot: tt.fields.protoconfRoot,
-			}
+			s := NewProtoconfMutationServer(tt.fields.protoconfRoot)
+			s.config = tt.fields.config
 			got, err := s.MutateConfig(tt.args.ctx, tt.args.in)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("server.MutateConfig() error = %v, wantErr %v", err, tt.wantErr)

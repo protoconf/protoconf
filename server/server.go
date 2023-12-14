@@ -14,9 +14,10 @@ import (
 	"strings"
 
 	"github.com/mitchellh/cli"
+	"github.com/protoconf/protoconf/compiler/lib"
+	"github.com/protoconf/protoconf/compiler/lib/parser"
 	"github.com/protoconf/protoconf/consts"
 	protoconfmutation "github.com/protoconf/protoconf/server/api/proto/v1"
-	"github.com/protoconf/protoconf/utils"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/encoding/protojson"
 )
@@ -56,7 +57,8 @@ func (c *cliCommand) Run(args []string) int {
 	}
 
 	protoconfRoot := strings.TrimSpace(flags.Args()[0])
-	protoconfServer := &ProtoconfMutationServer{config: config, protoconfRoot: protoconfRoot}
+	protoconfServer := NewProtoconfMutationServer(protoconfRoot)
+	protoconfServer.config = config
 
 	logger.Info("starting protoconf server", "address", config.grpcAddress, "version", consts.Version, "root", protoconfRoot, "pre", config.preMutationScript, "post", config.postMutationScript)
 
@@ -101,17 +103,21 @@ func Command() (cli.Command, error) {
 type ProtoconfMutationServer struct {
 	config        *cliConfig
 	protoconfRoot string
+	parser        *parser.Parser
 }
 
 func NewProtoconfMutationServer(protoconfRoot string) *ProtoconfMutationServer {
-	return &ProtoconfMutationServer{protoconfRoot: protoconfRoot, config: &cliConfig{}}
+	ms := lib.NewModuleService(protoconfRoot)
+	ms.LoadFromLockFile()
+	parser := parser.NewParser(ms.GetProtoFilesRegistry())
+	return &ProtoconfMutationServer{protoconfRoot: protoconfRoot, config: &cliConfig{}, parser: parser}
 }
 
-func (s ProtoconfMutationServer) MutateConfig(ctx context.Context, in *protoconfmutation.ConfigMutationRequest) (*protoconfmutation.ConfigMutationResponse, error) {
+func (s *ProtoconfMutationServer) MutateConfig(ctx context.Context, in *protoconfmutation.ConfigMutationRequest) (*protoconfmutation.ConfigMutationResponse, error) {
 	log.Printf("Mutating path=%s", in.Path)
 	filename := filepath.Join(s.protoconfRoot, consts.MutableConfigPath, filepath.Clean(in.Path)+consts.CompiledConfigExtension)
 
-	resolver := utils.LocalResolver(filepath.Join(s.protoconfRoot, consts.SrcPath))
+	resolver := s.parser.LocalResolver
 	jsonData, err := protojson.MarshalOptions{Resolver: resolver, Multiline: true}.Marshal(in.Value)
 	if err != nil {
 		return nil, logError(fmt.Errorf("error marshaling ProtoconfValue to JSON, value=%s", in.Value))

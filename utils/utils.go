@@ -11,14 +11,10 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/golang/protobuf/jsonpb"
 	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/desc/protoparse"
-	"github.com/jhump/protoreflect/dynamic"
 
 	_ "github.com/protoconf/proto-validate-reflect/validate"
-	"github.com/protoconf/protoconf/consts"
-	protoconfvalue "github.com/protoconf/protoconf/datatypes/proto/v1"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protodesc"
@@ -26,10 +22,6 @@ import (
 	"google.golang.org/protobuf/reflect/protoregistry"
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/dynamicpb"
-)
-
-var (
-	localResolver *protoregistry.Types
 )
 
 type fileDescriptorSorter []*descriptorpb.FileDescriptorProto
@@ -173,79 +165,6 @@ func (d *DescriptorRegistry) ReadConfig(filename string, msg proto.Message) erro
 	}
 	return protojson.UnmarshalOptions{Resolver: d.GetTypesResolver()}.Unmarshal(configReader, msg)
 
-}
-
-// ReadConfig reads a materialized config
-func ReadConfig(protoconfRoot string, configName string) (*protoconfvalue.ProtoconfValue, error) {
-	filename := filepath.Join(protoconfRoot, consts.CompiledConfigPath, configName+consts.CompiledConfigExtension)
-
-	configReader, err := os.ReadFile(filename)
-	if err != nil {
-		return nil, fmt.Errorf("error opening config file, file=%s", filename)
-	}
-
-	if localResolver == nil {
-		localResolver = LocalResolver(protoconfRoot)
-	}
-
-	val := &protoconfvalue.ProtoconfValue{}
-	err = protojson.UnmarshalOptions{Resolver: localResolver}.Unmarshal(configReader, val)
-	if err != nil {
-		return nil, err
-	}
-	return val, nil
-
-}
-
-func LocalResolver(protoconfRoot ...string) *protoregistry.Types {
-	return localLinkedResolver(false, protoconfRoot...)
-}
-
-func LocalLinkedResolver(protoconfRoot ...string) *protoregistry.Types {
-	return localLinkedResolver(true, protoconfRoot...)
-}
-
-func localLinkedResolver(link bool, protoconfRoot ...string) *protoregistry.Types {
-
-	localTypes := new(protoregistry.Types)
-	localFiles, err := LoadLocalProtoFiles(link, protoconfRoot...)
-	if err != nil {
-		log.Fatal("LocalResolver:", err)
-	}
-	localFiles.RangeFiles(func(file protoreflect.FileDescriptor) bool {
-		_, err := protoregistry.GlobalFiles.FindFileByPath(file.Path())
-		if err != nil {
-			protoregistry.GlobalFiles.RegisterFile(file)
-		}
-		return true
-	})
-	protoregistry.GlobalFiles.RangeFiles(func(fd protoreflect.FileDescriptor) bool {
-		if fd.Messages().Len() > 0 {
-			for i := 0; i < fd.Messages().Len(); i++ {
-				fdm := fd.Messages().Get(i)
-				msg := dynamicpb.NewMessageType(fdm)
-				localTypes.RegisterMessage(msg)
-			}
-		}
-		if fd.Enums().Len() > 0 {
-			for i := 0; i < fd.Enums().Len(); i++ {
-				enum := fd.Enums().Get(i)
-				localTypes.RegisterEnum(dynamicpb.NewEnumType(enum))
-			}
-		}
-		return true
-	})
-	return localTypes
-}
-
-// LoadAnyResolver is a util that helps resolve `Any` messages
-func LoadAnyResolver(rootPath string, parseFiles ...string) (jsonpb.AnyResolver, error) {
-	parser := &protoparse.Parser{ImportPaths: []string{rootPath}}
-	descriptors, err := parser.ParseFiles(parseFiles...)
-	if err != nil {
-		return nil, fmt.Errorf("error parsing proto file, file=%s err=%v", parseFiles, err)
-	}
-	return dynamic.AnyResolver(nil, descriptors...), nil
 }
 
 func find(root, ext string) []string {
