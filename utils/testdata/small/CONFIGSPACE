@@ -1,0 +1,10 @@
+terraform_repo=remote_repo(
+    label="terraform_repo",
+    url="./internal/terraform.tgz",
+    checksum="adb174390ed97ba74a2221342d505f00",
+)
+vizceral_repo=remote_repo(
+    label="vizceral_repo",
+    url="./internal/vizceral.tgz",
+    checksum="896b13d56bd1787089ca5767656c7ef1",
+)

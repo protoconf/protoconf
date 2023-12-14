@@ -8,14 +8,15 @@ import (
 	"fmt"
 	"log"
 	"path/filepath"
-	"strings"
 	"sync"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/kvtools/valkeyrie"
 	"github.com/kvtools/valkeyrie/store"
+	"github.com/protoconf/protoconf/compiler/lib"
+	"github.com/protoconf/protoconf/compiler/lib/parser"
 	"github.com/protoconf/protoconf/consts"
-	"github.com/protoconf/protoconf/utils"
+	protoconfvalue "github.com/protoconf/protoconf/datatypes/proto/v1"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -50,6 +51,7 @@ type Store struct {
 	protoconfRoot   string
 	watches         map[string]([]chan struct{})
 	lock            sync.Mutex
+	parser          *parser.Parser
 }
 
 // New creates a new Example client.
@@ -64,11 +66,14 @@ func New(ctx context.Context, endpoints []string, options *Config) (*Store, erro
 	if err != nil {
 		return nil, err
 	}
+	ms := lib.NewModuleService(absRoot)
+	ms.LoadFromLockFile()
 
 	watcher := &Store{
 		fsnotifyWatcher: fsnotifyWatcher,
 		protoconfRoot:   absRoot,
 		watches:         make(map[string]([]chan struct{})),
+		parser:          parser.NewParser(ms.GetProtoFilesRegistry()),
 	}
 
 	go watcher.readEvents()
@@ -100,7 +105,7 @@ func (s Store) Exists(ctx context.Context, key string, opts *store.ReadOptions) 
 }
 
 // Watch for changes on a key.
-func (s Store) Watch(ctx context.Context, key string, opts *store.ReadOptions) (<-chan *store.KVPair, error) {
+func (s *Store) Watch(ctx context.Context, key string, opts *store.ReadOptions) (<-chan *store.KVPair, error) {
 	// TODO implement me
 	if key != filepath.ToSlash(filepath.Clean(key)) || key == "" {
 		return nil, fmt.Errorf("invalid path to watch, path=%s", key)
@@ -120,7 +125,8 @@ func (s Store) Watch(ctx context.Context, key string, opts *store.ReadOptions) (
 		}()
 
 		for {
-			protoconfValue, err := utils.ReadConfig(s.protoconfRoot, strings.TrimPrefix(key, consts.CompiledConfigPath))
+			protoconfValue := &protoconfvalue.ProtoconfValue{}
+			err := s.parser.ReadConfig(absPath, protoconfValue)
 			if err != nil {
 				log.Println(err)
 				return

@@ -2,7 +2,9 @@ package lib
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"path/filepath"
@@ -29,22 +31,44 @@ func NewCompiler(protoconfRoot string, verboseLogging bool) *Compiler {
 	resolve.AllowGlobalReassign = true // allow reassignment to top-level names; also, allow if/for/while at top-level
 	resolve.AllowRecursion = true      // allow while statements and recursive functions
 
+	ms := NewModuleService(protoconfRoot)
+	ms.LoadFromLockFile()
+
 	return &Compiler{
 		protoconfRoot:   protoconfRoot,
 		verboseLogging:  verboseLogging,
-		disableWriting:  false,
 		MaterializedDir: filepath.Join(protoconfRoot, consts.CompiledConfigPath),
-		parser:          parser.NewParser(protoconfRoot),
+		// parser:          parser.NewParser(append([]string{filepath.Join(protoconfRoot, consts.SrcPath)}, ms.GetProtoPaths()...)...),
+		parser:        parser.NewParser(ms.GetProtoFilesRegistry()),
+		ModuleService: ms,
 	}
 }
 
 type Compiler struct {
 	protoconfRoot   string
 	verboseLogging  bool
-	disableWriting  bool
 	MaterializedDir string
 	parser          *parser.Parser
+	ModuleService   *ModuleService
 }
+
+func (c *Compiler) SyncModules(ctx context.Context) error {
+	c.ModuleService.LoadFromLockFile()
+	err := c.ModuleService.Sync(ctx)
+	if err != nil {
+		return err
+	}
+	c.parser = parser.NewParser(c.ModuleService.GetProtoFilesRegistry())
+	return nil
+
+}
+
+var (
+	ErrBadConfigExtension = errors.New("bad config extension")
+	ErrNotADictionary     = errors.New("`main' returned something that's not a dict")
+	ErrNotStringKey       = errors.New("`main' returned a dict with non-string key")
+	ErrNoProtobufValue    = errors.New("`main' returned a dict with non-protobuf value")
+)
 
 func (c *Compiler) CompileFile(filename string) error {
 	multiConfig := false
@@ -52,7 +76,7 @@ func (c *Compiler) CompileFile(filename string) error {
 	} else if strings.HasSuffix(filename, consts.MultiConfigExtension) {
 		multiConfig = true
 	} else {
-		return fmt.Errorf("config file must end with either %s or %s, got: %s", consts.ConfigExtension, consts.MultiConfigExtension, filename)
+		return errors.Join(ErrBadConfigExtension, fmt.Errorf("config file must end with either %s or %s, got: %s", consts.ConfigExtension, consts.MultiConfigExtension, filename))
 	}
 
 	mainOutput, configFile, err := c.runConfig(filename)
@@ -66,18 +90,18 @@ func (c *Compiler) CompileFile(filename string) error {
 	if multiConfig {
 		starDict, ok := mainOutput.(*starlark.Dict)
 		if !ok {
-			return fmt.Errorf("`main' returned something that's not a dict, got: %s", mainOutput.Type())
+			return errors.Join(ErrNotADictionary, fmt.Errorf("got: %s", mainOutput.Type()))
 		}
 
 		outputDir := filepath.Join(c.MaterializedDir, strings.TrimSuffix(filename, consts.MultiConfigExtension))
 		for _, item := range starDict.Items() {
 			key, ok := item[0].(starlark.String)
 			if !ok {
-				return fmt.Errorf("`main' returned a dict with non-string key, got: %s", item[0].Type())
+				return errors.Join(ErrNotStringKey, fmt.Errorf("got: %s", item[0].Type()))
 			}
 			value, ok := starproto.ToProtoMessage(item[1])
 			if !ok {
-				return fmt.Errorf("`main' returned a dict with non-protobuf value, got: %s", item[1].Type())
+				return errors.Join(ErrNoProtobufValue, fmt.Errorf("got: %s", item[1].Type()))
 			}
 			configs[filepath.Join(outputDir, string(key))+consts.CompiledConfigExtension] = value
 			if hasAnySuffix(string(key), ".json", ".yaml", ".yml", ".toml") {
@@ -87,7 +111,7 @@ func (c *Compiler) CompileFile(filename string) error {
 	} else {
 		message, ok := starproto.ToProtoMessage(mainOutput)
 		if !ok {
-			return fmt.Errorf("`main' returned something that's not a protobuf, got: %s", mainOutput.Type())
+			return errors.Join(ErrNoProtobufValue, fmt.Errorf("got: %s", mainOutput.Type()))
 		}
 		outputFile := filepath.Join(c.MaterializedDir, strings.TrimSuffix(filename, consts.ConfigExtension)+consts.CompiledConfigExtension)
 		configs[outputFile] = message
@@ -197,19 +221,24 @@ func (c *Compiler) writeConfig(message *dynamic.Message, filename string) error 
 	return nil
 }
 
+var (
+	ErrStarlarkEval = errors.New("error evaluating starlark file")
+	ErrLoadStarlark = errors.New("error loading starlark file")
+)
+
 func (c *Compiler) runConfig(filename string) (starlark.Value, *config, error) {
 	configFile, err := c.load(filename)
 
 	if err != nil {
-		return nil, nil, fmt.Errorf("error loading %s:\n    %v", filename, err)
+		return nil, nil, errors.Join(ErrLoadStarlark, err)
 	}
 
 	mainOutput, err := configFile.main()
 	if err != nil {
 		if evalError, ok := err.(*starlark.EvalError); ok {
-			return nil, nil, fmt.Errorf("\n%s", evalError.Backtrace())
+			return nil, nil, errors.Join(ErrStarlarkEval, evalError, fmt.Errorf("\n%s", evalError.Backtrace()))
 		}
-		return nil, nil, fmt.Errorf("error evaluating %s:\n    %v", configFile.filename, err)
+		return nil, nil, errors.Join(ErrStarlarkEval, fmt.Errorf("%s", configFile.filename), err)
 	}
 
 	return mainOutput, configFile, nil
@@ -231,11 +260,14 @@ func (c *Compiler) load(filename string) (*config, error) {
 }
 
 func (c *Compiler) GetLoader() *starlarkLoader {
+	modules := getModules()
+	modules["remote_repo"] = starlark.NewBuiltin("remote_repo", c.ModuleService.Add)
 	return &starlarkLoader{
-		cache:      make(map[string]*cacheEntry),
-		Modules:    getModules(),
-		mutableDir: filepath.Join(c.protoconfRoot, consts.MutableConfigPath),
-		srcDir:     filepath.Join(c.protoconfRoot, consts.SrcPath),
-		parser:     c.parser,
+		cache:         make(map[string]*cacheEntry),
+		Modules:       modules,
+		mutableDir:    filepath.Join(c.protoconfRoot, consts.MutableConfigPath),
+		srcDir:        filepath.Join(c.protoconfRoot, consts.SrcPath),
+		parser:        c.parser,
+		moduleService: c.ModuleService,
 	}
 }

@@ -13,15 +13,18 @@ import (
 
 	dpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/golang/protobuf/ptypes"
+	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/dynamic"
 	"github.com/mitchellh/cli"
 	"github.com/pkg/errors"
+	"github.com/protoconf/protoconf/compiler/lib"
+	"github.com/protoconf/protoconf/compiler/lib/parser"
 	pv "github.com/protoconf/protoconf/datatypes/proto/v1"
 	pc "github.com/protoconf/protoconf/server/api/proto/v1"
-	"github.com/protoconf/protoconf/utils"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 var conn *grpc.ClientConn
@@ -98,20 +101,22 @@ func (c *cliCommand) Run(args []string) int {
 	if err != nil {
 		log.Fatal("failed to get root path:", err)
 	}
-	anyResolver, err := utils.LoadAnyResolver(root, config.protoFile)
-	if err != nil {
-		log.Fatal("failed to get AnyResolver:", err)
-	}
+	ms := lib.NewModuleService(root)
+	ms.LoadFromLockFile()
+	parser := parser.NewParser(ms.GetProtoFilesRegistry())
+	anyResolver := parser.LocalResolver
 
-	name, err := anyResolver.Resolve(config.protoMsg)
+	messageType, err := anyResolver.FindMessageByName(protoreflect.FullName(config.protoMsg))
+
 	if err != nil {
 		log.Fatal(errors.Wrapf(err, "could not find typeUrl for %s", config.protoMsg))
 	}
-
-	msg, err := dynamic.AsDynamicMessage(name)
+	wrap, err := desc.WrapMessage(messageType.Descriptor())
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	msg := dynamic.NewMessage(wrap)
 
 	for _, fName := range config.fieldsArray {
 		ret := strings.SplitN(fName, "=", 2)

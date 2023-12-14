@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"errors"
 	"fmt"
 
 	pbproto "github.com/golang/protobuf/proto"
@@ -19,14 +20,19 @@ type config struct {
 	validators map[string]*starlark.Function
 }
 
+var (
+	ErrMainNotCallable = errors.New("`main` must be a function")
+	ErrMainNotFound    = errors.New("`main` function not found")
+)
+
 func (c *config) main() (starlark.Value, error) {
 	mainVal, ok := c.locals["main"]
 	if !ok {
-		return nil, fmt.Errorf("no `main' function found in %s", c.filename)
+		return nil, errors.Join(ErrMainNotFound, fmt.Errorf("in file: %s", c.filename))
 	}
 	main, ok := mainVal.(starlark.Callable)
 	if !ok {
-		return nil, fmt.Errorf("`main' must be a function (got a %s)", mainVal.Type())
+		return nil, errors.Join(ErrMainNotCallable, fmt.Errorf("(got a %s)", mainVal.Type()))
 	}
 
 	thread := &starlark.Thread{
@@ -39,6 +45,10 @@ func (c *config) main() (starlark.Value, error) {
 	}
 	return mainVal, nil
 }
+
+var (
+	ErrInvalidConfig = errors.New("config is not valid")
+)
 
 func (c *config) validate(value interface{}) error {
 	message, ok := value.(*dynamic.Message)
@@ -57,7 +67,7 @@ func (c *config) validate(value interface{}) error {
 	b, _ := message.Marshal()
 	proto.Unmarshal(b, pbmsg)
 	if ok, err := proto_validate_reflect.ValidateDynamic(pbmsg); !ok {
-		return err
+		return errors.Join(ErrInvalidConfig, err)
 	}
 
 	if validator, ok := c.validators[message.GetMessageDescriptor().GetFullyQualifiedName()]; ok {
@@ -68,7 +78,7 @@ func (c *config) validate(value interface{}) error {
 			starproto.NewStarProtoMessage(message),
 		})
 		if _, err := starlark.Call(thread, validator, args, nil); err != nil {
-			return err
+			return errors.Join(ErrInvalidConfig, err)
 		}
 	}
 

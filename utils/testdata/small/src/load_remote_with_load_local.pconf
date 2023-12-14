@@ -1,0 +1,4 @@
+load("@vizceral_repo//services/frontend.pinc", "FRONTEND")
+
+def main():
+    return FRONTEND

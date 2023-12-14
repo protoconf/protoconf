@@ -1,26 +1,44 @@
 package parser
 
 import (
+	"os"
+
 	"github.com/jhump/protoreflect/desc"
 	"github.com/protoconf/protoconf/utils"
+	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/reflect/protoregistry"
 )
 
 // Parser provides a wrapper around jhump/protoreflect/protoparse that will keep a cache of dpd.FileDescriptor
 type Parser struct {
 	LocalResolver *protoregistry.Types
+	FilesResolver *protoregistry.Files
 }
 
-func NewParser(protoconfRoot string) *Parser {
+func NewParser(fileRegs ...*protoregistry.Files) *Parser {
+	dr := utils.NewDescriptorRegistry()
+	fileRegs = append([]*protoregistry.Files{protoregistry.GlobalFiles}, fileRegs...)
+	resolver := dr.GetTypesResolver(fileRegs...)
+
 	p := &Parser{
-		LocalResolver: utils.LocalLinkedResolver(protoconfRoot),
+		LocalResolver: resolver,
+		FilesResolver: &protoregistry.Files{},
 	}
+	for _, reg := range fileRegs {
+		reg.RangeFiles(func(fd protoreflect.FileDescriptor) bool {
+			p.FilesResolver.RegisterFile(fd)
+			return true
+		})
+	}
+
 	return p
 }
 
 func (p *Parser) ParseFilesX(filenames ...string) (results []*desc.FileDescriptor, err error) {
 	for _, filename := range filenames {
-		fd, err := protoregistry.GlobalFiles.FindFileByPath(filename)
+		fd, err := p.FilesResolver.FindFileByPath(filename)
 		if err != nil {
 			return nil, err
 		}
@@ -32,4 +50,13 @@ func (p *Parser) ParseFilesX(filenames ...string) (results []*desc.FileDescripto
 
 	}
 	return results, nil
+}
+
+func (p *Parser) ReadConfig(filename string, msg proto.Message) error {
+	configReader, err := os.ReadFile(filename)
+	if err != nil {
+		return err
+	}
+	return protojson.UnmarshalOptions{Resolver: p.LocalResolver}.Unmarshal(configReader, msg)
+
 }

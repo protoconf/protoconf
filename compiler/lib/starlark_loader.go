@@ -3,6 +3,7 @@ package lib
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -20,7 +21,6 @@ import (
 	"github.com/qri-io/starlib"
 	"go.starlark.net/starlark"
 	"google.golang.org/protobuf/reflect/protoreflect"
-	"google.golang.org/protobuf/reflect/protoregistry"
 )
 
 type cacheEntry struct {
@@ -29,11 +29,12 @@ type cacheEntry struct {
 }
 
 type starlarkLoader struct {
-	cache      map[string]*cacheEntry
-	Modules    starlark.StringDict
-	mutableDir string
-	srcDir     string
-	parser     *parser.Parser
+	cache         map[string]*cacheEntry
+	Modules       starlark.StringDict
+	mutableDir    string
+	srcDir        string
+	parser        *parser.Parser
+	moduleService *ModuleService
 }
 
 func (l *starlarkLoader) loadConfig(moduleName string) (starlark.StringDict, map[string]*starlark.Function, error) {
@@ -56,6 +57,11 @@ func (l *starlarkLoader) loadConfig(moduleName string) (starlark.StringDict, map
 }
 
 func (l *starlarkLoader) Load(thread *starlark.Thread, moduleName string) (starlark.StringDict, error) {
+	metadata := ParseModulePath(moduleName)
+	if metadata != nil && metadata.Repo != "" {
+		return l.moduleService.Load(thread, moduleName)
+	}
+
 	if moduleName == "any.star" {
 		return starlark.StringDict{"any": starproto.AnyModule}, nil
 	}
@@ -94,7 +100,7 @@ func (l *starlarkLoader) loadValidators() (map[string]*starlark.Function, error)
 	validators := make(map[string]*starlark.Function)
 
 	l.Modules["add_validator"] = starlark.NewBuiltin("add_validator", starAddValidator(&validators))
-	protoregistry.GlobalFiles.RangeFiles(func(fd protoreflect.FileDescriptor) bool {
+	l.parser.FilesResolver.RangeFiles(func(fd protoreflect.FileDescriptor) bool {
 		protoFile := fd.Path()
 		validatorFile := protoFile + consts.ValidatorExtensionSuffix
 		validatorAbsPath := filepath.Join(l.srcDir, validatorFile)
@@ -133,6 +139,11 @@ func (l *starlarkLoader) loadInner(thread *starlark.Thread, modulePath string) (
 	return l.loadStarlark(thread, modulePath)
 }
 
+var (
+	ErrLoadMutable = errors.New("error opening mutable config file")
+	ErrReadMutable = errors.New("error reading from mutable config file")
+)
+
 func (l *starlarkLoader) loadMutable(modulePath string) (starlark.StringDict, error) {
 	filename := filepath.Join(
 		l.mutableDir,
@@ -141,13 +152,13 @@ func (l *starlarkLoader) loadMutable(modulePath string) (starlark.StringDict, er
 
 	configReader, err := openFile(filename)
 	if err != nil {
-		return nil, fmt.Errorf("error opening mutable config file, file=%s, err=%s", filename, err)
+		return nil, errors.Join(ErrLoadMutable, fmt.Errorf("file=%s", filename), err)
 	}
 	defer configReader.Close()
 
 	jsonData, err := io.ReadAll(configReader)
 	if err != nil {
-		return nil, fmt.Errorf("error reading from mutable config file, file=%s, err=%s", filename, err)
+		return nil, errors.Join(ErrReadMutable, fmt.Errorf("file=%s", filename), err)
 	}
 
 	type configJSONType struct {
@@ -171,7 +182,7 @@ func (l *starlarkLoader) loadMutable(modulePath string) (starlark.StringDict, er
 	protoconfValue := &pc.ProtoconfValue{}
 	um := jsonpb.Unmarshaler{AnyResolver: anyResolver}
 	if err = um.Unmarshal(io.NopCloser(bytes.NewReader(jsonData)), protoconfValue); err != nil {
-		return nil, fmt.Errorf("error unmarshaling, err=%s", err)
+		return nil, fmt.Errorf("error unmarshal, err=%s", err)
 	}
 
 	name, err := ptypes.AnyMessageName(protoconfValue.Value)
@@ -199,7 +210,6 @@ func (l *starlarkLoader) loadMutable(modulePath string) (starlark.StringDict, er
 }
 
 func (l *starlarkLoader) loadProto(modulePath string) (starlark.StringDict, error) {
-	//parser := &protoparse.Parser{ImportPaths: []string{l.srcDir}, Accessor: l.protoAccessor}
 	descriptors, err := l.parser.ParseFilesX(modulePath)
 	if err != nil {
 		return nil, fmt.Errorf("error parsing proto file, file=%s err=%v", modulePath, err)
@@ -218,7 +228,7 @@ func (l *starlarkLoader) loadProto(modulePath string) (starlark.StringDict, erro
 func (l *starlarkLoader) loadStarlark(thread *starlark.Thread, modulePath string) (starlark.StringDict, error) {
 	reader, err := openFile(filepath.Join(l.srcDir, modulePath))
 	if err != nil {
-		return nil, err
+		return nil, errors.Join(errors.New("cannot load starlark file"), err)
 	}
 	defer reader.Close()
 	moduleSource, err := io.ReadAll(reader)

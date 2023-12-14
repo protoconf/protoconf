@@ -20,8 +20,10 @@ import (
 	"github.com/kvtools/zookeeper"
 	"github.com/mitchellh/cli"
 	"github.com/protoconf/protoconf/command"
+	"github.com/protoconf/protoconf/compiler/lib"
+	"github.com/protoconf/protoconf/compiler/lib/parser"
 	"github.com/protoconf/protoconf/consts"
-	"github.com/protoconf/protoconf/utils"
+	v1 "github.com/protoconf/protoconf/datatypes/proto/v1"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -103,10 +105,12 @@ func (c *cliCommand) Run(args []string) int {
 		}
 	} else {
 		protoconfRoot := strings.TrimSpace(flags.Args()[0])
+		inserter := NewProtoconfInserter(protoconfRoot, kvStore)
+		inserter.Prefix = kVConfig.Prefix
 		wg := &sync.WaitGroup{}
 		path := flags.Args()[1]
 		configName := filepath.ToSlash(strings.TrimSpace(path))
-		if err := insertConfig(configName, protoconfRoot, kvStore, kVConfig.Prefix); err != nil {
+		if err := inserter.InsertConfig(configName); err != nil {
 			log.Printf("Error inserting config %s, err=%s", configName, err)
 		}
 		for i := 1; i < flags.NArg(); i++ {
@@ -116,7 +120,7 @@ func (c *cliCommand) Run(args []string) int {
 				log.Print(path)
 
 				configName := filepath.ToSlash(strings.TrimSpace(path))
-				if err := insertConfig(configName, protoconfRoot, kvStore, kVConfig.Prefix); err != nil {
+				if err := inserter.InsertConfig(configName); err != nil {
 					log.Printf("Error inserting config %s, err=%s", configName, err)
 				}
 			}(flags.Args()[i])
@@ -146,14 +150,33 @@ func Command() (cli.Command, error) {
 	return &cliCommand{}, nil
 }
 
-func insertConfig(configFile string, protoconfRoot string, kvStore store.Store, prefix string) error {
+type ProtoconfInserter struct {
+	protoconfRoot string
+	kvStore       store.Store
+	parser        *parser.Parser
+	Prefix        string
+}
+
+func NewProtoconfInserter(protoconfRoot string, kvStore store.Store) *ProtoconfInserter {
+	ms := lib.NewModuleService(protoconfRoot)
+	ms.LoadFromLockFile()
+	return &ProtoconfInserter{
+		protoconfRoot: protoconfRoot,
+		kvStore:       kvStore,
+		parser:        parser.NewParser(ms.GetProtoFilesRegistry()),
+	}
+
+}
+
+func (i *ProtoconfInserter) InsertConfig(configFile string) error {
 	now := time.Now()
 	if !strings.HasSuffix(configFile, consts.CompiledConfigExtension) {
 		return fmt.Errorf("config must be a %s file, file=%s", consts.CompiledConfigExtension, configFile)
 	}
 	configName := strings.TrimSuffix(configFile, consts.CompiledConfigExtension)
 
-	protoconfValue, err := utils.ReadConfig(protoconfRoot, configName)
+	protoconfValue := &v1.ProtoconfValue{}
+	err := i.parser.ReadConfig(filepath.Join(i.protoconfRoot, consts.CompiledConfigPath, configFile), protoconfValue)
 	if err != nil {
 		return err
 	}
@@ -163,10 +186,10 @@ func insertConfig(configFile string, protoconfRoot string, kvStore store.Store, 
 		return fmt.Errorf("error marshaling ProtoconfValue to bytes, value=%v", protoconfValue)
 	}
 
-	kvPath := prefix + configName
+	kvPath := i.Prefix + configName
 	write := base64.StdEncoding.EncodeToString(data)
 	ctx := context.Background()
-	if err := kvStore.Put(ctx, kvPath, []byte(write), nil); err != nil {
+	if err := i.kvStore.Put(ctx, kvPath, []byte(write), nil); err != nil {
 		return fmt.Errorf("error writing to key-value store, path=%s", kvPath)
 	}
 

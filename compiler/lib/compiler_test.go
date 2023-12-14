@@ -1,42 +1,59 @@
 package lib
 
 import (
+	"context"
+	"errors"
 	"testing"
 
-	proto_validate_reflect "github.com/protoconf/proto-validate-reflect"
 	"github.com/protoconf/protoconf/utils/testdata"
 	assert "github.com/stretchr/testify/require"
 )
 
-func Test(t *testing.T) {
-	c := NewCompiler(testdata.SmallTestDir(), true)
-	assert.ErrorAs(t, c.CompileFile("validator_ext.pconf"), &proto_validate_reflect.ErrorInvalidEmail)
-	assert.NoError(t, c.CompileFile("test.pconf"))
-	assert.Error(t, c.CompileFile("validator_test.pconf"))
-	assert.Error(t, c.CompileFile("validator_repeated_test.pconf"))
-	assert.Error(t, c.CompileFile("validator_map_test.pconf"))
-	assert.NoError(t, c.CompileFile("validator_passing_test.pconf"))
-	assert.NoError(t, c.CompileFile("enum_test.pconf"))
-	assert.NoError(t, c.CompileFile("enum_top_test.pconf"))
-	assert.Error(t, c.CompileFile("enum_wrong_types_test.pconf"))
-	assert.NoError(t, c.CompileFile("multioutputs_test.mpconf"))
-	assert.NoError(t, c.CompileFile("include_pinc_test.pconf"))
-	assert.NoError(t, c.CompileFile("load_mutable_test.pconf"))
-	assert.NoError(t, c.CompileFile("field_type_any_test.pconf"))
-	assert.NoError(t, c.CompileFile("uninitialized_msg_test.pconf"))
-	assert.NoError(t, c.CompileFile("test_hashable.pconf"))
-	assert.NoError(t, c.CompileFile("output.json.pconf"))
-	assert.NoError(t, c.CompileFile("multioutputs.mpconf"))
-	assert.Error(t, c.CompileFile("wrong_file_err.name"))
-	assert.Error(t, c.CompileFile("not_a_dict_err.mpconf"))
-	assert.Error(t, c.CompileFile("not_a_string_key_err.mpconf"))
-	assert.Error(t, c.CompileFile("not_a_proto_value_err.mpconf"))
-	assert.Error(t, c.CompileFile("not_a_proto_value_err.pconf"))
-	assert.Error(t, c.CompileFile("loading_err.pconf"))
-	assert.Error(t, c.CompileFile("eval_err.pconf"))
-	assert.Error(t, c.CompileFile("no_main_err.pconf"))
-	assert.Error(t, c.CompileFile("main_not_a_function_err.pconf"))
-	assert.Error(t, c.CompileFile("mutable_not_exists_err.pconf"))
-	assert.Error(t, c.CompileFile("mutable_bad_json_err.pconf"))
-	assert.Error(t, c.CompileFile("mutable_bad_proto_filename_err.pconf"))
+func TestCompiler_CompileFile(t *testing.T) {
+	tests := []struct {
+		name    string
+		wantErr error
+	}{
+		{"load_remote_with_load_local.pconf", nil},
+		{"load_remote.pconf", nil},
+		{"validator_ext.pconf", ErrInvalidConfig},
+		{"test.pconf", nil},
+		{"validator_test.pconf", ErrInvalidConfig},
+		{"validator_repeated_test.pconf", ErrInvalidConfig},
+		{"validator_map_test.pconf", ErrInvalidConfig},
+		{"validator_passing_test.pconf", nil},
+		{"enum_test.pconf", nil},
+		{"enum_top_test.pconf", nil},
+		{"enum_wrong_types_test.pconf", ErrStarlarkEval},
+		{"multioutputs_test.mpconf", nil},
+		{"include_pinc_test.pconf", nil},
+		{"load_mutable_test.pconf", nil},
+		{"field_type_any_test.pconf", nil},
+		{"uninitialized_msg_test.pconf", nil},
+		{"test_hashable.pconf", nil},
+		{"output.json.pconf", nil},
+		{"multioutputs.mpconf", nil},
+		{"wrong_file_err.name", ErrBadConfigExtension},
+		{"not_a_dict_err.mpconf", ErrNotADictionary},
+		{"not_a_string_key_err.mpconf", ErrNotStringKey},
+		{"not_a_proto_value_err.mpconf", ErrNoProtobufValue},
+		{"not_a_proto_value_err.pconf", ErrNoProtobufValue},
+		{"loading_err.pconf", ErrLoadStarlark},
+		{"eval_err.pconf", ErrStarlarkEval},
+		{"no_main_err.pconf", ErrMainNotFound},
+		{"main_not_a_function_err.pconf", ErrMainNotCallable},
+		{"mutable_not_exists_err.pconf", ErrLoadMutable},
+		{"mutable_bad_json_err.pconf", ErrLoadStarlark},
+		{"mutable_bad_proto_filename_err.pconf", ErrLoadStarlark},
+	}
+	c := NewCompiler(testdata.SmallTestDir(), false)
+	assert.NoError(t, c.ModuleService.Init(context.Background(), "CONFIGSPACE"))
+	assert.NoError(t, c.SyncModules(context.Background()))
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := c.CompileFile(tt.name); !errors.Is(err, tt.wantErr) {
+				t.Errorf("Compiler.CompileFile() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
 }
