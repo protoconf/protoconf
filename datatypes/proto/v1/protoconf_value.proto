@@ -12,6 +12,7 @@ message ProtoconfValue {
     google.protobuf.Any value = 2;
 
     ConfigRollout rollout_config = 3;
+    Metadata metadata = 4;
 
     message ConfigRollout {
         // cooldown is the duration of time the inserter waits before applying
