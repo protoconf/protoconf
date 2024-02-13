@@ -5,6 +5,7 @@ option java_package = "com.protoconf.datatypes.v1";
 option go_package = "github.com/protoconf/protoconf/datatypes/proto/v1;datatypes";
 import "google/protobuf/any.proto";
 import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
 
 message ProtoconfValue {
     string proto_file = 1;
@@ -31,6 +32,18 @@ message ProtoconfValue {
             bool manual = 4;
             google.protobuf.Duration cooldown = 5;
             google.protobuf.Duration expiration = 6;            
+            google.protobuf.Timestamp expires_at = 7;
+            string version = 8;
         }
     }
+}
+
+message Metadata {
+	string commit = 1;
+	string committer_email = 2;
+	string author_email = 3;
+	google.protobuf.Timestamp committed_at = 4;
+	google.protobuf.Timestamp authored_at = 5;
+	google.protobuf.Timestamp inserted_at = 6;
+	string channel = 7;
 }
