@@ -14,6 +14,9 @@ func TestCompiler_CompileFile(t *testing.T) {
 		name    string
 		wantErr error
 	}{
+		{"with_config_rollout_value_is_string.pconf", ErrStarlarkEval},
+		{"with_config_rollout_value_is_none.pconf", ErrStarlarkEval},
+		{"with_config_rollout.pconf", nil},
 		{"load_remote_with_load_local.pconf", nil},
 		{"load_remote.pconf", nil},
 		{"validator_ext.pconf", ErrInvalidConfig},
