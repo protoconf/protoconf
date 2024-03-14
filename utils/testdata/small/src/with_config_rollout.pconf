@@ -1,0 +1,12 @@
+load("test.proto", "TestMessage")
+load("//google/protobuf/duration.proto", "Duration")
+
+def main():
+    return ConfigRollout(
+        TestMessage(stringValue="test"),
+        default_cooldown_time=Duration(seconds=2),
+        stages=[
+            RolloutStage(channel="alpha"),
+            RolloutStage(channel="beta")
+        ]
+    )
