@@ -112,8 +112,8 @@ func (s Store) Get(ctx context.Context, key string, opts *store.ReadOptions) (*s
 
 // Delete the value at the specified key.
 func (s Store) Delete(ctx context.Context, key string) error {
-	// TODO implement me
-	panic("implement me")
+	s.store.Delete(key)
+	return nil
 }
 
 // Exists Verify if a Key exists in the store.
