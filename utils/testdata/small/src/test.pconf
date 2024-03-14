@@ -3,4 +3,4 @@ load("re.star", "re")
 
 def main() :
     print("im here")
-    return TestMessage()
+    return TestMessage(stringValue="Im here")
