@@ -26,12 +26,17 @@ message AgentConfig {
     bool log_as_json = 10 [json_name = "log-as-json"];
     LogLevel log_level = 11 [json_name = "log-level"];
     bool log_source = 12 [json_name = "log-source"];
+    string channel_name = 13;
+    string agent_id = 14;
+    string namespace = 15;
+    bool enable_rollout = 16 [json_name = "enable-rollout"];
 
     enum StoreType {
         consul = 0;
         etcd = 1;
         zookeeper = 2;
         file = 3;
+        configmaps = 4;
     }
 
     enum LogLevel {

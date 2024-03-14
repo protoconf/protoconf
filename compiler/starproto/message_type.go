@@ -5,6 +5,8 @@ import (
 
 	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/dynamic"
+	"github.com/pkg/errors"
+	"google.golang.org/protobuf/runtime/protoiface"
 
 	"go.starlark.net/starlark"
 )
@@ -21,6 +23,34 @@ func NewMessageType(desc *desc.MessageDescriptor) starlark.Value {
 		desc: desc,
 	}
 	return mt
+}
+
+type NewBuiltinCallback func(*dynamic.Message) error
+
+func NewBuiltin(msg protoiface.MessageV1, callbacks ...NewBuiltinCallback) *starlark.Builtin {
+	d, _ := desc.LoadMessageDescriptorForMessage(msg)
+	starMsg, _ := NewMessageType(d).(starlark.Callable)
+
+	f := func(thread *starlark.Thread, fn *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
+		v, err := starMsg.CallInternal(thread, args, kwargs)
+		if err != nil {
+			return nil, err
+		}
+		msg, ok := ToProtoMessage(v)
+		if !ok {
+			return nil, errors.New("failed to create proto message")
+		}
+		for _, c := range callbacks {
+			err := c(msg)
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		return NewStarProtoMessage(msg), nil
+	}
+
+	return starlark.NewBuiltin(starMsg.Name(), f)
 }
 
 // A Starlark built-in type representing a Protobuf message type. This is the

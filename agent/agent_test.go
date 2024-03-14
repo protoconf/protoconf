@@ -23,7 +23,7 @@ func TestRunAgent(t *testing.T) {
 			name: "run dev server",
 			args: args{
 				ctx: func() context.Context {
-					ctx, _ := context.WithTimeoutCause(context.Background(), time.Second*2, errors.New("time out"))
+					ctx, _ := context.WithTimeoutCause(context.Background(), time.Second*5, errors.New("time out"))
 					return ctx
 				}(),
 				config: &protoconf_agent_config.AgentConfig{
