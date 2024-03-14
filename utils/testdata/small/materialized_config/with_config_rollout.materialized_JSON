@@ -1,0 +1,17 @@
+{
+  "value": {
+    "@type": "type.googleapis.com/TestMessage",
+    "stringValue": "test"
+  },
+  "rolloutConfig": {
+    "defaultCooldownTime": "2s",
+    "stages": [
+      {
+        "channel": "alpha"
+      },
+      {
+        "channel": "beta"
+      }
+    ]
+  }
+}
