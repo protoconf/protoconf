@@ -1,0 +1,8 @@
+
+def main():
+    return ConfigRollout(
+        "Hello World",
+        stages=[
+            RolloutStage(channel="alpha")
+        ]
+    )

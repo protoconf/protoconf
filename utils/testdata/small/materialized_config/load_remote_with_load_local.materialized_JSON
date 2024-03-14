@@ -1,0 +1,622 @@
+{
+  "protoFile": "services/services.proto",
+  "value": {
+    "@type": "type.googleapis.com/services.Service",
+    "name": "Frontend",
+    "description": "\n    Exposes an HTTP server to serve the website. Does not require signup/login and generates session IDs for all users automatically.\n    ",
+    "slos": [
+      {
+        "errorRate": {
+          "meta": {
+            "name": "dummy_error_rate",
+            "below": 0.01
+          }
+        }
+      }
+    ],
+    "downstreams": [
+      {
+        "name": "AdService",
+        "description": "Provides text ads based on given context words.",
+        "slos": [
+          {
+            "errorRate": {
+              "meta": {
+                "name": "dummy_error_rate",
+                "below": 0.01
+              }
+            }
+          }
+        ],
+        "artifact": {
+          "name": "adservice"
+        },
+        "versions": [
+          {
+            "version": {
+              "minor": 1,
+              "patch": 4,
+              "prerelease": "31-gc4d8670"
+            },
+            "weight": 100,
+            "name": "prod"
+          }
+        ]
+      },
+      {
+        "name": "CartService",
+        "description": "\n    Stores the items in the user's shopping cart in Redis and retrieves it.\n    ",
+        "slos": [
+          {
+            "errorRate": {
+              "meta": {
+                "name": "dummy_error_rate",
+                "below": 0.01
+              }
+            }
+          }
+        ],
+        "versions": [
+          {
+            "version": {
+              "minor": 1,
+              "patch": 4,
+              "prerelease": "31-gc4d8670"
+            },
+            "weight": 90,
+            "name": "prod"
+          },
+          {
+            "version": {
+              "minor": 1,
+              "patch": 4,
+              "prerelease": "31-gc4d8670"
+            },
+            "weight": 9,
+            "name": "beta"
+          },
+          {
+            "version": {
+              "minor": 1,
+              "patch": 4,
+              "prerelease": "31-gc4d8670"
+            },
+            "weight": 1,
+            "name": "alpha"
+          }
+        ]
+      },
+      {
+        "name": "CheckoutService",
+        "description": "\n    Retrieves user cart, prepares order and orchestrates the payment, shipping and the email notification.\n    ",
+        "slos": [
+          {
+            "errorRate": {
+              "meta": {
+                "name": "dummy_error_rate",
+                "below": 0.01
+              }
+            }
+          }
+        ],
+        "downstreams": [
+          {
+            "name": "CartService",
+            "description": "\n    Stores the items in the user's shopping cart in Redis and retrieves it.\n    ",
+            "slos": [
+              {
+                "errorRate": {
+                  "meta": {
+                    "name": "dummy_error_rate",
+                    "below": 0.01
+                  }
+                }
+              }
+            ],
+            "versions": [
+              {
+                "version": {
+                  "minor": 1,
+                  "patch": 4,
+                  "prerelease": "31-gc4d8670"
+                },
+                "weight": 90,
+                "name": "prod"
+              },
+              {
+                "version": {
+                  "minor": 1,
+                  "patch": 4,
+                  "prerelease": "31-gc4d8670"
+                },
+                "weight": 9,
+                "name": "beta"
+              },
+              {
+                "version": {
+                  "minor": 1,
+                  "patch": 4,
+                  "prerelease": "31-gc4d8670"
+                },
+                "weight": 1,
+                "name": "alpha"
+              }
+            ]
+          },
+          {
+            "name": "CurrencyService",
+            "description": "\n    Converts one money amount to another currency. Uses real values fetched from European Central Bank. It's the highest QPS service.\n    ",
+            "slos": [
+              {
+                "errorRate": {
+                  "meta": {
+                    "name": "dummy_error_rate",
+                    "below": 0.01
+                  }
+                }
+              }
+            ],
+            "versions": [
+              {
+                "version": {
+                  "minor": 1,
+                  "patch": 4,
+                  "prerelease": "31-gc4d8670"
+                },
+                "weight": 90,
+                "name": "prod"
+              },
+              {
+                "version": {
+                  "minor": 1,
+                  "patch": 4,
+                  "prerelease": "31-gc4d8670"
+                },
+                "weight": 9,
+                "name": "beta"
+              },
+              {
+                "version": {
+                  "minor": 1,
+                  "patch": 4,
+                  "prerelease": "31-gc4d8670"
+                },
+                "weight": 1,
+                "name": "alpha"
+              }
+            ]
+          },
+          {
+            "name": "EmailService",
+            "description": "\n    Sends users an order confirmation email (mock).\n    ",
+            "slos": [
+              {
+                "errorRate": {
+                  "meta": {
+                    "name": "dummy_error_rate",
+                    "below": 0.01
+                  }
+                }
+              }
+            ],
+            "versions": [
+              {
+                "version": {
+                  "minor": 1,
+                  "patch": 4,
+                  "prerelease": "31-gc4d8670"
+                },
+                "weight": 90,
+                "name": "prod"
+              },
+              {
+                "version": {
+                  "minor": 1,
+                  "patch": 4,
+                  "prerelease": "31-gc4d8670"
+                },
+                "weight": 9,
+                "name": "beta"
+              },
+              {
+                "version": {
+                  "minor": 1,
+                  "patch": 4,
+                  "prerelease": "31-gc4d8670"
+                },
+                "weight": 1,
+                "name": "alpha"
+              }
+            ]
+          },
+          {
+            "name": "PaymentService",
+            "description": "\n    Charges the given credit card info (mock) with the given amount and returns a transaction ID.\n    ",
+            "slos": [
+              {
+                "errorRate": {
+                  "meta": {
+                    "name": "dummy_error_rate",
+                    "below": 0.01
+                  }
+                }
+              }
+            ],
+            "versions": [
+              {
+                "version": {
+                  "minor": 1,
+                  "patch": 4,
+                  "prerelease": "31-gc4d8670"
+                },
+                "weight": 90,
+                "name": "prod"
+              },
+              {
+                "version": {
+                  "minor": 1,
+                  "patch": 4,
+                  "prerelease": "31-gc4d8670"
+                },
+                "weight": 9,
+                "name": "beta"
+              },
+              {
+                "version": {
+                  "minor": 1,
+                  "patch": 4,
+                  "prerelease": "31-gc4d8670"
+                },
+                "weight": 1,
+                "name": "alpha"
+              }
+            ]
+          },
+          {
+            "name": "ProductCatalogService",
+            "description": "\n    Provides the list of products from a JSON file and ability to search products and get individual products.\n    ",
+            "slos": [
+              {
+                "errorRate": {
+                  "meta": {
+                    "name": "dummy_error_rate",
+                    "below": 0.01
+                  }
+                }
+              }
+            ],
+            "versions": [
+              {
+                "version": {
+                  "minor": 1,
+                  "patch": 4,
+                  "prerelease": "31-gc4d8670"
+                },
+                "weight": 90,
+                "name": "prod"
+              },
+              {
+                "version": {
+                  "minor": 1,
+                  "patch": 4,
+                  "prerelease": "31-gc4d8670"
+                },
+                "weight": 9,
+                "name": "beta"
+              },
+              {
+                "version": {
+                  "minor": 1,
+                  "patch": 4,
+                  "prerelease": "31-gc4d8670"
+                },
+                "weight": 1,
+                "name": "alpha"
+              }
+            ]
+          },
+          {
+            "name": "ShippingService",
+            "description": "\n    Gives shipping cost estimates based on the shopping cart. Ships items to the given address (mock)\n    ",
+            "slos": [
+              {
+                "errorRate": {
+                  "meta": {
+                    "name": "dummy_error_rate",
+                    "below": 0.01
+                  }
+                }
+              }
+            ],
+            "versions": [
+              {
+                "version": {
+                  "minor": 1,
+                  "patch": 4,
+                  "prerelease": "31-gc4d8670"
+                },
+                "weight": 90,
+                "name": "prod"
+              },
+              {
+                "version": {
+                  "minor": 1,
+                  "patch": 4,
+                  "prerelease": "31-gc4d8670"
+                },
+                "weight": 9,
+                "name": "beta"
+              },
+              {
+                "version": {
+                  "minor": 1,
+                  "patch": 4,
+                  "prerelease": "31-gc4d8670"
+                },
+                "weight": 1,
+                "name": "alpha"
+              }
+            ]
+          }
+        ],
+        "versions": [
+          {
+            "version": {
+              "minor": 1,
+              "patch": 4,
+              "prerelease": "31-gc4d8670"
+            },
+            "weight": 90,
+            "name": "prod"
+          },
+          {
+            "version": {
+              "minor": 1,
+              "patch": 4,
+              "prerelease": "31-gc4d8670"
+            },
+            "weight": 9,
+            "name": "beta"
+          },
+          {
+            "version": {
+              "minor": 1,
+              "patch": 4,
+              "prerelease": "31-gc4d8670"
+            },
+            "weight": 1,
+            "name": "alpha"
+          }
+        ]
+      },
+      {
+        "name": "CurrencyService",
+        "description": "\n    Converts one money amount to another currency. Uses real values fetched from European Central Bank. It's the highest QPS service.\n    ",
+        "slos": [
+          {
+            "errorRate": {
+              "meta": {
+                "name": "dummy_error_rate",
+                "below": 0.01
+              }
+            }
+          }
+        ],
+        "versions": [
+          {
+            "version": {
+              "minor": 1,
+              "patch": 4,
+              "prerelease": "31-gc4d8670"
+            },
+            "weight": 90,
+            "name": "prod"
+          },
+          {
+            "version": {
+              "minor": 1,
+              "patch": 4,
+              "prerelease": "31-gc4d8670"
+            },
+            "weight": 9,
+            "name": "beta"
+          },
+          {
+            "version": {
+              "minor": 1,
+              "patch": 4,
+              "prerelease": "31-gc4d8670"
+            },
+            "weight": 1,
+            "name": "alpha"
+          }
+        ]
+      },
+      {
+        "name": "ProductCatalogService",
+        "description": "\n    Provides the list of products from a JSON file and ability to search products and get individual products.\n    ",
+        "slos": [
+          {
+            "errorRate": {
+              "meta": {
+                "name": "dummy_error_rate",
+                "below": 0.01
+              }
+            }
+          }
+        ],
+        "versions": [
+          {
+            "version": {
+              "minor": 1,
+              "patch": 4,
+              "prerelease": "31-gc4d8670"
+            },
+            "weight": 90,
+            "name": "prod"
+          },
+          {
+            "version": {
+              "minor": 1,
+              "patch": 4,
+              "prerelease": "31-gc4d8670"
+            },
+            "weight": 9,
+            "name": "beta"
+          },
+          {
+            "version": {
+              "minor": 1,
+              "patch": 4,
+              "prerelease": "31-gc4d8670"
+            },
+            "weight": 1,
+            "name": "alpha"
+          }
+        ]
+      },
+      {
+        "name": "RecommendationService",
+        "description": "\n    Recommends other products based on what's given in the cart.\n    ",
+        "slos": [
+          {
+            "errorRate": {
+              "meta": {
+                "name": "dummy_error_rate",
+                "below": 0.01
+              }
+            }
+          }
+        ],
+        "downstreams": [
+          {
+            "name": "ProductCatalogService",
+            "description": "\n    Provides the list of products from a JSON file and ability to search products and get individual products.\n    ",
+            "slos": [
+              {
+                "errorRate": {
+                  "meta": {
+                    "name": "dummy_error_rate",
+                    "below": 0.01
+                  }
+                }
+              }
+            ],
+            "versions": [
+              {
+                "version": {
+                  "minor": 1,
+                  "patch": 4,
+                  "prerelease": "31-gc4d8670"
+                },
+                "weight": 90,
+                "name": "prod"
+              },
+              {
+                "version": {
+                  "minor": 1,
+                  "patch": 4,
+                  "prerelease": "31-gc4d8670"
+                },
+                "weight": 9,
+                "name": "beta"
+              },
+              {
+                "version": {
+                  "minor": 1,
+                  "patch": 4,
+                  "prerelease": "31-gc4d8670"
+                },
+                "weight": 1,
+                "name": "alpha"
+              }
+            ]
+          }
+        ],
+        "versions": [
+          {
+            "version": {
+              "minor": 1,
+              "patch": 4,
+              "prerelease": "31-gc4d8670"
+            },
+            "weight": 90,
+            "name": "prod"
+          },
+          {
+            "version": {
+              "minor": 1,
+              "patch": 4,
+              "prerelease": "31-gc4d8670"
+            },
+            "weight": 9,
+            "name": "beta"
+          },
+          {
+            "version": {
+              "minor": 1,
+              "patch": 4,
+              "prerelease": "31-gc4d8670"
+            },
+            "weight": 1,
+            "name": "alpha"
+          }
+        ]
+      },
+      {
+        "name": "ShippingService",
+        "description": "\n    Gives shipping cost estimates based on the shopping cart. Ships items to the given address (mock)\n    ",
+        "slos": [
+          {
+            "errorRate": {
+              "meta": {
+                "name": "dummy_error_rate",
+                "below": 0.01
+              }
+            }
+          }
+        ],
+        "versions": [
+          {
+            "version": {
+              "minor": 1,
+              "patch": 4,
+              "prerelease": "31-gc4d8670"
+            },
+            "weight": 90,
+            "name": "prod"
+          },
+          {
+            "version": {
+              "minor": 1,
+              "patch": 4,
+              "prerelease": "31-gc4d8670"
+            },
+            "weight": 9,
+            "name": "beta"
+          },
+          {
+            "version": {
+              "minor": 1,
+              "patch": 4,
+              "prerelease": "31-gc4d8670"
+            },
+            "weight": 1,
+            "name": "alpha"
+          }
+        ]
+      }
+    ],
+    "versions": [
+      {
+        "version": {
+          "minor": 1,
+          "patch": 4,
+          "prerelease": "31-gc4d8670"
+        },
+        "weight": 100,
+        "name": "prod"
+      }
+    ]
+  }
+}
