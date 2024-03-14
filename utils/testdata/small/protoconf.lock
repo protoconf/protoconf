@@ -1,0 +1,24 @@
+deps:  {
+  key:  "terraform_repo"
+  value:  {
+    label:  "terraform_repo"
+    url:  "./internal/terraform.tgz"
+    checksum:  "adb174390ed97ba74a2221342d505f00"
+    source_path:  "src"
+    integrity:  "h1:Tyfkoi+dMfZs5BjYQAdQOsHzZ5GeNfkUO/VXO5I+zig="
+    getter_url:  "file:///Users/smintz/go/src/github.com/protoconf/protoconf/utils/testdata/small/internal/terraform.tgz?checksum=adb174390ed97ba74a2221342d505f00"
+    file_descriptor_set_sum:  "5399203deea35e206702661542d3736eb5a4968e0d703637eee444cd5a3c7ca5"
+  }
+}
+deps:  {
+  key:  "vizceral_repo"
+  value:  {
+    label:  "vizceral_repo"
+    url:  "./internal/vizceral.tgz"
+    checksum:  "896b13d56bd1787089ca5767656c7ef1"
+    source_path:  "src"
+    integrity:  "h1:mKU/VAicQpQB3uVzxxAlTZsKPewktnNXQvwmBXI5W9o="
+    getter_url:  "file:///Users/smintz/go/src/github.com/protoconf/protoconf/utils/testdata/small/internal/vizceral.tgz?checksum=896b13d56bd1787089ca5767656c7ef1"
+    file_descriptor_set_sum:  "2644d8ef49db5459809a69f762de17250d2990c6bd8e3966eb4adaa0ea0d5922"
+  }
+}
