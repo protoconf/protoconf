@@ -8,6 +8,7 @@ import "google/protobuf/any.proto";
 
 message ConfigSubscriptionRequest {
     string path = 1;
+    string channel = 2;
 }
 
 message ConfigUpdate {
