@@ -23,6 +23,11 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
+const (
+	ConfigRollout = "ConfigRollout"
+	RolloutStage  = "RolloutStage"
+)
+
 func NewCompiler(protoconfRoot string, verboseLogging bool) *Compiler {
 	resolve.AllowNestedDef = true      // allow def statements within function bodies
 	resolve.AllowLambda = true         // allow lambda expressions
@@ -185,14 +190,19 @@ func (c *Compiler) writeOutput(message *dynamic.Message, filename string) error 
 }
 
 func (c *Compiler) writeConfig(message *dynamic.Message, filename string) error {
-	any, err := ptypes.MarshalAny(message)
+	protoconfValue := &pc.ProtoconfValue{}
+	err := message.MergeInto(protoconfValue)
 	if err != nil {
-		return fmt.Errorf("error marshaling proto to Any, message=%s", message)
-	}
+		any, err := ptypes.MarshalAny(message)
+		if err != nil {
+			return fmt.Errorf("error marshaling proto to Any, message=%s", message)
+		}
 
-	protoconfValue := &pc.ProtoconfValue{
-		ProtoFile: filepath.ToSlash(message.GetMessageDescriptor().GetFile().GetName()),
-		Value:     any,
+		protoconfValue = &pc.ProtoconfValue{
+			ProtoFile: filepath.ToSlash(message.GetMessageDescriptor().GetFile().GetName()),
+			Value:     any,
+		}
+
 	}
 
 	jsonData, err := protojson.MarshalOptions{
@@ -261,7 +271,8 @@ func (c *Compiler) load(filename string) (*config, error) {
 
 func (c *Compiler) GetLoader() *starlarkLoader {
 	modules := getModules()
-	modules["remote_repo"] = starlark.NewBuiltin("remote_repo", c.ModuleService.Add)
+	modules[ConfigRollout] = starlark.NewBuiltin(ConfigRollout, newConfigRollout)
+	modules[RolloutStage] = starproto.NewBuiltin(&pc.ProtoconfValue_ConfigRollout_Stage{})
 	return &starlarkLoader{
 		cache:         make(map[string]*cacheEntry),
 		Modules:       modules,
@@ -270,4 +281,44 @@ func (c *Compiler) GetLoader() *starlarkLoader {
 		parser:        c.parser,
 		moduleService: c.ModuleService,
 	}
+}
+
+func newConfigRollout(thread *starlark.Thread, fn *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
+	var config starlark.Value
+
+	// UnpackArgs returns an expected err and is not currently supports `errors.Is`.
+	// We will check wether `config` is `nil` instead.
+	err := starlark.UnpackArgs(fn.Name(), args, kwargs, "value", &config)
+	if config == starlark.None {
+		return nil, err
+	}
+
+	msg, ok := starproto.ToProtoMessage(config)
+	if !ok {
+		return nil, errors.New("value is not a proto message")
+	}
+
+	any, err := ptypes.MarshalAny(msg)
+	if err != nil {
+		return nil, err
+	}
+
+	ret := &pc.ProtoconfValue{
+		Value:         any,
+		RolloutConfig: &pc.ProtoconfValue_ConfigRollout{},
+	}
+
+	_, err = starproto.NewBuiltin(ret.RolloutConfig, func(m *dynamic.Message) error {
+		return m.MergeInto(ret.RolloutConfig)
+	}).CallInternal(thread, nil, kwargs)
+	if err != nil {
+		return nil, err
+	}
+	dyn, err := dynamic.AsDynamicMessage(ret)
+	if err != nil {
+		return nil, err
+	}
+
+	return starproto.NewStarProtoMessage(dyn), nil
+
 }
