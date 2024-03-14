@@ -5,7 +5,6 @@ package dummykv
 import (
 	"context"
 	"fmt"
-	"log/slog"
 	"sync"
 
 	"github.com/kvtools/valkeyrie"
@@ -112,8 +111,8 @@ func (s Store) Get(ctx context.Context, key string, opts *store.ReadOptions) (*s
 
 // Delete the value at the specified key.
 func (s Store) Delete(ctx context.Context, key string) error {
-	// TODO implement me
-	panic("implement me")
+	s.store.Delete(key)
+	return nil
 }
 
 // Exists Verify if a Key exists in the store.
@@ -124,7 +123,6 @@ func (s Store) Exists(ctx context.Context, key string, opts *store.ReadOptions) 
 
 // Watch for changes on a key.
 func (s Store) Watch(ctx context.Context, key string, opts *store.ReadOptions) (<-chan *store.KVPair, error) {
-	slog.Default().Info("dummykv watch", "key", key, "ctx", ctx)
 	ch := s.channels.Channel(key)
 
 	if current, err := s.Get(ctx, key, opts); err == nil {
@@ -159,7 +157,7 @@ func (s Store) List(ctx context.Context, directory string, opts *store.ReadOptio
 // DeleteTree deletes a range of keys under a given directory.
 func (s Store) DeleteTree(ctx context.Context, directory string) error {
 	// TODO implement me
-	panic("implement me")
+	return nil
 }
 
 // AtomicPut Atomic CAS operation on a single value.
