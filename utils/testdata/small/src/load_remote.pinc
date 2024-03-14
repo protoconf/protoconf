@@ -1,0 +1,4 @@
+load("@terraform_repo//terraform/v1/terraform.proto", "Terraform")
+
+def NewTerraform(**kwargs):
+    return Terraform(**kwargs)

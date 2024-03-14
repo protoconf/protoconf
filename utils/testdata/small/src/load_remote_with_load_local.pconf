@@ -1,4 +1,5 @@
 load("@vizceral_repo//services/frontend.pinc", "FRONTEND")
+load("include_me.pinc", "TEST_CONST")
 
 def main():
     return FRONTEND
