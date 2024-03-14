@@ -2,16 +2,35 @@ syntax = "proto3";
 package v1;
 
 option java_package = "com.protoconf.datatypes.v1";
-
+option go_package = "github.com/protoconf/protoconf/datatypes/proto/v1;datatypes";
 import "google/protobuf/any.proto";
+import "google/protobuf/duration.proto";
 
 message ProtoconfValue {
     string proto_file = 1;
     google.protobuf.Any value = 2;
-    repeated SecretMetadata secrets = 3;
-}
 
-message SecretMetadata {
-    int32 pos = 1;
-    int32 len = 2;
+    ConfigRollout rollout_config = 3;
+
+    message ConfigRollout {
+        // cooldown is the duration of time the inserter waits before applying
+        // the next stage, Uses protobuf google.protobuf.Duration well-known-type
+        google.protobuf.Duration default_cooldown_time = 1;
+
+		// expiration will be added to the time of insertion to be set as
+        // `expires_at`. When `expires_at` is due, the config should revert
+        // to default.
+        google.protobuf.Duration default_expiration_time = 2;
+
+        repeated Stage stages = 3;
+
+        message Stage {
+            string channel = 1;
+            uint32 percentile = 2;
+            map<string, string> labels = 3;
+            bool manual = 4;
+            google.protobuf.Duration cooldown = 5;
+            google.protobuf.Duration expiration = 6;            
+        }
+    }
 }

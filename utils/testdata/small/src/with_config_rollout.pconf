@@ -1,0 +1,9 @@
+load("test.proto", "TestMessage")
+
+def main():
+    return ConfigRollout(
+        TestMessage(stringValue="test"),
+        stages=[
+            RolloutStage(channel="alpha")
+        ]
+    )
