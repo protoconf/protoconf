@@ -208,6 +208,9 @@ func (m *ModuleService) Load(thread *starlark.Thread, moduleName string) (starla
 	if metadata == nil {
 		return nil, errors.New("could not parse module path")
 	}
+	if metadata.Ext == ".proto" {
+		return thread.Load(thread, metadata.Filepath)
+	}
 	repo, ok := m.head.Deps[metadata.Repo]
 	if !ok {
 		return nil, errors.New("repo does not exist in workspace")
@@ -216,8 +219,9 @@ func (m *ModuleService) Load(thread *starlark.Thread, moduleName string) (starla
 	moduleRoot := filepath.Join(m.getCacheDir(), repo.Label)
 	c := NewCompiler(moduleRoot, false)
 	c.parser = parser.NewParser(m.GetProtoFilesRegistry())
-	thread.Load = c.GetLoader().Load
-	return c.GetLoader().Load(thread, metadata.Filepath)
+	newThread := &starlark.Thread{}
+	newThread.Load = c.GetLoader().Load
+	return c.GetLoader().Load(newThread, metadata.Filepath)
 }
 
 func (m *ModuleService) Lock() error {
@@ -330,12 +334,18 @@ func (m *ModuleService) GetProtoFilesRegistry() *protoregistry.Files {
 
 }
 
+var cachedRegistry *utils.DescriptorRegistry
+
 func (m *ModuleService) GetProtoRegistry() *utils.DescriptorRegistry {
+	if cachedRegistry != nil {
+		return cachedRegistry
+	}
 	registry := utils.NewDescriptorRegistry()
 	for _, dep := range m.head.Deps {
 		registry.Load(filepath.Join(m.getCacheDir(), dep.Label+".fds"), dep.FileDescriptorSetSum)
 	}
 	registry.Import(utils.Parse, []*regexp.Regexp{}, filepath.Join(m.getProtoconfPath(), consts.SrcPath))
+	cachedRegistry = registry
 	return registry
 
 }
