@@ -76,6 +76,11 @@ func Test_cliCommand_Run(t *testing.T) {
 			want: 0,
 		},
 		{
+			name: "test multi",
+			args: args{args: []string{testDir, "test.materialized_JSON", "with_config_rollout.materialized_JSON"}},
+			want: 0,
+		},
+		{
 			name: "no args",
 			args: args{args: []string{}},
 			want: 1,

@@ -360,7 +360,11 @@ func (i *ProtoconfInserter) XXXinsertVersion(configName string, version string, 
 
 }
 
+var metaMutex *sync.Mutex = &sync.Mutex{}
+
 func (i *ProtoconfInserter) GatherMetadata(configFile string) (*datatypes.Metadata, error) {
+	metaMutex.Lock()
+	defer metaMutex.Unlock()
 	if !i.isGit {
 		return &datatypes.Metadata{Commit: "not_a_git_repo"}, nil
 	}
