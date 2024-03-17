@@ -58,6 +58,7 @@ type Compiler struct {
 }
 
 func (c *Compiler) SyncModules(ctx context.Context) error {
+	cachedRegistry = nil
 	c.ModuleService.LoadFromLockFile()
 	err := c.ModuleService.Sync(ctx)
 	if err != nil {

@@ -1,0 +1,5 @@
+load("load_remote.pinc", "NewTerraform")
+load("@terraform_repo//protoconf_terraform/config/v1/config.proto", "TerraformPluginConfig")
+
+def main():
+    return TerraformPluginConfig()
