@@ -4,15 +4,20 @@ import (
 	"bytes"
 	"context"
 	"encoding/base64"
+	"errors"
 	"flag"
 	"fmt"
 	"log"
+	"log/slog"
+	"os"
+	"os/signal"
 	"path/filepath"
 	"runtime"
 	"strings"
 	"sync"
 	"time"
 
+	"github.com/go-git/go-git/v5"
 	"github.com/kvtools/consul"
 	"github.com/kvtools/etcdv3"
 	"github.com/kvtools/valkeyrie"
@@ -23,9 +28,15 @@ import (
 	"github.com/protoconf/protoconf/compiler/lib"
 	"github.com/protoconf/protoconf/compiler/lib/parser"
 	"github.com/protoconf/protoconf/consts"
-	v1 "github.com/protoconf/protoconf/datatypes/proto/v1"
+	datatypes "github.com/protoconf/protoconf/datatypes/proto/v1"
+	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/types/dynamicpb"
+	"google.golang.org/protobuf/types/known/durationpb"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
+
+const Stable = "STABLE"
 
 type cliCommand struct{}
 
@@ -57,6 +68,8 @@ func newFlagSet() (*flag.FlagSet, *cliConfig, *command.KVStoreConfig) {
 }
 
 func (c *cliCommand) Run(args []string) int {
+	logger := slog.Default()
+	logger.With("args", args).Info("starting inserter")
 	flags, config, kVConfig := newFlagSet()
 	flags.Parse(args)
 
@@ -91,7 +104,7 @@ func (c *cliCommand) Run(args []string) int {
 	}
 
 	if err != nil {
-		log.Printf("Error connecting to key-value store, err=%s", err)
+		logger.With("error", err).Error("Error connecting to key-value store")
 		return 1
 	}
 
@@ -99,7 +112,7 @@ func (c *cliCommand) Run(args []string) int {
 		for i := 0; i < flags.NArg(); i++ {
 			configName := filepath.ToSlash(strings.TrimSpace(flags.Args()[i]))
 			if err := kvStore.Delete(ctx, kVConfig.Prefix+configName); err != nil {
-				log.Printf("Error deleting config %s, err=%s", configName, err)
+				logger.With("error", err, "key", configName).Error("Error deleting config")
 				return 1
 			}
 		}
@@ -108,20 +121,14 @@ func (c *cliCommand) Run(args []string) int {
 		inserter := NewProtoconfInserter(protoconfRoot, kvStore)
 		inserter.Prefix = kVConfig.Prefix
 		wg := &sync.WaitGroup{}
-		path := flags.Args()[1]
-		configName := filepath.ToSlash(strings.TrimSpace(path))
-		if err := inserter.InsertConfig(configName); err != nil {
-			log.Printf("Error inserting config %s, err=%s", configName, err)
-		}
 		for i := 1; i < flags.NArg(); i++ {
 			wg.Add(1)
 			go func(path string) {
 				defer wg.Done()
-				log.Print(path)
 
 				configName := filepath.ToSlash(strings.TrimSpace(path))
 				if err := inserter.InsertConfig(configName); err != nil {
-					log.Printf("Error inserting config %s, err=%s", configName, err)
+					logger.With("key", configName, "error", err).Error("Error inserting config")
 				}
 			}(flags.Args()[i])
 		}
@@ -155,44 +162,206 @@ type ProtoconfInserter struct {
 	kvStore       store.Store
 	parser        *parser.Parser
 	Prefix        string
+	repo          *git.Repository
+	rel           string
+	logger        *slog.Logger
+	isGit         bool
 }
 
 func NewProtoconfInserter(protoconfRoot string, kvStore store.Store) *ProtoconfInserter {
+	logger := slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: slog.LevelDebug}))
+	logger.Debug("loading module service")
 	ms := lib.NewModuleService(protoconfRoot)
 	ms.LoadFromLockFile()
+	protoconfRootAbs, _ := filepath.Abs(protoconfRoot)
+	gitRoot := protoconfRootAbs
+	isGit := true
+
+	logger.Debug("loading git info")
+	repo, err := git.PlainOpen(gitRoot)
+	var rel string
+	for errors.Is(err, git.ErrRepositoryNotExists) {
+		gitRoot = filepath.Dir(gitRoot)
+		if gitRoot == "/" {
+			break
+		}
+		rel, _ = filepath.Rel(gitRoot, protoconfRootAbs)
+		repo, err = git.PlainOpen(gitRoot)
+	}
+	if err != nil {
+		logger.Info("not a git repo")
+		isGit = false
+	}
 	return &ProtoconfInserter{
 		protoconfRoot: protoconfRoot,
 		kvStore:       kvStore,
 		parser:        parser.NewParser(ms.GetProtoFilesRegistry()),
+		repo:          repo,
+		rel:           rel,
+		logger:        logger,
+		isGit:         isGit,
 	}
 
 }
+
+var ErrInsertionCompleted = errors.New("insertion completed")
 
 func (i *ProtoconfInserter) InsertConfig(configFile string) error {
 	now := time.Now()
 	if !strings.HasSuffix(configFile, consts.CompiledConfigExtension) {
 		return fmt.Errorf("config must be a %s file, file=%s", consts.CompiledConfigExtension, configFile)
 	}
+	metadata, err := i.GatherMetadata(filepath.Join(i.rel, consts.CompiledConfigPath, configFile))
+	if err != nil {
+		return err
+	}
 	configName := strings.TrimSuffix(configFile, consts.CompiledConfigExtension)
+	logger := i.logger.With("key", configName, "commit", metadata.Commit[0:8])
 
-	protoconfValue := &v1.ProtoconfValue{}
-	err := i.parser.ReadConfig(filepath.Join(i.protoconfRoot, consts.CompiledConfigPath, configFile), protoconfValue)
+	protoconfValue := &datatypes.ProtoconfValue{}
+	err = i.parser.ReadConfig(filepath.Join(i.protoconfRoot, consts.CompiledConfigPath, configFile), protoconfValue)
 	if err != nil {
 		return err
 	}
 
+	err = i.insertVersion(configName, fmt.Sprintf("%d.%s", metadata.CommittedAt.Seconds, metadata.Commit), protoconfValue, metadata)
+	if err != nil {
+		return err
+	}
+
+	if protoconfValue.RolloutConfig != nil {
+		rolloutConfig := &datatypes.ProtoconfValue_ConfigRollout{
+			DefaultCooldownTime:   durationpb.New(time.Second * 60),
+			DefaultExpirationTime: durationpb.New(time.Second * 300),
+		}
+		proto.Merge(rolloutConfig, protoconfValue.RolloutConfig)
+		rolloutConfig.Stages = []*datatypes.ProtoconfValue_ConfigRollout_Stage{}
+		kvRolloutConfig := filepath.Join(i.Prefix, configName, "rollout.json")
+		ctx, cancel := context.WithCancelCause(context.Background())
+		ctx, _ = signal.NotifyContext(ctx, os.Interrupt)
+		context.AfterFunc(ctx, func() {
+			err := context.Cause(ctx)
+			logger.With("error", err).Error("stopped. deleting rollout config")
+			i.kvStore.Delete(context.Background(), kvRolloutConfig)
+		})
+		defer cancel(ErrInsertionCompleted)
+		for _, stage := range protoconfValue.RolloutConfig.Stages {
+			stageLogger := logger.With("stage", stage.Channel)
+			select {
+			case <-ctx.Done():
+				stageLogger.Info("context canceled, skipping stage")
+				return nil
+			default:
+				expiration := stage.Expiration
+				if expiration != nil {
+					expiration = rolloutConfig.DefaultExpirationTime
+				}
+				stage.ExpiresAt = timestamppb.New(time.Now().Add(expiration.AsDuration()))
+				stage.Version = metadata.Commit
+				rolloutConfig.Stages = append(rolloutConfig.Stages, stage)
+				data, err := protojson.MarshalOptions{Indent: "  "}.Marshal(rolloutConfig)
+				if err != nil {
+					return fmt.Errorf("error marshaling rollout to json, value=%v", rolloutConfig)
+				}
+				if err := i.kvStore.Put(ctx, kvRolloutConfig, data, nil); err != nil {
+					return fmt.Errorf("error writing to key-value store, path=%s", kvRolloutConfig)
+				}
+				cooldown := stage.Cooldown
+				if cooldown == nil {
+					cooldown = rolloutConfig.DefaultCooldownTime
+				}
+				stageLogger.With("cooldown", cooldown.AsDuration()).Info("rollout stage updated")
+				sleep, cancel := context.WithTimeout(ctx, cooldown.AsDuration())
+				defer cancel()
+				<-sleep.Done()
+			}
+		}
+
+	}
+
+	err = i.insertVersion(configName, Stable, protoconfValue, metadata)
+	if err != nil {
+		return err
+	}
+
+	logger.With("completed_in", time.Since(now)).Info("inserted successfully")
+	return nil
+}
+
+func (i *ProtoconfInserter) insertVersion(configName string, version string, protoconfValue *datatypes.ProtoconfValue, metadata *datatypes.Metadata) error {
+	logger := i.logger.With("key", configName, "version", version, "commit", metadata.Commit[0:8])
+	logger.Debug("starting version insertion")
+	kvConfigJsonPath := filepath.Join(i.Prefix, configName, version, "config.json")
+	kvConfigPbPath := filepath.Join(i.Prefix, configName, version, "config.data")
+	kvMetadataPath := filepath.Join(i.Prefix, configName, version, "metadata.json")
+	ctx := context.Background()
+
+	// Writing config data
+	logger.Debug("writing config binary data")
 	data, err := proto.Marshal(protoconfValue)
 	if err != nil {
 		return fmt.Errorf("error marshaling ProtoconfValue to bytes, value=%v", protoconfValue)
 	}
-
-	kvPath := i.Prefix + configName
 	write := base64.StdEncoding.EncodeToString(data)
-	ctx := context.Background()
-	if err := i.kvStore.Put(ctx, kvPath, []byte(write), nil); err != nil {
-		return fmt.Errorf("error writing to key-value store, path=%s", kvPath)
+	if err := i.kvStore.Put(ctx, kvConfigPbPath, []byte(write), nil); err != nil {
+		return errors.Join(err, fmt.Errorf("error writing to key-value store, path=%s", kvConfigPbPath))
+	}
+	logger.Debug("finished writing config binary data")
+
+	// Writing config json
+	logger.Debug("writing config json data")
+	mt, err := i.parser.LocalResolver.FindMessageByURL(protoconfValue.Value.TypeUrl)
+	if err != nil {
+		return err
+	}
+	new := dynamicpb.NewMessage(mt.Descriptor())
+	err = protoconfValue.Value.UnmarshalTo(new)
+	if err != nil {
+		return err
 	}
 
-	fmt.Printf("Path %s inserted successfully (took: %v)\n", kvPath, time.Since(now))
+	data, err = protojson.MarshalOptions{Multiline: true}.Marshal(new)
+	if err != nil {
+		return errors.Join(err, fmt.Errorf("error marshaling ProtoconfValue to json, value=%v", protoconfValue))
+	}
+	if err := i.kvStore.Put(ctx, kvConfigJsonPath, data, nil); err != nil {
+		return errors.Join(err, fmt.Errorf("error writing to key-value store, path=%s", kvConfigJsonPath))
+	}
+	logger.Debug("finished writing config json data")
+
+	// Writing metadata json
+	logger.Debug("writing metadata json")
+	data, err = protojson.MarshalOptions{Multiline: true}.Marshal(metadata)
+	if err != nil {
+		return errors.Join(err, fmt.Errorf("error marshaling metadata to json, value=%v", protoconfValue))
+	}
+	if err := i.kvStore.Put(ctx, kvMetadataPath, data, nil); err != nil {
+		return fmt.Errorf("error writing to key-value store, path=%s", kvMetadataPath)
+	}
+	logger.Debug("finished writing metadata json")
 	return nil
+
+}
+
+func (i *ProtoconfInserter) GatherMetadata(configFile string) (*datatypes.Metadata, error) {
+	if !i.isGit {
+		return &datatypes.Metadata{Commit: "not_a_git_repo"}, nil
+	}
+	gitLog, err := i.repo.Log(&git.LogOptions{FileName: &configFile})
+	if err != nil {
+		return nil, err
+	}
+	commit, err := gitLog.Next()
+	if err != nil {
+		return nil, err
+	}
+	return &datatypes.Metadata{
+		Commit:         commit.Hash.String(),
+		CommitterEmail: commit.Committer.Email,
+		AuthorEmail:    commit.Author.Email,
+		CommittedAt:    timestamppb.New(commit.Committer.When),
+		AuthoredAt:     timestamppb.New(commit.Committer.When),
+		InsertedAt:     timestamppb.Now(),
+	}, nil
+
 }

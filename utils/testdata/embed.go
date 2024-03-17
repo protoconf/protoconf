@@ -6,6 +6,10 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"time"
+
+	"github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5/plumbing/object"
 )
 
 //go:embed bad_proto large small
@@ -36,7 +40,18 @@ func TestDir(name string) string {
 	if err != nil {
 		log.Fatalf("init error: %v", err)
 	}
-	return filepath.Join(dirPath, name)
+	testDir := filepath.Join(dirPath, name)
+	repo, _ := git.PlainInit(testDir, false)
+	w, _ := repo.Worktree()
+	w.AddGlob(".")
+	w.Commit("dummy commit", &git.CommitOptions{
+		Author: &object.Signature{
+			Name:  "John Doe",
+			Email: "john@doe.org",
+			When:  time.Now(),
+		},
+	})
+	return testDir
 }
 
 func SmallTestDir() string {
