@@ -237,6 +237,7 @@ func (i *ProtoconfInserter) InsertConfig(configName string, protoconfValue *data
 		return err
 	}
 
+	kvRolloutConfig := filepath.Join(i.Prefix, configName, "rollout.json")
 	if protoconfValue.RolloutConfig != nil {
 		rolloutConfig := &datatypes.ProtoconfValue_ConfigRollout{
 			DefaultCooldownTime:   durationpb.New(time.Second * 60),
@@ -244,13 +245,12 @@ func (i *ProtoconfInserter) InsertConfig(configName string, protoconfValue *data
 		}
 		proto.Merge(rolloutConfig, protoconfValue.RolloutConfig)
 		rolloutConfig.Stages = []*datatypes.ProtoconfValue_ConfigRollout_Stage{}
-		kvRolloutConfig := filepath.Join(i.Prefix, configName, "rollout.json")
 		ctx, cancel := context.WithCancelCause(context.Background())
 		ctx, _ = signal.NotifyContext(ctx, os.Interrupt)
 		context.AfterFunc(ctx, func() {
 			err := context.Cause(ctx)
 			logger.With("error", err).Error("stopped. deleting rollout config")
-			logger.With("result", i.kvStore.Delete(context.Background(), kvRolloutConfig)).Info("deleted rollout config")
+			logger.With("result", i.kvStore.Put(context.Background(), kvRolloutConfig, []byte("{}"), &store.WriteOptions{})).Info("deleted rollout config")
 		})
 		defer cancel(ErrInsertionCompleted)
 		for _, stage := range protoconfValue.RolloutConfig.Stages {
@@ -287,7 +287,8 @@ func (i *ProtoconfInserter) InsertConfig(configName string, protoconfValue *data
 				}
 			}
 		}
-
+	} else {
+		logger.With("result", i.kvStore.Put(context.Background(), kvRolloutConfig, []byte("{}"), &store.WriteOptions{})).Info("Setting empty rollout.json")
 	}
 
 	err = i.XXXinsertVersion(configName, Stable, protoconfValue, metadata)
