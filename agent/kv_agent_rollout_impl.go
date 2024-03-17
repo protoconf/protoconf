@@ -46,34 +46,8 @@ var (
 	meter = otel.Meter("protoconf.dev/agent",
 		metric.WithInstrumentationVersion(consts.Version),
 	)
-	configReloads, _ = meter.Int64Counter("protoconf_agent_config_reloads")
-	lastUpdate       = time.Now().UnixMilli()
-	lastInsertion    = time.Now()
-	_, _             = meter.Int64ObservableGauge("protoconf_agent_time_since_last_update",
-		metric.WithUnit("ms"),
-		metric.WithDescription("Time since last config update"),
-		metric.WithInt64Callback(func(ctx context.Context, io metric.Int64Observer) error {
-			lu := atomic.LoadInt64(&lastUpdate)
-			io.Observe(time.Since(time.UnixMilli(lu)).Milliseconds())
-			return nil
-		}),
-	)
-	_, _ = meter.Int64ObservableGauge("protoconf_agent_apply_timestamp",
-		metric.WithDescription("Timestamp of the last config update"),
-		metric.WithInt64Callback(func(ctx context.Context, io metric.Int64Observer) error {
-			lu := atomic.LoadInt64(&lastUpdate)
-			io.Observe(lu)
-			return nil
-		}),
-	)
-	_, _ = meter.Int64ObservableGauge("protoconf_agent_time_since_last_insertion",
-		metric.WithUnit("ms"),
-		metric.WithDescription("Time since last config insertion"),
-		metric.WithInt64Callback(func(ctx context.Context, io metric.Int64Observer) error {
-			io.Observe(time.Since(lastInsertion).Milliseconds())
-			return nil
-		}),
-	)
+	lastUpdate    = time.Now().UnixMilli()
+	lastInsertion = time.Now()
 )
 
 func NewProtoconfKVAgentRollout(store store.Store, config *protoconf_agent_config.AgentConfig) (*ProtoconfKVAgentRollout, error) {
@@ -105,24 +79,101 @@ func newProtoconfKVAgentRollout(store store.Store, config *protoconf_agent_confi
 	}
 }
 
-func (s *ProtoconfKVAgentRollout) SubscribeForConfig(request *protoconfservice.ConfigSubscriptionRequest, srv protoconfservice.ProtoconfService_SubscribeForConfigServer) error {
-	ctx := srv.Context()
-	pathValue := attribute.String("config_path", request.Path)
+type configVersionReporter struct {
+	configVersionReporter metric.Int64UpDownCounter
+	configReloads         metric.Int64Counter
+	pathValue             attribute.KeyValue
+	commitValue           attribute.KeyValue
+	authorValue           attribute.KeyValue
+	stageValue            attribute.KeyValue
+	isLockedMetric        metric.Int64UpDownCounter
+	attrs                 metric.MeasurementOption
+	mutex                 *sync.Mutex
+}
+
+func newConfigVersionReporter(path string) *configVersionReporter {
+	pathValue := attribute.String("config_path", path)
 	commitValue := attribute.String("commit", "unknown")
 	authorValue := attribute.String("author", "unknown")
-	configVersionReporter, _ := meter.Int64UpDownCounter(
+	stageValue := attribute.String("stage", "default")
+	reporter, _ := meter.Int64UpDownCounter(
 		"protoconf_agent_config_version",
 		metric.WithDescription("Config version"),
 	)
-	attrs := metric.WithAttributeSet(attribute.NewSet(pathValue, commitValue, authorValue))
-	configVersionReporter.Add(ctx, 1, attrs)
-	defer configVersionReporter.Add(ctx, -1, attrs)
+	attrs := metric.WithAttributeSet(attribute.NewSet(pathValue, stageValue, commitValue, authorValue))
+	reporter.Add(context.Background(), 1, attrs)
+	_, _ = meter.Int64ObservableGauge("protoconf_agent_time_since_last_update",
+		metric.WithUnit("ms"),
+		metric.WithDescription("Time since last config update"),
+		metric.WithInt64Callback(func(ctx context.Context, io metric.Int64Observer) error {
+			lu := atomic.LoadInt64(&lastUpdate)
+			io.Observe(time.Since(time.UnixMilli(lu)).Milliseconds(), attrs)
+			return nil
+		}),
+	)
+	_, _ = meter.Int64ObservableGauge("protoconf_agent_apply_timestamp",
+		metric.WithDescription("Timestamp of the last config update"),
+		metric.WithInt64Callback(func(ctx context.Context, io metric.Int64Observer) error {
+			lu := atomic.LoadInt64(&lastUpdate)
+			io.Observe(lu, attrs)
+			return nil
+		}),
+	)
+	_, _ = meter.Int64ObservableGauge("protoconf_agent_time_since_last_insertion",
+		metric.WithUnit("ms"),
+		metric.WithDescription("Time since last config insertion"),
+		metric.WithInt64Callback(func(ctx context.Context, io metric.Int64Observer) error {
+			io.Observe(time.Since(lastInsertion).Milliseconds(), attrs)
+			return nil
+		}),
+	)
+	isLockedMetric, _ := meter.Int64UpDownCounter("protoconf_agent_version_stage_inflight",
+		metric.WithDescription("Whether the agent is locked to a specific stage"),
+	)
+	configReloads, _ := meter.Int64Counter("protoconf_agent_config_reloads", metric.WithDescription("Number of config reloads"))
+	return &configVersionReporter{
+		configVersionReporter: reporter,
+		pathValue:             pathValue,
+		commitValue:           commitValue,
+		authorValue:           authorValue,
+		stageValue:            stageValue,
+		configReloads:         configReloads,
+		isLockedMetric:        isLockedMetric,
+		attrs:                 attrs,
+		mutex:                 &sync.Mutex{},
+	}
+}
+
+func (c *configVersionReporter) Report(ctx context.Context, version *protoconfvalue.Metadata, stage string, callbacks ...func() error) error {
+	c.mutex.Lock()
+	defer c.mutex.Unlock()
+	if version != nil {
+		c.configVersionReporter.Add(ctx, -1, c.attrs)
+		c.commitValue = attribute.String("commit", version.Commit[:8])
+		c.authorValue = attribute.String("author", version.AuthorEmail)
+		c.stageValue = attribute.String("stage", stage)
+		c.attrs = metric.WithAttributeSet(attribute.NewSet(c.pathValue, c.stageValue, c.commitValue, c.authorValue))
+		c.configVersionReporter.Add(ctx, 1, c.attrs)
+		c.configReloads.Add(ctx, 1, c.attrs)
+		c.isLockedMetric.Add(ctx, 1, c.attrs)
+		defer c.isLockedMetric.Add(ctx, -1, c.attrs)
+	}
+	g := &errgroup.Group{}
+	for _, cb := range callbacks {
+		g.Go(cb)
+	}
+	return g.Wait()
+}
+
+func (s *ProtoconfKVAgentRollout) SubscribeForConfig(request *protoconfservice.ConfigSubscriptionRequest, srv protoconfservice.ProtoconfService_SubscribeForConfigServer) error {
+	ctx := srv.Context()
+	versionReporter := newConfigVersionReporter(request.Path)
 
 	logger := s.Logger.With(slog.String("key", request.Path))
 	if peer, ok := peer.FromContext(ctx); ok {
 		logger = logger.With(slog.Any("peer_addr", peer.Addr))
 	}
-	logger.Info("start watching for config changes")
+	logger.InfoContext(ctx, "start watching for config changes")
 	wg, ctx := errgroup.WithContext(ctx)
 	kvStableConfigPath := path.Join(s.config.Prefix, request.Path, "config.data")
 	wg.Go(func() error {
@@ -142,8 +193,6 @@ func (s *ProtoconfKVAgentRollout) SubscribeForConfig(request *protoconfservice.C
 					attribute.String("author", result.Metadata.AuthorEmail),
 					attribute.String("insertion_time", result.Metadata.InsertedAt.String()),
 				)
-				commitValue.Value = attribute.StringValue(result.Metadata.Commit[:8])
-				authorValue.Value = attribute.StringValue(result.Metadata.AuthorEmail)
 				lastInsertion = result.Metadata.InsertedAt.AsTime()
 			}
 			span.AddEvent("config update received", trace.WithAttributes(attrs...))
@@ -155,9 +204,11 @@ func (s *ProtoconfKVAgentRollout) SubscribeForConfig(request *protoconfservice.C
 				return nil
 			}
 
-			err = s.sendWithLock(ctx, srv, &protoconfservice.ConfigUpdate{
-				Value: result.Value,
-			}, time.Now())
+			err = versionReporter.Report(ctx, result.Metadata, "default", func() error {
+				return s.sendWithLock(ctx, srv, &protoconfservice.ConfigUpdate{
+					Value: result.Value,
+				}, time.Now())
+			})
 			if err != nil {
 				logger.ErrorContext(ctx, err.Error())
 				return err
@@ -167,19 +218,6 @@ func (s *ProtoconfKVAgentRollout) SubscribeForConfig(request *protoconfservice.C
 
 		})
 	})
-
-	// kvStableMetadataPath := path.Join(s.config.Prefix, request.Path, "metadata.json")
-	// wg.Go(func() error {
-	// 	return s.watchKey(ctx, kvStableMetadataPath, func(ctx context.Context, kvPair *store.KVPair) error {
-	// 		metadata := &protoconfvalue.Metadata{}
-	// 		err := protojson.Unmarshal(kvPair.Value, metadata)
-	// 		if err != nil {
-	// 			return errors.Join(errors.New("failed to unmarshal data received from config store"), err)
-	// 		}
-	// 		logger.With(slog.Any("metadata", metadata)).Debug("metadata update received")
-	// 		return nil
-	// 	})
-	// })
 
 	kvRolloutConfigPath := path.Join(s.config.Prefix, request.Path, "rollout.json")
 	wg.Go(func() error {
@@ -215,7 +253,9 @@ func (s *ProtoconfKVAgentRollout) SubscribeForConfig(request *protoconfservice.C
 						logger.Error(err.Error())
 						return err
 					}
-					return s.sendWithLock(ctx, srv, &protoconfservice.ConfigUpdate{Value: result.Value}, stage.ExpiresAt.AsTime())
+					return versionReporter.Report(ctx, result.Metadata, stage.Channel, func() error {
+						return s.sendWithLock(ctx, srv, &protoconfservice.ConfigUpdate{Value: result.Value}, stage.ExpiresAt.AsTime())
+					})
 				}
 			}
 			return nil
@@ -300,7 +340,6 @@ func (s *ProtoconfKVAgentRollout) sendWithLock(ctx context.Context, srv protocon
 		return err
 	}
 	span.End()
-	configReloads.Add(ctx, 1)
 	atomic.StoreInt64(&lastUpdate, time.Now().UnixMilli())
 	ctx, span = s.tracer.Start(ctx, "protoconf.agent.LockUntilDeadline")
 	defer span.End()
