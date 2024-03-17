@@ -24,6 +24,7 @@ import (
 	"github.com/kvtools/valkeyrie/store"
 	"github.com/kvtools/zookeeper"
 	"github.com/mitchellh/cli"
+	"github.com/protoconf/protoconf/agent/configmaps"
 	"github.com/protoconf/protoconf/command"
 	"github.com/protoconf/protoconf/compiler/lib"
 	"github.com/protoconf/protoconf/compiler/lib/parser"
@@ -99,6 +100,8 @@ func (c *cliCommand) Run(args []string) int {
 			address = consts.ZookeeperDefaultAddress
 		}
 		kvStore, err = valkeyrie.NewStore(ctx, zookeeper.StoreName, []string{address}, nil)
+	} else if kVConfig.Store == command.KVStoreConfigMaps {
+		kvStore, err = configmaps.New(ctx, []string{}, &configmaps.Config{Namespace: kVConfig.Namespace})
 	} else {
 		log.Fatalf("Unknown key-value store %s", kVConfig.Store)
 	}
