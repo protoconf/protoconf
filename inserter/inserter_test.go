@@ -35,7 +35,7 @@ func TestProtoconfInserter_InsertConfig(t *testing.T) {
 			args:    args{configFile: "test.materialized_JSON"},
 			wantErr: nil,
 			want: map[string]string{
-				"test/STABLE/config.data": `Cgp0ZXN0LnByb3RvEiwKH3R5cGUuZ29vZ2xlYXBpcy5jb20vVGVzdE1lc3NhZ2USCQoHSW0gaGVyZQ==`,
+				"test/config.data": `Cgp0ZXN0LnByb3RvEiwKH3R5cGUuZ29vZ2xlYXBpcy5jb20vVGVzdE1lc3NhZ2USCQoHSW0gaGVyZ`,
 			},
 		},
 		{
@@ -46,14 +46,14 @@ func TestProtoconfInserter_InsertConfig(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := i.InsertConfig(tt.args.configFile); !errors.Is(tt.wantErr, err) {
+			if err := i.InsertConfigFile(tt.args.configFile); !errors.Is(tt.wantErr, err) {
 				t.Errorf("ProtoconfInserter.InsertConfig() error = %v, wantErr %v", err, tt.wantErr)
 			}
 			for key, value := range tt.want {
 				v, err := kvStore.Get(context.Background(), key, &store.ReadOptions{})
 				assert.NoError(t, err)
-				if string(v.Value) != value {
-					t.Errorf("expected key %s to be: %v, got %s", key, value, v.Value)
+				if !strings.HasPrefix(string(v.Value), value) {
+					t.Errorf("expected key %s to be to start with:\n%v, got:\n%s", key, value, v.Value)
 				}
 			}
 		})

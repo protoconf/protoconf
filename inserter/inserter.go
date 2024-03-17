@@ -127,7 +127,7 @@ func (c *cliCommand) Run(args []string) int {
 				defer wg.Done()
 
 				configName := filepath.ToSlash(strings.TrimSpace(path))
-				if err := inserter.InsertConfig(configName); err != nil {
+				if err := inserter.InsertConfigFile(configName); err != nil {
 					logger.With("key", configName, "error", err).Error("Error inserting config")
 				}
 			}(flags.Args()[i])
@@ -169,7 +169,7 @@ type ProtoconfInserter struct {
 }
 
 func NewProtoconfInserter(protoconfRoot string, kvStore store.Store) *ProtoconfInserter {
-	logger := slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: slog.LevelDebug}))
+	logger := slog.Default()
 	logger.Debug("loading module service")
 	ms := lib.NewModuleService(protoconfRoot)
 	ms.LoadFromLockFile()
@@ -206,25 +206,30 @@ func NewProtoconfInserter(protoconfRoot string, kvStore store.Store) *ProtoconfI
 
 var ErrInsertionCompleted = errors.New("insertion completed")
 
-func (i *ProtoconfInserter) InsertConfig(configFile string) error {
-	now := time.Now()
+func (i *ProtoconfInserter) InsertConfigFile(configFile string) error {
 	if !strings.HasSuffix(configFile, consts.CompiledConfigExtension) {
-		return fmt.Errorf("config must be a %s file, file=%s", consts.CompiledConfigExtension, configFile)
+		configFile = configFile + consts.CompiledConfigPath
 	}
 	metadata, err := i.GatherMetadata(filepath.Join(i.rel, consts.CompiledConfigPath, configFile))
 	if err != nil {
 		return err
 	}
 	configName := strings.TrimSuffix(configFile, consts.CompiledConfigExtension)
-	logger := i.logger.With("key", configName, "commit", metadata.Commit[0:8])
 
 	protoconfValue := &datatypes.ProtoconfValue{}
 	err = i.parser.ReadConfig(filepath.Join(i.protoconfRoot, consts.CompiledConfigPath, configFile), protoconfValue)
 	if err != nil {
 		return err
 	}
+	protoconfValue.Metadata = metadata
+	return i.InsertConfig(configName, protoconfValue, metadata)
 
-	err = i.insertVersion(configName, fmt.Sprintf("%d.%s", metadata.CommittedAt.Seconds, metadata.Commit), protoconfValue, metadata)
+}
+
+func (i *ProtoconfInserter) InsertConfig(configName string, protoconfValue *datatypes.ProtoconfValue, metadata *datatypes.Metadata) error {
+	now := time.Now()
+	logger := i.logger.With("key", configName, "commit", metadata.Commit[0:8])
+	err := i.XXXinsertVersion(configName, fmt.Sprintf("%d.%s", metadata.CommittedAt.Seconds, metadata.Commit), protoconfValue, metadata)
 	if err != nil {
 		return err
 	}
@@ -242,7 +247,7 @@ func (i *ProtoconfInserter) InsertConfig(configFile string) error {
 		context.AfterFunc(ctx, func() {
 			err := context.Cause(ctx)
 			logger.With("error", err).Error("stopped. deleting rollout config")
-			i.kvStore.Delete(context.Background(), kvRolloutConfig)
+			logger.With("result", i.kvStore.Delete(context.Background(), kvRolloutConfig)).Info("deleted rollout config")
 		})
 		defer cancel(ErrInsertionCompleted)
 		for _, stage := range protoconfValue.RolloutConfig.Stages {
@@ -253,11 +258,11 @@ func (i *ProtoconfInserter) InsertConfig(configFile string) error {
 				return nil
 			default:
 				expiration := stage.Expiration
-				if expiration != nil {
+				if expiration == nil {
 					expiration = rolloutConfig.DefaultExpirationTime
 				}
 				stage.ExpiresAt = timestamppb.New(time.Now().Add(expiration.AsDuration()))
-				stage.Version = metadata.Commit
+				stage.Version = fmt.Sprintf("%d.%s", metadata.CommittedAt.Seconds, metadata.Commit)
 				rolloutConfig.Stages = append(rolloutConfig.Stages, stage)
 				data, err := protojson.MarshalOptions{Indent: "  "}.Marshal(rolloutConfig)
 				if err != nil {
@@ -274,12 +279,15 @@ func (i *ProtoconfInserter) InsertConfig(configFile string) error {
 				sleep, cancel := context.WithTimeout(ctx, cooldown.AsDuration())
 				defer cancel()
 				<-sleep.Done()
+				if context.Cause(ctx) != nil {
+					return context.Cause(ctx)
+				}
 			}
 		}
 
 	}
 
-	err = i.insertVersion(configName, Stable, protoconfValue, metadata)
+	err = i.XXXinsertVersion(configName, Stable, protoconfValue, metadata)
 	if err != nil {
 		return err
 	}
@@ -288,12 +296,17 @@ func (i *ProtoconfInserter) InsertConfig(configFile string) error {
 	return nil
 }
 
-func (i *ProtoconfInserter) insertVersion(configName string, version string, protoconfValue *datatypes.ProtoconfValue, metadata *datatypes.Metadata) error {
+func (i *ProtoconfInserter) XXXinsertVersion(configName string, version string, protoconfValue *datatypes.ProtoconfValue, metadata *datatypes.Metadata) error {
 	logger := i.logger.With("key", configName, "version", version, "commit", metadata.Commit[0:8])
 	logger.Debug("starting version insertion")
 	kvConfigJsonPath := filepath.Join(i.Prefix, configName, version, "config.json")
 	kvConfigPbPath := filepath.Join(i.Prefix, configName, version, "config.data")
 	kvMetadataPath := filepath.Join(i.Prefix, configName, version, "metadata.json")
+	if version == Stable {
+		kvConfigJsonPath = filepath.Join(i.Prefix, configName, "config.json")
+		kvConfigPbPath = filepath.Join(i.Prefix, configName, "config.data")
+		kvMetadataPath = filepath.Join(i.Prefix, configName, "metadata.json")
+	}
 	ctx := context.Background()
 
 	// Writing config data
@@ -349,11 +362,11 @@ func (i *ProtoconfInserter) GatherMetadata(configFile string) (*datatypes.Metada
 	}
 	gitLog, err := i.repo.Log(&git.LogOptions{FileName: &configFile})
 	if err != nil {
-		return nil, err
+		return nil, errors.Join(err, fmt.Errorf("error getting git log for file %s", configFile))
 	}
 	commit, err := gitLog.Next()
 	if err != nil {
-		return nil, err
+		return nil, errors.Join(err, fmt.Errorf("error getting next git log item for file %s", configFile))
 	}
 	return &datatypes.Metadata{
 		Commit:         commit.Hash.String(),

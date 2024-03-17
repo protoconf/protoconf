@@ -26,6 +26,7 @@ import (
 	"google.golang.org/grpc/test/bufconn"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/anypb"
+	"google.golang.org/protobuf/types/known/structpb"
 )
 
 func Test(t *testing.T) {
@@ -71,7 +72,7 @@ func Test(t *testing.T) {
 	prodStore, err := dummykv.New(ctx, []string{}, &dummykv.Config{})
 	assert.NoError(t, err)
 	inserter := inserter.NewProtoconfInserter(protoconfRoot, prodStore)
-	prodAgentServer, err := agent.NewProtoconfKVAgent(prodStore, &protoconf_agent_config.AgentConfig{})
+	prodAgentServer, err := agent.NewProtoconfKVAgentRollout(prodStore, &protoconf_agent_config.AgentConfig{})
 	assert.NoError(t, err)
 	var prodAgentClient protoconfservice.ProtoconfServiceClient
 	prodCloser := testServer(ctx, func(s *grpc.Server) {
@@ -100,7 +101,7 @@ func Test(t *testing.T) {
 	// Get first message from prodStore
 	t.Run("get first message on prodClient", func(t *testing.T) {
 		t.Run("insert to prodStore", func(t *testing.T) {
-			err = inserter.InsertConfig("load_mutable_test" + consts.CompiledConfigExtension)
+			err = inserter.InsertConfigFile("load_mutable_test" + consts.CompiledConfigExtension)
 			assert.NoError(t, err)
 		})
 		prodConfigValue, err := prodWatcher.Recv()
@@ -114,7 +115,8 @@ func Test(t *testing.T) {
 		}
 	})
 	// Change config via mutation rpc
-	mutationValue := &anypb.Any{TypeUrl: "type.googleapis.com/TestMessage", Value: []byte("\n\x05world")}
+
+	mutationValue, _ := anypb.New(structpb.NewStringValue("hello mutation"))
 	t.Run("change config via mutation rpc", func(t *testing.T) {
 		_, err = devMutationClient.MutateConfig(ctx, &protoconfmutation.ConfigMutationRequest{
 			Path: "mutation_test", Value: &v1.ProtoconfValue{
@@ -145,7 +147,7 @@ func Test(t *testing.T) {
 
 	t.Run("get update on prodClient", func(t *testing.T) {
 		t.Run("insert to prodStore", func(t *testing.T) {
-			err = inserter.InsertConfig("load_mutable_test" + consts.CompiledConfigExtension)
+			err = inserter.InsertConfigFile("load_mutable_test" + consts.CompiledConfigExtension)
 			assert.NoError(t, err)
 		})
 		prodConfigValue, err := prodWatcher.Recv()
@@ -180,8 +182,9 @@ func Test(t *testing.T) {
 		watcher, err := prodAgentClient.SubscribeForConfig(newCtx, &protoconfservice.ConfigSubscriptionRequest{Path: "load_remote"})
 		require.NoError(t, err)
 		t.Run("insert load_remote to prod", func(t *testing.T) {
-			err = inserter.InsertConfig("load_remote" + consts.CompiledConfigExtension)
-			require.NoError(t, err)
+			require.NoError(t,
+				inserter.InsertConfigFile("load_remote"+consts.CompiledConfigExtension),
+			)
 		})
 		value, err := watcher.Recv()
 		require.NoError(t, err)
