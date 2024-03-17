@@ -10,12 +10,18 @@ import (
 	"path"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/kvtools/valkeyrie/store"
 	protoconfservice "github.com/protoconf/protoconf/agent/api/proto/v1"
 	protoconf_agent_config "github.com/protoconf/protoconf/agent/config/v1"
+	"github.com/protoconf/protoconf/consts"
 	protoconfvalue "github.com/protoconf/protoconf/datatypes/proto/v1"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/metric"
+	"go.opentelemetry.io/otel/trace"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/peer"
@@ -31,9 +37,44 @@ type ProtoconfKVAgentRollout struct {
 	sendMutex   *sync.Mutex
 	channelName string
 	agentId     string
+	tracer      trace.Tracer
 
 	protoconfservice.ProtoconfServiceServer
 }
+
+var (
+	meter = otel.Meter("protoconf.dev/agent",
+		metric.WithInstrumentationVersion(consts.Version),
+	)
+	configReloads, _ = meter.Int64Counter("protoconf_agent_config_reloads")
+	lastUpdate       = time.Now().UnixMilli()
+	lastInsertion    = time.Now()
+	_, _             = meter.Int64ObservableGauge("protoconf_agent_time_since_last_update",
+		metric.WithUnit("ms"),
+		metric.WithDescription("Time since last config update"),
+		metric.WithInt64Callback(func(ctx context.Context, io metric.Int64Observer) error {
+			lu := atomic.LoadInt64(&lastUpdate)
+			io.Observe(time.Since(time.UnixMilli(lu)).Milliseconds())
+			return nil
+		}),
+	)
+	_, _ = meter.Int64ObservableGauge("protoconf_agent_apply_timestamp",
+		metric.WithDescription("Timestamp of the last config update"),
+		metric.WithInt64Callback(func(ctx context.Context, io metric.Int64Observer) error {
+			lu := atomic.LoadInt64(&lastUpdate)
+			io.Observe(lu)
+			return nil
+		}),
+	)
+	_, _ = meter.Int64ObservableGauge("protoconf_agent_time_since_last_insertion",
+		metric.WithUnit("ms"),
+		metric.WithDescription("Time since last config insertion"),
+		metric.WithInt64Callback(func(ctx context.Context, io metric.Int64Observer) error {
+			io.Observe(time.Since(lastInsertion).Milliseconds())
+			return nil
+		}),
+	)
+)
 
 func NewProtoconfKVAgentRollout(store store.Store, config *protoconf_agent_config.AgentConfig) (*ProtoconfKVAgentRollout, error) {
 	_, err := store.Exists(context.Background(), "/", nil)
@@ -52,6 +93,7 @@ func newProtoconfKVAgentRollout(store store.Store, config *protoconf_agent_confi
 		logger = logger.With(slog.String("agent_id", config.AgentId))
 	}
 	slog.SetDefault(logger)
+	tracer := otel.Tracer("protoconf.dev/agent")
 	return &ProtoconfKVAgentRollout{
 		store:       store,
 		config:      config,
@@ -59,11 +101,22 @@ func newProtoconfKVAgentRollout(store store.Store, config *protoconf_agent_confi
 		sendMutex:   &sync.Mutex{},
 		channelName: config.ChannelName,
 		agentId:     config.AgentId,
+		tracer:      tracer,
 	}
 }
 
 func (s *ProtoconfKVAgentRollout) SubscribeForConfig(request *protoconfservice.ConfigSubscriptionRequest, srv protoconfservice.ProtoconfService_SubscribeForConfigServer) error {
 	ctx := srv.Context()
+	pathValue := attribute.String("config_path", request.Path)
+	commitValue := attribute.String("commit", "unknown")
+	authorValue := attribute.String("author", "unknown")
+	configVersionReporter, _ := meter.Int64UpDownCounter(
+		"protoconf_agent_config_version",
+		metric.WithDescription("Config version"),
+	)
+	attrs := metric.WithAttributeSet(attribute.NewSet(pathValue, commitValue, authorValue))
+	configVersionReporter.Add(ctx, 1, attrs)
+	defer configVersionReporter.Add(ctx, -1, attrs)
 
 	logger := s.Logger.With(slog.String("key", request.Path))
 	if peer, ok := peer.FromContext(ctx); ok {
@@ -73,49 +126,68 @@ func (s *ProtoconfKVAgentRollout) SubscribeForConfig(request *protoconfservice.C
 	wg, ctx := errgroup.WithContext(ctx)
 	kvStableConfigPath := path.Join(s.config.Prefix, request.Path, "config.data")
 	wg.Go(func() error {
-		return s.watchKey(ctx, kvStableConfigPath, func(kvPair *store.KVPair) error {
+		ctx, span := s.tracer.Start(ctx, "protoconf.agent.WatchConfigChanges")
+		defer span.End()
+		return s.watchKey(ctx, kvStableConfigPath, func(ctx context.Context, kvPair *store.KVPair) error {
+			ctx, span := s.tracer.Start(ctx, "protoconf.agent.ConfigUpdate")
+			defer span.End()
 			l := logger.WithGroup("config_update")
 			l.Debug("config update received")
 			result, err := parseProtoconfValue(kvPair)
+			attrs := []attribute.KeyValue{}
 			if result.Metadata != nil {
 				l = l.With(slog.String("commit", result.Metadata.Commit[:8]))
+				attrs = append(attrs,
+					attribute.String("commit", result.Metadata.Commit),
+					attribute.String("author", result.Metadata.AuthorEmail),
+					attribute.String("insertion_time", result.Metadata.InsertedAt.String()),
+				)
+				commitValue.Value = attribute.StringValue(result.Metadata.Commit[:8])
+				authorValue.Value = attribute.StringValue(result.Metadata.AuthorEmail)
+				lastInsertion = result.Metadata.InsertedAt.AsTime()
 			}
+			span.AddEvent("config update received", trace.WithAttributes(attrs...))
 			if err != nil {
 				s.sendWithLock(ctx, srv, &protoconfservice.ConfigUpdate{
 					Error: err.Error(),
 				}, time.Now())
-				l.Error(err.Error())
+				l.ErrorContext(ctx, err.Error())
 				return nil
 			}
+
 			err = s.sendWithLock(ctx, srv, &protoconfservice.ConfigUpdate{
 				Value: result.Value,
 			}, time.Now())
 			if err != nil {
-				logger.Error(err.Error())
+				logger.ErrorContext(ctx, err.Error())
 				return err
 			}
-			l.Info("config update sent")
+			l.InfoContext(ctx, "config update sent")
 			return nil
 
 		})
 	})
 
-	kvStableMetadataPath := path.Join(s.config.Prefix, request.Path, "metadata.json")
-	wg.Go(func() error {
-		return s.watchKey(ctx, kvStableMetadataPath, func(kvPair *store.KVPair) error {
-			metadata := &protoconfvalue.Metadata{}
-			err := protojson.Unmarshal(kvPair.Value, metadata)
-			if err != nil {
-				return errors.Join(errors.New("failed to unmarshal data received from config store"), err)
-			}
-			logger.With(slog.Any("metadata", metadata)).Debug("metadata update received")
-			return nil
-		})
-	})
+	// kvStableMetadataPath := path.Join(s.config.Prefix, request.Path, "metadata.json")
+	// wg.Go(func() error {
+	// 	return s.watchKey(ctx, kvStableMetadataPath, func(ctx context.Context, kvPair *store.KVPair) error {
+	// 		metadata := &protoconfvalue.Metadata{}
+	// 		err := protojson.Unmarshal(kvPair.Value, metadata)
+	// 		if err != nil {
+	// 			return errors.Join(errors.New("failed to unmarshal data received from config store"), err)
+	// 		}
+	// 		logger.With(slog.Any("metadata", metadata)).Debug("metadata update received")
+	// 		return nil
+	// 	})
+	// })
 
 	kvRolloutConfigPath := path.Join(s.config.Prefix, request.Path, "rollout.json")
 	wg.Go(func() error {
-		return s.watchKey(ctx, kvRolloutConfigPath, func(kvPair *store.KVPair) error {
+		ctx, span := s.tracer.Start(ctx, "protoconf.agent.WatchRolloutConfig")
+		defer span.End()
+		return s.watchKey(ctx, kvRolloutConfigPath, func(ctx context.Context, kvPair *store.KVPair) error {
+			ctx, span := s.tracer.Start(ctx, "protoconf.agent.RolloutConfigUpdate")
+			defer span.End()
 			if kvPair == nil {
 				return nil
 			}
@@ -125,10 +197,13 @@ func (s *ProtoconfKVAgentRollout) SubscribeForConfig(request *protoconfservice.C
 			if err != nil {
 				return errors.Join(errors.New("failed to unmarshal data received from config store"), err)
 			}
-			logger.With(slog.Any("rollout_config", rolloutConfig)).Debug("rollout config update received")
+			logger.With(slog.Any("rollout_config", rolloutConfig)).DebugContext(ctx, "rollout config update received")
 			for _, stage := range rolloutConfig.Stages {
 				if s.matchStage(request, stage) {
-					logger.With(slog.String("stage", stage.Channel), slog.String("commit", strings.Split(stage.Version, ".")[1][:8])).Info("found matching stage")
+					logger.With(
+						slog.String("stage", stage.Channel),
+						slog.String("commit", strings.Split(stage.Version, ".")[1][:8]),
+					).InfoContext(ctx, "found matching stage")
 					kvStageConfigPath := path.Join(s.config.Prefix, request.Path, stage.Version, "config.data")
 					kvPair, err := s.store.Get(ctx, kvStageConfigPath, &store.ReadOptions{})
 					if err != nil {
@@ -195,7 +270,7 @@ func parseProtoconfValue(kvPair *store.KVPair) (*protoconfvalue.ProtoconfValue, 
 	return result, nil
 }
 
-func (s *ProtoconfKVAgentRollout) watchKey(ctx context.Context, key string, callback func(*store.KVPair) error) error {
+func (s *ProtoconfKVAgentRollout) watchKey(ctx context.Context, key string, callback func(context.Context, *store.KVPair) error) error {
 	kvPairCh, err := s.store.Watch(ctx, key, &store.ReadOptions{})
 	if err != nil {
 		return err
@@ -204,7 +279,7 @@ func (s *ProtoconfKVAgentRollout) watchKey(ctx context.Context, key string, call
 		select {
 		case kvPair := <-kvPairCh:
 			if kvPair != nil {
-				err = callback(kvPair)
+				err = callback(ctx, kvPair)
 				if err != nil {
 					return err
 				}
@@ -216,12 +291,19 @@ func (s *ProtoconfKVAgentRollout) watchKey(ctx context.Context, key string, call
 }
 
 func (s *ProtoconfKVAgentRollout) sendWithLock(ctx context.Context, srv protoconfservice.ProtoconfService_SubscribeForConfigServer, value *protoconfservice.ConfigUpdate, lockUntil time.Time) error {
+	ctx, span := s.tracer.Start(ctx, "protoconf.agent.SendConfigUpdate")
+
 	s.sendMutex.Lock()
 	defer s.sendMutex.Unlock()
 	err := srv.Send(value)
 	if err != nil {
 		return err
 	}
+	span.End()
+	configReloads.Add(ctx, 1)
+	atomic.StoreInt64(&lastUpdate, time.Now().UnixMilli())
+	ctx, span = s.tracer.Start(ctx, "protoconf.agent.LockUntilDeadline")
+	defer span.End()
 	sleep, cancel := context.WithDeadline(ctx, lockUntil)
 	defer cancel()
 	<-sleep.Done()

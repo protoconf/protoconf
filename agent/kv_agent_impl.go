@@ -11,6 +11,7 @@ import (
 	protoconfservice "github.com/protoconf/protoconf/agent/api/proto/v1"
 	protoconf_agent_config "github.com/protoconf/protoconf/agent/config/v1"
 	protoconfvalue "github.com/protoconf/protoconf/datatypes/proto/v1"
+	"go.opentelemetry.io/otel"
 	"google.golang.org/grpc/peer"
 	"google.golang.org/protobuf/proto"
 )
@@ -21,6 +22,8 @@ type ProtoconfKVAgent struct {
 	Logger *slog.Logger
 	protoconfservice.ProtoconfServiceServer
 }
+
+var tracer = otel.Tracer("protoconf-agent")
 
 func NewProtoconfKVAgent(store store.Store, config *protoconf_agent_config.AgentConfig) (*ProtoconfKVAgent, error) {
 	_, err := store.Exists(context.Background(), "/", nil)
@@ -33,6 +36,8 @@ func NewProtoconfKVAgent(store store.Store, config *protoconf_agent_config.Agent
 
 func (s *ProtoconfKVAgent) SubscribeForConfig(request *protoconfservice.ConfigSubscriptionRequest, srv protoconfservice.ProtoconfService_SubscribeForConfigServer) error {
 	ctx := srv.Context()
+	ctx, span := tracer.Start(ctx, "SubscribeForConfig")
+	defer span.End()
 
 	logger := s.Logger.With(slog.String("key", request.Path))
 	if peer, ok := peer.FromContext(ctx); ok {
@@ -47,6 +52,7 @@ func (s *ProtoconfKVAgent) SubscribeForConfig(request *protoconfservice.ConfigSu
 	for {
 		select {
 		case kvPair := <-kvPairCh:
+			span.AddEvent("received config update")
 			result := &protoconfvalue.ProtoconfValue{}
 			if kvPair == nil {
 				continue
