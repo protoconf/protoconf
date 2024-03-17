@@ -179,10 +179,10 @@ func RunAgent(ctx context.Context, config *protoconf_agent_config.AgentConfig) e
 		"grpc": orchestra.PlayerFunc(func(ctx context.Context) error {
 			context.AfterFunc(ctx, func() {
 				logger.Info("stopping grpc server")
-				rpcServer.Stop()
+				rpcServer.GracefulStop()
+				logger.Info("protoconf grpc agent stopped")
 			})
 			logger.Info("starting protoconf agent")
-			defer logger.Info("protoconf agent stopped")
 			return rpcServer.Serve(listener)
 		}),
 		"http": orchestra.NewServerPlayer(

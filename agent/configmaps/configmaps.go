@@ -206,6 +206,7 @@ func (s *Store) Watch(ctx context.Context, key string, opts *store.ReadOptions) 
 			case <-ctx.Done():
 				err := context.Cause(ctx)
 				logger.Info("context done", "cause", err)
+				return
 			case event := <-c.ResultChan():
 				logger.Debug("got modified event", "event_type", event.Type)
 				kv, err := s.Get(ctx, key, &store.ReadOptions{})
