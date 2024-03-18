@@ -33,7 +33,7 @@ jobs:
           node-version: 18
           cache: yarn
           cache-dependency-path: website/protoconf/yarn.lock
-      - uses: webfactory/ssh-agent@v0.8.0
+      - uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.GH_PAGES_DEPLOY }}
       - name: Deploy to GitHub Pages
