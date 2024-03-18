@@ -1,8 +1,6 @@
 package lib
 
 import (
-	"bytes"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -11,8 +9,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/golang/protobuf/jsonpb"
-	"github.com/golang/protobuf/ptypes"
 	"github.com/jhump/protoreflect/dynamic"
 	"github.com/protoconf/protoconf/compiler/lib/parser"
 	"github.com/protoconf/protoconf/compiler/starproto"
@@ -20,7 +16,10 @@ import (
 	pc "github.com/protoconf/protoconf/datatypes/proto/v1"
 	"github.com/qri-io/starlib"
 	"go.starlark.net/starlark"
+	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/protoadapt"
 	"google.golang.org/protobuf/reflect/protoreflect"
+	"google.golang.org/protobuf/types/dynamicpb"
 )
 
 type cacheEntry struct {
@@ -149,63 +148,36 @@ func (l *starlarkLoader) loadMutable(modulePath string) (starlark.StringDict, er
 		l.mutableDir,
 		strings.TrimPrefix(modulePath, consts.MutableConfigPrefix)+consts.CompiledConfigExtension,
 	)
-
-	configReader, err := openFile(filename)
+	protoconfValue := &pc.ProtoconfValue{}
+	err := l.parser.ReadConfig(filename, protoconfValue)
 	if err != nil {
 		return nil, errors.Join(ErrLoadMutable, fmt.Errorf("file=%s", filename), err)
 	}
-	defer configReader.Close()
 
-	jsonData, err := io.ReadAll(configReader)
+	mt, err := l.parser.LocalResolver.FindMessageByURL(protoconfValue.Value.TypeUrl)
+	if err != nil {
+		return nil, err
+	}
+	new := dynamicpb.NewMessage(mt.Descriptor())
+	err = protoconfValue.Value.UnmarshalTo(new)
 	if err != nil {
 		return nil, errors.Join(ErrReadMutable, fmt.Errorf("file=%s", filename), err)
 	}
-
-	type configJSONType struct {
-		ProtoFile string
-	}
-	var configJSON configJSONType
-	if err = json.Unmarshal(jsonData, &configJSON); err != nil {
+	message, err := dynamic.AsDynamicMessage(protoadapt.MessageV1Of(new))
+	if err != nil {
 		return nil, err
 	}
-
-	// parser := &protoparse.Parser{ImportPaths: []string{l.srcDir}, Accessor: l.protoAccessor}
-	// l.parser.Accessor = l.protoAccessor
-	descriptors, err := l.parser.ParseFilesX(configJSON.ProtoFile)
+	b, err := proto.Marshal(new)
 	if err != nil {
-		return nil, fmt.Errorf("error parsing proto file, file=%s err=%s", configJSON.ProtoFile, err)
+		return nil, err
 	}
-	// l.parser.Accessor = nil
-	fileDescriptor := descriptors[0]
-	anyResolver := dynamic.AnyResolver(nil, fileDescriptor)
-
-	protoconfValue := &pc.ProtoconfValue{}
-	um := jsonpb.Unmarshaler{AnyResolver: anyResolver}
-	if err = um.Unmarshal(io.NopCloser(bytes.NewReader(jsonData)), protoconfValue); err != nil {
-		return nil, fmt.Errorf("error unmarshal, err=%s", err)
-	}
-
-	name, err := ptypes.AnyMessageName(protoconfValue.Value)
+	err = message.Unmarshal(b)
 	if err != nil {
 		return nil, err
 	}
 
-	value, err := anyResolver.Resolve(name)
-	if err != nil {
-		return nil, err
-	}
-
-	if err = ptypes.UnmarshalAny(protoconfValue.Value, value); err != nil {
-		return nil, err
-	}
-
-	message, err := dynamic.AsDynamicMessage(value)
-	if err != nil {
-		return nil, err
-	}
-
-	globals := starlark.StringDict{}
-	globals["value"] = starproto.NewStarProtoMessage(message)
+	starProtoMsg := starproto.NewStarProtoMessage(message)
+	globals := starlark.StringDict{"value": starProtoMsg}
 	return globals, nil
 }
 

@@ -101,6 +101,7 @@ func Command() (cli.Command, error) {
 }
 
 type ProtoconfMutationServer struct {
+	protoconfmutation.UnimplementedProtoconfMutationServiceServer
 	config        *cliConfig
 	protoconfRoot string
 	parser        *parser.Parser
