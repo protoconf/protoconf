@@ -319,7 +319,7 @@ func (m *ModuleService) GenFileDescriptorSet(r *module.RemoteRepo) error {
 		excludes = append(excludes, newRe)
 	}
 
-	err := registry.Import(utils.ParseFilesButDoNotLink, excludes, files...)
+	err := registry.Import(utils.Parse, excludes, files...)
 	if err != nil {
 		return err
 	}
