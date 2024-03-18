@@ -1,12 +1,12 @@
 module github.com/protoconf/protoconf
 
-go 1.21
+go 1.21.4
 
-toolchain go1.21.3
+toolchain go1.22.1
 
 require (
 	github.com/Masterminds/sprig/v3 v3.2.3
-	github.com/bazelbuild/bazel-gazelle v0.34.0
+	github.com/bazelbuild/bazel-gazelle v0.35.0
 	github.com/fsnotify/fsnotify v1.7.0
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-git/go-git/v5 v5.11.0
