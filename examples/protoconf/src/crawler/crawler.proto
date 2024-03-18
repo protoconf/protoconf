@@ -1,5 +1,6 @@
 syntax = "proto3";
 
+option go_package = "github.com/protoconf/protoconf/examples/protoconf/src/crawler";
 option java_package = "com.protoconf.examples.crawler";
 
 message Crawler {

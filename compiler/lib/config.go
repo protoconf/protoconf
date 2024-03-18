@@ -4,13 +4,13 @@ import (
 	"errors"
 	"fmt"
 
-	pbproto "github.com/golang/protobuf/proto"
-	dpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/jhump/protoreflect/dynamic"
 	proto_validate_reflect "github.com/protoconf/proto-validate-reflect"
 	"github.com/protoconf/protoconf/compiler/starproto"
 	"go.starlark.net/starlark"
 	"google.golang.org/protobuf/proto"
+	pbproto "google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/dynamicpb"
 )
 
@@ -83,19 +83,19 @@ func (c *config) validate(value interface{}) error {
 	}
 
 	for _, field := range message.GetMessageDescriptor().GetFields() {
-		if field.GetType() != dpb.FieldDescriptorProto_TYPE_MESSAGE {
+		if field.GetType() != descriptorpb.FieldDescriptorProto_TYPE_MESSAGE {
 			continue
 		}
 		if field.IsMap() {
 			mp := message.GetField(field).(map[interface{}]interface{})
-			if field.GetMapKeyType().GetType() == dpb.FieldDescriptorProto_TYPE_MESSAGE {
+			if field.GetMapKeyType().GetType() == descriptorpb.FieldDescriptorProto_TYPE_MESSAGE {
 				for key := range mp {
 					if err := c.validate(key); err != nil {
 						return err
 					}
 				}
 			}
-			if field.GetMapValueType().GetType() == dpb.FieldDescriptorProto_TYPE_MESSAGE {
+			if field.GetMapValueType().GetType() == descriptorpb.FieldDescriptorProto_TYPE_MESSAGE {
 				for _, value := range mp {
 					if err := c.validate(value); err != nil {
 						return err

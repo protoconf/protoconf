@@ -10,6 +10,7 @@ import (
 	"github.com/pkg/errors"
 	"go.starlark.net/starlark"
 	"go.starlark.net/syntax"
+	"google.golang.org/protobuf/types/dynamicpb"
 )
 
 func NewStarProtoMessage(msg *dynamic.Message) *starProtoMessage {
@@ -27,6 +28,17 @@ func ToProtoMessage(val starlark.Value) (*dynamic.Message, bool) {
 		return msg.msg, true
 	}
 	return nil, false
+}
+
+func ToDynamicPb(msg *dynamic.Message) *dynamicpb.Message {
+	mdp := msg.GetMessageDescriptor().UnwrapMessage()
+	dynamicMessage := dynamicpb.NewMessage(mdp)
+	msg.ConvertTo(dynamicMessage)
+	return dynamicMessage
+}
+
+func (msg *starProtoMessage) AsDynamicPb() *dynamicpb.Message {
+	return ToDynamicPb(msg.msg)
 }
 
 // A Starlark built-in type representing a Protobuf message. Provides attributes

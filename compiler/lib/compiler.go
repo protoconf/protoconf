@@ -11,7 +11,6 @@ import (
 	"strings"
 
 	"github.com/ghodss/yaml"
-	"github.com/golang/protobuf/ptypes"
 	"github.com/jhump/protoreflect/dynamic"
 	"github.com/pelletier/go-toml"
 	"github.com/protoconf/protoconf/compiler/lib/parser"
@@ -21,6 +20,7 @@ import (
 	"go.starlark.net/resolve"
 	"go.starlark.net/starlark"
 	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/types/known/anypb"
 )
 
 const (
@@ -194,7 +194,7 @@ func (c *Compiler) writeConfig(message *dynamic.Message, filename string) error 
 	protoconfValue := &pc.ProtoconfValue{}
 	err := message.MergeInto(protoconfValue)
 	if err != nil {
-		any, err := ptypes.MarshalAny(message)
+		any, err := anypb.New(starproto.ToDynamicPb(message))
 		if err != nil {
 			return fmt.Errorf("error marshaling proto to Any, message=%s", message)
 		}
@@ -299,7 +299,7 @@ func newConfigRollout(thread *starlark.Thread, fn *starlark.Builtin, args starla
 		return nil, errors.New("value is not a proto message")
 	}
 
-	any, err := ptypes.MarshalAny(msg)
+	any, err := anypb.New(starproto.ToDynamicPb(msg))
 	if err != nil {
 		return nil, err
 	}

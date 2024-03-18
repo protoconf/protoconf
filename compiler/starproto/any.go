@@ -3,10 +3,10 @@ package starproto
 import (
 	"fmt"
 
-	"github.com/golang/protobuf/ptypes"
 	"github.com/jhump/protoreflect/dynamic"
 	"go.starlark.net/starlark"
 	"go.starlark.net/starlarkstruct"
+	"google.golang.org/protobuf/types/known/anypb"
 )
 
 var AnyModule = &starlarkstruct.Module{
@@ -23,7 +23,7 @@ func newAny(thread *starlark.Thread, _ *starlark.Builtin, args starlark.Tuple, k
 	if err != nil {
 		return nil, err
 	}
-	any, err := ptypes.MarshalAny(msg.msg)
+	any, err := anypb.New(msg.AsDynamicPb())
 	if err != nil {
 		return nil, err
 	}

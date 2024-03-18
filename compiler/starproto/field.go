@@ -5,11 +5,12 @@ import (
 	"math"
 	"reflect"
 
-	pbproto "github.com/golang/protobuf/proto"
-	dpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/dynamic"
 	"go.starlark.net/starlark"
+	pbproto "google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/protoadapt"
+	"google.golang.org/protobuf/types/descriptorpb"
 )
 
 type fieldValue struct {
@@ -66,28 +67,32 @@ func scalarToStarlark(t *desc.FieldDescriptor, val interface{}) starlark.Value {
 		return starlark.None
 	}
 	switch t.GetType() {
-	case dpb.FieldDescriptorProto_TYPE_INT32, dpb.FieldDescriptorProto_TYPE_SINT32, dpb.FieldDescriptorProto_TYPE_SFIXED32:
+	case descriptorpb.FieldDescriptorProto_TYPE_INT32, descriptorpb.FieldDescriptorProto_TYPE_SINT32, descriptorpb.FieldDescriptorProto_TYPE_SFIXED32:
 		return starlark.MakeInt64(int64(val.(int32)))
-	case dpb.FieldDescriptorProto_TYPE_INT64, dpb.FieldDescriptorProto_TYPE_SINT64, dpb.FieldDescriptorProto_TYPE_SFIXED64:
+	case descriptorpb.FieldDescriptorProto_TYPE_INT64, descriptorpb.FieldDescriptorProto_TYPE_SINT64, descriptorpb.FieldDescriptorProto_TYPE_SFIXED64:
 		return starlark.MakeInt64(val.(int64))
-	case dpb.FieldDescriptorProto_TYPE_UINT32, dpb.FieldDescriptorProto_TYPE_FIXED32:
+	case descriptorpb.FieldDescriptorProto_TYPE_UINT32, descriptorpb.FieldDescriptorProto_TYPE_FIXED32:
 		return starlark.MakeUint64(uint64(val.(uint32)))
-	case dpb.FieldDescriptorProto_TYPE_UINT64, dpb.FieldDescriptorProto_TYPE_FIXED64:
+	case descriptorpb.FieldDescriptorProto_TYPE_UINT64, descriptorpb.FieldDescriptorProto_TYPE_FIXED64:
 		return starlark.MakeUint64(val.(uint64))
-	case dpb.FieldDescriptorProto_TYPE_FLOAT:
+	case descriptorpb.FieldDescriptorProto_TYPE_FLOAT:
 		return starlark.Float(val.(float32))
-	case dpb.FieldDescriptorProto_TYPE_DOUBLE:
+	case descriptorpb.FieldDescriptorProto_TYPE_DOUBLE:
 		return starlark.Float(val.(float64))
-	case dpb.FieldDescriptorProto_TYPE_STRING:
+	case descriptorpb.FieldDescriptorProto_TYPE_STRING:
 		return starlark.String(val.(string))
-	case dpb.FieldDescriptorProto_TYPE_BYTES:
+	case descriptorpb.FieldDescriptorProto_TYPE_BYTES:
 		return starlark.String(string(val.([]byte)))
-	case dpb.FieldDescriptorProto_TYPE_BOOL:
+	case descriptorpb.FieldDescriptorProto_TYPE_BOOL:
 		return starlark.Bool(val.(bool))
-	case dpb.FieldDescriptorProto_TYPE_ENUM:
+	case descriptorpb.FieldDescriptorProto_TYPE_ENUM:
 		return &starProtoEnumValue{desc: t.GetEnumType().FindValueByNumber(val.(int32))}
-	case dpb.FieldDescriptorProto_TYPE_MESSAGE:
-		message, err := dynamic.AsDynamicMessage(val.(pbproto.Message))
+	case descriptorpb.FieldDescriptorProto_TYPE_MESSAGE:
+		v, ok := val.(pbproto.Message)
+		if !ok {
+			panic(fmt.Errorf("scalarToStarlark: error converting proto.Message to dynamic.Message %v", val))
+		}
+		message, err := dynamic.AsDynamicMessage(protoadapt.MessageV1Of(v))
 		if err != nil {
 			panic(fmt.Errorf("scalarToStarlark: error converting proto.Message to dynamic.Message %v", err))
 		}
@@ -103,22 +108,22 @@ func valueFromStarlark(t *desc.FieldDescriptor, star starlark.Value) (interface{
 	switch star := star.(type) {
 	case starlark.Int:
 		switch t.GetType() {
-		case dpb.FieldDescriptorProto_TYPE_INT64, dpb.FieldDescriptorProto_TYPE_SINT64:
+		case descriptorpb.FieldDescriptorProto_TYPE_INT64, descriptorpb.FieldDescriptorProto_TYPE_SINT64:
 			if val, ok := star.Int64(); ok {
 				return val, nil
 			}
 			return nil, fmt.Errorf("ValueError: value %v overflows type `int64'", star)
-		case dpb.FieldDescriptorProto_TYPE_UINT64, dpb.FieldDescriptorProto_TYPE_SFIXED64:
+		case descriptorpb.FieldDescriptorProto_TYPE_UINT64, descriptorpb.FieldDescriptorProto_TYPE_SFIXED64:
 			if val, ok := star.Uint64(); ok {
 				return val, nil
 			}
 			return nil, fmt.Errorf("ValueError: value %v overflows type `uint64'", star)
-		case dpb.FieldDescriptorProto_TYPE_INT32, dpb.FieldDescriptorProto_TYPE_SINT32:
+		case descriptorpb.FieldDescriptorProto_TYPE_INT32, descriptorpb.FieldDescriptorProto_TYPE_SINT32:
 			if val, ok := star.Int64(); ok && val >= math.MinInt32 && val <= math.MaxInt32 {
 				return int32(val), nil
 			}
 			return nil, fmt.Errorf("ValueError: value %v overflows type `int32'", star)
-		case dpb.FieldDescriptorProto_TYPE_UINT32, dpb.FieldDescriptorProto_TYPE_SFIXED32:
+		case descriptorpb.FieldDescriptorProto_TYPE_UINT32, descriptorpb.FieldDescriptorProto_TYPE_SFIXED32:
 			if val, ok := star.Uint64(); ok && val <= math.MaxUint32 {
 				return uint32(val), nil
 			}
@@ -126,24 +131,24 @@ func valueFromStarlark(t *desc.FieldDescriptor, star starlark.Value) (interface{
 		}
 	case starlark.Float:
 		switch t.GetType() {
-		case dpb.FieldDescriptorProto_TYPE_DOUBLE:
+		case descriptorpb.FieldDescriptorProto_TYPE_DOUBLE:
 			if val, ok := starlark.AsFloat(star); ok {
 				return val, nil
 			}
-		case dpb.FieldDescriptorProto_TYPE_FLOAT:
+		case descriptorpb.FieldDescriptorProto_TYPE_FLOAT:
 			if val, ok := starlark.AsFloat(star); ok {
 				return float32(val), nil
 			}
 		}
 	case starlark.String:
 		switch t.GetType() {
-		case dpb.FieldDescriptorProto_TYPE_STRING:
+		case descriptorpb.FieldDescriptorProto_TYPE_STRING:
 			return string(star), nil
-		case dpb.FieldDescriptorProto_TYPE_BYTES:
+		case descriptorpb.FieldDescriptorProto_TYPE_BYTES:
 			return []byte(string(star)), nil
 		}
 	case starlark.Bool:
-		if t.GetType() == dpb.FieldDescriptorProto_TYPE_BOOL {
+		if t.GetType() == descriptorpb.FieldDescriptorProto_TYPE_BOOL {
 			return bool(star), nil
 		}
 	case starlark.NoneType:
@@ -152,7 +157,7 @@ func valueFromStarlark(t *desc.FieldDescriptor, star starlark.Value) (interface{
 			return star.desc.GetNumber(), nil
 		}
 	case *starProtoMessage:
-		if t.GetType() == dpb.FieldDescriptorProto_TYPE_MESSAGE {
+		if t.GetType() == descriptorpb.FieldDescriptorProto_TYPE_MESSAGE {
 			return star.msg, nil
 		}
 	case *protoRepeated:

@@ -11,20 +11,21 @@ import (
 	"strings"
 	"time"
 
-	dpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
-	"github.com/golang/protobuf/ptypes"
 	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/dynamic"
 	"github.com/mitchellh/cli"
 	"github.com/pkg/errors"
 	"github.com/protoconf/protoconf/compiler/lib"
 	"github.com/protoconf/protoconf/compiler/lib/parser"
+	"github.com/protoconf/protoconf/compiler/starproto"
 	pv "github.com/protoconf/protoconf/datatypes/proto/v1"
 	pc "github.com/protoconf/protoconf/server/api/proto/v1"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/protobuf/reflect/protoreflect"
+	"google.golang.org/protobuf/types/descriptorpb"
+	"google.golang.org/protobuf/types/known/anypb"
 )
 
 var conn *grpc.ClientConn
@@ -125,21 +126,21 @@ func (c *cliCommand) Run(args []string) int {
 			log.Fatalf("%s is not a field in %s", ret[0], msg.XXX_MessageName())
 		}
 		switch field.GetType() {
-		case dpb.FieldDescriptorProto_TYPE_DOUBLE:
+		case descriptorpb.FieldDescriptorProto_TYPE_DOUBLE:
 			setFloat(msg, ret[0], ret[1], func(s interface{}) interface{} { return s })
-		case dpb.FieldDescriptorProto_TYPE_FLOAT:
+		case descriptorpb.FieldDescriptorProto_TYPE_FLOAT:
 			setFloat(msg, ret[0], ret[1], func(s interface{}) interface{} { return s })
-		case dpb.FieldDescriptorProto_TYPE_INT64:
+		case descriptorpb.FieldDescriptorProto_TYPE_INT64:
 			setNumeric(msg, ret[0], ret[1], func(s interface{}) interface{} { return s })
-		case dpb.FieldDescriptorProto_TYPE_UINT64:
+		case descriptorpb.FieldDescriptorProto_TYPE_UINT64:
 			setNumeric(msg, ret[0], ret[1], func(s interface{}) interface{} { return s })
-		case dpb.FieldDescriptorProto_TYPE_INT32:
+		case descriptorpb.FieldDescriptorProto_TYPE_INT32:
 			setNumeric(msg, ret[0], ret[1], func(s interface{}) interface{} { return int32(s.(int64)) })
-		case dpb.FieldDescriptorProto_TYPE_FIXED64:
+		case descriptorpb.FieldDescriptorProto_TYPE_FIXED64:
 			setNumeric(msg, ret[0], ret[1], func(s interface{}) interface{} { return s })
-		case dpb.FieldDescriptorProto_TYPE_FIXED32:
+		case descriptorpb.FieldDescriptorProto_TYPE_FIXED32:
 			setNumeric(msg, ret[0], ret[1], func(s interface{}) interface{} { return int32(s.(int64)) })
-		case dpb.FieldDescriptorProto_TYPE_BOOL:
+		case descriptorpb.FieldDescriptorProto_TYPE_BOOL:
 			b, e := strconv.ParseBool(ret[1])
 			if e != nil {
 				log.Fatal(e)
@@ -147,17 +148,17 @@ func (c *cliCommand) Run(args []string) int {
 			setField(msg, ret[0], b, func(s interface{}) interface{} {
 				return s
 			})
-		case dpb.FieldDescriptorProto_TYPE_STRING:
+		case descriptorpb.FieldDescriptorProto_TYPE_STRING:
 			setField(msg, ret[0], ret[1], func(s interface{}) interface{} { return s })
-		case dpb.FieldDescriptorProto_TYPE_UINT32:
+		case descriptorpb.FieldDescriptorProto_TYPE_UINT32:
 			setNumeric(msg, ret[0], ret[1], func(s interface{}) interface{} { return uint32(s.(int64)) })
-		case dpb.FieldDescriptorProto_TYPE_SFIXED32:
+		case descriptorpb.FieldDescriptorProto_TYPE_SFIXED32:
 			setNumeric(msg, ret[0], ret[1], func(s interface{}) interface{} { return int32(s.(int64)) })
-		case dpb.FieldDescriptorProto_TYPE_SFIXED64:
+		case descriptorpb.FieldDescriptorProto_TYPE_SFIXED64:
 			setNumeric(msg, ret[0], ret[1], func(s interface{}) interface{} { return s })
-		case dpb.FieldDescriptorProto_TYPE_SINT32:
+		case descriptorpb.FieldDescriptorProto_TYPE_SINT32:
 			setNumeric(msg, ret[0], ret[1], func(s interface{}) interface{} { return uint32(s.(int64)) })
-		case dpb.FieldDescriptorProto_TYPE_SINT64:
+		case descriptorpb.FieldDescriptorProto_TYPE_SINT64:
 			setNumeric(msg, ret[0], ret[1], func(s interface{}) interface{} { return s })
 		}
 	}
@@ -169,7 +170,7 @@ func (c *cliCommand) Run(args []string) int {
 		log.Fatal(fmt.Errorf("error connecting to server address=%s err=%s", address, err))
 	}
 	defer conn.Close()
-	any, err := ptypes.MarshalAny(msg)
+	any, err := anypb.New(starproto.ToDynamicPb(msg))
 	if err != nil {
 		log.Fatal(fmt.Errorf("error marshalling message to any message=%s err=%s", msg, err))
 	}

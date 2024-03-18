@@ -7,8 +7,6 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/golang/protobuf/descriptor"
-	"github.com/golang/protobuf/ptypes"
 	"github.com/protoconf/protoconf/consts"
 	pv "github.com/protoconf/protoconf/datatypes/proto/v1"
 	pb "github.com/protoconf/protoconf/examples/protoconf/src/crawler"
@@ -16,6 +14,8 @@ import (
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/types/known/anypb"
 )
 
 const (
@@ -51,13 +51,12 @@ func main() {
 	log.Printf("Mutated %s successfully", path)
 }
 
-func mutate(path string, value descriptor.Message, scriptMetadata string) error {
-	fileDesc, _ := descriptor.ForMessage(value)
-	any, err := ptypes.MarshalAny(value)
+func mutate(path string, value proto.Message, scriptMetadata string) error {
+	any, err := anypb.New(value)
 	if err != nil {
 		return fmt.Errorf("error marshalling message to any message=%s err=%s", value, err)
 	}
-	config := &pv.ProtoconfValue{ProtoFile: fileDesc.GetName(), Value: any}
+	config := &pv.ProtoconfValue{Value: any}
 	request := &pc.ConfigMutationRequest{Path: path, Value: config, ScriptMetadata: scriptMetadata}
 
 	address := consts.ServerDefaultAddress
@@ -68,6 +67,7 @@ func mutate(path string, value descriptor.Message, scriptMetadata string) error 
 	defer conn.Close()
 
 	c := pc.NewProtoconfMutationServiceClient(conn)
+
 	// Wait until the server finishes long git operations
 	timeout := 60 * time.Second
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)

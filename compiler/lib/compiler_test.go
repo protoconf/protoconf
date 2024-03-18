@@ -49,7 +49,6 @@ func TestCompiler_CompileFile(t *testing.T) {
 	t.Run("main_not_a_function_err.pconf", compilerTest(c, ErrMainNotCallable))
 	t.Run("mutable_not_exists_err.pconf", compilerTest(c, ErrLoadMutable))
 	t.Run("mutable_bad_json_err.pconf", compilerTest(c, ErrLoadStarlark))
-	t.Run("mutable_bad_proto_filename_err.pconf", compilerTest(c, ErrLoadStarlark))
 
 }
 

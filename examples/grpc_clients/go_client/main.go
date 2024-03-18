@@ -5,13 +5,14 @@ import (
 	"log"
 	"os"
 
-	"github.com/golang/protobuf/ptypes"
 	pc "github.com/protoconf/protoconf/agent/api/proto/v1"
 	"github.com/protoconf/protoconf/consts"
 	pb "github.com/protoconf/protoconf/examples/protoconf/src/crawler"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/types/known/anypb"
 )
 
 const (
@@ -55,7 +56,7 @@ func listenToChanges(path string) {
 			log.Fatalf("Error while streaming config path=%s err=%s", path, err)
 		}
 
-		if err = ptypes.UnmarshalAny(update.GetValue(), config); err != nil {
+		if err = anypb.UnmarshalTo(update.GetValue(), config, proto.UnmarshalOptions{}); err != nil {
 			log.Fatalf("Error unmarshaling config path=%s value=%s err=%s", path, update.Value, err)
 		}
 
