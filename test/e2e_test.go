@@ -120,7 +120,7 @@ func Test(t *testing.T) {
 	t.Run("change config via mutation rpc", func(t *testing.T) {
 		_, err = devMutationClient.MutateConfig(ctx, &protoconfmutation.ConfigMutationRequest{
 			Path: "mutation_test", Value: &v1.ProtoconfValue{
-				ProtoFile: "test.proto",
+				ProtoFile: "google/protobuf/struct.proto",
 				Value:     mutationValue,
 			},
 		})
@@ -130,7 +130,7 @@ func Test(t *testing.T) {
 	// Compile after mutation
 	t.Run("compile after mutation", func(t *testing.T) {
 		err = c.CompileFile("load_mutable_test.pconf")
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	})
 
 	// fetch update from watcher and validate the value after mutation

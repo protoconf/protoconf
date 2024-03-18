@@ -16,6 +16,8 @@ import (
 	pc "github.com/protoconf/protoconf/datatypes/proto/v1"
 	"github.com/qri-io/starlib"
 	"go.starlark.net/starlark"
+	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/protoadapt"
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/types/dynamicpb"
 )
@@ -161,14 +163,21 @@ func (l *starlarkLoader) loadMutable(modulePath string) (starlark.StringDict, er
 	if err != nil {
 		return nil, errors.Join(ErrReadMutable, fmt.Errorf("file=%s", filename), err)
 	}
-
-	message, err := dynamic.AsDynamicMessage(new)
+	message, err := dynamic.AsDynamicMessage(protoadapt.MessageV1Of(new))
+	if err != nil {
+		return nil, err
+	}
+	b, err := proto.Marshal(new)
+	if err != nil {
+		return nil, err
+	}
+	err = message.Unmarshal(b)
 	if err != nil {
 		return nil, err
 	}
 
-	globals := starlark.StringDict{}
-	globals["value"] = starproto.NewStarProtoMessage(message)
+	starProtoMsg := starproto.NewStarProtoMessage(message)
+	globals := starlark.StringDict{"value": starProtoMsg}
 	return globals, nil
 }
 
