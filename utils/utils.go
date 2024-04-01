@@ -121,6 +121,14 @@ func (d *DescriptorRegistry) Import(parse ParserFunc, excludes []*regexp.Regexp,
 		ImportPaths:                     paths,
 		InterpretOptionsInUnlinkedFiles: true,
 		LookupImport:                    desc.LoadFileDescriptor,
+		LookupImportProto: func(s string) (*descriptorpb.FileDescriptorProto, error) {
+			for _, fd := range d.fileDescriptors {
+				if fd.GetName() == s {
+					return fd, nil
+				}
+			}
+			return nil, fmt.Errorf("proto file: %s not found", s)
+		},
 	}
 
 	fds, err := parse(parser, files, d.fileDescriptors)

@@ -88,13 +88,19 @@ func scalarToStarlark(t *desc.FieldDescriptor, val interface{}) starlark.Value {
 	case descriptorpb.FieldDescriptorProto_TYPE_ENUM:
 		return &starProtoEnumValue{desc: t.GetEnumType().FindValueByNumber(val.(int32))}
 	case descriptorpb.FieldDescriptorProto_TYPE_MESSAGE:
-		v, ok := val.(pbproto.Message)
-		if !ok {
+		var message *dynamic.Message
+
+		switch v := val.(type) {
+		case *dynamic.Message:
+			message = v
+		case pbproto.Message:
+			message, err := dynamic.AsDynamicMessage(protoadapt.MessageV1Of(v))
+			if err != nil {
+				panic(fmt.Errorf("scalarToStarlark: error converting proto.Message to dynamic.Message %v", err))
+			}
+			return NewStarProtoMessage(message)
+		default:
 			panic(fmt.Errorf("scalarToStarlark: error converting proto.Message to dynamic.Message %v", val))
-		}
-		message, err := dynamic.AsDynamicMessage(protoadapt.MessageV1Of(v))
-		if err != nil {
-			panic(fmt.Errorf("scalarToStarlark: error converting proto.Message to dynamic.Message %v", err))
 		}
 		return NewStarProtoMessage(message)
 	}
