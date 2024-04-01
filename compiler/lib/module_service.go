@@ -111,7 +111,10 @@ func (m *ModuleService) Init(ctx context.Context, initFiles ...string) error {
 			}
 			locals, err := starlark.ExecFile(thread, filePath, b, starlark.StringDict{"remote_repo": starlark.NewBuiltin("remote_repo", m.Add)})
 			for name, v := range locals {
-				dyn, _ := starproto.ToProtoMessage(v)
+				dyn, ok := starproto.ToProtoMessage(v)
+				if !ok {
+					continue
+				}
 				msg := &module.RemoteRepo{}
 				originalGetterUrl := ""
 				if msgTmp, ok := m.head.Deps[name]; ok {
@@ -182,7 +185,6 @@ func (m *ModuleService) Add(t *starlark.Thread, fn *starlark.Builtin, args starl
 		query.Set("checksum", x.Checksum)
 	default:
 		ui.Error(fmt.Sprintf("Warning! Please provide on of: tag, branch, commit or checksum for remote_repo url: %s", remoteRepo.Url))
-
 	}
 	u.RawQuery = query.Encode()
 
@@ -344,11 +346,14 @@ func (m *ModuleService) GetProtoRegistry() *utils.DescriptorRegistry {
 	for _, dep := range m.head.Deps {
 		registry.Load(filepath.Join(m.getCacheDir(), dep.Label+".fds"), dep.FileDescriptorSetSum)
 	}
-	registry.Import(utils.Parse, []*regexp.Regexp{}, filepath.Join(m.getProtoconfPath(), consts.SrcPath))
+	err := registry.Import(utils.Parse, []*regexp.Regexp{}, filepath.Join(m.getProtoconfPath(), consts.SrcPath))
+	if err != nil {
+		log.Fatal(err)
+	}
 	cachedRegistry = registry
 	return registry
-
 }
+
 func (m *ModuleService) Sync(ctx context.Context) error {
 	grp, _ := errgroup.WithContext(ctx)
 	for _, r := range m.head.Deps {
