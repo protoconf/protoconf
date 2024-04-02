@@ -7,13 +7,16 @@ import (
 	"testing"
 
 	"github.com/protoconf/protoconf/utils/testdata"
-	assert "github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestCompiler_CompileFile(t *testing.T) {
-	c := NewCompiler(testdata.SmallTestDir(), false)
-	assert.NoError(t, c.ModuleService.Init(context.Background(), "CONFIGSPACE"))
-	assert.NoError(t, c.SyncModules(context.Background()))
+	dir := testdata.SmallTestDir()
+	ms := NewModuleService(dir)
+	require.NoError(t, ms.Init(context.Background(), "CONFIGSPACE"))
+	require.NoError(t, ms.Sync(context.Background()))
+	c := NewCompiler(dir, false)
 
 	t.Run("pinc_load_remote.pconf", compilerTest(c, nil))
 	t.Run("with_config_rollout_value_is_string.pconf", compilerTest(c, ErrStarlarkEval))

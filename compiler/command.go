@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -54,6 +55,11 @@ func (c *cliCommand) Run(args []string) int {
 		Writer:      os.Stdout,
 		ErrorWriter: os.Stderr,
 	}
+	logger := slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{
+		AddSource: true,
+		Level:     slog.LevelDebug,
+	}))
+	slog.SetDefault(logger)
 	flags.Parse(args)
 
 	if flags.NArg() < 1 {
@@ -74,7 +80,6 @@ func (c *cliCommand) Run(args []string) int {
 
 	protoconfRoot := strings.TrimSpace(flags.Args()[0])
 	compiler := compilerlib.NewCompiler(protoconfRoot, config.verboseLogging)
-	compiler.SyncModules(context.Background())
 
 	if config.repl {
 		REPL(compiler)

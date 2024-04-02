@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"log/slog"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -34,10 +35,11 @@ import (
 )
 
 type ModuleService struct {
-	Config      *module.ModuleServiceConfig
-	head        *module.RemoteRepo
-	mutex       sync.RWMutex
-	downloadMux *sync.Mutex
+	Config         *module.ModuleServiceConfig
+	head           *module.RemoteRepo
+	mutex          sync.RWMutex
+	downloadMux    *sync.Mutex
+	cachedRegistry *utils.DescriptorRegistry
 }
 
 func NewModuleService(protoconfRoot string) *ModuleService {
@@ -302,6 +304,7 @@ func (m *ModuleService) Download(ctx context.Context, r *module.RemoteRepo) erro
 	repoCacheDir := filepath.Join(m.getCacheDir(), r.Label)
 
 	m.downloadMux.Lock()
+	slog.Default().Info("downloading", slog.String("label", r.Label), slog.String("url", r.GetterUrl))
 	err := getter.GetAny(repoCacheDir, r.GetterUrl, getter.WithContext(ctx))
 	m.downloadMux.Unlock()
 	if err != nil {
@@ -336,21 +339,24 @@ func (m *ModuleService) GetProtoFilesRegistry() *protoregistry.Files {
 
 }
 
-var cachedRegistry *utils.DescriptorRegistry
-
 func (m *ModuleService) GetProtoRegistry() *utils.DescriptorRegistry {
-	if cachedRegistry != nil {
-		return cachedRegistry
+	if m.cachedRegistry != nil {
+		return m.cachedRegistry
 	}
 	registry := utils.NewDescriptorRegistry()
 	for _, dep := range m.head.Deps {
-		registry.Load(filepath.Join(m.getCacheDir(), dep.Label+".fds"), dep.FileDescriptorSetSum)
+		err := registry.Load(filepath.Join(m.getCacheDir(), dep.Label+".fds"), dep.FileDescriptorSetSum)
+		if err != nil {
+			slog.Default().Error("failed to load file descriptor set", slog.String("error", err.Error()))
+			slog.Default().Error("try run `protoconf mod sync`")
+
+		}
 	}
 	err := registry.Import(utils.Parse, []*regexp.Regexp{}, filepath.Join(m.getProtoconfPath(), consts.SrcPath))
 	if err != nil {
-		log.Fatal(err)
+		slog.Default().Error("failed to import proto files", slog.String("error", err.Error()))
 	}
-	cachedRegistry = registry
+	m.cachedRegistry = registry
 	return registry
 }
 
@@ -361,6 +367,7 @@ func (m *ModuleService) Sync(ctx context.Context) error {
 		grp.Go(func() error {
 			err := m.Download(ctx, remoteRepo)
 			if err != nil {
+				slog.Default().Error("failed to download remote repo", slog.String("error", err.Error()))
 				return err
 			}
 			return m.GenFileDescriptorSet(remoteRepo)
