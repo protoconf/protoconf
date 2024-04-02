@@ -38,12 +38,13 @@ func Test(t *testing.T) {
 
 	// Init
 	protoconfRoot := testdata.SmallTestDir()
-	c := lib.NewCompiler(protoconfRoot, false)
 	t.Run("mod tidy", func(t *testing.T) {
-		assert.NoError(t, c.ModuleService.Init(ctx, "CONFIGSPACE"))
-		assert.NoError(t, c.SyncModules(ctx))
+		ms := lib.NewModuleService(protoconfRoot)
+		require.NoError(t, ms.Init(ctx, "CONFIGSPACE"))
+		require.NoError(t, ms.Sync(ctx))
 	})
 
+	c := lib.NewCompiler(protoconfRoot, false)
 	// Create dev agent
 	devConfig := &protoconf_agent_config.AgentConfig{
 		Prefix: consts.CompiledConfigPath,

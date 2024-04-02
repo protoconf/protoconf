@@ -2,7 +2,6 @@ package lib
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -43,9 +42,8 @@ func NewCompiler(protoconfRoot string, verboseLogging bool) *Compiler {
 		protoconfRoot:   protoconfRoot,
 		verboseLogging:  verboseLogging,
 		MaterializedDir: filepath.Join(protoconfRoot, consts.CompiledConfigPath),
-		// parser:          parser.NewParser(append([]string{filepath.Join(protoconfRoot, consts.SrcPath)}, ms.GetProtoPaths()...)...),
-		parser:        parser.NewParser(ms.GetProtoFilesRegistry()),
-		ModuleService: ms,
+		parser:          parser.NewParser(ms.GetProtoFilesRegistry()),
+		ModuleService:   ms,
 	}
 }
 
@@ -55,18 +53,6 @@ type Compiler struct {
 	MaterializedDir string
 	parser          *parser.Parser
 	ModuleService   *ModuleService
-}
-
-func (c *Compiler) SyncModules(ctx context.Context) error {
-	cachedRegistry = nil
-	c.ModuleService.LoadFromLockFile()
-	err := c.ModuleService.Sync(ctx)
-	if err != nil {
-		return err
-	}
-	c.parser = parser.NewParser(c.ModuleService.GetProtoFilesRegistry())
-	return nil
-
 }
 
 var (

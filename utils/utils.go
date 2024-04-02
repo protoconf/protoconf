@@ -120,6 +120,7 @@ func (d *DescriptorRegistry) Import(parse ParserFunc, excludes []*regexp.Regexp,
 	parser := &protoparse.Parser{
 		ImportPaths:                     paths,
 		InterpretOptionsInUnlinkedFiles: true,
+		ValidateUnlinkedFiles:           true,
 		LookupImport:                    desc.LoadFileDescriptor,
 		LookupImportProto: func(s string) (*descriptorpb.FileDescriptorProto, error) {
 			for _, fd := range d.fileDescriptors {
