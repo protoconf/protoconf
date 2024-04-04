@@ -14,10 +14,13 @@ import (
 
 	"github.com/kvtools/valkeyrie"
 	"github.com/kvtools/valkeyrie/store"
+	cv1 "k8s.io/api/core/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
+	"k8s.io/client-go/util/retry"
 )
 
 // StoreName the name of the store.
@@ -113,12 +116,19 @@ func (s *Store) Put(ctx context.Context, key string, value []byte, opts *store.W
 		strings.ReplaceAll(
 			strings.ReplaceAll(filepath.Dir(key), "/", "---"), "_", "--"),
 	)
-	cm, err := s.clientset.CoreV1().ConfigMaps(s.config.Namespace).Get(ctx, configMapName, v1.GetOptions{})
+	cmClient := s.clientset.CoreV1().ConfigMaps(s.config.Namespace)
+	cm, err := cmClient.Get(ctx, configMapName, v1.GetOptions{})
 	if err != nil {
 		cm.ObjectMeta.Name = configMapName
-		cm, err = s.clientset.CoreV1().ConfigMaps(s.config.Namespace).Create(ctx, cm, v1.CreateOptions{})
-		if err != nil {
+		retryableFn := func(error) bool {
+			return true
+		}
+		retryErr := retry.OnError(retry.DefaultBackoff, retryableFn, func() error {
+			cm, err = cmClient.Create(ctx, cm, v1.CreateOptions{})
 			return err
+		})
+		if retryErr != nil {
+			return retryErr
 		}
 	}
 	if cm.Data == nil {
@@ -126,7 +136,7 @@ func (s *Store) Put(ctx context.Context, key string, value []byte, opts *store.W
 	}
 	cm.Data[filename] = string(value)
 
-	_, err = s.clientset.CoreV1().ConfigMaps(s.config.Namespace).Update(
+	_, err = cmClient.Update(
 		ctx, cm, v1.UpdateOptions{},
 	)
 	return err
@@ -141,10 +151,20 @@ func (s *Store) Get(ctx context.Context, key string, opts *store.ReadOptions) (*
 		strings.ReplaceAll(
 			strings.ReplaceAll(filepath.Dir(key), "/", "---"), "_", "--"),
 	)
-	c, err := s.clientset.CoreV1().ConfigMaps(s.config.Namespace).Get(ctx, configMapName, v1.GetOptions{})
-	logger.Debug("got configmap", slog.Any("error", err))
-	if err != nil {
-		return nil, err
+	cmClient := s.clientset.CoreV1().ConfigMaps(s.config.Namespace)
+
+	retryableFn := func(error) bool {
+		return true
+	}
+	var c *cv1.ConfigMap
+	var err error
+	retryErr := retry.OnError(retry.DefaultBackoff, retryableFn, func() error {
+		c, err = cmClient.Get(ctx, configMapName, v1.GetOptions{})
+		return err
+	})
+	logger.Debug("got configmap", slog.Any("error", retryErr))
+	if retryErr != nil {
+		return nil, retryErr
 	}
 
 	if value, ok := c.Data[filename]; ok {
@@ -163,14 +183,29 @@ func (s Store) Delete(ctx context.Context, key string) error {
 		strings.ReplaceAll(
 			strings.ReplaceAll(filepath.Dir(key), "/", "---"), "_", "--"),
 	)
-	cm, err := s.clientset.CoreV1().ConfigMaps(s.config.Namespace).Get(ctx, configMapName, v1.GetOptions{})
-	if err != nil {
+	cmClient := s.clientset.CoreV1().ConfigMaps(s.config.Namespace)
+	retryableFn := func(error) bool {
+		return true
+	}
+	var cm *cv1.ConfigMap
+	var err error
+	retryErr := retry.OnError(retry.DefaultBackoff, retryableFn, func() error {
+		cm, err = cmClient.Get(ctx, configMapName, v1.GetOptions{})
 		return err
+	})
+	if retryErr != nil {
+		return retryErr
 	}
 	delete(cm.Data, filename)
-	_, err = s.clientset.CoreV1().ConfigMaps(s.config.Namespace).Update(
-		ctx, cm, v1.UpdateOptions{},
-	)
+	retryErr = retry.OnError(retry.DefaultBackoff, retryableFn, func() error {
+		_, err = cmClient.Update(
+			ctx, cm, v1.UpdateOptions{},
+		)
+		return err
+	})
+	if retryErr != nil {
+		return retryErr
+	}
 	return err
 }
 
@@ -184,7 +219,19 @@ func (s Store) Exists(ctx context.Context, key string, opts *store.ReadOptions) 
 func (s *Store) Watch(ctx context.Context, key string, opts *store.ReadOptions) (<-chan *store.KVPair, error) {
 	logger := s.logger.With(slog.String("key", key))
 	logger.Debug("watching key")
-	c, err := s.clientset.CoreV1().ConfigMaps(s.config.Namespace).Watch(ctx, v1.ListOptions{FieldSelector: ""})
+	cmClient := s.clientset.CoreV1().ConfigMaps(s.config.Namespace)
+	retryableFn := func(error) bool {
+		return true
+	}
+	var c watch.Interface
+	var err error
+	retryErr := retry.OnError(retry.DefaultBackoff, retryableFn, func() error {
+		c, err = cmClient.Watch(ctx, v1.ListOptions{FieldSelector: ""})
+		return err
+	})
+	if retryErr != nil {
+		return nil, retryErr
+	}
 	if err != nil {
 		return nil, err
 	}
