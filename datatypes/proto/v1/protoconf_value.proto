@@ -26,6 +26,8 @@ message ProtoconfValue {
 
         repeated Stage stages = 3;
 
+        string namespace = 4;
+
         message Stage {
             string channel = 1;
             uint32 percentile = 2;

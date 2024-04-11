@@ -207,35 +207,54 @@ func NewProtoconfInserter(protoconfRoot string, kvStore store.Store) *ProtoconfI
 
 }
 
-var ErrInsertionCompleted = errors.New("insertion completed")
-
-func (i *ProtoconfInserter) InsertConfigFile(configFile string) error {
+func ensureConfigMaterialized(configFile string) string {
 	if !strings.HasSuffix(configFile, consts.CompiledConfigExtension) {
 		configFile = configFile + consts.CompiledConfigPath
 	}
-	metadata, err := i.GatherMetadata(filepath.Join(i.rel, consts.CompiledConfigPath, configFile))
+	if !strings.HasPrefix(configFile, consts.CompiledConfigPath) {
+		configFile = filepath.Join(consts.CompiledConfigPath, configFile)
+	}
+	return configFile
+}
+
+var ErrInsertionCompleted = errors.New("insertion completed")
+
+func (i *ProtoconfInserter) InsertConfigFile(configFile string) error {
+	configFile = ensureConfigMaterialized(configFile)
+	metadata, err := i.GatherMetadata(filepath.Join(i.rel, configFile))
 	if err != nil {
 		return err
 	}
-	configName := strings.TrimSuffix(configFile, consts.CompiledConfigExtension)
+	configName := strings.TrimPrefix(strings.TrimSuffix(configFile, consts.CompiledConfigExtension), consts.CompiledConfigPath)
 
 	protoconfValue := &datatypes.ProtoconfValue{}
-	err = i.parser.ReadConfig(filepath.Join(i.protoconfRoot, consts.CompiledConfigPath, configFile), protoconfValue)
+	err = i.parser.ReadConfig(filepath.Join(i.protoconfRoot, configFile), protoconfValue)
 	if err != nil {
 		return err
 	}
 	protoconfValue.Metadata = metadata
 	return i.InsertConfig(configName, protoconfValue, metadata)
+}
+
+func (i *ProtoconfInserter) getKvStoreForConfig(protoconfValue *datatypes.ProtoconfValue) store.Store {
+	if ns := protoconfValue.GetRolloutConfig().GetNamespace(); ns != "" {
+		kvStore, err := configmaps.New(context.Background(), []string{}, &configmaps.Config{Namespace: ns})
+		if err == nil {
+			return kvStore
+		}
+	}
+	return i.kvStore
 
 }
 
 func (i *ProtoconfInserter) InsertConfig(configName string, protoconfValue *datatypes.ProtoconfValue, metadata *datatypes.Metadata) error {
 	now := time.Now()
-	logger := i.logger.With("key", configName, "commit", metadata.Commit[0:8])
+	logger := i.logger.With("key", configName, "commit", metadata.Commit[0:8], "namespace", protoconfValue.GetRolloutConfig().GetNamespace())
 	err := i.XXXinsertVersion(configName, fmt.Sprintf("%d.%s", metadata.CommittedAt.Seconds, metadata.Commit), protoconfValue, metadata)
 	if err != nil {
 		return err
 	}
+	kvStore := i.getKvStoreForConfig(protoconfValue)
 
 	kvRolloutConfig := filepath.Join(i.Prefix, configName, "rollout.json")
 	if protoconfValue.RolloutConfig != nil {
@@ -250,7 +269,7 @@ func (i *ProtoconfInserter) InsertConfig(configName string, protoconfValue *data
 		context.AfterFunc(ctx, func() {
 			err := context.Cause(ctx)
 			logger.With("error", err).Error("stopped. deleting rollout config")
-			logger.With("result", i.kvStore.Put(context.Background(), kvRolloutConfig, []byte("{}"), &store.WriteOptions{})).Info("deleted rollout config")
+			logger.With("result", kvStore.Put(context.Background(), kvRolloutConfig, []byte("{}"), &store.WriteOptions{})).Info("deleted rollout config")
 		})
 		defer cancel(ErrInsertionCompleted)
 		for _, stage := range protoconfValue.RolloutConfig.Stages {
@@ -271,7 +290,7 @@ func (i *ProtoconfInserter) InsertConfig(configName string, protoconfValue *data
 				if err != nil {
 					return fmt.Errorf("error marshaling rollout to json, value=%v", rolloutConfig)
 				}
-				if err := i.kvStore.Put(ctx, kvRolloutConfig, data, nil); err != nil {
+				if err := kvStore.Put(ctx, kvRolloutConfig, data, nil); err != nil {
 					return fmt.Errorf("error writing to key-value store, path=%s", kvRolloutConfig)
 				}
 				cooldown := stage.Cooldown
@@ -288,7 +307,7 @@ func (i *ProtoconfInserter) InsertConfig(configName string, protoconfValue *data
 			}
 		}
 	} else {
-		logger.With("result", i.kvStore.Put(context.Background(), kvRolloutConfig, []byte("{}"), &store.WriteOptions{})).Info("Setting empty rollout.json")
+		logger.With("result", kvStore.Put(context.Background(), kvRolloutConfig, []byte("{}"), &store.WriteOptions{})).Info("Setting empty rollout.json")
 	}
 
 	err = i.XXXinsertVersion(configName, Stable, protoconfValue, metadata)
@@ -301,7 +320,7 @@ func (i *ProtoconfInserter) InsertConfig(configName string, protoconfValue *data
 }
 
 func (i *ProtoconfInserter) XXXinsertVersion(configName string, version string, protoconfValue *datatypes.ProtoconfValue, metadata *datatypes.Metadata) error {
-	logger := i.logger.With("key", configName, "version", version, "commit", metadata.Commit[0:8])
+	logger := i.logger.With("key", configName, "version", version, "commit", metadata.Commit[0:8], "namespace", protoconfValue.GetRolloutConfig().GetNamespace())
 	logger.Debug("starting version insertion")
 	kvConfigJsonPath := filepath.Join(i.Prefix, configName, version, "config.json")
 	kvConfigPbPath := filepath.Join(i.Prefix, configName, version, "config.data")
@@ -312,6 +331,7 @@ func (i *ProtoconfInserter) XXXinsertVersion(configName string, version string, 
 		kvMetadataPath = filepath.Join(i.Prefix, configName, "metadata.json")
 	}
 	ctx := context.Background()
+	kvStore := i.getKvStoreForConfig(protoconfValue)
 
 	// Writing config data
 	logger.Debug("writing config binary data")
@@ -320,7 +340,7 @@ func (i *ProtoconfInserter) XXXinsertVersion(configName string, version string, 
 		return fmt.Errorf("error marshaling ProtoconfValue to bytes, value=%v", protoconfValue)
 	}
 	write := base64.StdEncoding.EncodeToString(data)
-	if err := i.kvStore.Put(ctx, kvConfigPbPath, []byte(write), nil); err != nil {
+	if err := kvStore.Put(ctx, kvConfigPbPath, []byte(write), nil); err != nil {
 		return errors.Join(err, fmt.Errorf("error writing to key-value store, path=%s", kvConfigPbPath))
 	}
 	logger.Debug("finished writing config binary data")
@@ -341,7 +361,7 @@ func (i *ProtoconfInserter) XXXinsertVersion(configName string, version string, 
 	if err != nil {
 		return errors.Join(err, fmt.Errorf("error marshaling ProtoconfValue to json, value=%v", protoconfValue))
 	}
-	if err := i.kvStore.Put(ctx, kvConfigJsonPath, data, nil); err != nil {
+	if err := kvStore.Put(ctx, kvConfigJsonPath, data, nil); err != nil {
 		return errors.Join(err, fmt.Errorf("error writing to key-value store, path=%s", kvConfigJsonPath))
 	}
 	logger.Debug("finished writing config json data")
