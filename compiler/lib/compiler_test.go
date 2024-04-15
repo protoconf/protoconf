@@ -18,6 +18,7 @@ func TestCompiler_CompileFile(t *testing.T) {
 	require.NoError(t, ms.Sync(context.Background()))
 	c := NewCompiler(dir, false)
 
+	t.Run("with_config_rollout_validator.pconf", compilerTest(c, ErrInvalidConfig))
 	t.Run("pinc_load_remote.pconf", compilerTest(c, nil))
 	t.Run("with_config_rollout_value_is_string.pconf", compilerTest(c, ErrStarlarkEval))
 	t.Run("with_config_rollout_value_is_none.pconf", compilerTest(c, ErrStarlarkEval))

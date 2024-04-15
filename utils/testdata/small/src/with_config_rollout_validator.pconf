@@ -1,0 +1,12 @@
+load("test.proto", "ValidateMe")
+load("//google/protobuf/duration.proto", "Duration")
+
+def main():
+    return ConfigRollout(
+        ValidateMe(),
+        default_cooldown_time=Duration(seconds=2),
+        stages=[
+            RolloutStage(channel="alpha"),
+            RolloutStage(channel="beta")
+        ]
+    )
