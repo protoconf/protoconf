@@ -250,9 +250,10 @@ func (c *Compiler) load(filename string) (*config, error) {
 	}
 
 	return &config{
-		filename:   filename,
-		locals:     locals,
-		validators: validators,
+		filename:      filename,
+		locals:        locals,
+		validators:    validators,
+		protoResolver: c.parser.LocalResolver,
 	}, nil
 }
 

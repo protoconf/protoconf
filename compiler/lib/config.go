@@ -4,20 +4,25 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/dynamic"
 	proto_validate_reflect "github.com/protoconf/proto-validate-reflect"
 	"github.com/protoconf/protoconf/compiler/starproto"
 	"go.starlark.net/starlark"
 	"google.golang.org/protobuf/proto"
 	pbproto "google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/protoadapt"
+	"google.golang.org/protobuf/reflect/protoregistry"
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/dynamicpb"
+	"google.golang.org/protobuf/types/known/anypb"
 )
 
 type config struct {
-	filename   string
-	locals     starlark.StringDict
-	validators map[string]*starlark.Function
+	filename      string
+	locals        starlark.StringDict
+	validators    map[string]*starlark.Function
+	protoResolver *protoregistry.Types
 }
 
 var (
@@ -51,11 +56,34 @@ var (
 )
 
 func (c *config) validate(value interface{}) error {
-	message, ok := value.(*dynamic.Message)
-	if !ok {
-		if _, ok := value.(pbproto.Message); ok {
+	var message *dynamic.Message
+	switch result := value.(type) {
+	case *anypb.Any:
+		mt, err := c.protoResolver.FindMessageByURL(result.GetTypeUrl())
+		if errors.Is(err, protoregistry.NotFound) {
 			return nil
 		}
+		if err != nil {
+			return err
+		}
+		d, err := desc.WrapMessage(mt.Descriptor())
+		if err != nil {
+			return err
+		}
+		message = dynamic.NewMessage(d)
+		err = message.Unmarshal(result.GetValue())
+		if err != nil {
+			return err
+		}
+	case pbproto.Message:
+		m, err := dynamic.AsDynamicMessage(protoadapt.MessageV1Of(result))
+		if err != nil {
+			return err
+		}
+		message = m
+	case *dynamic.Message:
+		message = result
+	default:
 		return fmt.Errorf("expecting a proto message to validate, got=%v", value)
 	}
 
