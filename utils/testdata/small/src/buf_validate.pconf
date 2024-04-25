@@ -1,0 +1,5 @@
+load("//test.proto", "BufValidate")
+
+
+def main():
+    return BufValidate(email="hello.world")

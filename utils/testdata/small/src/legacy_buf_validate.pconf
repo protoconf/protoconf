@@ -1,0 +1,5 @@
+load("//test.proto", "LegacyBufValidate")
+
+
+def main():
+    return LegacyBufValidate(email="hello.world")

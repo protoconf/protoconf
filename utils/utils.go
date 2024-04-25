@@ -11,10 +11,10 @@ import (
 	"sort"
 	"strings"
 
+	_ "github.com/bufbuild/protovalidate-go"
 	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/desc/protoparse"
 
-	_ "github.com/protoconf/proto-validate-reflect/validate"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protodesc"
