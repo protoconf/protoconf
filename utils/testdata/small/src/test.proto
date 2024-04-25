@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 import "google/protobuf/any.proto";
+import "buf/validate/validate.proto";
 import "validate/validate.proto";
 
 message TestMessage {
@@ -53,6 +54,10 @@ message MessageWithSubMessage {
     SubMessage sub = 1;
 }
 
-message ValidExt {
+message BufValidate {
+    string email = 1 [(buf.validate.field).string.email = true];
+}
+
+message LegacyBufValidate {
     string email = 1 [(validate.rules).string.email = true];
 }

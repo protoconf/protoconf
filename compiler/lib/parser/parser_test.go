@@ -5,7 +5,9 @@ import (
 	"regexp"
 	"testing"
 
-	_ "github.com/protoconf/proto-validate-reflect/validate"
+	_ "github.com/bufbuild/protovalidate-go"
+	_ "github.com/bufbuild/protovalidate-go/legacy"
+
 	"github.com/protoconf/protoconf/consts"
 	v1 "github.com/protoconf/protoconf/datatypes/proto/v1"
 	"github.com/protoconf/protoconf/utils"

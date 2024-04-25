@@ -6,7 +6,6 @@ import (
 
 	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/dynamic"
-	proto_validate_reflect "github.com/protoconf/proto-validate-reflect"
 	"github.com/protoconf/protoconf/compiler/starproto"
 	"go.starlark.net/starlark"
 	"google.golang.org/protobuf/proto"
@@ -16,13 +15,16 @@ import (
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/dynamicpb"
 	"google.golang.org/protobuf/types/known/anypb"
+
+	"github.com/bufbuild/protovalidate-go"
+	"github.com/bufbuild/protovalidate-go/legacy"
 )
 
 type config struct {
 	filename      string
 	locals        starlark.StringDict
 	validators    map[string]*starlark.Function
-	protoResolver *protoregistry.Types
+	protoResolver protoregistry.MessageTypeResolver
 }
 
 var (
@@ -94,7 +96,16 @@ func (c *config) validate(value interface{}) error {
 	pbmsg := dynamicpb.NewMessage(message.GetMessageDescriptor().UnwrapMessage())
 	b, _ := message.Marshal()
 	proto.Unmarshal(b, pbmsg)
-	if ok, err := proto_validate_reflect.ValidateDynamic(pbmsg); !ok {
+
+	validator, err := protovalidate.New(
+		legacy.WithLegacySupport(legacy.ModeMerge),
+		protovalidate.WithDescriptors(message.GetMessageDescriptor().UnwrapMessage()),
+	)
+	if err != nil {
+		return err
+	}
+	err = validator.Validate(pbmsg)
+	if err != nil {
 		return errors.Join(ErrInvalidConfig, err)
 	}
 

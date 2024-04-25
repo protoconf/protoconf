@@ -1,5 +1,0 @@
-load("//test.proto", "ValidExt")
-
-
-def main():
-    return ValidExt(email="hello.world")
