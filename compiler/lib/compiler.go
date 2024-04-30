@@ -250,10 +250,11 @@ func (c *Compiler) load(filename string) (*config, error) {
 	}
 
 	return &config{
-		filename:      filename,
-		locals:        locals,
-		validators:    validators,
-		protoResolver: c.parser.LocalResolver,
+		filename:        filename,
+		locals:          locals,
+		validators:      validators,
+		protoResolver:   c.parser.LocalResolver,
+		messageRegistry: c.ModuleService.GetProtoRegistry().MessageRegistry,
 	}, nil
 }
 

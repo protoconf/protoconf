@@ -1,7 +1,7 @@
 {
   "protoFile": "test.proto",
   "value": {
-    "@type": "type.googleapis.com/MessageWithEnum",
+    "@type": "type.googleapis.com/test.v1.MessageWithEnum",
     "e": "ONE"
   }
 }

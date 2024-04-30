@@ -12,7 +12,10 @@ message ConfigMutationRequest {
   string script_metadata = 3;
 }
 
-message ConfigMutationResponse {}
+message ConfigMutationResponse {
+  string path = 1;
+  string commit_hash = 2; 
+}
 
 service ProtoconfMutationService {
   rpc MutateConfig(ConfigMutationRequest) returns (ConfigMutationResponse);

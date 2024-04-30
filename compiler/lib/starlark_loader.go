@@ -13,11 +13,10 @@ import (
 	"github.com/protoconf/protoconf/compiler/lib/parser"
 	"github.com/protoconf/protoconf/compiler/starproto"
 	"github.com/protoconf/protoconf/consts"
-	pc "github.com/protoconf/protoconf/datatypes/proto/v1"
+	protoconf_pb "github.com/protoconf/protoconf/pb/protoconf/v1"
 	"github.com/qri-io/starlib"
 	"go.starlark.net/starlark"
 	"google.golang.org/protobuf/proto"
-	"google.golang.org/protobuf/protoadapt"
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/types/dynamicpb"
 )
@@ -148,7 +147,7 @@ func (l *starlarkLoader) loadMutable(modulePath string) (starlark.StringDict, er
 		l.mutableDir,
 		strings.TrimPrefix(modulePath, consts.MutableConfigPrefix)+consts.CompiledConfigExtension,
 	)
-	protoconfValue := &pc.ProtoconfValue{}
+	protoconfValue := &protoconf_pb.ProtoconfValue{}
 	err := l.parser.ReadConfig(filename, protoconfValue)
 	if err != nil {
 		return nil, errors.Join(ErrLoadMutable, fmt.Errorf("file=%s", filename), err)
@@ -163,7 +162,13 @@ func (l *starlarkLoader) loadMutable(modulePath string) (starlark.StringDict, er
 	if err != nil {
 		return nil, errors.Join(ErrReadMutable, fmt.Errorf("file=%s", filename), err)
 	}
-	message, err := dynamic.AsDynamicMessage(protoadapt.MessageV1Of(new))
+
+	d, err := l.moduleService.GetProtoRegistry().MessageRegistry.FindMessageTypeByUrl(protoconfValue.Value.TypeUrl)
+	if err != nil {
+		return nil, err
+	}
+	message := dynamic.NewMessage(d)
+
 	if err != nil {
 		return nil, err
 	}

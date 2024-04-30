@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/fs"
 	"log"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -12,10 +13,13 @@ import (
 	"strings"
 
 	_ "github.com/bufbuild/protovalidate-go"
+	_ "github.com/bufbuild/protovalidate-go/legacy"
+	_ "github.com/protoconf/protoconf/pb/protoconf/v1"
+
 	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/desc/protoparse"
+	"github.com/jhump/protoreflect/dynamic/msgregistry"
 
-	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protodesc"
 	"google.golang.org/protobuf/reflect/protoreflect"
@@ -42,11 +46,15 @@ func (s fileDescriptorSorter) Swap(i, j int) {
 
 type DescriptorRegistry struct {
 	fileDescriptors fileDescriptorSorter
+	MessageRegistry msgregistry.MessageRegistry
+	FileRegistry    map[string]*desc.FileDescriptor
 }
 
 func NewDescriptorRegistry() *DescriptorRegistry {
 	return &DescriptorRegistry{
 		fileDescriptors: fileDescriptorSorter{},
+		MessageRegistry: *msgregistry.NewMessageRegistryWithDefaults(),
+		FileRegistry:    make(map[string]*desc.FileDescriptor),
 	}
 }
 
@@ -121,14 +129,22 @@ func (d *DescriptorRegistry) Import(parse ParserFunc, excludes []*regexp.Regexp,
 		ImportPaths:                     paths,
 		InterpretOptionsInUnlinkedFiles: true,
 		ValidateUnlinkedFiles:           true,
-		LookupImport:                    desc.LoadFileDescriptor,
-		LookupImportProto: func(s string) (*descriptorpb.FileDescriptorProto, error) {
-			for _, fd := range d.fileDescriptors {
-				if fd.GetName() == s {
-					return fd, nil
-				}
+		LookupImport: func(s string) (*desc.FileDescriptor, error) {
+			fds, err := desc.CreateFileDescriptorsFromSet(d.GetFileDescriptorSet())
+			if err != nil {
+				slog.Default().Debug("failed to create file descriptors from set", slog.Any("err", err))
 			}
-			return nil, fmt.Errorf("proto file: %s not found", s)
+			if fd, ok := fds[s]; ok {
+				return fd, nil
+			}
+			if d, err := desc.LoadFileDescriptor(s); err == nil {
+				return d, nil
+			}
+			if fd, err := protoregistry.GlobalFiles.FindFileByPath(s); err == nil {
+				return desc.WrapFile(fd)
+			}
+
+			return desc.LoadFileDescriptor(s)
 		},
 	}
 
@@ -147,7 +163,7 @@ func (d *DescriptorRegistry) Store(path string) (string, error) {
 		return "", err
 	}
 	h := sha256.Sum256(b)
-	return fmt.Sprintf("%x", h), os.WriteFile(path, b, 0666)
+	return fmt.Sprintf("%x", h), os.WriteFile(path, b, 0644)
 }
 
 func (d *DescriptorRegistry) Load(path, checksum string) error {
@@ -167,15 +183,6 @@ func (d *DescriptorRegistry) Load(path, checksum string) error {
 	return nil
 }
 
-func (d *DescriptorRegistry) ReadConfig(filename string, msg proto.Message) error {
-	configReader, err := os.ReadFile(filename)
-	if err != nil {
-		return err
-	}
-	return protojson.UnmarshalOptions{Resolver: d.GetTypesResolver()}.Unmarshal(configReader, msg)
-
-}
-
 func find(root, ext string) []string {
 	var a []string
 	filepath.WalkDir(root, func(s string, d fs.DirEntry, e error) error {
@@ -190,6 +197,19 @@ func find(root, ext string) []string {
 	return a
 }
 
+func (d *DescriptorRegistry) Parse(parser *protoparse.Parser, files []string, fds fileDescriptorSorter) (fileDescriptorSorter, error) {
+	descriptors, err := parser.ParseFiles(files...)
+	if err != nil {
+		return fds, fmt.Errorf("parser: %v", err)
+	}
+	for _, fd := range descriptors {
+		d.MessageRegistry.AddFile("type.googleapis.com", fd)
+		d.FileRegistry[fd.GetName()] = fd
+		fds = append(fds, fd.AsFileDescriptorProto())
+	}
+	return fds, nil
+}
+
 type ParserFunc func(parser *protoparse.Parser, files []string, fds fileDescriptorSorter) (fileDescriptorSorter, error)
 
 func Parse(parser *protoparse.Parser, files []string, fds fileDescriptorSorter) (fileDescriptorSorter, error) {
@@ -197,6 +217,7 @@ func Parse(parser *protoparse.Parser, files []string, fds fileDescriptorSorter) 
 	if err != nil {
 		return fds, fmt.Errorf("parser: %v", err)
 	}
+
 	for _, fd := range descriptors {
 		fds = append(fds, fd.AsFileDescriptorProto())
 	}
@@ -210,51 +231,4 @@ func ParseFilesButDoNotLink(parser *protoparse.Parser, files []string, fds fileD
 	}
 	fds = append(fds, descriptors...)
 	return fds, nil
-}
-
-func LoadLocalProtoFiles(link bool, protoPaths ...string) (*protoregistry.Files, error) {
-	files := []string{}
-	for _, protoPath := range protoPaths {
-		files = append(files, find(protoPath, ".proto")...)
-	}
-	parser := &protoparse.Parser{
-		ImportPaths:                     protoPaths,
-		InterpretOptionsInUnlinkedFiles: true,
-		LookupImport:                    desc.LoadFileDescriptor,
-	}
-	fds := &descriptorpb.FileDescriptorSet{File: []*descriptorpb.FileDescriptorProto{}}
-
-	if link {
-		descriptors, err := parser.ParseFiles(files...)
-		if err != nil {
-			return nil, fmt.Errorf("parser: %v", err)
-		}
-		for _, fd := range descriptors {
-			fds.File = append(fds.File, fd.AsFileDescriptorProto())
-		}
-
-	} else {
-		descriptors, err := parser.ParseFilesButDoNotLink(files...)
-		if err != nil {
-			return nil, fmt.Errorf("parser: %v", err)
-		}
-		fds.File = descriptors
-
-	}
-
-	protoregistry.GlobalFiles.RangeFiles(func(fd protoreflect.FileDescriptor) bool {
-		if strings.HasPrefix(fd.Path(), "google") {
-			fds.File = append(fds.File,
-				protodesc.ToFileDescriptorProto(fd),
-			)
-		}
-		return true
-	})
-	fileoptions := &protodesc.FileOptions{AllowUnresolvable: true}
-	protoFiles, err := fileoptions.NewFiles(fds)
-	if err != nil {
-		return nil, fmt.Errorf("new files: %v", err)
-	}
-	return protoFiles, err
-
 }

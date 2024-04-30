@@ -16,6 +16,7 @@ import (
 	"github.com/protoconf/protoconf/consts"
 	v1 "github.com/protoconf/protoconf/datatypes/proto/v1"
 	"github.com/protoconf/protoconf/inserter"
+	protoconf_pb "github.com/protoconf/protoconf/pb/protoconf/v1"
 	"github.com/protoconf/protoconf/server"
 	protoconfmutation "github.com/protoconf/protoconf/server/api/proto/v1"
 	"github.com/protoconf/protoconf/utils/testdata"
@@ -61,7 +62,7 @@ func Test(t *testing.T) {
 	var devMutationClient protoconfmutation.ProtoconfMutationServiceClient
 	devCloser := testServer(ctx, func(s *grpc.Server) {
 		protoconfservice.RegisterProtoconfServiceServer(s, devAgentServer)
-		protoconfmutation.RegisterProtoconfMutationServiceServer(s, devMutationServer)
+		protoconf_pb.RegisterProtoconfMutationServiceServer(s, devMutationServer)
 	}, func(conn *grpc.ClientConn) {
 		devAgentClient = protoconfservice.NewProtoconfServiceClient(conn)
 		devMutationClient = protoconfmutation.NewProtoconfMutationServiceClient(conn)

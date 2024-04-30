@@ -1,14 +1,20 @@
 syntax = "proto3";
+package test.v1;
 
 import "google/protobuf/any.proto";
 import "buf/validate/validate.proto";
 import "validate/validate.proto";
+import "protoconf/v1/protoconf.proto";
 
 message TestMessage {
     string stringValue = 1;
     google.protobuf.Any any_field = 3;
     repeated google.protobuf.Any any_repeated = 4;
     map<string,google.protobuf.Any> any_map = 5;
+    AnotherMessageWithEnum enum_field = 6;
+    MessageWithEnum enum_field_internal = 7;
+    ValidateMe validate_me = 8;
+    MessageWithSubMessage sub_message = 9;
 }
 
 message AnotherMessageWithEnum {
@@ -60,4 +66,9 @@ message BufValidate {
 
 message LegacyBufValidate {
     string email = 1 [(validate.rules).string.email = true];
+}
+
+service TestService {
+    rpc PutTestMessage(TestMessage) returns (protoconf.v1.ConfigMutationResponse);
+    rpc PutValidateMe(ValidateMe) returns (protoconf.v1.ConfigMutationResponse);
 }
