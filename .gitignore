@@ -6,6 +6,5 @@ node_modules/
 dist/
 coverage.txt
 trace.out
-protoconf
 .protoconf_cache
 __debug_bin*

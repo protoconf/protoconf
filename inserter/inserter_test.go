@@ -35,7 +35,7 @@ func TestProtoconfInserter_InsertConfig(t *testing.T) {
 			args:    args{configFile: "test.materialized_JSON"},
 			wantErr: nil,
 			want: map[string]string{
-				"test/config.data": `Cgp0ZXN0LnByb3RvEiwKH3R5cGUuZ29vZ2xlYXBpcy5jb20vVGVzdE1lc3NhZ2USCQoHSW0gaGVyZ`,
+				"test/config.data": `Cgp0ZXN0LnByb3RvEjQKJ3R5cGUuZ29vZ2xlYXBpcy5jb20vdGVzdC52MS5UZXN0TWVzc2FnZRIJCgdJbSBoZXJlImQKK`,
 			},
 		},
 		{

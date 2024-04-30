@@ -7,6 +7,7 @@ import (
 	"time"
 
 	protoconf_agent_config "github.com/protoconf/protoconf/agent/config/v1"
+	"github.com/protoconf/protoconf/utils/testdata"
 )
 
 func TestRunAgent(t *testing.T) {
@@ -29,7 +30,7 @@ func TestRunAgent(t *testing.T) {
 				config: &protoconf_agent_config.AgentConfig{
 					GrpcAddress: ":0",
 					HttpAddress: ":0",
-					DevRoot:     "/some/fake/root",
+					DevRoot:     testdata.SmallTestDir(),
 				},
 			},
 		},

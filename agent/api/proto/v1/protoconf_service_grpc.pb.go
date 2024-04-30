@@ -124,5 +124,5 @@ var ProtoconfService_ServiceDesc = grpc.ServiceDesc{
 			ServerStreams: true,
 		},
 	},
-	Metadata: "protoconf_service.proto",
+	Metadata: "agent/api/proto/v1/protoconf_service.proto",
 }

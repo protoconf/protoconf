@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.28.1
 // 	protoc        v4.25.3
-// source: agent_config.proto
+// source: agent/config/v1/agent_config.proto
 
 package protoconf_agent_config
 
@@ -59,11 +59,11 @@ func (x AgentConfig_StoreType) String() string {
 }
 
 func (AgentConfig_StoreType) Descriptor() protoreflect.EnumDescriptor {
-	return file_agent_config_proto_enumTypes[0].Descriptor()
+	return file_agent_config_v1_agent_config_proto_enumTypes[0].Descriptor()
 }
 
 func (AgentConfig_StoreType) Type() protoreflect.EnumType {
-	return &file_agent_config_proto_enumTypes[0]
+	return &file_agent_config_v1_agent_config_proto_enumTypes[0]
 }
 
 func (x AgentConfig_StoreType) Number() protoreflect.EnumNumber {
@@ -72,7 +72,7 @@ func (x AgentConfig_StoreType) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use AgentConfig_StoreType.Descriptor instead.
 func (AgentConfig_StoreType) EnumDescriptor() ([]byte, []int) {
-	return file_agent_config_proto_rawDescGZIP(), []int{0, 0}
+	return file_agent_config_v1_agent_config_proto_rawDescGZIP(), []int{0, 0}
 }
 
 type AgentConfig_LogLevel int32
@@ -111,11 +111,11 @@ func (x AgentConfig_LogLevel) String() string {
 }
 
 func (AgentConfig_LogLevel) Descriptor() protoreflect.EnumDescriptor {
-	return file_agent_config_proto_enumTypes[1].Descriptor()
+	return file_agent_config_v1_agent_config_proto_enumTypes[1].Descriptor()
 }
 
 func (AgentConfig_LogLevel) Type() protoreflect.EnumType {
-	return &file_agent_config_proto_enumTypes[1]
+	return &file_agent_config_v1_agent_config_proto_enumTypes[1]
 }
 
 func (x AgentConfig_LogLevel) Number() protoreflect.EnumNumber {
@@ -124,7 +124,7 @@ func (x AgentConfig_LogLevel) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use AgentConfig_LogLevel.Descriptor instead.
 func (AgentConfig_LogLevel) EnumDescriptor() ([]byte, []int) {
-	return file_agent_config_proto_rawDescGZIP(), []int{0, 1}
+	return file_agent_config_v1_agent_config_proto_rawDescGZIP(), []int{0, 1}
 }
 
 // Protoconf agent configuration guide.
@@ -159,7 +159,7 @@ type AgentConfig struct {
 func (x *AgentConfig) Reset() {
 	*x = AgentConfig{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_agent_config_proto_msgTypes[0]
+		mi := &file_agent_config_v1_agent_config_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -172,7 +172,7 @@ func (x *AgentConfig) String() string {
 func (*AgentConfig) ProtoMessage() {}
 
 func (x *AgentConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_agent_config_proto_msgTypes[0]
+	mi := &file_agent_config_v1_agent_config_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -185,7 +185,7 @@ func (x *AgentConfig) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AgentConfig.ProtoReflect.Descriptor instead.
 func (*AgentConfig) Descriptor() ([]byte, []int) {
-	return file_agent_config_proto_rawDescGZIP(), []int{0}
+	return file_agent_config_v1_agent_config_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *AgentConfig) GetGrpcAddress() string {
@@ -322,7 +322,7 @@ type AgentConfig_TLSConfig struct {
 func (x *AgentConfig_TLSConfig) Reset() {
 	*x = AgentConfig_TLSConfig{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_agent_config_proto_msgTypes[1]
+		mi := &file_agent_config_v1_agent_config_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -335,7 +335,7 @@ func (x *AgentConfig_TLSConfig) String() string {
 func (*AgentConfig_TLSConfig) ProtoMessage() {}
 
 func (x *AgentConfig_TLSConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_agent_config_proto_msgTypes[1]
+	mi := &file_agent_config_v1_agent_config_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -348,7 +348,7 @@ func (x *AgentConfig_TLSConfig) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AgentConfig_TLSConfig.ProtoReflect.Descriptor instead.
 func (*AgentConfig_TLSConfig) Descriptor() ([]byte, []int) {
-	return file_agent_config_proto_rawDescGZIP(), []int{0, 0}
+	return file_agent_config_v1_agent_config_proto_rawDescGZIP(), []int{0, 0}
 }
 
 func (m *AgentConfig_TLSConfig) GetKey() isAgentConfig_TLSConfig_Key {
@@ -462,10 +462,11 @@ func (*AgentConfig_TLSConfig_CaText) isAgentConfig_TLSConfig_Ca() {}
 
 func (*AgentConfig_TLSConfig_CaFile) isAgentConfig_TLSConfig_Ca() {}
 
-var File_agent_config_proto protoreflect.FileDescriptor
+var File_agent_config_v1_agent_config_proto protoreflect.FileDescriptor
 
-var file_agent_config_proto_rawDesc = []byte{
-	0x0a, 0x12, 0x61, 0x67, 0x65, 0x6e, 0x74, 0x5f, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x2e, 0x70,
+var file_agent_config_v1_agent_config_proto_rawDesc = []byte{
+	0x0a, 0x22, 0x61, 0x67, 0x65, 0x6e, 0x74, 0x2f, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x2f, 0x76,
+	0x31, 0x2f, 0x61, 0x67, 0x65, 0x6e, 0x74, 0x5f, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x2e, 0x70,
 	0x72, 0x6f, 0x74, 0x6f, 0x12, 0x19, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6e, 0x66, 0x2e,
 	0x61, 0x67, 0x65, 0x6e, 0x74, 0x2e, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x2e, 0x76, 0x31, 0x22,
 	0xa1, 0x08, 0x0a, 0x0b, 0x41, 0x67, 0x65, 0x6e, 0x74, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x12,
@@ -543,26 +544,26 @@ var file_agent_config_proto_rawDesc = []byte{
 }
 
 var (
-	file_agent_config_proto_rawDescOnce sync.Once
-	file_agent_config_proto_rawDescData = file_agent_config_proto_rawDesc
+	file_agent_config_v1_agent_config_proto_rawDescOnce sync.Once
+	file_agent_config_v1_agent_config_proto_rawDescData = file_agent_config_v1_agent_config_proto_rawDesc
 )
 
-func file_agent_config_proto_rawDescGZIP() []byte {
-	file_agent_config_proto_rawDescOnce.Do(func() {
-		file_agent_config_proto_rawDescData = protoimpl.X.CompressGZIP(file_agent_config_proto_rawDescData)
+func file_agent_config_v1_agent_config_proto_rawDescGZIP() []byte {
+	file_agent_config_v1_agent_config_proto_rawDescOnce.Do(func() {
+		file_agent_config_v1_agent_config_proto_rawDescData = protoimpl.X.CompressGZIP(file_agent_config_v1_agent_config_proto_rawDescData)
 	})
-	return file_agent_config_proto_rawDescData
+	return file_agent_config_v1_agent_config_proto_rawDescData
 }
 
-var file_agent_config_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_agent_config_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
-var file_agent_config_proto_goTypes = []interface{}{
+var file_agent_config_v1_agent_config_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
+var file_agent_config_v1_agent_config_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_agent_config_v1_agent_config_proto_goTypes = []interface{}{
 	(AgentConfig_StoreType)(0),    // 0: protoconf.agent.config.v1.AgentConfig.StoreType
 	(AgentConfig_LogLevel)(0),     // 1: protoconf.agent.config.v1.AgentConfig.LogLevel
 	(*AgentConfig)(nil),           // 2: protoconf.agent.config.v1.AgentConfig
 	(*AgentConfig_TLSConfig)(nil), // 3: protoconf.agent.config.v1.AgentConfig.TLSConfig
 }
-var file_agent_config_proto_depIdxs = []int32{
+var file_agent_config_v1_agent_config_proto_depIdxs = []int32{
 	0, // 0: protoconf.agent.config.v1.AgentConfig.store:type_name -> protoconf.agent.config.v1.AgentConfig.StoreType
 	3, // 1: protoconf.agent.config.v1.AgentConfig.tls_config:type_name -> protoconf.agent.config.v1.AgentConfig.TLSConfig
 	3, // 2: protoconf.agent.config.v1.AgentConfig.store_tls:type_name -> protoconf.agent.config.v1.AgentConfig.TLSConfig
@@ -574,13 +575,13 @@ var file_agent_config_proto_depIdxs = []int32{
 	0, // [0:4] is the sub-list for field type_name
 }
 
-func init() { file_agent_config_proto_init() }
-func file_agent_config_proto_init() {
-	if File_agent_config_proto != nil {
+func init() { file_agent_config_v1_agent_config_proto_init() }
+func file_agent_config_v1_agent_config_proto_init() {
+	if File_agent_config_v1_agent_config_proto != nil {
 		return
 	}
 	if !protoimpl.UnsafeEnabled {
-		file_agent_config_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
+		file_agent_config_v1_agent_config_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*AgentConfig); i {
 			case 0:
 				return &v.state
@@ -592,7 +593,7 @@ func file_agent_config_proto_init() {
 				return nil
 			}
 		}
-		file_agent_config_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+		file_agent_config_v1_agent_config_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*AgentConfig_TLSConfig); i {
 			case 0:
 				return &v.state
@@ -605,7 +606,7 @@ func file_agent_config_proto_init() {
 			}
 		}
 	}
-	file_agent_config_proto_msgTypes[1].OneofWrappers = []interface{}{
+	file_agent_config_v1_agent_config_proto_msgTypes[1].OneofWrappers = []interface{}{
 		(*AgentConfig_TLSConfig_KeyText)(nil),
 		(*AgentConfig_TLSConfig_KeyFile)(nil),
 		(*AgentConfig_TLSConfig_CertText)(nil),
@@ -617,19 +618,19 @@ func file_agent_config_proto_init() {
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: file_agent_config_proto_rawDesc,
+			RawDescriptor: file_agent_config_v1_agent_config_proto_rawDesc,
 			NumEnums:      2,
 			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_agent_config_proto_goTypes,
-		DependencyIndexes: file_agent_config_proto_depIdxs,
-		EnumInfos:         file_agent_config_proto_enumTypes,
-		MessageInfos:      file_agent_config_proto_msgTypes,
+		GoTypes:           file_agent_config_v1_agent_config_proto_goTypes,
+		DependencyIndexes: file_agent_config_v1_agent_config_proto_depIdxs,
+		EnumInfos:         file_agent_config_v1_agent_config_proto_enumTypes,
+		MessageInfos:      file_agent_config_v1_agent_config_proto_msgTypes,
 	}.Build()
-	File_agent_config_proto = out.File
-	file_agent_config_proto_rawDesc = nil
-	file_agent_config_proto_goTypes = nil
-	file_agent_config_proto_depIdxs = nil
+	File_agent_config_v1_agent_config_proto = out.File
+	file_agent_config_v1_agent_config_proto_rawDesc = nil
+	file_agent_config_v1_agent_config_proto_goTypes = nil
+	file_agent_config_v1_agent_config_proto_depIdxs = nil
 }

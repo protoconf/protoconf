@@ -1,6 +1,6 @@
 {
   "protoFile": "test.proto",
   "value": {
-    "@type": "type.googleapis.com/MessageWithSubMessage"
+    "@type": "type.googleapis.com/test.v1.MessageWithSubMessage"
   }
 }

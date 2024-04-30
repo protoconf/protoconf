@@ -7,9 +7,9 @@ import (
 
 	_ "github.com/bufbuild/protovalidate-go"
 	_ "github.com/bufbuild/protovalidate-go/legacy"
+	protoconf_pb "github.com/protoconf/protoconf/pb/protoconf/v1"
 
 	"github.com/protoconf/protoconf/consts"
-	v1 "github.com/protoconf/protoconf/datatypes/proto/v1"
 	"github.com/protoconf/protoconf/utils"
 	"github.com/protoconf/protoconf/utils/testdata"
 	"google.golang.org/protobuf/proto"
@@ -74,7 +74,7 @@ func TestParser_ReadConfig(t *testing.T) {
 			fields: fields{filepath.Join(testdata.SmallTestDir())},
 			args: args{
 				filename: "materialized_config/test.materialized_JSON",
-				msg:      &v1.ProtoconfValue{},
+				msg:      &protoconf_pb.ProtoconfValue{},
 			},
 			wantErr: false,
 		},
@@ -83,7 +83,7 @@ func TestParser_ReadConfig(t *testing.T) {
 			fields: fields{filepath.Join(testdata.SmallTestDir())},
 			args: args{
 				filename: "materialized_config/test.materialized_JSON1",
-				msg:      &v1.ProtoconfValue{},
+				msg:      &protoconf_pb.ProtoconfValue{},
 			},
 			wantErr: true,
 		},

@@ -98,5 +98,5 @@ var ProtoconfMutationService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "protoconf_mutation.proto",
+	Metadata: "server/api/proto/v1/protoconf_mutation.proto",
 }

@@ -324,7 +324,7 @@ func (m *ModuleService) GenFileDescriptorSet(r *module.RemoteRepo) error {
 		excludes = append(excludes, newRe)
 	}
 
-	err := registry.Import(utils.ParseFilesButDoNotLink, excludes, files...)
+	err := registry.Import(registry.Parse, excludes, files...)
 	if err != nil {
 		return err
 	}
@@ -352,7 +352,7 @@ func (m *ModuleService) GetProtoRegistry() *utils.DescriptorRegistry {
 
 		}
 	}
-	err := registry.Import(utils.Parse, []*regexp.Regexp{}, filepath.Join(m.getProtoconfPath(), consts.SrcPath))
+	err := registry.Import(registry.Parse, []*regexp.Regexp{}, filepath.Join(m.getProtoconfPath(), consts.SrcPath))
 	if err != nil {
 		slog.Default().Error("failed to import proto files", slog.String("error", err.Error()))
 	}

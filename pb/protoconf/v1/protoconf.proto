@@ -1,0 +1,94 @@
+syntax = "proto3";
+package protoconf.v1;
+
+option java_package = "com.protoconf.datatypes.v1";
+option go_package = "github.com/protoconf/protoconf/pb/protoconf/v1;protoconf_pb";
+import "google/protobuf/any.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+message ProtoconfValue {
+    string proto_file = 1;
+    google.protobuf.Any value = 2;
+
+    ConfigRollout rollout_config = 3;
+    Metadata metadata = 4;
+
+    message ConfigRollout {
+        // cooldown is the duration of time the inserter waits before applying
+        // the next stage, Uses protobuf google.protobuf.Duration well-known-type
+        google.protobuf.Duration default_cooldown_time = 1;
+
+		// expiration will be added to the time of insertion to be set as
+        // `expires_at`. When `expires_at` is due, the config should revert
+        // to default.
+        google.protobuf.Duration default_expiration_time = 2;
+
+        repeated Stage stages = 3;
+
+        string namespace = 4;
+
+        message Stage {
+            string channel = 1;
+            uint32 percentile = 2;
+            map<string, string> labels = 3;
+            bool manual = 4;
+            google.protobuf.Duration cooldown = 5;
+            google.protobuf.Duration expiration = 6;            
+            google.protobuf.Timestamp expires_at = 7;
+            string version = 8;
+        }
+    }
+}
+
+
+// Agent
+message Metadata {
+	string commit = 1;
+	string committer_email = 2;
+	string author_email = 3;
+	google.protobuf.Timestamp committed_at = 4;
+	google.protobuf.Timestamp authored_at = 5;
+	google.protobuf.Timestamp inserted_at = 6;
+	string channel = 7;
+}
+
+message ConfigSubscriptionRequest {
+    string path = 1;
+    string channel = 2;
+}
+
+message ConfigUpdate {
+    google.protobuf.Any value = 1;
+    string error =2;
+}
+
+service ProtoconfService{
+    rpc SubscribeForConfig(ConfigSubscriptionRequest) returns (stream ConfigUpdate);
+}
+
+// Mutation Server
+message ConfigMutationRequest {
+    string path = 1;
+    ProtoconfValue value = 2;
+    string script_metadata = 3;
+  }
+  
+  message ConfigMutationResponse {
+    string uuid = 1;
+    string commit_hash = 2; 
+    map<string, string> links = 3;
+    oneof result {
+      bool success = 4;
+      bool failure = 5;
+    }
+    string error_message = 6;
+  }
+  
+  service ProtoconfMutationService {
+    rpc MutateConfig(ConfigMutationRequest) returns (ConfigMutationResponse);
+  }
+  
+  service ProtoconfMutationReportService {
+    rpc ReportProgress(ConfigMutationResponse) returns (ConfigMutationResponse);
+  }
