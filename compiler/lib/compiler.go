@@ -2,10 +2,12 @@ package lib
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
+	"log/slog"
 	"path/filepath"
 	"strings"
 
@@ -16,6 +18,7 @@ import (
 	"github.com/protoconf/protoconf/compiler/starproto"
 	"github.com/protoconf/protoconf/consts"
 	pc "github.com/protoconf/protoconf/datatypes/proto/v1"
+	protoconf_pb "github.com/protoconf/protoconf/pb/protoconf/v1"
 	"go.starlark.net/resolve"
 	"go.starlark.net/starlark"
 	"google.golang.org/protobuf/encoding/protojson"
@@ -63,71 +66,128 @@ var (
 )
 
 func (c *Compiler) CompileFile(filename string) error {
+	ctx := context.Background()
+	ctx, cancel := context.WithCancelCause(ctx)
+	ch, errCh := c.CompileFileAsync(ctx, cancel, filename)
+	var err error
+	for {
+		select {
+		case resp := <-ch:
+			slog.Default().Debug("Compiled", slog.String("file", resp.Path))
+		case e := <-errCh:
+			err = errors.Join(err, e)
+		case <-ctx.Done():
+			e := context.Cause(ctx)
+			if errors.Is(e, context.Canceled) {
+				e = nil
+			}
+			return errors.Join(err, e)
+		}
+	}
+}
+
+func (c *Compiler) CompileFileAsync(ctx context.Context, cancel context.CancelCauseFunc, filename string) (chan *protoconf_pb.CompileResponse, chan error) {
 	multiConfig := false
 	if strings.HasSuffix(filename, consts.ConfigExtension) {
 	} else if strings.HasSuffix(filename, consts.MultiConfigExtension) {
 		multiConfig = true
 	} else {
-		return errors.Join(ErrBadConfigExtension, fmt.Errorf("config file must end with either %s or %s, got: %s", consts.ConfigExtension, consts.MultiConfigExtension, filename))
+		cancel(errors.Join(ErrBadConfigExtension, fmt.Errorf("config file must end with either %s or %s, got: %s", consts.ConfigExtension, consts.MultiConfigExtension, filename)))
+		return nil, nil
 	}
 
 	mainOutput, configFile, err := c.runConfig(filename)
 	if err != nil {
-		return err
+		cancel(err)
+		return nil, nil
 	}
 
+	ch := make(chan *protoconf_pb.CompileResponse)
+	errCh := make(chan error)
 	configs := make(map[string]*dynamic.Message)
 	outputs := make(map[string]*dynamic.Message)
 
-	if multiConfig {
-		starDict, ok := mainOutput.(*starlark.Dict)
-		if !ok {
-			return errors.Join(ErrNotADictionary, fmt.Errorf("got: %s", mainOutput.Type()))
+	sendErr := func(err error) error {
+		ch <- &protoconf_pb.CompileResponse{
+			Path:   filename,
+			Errors: []string{err.Error()},
 		}
-
-		outputDir := filepath.Join(c.MaterializedDir, strings.TrimSuffix(filename, consts.MultiConfigExtension))
-		for _, item := range starDict.Items() {
-			key, ok := item[0].(starlark.String)
+		errCh <- err
+		cancel(err)
+		return err
+	}
+	go func() {
+		if multiConfig {
+			starDict, ok := mainOutput.(*starlark.Dict)
 			if !ok {
-				return errors.Join(ErrNotStringKey, fmt.Errorf("got: %s", item[0].Type()))
+				err := errors.Join(ErrNotADictionary, fmt.Errorf("got: %s", mainOutput.Type()))
+				sendErr(err)
+				return
 			}
-			value, ok := starproto.ToProtoMessage(item[1])
+
+			outputDir := filepath.Join(c.MaterializedDir, strings.TrimSuffix(filename, consts.MultiConfigExtension))
+			for _, item := range starDict.Items() {
+				key, ok := item[0].(starlark.String)
+				if !ok {
+					err = errors.Join(ErrNotStringKey, fmt.Errorf("got: %s", item[0].Type()))
+					sendErr(err)
+					return
+				}
+				value, ok := starproto.ToProtoMessage(item[1])
+				if !ok {
+					err = errors.Join(ErrNoProtobufValue, fmt.Errorf("got: %s", item[1].Type()))
+					sendErr(err)
+					return
+				}
+				configs[filepath.Join(outputDir, string(key))+consts.CompiledConfigExtension] = value
+				if hasAnySuffix(string(key), ".json", ".yaml", ".yml", ".toml") {
+					outputs[filepath.Join(strings.TrimSuffix(filename, consts.MultiConfigExtension), string(key))] = value
+				}
+			}
+		} else {
+			message, ok := starproto.ToProtoMessage(mainOutput)
 			if !ok {
-				return errors.Join(ErrNoProtobufValue, fmt.Errorf("got: %s", item[1].Type()))
+				err = errors.Join(ErrNoProtobufValue, fmt.Errorf("got: %s", mainOutput.Type()))
+				sendErr(err)
+				return
 			}
-			configs[filepath.Join(outputDir, string(key))+consts.CompiledConfigExtension] = value
-			if hasAnySuffix(string(key), ".json", ".yaml", ".yml", ".toml") {
-				outputs[filepath.Join(strings.TrimSuffix(filename, consts.MultiConfigExtension), string(key))] = value
+			outputFile := filepath.Join(c.MaterializedDir, strings.TrimSuffix(filename, consts.ConfigExtension)+consts.CompiledConfigExtension)
+			configs[outputFile] = message
+			if hasAnySuffix(strings.TrimSuffix(filename, consts.ConfigExtension), ".json", ".yaml", ".yml", ".toml") {
+				outputs[filepath.Join(strings.TrimSuffix(filename, consts.ConfigExtension))] = message
 			}
 		}
-	} else {
-		message, ok := starproto.ToProtoMessage(mainOutput)
-		if !ok {
-			return errors.Join(ErrNoProtobufValue, fmt.Errorf("got: %s", mainOutput.Type()))
-		}
-		outputFile := filepath.Join(c.MaterializedDir, strings.TrimSuffix(filename, consts.ConfigExtension)+consts.CompiledConfigExtension)
-		configs[outputFile] = message
-		if hasAnySuffix(strings.TrimSuffix(filename, consts.ConfigExtension), ".json", ".yaml", ".yml", ".toml") {
-			outputs[filepath.Join(strings.TrimSuffix(filename, consts.ConfigExtension))] = message
-		}
-	}
 
-	for outputFile, message := range configs {
-		if err := configFile.validate(message); err != nil {
-			return err
-		}
-		if err := c.writeConfig(message, outputFile); err != nil {
-			return err
-		}
-	}
+		for outputFile, message := range configs {
+			protoconfValue, err := toProtoconfValue(message)
+			result := &protoconf_pb.CompileResponse{
+				Path:   outputFile,
+				File:   filename,
+				Result: protoconfValue,
+				Errors: []string{},
+			}
+			if err != nil {
+				sendErr(err)
+			}
+			if err := configFile.validate(message); err != nil {
+				sendErr(err)
+			}
+			if err := c.writeConfig(message, outputFile); err != nil {
+				sendErr(err)
+			}
+			ch <- result
 
-	for outputFile, message := range outputs {
-		if err := c.writeOutput(message, outputFile); err != nil {
-			return err
 		}
-	}
 
-	return nil
+		for outputFile, message := range outputs {
+			if err := c.writeOutput(message, outputFile); err != nil {
+				sendErr(err)
+			}
+		}
+		slog.Default().Info("Compiled", slog.String("file", filename))
+		cancel(nil)
+	}()
+	return ch, errCh
 }
 
 func hasAnySuffix(s string, suffixes ...string) bool {
@@ -176,20 +236,27 @@ func (c *Compiler) writeOutput(message *dynamic.Message, filename string) error 
 	return nil
 }
 
-func (c *Compiler) writeConfig(message *dynamic.Message, filename string) error {
-	protoconfValue := &pc.ProtoconfValue{}
+func toProtoconfValue(message *dynamic.Message) (*protoconf_pb.ProtoconfValue, error) {
+	protoconfValue := &protoconf_pb.ProtoconfValue{}
 	err := message.MergeInto(protoconfValue)
 	if err != nil {
 		any, err := anypb.New(starproto.ToDynamicPb(message))
 		if err != nil {
-			return fmt.Errorf("error marshaling proto to Any, message=%s", message)
+			return nil, fmt.Errorf("error marshaling proto to Any, message=%s", message)
 		}
 
-		protoconfValue = &pc.ProtoconfValue{
+		return &protoconf_pb.ProtoconfValue{
 			ProtoFile: filepath.ToSlash(message.GetMessageDescriptor().GetFile().GetName()),
 			Value:     any,
-		}
+		}, nil
+	}
+	return protoconfValue, nil
+}
 
+func (c *Compiler) writeConfig(message *dynamic.Message, filename string) error {
+	protoconfValue, err := toProtoconfValue(message)
+	if err != nil {
+		return err
 	}
 
 	jsonData, err := protojson.MarshalOptions{

@@ -300,3 +300,116 @@ var ProtoconfMutationReportService_ServiceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "protoconf/v1/protoconf.proto",
 }
+
+// ProtoconfCompileClient is the client API for ProtoconfCompile service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type ProtoconfCompileClient interface {
+	CompileFiles(ctx context.Context, in *CompileRequest, opts ...grpc.CallOption) (ProtoconfCompile_CompileFilesClient, error)
+}
+
+type protoconfCompileClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewProtoconfCompileClient(cc grpc.ClientConnInterface) ProtoconfCompileClient {
+	return &protoconfCompileClient{cc}
+}
+
+func (c *protoconfCompileClient) CompileFiles(ctx context.Context, in *CompileRequest, opts ...grpc.CallOption) (ProtoconfCompile_CompileFilesClient, error) {
+	stream, err := c.cc.NewStream(ctx, &ProtoconfCompile_ServiceDesc.Streams[0], "/protoconf.v1.ProtoconfCompile/CompileFiles", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &protoconfCompileCompileFilesClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type ProtoconfCompile_CompileFilesClient interface {
+	Recv() (*CompileResponse, error)
+	grpc.ClientStream
+}
+
+type protoconfCompileCompileFilesClient struct {
+	grpc.ClientStream
+}
+
+func (x *protoconfCompileCompileFilesClient) Recv() (*CompileResponse, error) {
+	m := new(CompileResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+// ProtoconfCompileServer is the server API for ProtoconfCompile service.
+// All implementations must embed UnimplementedProtoconfCompileServer
+// for forward compatibility
+type ProtoconfCompileServer interface {
+	CompileFiles(*CompileRequest, ProtoconfCompile_CompileFilesServer) error
+	mustEmbedUnimplementedProtoconfCompileServer()
+}
+
+// UnimplementedProtoconfCompileServer must be embedded to have forward compatible implementations.
+type UnimplementedProtoconfCompileServer struct {
+}
+
+func (UnimplementedProtoconfCompileServer) CompileFiles(*CompileRequest, ProtoconfCompile_CompileFilesServer) error {
+	return status.Errorf(codes.Unimplemented, "method CompileFiles not implemented")
+}
+func (UnimplementedProtoconfCompileServer) mustEmbedUnimplementedProtoconfCompileServer() {}
+
+// UnsafeProtoconfCompileServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ProtoconfCompileServer will
+// result in compilation errors.
+type UnsafeProtoconfCompileServer interface {
+	mustEmbedUnimplementedProtoconfCompileServer()
+}
+
+func RegisterProtoconfCompileServer(s grpc.ServiceRegistrar, srv ProtoconfCompileServer) {
+	s.RegisterService(&ProtoconfCompile_ServiceDesc, srv)
+}
+
+func _ProtoconfCompile_CompileFiles_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(CompileRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(ProtoconfCompileServer).CompileFiles(m, &protoconfCompileCompileFilesServer{stream})
+}
+
+type ProtoconfCompile_CompileFilesServer interface {
+	Send(*CompileResponse) error
+	grpc.ServerStream
+}
+
+type protoconfCompileCompileFilesServer struct {
+	grpc.ServerStream
+}
+
+func (x *protoconfCompileCompileFilesServer) Send(m *CompileResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+// ProtoconfCompile_ServiceDesc is the grpc.ServiceDesc for ProtoconfCompile service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var ProtoconfCompile_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "protoconf.v1.ProtoconfCompile",
+	HandlerType: (*ProtoconfCompileServer)(nil),
+	Methods:     []grpc.MethodDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "CompileFiles",
+			Handler:       _ProtoconfCompile_CompileFiles_Handler,
+			ServerStreams: true,
+		},
+	},
+	Metadata: "protoconf/v1/protoconf.proto",
+}
