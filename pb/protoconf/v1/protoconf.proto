@@ -74,21 +74,39 @@ message ConfigMutationRequest {
     string script_metadata = 3;
   }
   
-  message ConfigMutationResponse {
-    string uuid = 1;
-    string commit_hash = 2; 
-    map<string, string> links = 3;
-    oneof result {
-      bool success = 4;
-      bool failure = 5;
-    }
-    string error_message = 6;
+message ConfigMutationResponse {
+  string uuid = 1;
+  string commit_hash = 2; 
+  map<string, string> links = 3;
+  oneof result {
+    bool success = 4;
+    bool failure = 5;
   }
-  
-  service ProtoconfMutationService {
-    rpc MutateConfig(ConfigMutationRequest) returns (ConfigMutationResponse);
-  }
-  
-  service ProtoconfMutationReportService {
-    rpc ReportProgress(ConfigMutationResponse) returns (ConfigMutationResponse);
-  }
+  string error_message = 6;
+}
+
+service ProtoconfMutationService {
+  rpc MutateConfig(ConfigMutationRequest) returns (ConfigMutationResponse);
+}
+
+service ProtoconfMutationReportService {
+  rpc ReportProgress(ConfigMutationResponse) returns (ConfigMutationResponse);
+}
+
+
+// Compiler
+message CompileRequest {
+  repeated string files = 1;
+  bool skip_disk = 2;
+}
+
+message CompileResponse {
+  string path = 1;
+  ProtoconfValue result = 2;
+  string file = 3;
+  repeated string errors = 4;
+}
+
+service ProtoconfCompile {
+   rpc CompileFiles(CompileRequest) returns (stream CompileResponse);
+}

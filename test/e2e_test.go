@@ -2,8 +2,6 @@ package test
 
 import (
 	"context"
-	"log"
-	"net"
 	"testing"
 	"time"
 
@@ -23,8 +21,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
-	"google.golang.org/grpc/test/bufconn"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/anypb"
 	"google.golang.org/protobuf/types/known/structpb"
@@ -60,7 +56,7 @@ func Test(t *testing.T) {
 
 	devMutationServer := server.NewProtoconfMutationServer(protoconfRoot)
 	var devMutationClient protoconfmutation.ProtoconfMutationServiceClient
-	devCloser := testServer(ctx, func(s *grpc.Server) {
+	devCloser := TestServer(ctx, func(s *grpc.Server) {
 		protoconfservice.RegisterProtoconfServiceServer(s, devAgentServer)
 		protoconf_pb.RegisterProtoconfMutationServiceServer(s, devMutationServer)
 	}, func(conn *grpc.ClientConn) {
@@ -77,7 +73,7 @@ func Test(t *testing.T) {
 	prodAgentServer, err := agent.NewProtoconfKVAgentRollout(prodStore, &protoconf_agent_config.AgentConfig{})
 	assert.NoError(t, err)
 	var prodAgentClient protoconfservice.ProtoconfServiceClient
-	prodCloser := testServer(ctx, func(s *grpc.Server) {
+	prodCloser := TestServer(ctx, func(s *grpc.Server) {
 		protoconfservice.RegisterProtoconfServiceServer(s, prodAgentServer)
 	}, func(conn *grpc.ClientConn) {
 		prodAgentClient = protoconfservice.NewProtoconfServiceClient(conn)
@@ -196,40 +192,4 @@ func Test(t *testing.T) {
 		}
 		watcher.CloseSend()
 	})
-}
-
-type regServer func(s *grpc.Server)
-type addConnectionToClient func(conn *grpc.ClientConn)
-
-func testServer(ctx context.Context, regServer regServer, addConnectionToClient addConnectionToClient) func() {
-	buffer := 101024 * 1024
-	lis := bufconn.Listen(buffer)
-	baseServer := grpc.NewServer()
-	regServer(baseServer)
-	go func() {
-		context.AfterFunc(ctx, func() { baseServer.GracefulStop() })
-		if err := baseServer.Serve(lis); err != nil {
-			log.Printf("error serving server: %v", err)
-		}
-	}()
-
-	conn, err := grpc.DialContext(ctx, "",
-		grpc.WithContextDialer(func(context.Context, string) (net.Conn, error) {
-			return lis.Dial()
-		}), grpc.WithTransportCredentials(insecure.NewCredentials()))
-	if err != nil {
-		log.Printf("error connecting to server: %v", err)
-	}
-
-	closer := func() {
-		err := lis.Close()
-		if err != nil {
-			log.Printf("error closing listener: %v", err)
-		}
-		baseServer.Stop()
-	}
-
-	addConnectionToClient(conn)
-
-	return closer
 }

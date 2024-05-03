@@ -3,8 +3,10 @@ package compiler
 import (
 	"bytes"
 	"context"
+	"errors"
 	"flag"
 	"fmt"
+	"io"
 	"log"
 	"log/slog"
 	"os"
@@ -16,9 +18,11 @@ import (
 	"github.com/mitchellh/cli"
 	compilerlib "github.com/protoconf/protoconf/compiler/lib"
 	"github.com/protoconf/protoconf/consts"
+	protoconf_pb "github.com/protoconf/protoconf/pb/protoconf/v1"
 	"go.starlark.net/repl"
 	"go.starlark.net/starlark"
 	"golang.org/x/sync/errgroup"
+	"google.golang.org/grpc"
 )
 
 type cliCommand struct{}
@@ -29,6 +33,7 @@ type cliConfig struct {
 	processTemplates bool
 	cpuprofile       string
 	memprofile       string
+	compilerAddress  string
 }
 
 func newFlagSet() (*flag.FlagSet, *cliConfig) {
@@ -44,17 +49,13 @@ func newFlagSet() (*flag.FlagSet, *cliConfig) {
 	flags.BoolVar(&config.processTemplates, "process-templates", false, "Process template files")
 	flags.StringVar(&config.cpuprofile, "cpuprofile", "", "Write cpu profiling info to this file")
 	flags.StringVar(&config.memprofile, "memprofile", "", "Write memory profiling info to this file")
+	flags.StringVar(&config.compilerAddress, "compiler-address", "", "if set, the command will issue a gRPC request to the compiler service at the given address instead of running the compiler locally. The compiler service must be running.")
 
 	return flags, config
 }
 
 func (c *cliCommand) Run(args []string) int {
 	flags, config := newFlagSet()
-	ui := &cli.BasicUi{
-		Reader:      os.Stdin,
-		Writer:      os.Stdout,
-		ErrorWriter: os.Stderr,
-	}
 	logger := slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{
 		AddSource: true,
 		Level:     slog.LevelDebug,
@@ -79,18 +80,6 @@ func (c *cliCommand) Run(args []string) int {
 	}
 
 	protoconfRoot := strings.TrimSpace(flags.Args()[0])
-	compiler := compilerlib.NewCompiler(protoconfRoot, config.verboseLogging)
-
-	if config.repl {
-		REPL(compiler)
-		return 0
-	}
-
-	if config.processTemplates {
-		if err := findTemplateFilesAndProccess(); err != nil {
-			log.Fatal(err)
-		}
-	}
 	var configs []string
 
 	if flags.NArg() == 1 {
@@ -104,6 +93,65 @@ func (c *cliCommand) Run(args []string) int {
 		configs = flags.Args()[1:]
 	}
 
+	if config.compilerAddress != "" {
+		return runRemote(config, configs)
+	}
+	return runLocally(protoconfRoot, config, configs)
+}
+
+func runRemote(config *cliConfig, configs []string) int {
+	conn, err := grpc.Dial(config.compilerAddress, grpc.WithInsecure())
+	if err != nil {
+		log.Printf("error connecting to server: %v", err)
+	}
+	client := protoconf_pb.NewProtoconfCompileClient(conn)
+	stream, err := client.CompileFiles(context.Background(), &protoconf_pb.CompileRequest{Files: configs})
+	if err != nil {
+		log.Printf("error compiling files: %v", err)
+		return 1
+	}
+	ret := 0
+	for {
+		resp, err := stream.Recv()
+		if errors.Is(err, io.EOF) {
+			return ret
+		}
+		if err != nil {
+			log.Printf("error receiving response: %v", err)
+			return 1
+		}
+		if resp != nil {
+			if len(resp.Errors) > 0 {
+				log.Printf("Error compiling config %s:\n    %s", resp.Path, resp.Errors)
+				ret = 1
+				continue
+			}
+			if config.verboseLogging {
+				log.Printf("Compiled %s: %v", resp.Path, resp.Result)
+			}
+		}
+	}
+
+}
+
+func runLocally(protoconfRoot string, config *cliConfig, configs []string) int {
+	compiler := compilerlib.NewCompiler(protoconfRoot, config.verboseLogging)
+	ui := &cli.BasicUi{
+		Reader:      os.Stdin,
+		Writer:      os.Stdout,
+		ErrorWriter: os.Stderr,
+	}
+
+	if config.repl {
+		REPL(compiler)
+		return 0
+	}
+
+	if config.processTemplates {
+		if err := findTemplateFilesAndProccess(); err != nil {
+			log.Fatal(err)
+		}
+	}
 	g, _ := errgroup.WithContext(context.Background())
 
 	for _, config := range configs {

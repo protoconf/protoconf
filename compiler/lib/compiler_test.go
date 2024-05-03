@@ -16,11 +16,23 @@ import (
 )
 
 func TestCompiler_CompileFile(t *testing.T) {
-	dir := testdata.SmallTestDir()
-	ms := NewModuleService(dir)
-	require.NoError(t, ms.Init(context.Background(), "CONFIGSPACE"))
-	require.NoError(t, ms.Sync(context.Background()))
-	c := NewCompiler(dir, false)
+	var dir string
+	var ms *ModuleService
+	var c *Compiler
+	t.Run("Prepare", func(t *testing.T) {
+		dir = testdata.SmallTestDir()
+	})
+	t.Run("NewModuleService", func(t *testing.T) {
+		ms = NewModuleService(dir)
+	})
+	t.Run("Setup", func(t *testing.T) {
+		require.NoError(t, ms.Init(context.Background(), "CONFIGSPACE"))
+		require.NoError(t, ms.Sync(context.Background()))
+	})
+
+	t.Run("NewCompiler", func(t *testing.T) {
+		c = NewCompiler(dir, false)
+	})
 
 	t.Run("with_config_rollout_validator.pconf", compilerTest(c, ErrInvalidConfig))
 	t.Run("pinc_load_remote.pconf", compilerTest(c, nil))
