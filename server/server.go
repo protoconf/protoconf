@@ -35,12 +35,15 @@ import (
 	"go.opentelemetry.io/otel/sdk/resource"
 	"go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
+	"golang.org/x/net/http2"
+	"golang.org/x/net/http2/h2c"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/reflection/grpc_reflection_v1alpha"
+	"google.golang.org/grpc/test/bufconn"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
@@ -137,22 +140,105 @@ func (c *cliCommand) Run(args []string) int {
 	protoconfRoot := strings.TrimSpace(flags.Args()[0])
 	protoconfServer := NewProtoconfMutationServer(protoconfRoot)
 	protoconfServer.config = config
+	protoconfServer.PreMutationScript = config.preMutationScript
+	protoconfServer.PostMutationScript = config.postMutationScript
 
 	logger.Info("starting protoconf server", "address", config.grpcAddress, "version", consts.Version, "root", protoconfRoot, "pre", config.preMutationScript, "post", config.postMutationScript)
 
-	listener, err := net.Listen("tcp", config.grpcAddress)
-	if err != nil {
-		logger.Error("error listening", err)
-		return 1
-	}
-
 	rpcServer := grpc.NewServer(grpc.StatsHandler(otelgrpc.NewServerHandler()))
-	protoconfmutation.RegisterProtoconfMutationServiceServer(rpcServer, &legacyProtoconfMutationServer{srv: protoconfServer})
-	protoconf_pb.RegisterProtoconfMutationServiceServer(rpcServer, protoconfServer)
-	protoconf_pb.RegisterProtoconfMutationReportServiceServer(rpcServer, protoconfServer)
+	protoconfServer.Init(rpcServer)
 
-	exampleMaker := map[string]exampleFunc{}
-	protoconfServer.parser.FilesResolver.RangeFiles(func(fd protoreflect.FileDescriptor) bool {
+	logger.Info("protoconf server running")
+
+	httpServer := &http.Server{
+		Addr: ":4300",
+	}
+	go func() {
+		ticker := time.NewTicker(5 * time.Second)
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case <-ticker.C:
+				protoconfServer.GenReflectionUI(ctx, rpcServer, httpServer)
+			}
+		}
+	}()
+	protoconfServer.GenReflectionUI(ctx, rpcServer, httpServer)
+	context.AfterFunc(ctx, func() {
+		httpServer.Shutdown(ctx)
+	})
+
+	httpServer.ListenAndServe()
+
+	return 0
+}
+
+func (c *cliCommand) Help() string {
+	var b bytes.Buffer
+	b.WriteString(c.Synopsis())
+	b.WriteString("\n")
+	flags, _ := newFlagSet()
+	flags.SetOutput(&b)
+	flags.Usage()
+	return b.String()
+}
+
+func (c *cliCommand) Synopsis() string {
+	return "Runs a server"
+}
+
+// Command is a cli.CommandFactory
+func Command() (cli.Command, error) {
+	return &cliCommand{}, nil
+}
+
+type ProtoconfMutationServer struct {
+	protoconf_pb.UnimplementedProtoconfMutationServiceServer
+	protoconf_pb.UnimplementedProtoconfMutationReportServiceServer
+	config             *cliConfig
+	protoconfRoot      string
+	parser             *parser.Parser
+	reports            *sync.Map
+	exampleMaker       map[string]exampleFunc
+	PreMutationScript  string
+	PostMutationScript string
+}
+
+func NewProtoconfMutationServer(protoconfRoot string) *ProtoconfMutationServer {
+	ms := lib.NewModuleService(protoconfRoot)
+	ms.LoadFromLockFile()
+	parser := parser.NewParser(ms.GetProtoFilesRegistry())
+	return &ProtoconfMutationServer{protoconfRoot: protoconfRoot, config: &cliConfig{}, parser: parser, reports: &sync.Map{}}
+}
+
+func (s *ProtoconfMutationServer) Put(ctx context.Context, in *dynamicpb.Message) (proto.Message, error) {
+	any, err := anypb.New(in)
+	if err != nil {
+		return nil, err
+	}
+	md, _ := metadata.FromIncomingContext(ctx)
+	path := md.Get("path")
+	if len(path) != 1 {
+		return nil, fmt.Errorf("path metadata not found")
+	}
+	req := &protoconf_pb.ConfigMutationRequest{
+		Path: path[0],
+		Value: &protoconf_pb.ProtoconfValue{
+			Value: any,
+		},
+	}
+	slog.Debug("Put", "in", in, "path", path, "metadata", md)
+	return s.MutateConfig(ctx, req)
+}
+
+func (s *ProtoconfMutationServer) Init(rpcServer *grpc.Server) {
+	protoconfmutation.RegisterProtoconfMutationServiceServer(rpcServer, &legacyProtoconfMutationServer{srv: s})
+	protoconf_pb.RegisterProtoconfMutationServiceServer(rpcServer, s)
+	protoconf_pb.RegisterProtoconfMutationReportServiceServer(rpcServer, s)
+
+	s.exampleMaker = map[string]exampleFunc{}
+	s.parser.FilesResolver.RangeFiles(func(fd protoreflect.FileDescriptor) bool {
 		_, err := protoregistry.GlobalFiles.FindFileByPath(fd.Path())
 		if !errors.Is(err, protoregistry.NotFound) {
 			return true
@@ -190,7 +276,7 @@ func (c *cliCommand) Run(args []string) int {
 						return interceptor(ctx, in, info, handler)
 					},
 				})
-				exampleMaker[string(method.Input().FullName())] = func(path string, msg proto.Message) standalone.Example {
+				s.exampleMaker[string(method.Input().FullName())] = func(path string, msg proto.Message) standalone.Example {
 					return standalone.Example{
 						Name:    path,
 						Service: string(svc.FullName()),
@@ -203,110 +289,22 @@ func (c *cliCommand) Run(args []string) int {
 				}
 			}
 			logger.Info("Registering service", "service", svcDesc.ServiceName)
-			rpcServer.RegisterService(svcDesc, protoconfServer)
+			rpcServer.RegisterService(svcDesc, s)
 		}
 		return true
 	})
-	logger.Debug("examples", "maker", exampleMaker)
+	logger.Debug("examples", "maker", s.exampleMaker)
 	reflectionServer := reflection.NewServer(reflection.ServerOptions{
 		Services:           rpcServer,
-		DescriptorResolver: protoconfServer.parser.FilesResolver,
-		ExtensionResolver:  protoconfServer.parser.LocalResolver,
+		DescriptorResolver: s.parser.FilesResolver,
+		ExtensionResolver:  s.parser.LocalResolver,
 	})
 
 	grpc_reflection_v1alpha.RegisterServerReflectionServer(rpcServer, reflectionServer)
-
-	logger.Info("protoconf server running")
-
-	httpServer := &http.Server{
-		Addr: ":4333",
-	}
-	context.AfterFunc(ctx, func() {
-		rpcServer.GracefulStop()
-		httpServer.Shutdown(ctx)
-	})
-	go func() {
-		err = rpcServer.Serve(listener)
-		if err != nil {
-			logger.Error("Error serving gRPC, err=%s", err)
-		}
-	}()
-	go func() {
-		ticker := time.NewTicker(5 * time.Second)
-		for {
-			select {
-			case <-ctx.Done():
-				return
-			case <-ticker.C:
-				protoconfServer.genReflectionUI(ctx, listener, httpServer, exampleMaker)
-			}
-		}
-	}()
-	protoconfServer.genReflectionUI(ctx, listener, httpServer, exampleMaker)
-
-	httpServer.ListenAndServe()
-
-	return 0
 }
-
-func (c *cliCommand) Help() string {
-	var b bytes.Buffer
-	b.WriteString(c.Synopsis())
-	b.WriteString("\n")
-	flags, _ := newFlagSet()
-	flags.SetOutput(&b)
-	flags.Usage()
-	return b.String()
-}
-
-func (c *cliCommand) Synopsis() string {
-	return "Runs a server"
-}
-
-// Command is a cli.CommandFactory
-func Command() (cli.Command, error) {
-	return &cliCommand{}, nil
-}
-
-type ProtoconfMutationServer struct {
-	protoconf_pb.UnimplementedProtoconfMutationServiceServer
-	protoconf_pb.UnimplementedProtoconfMutationReportServiceServer
-	config        *cliConfig
-	protoconfRoot string
-	parser        *parser.Parser
-	reports       *sync.Map
-}
-
-func NewProtoconfMutationServer(protoconfRoot string) *ProtoconfMutationServer {
-	ms := lib.NewModuleService(protoconfRoot)
-	ms.LoadFromLockFile()
-	parser := parser.NewParser(ms.GetProtoFilesRegistry())
-	return &ProtoconfMutationServer{protoconfRoot: protoconfRoot, config: &cliConfig{}, parser: parser, reports: &sync.Map{}}
-}
-
-func (s *ProtoconfMutationServer) Put(ctx context.Context, in *dynamicpb.Message) (proto.Message, error) {
-	any, err := anypb.New(in)
-	if err != nil {
-		return nil, err
-	}
-	md, _ := metadata.FromIncomingContext(ctx)
-	path := md.Get("path")
-	if len(path) != 1 {
-		return nil, fmt.Errorf("path metadata not found")
-	}
-	req := &protoconf_pb.ConfigMutationRequest{
-		Path: path[0],
-		Value: &protoconf_pb.ProtoconfValue{
-			Value: any,
-		},
-	}
-	slog.Debug("Put", "in", in, "path", path, "metadata", md)
-	return s.MutateConfig(ctx, req)
-}
-
 func (s *ProtoconfMutationServer) MutateConfig(ctx context.Context, in *protoconf_pb.ConfigMutationRequest) (*protoconf_pb.ConfigMutationResponse, error) {
-	id := uuid.New()
-	s.reports.Store(id, &protoconf_pb.ConfigMutationResponse{Uuid: id.String()})
+	id := uuid.NewString()
+	s.reports.Store(id, &protoconf_pb.ConfigMutationResponse{Uuid: id})
 	defer s.reports.Delete(id)
 	log.Printf("Mutating path=%s", in.Path)
 	filename := filepath.Join(s.protoconfRoot, consts.MutableConfigPath, filepath.Clean(in.Path)+consts.CompiledConfigExtension)
@@ -317,8 +315,8 @@ func (s *ProtoconfMutationServer) MutateConfig(ctx context.Context, in *protocon
 		return nil, logError(fmt.Errorf("error marshaling ProtoconfValue to JSON, value=%s", in.Value))
 	}
 
-	if s.config.preMutationScript != "" {
-		if err := runScript(s.config.preMutationScript, id.String()); err != nil {
+	if s.PreMutationScript != "" {
+		if err := runScript(s.PreMutationScript, id); err != nil {
 			return nil, logError(fmt.Errorf("error running pre mutation script, err=%s", err))
 		}
 	}
@@ -333,8 +331,8 @@ func (s *ProtoconfMutationServer) MutateConfig(ctx context.Context, in *protocon
 
 	log.Printf("Written to %s", filename)
 
-	if s.config.postMutationScript != "" {
-		if err := runScript(s.config.postMutationScript, id.String()); err != nil {
+	if s.PostMutationScript != "" {
+		if err := runScript(s.PostMutationScript, id); err != nil {
 			return nil, logError(fmt.Errorf("error running post mutation script, err=%s", err))
 		}
 	}
@@ -374,20 +372,14 @@ func runScript(filename string, uuid string) error {
 	return nil
 }
 
-func (s *ProtoconfMutationServer) genReflectionUI(ctx context.Context, listener net.Listener, httpServer *http.Server, exampleMaker map[string]exampleFunc) error {
-	cc, err := grpc.DialContext(ctx, listener.Addr().String(), grpc.WithBlock(), grpc.WithTransportCredentials(insecure.NewCredentials()))
-	if err != nil {
-		slog.Default().Error("error creating grpc client", "err", err)
-		return err
-	}
-
+func (s *ProtoconfMutationServer) GenReflectionUI(ctx context.Context, rpcServer *grpc.Server, httpServer *http.Server) error {
 	examples := []standalone.Example{}
 	filepath.WalkDir(filepath.Join(s.protoconfRoot, consts.MutableConfigPath), func(path string, info fs.DirEntry, _ error) error {
 		if info.IsDir() {
 			return nil
 		}
 		value := &protoconf_pb.ProtoconfValue{}
-		err = s.parser.ReadConfig(path, value)
+		err := s.parser.ReadConfig(path, value)
 		if err != nil {
 			logger.Error("error reading config", "path", path, "err", err)
 			return nil
@@ -407,7 +399,7 @@ func (s *ProtoconfMutationServer) genReflectionUI(ctx context.Context, listener 
 		path, _ = filepath.Rel(filepath.Join(s.protoconfRoot, consts.MutableConfigPath), path)
 		path = strings.TrimSuffix(path, consts.CompiledConfigExtension)
 		logger.Debug("example", "path", path, "value", dynamic)
-		if f, ok := exampleMaker[string(mt.Descriptor().FullName())]; ok {
+		if f, ok := s.exampleMaker[string(mt.Descriptor().FullName())]; ok {
 			examples = append(examples, f(path, dynamic))
 		}
 
@@ -419,11 +411,39 @@ func (s *ProtoconfMutationServer) genReflectionUI(ctx context.Context, listener 
 		slog.Default().Error("error creating examples", "err", err)
 		return err
 	}
-	h, err := standalone.HandlerViaReflection(ctx, cc, listener.Addr().String(), ex)
+
+	buffer := 1024 * 1024
+	lis := bufconn.Listen(buffer)
+	go func() {
+		context.AfterFunc(ctx, func() {
+			slog.Info("shutting down rpc server")
+			rpcServer.GracefulStop()
+		})
+		if err := rpcServer.Serve(lis); err != nil {
+			log.Printf("error serving server: %v", err)
+		}
+	}()
+
+	conn, err := grpc.DialContext(ctx, "",
+		grpc.WithContextDialer(func(context.Context, string) (net.Conn, error) {
+			return lis.Dial()
+		}), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Printf("error connecting to server: %v", err)
+	}
+	ui, err := standalone.HandlerViaReflection(ctx, conn, lis.Addr().String(), ex)
 	if err != nil {
 		slog.Default().Error("error creating reflection handler", "err", err)
 		return err
 	}
-	httpServer.Handler = h
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if r.ProtoMajor == 2 && strings.HasPrefix(r.Header.Get("Content-Type"), "application/grpc") {
+			rpcServer.ServeHTTP(w, r)
+		} else {
+			ui.ServeHTTP(w, r)
+		}
+	})
+	httpServer.Handler = h2c.NewHandler(mux, &http2.Server{})
 	return nil
 }

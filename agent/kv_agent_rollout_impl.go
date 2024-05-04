@@ -14,10 +14,10 @@ import (
 	"time"
 
 	"github.com/kvtools/valkeyrie/store"
-	protoconfservice "github.com/protoconf/protoconf/agent/api/proto/v1"
 	protoconf_agent_config "github.com/protoconf/protoconf/agent/config/v1"
 	"github.com/protoconf/protoconf/consts"
 	protoconfvalue "github.com/protoconf/protoconf/datatypes/proto/v1"
+	protoconfservice "github.com/protoconf/protoconf/pb/protoconf/v1"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/metric"

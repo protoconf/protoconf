@@ -6,11 +6,10 @@ import (
 	"testing"
 	"time"
 
-	protoconfservice "github.com/protoconf/protoconf/agent/api/proto/v1"
 	protoconf_agent_config "github.com/protoconf/protoconf/agent/config/v1"
 	"github.com/protoconf/protoconf/agent/dummykv"
-	datatypes "github.com/protoconf/protoconf/datatypes/proto/v1"
 	"github.com/protoconf/protoconf/inserter"
+	protoconf_pb "github.com/protoconf/protoconf/pb/protoconf/v1"
 	"github.com/protoconf/protoconf/utils/testdata"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/protobuf/proto"
@@ -37,17 +36,17 @@ func TestProtoconfKVAgentRollout_SubscribeForConfig(t *testing.T) {
 
 	type update struct {
 		configName     string
-		protoconfValue *datatypes.ProtoconfValue
-		metadata       *datatypes.Metadata
+		protoconfValue *protoconf_pb.ProtoconfValue
+		metadata       *protoconf_pb.Metadata
 	}
 	type result struct {
-		update *protoconfservice.ConfigUpdate
+		update *protoconf_pb.ConfigUpdate
 		within time.Duration
 	}
 	type want struct {
 		agentChannel string
-		agentClient  protoconfservice.ProtoconfServiceClient
-		request      *protoconfservice.ConfigSubscriptionRequest
+		agentClient  protoconf_pb.ProtoconfServiceClient
+		request      *protoconf_pb.ConfigSubscriptionRequest
 		expects      []*result
 	}
 	type args struct {
@@ -65,50 +64,50 @@ func TestProtoconfKVAgentRollout_SubscribeForConfig(t *testing.T) {
 				updates: []*update{
 					{
 						configName:     "test",
-						protoconfValue: &datatypes.ProtoconfValue{Value: newAny(structpb.NewStringValue("hello world!"))},
-						metadata:       &datatypes.Metadata{Commit: "commit_1", CommittedAt: timestamppb.Now()},
+						protoconfValue: &protoconf_pb.ProtoconfValue{Value: newAny(structpb.NewStringValue("hello world!"))},
+						metadata:       &protoconf_pb.Metadata{Commit: "commit_1", CommittedAt: timestamppb.Now()},
 					},
 					{
 						configName: "test",
-						protoconfValue: &datatypes.ProtoconfValue{
+						protoconfValue: &protoconf_pb.ProtoconfValue{
 							Value: newAny(structpb.NewStringValue("hello protoconf!")),
-							RolloutConfig: &datatypes.ProtoconfValue_ConfigRollout{
+							RolloutConfig: &protoconf_pb.ProtoconfValue_ConfigRollout{
 								DefaultCooldownTime: durationpb.New(time.Second * 5),
-								Stages: []*datatypes.ProtoconfValue_ConfigRollout_Stage{
+								Stages: []*protoconf_pb.ProtoconfValue_ConfigRollout_Stage{
 									{Channel: "alpha", Percentile: 10},
 									{Channel: "beta", Percentile: 50},
 								},
 							},
 						},
-						metadata: &datatypes.Metadata{Commit: "commit_2", CommittedAt: timestamppb.New(time.Now().Add(time.Second * 5))},
+						metadata: &protoconf_pb.Metadata{Commit: "commit_2", CommittedAt: timestamppb.New(time.Now().Add(time.Second * 5))},
 					},
 				},
 				want: []*want{
 					{
 						agentChannel: "alpha",
 						agentClient:  alphaClient,
-						request:      &protoconfservice.ConfigSubscriptionRequest{Path: "test"},
+						request:      &protoconf_pb.ConfigSubscriptionRequest{Path: "test"},
 						expects: []*result{
-							{update: &protoconfservice.ConfigUpdate{Value: newAny(structpb.NewStringValue("hello world!"))}, within: time.Second},
-							{update: &protoconfservice.ConfigUpdate{Value: newAny(structpb.NewStringValue("hello protoconf!"))}, within: time.Second * 6},
+							{update: &protoconf_pb.ConfigUpdate{Value: newAny(structpb.NewStringValue("hello world!"))}, within: time.Second},
+							{update: &protoconf_pb.ConfigUpdate{Value: newAny(structpb.NewStringValue("hello protoconf!"))}, within: time.Second * 6},
 						},
 					},
 					{
 						agentChannel: "beta",
 						agentClient:  betaClient,
-						request:      &protoconfservice.ConfigSubscriptionRequest{Path: "test"},
+						request:      &protoconf_pb.ConfigSubscriptionRequest{Path: "test"},
 						expects: []*result{
-							{update: &protoconfservice.ConfigUpdate{Value: newAny(structpb.NewStringValue("hello world!"))}, within: time.Second},
-							{update: &protoconfservice.ConfigUpdate{Value: newAny(structpb.NewStringValue("hello protoconf!"))}, within: time.Second * 11},
+							{update: &protoconf_pb.ConfigUpdate{Value: newAny(structpb.NewStringValue("hello world!"))}, within: time.Second},
+							{update: &protoconf_pb.ConfigUpdate{Value: newAny(structpb.NewStringValue("hello protoconf!"))}, within: time.Second * 11},
 						},
 					},
 					{
 						agentChannel: "prod",
 						agentClient:  prodClient,
-						request:      &protoconfservice.ConfigSubscriptionRequest{Path: "test"},
+						request:      &protoconf_pb.ConfigSubscriptionRequest{Path: "test"},
 						expects: []*result{
-							{update: &protoconfservice.ConfigUpdate{Value: newAny(structpb.NewStringValue("hello world!"))}, within: time.Second},
-							{update: &protoconfservice.ConfigUpdate{Value: newAny(structpb.NewStringValue("hello protoconf!"))}, within: time.Second * 16},
+							{update: &protoconf_pb.ConfigUpdate{Value: newAny(structpb.NewStringValue("hello world!"))}, within: time.Second},
+							{update: &protoconf_pb.ConfigUpdate{Value: newAny(structpb.NewStringValue("hello protoconf!"))}, within: time.Second * 16},
 						},
 					},
 				},
@@ -155,8 +154,8 @@ func TestProtoconfKVAgentRollout_SubscribeForConfig(t *testing.T) {
 	}
 }
 
-func recvCh(ctx context.Context, watcher protoconfservice.ProtoconfService_SubscribeForConfigClient) chan *protoconfservice.ConfigUpdate {
-	ch := make(chan *protoconfservice.ConfigUpdate)
+func recvCh(ctx context.Context, watcher protoconf_pb.ProtoconfService_SubscribeForConfigClient) chan *protoconf_pb.ConfigUpdate {
+	ch := make(chan *protoconf_pb.ConfigUpdate)
 	go func() {
 		for {
 			select {

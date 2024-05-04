@@ -17,12 +17,12 @@ import (
 	"github.com/kvtools/valkeyrie/store"
 	"github.com/kvtools/zookeeper"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	protoconfservice "github.com/protoconf/protoconf/agent/api/proto/v1"
 	protoconf_agent_config "github.com/protoconf/protoconf/agent/config/v1"
 	"github.com/protoconf/protoconf/agent/configmaps"
 	"github.com/protoconf/protoconf/agent/filekv"
 	"github.com/protoconf/protoconf/agent/otelkv"
 	"github.com/protoconf/protoconf/consts"
+	protoconf_pb "github.com/protoconf/protoconf/pb/protoconf/v1"
 	slogotel "github.com/remychantenay/slog-otel"
 	"github.com/stephenafamo/orchestra"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
@@ -146,7 +146,7 @@ func RunAgent(ctx context.Context, config *protoconf_agent_config.AgentConfig) e
 		return errors.Join(errors.New("error setting config store"), err)
 	}
 
-	var agent protoconfservice.ProtoconfServiceServer
+	var agent protoconf_pb.ProtoconfServiceServer
 	if config.EnableRollout {
 		if err == nil {
 			config.AgentId = hostname
@@ -169,7 +169,7 @@ func RunAgent(ctx context.Context, config *protoconf_agent_config.AgentConfig) e
 		grpc.StreamInterceptor(grpc_prometheus.StreamServerInterceptor),
 		grpc.UnaryInterceptor(grpc_prometheus.UnaryServerInterceptor),
 	)
-	protoconfservice.RegisterProtoconfServiceServer(rpcServer, agent)
+	protoconf_pb.RegisterProtoconfServiceServer(rpcServer, agent)
 	grpc_prometheus.Register(rpcServer)
 	mux := http.NewServeMux()
 	mux.HandleFunc("/debug/pprof", pprof.Profile)

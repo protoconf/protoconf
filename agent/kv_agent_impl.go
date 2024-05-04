@@ -8,9 +8,8 @@ import (
 	"path"
 
 	"github.com/kvtools/valkeyrie/store"
-	protoconfservice "github.com/protoconf/protoconf/agent/api/proto/v1"
 	protoconf_agent_config "github.com/protoconf/protoconf/agent/config/v1"
-	protoconfvalue "github.com/protoconf/protoconf/datatypes/proto/v1"
+	protoconf_pb "github.com/protoconf/protoconf/pb/protoconf/v1"
 	"go.opentelemetry.io/otel"
 	"google.golang.org/grpc/peer"
 	"google.golang.org/protobuf/proto"
@@ -20,7 +19,7 @@ type ProtoconfKVAgent struct {
 	store  store.Store
 	config *protoconf_agent_config.AgentConfig
 	Logger *slog.Logger
-	protoconfservice.ProtoconfServiceServer
+	protoconf_pb.ProtoconfServiceServer
 }
 
 var tracer = otel.Tracer("protoconf-agent")
@@ -34,7 +33,7 @@ func NewProtoconfKVAgent(store store.Store, config *protoconf_agent_config.Agent
 	return &ProtoconfKVAgent{store: store, config: config, Logger: logger}, nil
 }
 
-func (s *ProtoconfKVAgent) SubscribeForConfig(request *protoconfservice.ConfigSubscriptionRequest, srv protoconfservice.ProtoconfService_SubscribeForConfigServer) error {
+func (s *ProtoconfKVAgent) SubscribeForConfig(request *protoconf_pb.ConfigSubscriptionRequest, srv protoconf_pb.ProtoconfService_SubscribeForConfigServer) error {
 	ctx := srv.Context()
 	ctx, span := tracer.Start(ctx, "SubscribeForConfig")
 	defer span.End()
@@ -53,13 +52,13 @@ func (s *ProtoconfKVAgent) SubscribeForConfig(request *protoconfservice.ConfigSu
 		select {
 		case kvPair := <-kvPairCh:
 			span.AddEvent("received config update")
-			result := &protoconfvalue.ProtoconfValue{}
+			result := &protoconf_pb.ProtoconfValue{}
 			if kvPair == nil {
 				continue
 			}
 			data, err := base64.StdEncoding.DecodeString(string(kvPair.Value))
 			if err != nil {
-				srv.Send(&protoconfservice.ConfigUpdate{
+				srv.Send(&protoconf_pb.ConfigUpdate{
 					Error: "failed to decode data from config store, expected base64 encoded value",
 				})
 				logger.Error(err.Error())
@@ -68,14 +67,14 @@ func (s *ProtoconfKVAgent) SubscribeForConfig(request *protoconfservice.ConfigSu
 			}
 			err = proto.Unmarshal(data, result)
 			if err != nil {
-				srv.Send(&protoconfservice.ConfigUpdate{
+				srv.Send(&protoconf_pb.ConfigUpdate{
 					Error: "failed to unmarshal data received from config store",
 				})
 				logger.Error(err.Error())
 				continue
 				// return err
 			}
-			err = srv.Send(&protoconfservice.ConfigUpdate{
+			err = srv.Send(&protoconf_pb.ConfigUpdate{
 				Value: result.Value,
 			})
 			if err != nil {

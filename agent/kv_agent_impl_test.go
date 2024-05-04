@@ -17,6 +17,7 @@ import (
 	protoconf_agent_config "github.com/protoconf/protoconf/agent/config/v1"
 	"github.com/protoconf/protoconf/agent/dummykv"
 	protoconfvalue "github.com/protoconf/protoconf/datatypes/proto/v1"
+	protoconf_pb "github.com/protoconf/protoconf/pb/protoconf/v1"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
@@ -34,7 +35,7 @@ func newAny(msg proto.Message) *anypb.Any {
 }
 
 func TestProtoconfKVAgent_SubscribeForConfig(t *testing.T) {
-	request := &protoconfservice.ConfigSubscriptionRequest{
+	request := &protoconf_pb.ConfigSubscriptionRequest{
 		Path: "test",
 	}
 	expects := &protoconfservice.ConfigUpdate{
@@ -93,8 +94,8 @@ func BenchmarkProtoconfAgent(b *testing.B) {
 	path := "root"
 	for i := 0; i < b.N; i++ {
 		localPath := filepath.Join(path, fmt.Sprintf("%d", i))
-		rootWatcher, _ := client.SubscribeForConfig(ctx, &protoconfservice.ConfigSubscriptionRequest{Path: path})
-		watcher, _ := client.SubscribeForConfig(ctx, &protoconfservice.ConfigSubscriptionRequest{Path: localPath})
+		rootWatcher, _ := client.SubscribeForConfig(ctx, &protoconf_pb.ConfigSubscriptionRequest{Path: path})
+		watcher, _ := client.SubscribeForConfig(ctx, &protoconf_pb.ConfigSubscriptionRequest{Path: localPath})
 		go func() {
 			counter := 0
 			for {
@@ -131,11 +132,11 @@ func BenchmarkProtoconfAgent(b *testing.B) {
 	}
 }
 
-func testServer(ctx context.Context, srv protoconfservice.ProtoconfServiceServer) (protoconfservice.ProtoconfServiceClient, func()) {
+func testServer(ctx context.Context, srv protoconf_pb.ProtoconfServiceServer) (protoconf_pb.ProtoconfServiceClient, func()) {
 	buffer := 101024 * 1024
 	lis := bufconn.Listen(buffer)
 	baseServer := grpc.NewServer()
-	protoconfservice.RegisterProtoconfServiceServer(baseServer, srv)
+	protoconf_pb.RegisterProtoconfServiceServer(baseServer, srv)
 	go func() {
 		if err := baseServer.Serve(lis); err != nil {
 			log.Printf("error serving server: %v", err)
@@ -158,7 +159,7 @@ func testServer(ctx context.Context, srv protoconfservice.ProtoconfServiceServer
 		baseServer.Stop()
 	}
 
-	client := protoconfservice.NewProtoconfServiceClient(conn)
+	client := protoconf_pb.NewProtoconfServiceClient(conn)
 
 	return client, closer
 }

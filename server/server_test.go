@@ -124,6 +124,8 @@ func Test_server_MutateConfig(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			s := NewProtoconfMutationServer(tt.fields.protoconfRoot)
 			s.config = tt.fields.config
+			s.PreMutationScript = tt.fields.config.preMutationScript
+			s.PostMutationScript = tt.fields.config.postMutationScript
 			// TODO(smintz): assert the response
 			_, err := s.MutateConfig(tt.args.ctx, tt.args.in)
 			if (err != nil) != tt.wantErr {
