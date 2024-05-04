@@ -29,7 +29,7 @@ import (
 	"github.com/protoconf/protoconf/compiler/lib"
 	"github.com/protoconf/protoconf/compiler/lib/parser"
 	"github.com/protoconf/protoconf/consts"
-	datatypes "github.com/protoconf/protoconf/datatypes/proto/v1"
+	protoconf_pb "github.com/protoconf/protoconf/pb/protoconf/v1"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/dynamicpb"
@@ -227,7 +227,7 @@ func (i *ProtoconfInserter) InsertConfigFile(configFile string) error {
 	}
 	configName := strings.TrimPrefix(strings.TrimSuffix(configFile, consts.CompiledConfigExtension), consts.CompiledConfigPath)
 
-	protoconfValue := &datatypes.ProtoconfValue{}
+	protoconfValue := &protoconf_pb.ProtoconfValue{}
 	err = i.parser.ReadConfig(filepath.Join(i.protoconfRoot, configFile), protoconfValue)
 	if err != nil {
 		return err
@@ -236,7 +236,7 @@ func (i *ProtoconfInserter) InsertConfigFile(configFile string) error {
 	return i.InsertConfig(configName, protoconfValue, metadata)
 }
 
-func (i *ProtoconfInserter) getKvStoreForConfig(protoconfValue *datatypes.ProtoconfValue) store.Store {
+func (i *ProtoconfInserter) getKvStoreForConfig(protoconfValue *protoconf_pb.ProtoconfValue) store.Store {
 	if ns := protoconfValue.GetRolloutConfig().GetNamespace(); ns != "" {
 		kvStore, err := configmaps.New(context.Background(), []string{}, &configmaps.Config{Namespace: ns})
 		if err == nil {
@@ -247,7 +247,7 @@ func (i *ProtoconfInserter) getKvStoreForConfig(protoconfValue *datatypes.Protoc
 
 }
 
-func (i *ProtoconfInserter) InsertConfig(configName string, protoconfValue *datatypes.ProtoconfValue, metadata *datatypes.Metadata) error {
+func (i *ProtoconfInserter) InsertConfig(configName string, protoconfValue *protoconf_pb.ProtoconfValue, metadata *protoconf_pb.Metadata) error {
 	now := time.Now()
 	logger := i.logger.With("key", configName, "commit", metadata.Commit[0:8], "namespace", protoconfValue.GetRolloutConfig().GetNamespace())
 	err := i.XXXinsertVersion(configName, fmt.Sprintf("%d.%s", metadata.CommittedAt.Seconds, metadata.Commit), protoconfValue, metadata)
@@ -258,12 +258,12 @@ func (i *ProtoconfInserter) InsertConfig(configName string, protoconfValue *data
 
 	kvRolloutConfig := filepath.Join(i.Prefix, configName, "rollout.json")
 	if protoconfValue.RolloutConfig != nil {
-		rolloutConfig := &datatypes.ProtoconfValue_ConfigRollout{
+		rolloutConfig := &protoconf_pb.ProtoconfValue_ConfigRollout{
 			DefaultCooldownTime:   durationpb.New(time.Second * 60),
 			DefaultExpirationTime: durationpb.New(time.Second * 300),
 		}
 		proto.Merge(rolloutConfig, protoconfValue.RolloutConfig)
-		rolloutConfig.Stages = []*datatypes.ProtoconfValue_ConfigRollout_Stage{}
+		rolloutConfig.Stages = []*protoconf_pb.ProtoconfValue_ConfigRollout_Stage{}
 		ctx, cancel := context.WithCancelCause(context.Background())
 		ctx, _ = signal.NotifyContext(ctx, os.Interrupt)
 		context.AfterFunc(ctx, func() {
@@ -319,7 +319,7 @@ func (i *ProtoconfInserter) InsertConfig(configName string, protoconfValue *data
 	return nil
 }
 
-func (i *ProtoconfInserter) XXXinsertVersion(configName string, version string, protoconfValue *datatypes.ProtoconfValue, metadata *datatypes.Metadata) error {
+func (i *ProtoconfInserter) XXXinsertVersion(configName string, version string, protoconfValue *protoconf_pb.ProtoconfValue, metadata *protoconf_pb.Metadata) error {
 	logger := i.logger.With("key", configName, "version", version, "commit", metadata.Commit[0:8], "namespace", protoconfValue.GetRolloutConfig().GetNamespace())
 	logger.Debug("starting version insertion")
 	kvConfigJsonPath := filepath.Join(i.Prefix, configName, version, "config.json")
@@ -382,11 +382,11 @@ func (i *ProtoconfInserter) XXXinsertVersion(configName string, version string, 
 
 var metaMutex *sync.Mutex = &sync.Mutex{}
 
-func (i *ProtoconfInserter) GatherMetadata(configFile string) (*datatypes.Metadata, error) {
+func (i *ProtoconfInserter) GatherMetadata(configFile string) (*protoconf_pb.Metadata, error) {
 	metaMutex.Lock()
 	defer metaMutex.Unlock()
 	if !i.isGit {
-		return &datatypes.Metadata{Commit: "not_a_git_repo"}, nil
+		return &protoconf_pb.Metadata{Commit: "not_a_git_repo"}, nil
 	}
 	gitLog, err := i.repo.Log(&git.LogOptions{FileName: &configFile})
 	if err != nil {
@@ -396,7 +396,7 @@ func (i *ProtoconfInserter) GatherMetadata(configFile string) (*datatypes.Metada
 	if err != nil {
 		return nil, errors.Join(err, fmt.Errorf("error getting next git log item for file %s", configFile))
 	}
-	return &datatypes.Metadata{
+	return &protoconf_pb.Metadata{
 		Commit:         commit.Hash.String(),
 		CommitterEmail: commit.Committer.Email,
 		AuthorEmail:    commit.Author.Email,

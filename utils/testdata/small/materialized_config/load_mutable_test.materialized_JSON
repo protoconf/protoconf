@@ -1,7 +1,7 @@
 {
   "protoFile": "google/protobuf/wrappers.proto",
   "value": {
-    "@type": "type.googleapis.com/google.protobuf.UInt64Value",
-    "value": "100"
+    "@type": "type.googleapis.com/google.protobuf.Value",
+    "value": "hello"
   }
 }

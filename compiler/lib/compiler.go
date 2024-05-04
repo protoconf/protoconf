@@ -10,6 +10,7 @@ import (
 	"log/slog"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/ghodss/yaml"
 	"github.com/jhump/protoreflect/dynamic"
@@ -38,8 +39,13 @@ func NewCompiler(protoconfRoot string, verboseLogging bool) *Compiler {
 	resolve.AllowGlobalReassign = true // allow reassignment to top-level names; also, allow if/for/while at top-level
 	resolve.AllowRecursion = true      // allow while statements and recursive functions
 
+	t := time.Now()
 	ms := NewModuleService(protoconfRoot)
-	ms.LoadFromLockFile()
+	slog.Info("module service loaded", "took", time.Since(t))
+	err := ms.LoadFromLockFile()
+	if err != nil {
+		slog.Error("error loading from lock file", "err", err)
+	}
 
 	return &Compiler{
 		protoconfRoot:   protoconfRoot,

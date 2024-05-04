@@ -6,17 +6,14 @@ import (
 	"time"
 
 	"github.com/protoconf/protoconf/agent"
-	protoconfservice "github.com/protoconf/protoconf/agent/api/proto/v1"
 	protoconf_agent_config "github.com/protoconf/protoconf/agent/config/v1"
 	"github.com/protoconf/protoconf/agent/dummykv"
 	"github.com/protoconf/protoconf/agent/filekv"
 	"github.com/protoconf/protoconf/compiler/lib"
 	"github.com/protoconf/protoconf/consts"
-	v1 "github.com/protoconf/protoconf/datatypes/proto/v1"
 	"github.com/protoconf/protoconf/inserter"
 	protoconf_pb "github.com/protoconf/protoconf/pb/protoconf/v1"
 	"github.com/protoconf/protoconf/server"
-	protoconfmutation "github.com/protoconf/protoconf/server/api/proto/v1"
 	"github.com/protoconf/protoconf/utils/testdata"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -51,17 +48,17 @@ func Test(t *testing.T) {
 	assert.NoError(t, err)
 
 	devAgentServer, err := agent.NewProtoconfKVAgent(devStore, devConfig)
-	var devAgentClient protoconfservice.ProtoconfServiceClient
+	var devAgentClient protoconf_pb.ProtoconfServiceClient
 	assert.NoError(t, err)
 
 	devMutationServer := server.NewProtoconfMutationServer(protoconfRoot)
-	var devMutationClient protoconfmutation.ProtoconfMutationServiceClient
+	var devMutationClient protoconf_pb.ProtoconfMutationServiceClient
 	devCloser := TestServer(ctx, func(s *grpc.Server) {
-		protoconfservice.RegisterProtoconfServiceServer(s, devAgentServer)
+		protoconf_pb.RegisterProtoconfServiceServer(s, devAgentServer)
 		protoconf_pb.RegisterProtoconfMutationServiceServer(s, devMutationServer)
 	}, func(conn *grpc.ClientConn) {
-		devAgentClient = protoconfservice.NewProtoconfServiceClient(conn)
-		devMutationClient = protoconfmutation.NewProtoconfMutationServiceClient(conn)
+		devAgentClient = protoconf_pb.NewProtoconfServiceClient(conn)
+		devMutationClient = protoconf_pb.NewProtoconfMutationServiceClient(conn)
 	})
 	defer devCloser()
 	assert.NoError(t, err)
@@ -72,17 +69,17 @@ func Test(t *testing.T) {
 	inserter := inserter.NewProtoconfInserter(protoconfRoot, prodStore)
 	prodAgentServer, err := agent.NewProtoconfKVAgentRollout(prodStore, &protoconf_agent_config.AgentConfig{})
 	assert.NoError(t, err)
-	var prodAgentClient protoconfservice.ProtoconfServiceClient
+	var prodAgentClient protoconf_pb.ProtoconfServiceClient
 	prodCloser := TestServer(ctx, func(s *grpc.Server) {
-		protoconfservice.RegisterProtoconfServiceServer(s, prodAgentServer)
+		protoconf_pb.RegisterProtoconfServiceServer(s, prodAgentServer)
 	}, func(conn *grpc.ClientConn) {
-		prodAgentClient = protoconfservice.NewProtoconfServiceClient(conn)
+		prodAgentClient = protoconf_pb.NewProtoconfServiceClient(conn)
 	})
 	defer prodCloser()
 
 	// Get first message from materialized_configs
-	devWatcher, err := devAgentClient.SubscribeForConfig(ctx, &protoconfservice.ConfigSubscriptionRequest{Path: "load_mutable_test"})
-	expected := &anypb.Any{TypeUrl: "type.googleapis.com/TestMessage", Value: []byte("\n\x05hello")}
+	devWatcher, err := devAgentClient.SubscribeForConfig(ctx, &protoconf_pb.ConfigSubscriptionRequest{Path: "load_mutable_test"})
+	expected, _ := anypb.New(structpb.NewStringValue("hello"))
 	t.Run("get first message on devClient", func(t *testing.T) {
 		assert.NoError(t, err)
 
@@ -94,7 +91,7 @@ func Test(t *testing.T) {
 	})
 
 	tCtx, _ := context.WithTimeout(ctx, 60*time.Second)
-	prodWatcher, err := prodAgentClient.SubscribeForConfig(tCtx, &protoconfservice.ConfigSubscriptionRequest{Path: "load_mutable_test"})
+	prodWatcher, err := prodAgentClient.SubscribeForConfig(tCtx, &protoconf_pb.ConfigSubscriptionRequest{Path: "load_mutable_test"})
 	assert.NoError(t, err)
 	// Get first message from prodStore
 	t.Run("get first message on prodClient", func(t *testing.T) {
@@ -116,8 +113,8 @@ func Test(t *testing.T) {
 
 	mutationValue, _ := anypb.New(structpb.NewStringValue("hello mutation"))
 	t.Run("change config via mutation rpc", func(t *testing.T) {
-		_, err = devMutationClient.MutateConfig(ctx, &protoconfmutation.ConfigMutationRequest{
-			Path: "mutation_test", Value: &v1.ProtoconfValue{
+		_, err = devMutationClient.MutateConfig(ctx, &protoconf_pb.ConfigMutationRequest{
+			Path: "mutation_test", Value: &protoconf_pb.ProtoconfValue{
 				ProtoFile: "google/protobuf/struct.proto",
 				Value:     mutationValue,
 			},
@@ -165,7 +162,7 @@ func Test(t *testing.T) {
 	assert.NoError(t, err)
 	// devWatcher, err = devAgentClient.SubscribeForConfig(ctx, &protoconfservice.ConfigSubscriptionRequest{Path: "load_remote_with_load_local"})
 	t.Run("load_remote on dev", func(t *testing.T) {
-		devWatcher, err = devAgentClient.SubscribeForConfig(ctx, &protoconfservice.ConfigSubscriptionRequest{Path: "load_remote"})
+		devWatcher, err = devAgentClient.SubscribeForConfig(ctx, &protoconf_pb.ConfigSubscriptionRequest{Path: "load_remote"})
 		assert.NoError(t, err)
 		devConfigValue, err := devWatcher.Recv()
 		assert.NoError(t, err)
@@ -177,7 +174,7 @@ func Test(t *testing.T) {
 	})
 	t.Run("load_remote prod", func(t *testing.T) {
 		newCtx, _ := context.WithTimeout(ctx, 10*time.Second)
-		watcher, err := prodAgentClient.SubscribeForConfig(newCtx, &protoconfservice.ConfigSubscriptionRequest{Path: "load_remote"})
+		watcher, err := prodAgentClient.SubscribeForConfig(newCtx, &protoconf_pb.ConfigSubscriptionRequest{Path: "load_remote"})
 		require.NoError(t, err)
 		t.Run("insert load_remote to prod", func(t *testing.T) {
 			require.NoError(t,
