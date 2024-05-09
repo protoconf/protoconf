@@ -8,3 +8,5 @@ coverage.txt
 trace.out
 .protoconf_cache
 __debug_bin*
+
+outputs

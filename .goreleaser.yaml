@@ -14,15 +14,13 @@ builds:
       - -s -w -X github.com/protoconf/protoconf/consts.Version={{.Version}}
     goos:
       - linux
-      - windows
+      # - windows
       - darwin
-      - freebsd
-      - openbsd
-      - solaris
+      # - freebsd
+      # - openbsd
+      # - solaris
     main: ./cmd/protoconf
 archives:
-  - replacements:
-      386: i386
 checksum:
   name_template: "checksums.txt"
 snapshot:
@@ -82,6 +80,7 @@ dockers:
       - "ghcr.io/protoconf/protoconf:{{ .Tag }}"
       - "ghcr.io/protoconf/protoconf:{{ .Major }}"
       - "ghcr.io/protoconf/protoconf:{{ .Major }}.{{ .Minor }}"
+      - "protoconfinternal.azurecr.io/protoconf/protoconf:{{ .Major }}.{{ .Minor }}.{{.Patch}}-{{.FullCommit}}"
     dockerfile: docker/Dockerfile
     build_flag_templates:
       - "--pull"

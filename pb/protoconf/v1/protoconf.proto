@@ -83,6 +83,9 @@ message ConfigMutationResponse {
     bool failure = 5;
   }
   string error_message = 6;
+  google.protobuf.Duration pre_script_duration = 7;
+  google.protobuf.Duration post_script_duration = 8;
+  google.protobuf.Duration compile_duration = 9;
 }
 
 service ProtoconfMutationService {

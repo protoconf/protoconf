@@ -12,14 +12,14 @@ import (
 
 type CompilerService struct {
 	protoconf_pb.UnimplementedProtoconfCompileServer
-	compiler *lib.Compiler
+	Compiler *lib.Compiler
 }
 
 var _ protoconf_pb.ProtoconfCompileServer = &CompilerService{}
 
 func NewCompilerService(dir string, verbose bool) *CompilerService {
 	return &CompilerService{
-		compiler: lib.NewCompiler(dir, verbose),
+		Compiler: lib.NewCompiler(dir, verbose),
 	}
 }
 
@@ -30,7 +30,7 @@ func (s *CompilerService) CompileFiles(in *protoconf_pb.CompileRequest, srv prot
 		file := file
 		grp.Go(func() error {
 			ctx, cancel := context.WithCancelCause(ctx)
-			ch, errCh := s.compiler.CompileFileAsync(ctx, cancel, file)
+			ch, errCh := s.Compiler.CompileFileAsync(ctx, cancel, file)
 			var err error
 			for {
 				select {
