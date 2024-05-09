@@ -43,13 +43,14 @@ func newFlagSet() (*flag.FlagSet, *cliConfig) {
 		flags.PrintDefaults()
 	}
 
+	compilerAddress := os.Getenv(`PROTOCONF_COMPILER_ADDR`)
 	config := &cliConfig{}
 	flags.BoolVar(&config.repl, "repl", false, "Interactive REPL mode")
 	flags.BoolVar(&config.verboseLogging, "V", false, "Verbose logging")
 	flags.BoolVar(&config.processTemplates, "process-templates", false, "Process template files")
 	flags.StringVar(&config.cpuprofile, "cpuprofile", "", "Write cpu profiling info to this file")
 	flags.StringVar(&config.memprofile, "memprofile", "", "Write memory profiling info to this file")
-	flags.StringVar(&config.compilerAddress, "compiler-address", "", "if set, the command will issue a gRPC request to the compiler service at the given address instead of running the compiler locally. The compiler service must be running.")
+	flags.StringVar(&config.compilerAddress, "compiler-address", compilerAddress, "if set, the command will issue a gRPC request to the compiler service at the given address instead of running the compiler locally. The compiler service must be running.")
 
 	return flags, config
 }
@@ -84,7 +85,7 @@ func (c *cliCommand) Run(args []string) int {
 
 	if flags.NArg() == 1 {
 		var err error
-		configs, err = getAllConfigs(protoconfRoot)
+		configs, err = GetAllConfigs(protoconfRoot)
 		if err != nil {
 			log.Printf("Error getting all configs from %s, err=%s", protoconfRoot, err)
 			return 1
@@ -203,7 +204,7 @@ func Command() (cli.Command, error) {
 	return &cliCommand{}, nil
 }
 
-func getAllConfigs(protoconfRoot string) ([]string, error) {
+func GetAllConfigs(protoconfRoot string) ([]string, error) {
 	srcDir, err := filepath.Abs(filepath.Join(protoconfRoot, consts.SrcPath))
 	if err != nil {
 		return nil, err

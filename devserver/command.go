@@ -68,8 +68,8 @@ func (d *DevServerCommand) Run(args []string) int {
 	healthcheck.SetServingStatus("reporting", healthgrpc.HealthCheckResponse_SERVING)
 
 	slog.Default().Info("starting mutation server...")
-	mutationServer := server.NewProtoconfMutationServer(protoconfRoot)
-	mutationServer.PostMutationScript = `/Users/smintz/go/src/github.com/ROKT/configs/compile.sh`
+	mutationServer := server.NewProtoconfMutationServer(protoconfRoot, server.WithCompiler(compilerSvc.Compiler))
+	// mutationServer.PostMutationScript = ``
 	mutationServer.Init(rpcServer)
 
 	httpSrv := &http.Server{

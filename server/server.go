@@ -22,6 +22,7 @@ import (
 	"github.com/fullstorydev/grpcui/standalone"
 	"github.com/google/uuid"
 	"github.com/mitchellh/cli"
+	"github.com/protoconf/protoconf/compiler"
 	"github.com/protoconf/protoconf/compiler/lib"
 	"github.com/protoconf/protoconf/compiler/lib/parser"
 	"github.com/protoconf/protoconf/consts"
@@ -37,6 +38,7 @@ import (
 	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
+	"golang.org/x/sync/errgroup"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -50,6 +52,7 @@ import (
 	"google.golang.org/protobuf/reflect/protoregistry"
 	"google.golang.org/protobuf/types/dynamicpb"
 	"google.golang.org/protobuf/types/known/anypb"
+	"google.golang.org/protobuf/types/known/durationpb"
 )
 
 var logger = slog.Default()
@@ -151,7 +154,7 @@ func (c *cliCommand) Run(args []string) int {
 	logger.Info("protoconf server running")
 
 	httpServer := &http.Server{
-		Addr: ":4300",
+		Addr: config.grpcAddress,
 	}
 	go func() {
 		ticker := time.NewTicker(5 * time.Second)
@@ -203,13 +206,26 @@ type ProtoconfMutationServer struct {
 	exampleMaker       map[string]exampleFunc
 	PreMutationScript  string
 	PostMutationScript string
+	compiler           *lib.Compiler
 }
 
-func NewProtoconfMutationServer(protoconfRoot string) *ProtoconfMutationServer {
+type MutationServerOption func(*ProtoconfMutationServer)
+
+func WithCompiler(c *lib.Compiler) func(*ProtoconfMutationServer) {
+	return func(s *ProtoconfMutationServer) {
+		s.compiler = c
+	}
+}
+
+func NewProtoconfMutationServer(protoconfRoot string, opts ...MutationServerOption) *ProtoconfMutationServer {
 	ms := lib.NewModuleService(protoconfRoot)
 	ms.LoadFromLockFile()
 	parser := parser.NewParser(ms.GetProtoFilesRegistry())
-	return &ProtoconfMutationServer{protoconfRoot: protoconfRoot, config: &cliConfig{}, parser: parser, reports: &sync.Map{}}
+	s := &ProtoconfMutationServer{protoconfRoot: protoconfRoot, config: &cliConfig{}, parser: parser, reports: &sync.Map{}}
+	for _, opt := range opts {
+		opt(s)
+	}
+	return s
 }
 
 func (s *ProtoconfMutationServer) Put(ctx context.Context, in *dynamicpb.Message) (proto.Message, error) {
@@ -302,6 +318,13 @@ func (s *ProtoconfMutationServer) Init(rpcServer *grpc.Server) {
 
 	grpc_reflection_v1alpha.RegisterServerReflectionServer(rpcServer, reflectionServer)
 }
+
+func (s *ProtoconfMutationServer) StoreReport(id string, f func(*protoconf_pb.ConfigMutationResponse) *protoconf_pb.ConfigMutationResponse) {
+	item, _ := s.reports.LoadOrStore(id, &protoconf_pb.ConfigMutationResponse{})
+	item = f(item.(*protoconf_pb.ConfigMutationResponse))
+	s.reports.Store(id, item)
+}
+
 func (s *ProtoconfMutationServer) MutateConfig(ctx context.Context, in *protoconf_pb.ConfigMutationRequest) (*protoconf_pb.ConfigMutationResponse, error) {
 	id := uuid.NewString()
 	s.reports.Store(id, &protoconf_pb.ConfigMutationResponse{Uuid: id})
@@ -312,13 +335,18 @@ func (s *ProtoconfMutationServer) MutateConfig(ctx context.Context, in *protocon
 	resolver := s.parser.LocalResolver
 	jsonData, err := protojson.MarshalOptions{Resolver: resolver, Multiline: true}.Marshal(in.Value)
 	if err != nil {
-		return nil, logError(fmt.Errorf("error marshaling ProtoconfValue to JSON, value=%s", in.Value))
+		return nil, logError(fmt.Errorf("error marshaling ProtoconfValue to JSON, value=%s, err=%s", in.Value, err))
 	}
 
 	if s.PreMutationScript != "" {
-		if err := runScript(s.PreMutationScript, id); err != nil {
+		t := time.Now()
+		if err := s.runScript(s.PreMutationScript, id); err != nil {
 			return nil, logError(fmt.Errorf("error running pre mutation script, err=%s", err))
 		}
+		s.StoreReport(id, func(cmr *protoconf_pb.ConfigMutationResponse) *protoconf_pb.ConfigMutationResponse {
+			cmr.PreScriptDuration = durationpb.New(time.Since(t))
+			return cmr
+		})
 	}
 
 	if err := os.MkdirAll(filepath.Dir(filename), 0755); err != nil {
@@ -331,10 +359,45 @@ func (s *ProtoconfMutationServer) MutateConfig(ctx context.Context, in *protocon
 
 	log.Printf("Written to %s", filename)
 
+	if s.compiler != nil {
+		t := time.Now()
+		files, err := compiler.GetAllConfigs(s.protoconfRoot)
+		if err != nil {
+			return nil, err
+		}
+		g, _ := errgroup.WithContext(ctx)
+		for _, f := range files {
+			file := f
+			g.Go(func() error {
+				lt := time.Now()
+				err := s.compiler.CompileFile(file)
+				if err != nil {
+					slog.Error("error compiling file", "file", file, "error", err)
+				} else {
+					slog.Info("compiled", "file", file, "duration", time.Since(lt))
+				}
+				return err
+			})
+
+		}
+		if err = g.Wait(); err != nil {
+			return nil, err
+		}
+		s.StoreReport(id, func(cmr *protoconf_pb.ConfigMutationResponse) *protoconf_pb.ConfigMutationResponse {
+			cmr.CompileDuration = durationpb.New(time.Since(t))
+			return cmr
+		})
+	}
+
 	if s.PostMutationScript != "" {
-		if err := runScript(s.PostMutationScript, id); err != nil {
+		t := time.Now()
+		if err := s.runScript(s.PostMutationScript, id); err != nil {
 			return nil, logError(fmt.Errorf("error running post mutation script, err=%s", err))
 		}
+		s.StoreReport(id, func(cmr *protoconf_pb.ConfigMutationResponse) *protoconf_pb.ConfigMutationResponse {
+			cmr.PostScriptDuration = durationpb.New(time.Since(t))
+			return cmr
+		})
 	}
 
 	if report, ok := s.reports.Load(id); ok {
@@ -359,9 +422,12 @@ func logError(err error) error {
 	return err
 }
 
-func runScript(filename string, uuid string) error {
+func (s *ProtoconfMutationServer) runScript(filename string, uuid string) error {
 	cmd := exec.Command(filename)
-	cmd.Env = append(cmd.Env, "PROTOCONF_MUTATION_UUID="+uuid)
+	cmd.Env = append(cmd.Env,
+		"PROTOCONF_MUTATION_UUID="+uuid,
+		"PROTOCONF_COMPILER_ADDR"+s.config.grpcAddress,
+	)
 	_, err := cmd.Output()
 	if err != nil {
 		if ee, ok := err.(*exec.ExitError); ok {
@@ -374,12 +440,15 @@ func runScript(filename string, uuid string) error {
 
 func (s *ProtoconfMutationServer) GenReflectionUI(ctx context.Context, rpcServer *grpc.Server, httpServer *http.Server) error {
 	examples := []standalone.Example{}
-	filepath.WalkDir(filepath.Join(s.protoconfRoot, consts.MutableConfigPath), func(path string, info fs.DirEntry, _ error) error {
+	filepath.WalkDir(filepath.Join(s.protoconfRoot, consts.MutableConfigPath), func(path string, info fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
 		if info.IsDir() {
 			return nil
 		}
 		value := &protoconf_pb.ProtoconfValue{}
-		err := s.parser.ReadConfig(path, value)
+		err = s.parser.ReadConfig(path, value)
 		if err != nil {
 			logger.Error("error reading config", "path", path, "err", err)
 			return nil
@@ -431,7 +500,7 @@ func (s *ProtoconfMutationServer) GenReflectionUI(ctx context.Context, rpcServer
 	if err != nil {
 		log.Printf("error connecting to server: %v", err)
 	}
-	ui, err := standalone.HandlerViaReflection(ctx, conn, lis.Addr().String(), ex)
+	ui, err := standalone.HandlerViaReflection(ctx, conn, httpServer.Addr, ex)
 	if err != nil {
 		slog.Default().Error("error creating reflection handler", "err", err)
 		return err
