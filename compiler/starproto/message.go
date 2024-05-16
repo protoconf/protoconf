@@ -111,6 +111,13 @@ func (msg *starProtoMessage) Attr(name string) (starlark.Value, error) {
 	if name == "__proto__" {
 		return msg, nil
 	}
+	if name == "DESCRIPTOR" {
+		d, err := dynamic.AsDynamicMessage(msg.desc.AsProto())
+		if err != nil {
+			return nil, err
+		}
+		return NewStarProtoMessage(d), nil
+	}
 	if attr, ok := msg.attrCache[name]; ok {
 		return attr, nil
 	}
