@@ -1,11 +1,11 @@
 # This is an example .goreleaser.yml file with some sensible defaults.
 # Make sure to check the documentation at https://goreleaser.com
-before:
-  hooks:
-    # You may remove this if you don't use go modules.
-    - go mod tidy
-    # you may remove this if you don't need go generate
-    - go generate ./...
+# before:
+#   hooks:
+#     # You may remove this if you don't use go modules.
+#     # - go mod tidy
+#     # you may remove this if you don't need go generate
+#     # - go generate ./...
 builds:
   - id: protoconf
     env:
@@ -20,7 +20,6 @@ builds:
       # - openbsd
       # - solaris
     main: ./cmd/protoconf
-archives:
 checksum:
   name_template: "checksums.txt"
 snapshot:
@@ -58,7 +57,7 @@ brews:
 
     # Your app's homepage.
     # Default is empty.
-    homepage: "https://docs.protoconf.sh/"
+    homepage: "https://www.protoconf.dev/"
 
     # Template of your app's description.
     # Default is empty.
@@ -80,7 +79,6 @@ dockers:
       - "ghcr.io/protoconf/protoconf:{{ .Tag }}"
       - "ghcr.io/protoconf/protoconf:{{ .Major }}"
       - "ghcr.io/protoconf/protoconf:{{ .Major }}.{{ .Minor }}"
-      - "protoconfinternal.azurecr.io/protoconf/protoconf:{{ .Major }}.{{ .Minor }}.{{.Patch}}-{{.FullCommit}}"
     dockerfile: docker/Dockerfile
     build_flag_templates:
       - "--pull"
