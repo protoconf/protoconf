@@ -44,8 +44,8 @@ func TestParser_ParseFilesX(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			dr := utils.NewDescriptorRegistry()
-			dr.Import(utils.Parse, []*regexp.Regexp{}, tt.fields.protoconfRoot)
-			p := NewParser(dr.GetFilesResolver())
+			dr.Import(dr.Parse, []*regexp.Regexp{}, tt.fields.protoconfRoot)
+			p := NewParserWithDescriptorRegistry(dr)
 			_, err := p.ParseFilesX(tt.args.filenames...)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Parser.ParseFilesX() error = %v, wantErr %v", err, tt.wantErr)
@@ -92,8 +92,8 @@ func TestParser_ReadConfig(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			dr := utils.NewDescriptorRegistry()
-			dr.Import(utils.Parse, []*regexp.Regexp{}, tt.fields.protoconfRoot)
-			p := NewParser(dr.GetFilesResolver())
+			dr.Import(dr.Parse, []*regexp.Regexp{}, tt.fields.protoconfRoot)
+			p := NewParserWithDescriptorRegistry(dr)
 			if err := p.ReadConfig(filepath.Join(tt.fields.protoconfRoot, tt.args.filename), tt.args.msg); (err != nil) != tt.wantErr {
 				t.Errorf("Parser.ReadConfig() error = %v, wantErr %v", err, tt.wantErr)
 			}

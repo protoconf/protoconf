@@ -55,11 +55,6 @@ func (l *starlarkLoader) loadConfig(moduleName string) (starlark.StringDict, map
 }
 
 func (l *starlarkLoader) Load(thread *starlark.Thread, moduleName string) (starlark.StringDict, error) {
-	metadata := ParseModulePath(moduleName)
-	if metadata != nil && metadata.Repo != "" {
-		return l.moduleService.Load(thread, moduleName)
-	}
-
 	if moduleName == "any.star" {
 		return starlark.StringDict{"any": starproto.AnyModule}, nil
 	}
@@ -72,6 +67,27 @@ func (l *starlarkLoader) Load(thread *starlark.Thread, moduleName string) (starl
 	var fromPath string
 	if thread.CallStackDepth() > 0 {
 		fromPath = thread.CallFrame(0).Pos.Filename()
+	}
+	fromPathMeta := ParseModulePath(fromPath)
+	metadata := ParseModulePath(moduleName)
+	if fromPathMeta != nil && fromPathMeta.Repo != "" && metadata != nil && metadata.Repo == "" {
+		metadata.Repo = fromPathMeta.Repo
+		metadata.Filepath, _ = toCanonicalPath(moduleName, fromPathMeta.Filepath)
+	}
+	if metadata != nil && metadata.Repo != "" {
+		if entry, ok := l.cache[metadata.String()]; entry != nil {
+			return entry.globals, entry.err
+		} else if ok {
+			return nil, fmt.Errorf("cycle in load graph")
+		}
+		if metadata.Ext == ".proto" {
+			globals, err := l.loadProto(strings.TrimPrefix(filepath.Clean(metadata.Filepath), "/"))
+			l.cache[metadata.String()] = &cacheEntry{globals, err}
+			return globals, err
+		}
+		globals, err := l.loadStarlarkFromModule(thread, metadata)
+		l.cache[metadata.String()] = &cacheEntry{globals, err}
+		return globals, err
 	}
 	modulePath, err := toCanonicalPath(moduleName, fromPath)
 	if err != nil {
@@ -200,6 +216,25 @@ func (l *starlarkLoader) loadProto(modulePath string) (starlark.StringDict, erro
 		globals[enum.GetName()] = starproto.NewEnumType(enum)
 	}
 	return globals, nil
+}
+
+func (l *starlarkLoader) loadStarlarkFromModule(thread *starlark.Thread, m *ModulePath) (starlark.StringDict, error) {
+	repo, ok := l.moduleService.head.Deps[m.Repo]
+	if !ok {
+		return nil, errors.Join(errors.New("cannot find repo in workspace"), fmt.Errorf("module name: %s", m.Repo))
+	}
+	fullPath := filepath.Join(l.moduleService.getCacheDir(), repo.Label, consts.SrcPath, m.Filepath)
+	reader, err := openFile(fullPath)
+	if err != nil {
+		return nil, errors.Join(errors.New("cannot load starlark file"), err)
+	}
+	defer reader.Close()
+	moduleSource, err := io.ReadAll(reader)
+	if err != nil {
+		return nil, err
+	}
+
+	return starlark.ExecFile(thread, m.String(), moduleSource, l.Modules)
 }
 
 func (l *starlarkLoader) loadStarlark(thread *starlark.Thread, modulePath string) (starlark.StringDict, error) {

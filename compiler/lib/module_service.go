@@ -22,7 +22,6 @@ import (
 	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/dynamic"
 	"github.com/mitchellh/cli"
-	"github.com/protoconf/protoconf/compiler/lib/parser"
 	"github.com/protoconf/protoconf/compiler/module/v1"
 	"github.com/protoconf/protoconf/compiler/starproto"
 	"github.com/protoconf/protoconf/consts"
@@ -82,22 +81,13 @@ func (m *ModuleService) getLockFile() string {
 	return filepath.Join(m.getProtoconfPath(), m.Config.LockFile)
 }
 
-func (m *ModuleService) GetProtoPaths() []string {
-	arr := []string{}
-	return m.protoPaths(m.head, arr)
-}
-
 func (m *ModuleService) protoPaths(r *module.RemoteRepo, input []string) []string {
 	for _, path := range append(r.AdditionalProtoDirs, r.SourcePath) {
 		if path != "" {
 			input = append(input, filepath.Join(m.getCacheDir(), r.Label, path))
 		}
 	}
-	for _, dep := range r.Deps {
-		input = m.protoPaths(dep, input)
-	}
 	return input
-
 }
 
 func (m *ModuleService) Init(ctx context.Context, initFiles ...string) error {
@@ -207,27 +197,6 @@ func (m *ModuleService) Add(t *starlark.Thread, fn *starlark.Builtin, args starl
 	return starproto.NewStarProtoMessage(dynamicMsg), nil
 }
 
-func (m *ModuleService) Load(thread *starlark.Thread, moduleName string) (starlark.StringDict, error) {
-	metadata := ParseModulePath(moduleName)
-	if metadata == nil {
-		return nil, errors.New("could not parse module path")
-	}
-	if metadata.Ext == ".proto" {
-		return thread.Load(thread, metadata.Filepath)
-	}
-	repo, ok := m.head.Deps[metadata.Repo]
-	if !ok {
-		return nil, errors.New("repo does not exist in workspace")
-	}
-
-	moduleRoot := filepath.Join(m.getCacheDir(), repo.Label)
-	c := NewCompiler(moduleRoot, false)
-	c.parser = parser.NewParser(m.GetProtoFilesRegistry())
-	newThread := &starlark.Thread{}
-	newThread.Load = c.GetLoader().Load
-	return c.GetLoader().Load(newThread, metadata.Filepath)
-}
-
 func (m *ModuleService) Lock() error {
 	b, err := prototext.MarshalOptions{Multiline: true}.Marshal(m.head)
 	if err != nil {
@@ -293,6 +262,7 @@ func hash1(files []string, open func(string) (io.ReadCloser, error)) (string, er
 }
 
 func (m *ModuleService) Download(ctx context.Context, r *module.RemoteRepo) error {
+	slog.Debug("downloading repo", "label", r.Label, "integrity", r.Integrity)
 	switch _, integrityErr := m.Validate(r); {
 	case integrityErr == nil:
 		return nil
@@ -312,26 +282,36 @@ func (m *ModuleService) Download(ctx context.Context, r *module.RemoteRepo) erro
 	}
 	r.Integrity, err = m.Validate(r)
 	return err
-
 }
 
-func (m *ModuleService) GenFileDescriptorSet(r *module.RemoteRepo) error {
-	registry := utils.NewDescriptorRegistry()
-	files := m.protoPaths(r, []string{})
+func (m *ModuleService) GenFileDescriptorSet(registry *utils.DescriptorRegistry, r *module.RemoteRepo) error {
+	cacheFile := filepath.Join(m.getCacheDir(), r.GetLabel()+".fds")
+	err := registry.Load(cacheFile, r.GetFileDescriptorSetSum())
+	if err == nil {
+		return nil
+	}
+	paths := m.protoPaths(r, []string{})
 	excludes := []*regexp.Regexp{}
 	for _, str := range r.ExcludeFileRegexps {
 		newRe := regexp.MustCompile(str)
 		excludes = append(excludes, newRe)
 	}
 
-	err := registry.Import(registry.Parse, excludes, files...)
+	err = registry.Import(registry.Parse, excludes, paths...)
 	if err != nil {
 		return err
 	}
 
-	h, err := registry.Store(filepath.Join(m.getCacheDir(), r.Label+".fds"))
-	r.FileDescriptorSetSum = h
-	return err
+	h, err := registry.Store(cacheFile)
+	if err != nil {
+		return err
+	}
+	return m.Walk(func(repo *module.RemoteRepo) error {
+		if r.Label == repo.Label {
+			repo.FileDescriptorSetSum = h
+		}
+		return m.Lock()
+	})
 }
 
 func (m *ModuleService) GetProtoFilesRegistry() *protoregistry.Files {
@@ -354,30 +334,53 @@ func (m *ModuleService) GetProtoRegistry() *utils.DescriptorRegistry {
 	}
 	err := registry.Import(registry.Parse, []*regexp.Regexp{}, filepath.Join(m.getProtoconfPath(), consts.SrcPath))
 	if err != nil {
-		slog.Default().Error("failed to import proto files", slog.String("error", err.Error()))
+		slog.Error("failed to parse proto files", slog.String("error", err.Error()))
+
 	}
 	m.cachedRegistry = registry
 	return registry
 }
 
 func (m *ModuleService) Sync(ctx context.Context) error {
-	grp, _ := errgroup.WithContext(ctx)
-	for _, r := range m.head.Deps {
-		remoteRepo := r
-		grp.Go(func() error {
-			err := m.Download(ctx, remoteRepo)
-			if err != nil {
-				slog.Default().Error("failed to download remote repo", slog.String("error", err.Error()))
-				return err
-			}
-			return m.GenFileDescriptorSet(remoteRepo)
-		})
-	}
-	err := grp.Wait()
-	if err != nil {
+	// err := m.LoadFromLockFile()
+	// if err != nil {
+	// 	return err
+	// }
+	m.Walk(func(r *module.RemoteRepo) error {
+		err := m.Download(ctx, r)
+		if err != nil {
+			return err
+		}
+		if r.Integrity != "" && r.Integrity != "dummy" {
+			m.Walk(func(repo *module.RemoteRepo) error {
+				if r.Label == repo.Label {
+					repo.Integrity = r.Integrity
+				}
+				return nil
+			})
+		}
+		return m.Lock()
+	})
+	registry := utils.NewDescriptorRegistry()
+	return m.Walk(func(r *module.RemoteRepo) error {
+		err := m.GenFileDescriptorSet(registry, r)
+		slog.Info("generating descriptor set", "repo", r.Label, "error", err)
 		return err
+	})
+}
+
+type WalkFunction func(r *module.RemoteRepo) error
+
+func walk(head *module.RemoteRepo, walkFn WalkFunction) error {
+	var err error
+	for _, dep := range head.GetDeps() {
+		err = errors.Join(walk(dep, walkFn))
 	}
-	return m.Lock()
+	return errors.Join(err, walkFn(head))
+}
+
+func (m *ModuleService) Walk(walkFn WalkFunction) error {
+	return walk(m.head, walkFn)
 }
 
 var loadMatcherRegex = regexp.MustCompile(`((?P<repo>(@[^//]+|\.)|))(?P<filepath>(//|).*(?P<ext>(.proto|.pinc|.pconf|.mpconf|.star)))`)
@@ -386,6 +389,10 @@ type ModulePath struct {
 	Repo     string
 	Filepath string
 	Ext      string
+}
+
+func (m *ModulePath) String() string {
+	return fmt.Sprintf("@%s/%s", m.Repo, filepath.Clean(m.Filepath))
 }
 
 func ParseModulePath(moduleName string) *ModulePath {

@@ -4,12 +4,10 @@ import (
 	"crypto/sha256"
 	"fmt"
 	"io/fs"
-	"log"
 	"log/slog"
 	"os"
 	"path/filepath"
 	"regexp"
-	"sort"
 	"strings"
 
 	_ "github.com/bufbuild/protovalidate-go"
@@ -28,57 +26,41 @@ import (
 	"google.golang.org/protobuf/types/dynamicpb"
 )
 
-type fileDescriptorSorter []*descriptorpb.FileDescriptorProto
-
-var _ sort.Interface = (*fileDescriptorSorter)(nil)
-
-func (s fileDescriptorSorter) Len() int {
-	return len(s)
-}
-
-func (s fileDescriptorSorter) Less(i, j int) bool {
-	return string(*s[i].Name) < string(*s[j].Name)
-}
-
-func (s fileDescriptorSorter) Swap(i, j int) {
-	s[i], s[j] = s[j], s[i]
-}
-
 type DescriptorRegistry struct {
-	fileDescriptors fileDescriptorSorter
 	MessageRegistry msgregistry.MessageRegistry
 	FileRegistry    map[string]*desc.FileDescriptor
 }
 
 func NewDescriptorRegistry() *DescriptorRegistry {
+	fds := &descriptorpb.FileDescriptorSet{File: []*descriptorpb.FileDescriptorProto{}}
+	protoregistry.GlobalFiles.RangeFiles(func(fd protoreflect.FileDescriptor) bool {
+		if globalRegexMatcher.MatchString(fd.Path()) {
+			fds.File = append(fds.File, protodesc.ToFileDescriptorProto(fd))
+		}
+		return true
+	})
+	fr, _ := desc.CreateFileDescriptorsFromSet(fds)
 	return &DescriptorRegistry{
-		fileDescriptors: fileDescriptorSorter{},
 		MessageRegistry: *msgregistry.NewMessageRegistryWithDefaults(),
-		FileRegistry:    make(map[string]*desc.FileDescriptor),
+		FileRegistry:    fr,
 	}
 }
 
-func (d *DescriptorRegistry) GetFileDescriptorSet() *descriptorpb.FileDescriptorSet {
+var globalRegexMatcher = regexp.MustCompile(`(google/protobuf|google/api|google/rpc|google/type|buf/validate|validate|protoconf/v1)/(.*)\.proto`)
 
-	sort.Stable(d.fileDescriptors)
-	return &descriptorpb.FileDescriptorSet{
-		File: d.fileDescriptors,
+func (d *DescriptorRegistry) GetFileDescriptorSet() *descriptorpb.FileDescriptorSet {
+	fds := &descriptorpb.FileDescriptorSet{File: []*descriptorpb.FileDescriptorProto{}}
+	for _, fd := range d.FileRegistry {
+		fds.File = append(fds.File, fd.AsFileDescriptorProto())
 	}
+	return fds
 }
 
 func (d *DescriptorRegistry) GetFilesResolver() *protoregistry.Files {
 	fds := d.GetFileDescriptorSet()
-	protoregistry.GlobalFiles.RangeFiles(func(fd protoreflect.FileDescriptor) bool {
-		if strings.HasPrefix(fd.Path(), "google") {
-			fds.File = append(fds.File,
-				protodesc.ToFileDescriptorProto(fd),
-			)
-		}
-		return true
-	})
 	files, err := protodesc.FileOptions{AllowUnresolvable: true}.NewFiles(fds)
 	if err != nil {
-		log.Fatalln(err)
+		slog.Error("failed to generate files resolver", "error", err.Error())
 	}
 	return files
 }
@@ -109,52 +91,52 @@ func (d *DescriptorRegistry) GetTypesResolver(regs ...*protoregistry.Files) *pro
 func (d *DescriptorRegistry) Import(parse ParserFunc, excludes []*regexp.Regexp, paths ...string) error {
 	files := []string{}
 	for _, path := range paths {
-
 		localFiles := find(path, ".proto")
 		for _, f := range localFiles {
 			skip := false
 			for _, r := range excludes {
 				if r.MatchString(f) {
+					slog.Debug("evaluating regexp", "file", f, "regexp", r)
 					skip = true
 				}
 			}
-			if skip {
+			if !skip {
+				files = append(files, strings.TrimPrefix(strings.TrimPrefix(f, path), "/"))
 				continue
 			}
-
-			files = append(files, strings.TrimPrefix(strings.TrimPrefix(f, path), "/"))
+			slog.Debug("skipping file", "file", f)
 		}
 	}
+	slog.Debug("files", "files", files)
 	parser := &protoparse.Parser{
 		ImportPaths:                     paths,
 		InterpretOptionsInUnlinkedFiles: true,
 		ValidateUnlinkedFiles:           true,
+		InferImportPaths:                false,
 		LookupImport: func(s string) (*desc.FileDescriptor, error) {
-			fds, err := desc.CreateFileDescriptorsFromSet(d.GetFileDescriptorSet())
-			if err != nil {
-				slog.Default().Debug("failed to create file descriptors from set", slog.Any("err", err))
-			}
-			if fd, ok := fds[s]; ok {
+			if fd, ok := d.FileRegistry[s]; ok {
 				return fd, nil
 			}
 			if d, err := desc.LoadFileDescriptor(s); err == nil {
 				return d, nil
 			}
-			if fd, err := protoregistry.GlobalFiles.FindFileByPath(s); err == nil {
-				return desc.WrapFile(fd)
-			}
 
-			return desc.LoadFileDescriptor(s)
+			return nil, fmt.Errorf("failed to find descriptor for file: %s", s)
 		},
 	}
 
-	fds, err := parse(parser, files, d.fileDescriptors)
-	d.fileDescriptors = fds
+	err := parse(parser, files)
 	return err
 }
 
 func (d *DescriptorRegistry) MergeFileDescriptorSet(fds *descriptorpb.FileDescriptorSet) {
-	d.fileDescriptors = append(d.fileDescriptors, fds.File...)
+	fff, err := desc.CreateFileDescriptorsFromSet(fds)
+	if err != nil {
+		slog.Error("error creating file descriptors", "error", err)
+	}
+	for name, fd := range fff {
+		d.FileRegistry[name] = fd
+	}
 }
 
 func (d *DescriptorRegistry) Store(path string) (string, error) {
@@ -197,38 +179,13 @@ func find(root, ext string) []string {
 	return a
 }
 
-func (d *DescriptorRegistry) Parse(parser *protoparse.Parser, files []string, fds fileDescriptorSorter) (fileDescriptorSorter, error) {
+func (d *DescriptorRegistry) Parse(parser *protoparse.Parser, files []string) error {
 	descriptors, err := parser.ParseFiles(files...)
-	if err != nil {
-		return fds, fmt.Errorf("parser: %v", err)
-	}
 	for _, fd := range descriptors {
 		d.MessageRegistry.AddFile("type.googleapis.com", fd)
 		d.FileRegistry[fd.GetName()] = fd
-		fds = append(fds, fd.AsFileDescriptorProto())
 	}
-	return fds, nil
+	return err
 }
 
-type ParserFunc func(parser *protoparse.Parser, files []string, fds fileDescriptorSorter) (fileDescriptorSorter, error)
-
-func Parse(parser *protoparse.Parser, files []string, fds fileDescriptorSorter) (fileDescriptorSorter, error) {
-	descriptors, err := parser.ParseFiles(files...)
-	if err != nil {
-		return fds, fmt.Errorf("parser: %v", err)
-	}
-
-	for _, fd := range descriptors {
-		fds = append(fds, fd.AsFileDescriptorProto())
-	}
-	return fds, nil
-}
-
-func ParseFilesButDoNotLink(parser *protoparse.Parser, files []string, fds fileDescriptorSorter) (fileDescriptorSorter, error) {
-	descriptors, err := parser.ParseFilesButDoNotLink(files...)
-	if err != nil {
-		return fds, fmt.Errorf("parser: %v", err)
-	}
-	fds = append(fds, descriptors...)
-	return fds, nil
-}
+type ParserFunc func(parser *protoparse.Parser, files []string) error

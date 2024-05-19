@@ -24,9 +24,18 @@ type Parser struct {
 	FileDescriptors map[string]*desc.FileDescriptor
 }
 
+func NewParserWithDescriptorRegistry(registry *utils.DescriptorRegistry) *Parser {
+	files := registry.GetFilesResolver()
+	return &Parser{
+		FilesResolver:   files,
+		LocalResolver:   registry.GetTypesResolver(files),
+		FileDescriptors: registry.FileRegistry,
+	}
+}
+
 func NewParser(fileRegs ...*protoregistry.Files) *Parser {
 	dr := utils.NewDescriptorRegistry()
-	fileRegs = append([]*protoregistry.Files{protoregistry.GlobalFiles}, fileRegs...)
+	// fileRegs = append([]*protoregistry.Files{protoregistry.GlobalFiles}, fileRegs...)
 	resolver := dr.GetTypesResolver(fileRegs...)
 
 	p := &Parser{
