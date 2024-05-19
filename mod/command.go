@@ -50,6 +50,7 @@ func (c *modInitCommand) Help() string {
 }
 
 func (c *modInitCommand) Run(args []string) int {
+	c.flag.Parse(args)
 	c.ui.Info(c.ms.Config.String())
 	c.ms.LoadFromLockFile()
 	err := c.ms.Init(context.Background(), "CONFIGSPACE")
@@ -91,6 +92,7 @@ func (c *modSyncCommand) Help() string {
 }
 
 func (c *modSyncCommand) Run(args []string) int {
+	c.flag.Parse(args)
 	err := c.ms.LoadFromLockFile()
 	if err != nil {
 		c.ui.Error(err.Error())
@@ -125,6 +127,7 @@ func (c *modTidyCommand) Help() string {
 }
 
 func (c *modTidyCommand) Run(args []string) int {
+	c.flag.Parse(args)
 	err := c.ms.LoadFromLockFile()
 	if err != nil {
 		c.ui.Error(err.Error())
@@ -132,11 +135,13 @@ func (c *modTidyCommand) Run(args []string) int {
 	}
 	err = c.ms.Init(context.Background(), "CONFIGSPACE")
 	if err != nil {
+		c.ui.Error("Failed to initialize CONFIGSPACE")
 		c.ui.Error(err.Error())
 		return 1
 	}
 	err = c.ms.Sync(context.Background())
 	if err != nil {
+		c.ui.Error("Failed to sync protoconf.lock")
 		c.ui.Error(err.Error())
 		return 1
 	}

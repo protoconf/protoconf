@@ -18,7 +18,6 @@ import (
 	"github.com/protoconf/protoconf/compiler/lib/parser"
 	"github.com/protoconf/protoconf/compiler/starproto"
 	"github.com/protoconf/protoconf/consts"
-	pc "github.com/protoconf/protoconf/datatypes/proto/v1"
 	protoconf_pb "github.com/protoconf/protoconf/pb/protoconf/v1"
 	"go.starlark.net/resolve"
 	"go.starlark.net/starlark"
@@ -41,17 +40,18 @@ func NewCompiler(protoconfRoot string, verboseLogging bool) *Compiler {
 
 	t := time.Now()
 	ms := NewModuleService(protoconfRoot)
-	slog.Info("module service loaded", "took", time.Since(t))
 	err := ms.LoadFromLockFile()
 	if err != nil {
 		slog.Error("error loading from lock file", "err", err)
 	}
+	registry := ms.GetProtoRegistry()
+	slog.Info("module service loaded", "took", time.Since(t))
 
 	return &Compiler{
 		protoconfRoot:   protoconfRoot,
 		verboseLogging:  verboseLogging,
 		MaterializedDir: filepath.Join(protoconfRoot, consts.CompiledConfigPath),
-		parser:          parser.NewParser(ms.GetProtoFilesRegistry()),
+		parser:          parser.NewParserWithDescriptorRegistry(registry),
 		ModuleService:   ms,
 	}
 }
@@ -334,7 +334,7 @@ func (c *Compiler) load(filename string) (*config, error) {
 func (c *Compiler) GetLoader() *starlarkLoader {
 	modules := getModules()
 	modules[ConfigRollout] = starlark.NewBuiltin(ConfigRollout, newConfigRollout)
-	modules[RolloutStage] = starproto.NewBuiltin(&pc.ProtoconfValue_ConfigRollout_Stage{})
+	modules[RolloutStage] = starproto.NewBuiltin(&protoconf_pb.ProtoconfValue_ConfigRollout_Stage{})
 	return &starlarkLoader{
 		cache:         make(map[string]*cacheEntry),
 		Modules:       modules,
@@ -365,9 +365,9 @@ func newConfigRollout(thread *starlark.Thread, fn *starlark.Builtin, args starla
 		return nil, err
 	}
 
-	ret := &pc.ProtoconfValue{
+	ret := &protoconf_pb.ProtoconfValue{
 		Value:         any,
-		RolloutConfig: &pc.ProtoconfValue_ConfigRollout{},
+		RolloutConfig: &protoconf_pb.ProtoconfValue_ConfigRollout{},
 	}
 
 	_, err = starproto.NewBuiltin(ret.RolloutConfig, func(m *dynamic.Message) error {
