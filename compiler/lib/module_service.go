@@ -28,8 +28,7 @@ import (
 	"github.com/protoconf/protoconf/utils"
 	"go.starlark.net/starlark"
 	"golang.org/x/mod/sumdb/dirhash"
-	"golang.org/x/sync/errgroup"
-	"google.golang.org/protobuf/encoding/prototext"
+	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoregistry"
 )
@@ -93,45 +92,40 @@ func (m *ModuleService) protoPaths(r *module.RemoteRepo, input []string) []strin
 
 func (m *ModuleService) Init(ctx context.Context, initFiles ...string) error {
 	os.MkdirAll(m.getCacheDir(), 0755)
-	grp, _ := errgroup.WithContext(ctx)
 	thread := &starlark.Thread{}
 	for _, file := range initFiles {
 		filePath := filepath.Join(m.getProtoconfPath(), file)
-		grp.Go(func() error {
-			b, err := os.ReadFile(filePath)
-			if err != nil {
-				return errors.Join(fmt.Errorf("failed to read file: %s", filePath), err)
+		b, err := os.ReadFile(filePath)
+		if err != nil {
+			return errors.Join(fmt.Errorf("failed to read file: %s", filePath), err)
+		}
+		locals, err := starlark.ExecFile(thread, filePath, b, starlark.StringDict{"remote_repo": starlark.NewBuiltin("remote_repo", m.Add)})
+		if err != nil {
+			return errors.Join(fmt.Errorf("failed to execute file: %s", filePath), err)
+		}
+		for name, v := range locals {
+			dyn, ok := starproto.ToProtoMessage(v)
+			if !ok {
+				continue
 			}
-			locals, err := starlark.ExecFile(thread, filePath, b, starlark.StringDict{"remote_repo": starlark.NewBuiltin("remote_repo", m.Add)})
-			for name, v := range locals {
-				dyn, ok := starproto.ToProtoMessage(v)
-				if !ok {
-					continue
-				}
-				msg := &module.RemoteRepo{}
-				originalGetterUrl := ""
-				if msgTmp, ok := m.head.Deps[name]; ok {
-					originalGetterUrl = msgTmp.GetterUrl
-					msg = msgTmp
-				}
+			msg := &module.RemoteRepo{}
+			var originalGetterUrl string
+			if msgTmp, ok := m.head.Deps[name]; ok {
+				originalGetterUrl = msgTmp.GetterUrl
+				msg = msgTmp
+			}
 
-				// Arrays must be reseted before merge
-				msg.AdditionalProtoDirs = []string{}
-				msg.ExcludeFileRegexps = []string{}
-				dyn.MergeInto(msg)
-				if !strings.EqualFold(originalGetterUrl, msg.GetterUrl) {
-					msg.Integrity = ""
-				}
-				m.mutex.Lock()
-				m.head.Deps[name] = msg
-				m.mutex.Unlock()
+			// Arrays must be reseted before merge
+			msg.AdditionalProtoDirs = []string{}
+			msg.ExcludeFileRegexps = []string{}
+			dyn.MergeInto(msg)
+			if originalGetterUrl != msg.GetterUrl {
+				msg.Integrity = ""
 			}
-			return err
-		})
-	}
-	err := grp.Wait()
-	if err != nil {
-		return err
+			m.mutex.Lock()
+			m.head.Deps[name] = msg
+			m.mutex.Unlock()
+		}
 	}
 	return m.Lock()
 }
@@ -199,7 +193,7 @@ func (m *ModuleService) Add(t *starlark.Thread, fn *starlark.Builtin, args starl
 }
 
 func (m *ModuleService) Lock() error {
-	b, err := prototext.MarshalOptions{Multiline: true}.Marshal(m.head)
+	b, err := protojson.MarshalOptions{Multiline: true}.Marshal(m.head)
 	if err != nil {
 		return err
 	}
@@ -211,7 +205,7 @@ func (m *ModuleService) LoadFromLockFile() error {
 	if err != nil {
 		return nil
 	}
-	return prototext.Unmarshal(b, m.head)
+	return protojson.Unmarshal(b, m.head)
 }
 
 var ErrorRemoteRepoNoIntegrityInfo = errors.New("missing integrity data")
@@ -344,10 +338,6 @@ func (m *ModuleService) GetProtoRegistry() *utils.DescriptorRegistry {
 }
 
 func (m *ModuleService) Sync(ctx context.Context) error {
-	// err := m.LoadFromLockFile()
-	// if err != nil {
-	// 	return err
-	// }
 	m.Walk(func(r *module.RemoteRepo) error {
 		err := m.Download(ctx, r)
 		if err != nil {
@@ -372,34 +362,36 @@ func (m *ModuleService) Sync(ctx context.Context) error {
 }
 
 func (m *ModuleService) DownloadDeps(ctx context.Context, r *module.RemoteRepo) error {
-	moduleLockFile := filepath.Join(m.getCacheDir(), r.GetLabel(), m.Config.LockFile)
-	b, err := os.ReadFile(moduleLockFile)
-	if err == os.ErrNotExist {
-		return nil
+	if r.GetterUrl != "" {
+		moduleLockFile := filepath.Join(m.getCacheDir(), r.GetLabel(), m.Config.LockFile)
+		b, err := os.ReadFile(moduleLockFile)
+		if err == os.ErrNotExist {
+			return nil
+		}
+		new := &module.RemoteRepo{}
+		err = protojson.Unmarshal(b, new)
+		if err != nil {
+			return err
+		}
+		proto.Merge(r, new)
 	}
-	new := &module.RemoteRepo{}
-	err = prototext.Unmarshal(b, new)
-	if err != nil {
-		return err
-	}
-	proto.Merge(r, new)
-	return walk(r, func(dep *module.RemoteRepo) error {
+	for _, dep := range r.GetDeps() {
 		err := m.Download(ctx, dep)
 		if err != nil {
 			return err
 		}
-		// return m.DownloadDeps(ctx, dep)
-		return nil
-	})
+		err = m.DownloadDeps(ctx, dep)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 type WalkFunction func(r *module.RemoteRepo) error
 
 func walk(head *module.RemoteRepo, walkFn WalkFunction) error {
 	var err error
-	if len(head.Deps) < 1 {
-		return nil
-	}
 	for _, dep := range head.GetDeps() {
 		err = errors.Join(walk(dep, walkFn))
 	}

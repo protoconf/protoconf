@@ -1,14 +1,16 @@
 package utils
 
 import (
-	"crypto/sha256"
+	"crypto/md5"
 	"errors"
 	"fmt"
+	"io"
 	"io/fs"
 	"log/slog"
 	"os"
 	"path/filepath"
 	"regexp"
+	"sort"
 	"strings"
 
 	_ "github.com/bufbuild/protovalidate-go"
@@ -124,12 +126,9 @@ func (d *DescriptorRegistry) Import(parse ParserFunc, excludes []*regexp.Regexp,
 		InterpretOptionsInUnlinkedFiles: true,
 		ValidateUnlinkedFiles:           true,
 		InferImportPaths:                true,
-		// ErrorReporter: func(err reporter.ErrorWithPos) error {
-		// 	if strings.HasPrefix(err.GetPosition().Filename, "google/protobuf") {
-		// 		return nil
-		// 	}
-		// 	return err
-		// },
+		Accessor: func(filename string) (io.ReadCloser, error) {
+			return os.Open(filename)
+		},
 		LookupImport: func(s string) (*desc.FileDescriptor, error) {
 			if fd, ok := d.FileRegistry[s]; ok {
 				return fd, nil
@@ -176,12 +175,30 @@ func (d *DescriptorRegistry) MergeFileDescriptorSet(fds *descriptorpb.FileDescri
 }
 
 func (d *DescriptorRegistry) Store(path string) (string, error) {
-	b, err := proto.Marshal(d.GetFileDescriptorSet())
+	fds := d.GetFileDescriptorSet()
+	b, err := proto.Marshal(fds)
 	if err != nil {
 		return "", err
 	}
-	h := sha256.Sum256(b)
-	return fmt.Sprintf("%x", h), os.WriteFile(path, b, 0644)
+	h := fileDescriptorSetSum(fds)
+	return h, os.WriteFile(path, b, 0644)
+}
+
+func fileDescriptorSetSum(fds *descriptorpb.FileDescriptorSet) string {
+	h := md5.New()
+	fdsMap := map[string]*descriptorpb.FileDescriptorProto{}
+	keys := []string{}
+	for _, fd := range fds.File {
+		keys = append(keys, fd.GetName())
+		fdsMap[fd.GetName()] = fd
+	}
+	sort.Strings(keys)
+	for _, k := range keys {
+		fd := fdsMap[k]
+		io.WriteString(h, fd.String())
+	}
+
+	return fmt.Sprintf("%x", h.Sum(nil))
 }
 
 func (d *DescriptorRegistry) Load(path, checksum string) error {
@@ -189,13 +206,15 @@ func (d *DescriptorRegistry) Load(path, checksum string) error {
 	if err != nil {
 		return err
 	}
-	if checksum != fmt.Sprintf("%x", sha256.Sum256(b)) {
-		return fmt.Errorf("failed to validate file content: %s (expected: %s, got: %x)", path, checksum, sha256.Sum256(b))
-	}
+
 	fds := &descriptorpb.FileDescriptorSet{}
 	err = proto.Unmarshal(b, fds)
 	if err != nil {
 		return err
+	}
+	md5sum := fileDescriptorSetSum(fds)
+	if checksum != md5sum {
+		return fmt.Errorf("failed to validate file content: %s (expected: %s, got: %s)", path, checksum, md5sum)
 	}
 	d.MergeFileDescriptorSet(fds)
 	return nil
