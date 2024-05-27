@@ -30,6 +30,7 @@ import (
 	"golang.org/x/mod/sumdb/dirhash"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/protobuf/encoding/prototext"
+	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoregistry"
 )
 
@@ -290,6 +291,7 @@ func (m *ModuleService) GenFileDescriptorSet(registry *utils.DescriptorRegistry,
 	if err == nil {
 		return nil
 	}
+	slog.Info("generating descriptor set", "repo", r.Label, "error", err)
 	paths := m.protoPaths(r, []string{})
 	excludes := []*regexp.Regexp{}
 	for _, str := range r.ExcludeFileRegexps {
@@ -299,7 +301,7 @@ func (m *ModuleService) GenFileDescriptorSet(registry *utils.DescriptorRegistry,
 
 	err = registry.Import(registry.Parse, excludes, paths...)
 	if err != nil {
-		return err
+		return errors.Join(fmt.Errorf("failed generate file descriptor set for: %s", r.Label), err)
 	}
 
 	h, err := registry.Store(cacheFile)
@@ -359,13 +361,35 @@ func (m *ModuleService) Sync(ctx context.Context) error {
 				return nil
 			})
 		}
-		return m.Lock()
+		defer m.Lock()
+		return m.DownloadDeps(ctx, r)
 	})
 	registry := utils.NewDescriptorRegistry()
 	return m.Walk(func(r *module.RemoteRepo) error {
 		err := m.GenFileDescriptorSet(registry, r)
-		slog.Info("generating descriptor set", "repo", r.Label, "error", err)
 		return err
+	})
+}
+
+func (m *ModuleService) DownloadDeps(ctx context.Context, r *module.RemoteRepo) error {
+	moduleLockFile := filepath.Join(m.getCacheDir(), r.GetLabel(), m.Config.LockFile)
+	b, err := os.ReadFile(moduleLockFile)
+	if err == os.ErrNotExist {
+		return nil
+	}
+	new := &module.RemoteRepo{}
+	err = prototext.Unmarshal(b, new)
+	if err != nil {
+		return err
+	}
+	proto.Merge(r, new)
+	return walk(r, func(dep *module.RemoteRepo) error {
+		err := m.Download(ctx, dep)
+		if err != nil {
+			return err
+		}
+		// return m.DownloadDeps(ctx, dep)
+		return nil
 	})
 }
 
@@ -373,6 +397,9 @@ type WalkFunction func(r *module.RemoteRepo) error
 
 func walk(head *module.RemoteRepo, walkFn WalkFunction) error {
 	var err error
+	if len(head.Deps) < 1 {
+		return nil
+	}
 	for _, dep := range head.GetDeps() {
 		err = errors.Join(walk(dep, walkFn))
 	}

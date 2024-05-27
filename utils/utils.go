@@ -2,6 +2,7 @@ package utils
 
 import (
 	"crypto/sha256"
+	"errors"
 	"fmt"
 	"io/fs"
 	"log/slog"
@@ -32,21 +33,28 @@ type DescriptorRegistry struct {
 }
 
 func NewDescriptorRegistry() *DescriptorRegistry {
-	fds := &descriptorpb.FileDescriptorSet{File: []*descriptorpb.FileDescriptorProto{}}
+	fds := []protoreflect.FileDescriptor{}
 	protoregistry.GlobalFiles.RangeFiles(func(fd protoreflect.FileDescriptor) bool {
 		if globalRegexMatcher.MatchString(fd.Path()) {
-			fds.File = append(fds.File, protodesc.ToFileDescriptorProto(fd))
+			fds = append(fds, fd)
 		}
 		return true
 	})
-	fr, _ := desc.CreateFileDescriptorsFromSet(fds)
+	descs, err := desc.WrapFiles(fds)
+	if err != nil {
+		slog.Error("failed to initialize descriptor registry", "error", err)
+	}
+	fr := map[string]*desc.FileDescriptor{}
+	for _, fd := range descs {
+		fr[fd.GetName()] = fd
+	}
 	return &DescriptorRegistry{
 		MessageRegistry: *msgregistry.NewMessageRegistryWithDefaults(),
 		FileRegistry:    fr,
 	}
 }
 
-var globalRegexMatcher = regexp.MustCompile(`(google/protobuf|google/api|google/rpc|google/type|buf/validate|validate|protoconf/v1)/(.*)\.proto`)
+var globalRegexMatcher = regexp.MustCompile(`(google|google/rpc|google/type|buf/validate|validate|protoconf/v1)/(.*)\.proto`)
 
 func (d *DescriptorRegistry) GetFileDescriptorSet() *descriptorpb.FileDescriptorSet {
 	fds := &descriptorpb.FileDescriptorSet{File: []*descriptorpb.FileDescriptorProto{}}
@@ -99,6 +107,9 @@ func (d *DescriptorRegistry) Import(parse ParserFunc, excludes []*regexp.Regexp,
 					slog.Debug("evaluating regexp", "file", f, "regexp", r)
 					skip = true
 				}
+				if _, present := d.FileRegistry[f]; present {
+					skip = true
+				}
 			}
 			if !skip {
 				files = append(files, strings.TrimPrefix(strings.TrimPrefix(f, path), "/"))
@@ -112,13 +123,21 @@ func (d *DescriptorRegistry) Import(parse ParserFunc, excludes []*regexp.Regexp,
 		ImportPaths:                     paths,
 		InterpretOptionsInUnlinkedFiles: true,
 		ValidateUnlinkedFiles:           true,
-		InferImportPaths:                false,
+		InferImportPaths:                true,
+		// ErrorReporter: func(err reporter.ErrorWithPos) error {
+		// 	if strings.HasPrefix(err.GetPosition().Filename, "google/protobuf") {
+		// 		return nil
+		// 	}
+		// 	return err
+		// },
 		LookupImport: func(s string) (*desc.FileDescriptor, error) {
 			if fd, ok := d.FileRegistry[s]; ok {
 				return fd, nil
 			}
-			if d, err := desc.LoadFileDescriptor(s); err == nil {
-				return d, nil
+			fd, err := desc.LoadFileDescriptor(s)
+			if err == nil {
+				d.FileRegistry[s] = fd
+				return fd, nil
 			}
 
 			return nil, fmt.Errorf("failed to find descriptor for file: %s", s)
@@ -126,8 +145,25 @@ func (d *DescriptorRegistry) Import(parse ParserFunc, excludes []*regexp.Regexp,
 	}
 
 	err := parse(parser, files)
-	return err
+	if err != nil {
+		return errors.Join(errors.New("failed to import files"), err)
+	}
+	return nil
 }
+
+func (d *DescriptorRegistry) Parse(parser *protoparse.Parser, files []string) error {
+	descriptors, err := parser.ParseFiles(files...)
+	for _, fd := range descriptors {
+		d.MessageRegistry.AddFile("type.googleapis.com", fd)
+		d.FileRegistry[fd.GetName()] = fd
+	}
+	if err != nil {
+		return errors.Join(errors.New("failed to parse files"), err)
+	}
+	return nil
+}
+
+type ParserFunc func(parser *protoparse.Parser, files []string) error
 
 func (d *DescriptorRegistry) MergeFileDescriptorSet(fds *descriptorpb.FileDescriptorSet) {
 	fff, err := desc.CreateFileDescriptorsFromSet(fds)
@@ -178,14 +214,3 @@ func find(root, ext string) []string {
 	})
 	return a
 }
-
-func (d *DescriptorRegistry) Parse(parser *protoparse.Parser, files []string) error {
-	descriptors, err := parser.ParseFiles(files...)
-	for _, fd := range descriptors {
-		d.MessageRegistry.AddFile("type.googleapis.com", fd)
-		d.FileRegistry[fd.GetName()] = fd
-	}
-	return err
-}
-
-type ParserFunc func(parser *protoparse.Parser, files []string) error

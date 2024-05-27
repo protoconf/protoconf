@@ -17,6 +17,7 @@ import (
 	"github.com/kvtools/valkeyrie/store"
 	"github.com/kvtools/zookeeper"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	protoconfagent "github.com/protoconf/protoconf/agent/api/proto/v1"
 	protoconf_agent_config "github.com/protoconf/protoconf/agent/config/v1"
 	"github.com/protoconf/protoconf/agent/configmaps"
 	"github.com/protoconf/protoconf/agent/filekv"
@@ -163,6 +164,7 @@ func RunAgent(ctx context.Context, config *protoconf_agent_config.AgentConfig) e
 	if err != nil {
 		return errors.Join(errors.New("error creating listener"), err)
 	}
+	legacy := newLegacyProtoconfServer(agent)
 
 	rpcServer := grpc.NewServer(
 		grpc.StatsHandler(otelgrpc.NewServerHandler()),
@@ -170,6 +172,8 @@ func RunAgent(ctx context.Context, config *protoconf_agent_config.AgentConfig) e
 		grpc.UnaryInterceptor(grpc_prometheus.UnaryServerInterceptor),
 	)
 	protoconf_pb.RegisterProtoconfServiceServer(rpcServer, agent)
+	protoconfagent.RegisterProtoconfServiceServer(rpcServer, legacy)
+
 	grpc_prometheus.Register(rpcServer)
 	mux := http.NewServeMux()
 	mux.HandleFunc("/debug/pprof", pprof.Profile)

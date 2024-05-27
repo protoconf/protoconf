@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"log/slog"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -57,11 +56,6 @@ func newFlagSet() (*flag.FlagSet, *cliConfig) {
 
 func (c *cliCommand) Run(args []string) int {
 	flags, config := newFlagSet()
-	logger := slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{
-		AddSource: true,
-		Level:     slog.LevelDebug,
-	}))
-	slog.SetDefault(logger)
 	flags.Parse(args)
 
 	if flags.NArg() < 1 {

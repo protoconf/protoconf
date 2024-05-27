@@ -94,6 +94,7 @@ func (c *modSyncCommand) Help() string {
 func (c *modSyncCommand) Run(args []string) int {
 	c.flag.Parse(args)
 	err := c.ms.LoadFromLockFile()
+	defer c.ms.Lock()
 	if err != nil {
 		c.ui.Error(err.Error())
 		return 1

@@ -190,7 +190,6 @@ func (c *Compiler) CompileFileAsync(ctx context.Context, cancel context.CancelCa
 				sendErr(err)
 			}
 		}
-		slog.Default().Info("Compiled", slog.String("file", filename))
 		cancel(nil)
 	}()
 	return ch, errCh
@@ -315,7 +314,6 @@ func (c *Compiler) runConfig(filename string) (starlark.Value, *config, error) {
 }
 
 func (c *Compiler) load(filename string) (*config, error) {
-
 	loader := c.GetLoader()
 	locals, validators, err := loader.loadConfig(filepath.ToSlash(filename))
 	if err != nil {
