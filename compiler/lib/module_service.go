@@ -54,6 +54,7 @@ func NewModuleService(protoconfRoot string) *ModuleService {
 		mutex:       sync.RWMutex{},
 		downloadMux: &sync.Mutex{},
 		head: &module.RemoteRepo{
+			Url:  ".",
 			Deps: map[string]*module.RemoteRepo{},
 		},
 	}
@@ -176,20 +177,25 @@ func (m *ModuleService) Add(t *starlark.Thread, fn *starlark.Builtin, args starl
 	u.RawQuery = query.Encode()
 
 	remoteRepo.GetterUrl = u.String()
-	if remoteRepo.Label == "" {
-		sanitized := strings.TrimPrefix(remoteRepo.GetterUrl, "git::")
-		parsedSanitized, _ := url.Parse(sanitized)
-		remoteRepo.Label = label.ImportPathToBazelRepoName(
-			filepath.Join(
-				parsedSanitized.Hostname(),
-				strings.TrimSuffix(filepath.Join(strings.Split(parsedSanitized.Path, "/")[:3]...), ".git"),
-				parsedSanitized.Query().Get("ref"),
-			),
-		)
-	}
-
+	remoteRepo.Label = repoLabel(remoteRepo)
 	dynamicMsg, _ := dynamic.AsDynamicMessage(remoteRepo)
 	return starproto.NewStarProtoMessage(dynamicMsg), nil
+}
+
+func repoLabel(remoteRepo *module.RemoteRepo) string {
+	if remoteRepo.Label != "" {
+		return remoteRepo.Label
+	}
+	sanitized := strings.TrimPrefix(remoteRepo.GetterUrl, "git::")
+	parsedSanitized, _ := url.Parse(sanitized)
+	return label.ImportPathToBazelRepoName(
+		filepath.Join(
+			parsedSanitized.Hostname(),
+			strings.TrimSuffix(filepath.Join(strings.Split(parsedSanitized.Path, "/")[:3]...), ".git"),
+			parsedSanitized.Query().Get("ref"),
+		),
+	)
+
 }
 
 func (m *ModuleService) Lock() error {
@@ -257,6 +263,9 @@ func hash1(files []string, open func(string) (io.ReadCloser, error)) (string, er
 }
 
 func (m *ModuleService) Download(ctx context.Context, r *module.RemoteRepo) error {
+	if r.GetterUrl == "" {
+		return nil
+	}
 	slog.Debug("downloading repo", "label", r.Label, "integrity", r.Integrity)
 	switch _, integrityErr := m.Validate(r); {
 	case integrityErr == nil:
@@ -338,7 +347,7 @@ func (m *ModuleService) GetProtoRegistry() *utils.DescriptorRegistry {
 }
 
 func (m *ModuleService) Sync(ctx context.Context) error {
-	m.Walk(func(r *module.RemoteRepo) error {
+	err := m.Walk(func(r *module.RemoteRepo) error {
 		err := m.Download(ctx, r)
 		if err != nil {
 			return err
@@ -354,19 +363,29 @@ func (m *ModuleService) Sync(ctx context.Context) error {
 		defer m.Lock()
 		return m.DownloadDeps(ctx, r)
 	})
+	if err != nil {
+		return err
+	}
 	registry := utils.NewDescriptorRegistry()
-	return m.Walk(func(r *module.RemoteRepo) error {
+	err = m.Walk(func(r *module.RemoteRepo) error {
+		if r.Url == "." {
+			return nil
+		}
 		err := m.GenFileDescriptorSet(registry, r)
 		return err
 	})
+	return err
 }
 
 func (m *ModuleService) DownloadDeps(ctx context.Context, r *module.RemoteRepo) error {
 	if r.GetterUrl != "" {
 		moduleLockFile := filepath.Join(m.getCacheDir(), r.GetLabel(), m.Config.LockFile)
 		b, err := os.ReadFile(moduleLockFile)
-		if err == os.ErrNotExist {
+		if errors.Is(err, os.ErrNotExist) || errors.Is(err, &os.PathError{}) {
 			return nil
+		}
+		if err != nil {
+			return err
 		}
 		new := &module.RemoteRepo{}
 		err = protojson.Unmarshal(b, new)
