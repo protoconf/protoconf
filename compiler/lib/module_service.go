@@ -39,6 +39,7 @@ type ModuleService struct {
 	mutex          sync.RWMutex
 	downloadMux    *sync.Mutex
 	cachedRegistry *utils.DescriptorRegistry
+	ui             cli.Ui
 }
 
 func NewModuleService(protoconfRoot string) *ModuleService {
@@ -49,6 +50,16 @@ func NewModuleService(protoconfRoot string) *ModuleService {
 		CacheDir:      cacheDir,
 		LockFile:      lockFile,
 	}
+	ui := &cli.ColoredUi{
+		Ui: &cli.BasicUi{
+			ErrorWriter: os.Stderr,
+			Writer:      os.Stdout,
+			Reader:      os.Stdin,
+		},
+		WarnColor:  cli.UiColorYellow,
+		InfoColor:  cli.UiColorGreen,
+		ErrorColor: cli.UiColorRed,
+	}
 	return &ModuleService{
 		Config:      config,
 		mutex:       sync.RWMutex{},
@@ -57,6 +68,7 @@ func NewModuleService(protoconfRoot string) *ModuleService {
 			Url:  ".",
 			Deps: map[string]*module.RemoteRepo{},
 		},
+		ui: ui,
 	}
 }
 
@@ -278,23 +290,29 @@ func (m *ModuleService) Download(ctx context.Context, r *module.RemoteRepo) erro
 	repoCacheDir := filepath.Join(m.getCacheDir(), r.Label)
 
 	m.downloadMux.Lock()
-	slog.Default().Info("downloading", slog.String("label", r.Label), slog.String("url", r.GetterUrl))
-	err := getter.GetAny(repoCacheDir, r.GetterUrl, getter.WithContext(ctx))
+	m.ui.Output(fmt.Sprintf("Downloading: %s", r.Url))
+	m.ui.Info("  => " + r.Label)
+	err := getter.GetAny(repoCacheDir, r.GetterUrl, getter.WithContext(ctx), getter.WithProgress(defaultProgressBar))
 	m.downloadMux.Unlock()
 	if err != nil {
+		m.ui.Error(fmt.Sprintf("  => Failed: %s", err))
 		return err
 	}
+	m.ui.Info("  => Done.")
 	r.Integrity, err = m.Validate(r)
 	return err
 }
 
 func (m *ModuleService) GenFileDescriptorSet(registry *utils.DescriptorRegistry, r *module.RemoteRepo) error {
 	cacheFile := filepath.Join(m.getCacheDir(), r.GetLabel()+".fds")
+	m.ui.Output(fmt.Sprintf("Generating file descriptor set for: %s", r.Label))
 	err := registry.Load(cacheFile, r.GetFileDescriptorSetSum())
 	if err == nil {
+		m.ui.Info("  => Loaded from cache.")
 		return nil
 	}
-	slog.Info("generating descriptor set", "repo", r.Label, "error", err)
+	m.ui.Warn("  =>  Could not load from cache: " + err.Error())
+	// slog.Info("generating descriptor set", "repo", r.Label, "error", err)
 	paths := m.protoPaths(r, []string{})
 	excludes := []*regexp.Regexp{}
 	for _, str := range r.ExcludeFileRegexps {
@@ -302,13 +320,17 @@ func (m *ModuleService) GenFileDescriptorSet(registry *utils.DescriptorRegistry,
 		excludes = append(excludes, newRe)
 	}
 
+	m.ui.Info("  => Parsing protos.")
 	err = registry.Import(registry.Parse, excludes, paths...)
 	if err != nil {
+		m.ui.Error("  => Failed to parse proto files: " + err.Error())
 		return errors.Join(fmt.Errorf("failed generate file descriptor set for: %s", r.Label), err)
 	}
 
+	m.ui.Info("  => Storing in cache.")
 	h, err := registry.Store(cacheFile)
 	if err != nil {
+		m.ui.Error("  => Failed to store file descriptor set: " + err.Error())
 		return err
 	}
 	return m.Walk(func(repo *module.RemoteRepo) error {
@@ -411,8 +433,15 @@ type WalkFunction func(r *module.RemoteRepo) error
 
 func walk(head *module.RemoteRepo, walkFn WalkFunction) error {
 	var err error
-	for _, dep := range head.GetDeps() {
-		err = errors.Join(walk(dep, walkFn))
+	keys := []string{}
+	deps := []*module.RemoteRepo{}
+	for k, dep := range head.GetDeps() {
+		keys = append(keys, k)
+		deps = append(deps, dep)
+	}
+	sort.Strings(keys)
+	for i := range keys {
+		err = errors.Join(walk(deps[i], walkFn))
 	}
 	return errors.Join(err, walkFn(head))
 }
