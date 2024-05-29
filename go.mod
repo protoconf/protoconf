@@ -8,6 +8,7 @@ require (
 	github.com/Masterminds/sprig/v3 v3.2.3
 	github.com/bazelbuild/bazel-gazelle v0.34.0
 	github.com/bufbuild/protovalidate-go v0.6.1
+	github.com/cheggaaa/pb v1.0.27
 	github.com/fsnotify/fsnotify v1.7.0
 	github.com/fullstorydev/grpcui v1.3.3
 	github.com/ghodss/yaml v1.0.0
@@ -128,6 +129,7 @@ require (
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
+	github.com/mattn/go-runewidth v0.0.4 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect

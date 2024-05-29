@@ -56,6 +56,13 @@ func NewDescriptorRegistry() *DescriptorRegistry {
 	}
 }
 
+func (d *DescriptorRegistry) Merge(other *DescriptorRegistry) {
+	for k, v := range other.FileRegistry {
+		d.FileRegistry[k] = v
+		d.MessageRegistry.AddFile("type.googleapis.com", v)
+	}
+}
+
 var globalRegexMatcher = regexp.MustCompile(`(google|google/rpc|google/type|buf/validate|validate|protoconf/v1)/(.*)\.proto`)
 
 func (d *DescriptorRegistry) GetFileDescriptorSet() *descriptorpb.FileDescriptorSet {
