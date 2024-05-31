@@ -16,10 +16,10 @@ message RemoteRepo {
     string source_path = 7;
     repeated string additional_proto_dirs = 8;
     repeated string exclude_file_regexps = 13;
-    map<string,RemoteRepo> deps = 9;
     string integrity = 10;
     string getter_url = 11;
     string file_descriptor_set_sum = 12;
+    map<string,RemoteRepo> deps = 100;
 }
 
 message ModuleServiceConfig {

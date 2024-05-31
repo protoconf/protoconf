@@ -22,6 +22,7 @@ import (
 	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/dynamic"
 	"github.com/mitchellh/cli"
+	"github.com/protoconf/protoconf/command"
 	"github.com/protoconf/protoconf/compiler/module/v1"
 	"github.com/protoconf/protoconf/compiler/starproto"
 	"github.com/protoconf/protoconf/consts"
@@ -39,7 +40,6 @@ type ModuleService struct {
 	mutex          sync.RWMutex
 	downloadMux    *sync.Mutex
 	cachedRegistry *utils.DescriptorRegistry
-	ui             cli.Ui
 }
 
 func NewModuleService(protoconfRoot string) *ModuleService {
@@ -50,16 +50,6 @@ func NewModuleService(protoconfRoot string) *ModuleService {
 		CacheDir:      cacheDir,
 		LockFile:      lockFile,
 	}
-	ui := &cli.ColoredUi{
-		Ui: &cli.BasicUi{
-			ErrorWriter: os.Stderr,
-			Writer:      os.Stdout,
-			Reader:      os.Stdin,
-		},
-		WarnColor:  cli.UiColorYellow,
-		InfoColor:  cli.UiColorGreen,
-		ErrorColor: cli.UiColorRed,
-	}
 	return &ModuleService{
 		Config:      config,
 		mutex:       sync.RWMutex{},
@@ -68,7 +58,6 @@ func NewModuleService(protoconfRoot string) *ModuleService {
 			Url:  ".",
 			Deps: map[string]*module.RemoteRepo{},
 		},
-		ui: ui,
 	}
 }
 
@@ -140,7 +129,7 @@ func (m *ModuleService) Init(ctx context.Context, initFiles ...string) error {
 			m.mutex.Unlock()
 		}
 	}
-	return m.Lock()
+	return m.MergeLock()
 }
 
 func (m *ModuleService) Add(t *starlark.Thread, fn *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
@@ -226,6 +215,14 @@ func (m *ModuleService) LoadFromLockFile() error {
 	return protojson.Unmarshal(b, m.head)
 }
 
+func (m *ModuleService) MergeLock() error {
+	err := m.LoadFromLockFile()
+	if err != nil {
+		return err
+	}
+	return m.Lock()
+}
+
 var ErrorRemoteRepoNoIntegrityInfo = errors.New("missing integrity data")
 var ErrorRemoteRepoNotDownloaded = errors.New("remote repo not in local cache")
 var ErrorRemoteRepoValidationFailed = errors.New("failed to validate integrity")
@@ -290,28 +287,30 @@ func (m *ModuleService) Download(ctx context.Context, r *module.RemoteRepo) erro
 	repoCacheDir := filepath.Join(m.getCacheDir(), r.Label)
 
 	m.downloadMux.Lock()
-	m.ui.Output(fmt.Sprintf("Downloading: %s", r.Url))
-	m.ui.Info("  => " + r.Label)
+	command.DefaultUI.Output(fmt.Sprintf("Downloading: %s", r.Url))
+	ui := command.NewPrefixedUi(fmt.Sprintf("  => %s: ", r.Label))
 	err := getter.GetAny(repoCacheDir, r.GetterUrl, getter.WithContext(ctx), getter.WithProgress(defaultProgressBar))
 	m.downloadMux.Unlock()
 	if err != nil {
-		m.ui.Error(fmt.Sprintf("  => Failed: %s", err))
+		ui.Error(fmt.Sprintf("Failed: %s", err))
 		return err
 	}
-	m.ui.Info("  => Done.")
+	ui.Info("Done.")
 	r.Integrity, err = m.Validate(r)
 	return err
 }
 
 func (m *ModuleService) GenFileDescriptorSet(registry *utils.DescriptorRegistry, r *module.RemoteRepo) error {
 	cacheFile := filepath.Join(m.getCacheDir(), r.GetLabel()+".fds")
-	m.ui.Output(fmt.Sprintf("Generating file descriptor set for: %s", r.Label))
+	command.DefaultUI.Output(fmt.Sprintf("Generating file descriptor set for: %s", r.Label))
+	ui := command.NewPrefixedUi(fmt.Sprintf("  => %s: ", r.Label))
 	err := registry.Load(cacheFile, r.GetFileDescriptorSetSum())
 	if err == nil {
-		m.ui.Info("  => Loaded from cache.")
+		ui.Info("Loaded from cache.")
 		return nil
 	}
-	m.ui.Warn("  =>  Could not load from cache: " + err.Error())
+	ui.Warn("Could not load from cache:")
+	ui.Warn(err.Error())
 	// slog.Info("generating descriptor set", "repo", r.Label, "error", err)
 	paths := m.protoPaths(r, []string{})
 	excludes := []*regexp.Regexp{}
@@ -320,17 +319,18 @@ func (m *ModuleService) GenFileDescriptorSet(registry *utils.DescriptorRegistry,
 		excludes = append(excludes, newRe)
 	}
 
-	m.ui.Info("  => Parsing protos.")
+	ui.Info("Parsing protos.")
 	err = registry.Import(registry.Parse, excludes, paths...)
 	if err != nil {
-		m.ui.Error("  => Failed to parse proto files: " + err.Error())
+		ui.Error("Failed to parse proto files:")
+		ui.Error(err.Error())
 		return errors.Join(fmt.Errorf("failed generate file descriptor set for: %s", r.Label), err)
 	}
 
-	m.ui.Info("  => Storing in cache.")
+	ui.Info("Storing in cache.")
 	h, err := registry.Store(cacheFile)
 	if err != nil {
-		m.ui.Error("  => Failed to store file descriptor set: " + err.Error())
+		ui.Error("Failed to store file descriptor set: " + err.Error())
 		return err
 	}
 	return m.Walk(func(repo *module.RemoteRepo) error {
@@ -354,9 +354,8 @@ func (m *ModuleService) GetProtoRegistry() *utils.DescriptorRegistry {
 	for _, dep := range m.head.Deps {
 		err := registry.Load(filepath.Join(m.getCacheDir(), dep.Label+".fds"), dep.FileDescriptorSetSum)
 		if err != nil {
-			slog.Default().Error("failed to load file descriptor set", slog.String("error", err.Error()))
-			slog.Default().Error("try run `protoconf mod sync`")
-
+			slog.Error("failed to load file descriptor set", slog.String("error", err.Error()))
+			slog.Error("try run `protoconf mod sync`")
 		}
 	}
 	err := registry.Import(registry.Parse, []*regexp.Regexp{}, filepath.Join(m.getProtoconfPath(), consts.SrcPath))
@@ -368,6 +367,10 @@ func (m *ModuleService) GetProtoRegistry() *utils.DescriptorRegistry {
 	return registry
 }
 
+// Sync synchronizes the modules by downloading dependencies and generating file descriptor sets.
+// It walks through each remote repository, downloads the repository if necessary, and updates the integrity of matching repositories.
+// Then, it downloads the dependencies and generates file descriptor sets for each repository.
+// Finally, it returns any error encountered during the process.
 func (m *ModuleService) Sync(ctx context.Context) error {
 	err := m.Walk(func(r *module.RemoteRepo) error {
 		err := m.Download(ctx, r)
@@ -399,22 +402,30 @@ func (m *ModuleService) Sync(ctx context.Context) error {
 	return err
 }
 
+// DownloadDeps downloads the dependencies of a remote repository.
+// It recursively downloads all the dependencies and their dependencies.
+// If a module lock file exists for a dependency, it merges the lock file with the remote repository.
+// If the lock file does not exist, it skips the dependency.
+// The method returns an error if any error occurs during the download process.
 func (m *ModuleService) DownloadDeps(ctx context.Context, r *module.RemoteRepo) error {
 	if r.GetterUrl != "" {
 		moduleLockFile := filepath.Join(m.getCacheDir(), r.GetLabel(), m.Config.LockFile)
 		b, err := os.ReadFile(moduleLockFile)
 		if errors.Is(err, os.ErrNotExist) || errors.Is(err, &os.PathError{}) {
-			return nil
+		} else {
+			if err != nil {
+				return err
+			}
+			new := &module.RemoteRepo{}
+
+			err = protojson.Unmarshal(b, new)
+			if err != nil {
+				return err
+			}
+			new.Url = r.Url
+			new.GetterUrl = r.GetterUrl
+			proto.Merge(r, new)
 		}
-		if err != nil {
-			return err
-		}
-		new := &module.RemoteRepo{}
-		err = protojson.Unmarshal(b, new)
-		if err != nil {
-			return err
-		}
-		proto.Merge(r, new)
 	}
 	for _, dep := range r.GetDeps() {
 		err := m.Download(ctx, dep)
