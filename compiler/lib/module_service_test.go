@@ -117,6 +117,19 @@ func TestModuleService_Sync(t *testing.T) {
 				},
 			},
 		},
+		{
+			name: "download deps",
+			head: &module.RemoteRepo{
+				Url: ".",
+				Deps: map[string]*module.RemoteRepo{
+					"vizceral_repo": {
+						Url:       "github.com/protoconf/protoconf-xds",
+						Pin:       &module.RemoteRepo_Commit{Commit: "e07a4b8"},
+						Integrity: "h1:m21JrXElYb7FoxjyMrRBEnW3rCh/gGLKTKPrxbXlFCU=",
+					},
+				},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
