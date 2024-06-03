@@ -21,6 +21,7 @@ import (
 	"github.com/jhump/protoreflect/desc/protoparse"
 	"github.com/jhump/protoreflect/dynamic/msgregistry"
 
+	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protodesc"
 	"google.golang.org/protobuf/reflect/protoreflect"
@@ -32,6 +33,7 @@ import (
 type DescriptorRegistry struct {
 	MessageRegistry msgregistry.MessageRegistry
 	FileRegistry    map[string]*desc.FileDescriptor
+	localFiles      map[string]struct{}
 }
 
 func NewDescriptorRegistry() *DescriptorRegistry {
@@ -53,6 +55,7 @@ func NewDescriptorRegistry() *DescriptorRegistry {
 	return &DescriptorRegistry{
 		MessageRegistry: *msgregistry.NewMessageRegistryWithDefaults(),
 		FileRegistry:    fr,
+		localFiles:      map[string]struct{}{},
 	}
 }
 
@@ -66,11 +69,11 @@ func (d *DescriptorRegistry) Merge(other *DescriptorRegistry) {
 var globalRegexMatcher = regexp.MustCompile(`(google|google/rpc|google/type|buf/validate|validate|protoconf/v1)/(.*)\.proto`)
 
 func (d *DescriptorRegistry) GetFileDescriptorSet() *descriptorpb.FileDescriptorSet {
-	fds := &descriptorpb.FileDescriptorSet{File: []*descriptorpb.FileDescriptorProto{}}
+	fileDescriptors := []*desc.FileDescriptor{}
 	for _, fd := range d.FileRegistry {
-		fds.File = append(fds.File, fd.AsFileDescriptorProto())
+		fileDescriptors = append(fileDescriptors, fd)
 	}
-	return fds
+	return desc.ToFileDescriptorSet(fileDescriptors...)
 }
 
 func (d *DescriptorRegistry) GetFilesResolver() *protoregistry.Files {
@@ -158,10 +161,12 @@ func (d *DescriptorRegistry) Import(parse ParserFunc, excludes []*regexp.Regexp,
 }
 
 func (d *DescriptorRegistry) Parse(parser *protoparse.Parser, files []string) error {
+	d.localFiles = map[string]struct{}{}
 	descriptors, err := parser.ParseFiles(files...)
 	for _, fd := range descriptors {
 		d.MessageRegistry.AddFile("type.googleapis.com", fd)
 		d.FileRegistry[fd.GetName()] = fd
+		d.localFiles[fd.GetName()] = struct{}{}
 	}
 	if err != nil {
 		return errors.Join(errors.New("failed to parse files"), err)
@@ -182,7 +187,16 @@ func (d *DescriptorRegistry) MergeFileDescriptorSet(fds *descriptorpb.FileDescri
 }
 
 func (d *DescriptorRegistry) Store(path string) (string, error) {
-	fds := d.GetFileDescriptorSet()
+	keys := []string{}
+	for filename := range d.localFiles {
+		keys = append(keys, filename)
+	}
+	sort.Strings(keys)
+	fileDescriptors := []*desc.FileDescriptor{}
+	for _, k := range keys {
+		fileDescriptors = append(fileDescriptors, d.FileRegistry[k])
+	}
+	fds := desc.ToFileDescriptorSet(fileDescriptors...)
 	b, err := proto.Marshal(fds)
 	if err != nil {
 		return "", err
@@ -191,21 +205,30 @@ func (d *DescriptorRegistry) Store(path string) (string, error) {
 	return h, os.WriteFile(path, b, 0644)
 }
 
-func fileDescriptorSetSum(fds *descriptorpb.FileDescriptorSet) string {
-	h := md5.New()
-	fdsMap := map[string]*descriptorpb.FileDescriptorProto{}
-	keys := []string{}
-	for _, fd := range fds.File {
-		keys = append(keys, fd.GetName())
-		fdsMap[fd.GetName()] = fd
-	}
-	sort.Strings(keys)
-	for _, k := range keys {
-		fd := fdsMap[k]
-		io.WriteString(h, fd.String())
-	}
+type fdsSorter struct {
+	*descriptorpb.FileDescriptorSet
+}
 
-	return fmt.Sprintf("%x", h.Sum(nil))
+var _ sort.Interface = (*fdsSorter)(nil)
+
+func (f fdsSorter) Len() int {
+	return len(f.File)
+}
+
+func (f fdsSorter) Less(i, j int) bool {
+	return f.File[i].GetName() < f.File[j].GetName()
+}
+
+func (f fdsSorter) Swap(i, j int) {
+	f.File[i], f.File[j] = f.File[j], f.File[i]
+}
+
+func fileDescriptorSetSum(fds *descriptorpb.FileDescriptorSet) string {
+	sorted := fdsSorter{fds}
+	sort.Stable(sorted)
+	b, _ := protojson.Marshal(sorted)
+
+	return fmt.Sprintf("%x", md5.Sum(b))
 }
 
 func (d *DescriptorRegistry) Load(path, checksum string) error {

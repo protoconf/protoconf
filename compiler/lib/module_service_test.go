@@ -124,8 +124,8 @@ func TestModuleService_Sync(t *testing.T) {
 				Deps: map[string]*module.RemoteRepo{
 					"vizceral_repo": {
 						Url:       "github.com/protoconf/protoconf-xds",
-						Pin:       &module.RemoteRepo_Commit{Commit: "e07a4b8"},
-						Integrity: "h1:m21JrXElYb7FoxjyMrRBEnW3rCh/gGLKTKPrxbXlFCU=",
+						Pin:       &module.RemoteRepo_Commit{Commit: "27d699b"},
+						Integrity: "h1:0pcqbr1XMmwU2HAweYk9o3Z/6EGZ69Y8yR9GGANEXqs=",
 					},
 				},
 			},
