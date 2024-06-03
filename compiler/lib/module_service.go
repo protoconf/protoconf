@@ -200,7 +200,7 @@ func repoLabel(remoteRepo *module.RemoteRepo) string {
 }
 
 func (m *ModuleService) Lock() error {
-	b, err := protojson.MarshalOptions{Multiline: true}.Marshal(m.head)
+	b, err := protojson.MarshalOptions{Multiline: true, Indent: "  "}.Marshal(m.head)
 	if err != nil {
 		return err
 	}
@@ -351,13 +351,19 @@ func (m *ModuleService) GetProtoRegistry() *utils.DescriptorRegistry {
 		return m.cachedRegistry
 	}
 	registry := utils.NewDescriptorRegistry()
-	for _, dep := range m.head.Deps {
-		err := registry.Load(filepath.Join(m.getCacheDir(), dep.Label+".fds"), dep.FileDescriptorSetSum)
-		if err != nil {
-			slog.Error("failed to load file descriptor set", slog.String("error", err.Error()))
-			slog.Error("try run `protoconf mod sync`")
+	m.Walk(func(r *module.RemoteRepo) error {
+		if r.Url == "." {
+			return nil
 		}
-	}
+		err := registry.Load(filepath.Join(m.getCacheDir(), r.Label+".fds"), r.FileDescriptorSetSum)
+		if err != nil {
+			command.DefaultUI.Output(fmt.Sprintf("Failed to load file descriptor set for: %s", r.Label))
+			ui := command.NewPrefixedUi(fmt.Sprintf("  => %s: ", r.Label))
+			ui.Error(err.Error())
+			ui.Error("try run `protoconf mod sync`")
+		}
+		return nil
+	})
 	err := registry.Import(registry.Parse, []*regexp.Regexp{}, filepath.Join(m.getProtoconfPath(), consts.SrcPath))
 	if err != nil {
 		slog.Error("failed to parse proto files", slog.String("error", err.Error()))
