@@ -73,7 +73,7 @@ func New(ctx context.Context, endpoints []string, options *Config) (*Store, erro
 		fsnotifyWatcher: fsnotifyWatcher,
 		protoconfRoot:   absRoot,
 		watches:         make(map[string]([]chan struct{})),
-		parser:          parser.NewParser(ms.GetProtoFilesRegistry()),
+		parser:          parser.NewParserWithDescriptorRegistry(ms.GetProtoRegistry()),
 	}
 
 	go watcher.readEvents()

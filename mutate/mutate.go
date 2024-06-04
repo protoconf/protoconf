@@ -104,7 +104,7 @@ func (c *cliCommand) Run(args []string) int {
 	}
 	ms := lib.NewModuleService(root)
 	ms.LoadFromLockFile()
-	parser := parser.NewParser(ms.GetProtoFilesRegistry())
+	parser := parser.NewParserWithDescriptorRegistry(ms.GetProtoRegistry())
 	anyResolver := parser.LocalResolver
 
 	messageType, err := anyResolver.FindMessageByName(protoreflect.FullName(config.protoMsg))

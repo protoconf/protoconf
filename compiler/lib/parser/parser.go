@@ -12,9 +12,7 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protodesc"
-	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/reflect/protoregistry"
-	"google.golang.org/protobuf/types/descriptorpb"
 )
 
 // Parser provides a wrapper around jhump/protoreflect/protoparse that will keep a cache of dpd.FileDescriptor
@@ -31,35 +29,6 @@ func NewParserWithDescriptorRegistry(registry *utils.DescriptorRegistry) *Parser
 		LocalResolver:   registry.GetTypesResolver(files),
 		FileDescriptors: registry.FileRegistry,
 	}
-}
-
-func NewParser(fileRegs ...*protoregistry.Files) *Parser {
-	dr := utils.NewDescriptorRegistry()
-	// fileRegs = append([]*protoregistry.Files{protoregistry.GlobalFiles}, fileRegs...)
-	resolver := dr.GetTypesResolver(fileRegs...)
-
-	p := &Parser{
-		LocalResolver:   resolver,
-		FilesResolver:   &protoregistry.Files{},
-		FileDescriptors: dr.FileRegistry,
-	}
-
-	fds := &descriptorpb.FileDescriptorSet{}
-	for _, reg := range fileRegs {
-		reg.RangeFiles(func(fd protoreflect.FileDescriptor) bool {
-			fds.File = append(fds.File, protodesc.ToFileDescriptorProto(fd))
-			p.FilesResolver.RegisterFile(fd)
-			return true
-		})
-	}
-
-	fileDescriptors, _ := desc.CreateFileDescriptorsFromSet(fds)
-	// if err != nil {
-	// 	panic(err)
-	// }
-	p.FileDescriptors = fileDescriptors
-
-	return p
 }
 
 func (p *Parser) ParseFilesX(filenames ...string) (results []*desc.FileDescriptor, err error) {
@@ -103,5 +72,4 @@ func (p *Parser) ReadConfig(filename string, msg proto.Message) error {
 		return err
 	}
 	return protojson.UnmarshalOptions{Resolver: p.LocalResolver}.Unmarshal(configReader, msg)
-
 }
