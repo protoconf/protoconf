@@ -13,6 +13,9 @@ import (
 	"github.com/protoconf/protoconf/utils/testdata"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
+	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/types/dynamicpb"
 )
 
 func Test_server_MutateConfig(t *testing.T) {
@@ -63,7 +66,7 @@ func Test_server_MutateConfig(t *testing.T) {
 				},
 			},
 			want:    &protoconf_pb.ConfigMutationResponse{},
-			wantErr: ErrInternalCompilerError,
+			wantErr: nil,
 		},
 		{
 			name: "run scripts",
@@ -84,7 +87,7 @@ func Test_server_MutateConfig(t *testing.T) {
 				},
 			},
 			want:    &protoconf_pb.ConfigMutationResponse{},
-			wantErr: ErrInternalCompilerError,
+			wantErr: nil,
 		},
 		{
 			name: "run bad pre scripts",
@@ -122,14 +125,13 @@ func Test_server_MutateConfig(t *testing.T) {
 					},
 				},
 			},
-			wantErr: os.ErrNotExist,
+			wantErr: ErrPostMutationScriptError,
 		},
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			compiler := lib.NewCompiler(tt.fields.protoconfRoot, false)
-			s := NewProtoconfMutationServer(tt.fields.protoconfRoot, WithCompiler(compiler))
+			s := NewProtoconfMutationServer(tt.fields.protoconfRoot)
 			s.config = tt.fields.config
 			s.PreMutationScript = tt.fields.config.preMutationScript
 			s.PostMutationScript = tt.fields.config.postMutationScript
@@ -228,4 +230,22 @@ func Test_cliCommand_Synopsis(t *testing.T) {
 	if got != want {
 		t.Errorf("cliCommand.Synopsis() = %q, want %q", got, want)
 	}
+}
+func TestProtoconfMutationServer_Put(t *testing.T) {
+	protoconfRoot := testdata.SmallTestDir()
+	compiler := lib.NewCompiler(protoconfRoot, false)
+	s := NewProtoconfMutationServer(protoconfRoot, WithCompiler(compiler))
+	ctx := context.Background()
+	ctx = metadata.NewIncomingContext(ctx, metadata.New(map[string]string{"path": "test"}))
+	tmp := &protoconf_pb.CompileRequest{}
+	in := dynamicpb.NewMessage(tmp.ProtoReflect().Descriptor())
+	proto.Merge(in, tmp)
+
+	_, err := s.Put(ctx, in)
+	if !errors.Is(err, ErrInternalCompilerError) {
+		t.Errorf("Put() error = %v", err)
+		return
+	}
+
+	// Add your assertions here to verify the expected behavior of Put
 }

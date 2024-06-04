@@ -412,7 +412,7 @@ func (s *ProtoconfMutationServer) MutateConfig(ctx context.Context, in *protocon
 	if s.PostMutationScript != "" {
 		t := time.Now()
 		if err := s.runScript(s.PostMutationScript, id); err != nil {
-			return nil, logError(fmt.Errorf("error running post mutation script, err=%s", err))
+			return nil, logError(errors.Join(ErrPostMutationScriptError, err))
 		}
 		s.StoreReport(id, func(cmr *protoconf_pb.ConfigMutationResponse) *protoconf_pb.ConfigMutationResponse {
 			cmr.PostScriptDuration = durationpb.New(time.Since(t))
