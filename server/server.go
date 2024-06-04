@@ -339,6 +339,12 @@ func (s *ProtoconfMutationServer) StoreReport(id string, f func(*protoconf_pb.Co
 	s.reports.Store(id, item)
 }
 
+var (
+	ErrPreMutationScriptError  = errors.New("error running pre-mutation script")
+	ErrPostMutationScriptError = errors.New("error running post-mutation script")
+	ErrInternalCompilerError   = errors.New("error compiling configs")
+)
+
 func (s *ProtoconfMutationServer) MutateConfig(ctx context.Context, in *protoconf_pb.ConfigMutationRequest) (*protoconf_pb.ConfigMutationResponse, error) {
 	id := uuid.NewString()
 	s.reports.Store(id, &protoconf_pb.ConfigMutationResponse{Uuid: id})
@@ -355,7 +361,7 @@ func (s *ProtoconfMutationServer) MutateConfig(ctx context.Context, in *protocon
 	if s.PreMutationScript != "" {
 		t := time.Now()
 		if err := s.runScript(s.PreMutationScript, id); err != nil {
-			return nil, logError(fmt.Errorf("error running pre mutation script, err=%s", err))
+			return nil, logError(errors.Join(ErrPreMutationScriptError, err))
 		}
 		s.StoreReport(id, func(cmr *protoconf_pb.ConfigMutationResponse) *protoconf_pb.ConfigMutationResponse {
 			cmr.PreScriptDuration = durationpb.New(time.Since(t))
@@ -395,7 +401,7 @@ func (s *ProtoconfMutationServer) MutateConfig(ctx context.Context, in *protocon
 
 		}
 		if err = g.Wait(); err != nil {
-			return nil, err
+			return nil, errors.Join(ErrInternalCompilerError, err)
 		}
 		s.StoreReport(id, func(cmr *protoconf_pb.ConfigMutationResponse) *protoconf_pb.ConfigMutationResponse {
 			cmr.CompileDuration = durationpb.New(time.Since(t))
