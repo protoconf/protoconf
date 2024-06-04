@@ -198,7 +198,7 @@ func NewProtoconfInserter(protoconfRoot string, kvStore store.Store) *ProtoconfI
 	return &ProtoconfInserter{
 		protoconfRoot: protoconfRoot,
 		kvStore:       kvStore,
-		parser:        parser.NewParser(ms.GetProtoFilesRegistry()),
+		parser:        parser.NewParserWithDescriptorRegistry(ms.GetProtoRegistry()),
 		repo:          repo,
 		rel:           rel,
 		logger:        logger,
