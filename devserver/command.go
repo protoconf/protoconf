@@ -33,9 +33,11 @@ func (d *DevServerCommand) Help() string {
 func (d *DevServerCommand) Run(args []string) int {
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer cancel()
-	protoconfRoot := args[0]
+	protoconfRoot := "."
+	if len(args) > 0 {
+		protoconfRoot = args[0]
+	}
 
-	// lis, err := net.Listen("tcp", ":4300")
 	rpcServer := grpc.NewServer()
 
 	slog.Default().Info("starting agent...")
