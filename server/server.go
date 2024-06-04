@@ -22,6 +22,7 @@ import (
 	"github.com/fullstorydev/grpcui/standalone"
 	"github.com/google/uuid"
 	"github.com/mitchellh/cli"
+	protoconfservice "github.com/protoconf/protoconf/agent/api/proto/v1"
 	"github.com/protoconf/protoconf/compiler"
 	"github.com/protoconf/protoconf/compiler/lib"
 	"github.com/protoconf/protoconf/compiler/lib/parser"
@@ -42,6 +43,8 @@ import (
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/health"
+	"google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/reflection/grpc_reflection_v1alpha"
@@ -220,7 +223,12 @@ func WithCompiler(c *lib.Compiler) func(*ProtoconfMutationServer) {
 func NewProtoconfMutationServer(protoconfRoot string, opts ...MutationServerOption) *ProtoconfMutationServer {
 	ms := lib.NewModuleService(protoconfRoot)
 	ms.LoadFromLockFile()
-	parser := parser.NewParser(ms.GetProtoFilesRegistry())
+	parser := parser.NewParserWithDescriptorRegistry(ms.GetProtoRegistry())
+	parser.FilesResolver.RegisterFile(grpc_reflection_v1alpha.File_grpc_reflection_v1alpha_reflection_proto)
+	parser.FilesResolver.RegisterFile(grpc_health_v1.File_grpc_health_v1_health_proto)
+	parser.FilesResolver.RegisterFile(protoconfmutation.File_server_api_proto_v1_protoconf_mutation_proto)
+	parser.FilesResolver.RegisterFile(protoconf_pb.File_protoconf_v1_protoconf_proto)
+	parser.FilesResolver.RegisterFile(protoconfservice.File_agent_api_proto_v1_protoconf_service_proto)
 	s := &ProtoconfMutationServer{protoconfRoot: protoconfRoot, config: &cliConfig{}, parser: parser, reports: &sync.Map{}}
 	for _, opt := range opts {
 		opt(s)
@@ -271,6 +279,9 @@ func (s *ProtoconfMutationServer) Init(rpcServer *grpc.Server) {
 			}
 			for j := 0; j < svc.Methods().Len(); j++ {
 				method := svc.Methods().Get(j)
+				if method.Output().FullName() != protoreflect.FullName("protoconf.v1.ConfigMutationResponse") {
+					continue
+				}
 				svcDesc.Methods = append(svcDesc.Methods, grpc.MethodDesc{
 					MethodName: string(method.Name()),
 					Handler: func(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -303,6 +314,9 @@ func (s *ProtoconfMutationServer) Init(rpcServer *grpc.Server) {
 						},
 					}
 				}
+			}
+			if len(svcDesc.Methods) < 1 {
+				continue
 			}
 			logger.Info("Registering service", "service", svcDesc.ServiceName)
 			rpcServer.RegisterService(svcDesc, s)
@@ -483,6 +497,7 @@ func (s *ProtoconfMutationServer) GenReflectionUI(ctx context.Context, rpcServer
 
 	buffer := 1024 * 1024
 	lis := bufconn.Listen(buffer)
+	_ = health.NewServer()
 	go func() {
 		context.AfterFunc(ctx, func() {
 			slog.Info("shutting down rpc server")
