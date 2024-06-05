@@ -15,7 +15,7 @@ require (
 	github.com/go-git/go-git/v5 v5.11.0
 	github.com/google/uuid v1.6.0
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
-	github.com/hashicorp/go-getter v1.7.3
+	github.com/hashicorp/go-getter v1.7.4
 	github.com/jhump/protoreflect v1.15.6
 	github.com/kvtools/consul v1.0.2
 	github.com/kvtools/etcdv3 v1.0.2
