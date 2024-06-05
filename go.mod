@@ -8,7 +8,7 @@ require (
 	github.com/Masterminds/sprig/v3 v3.2.3
 	github.com/bazelbuild/bazel-gazelle v0.37.0
 	github.com/bufbuild/protovalidate-go v0.6.2
-	github.com/cheggaaa/pb v1.0.27
+	github.com/cheggaaa/pb v1.0.29
 	github.com/fsnotify/fsnotify v1.7.0
 	github.com/fullstorydev/grpcui v1.3.3
 	github.com/ghodss/yaml v1.0.0
