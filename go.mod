@@ -7,7 +7,7 @@ toolchain go1.21.3
 require (
 	github.com/Masterminds/sprig/v3 v3.2.3
 	github.com/bazelbuild/bazel-gazelle v0.34.0
-	github.com/bufbuild/protovalidate-go v0.6.1
+	github.com/bufbuild/protovalidate-go v0.6.2
 	github.com/cheggaaa/pb v1.0.27
 	github.com/fsnotify/fsnotify v1.7.0
 	github.com/fullstorydev/grpcui v1.3.3
