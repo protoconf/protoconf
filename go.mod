@@ -1,6 +1,6 @@
 module github.com/protoconf/protoconf
 
-go 1.21.4
+go 1.22.4
 
 toolchain go1.22.4
 
