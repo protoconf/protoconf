@@ -22,7 +22,9 @@ jobs:
 
       - name: Run coverage
         run: export GOROOT=$(go env GOROOT); go test -race -coverprofile=coverage.txt -covermode=atomic -v ./... -json > test_results.json
+
       - name: Upload Go test results
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: Go-results
