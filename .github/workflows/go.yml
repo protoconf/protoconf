@@ -13,12 +13,17 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: 1.21
+          go-version: 1.22
 
       - name: Build
         run: go build -v ./...
 
       - name: Run coverage
-        run: export GOROOT=$(go env GOROOT); go test -race -coverprofile=coverage.txt -covermode=atomic -v ./...
+        run: export GOROOT=$(go env GOROOT); go test -race -coverprofile=coverage.txt -covermode=atomic -v ./... -json > test_results.json
+      - name: Upload Go test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: Go-results
+          path: test_results.json
       - name: Upload coverage to Codecov
         run: bash <(curl -s https://codecov.io/bash)
