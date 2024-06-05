@@ -86,6 +86,10 @@ func newFlagSet() (*flag.FlagSet, *cliConfig) {
 type exampleFunc func(path string, msg proto.Message) standalone.Example
 
 func (c *cliCommand) Run(args []string) int {
+	return c.run(context.Background(), args)
+}
+
+func (c *cliCommand) run(ctx context.Context, args []string) int {
 	flags, config := newFlagSet()
 	flags.Parse(args)
 
@@ -93,7 +97,7 @@ func (c *cliCommand) Run(args []string) int {
 		flags.Usage()
 		return 1
 	}
-	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
+	ctx, cancel := signal.NotifyContext(ctx, os.Interrupt)
 	defer cancel()
 
 	var err error
