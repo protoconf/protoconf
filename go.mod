@@ -2,8 +2,6 @@ module github.com/protoconf/protoconf
 
 go 1.22.4
 
-toolchain go1.22.4
-
 require (
 	github.com/Masterminds/sprig/v3 v3.2.3
 	github.com/bazelbuild/bazel-gazelle v0.37.0
