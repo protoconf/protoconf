@@ -29,7 +29,7 @@ require (
 	github.com/qri-io/starlib v0.5.0
 	github.com/remychantenay/slog-otel v1.2.4
 	github.com/smintz/starlarkobject v0.0.0-20221130044148-40067250eba0
-	github.com/stephenafamo/orchestra v0.1.0
+	github.com/stephenafamo/orchestra v0.4.0
 	github.com/stretchr/testify v1.9.0
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.47.0
 	go.opentelemetry.io/otel v1.22.0
