@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/protoconf/protoconf/compiler/lib"
 	protoconf_pb "github.com/protoconf/protoconf/pb/protoconf/v1"
@@ -183,6 +184,7 @@ func TestProtoconfMutationServer_ReportProgress(t *testing.T) {
 	// Assert the response
 	// Add your assertions here to verify the expected behavior of ReportProgress
 }
+
 func Test_cliCommand_Run(t *testing.T) {
 	// Create a temporary directory for the protoconfRoot
 	protoconfRoot := testdata.SmallTestDir()
@@ -214,7 +216,9 @@ func Test_cliCommand_Run(t *testing.T) {
 	})
 
 	// Run the command
-	exitCode := command.Run(flags.Args())
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	exitCode := command.run(ctx, flags.Args())
 
 	// Check the exit code
 	if exitCode != 0 {
@@ -223,6 +227,7 @@ func Test_cliCommand_Run(t *testing.T) {
 
 	// Add assertions here to verify the expected behavior of the Run function
 }
+
 func Test_cliCommand_Synopsis(t *testing.T) {
 	command := &cliCommand{}
 	got := command.Synopsis()
