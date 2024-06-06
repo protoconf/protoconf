@@ -27,7 +27,7 @@ require (
 	github.com/prometheus/client_golang v1.17.0
 	github.com/protoconf/libprotoconf v0.1.0
 	github.com/qri-io/starlib v0.5.0
-	github.com/remychantenay/slog-otel v1.2.4
+	github.com/remychantenay/slog-otel v1.3.0
 	github.com/smintz/starlarkobject v0.0.0-20221130044148-40067250eba0
 	github.com/stephenafamo/orchestra v0.1.0
 	github.com/stretchr/testify v1.9.0
