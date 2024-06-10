@@ -740,6 +740,8 @@ github.com/remychantenay/slog-otel v1.2.4 h1:Z/IwIgFPzzGqLTI460KbTuJZPm5U830dgu0
 github.com/remychantenay/slog-otel v1.2.4/go.mod h1:Ar2ZBcRfIPyoKV/3Xq4oHmNgKc69juGB0QMUzo1vJOc=
 github.com/remychantenay/slog-otel v1.3.0 h1:mppL97agkmwR416lKzltRQ9QRhrPdxwVidt0AnI3Ts4=
 github.com/remychantenay/slog-otel v1.3.0/go.mod h1:L2VAe6WOMAk/kRzzuv2B/rWe/IDXAhUNae0919b4kHU=
+github.com/remychantenay/slog-otel v1.3.1 h1:A+VjqHaUka/sg3meWKVZw9NuMCgYUu7tPLI87pvBHxs=
+github.com/remychantenay/slog-otel v1.3.1/go.mod h1:smosUkTPRlTot5TDJ88qcmGz6tnBq6MJ1bb2ndO66uE=
 github.com/rogpeppe/fastuuid v1.2.0/go.mod h1:jVj6XXZzXRy/MSR5jhDC/2q6DgLz+nrA6LYCDYWNEvQ=
 github.com/rogpeppe/go-internal v1.3.0/go.mod h1:M8bDsm7K2OlrFYOpmOWEs/qY81heoFRclV5y23lUDJ4=
 github.com/rogpeppe/go-internal v1.11.0 h1:cWPaGQEPrBb5/AsnsZesgZZ9yb1OQ+GOISoDNXVBh4M=
