@@ -6,6 +6,7 @@
 #     # - go mod tidy
 #     # you may remove this if you don't need go generate
 #     # - go generate ./...
+version: 2.0
 builds:
   - id: protoconf
     env:
@@ -36,7 +37,7 @@ brews:
     # Default to project name
     name: protoconf
 
-    tap:
+    repository:
       owner: protoconf
       name: homebrew-tap
 
@@ -53,7 +54,7 @@ brews:
 
     # Folder inside the repository to put the formula.
     # Default is the root folder.
-    folder: Formula
+    directory: Formula
 
     # Your app's homepage.
     # Default is empty.
