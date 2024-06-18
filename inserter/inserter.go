@@ -7,7 +7,6 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"log"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -103,7 +102,8 @@ func (c *cliCommand) Run(args []string) int {
 	} else if kVConfig.Store == command.KVStoreConfigMaps {
 		kvStore, err = configmaps.New(ctx, []string{}, &configmaps.Config{Namespace: kVConfig.Namespace})
 	} else {
-		log.Fatalf("Unknown key-value store %s", kVConfig.Store)
+		slog.Error("Unknown key-value store", "store", kVConfig.Store)
+		os.Exit(1)
 	}
 
 	if err != nil {

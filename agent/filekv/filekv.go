@@ -6,7 +6,7 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
-	"log"
+	"log/slog"
 	"path/filepath"
 	"sync"
 
@@ -128,12 +128,12 @@ func (s *Store) Watch(ctx context.Context, key string, opts *store.ReadOptions) 
 			protoconfValue := &protoconfvalue.ProtoconfValue{}
 			err := s.parser.ReadConfig(absPath, protoconfValue)
 			if err != nil {
-				log.Println(err)
+				slog.Error("Error reading config", "Error", err)
 				return
 			}
 			b, err := proto.Marshal(protoconfValue)
 			if err != nil {
-				log.Println(err)
+				slog.Error("Error Marshaling config", "Error", err)
 				return
 			}
 			watchCh <- &store.KVPair{

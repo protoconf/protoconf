@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
-	"log"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -14,7 +14,6 @@ import (
 	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/dynamic"
 	"github.com/mitchellh/cli"
-	"github.com/pkg/errors"
 	"github.com/protoconf/protoconf/compiler/lib"
 	"github.com/protoconf/protoconf/compiler/lib/parser"
 	"github.com/protoconf/protoconf/compiler/starproto"
@@ -100,7 +99,8 @@ func (c *cliCommand) Run(args []string) int {
 
 	root, err := filepath.Abs(config.protoconfRoot)
 	if err != nil {
-		log.Fatal("failed to get root path:", err)
+		slog.Error("failed to get root path", "error", err)
+		os.Exit(1)
 	}
 	ms := lib.NewModuleService(root)
 	ms.LoadFromLockFile()
@@ -110,11 +110,13 @@ func (c *cliCommand) Run(args []string) int {
 	messageType, err := anyResolver.FindMessageByName(protoreflect.FullName(config.protoMsg))
 
 	if err != nil {
-		log.Fatal(errors.Wrapf(err, "could not find typeUrl for %s", config.protoMsg))
+		slog.Error("could not find typeUrl for", "msg", config.protoMsg, "error", err)
+		os.Exit(1)
 	}
 	wrap, err := desc.WrapMessage(messageType.Descriptor())
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("error", err)
+		os.Exit(1)
 	}
 
 	msg := dynamic.NewMessage(wrap)
@@ -123,7 +125,8 @@ func (c *cliCommand) Run(args []string) int {
 		ret := strings.SplitN(fName, "=", 2)
 		field := msg.GetMessageDescriptor().FindFieldByName(ret[0])
 		if field == nil {
-			log.Fatalf("%s is not a field in %s", ret[0], msg.XXX_MessageName())
+			slog.Error("is not a field in ", "field", ret[0], "message", msg.XXX_MessageName())
+			os.Exit(1)
 		}
 		switch field.GetType() {
 		case descriptorpb.FieldDescriptorProto_TYPE_DOUBLE:
@@ -143,7 +146,8 @@ func (c *cliCommand) Run(args []string) int {
 		case descriptorpb.FieldDescriptorProto_TYPE_BOOL:
 			b, e := strconv.ParseBool(ret[1])
 			if e != nil {
-				log.Fatal(e)
+				slog.Error("error", e)
+				os.Exit(1)
 			}
 			setField(msg, ret[0], b, func(s interface{}) interface{} {
 				return s
@@ -163,19 +167,21 @@ func (c *cliCommand) Run(args []string) int {
 		}
 	}
 
-	log.Println(msg.String())
+	slog.Info(msg.String())
 	address := config.serverAddress
 	conn, err = grpc.Dial(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		log.Fatal(fmt.Errorf("error connecting to server address=%s err=%s", address, err))
+		slog.Error("error connecting to server", "address", address, "error", err)
+		os.Exit(1)
 	}
 	defer conn.Close()
 	any, err := anypb.New(starproto.ToDynamicPb(msg))
 	if err != nil {
-		log.Fatal(fmt.Errorf("error marshalling message to any message=%s err=%s", msg, err))
+		slog.Error("error marshalling message to any", "message", msg, "error", err)
+		os.Exit(1)
 	}
-	log.Println(msg)
-	log.Println(any)
+	slog.Info(msg.String())
+	slog.Info("Info", "any", any)
 	configValue := &pv.ProtoconfValue{ProtoFile: config.protoFile, Value: any}
 	request := &pc.ConfigMutationRequest{Path: config.configPath, Value: configValue, ScriptMetadata: config.metadataStr}
 
@@ -186,9 +192,10 @@ func (c *cliCommand) Run(args []string) int {
 	defer cancel()
 
 	if _, err := client.MutateConfig(ctx, request); err != nil {
-		log.Fatal(fmt.Errorf("error mutating path=%s err=%s", path, err))
+		slog.Error("error mutating", "path", path, "error", err)
+		os.Exit(1)
 	}
-	log.Printf("Mutated %s successfully", path)
+	slog.Info("Mutated successfully", "path", path)
 	return 0
 }
 
@@ -197,7 +204,8 @@ type typerFunc func(interface{}) interface{}
 func setNumeric(msg *dynamic.Message, key, val string, typer typerFunc) {
 	i, err := strconv.ParseInt(val, 0, 64)
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("error", err)
+		os.Exit(1)
 	}
 	setField(msg, key, i, typer)
 }
@@ -205,7 +213,8 @@ func setNumeric(msg *dynamic.Message, key, val string, typer typerFunc) {
 func setFloat(msg *dynamic.Message, key, val string, typer typerFunc) {
 	i, err := strconv.ParseFloat(val, 64)
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("error", err)
+		os.Exit(1)
 	}
 	setField(msg, key, i, typer)
 }
@@ -213,7 +222,7 @@ func setFloat(msg *dynamic.Message, key, val string, typer typerFunc) {
 func setField(msg *dynamic.Message, key string, val interface{}, typer typerFunc) {
 	err := msg.TrySetFieldByName(key, typer(val))
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("error", err)
 	}
 }
 

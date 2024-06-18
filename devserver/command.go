@@ -2,7 +2,6 @@ package devserver
 
 import (
 	"context"
-	"log"
 	"log/slog"
 	"net/http"
 	"os"
@@ -48,7 +47,7 @@ func (d *DevServerCommand) Run(args []string) int {
 	}
 	store, err := filekv.New(ctx, []string{}, &filekv.Config{ProtoconfRoot: config.DevRoot})
 	if err != nil {
-		log.Println(err)
+		slog.Error("Error creating filekv", "error", err)
 
 	}
 	agentSvc, err := agent.NewProtoconfKVAgent(store, config)

@@ -3,7 +3,7 @@ package testdata
 import (
 	"embed"
 	"io/fs"
-	"log"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"time"
@@ -18,7 +18,8 @@ var TestData embed.FS
 func TestDir(name string) string {
 	dirPath, err := os.MkdirTemp("", "protoconf-"+name)
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("error", err)
+		os.Exit(1)
 	}
 
 	err = fs.WalkDir(TestData, name, func(path string, d fs.DirEntry, err error) error {
@@ -38,7 +39,8 @@ func TestDir(name string) string {
 		return os.WriteFile(fullPath, b, 0644)
 	})
 	if err != nil {
-		log.Fatalf("init error: %v", err)
+		slog.Error("init error", "error", err)
+		os.Exit(1)
 	}
 	testDir := filepath.Join(dirPath, name)
 	repo, _ := git.PlainInit(testDir, false)

@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"log/slog"
 	"os"
 	"strconv"
 	"time"
@@ -45,10 +46,11 @@ func main() {
 	}
 
 	if err := mutate(path, &pb.Crawler{HttpTimeout: 30, UserAgent: userAgent}, scriptMetadata); err != nil {
-		log.Fatalf("%s", err)
+		slog.Error("error", err)
+		os.Exit(1)
 	}
 
-	log.Printf("Mutated %s successfully", path)
+	slog.Info("Mutated successfully", "path", path)
 }
 
 func mutate(path string, value proto.Message, scriptMetadata string) error {

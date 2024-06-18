@@ -2,7 +2,7 @@ package test
 
 import (
 	"context"
-	"log"
+	"log/slog"
 	"net"
 
 	"google.golang.org/grpc"
@@ -21,7 +21,7 @@ func TestServer(ctx context.Context, regServer RegServer, addConnectionToClient 
 	go func() {
 		context.AfterFunc(ctx, func() { baseServer.GracefulStop() })
 		if err := baseServer.Serve(lis); err != nil {
-			log.Printf("error serving server: %v", err)
+			slog.Error("error serving server", "error", err)
 		}
 	}()
 
@@ -30,13 +30,13 @@ func TestServer(ctx context.Context, regServer RegServer, addConnectionToClient 
 			return lis.Dial()
 		}), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		log.Printf("error connecting to server: %v", err)
+		slog.Error("error connecting to server", "error", err)
 	}
 
 	closer := func() {
 		err := lis.Close()
 		if err != nil {
-			log.Printf("error closing listener: %v", err)
+			slog.Error("error closing listener", "error", err)
 		}
 		baseServer.Stop()
 	}

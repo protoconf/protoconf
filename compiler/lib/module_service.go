@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
 	"log/slog"
 	"net/url"
 	"os"
@@ -64,7 +63,8 @@ func NewModuleService(protoconfRoot string) *ModuleService {
 func (m *ModuleService) getProtoconfPath() string {
 	path, err := filepath.Abs(m.Config.ProtoconfPath)
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("error", err)
+		os.Exit(1)
 	}
 	return path
 }
