@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -65,11 +66,13 @@ func (c *cliCommand) Run(args []string) int {
 	if config.cpuprofile != "" {
 		f, err := os.Create(config.cpuprofile)
 		if err != nil {
-			log.Fatal("Could not create CPU profile:", err)
+			slog.Error("Could not create CPU profile:", "error", err)
+			os.Exit(1)
 		}
 		defer f.Close()
 		if err := pprof.StartCPUProfile(f); err != nil {
-			log.Fatal("Could not start CPU profile:", err)
+			slog.Error("Could not start CPU profile:", "error", err)
+			os.Exit(1)
 		}
 		defer pprof.StopCPUProfile()
 	}
@@ -81,7 +84,7 @@ func (c *cliCommand) Run(args []string) int {
 		var err error
 		configs, err = GetAllConfigs(protoconfRoot)
 		if err != nil {
-			log.Printf("Error getting all configs from %s, err=%s", protoconfRoot, err)
+			slog.Error("Error getting all configs", "config", protoconfRoot, "error", err)
 			return 1
 		}
 	} else {
@@ -97,12 +100,12 @@ func (c *cliCommand) Run(args []string) int {
 func runRemote(config *cliConfig, configs []string) int {
 	conn, err := grpc.Dial(config.compilerAddress, grpc.WithInsecure())
 	if err != nil {
-		log.Printf("error connecting to server: %v", err)
+		slog.Error("error connecting to server", "error", err)
 	}
 	client := protoconf_pb.NewProtoconfCompileClient(conn)
 	stream, err := client.CompileFiles(context.Background(), &protoconf_pb.CompileRequest{Files: configs})
 	if err != nil {
-		log.Printf("error compiling files: %v", err)
+		slog.Error("error compiling files", "error", err)
 		return 1
 	}
 	ret := 0
@@ -112,17 +115,17 @@ func runRemote(config *cliConfig, configs []string) int {
 			return ret
 		}
 		if err != nil {
-			log.Printf("error receiving response: %v", err)
+			slog.Error("error receiving response", "error", err)
 			return 1
 		}
 		if resp != nil {
 			if len(resp.Errors) > 0 {
-				log.Printf("Error compiling config %s:\n    %s", resp.Path, resp.Errors)
+				slog.Error("Error compiling config", "path", resp.Path, "errors", resp.Errors)
 				ret = 1
 				continue
 			}
 			if config.verboseLogging {
-				log.Printf("Compiled %s: %v", resp.Path, resp.Result)
+				slog.Error("Compiled", "path", resp.Path, "result", resp.Result)
 			}
 		}
 	}

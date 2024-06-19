@@ -4,7 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
+	"log/slog"
+	"os"
 	"path"
 	"path/filepath"
 	"strings"
@@ -119,10 +120,11 @@ func (l *starlarkLoader) loadValidators() (map[string]*starlark.Function, error)
 		validatorFile := protoFile + consts.ValidatorExtensionSuffix
 		validatorAbsPath := filepath.Join(l.srcDir, validatorFile)
 		if exists, isDir, err := stat(validatorAbsPath); err != nil {
-			log.Fatalf("error getting file stat for validator: %v", err)
-			return true
+			slog.Error("error getting file stat for validator", "error", err)
+			os.Exit(1)
 		} else if isDir {
-			log.Fatalf("expected validator file and not a directory, file=%s", validatorAbsPath)
+			slog.Error("expected validator file and not a directory, file", "file", validatorAbsPath)
+			os.Exit(1)
 		} else if !exists {
 			return true
 		}
@@ -132,8 +134,8 @@ func (l *starlarkLoader) loadValidators() (map[string]*starlark.Function, error)
 		}
 
 		if _, err := l.Load(thread, filepath.ToSlash(validatorFile)); err != nil {
-			log.Fatalf("error loading validator: %v", err)
-			return true
+			slog.Error("error loading validator", "error", err)
+			os.Exit(1)
 		}
 		return true
 	})

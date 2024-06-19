@@ -3,7 +3,7 @@ package compiler
 import (
 	"fmt"
 	"html/template"
-	"log"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -88,7 +88,7 @@ func evaluateTemplateFile(filename string) error {
 
 	targetFile := filepath.Join(consts.SrcPath, strings.TrimSuffix(filename, `.template`))
 
-	log.Println("writing to", targetFile)
+	slog.Debug("writing to", "targetfile", targetFile)
 	fileWriter, err := os.Create(targetFile)
 	if err != nil {
 		return fmt.Errorf("failed to open file %s for writing, err: %v", targetFile, err)
@@ -97,13 +97,13 @@ func evaluateTemplateFile(filename string) error {
 }
 
 func findTemplateFilesAndProccess() error {
-	log.Println("processing template")
+	slog.Debug("processing template")
 	return filepath.Walk(consts.SrcPath, func(filepath string, _ os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
 		if strings.HasSuffix(filepath, consts.TemplateExtension) {
-			log.Println("found", filepath)
+			slog.Debug("found", "filepath", filepath)
 			return evaluateTemplateFile(strings.TrimPrefix(filepath, consts.SrcPath))
 		}
 		return nil

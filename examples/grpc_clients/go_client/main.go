@@ -2,7 +2,7 @@ package main
 
 import (
 	"io"
-	"log"
+	"log/slog"
 	"os"
 
 	pc "github.com/protoconf/protoconf/agent/api/proto/v1"
@@ -34,14 +34,16 @@ func listenToChanges(path string) {
 	address := consts.AgentDefaultAddress
 	conn, err := grpc.Dial(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		log.Fatalf("Error connecting to server address=%s err=%v", address, err)
+		slog.Error("Error connecting to server ", "address", address, "error", err)
+		os.Exit(1)
 	}
 	defer conn.Close()
 
 	c := pc.NewProtoconfServiceClient(conn)
 	stream, err := c.SubscribeForConfig(context.Background(), &pc.ConfigSubscriptionRequest{Path: path})
 	if err != nil {
-		log.Fatalf("Error subscribing for config path=%s err=%v", path, err)
+		slog.Error("Error subscribing for config", "path", path, "error", err)
+		os.Exit(1)
 	}
 
 	firstRead := true
@@ -50,21 +52,24 @@ func listenToChanges(path string) {
 		update, err := stream.Recv()
 
 		if err == io.EOF {
-			log.Fatalf("Connection closed while streaming config path=%s", path)
+			slog.Error("Connection closed while streaming config", "path", path)
+			os.Exit(1)
 		}
 		if err != nil {
-			log.Fatalf("Error while streaming config path=%s err=%s", path, err)
+			slog.Error("Error while streaming config", "path", path, "error", err)
+			os.Exit(1)
 		}
 
 		if err = anypb.UnmarshalTo(update.GetValue(), config, proto.UnmarshalOptions{}); err != nil {
-			log.Fatalf("Error unmarshaling config path=%s value=%s err=%s", path, update.Value, err)
+			slog.Error("Error unmarshaling config", "path", path, "value", update.Value, "error", err)
+			os.Exit(1)
 		}
 
 		if firstRead {
 			firstRead = false
-			log.Printf("Config %s initial value: %s", path, config)
+			slog.Info("Config initial value", "path", path, "value", config)
 		} else {
-			log.Printf("Config %s changed, new value: %s", path, config)
+			slog.Info("Config changed, new value:", "path", path, "value", config)
 		}
 	}
 }

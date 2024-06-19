@@ -125,7 +125,7 @@ func TestModuleService_Sync(t *testing.T) {
 					"vizceral_repo": {
 						Url:       "github.com/protoconf/protoconf-xds",
 						Pin:       &module.RemoteRepo_Commit{Commit: "27d699b"},
-						Integrity: "h1:0pcqbr1XMmwU2HAweYk9o3Z/6EGZ69Y8yR9GGANEXqs=",
+						Integrity: "h1:MHam+LpdxRMBNGdU+WzfqO6HWpMNfS/6ZHEU+nI1KpI=",
 					},
 				},
 			},

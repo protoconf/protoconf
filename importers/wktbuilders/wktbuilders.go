@@ -1,7 +1,8 @@
 package wktbuilders
 
 import (
-	"log"
+	"log/slog"
+	"os"
 
 	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/desc/builder"
@@ -16,11 +17,13 @@ var (
 func fromFile(fileName string) *builder.FileBuilder {
 	fileDesc, err := desc.LoadFileDescriptor(fileName)
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("error", err)
+		os.Exit(1)
 	}
 	builder, err := builder.FromFile(fileDesc)
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("error", err)
+		os.Exit(1)
 	}
 	return builder
 }

@@ -353,7 +353,7 @@ func (s *ProtoconfMutationServer) MutateConfig(ctx context.Context, in *protocon
 	id := uuid.NewString()
 	s.reports.Store(id, &protoconf_pb.ConfigMutationResponse{Uuid: id})
 	defer s.reports.Delete(id)
-	log.Printf("Mutating path=%s", in.Path)
+	slog.Info("Mutating path", "path", in.Path)
 	filename := filepath.Join(s.protoconfRoot, consts.MutableConfigPath, filepath.Clean(in.Path)+consts.CompiledConfigExtension)
 
 	resolver := s.parser.LocalResolver
@@ -381,7 +381,7 @@ func (s *ProtoconfMutationServer) MutateConfig(ctx context.Context, in *protocon
 		return nil, logError(fmt.Errorf("error writing to file %s, err: %s", filename, err))
 	}
 
-	log.Printf("Written to %s", filename)
+	slog.Info("Written to", "filename", filename)
 
 	if s.compiler != nil {
 		t := time.Now()
@@ -442,7 +442,7 @@ func (s *ProtoconfMutationServer) ReportProgress(ctx context.Context, in *protoc
 }
 
 func logError(err error) error {
-	log.Printf("Error: %s", err)
+	slog.Error("error", err)
 	return err
 }
 
@@ -455,7 +455,7 @@ func (s *ProtoconfMutationServer) runScript(filename string, uuid string) error 
 	_, err := cmd.Output()
 	if err != nil {
 		if ee, ok := err.(*exec.ExitError); ok {
-			log.Printf("Script error: %s", string(ee.Stderr))
+			slog.Error("Script error", "error", string(ee.Stderr))
 		}
 		return err
 	}
@@ -523,7 +523,7 @@ func (s *ProtoconfMutationServer) GenReflectionUI(ctx context.Context, rpcServer
 			return lis.Dial()
 		}), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		log.Printf("error connecting to server: %v", err)
+		slog.Error("error connecting to server", "error", err)
 	}
 	ui, err := standalone.HandlerViaReflection(ctx, conn, httpServer.Addr, ex)
 	if err != nil {
