@@ -16,7 +16,7 @@ const (
 	OutputsDir               = "outputs/"
 	ProtoExtension           = ".proto"
 	ServerDefaultAddress     = ":4301"
-	SrcPath                  = "src/"
+	SrcPath                  = "config/"
 	TemplateExtension        = ".template"
 	ValidatorExtensionSuffix = "-validator"
 	ZookeeperDefaultAddress  = "127.0.0.1:2181"
