@@ -107,16 +107,26 @@ func (msg *starProtoMessage) checkMutable(verb string) error {
 	return nil
 }
 
+func (msg *starProtoMessage) asJson() (starlark.Callable, error) {
+	return starlark.NewBuiltin("as_json_dict", func(thread *starlark.Thread, fn *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
+		b, err := msg.msg.MarshalJSON()
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to marshal message to JSON")
+		}
+		return starlark.String(b), nil
+	}), nil
+}
+
 func (msg *starProtoMessage) Attr(name string) (starlark.Value, error) {
-	if name == "__proto__" {
-		return msg, nil
-	}
 	if name == "DESCRIPTOR" {
 		d, err := dynamic.AsDynamicMessage(msg.desc.AsProto())
 		if err != nil {
 			return nil, err
 		}
 		return NewStarProtoMessage(d), nil
+	}
+	if name == "as_json" {
+		return msg.asJson()
 	}
 	if attr, ok := msg.attrCache[name]; ok {
 		return attr, nil
