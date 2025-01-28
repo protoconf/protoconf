@@ -27,18 +27,18 @@ require (
 	github.com/prometheus/client_golang v1.19.1
 	github.com/protoconf/libprotoconf v0.1.0
 	github.com/qri-io/starlib v0.5.0
-	github.com/remychantenay/slog-otel v1.3.0
+	github.com/remychantenay/slog-otel v1.3.2
 	github.com/smintz/starlarkobject v0.0.0-20221130044148-40067250eba0
 	github.com/stephenafamo/orchestra v0.1.0
 	github.com/stretchr/testify v1.9.0
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.52.0
-	go.opentelemetry.io/otel v1.27.0
+	go.opentelemetry.io/otel v1.28.0
 	go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc v1.27.0
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.27.0
-	go.opentelemetry.io/otel/metric v1.27.0
-	go.opentelemetry.io/otel/sdk v1.27.0
+	go.opentelemetry.io/otel/metric v1.28.0
+	go.opentelemetry.io/otel/sdk v1.28.0
 	go.opentelemetry.io/otel/sdk/metric v1.27.0
-	go.opentelemetry.io/otel/trace v1.27.0
+	go.opentelemetry.io/otel/trace v1.28.0
 	go.starlark.net v0.0.0-20240314022150-ee8ed142361c
 	golang.org/x/mod v0.18.0
 	golang.org/x/net v0.26.0
@@ -93,7 +93,7 @@ require (
 	github.com/fullstorydev/grpcurl v1.9.1 // indirect
 	github.com/go-git/gcfg v1.5.1-0.20230307220236-3a3c6141e376 // indirect
 	github.com/go-git/go-billy/v5 v5.5.0 // indirect
-	github.com/go-logr/logr v1.4.1 // indirect
+	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-openapi/jsonpointer v0.20.2 // indirect
 	github.com/go-openapi/jsonreference v0.20.4 // indirect
