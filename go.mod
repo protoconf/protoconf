@@ -39,7 +39,7 @@ require (
 	go.opentelemetry.io/otel/sdk v1.27.0
 	go.opentelemetry.io/otel/sdk/metric v1.27.0
 	go.opentelemetry.io/otel/trace v1.27.0
-	go.starlark.net v0.0.0-20240314022150-ee8ed142361c
+	go.starlark.net v0.0.0-20250128212104-d908c3ead437
 	golang.org/x/mod v0.18.0
 	golang.org/x/net v0.26.0
 	golang.org/x/sync v0.7.0
