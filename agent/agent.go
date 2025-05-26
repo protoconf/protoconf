@@ -82,7 +82,10 @@ func RunAgent(ctx context.Context, config *protoconf_agent_config.AgentConfig) e
 			slog.Default().Error("error shutting down tracer provider", slog.String("error", err.Error()))
 		}
 	}()
-	otel.SetTracerProvider(tracerProvider)
+	if v, ok := os.LookupEnv("PROTOCONF_ENABLE_TRACING"); ok && v == "true" {
+		slog.Default().Info("tracing is enabled")
+		otel.SetTracerProvider(tracerProvider)
+	}
 
 	// From here, the tracerProvider can be used by instrumentation to collect
 	// telemetry.
@@ -100,7 +103,10 @@ func RunAgent(ctx context.Context, config *protoconf_agent_config.AgentConfig) e
 			slog.Default().Error("error shutting down meter provider", slog.String("error", err.Error()))
 		}
 	}()
-	otel.SetMeterProvider(meterProvider)
+	if v, ok := os.LookupEnv("PROTOCONF_ENABLE_METRICS"); ok && v == "true" {
+		slog.Default().Info("metrics are enabled")
+		otel.SetMeterProvider(meterProvider)
+	}
 
 	var loggerHandler slog.Handler
 	loggerHandlerOptions := &slog.HandlerOptions{
