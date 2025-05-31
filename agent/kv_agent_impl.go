@@ -3,9 +3,10 @@ package agent
 import (
 	"context"
 	"encoding/base64"
-	"errors"
+	"fmt"
 	"log/slog"
 	"path"
+	"strings"
 
 	"github.com/kvtools/valkeyrie/store"
 	protoconf_agent_config "github.com/protoconf/protoconf/agent/config/v1"
@@ -25,12 +26,53 @@ type ProtoconfKVAgent struct {
 var tracer = otel.Tracer("protoconf-agent")
 
 func NewProtoconfKVAgent(store store.Store, config *protoconf_agent_config.AgentConfig) (*ProtoconfKVAgent, error) {
-	_, err := store.Exists(context.Background(), "/", nil)
-	if err != nil {
-		return nil, errors.Join(errors.New("store is not available"), err)
-	}
+	// _, err := store.Exists(context.Background(), "/", nil)
+	// if err != nil {
+	// 	return nil, errors.Join(errors.New("store is not available"), err)
+	// }
 	logger := slog.Default()
 	return &ProtoconfKVAgent{store: store, config: config, Logger: logger}, nil
+}
+
+func (s *ProtoconfKVAgent) GetConfig(ctx context.Context, request *protoconf_pb.ConfigRequest) (*protoconf_pb.ConfigUpdate, error) {
+	ctx, span := tracer.Start(ctx, "GetConfig")
+	defer span.End()
+
+	logger := s.Logger.With(slog.String("key", request.Path))
+	if peer, ok := peer.FromContext(ctx); ok {
+		logger = logger.With(slog.Any("peer_addr", peer.Addr))
+	}
+	logger.Info("got get request", slog.String("path", path.Join(s.config.Prefix, request.Path)))
+	kvPair, err := s.store.Get(ctx, path.Join(s.config.Prefix, request.Path), &store.ReadOptions{})
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
+	if kvPair == nil {
+		return nil, fmt.Errorf("unable to get [%s], store returned nil value", s.config.Prefix)
+	}
+	span.AddEvent("received config from get op")
+	if strings.HasSuffix(request.Path, ".json") {
+		logger.Info("requires a raw response", slog.String("path", request.Path))
+		return &protoconf_pb.ConfigUpdate{
+			Raw: kvPair.Value,
+		}, nil
+	}
+	result := &protoconf_pb.ProtoconfValue{}
+	data, err := base64.StdEncoding.DecodeString(string(kvPair.Value))
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, fmt.Errorf("failed to decode data from config store, expected base64 encoded value; %v", err)
+	}
+	err = proto.Unmarshal(data, result)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, fmt.Errorf("failed to unmarshal data received from config store; %v", err)
+	}
+	logger.Info("config get op sent")
+	return &protoconf_pb.ConfigUpdate{
+		Value: result.Value,
+	}, nil
 }
 
 func (s *ProtoconfKVAgent) SubscribeForConfig(request *protoconf_pb.ConfigSubscriptionRequest, srv protoconf_pb.ProtoconfService_SubscribeForConfigServer) error {
@@ -42,7 +84,7 @@ func (s *ProtoconfKVAgent) SubscribeForConfig(request *protoconf_pb.ConfigSubscr
 	if peer, ok := peer.FromContext(ctx); ok {
 		logger = logger.With(slog.Any("peer_addr", peer.Addr))
 	}
-	logger.Info("got watch request")
+	logger.Info("got watch request", slog.String("path", path.Join(s.config.Prefix, request.Path)))
 	kvPairCh, err := s.store.Watch(ctx, path.Join(s.config.Prefix, request.Path), &store.ReadOptions{})
 	if err != nil {
 		logger.Error(err.Error())

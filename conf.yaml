@@ -1,0 +1,9 @@
+grpc_address: "10.1.2.4:4300"
+http_address: "10.1.2.4:4380"
+store: etcd
+servers:
+  - 10.1.2.3:2379
+tls_config:
+  cert_file: "$HOME/client/tls/server.crt"
+  key_file: "$HOME/client/tls/server.key"
+

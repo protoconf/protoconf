@@ -2,6 +2,7 @@ package agent
 
 import (
 	"context"
+	"crypto/tls"
 	"errors"
 	"fmt"
 	"log/slog"
@@ -35,6 +36,8 @@ import (
 	"go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 func defaultServers(config *protoconf_agent_config.AgentConfig) []string {
@@ -57,51 +60,6 @@ func RunAgent(ctx context.Context, config *protoconf_agent_config.AgentConfig) e
 	var err error
 	var store store.Store
 
-	expTracer, err := otlptracegrpc.New(ctx)
-	if err != nil {
-		panic(err)
-	}
-
-	resources, _ := resource.New(ctx,
-		resource.WithFromEnv(),   // pull attributes from OTEL_RESOURCE_ATTRIBUTES and OTEL_SERVICE_NAME environment variables
-		resource.WithProcess(),   // This option configures a set of Detectors that discover process information
-		resource.WithOS(),        // This option configures a set of Detectors that discover OS information
-		resource.WithContainer(), // This option configures a set of Detectors that discover container information
-		resource.WithHost(),      // This option configures a set of Detectors that discover host information
-		resource.WithAttributes(
-			semconv.ServiceNameKey.String("protoconf"),
-			semconv.ServiceVersionKey.String(consts.Version),
-		),
-	)
-	tracerProvider := trace.NewTracerProvider(
-		trace.WithBatcher(expTracer),
-		trace.WithResource(resources),
-	)
-	defer func() {
-		if err := tracerProvider.Shutdown(ctx); err != nil {
-			slog.Default().Error("error shutting down tracer provider", slog.String("error", err.Error()))
-		}
-	}()
-	otel.SetTracerProvider(tracerProvider)
-
-	// From here, the tracerProvider can be used by instrumentation to collect
-	// telemetry.
-	expMeter, err := otlpmetricgrpc.New(ctx)
-	if err != nil {
-		panic(err)
-	}
-
-	meterProvider := metric.NewMeterProvider(
-		metric.WithReader(metric.NewPeriodicReader(expMeter)),
-		metric.WithResource(resources),
-	)
-	defer func() {
-		if err := meterProvider.Shutdown(ctx); err != nil {
-			slog.Default().Error("error shutting down meter provider", slog.String("error", err.Error()))
-		}
-	}()
-	otel.SetMeterProvider(meterProvider)
-
 	var loggerHandler slog.Handler
 	loggerHandlerOptions := &slog.HandlerOptions{
 		Level:     slog.Level(config.LogLevel),
@@ -122,6 +80,55 @@ func RunAgent(ctx context.Context, config *protoconf_agent_config.AgentConfig) e
 	logger.Info("Starting Protoconf agent", slog.String("address", config.GrpcAddress), slog.String("version", consts.Version), slog.String("http-address", config.HttpAddress), slog.Int("pid", os.Getpid()))
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
+
+	if os.Getenv("OTEL_SDK_DISABLED") != "" {
+		logger.Info("disabling otel trace handler")
+	} else {
+		expTracer, err := otlptracegrpc.New(ctx)
+		if err != nil {
+			panic(err)
+		}
+
+		resources, _ := resource.New(ctx,
+			resource.WithFromEnv(),   // pull attributes from OTEL_RESOURCE_ATTRIBUTES and OTEL_SERVICE_NAME environment variables
+			resource.WithProcess(),   // This option configures a set of Detectors that discover process information
+			resource.WithOS(),        // This option configures a set of Detectors that discover OS information
+			resource.WithContainer(), // This option configures a set of Detectors that discover container information
+			resource.WithHost(),      // This option configures a set of Detectors that discover host information
+			resource.WithAttributes(
+				semconv.ServiceNameKey.String("protoconf"),
+				semconv.ServiceVersionKey.String(consts.Version),
+			),
+		)
+		tracerProvider := trace.NewTracerProvider(
+			trace.WithBatcher(expTracer),
+			trace.WithResource(resources),
+		)
+		defer func() {
+			if err := tracerProvider.Shutdown(ctx); err != nil {
+				slog.Default().Error("error shutting down tracer provider", slog.String("error", err.Error()))
+			}
+		}()
+		otel.SetTracerProvider(tracerProvider)
+
+		// From here, the tracerProvider can be used by instrumentation to collect
+		// telemetry.
+		expMeter, err := otlpmetricgrpc.New(ctx)
+		if err != nil {
+			panic(err)
+		}
+
+		meterProvider := metric.NewMeterProvider(
+			metric.WithReader(metric.NewPeriodicReader(expMeter)),
+			metric.WithResource(resources),
+		)
+		defer func() {
+			if err := meterProvider.Shutdown(ctx); err != nil {
+				slog.Default().Error("error shutting down meter provider", slog.String("error", err.Error()))
+			}
+		}()
+		otel.SetMeterProvider(meterProvider)
+	}
 
 	if config.DevRoot != "" {
 		logger.Info("Using dev mode", slog.String("root", config.DevRoot))
@@ -166,8 +173,30 @@ func RunAgent(ctx context.Context, config *protoconf_agent_config.AgentConfig) e
 	}
 	legacy := newLegacyProtoconfServer(agent)
 
+	var otepStatsOpt grpc.ServerOption
+	if os.Getenv("OTEL_SDK_DISABLED") != "" {
+		logger.Info("disabling otel stats handler")
+		otepStatsOpt = grpc.StatsHandler(&noopStatsHandler{})
+	} else {
+		logger.Info("enabling otel stats handler")
+		otepStatsOpt = grpc.StatsHandler(otelgrpc.NewServerHandler())
+	}
+
+	var serverCreds grpc.ServerOption
+	if config.TlsConfig != nil {
+		logger.Info("enable TLS for gRPC")
+		tlsCfg, err := loadServerTLSConfig(config.TlsConfig)
+		if err != nil {
+			return fmt.Errorf("failed to load TLS config: %w", err)
+		}
+		serverCreds = grpc.Creds(credentials.NewTLS(tlsCfg))
+	} else {
+		serverCreds = grpc.Creds(insecure.NewCredentials()) // fallback if no TLS
+	}
+
 	rpcServer := grpc.NewServer(
-		grpc.StatsHandler(otelgrpc.NewServerHandler()),
+		otepStatsOpt,
+		serverCreds,
 		grpc.StreamInterceptor(grpc_prometheus.StreamServerInterceptor),
 		grpc.UnaryInterceptor(grpc_prometheus.UnaryServerInterceptor),
 	)
@@ -178,6 +207,7 @@ func RunAgent(ctx context.Context, config *protoconf_agent_config.AgentConfig) e
 	mux := http.NewServeMux()
 	mux.HandleFunc("/debug/pprof", pprof.Profile)
 	mux.Handle("/metrics", promhttp.Handler())
+	mux.HandleFunc("/getJsonConfig", legacy.GetJsonConfigHttp)
 
 	err = orchestra.PlayUntilSignal(ctx, &orchestra.Conductor{Players: map[string]orchestra.Player{
 		"grpc": orchestra.PlayerFunc(func(ctx context.Context) error {
@@ -200,4 +230,39 @@ func RunAgent(ctx context.Context, config *protoconf_agent_config.AgentConfig) e
 	}
 
 	return nil
+}
+
+func loadServerTLSConfig(cfg *protoconf_agent_config.AgentConfig_TLSConfig) (*tls.Config, error) {
+	var certPEM, keyPEM []byte
+	var err error
+
+	switch c := cfg.GetCert().(type) {
+	case *protoconf_agent_config.AgentConfig_TLSConfig_CertText:
+		certPEM = []byte(c.CertText)
+	case *protoconf_agent_config.AgentConfig_TLSConfig_CertFile:
+		certPEM, err = os.ReadFile(c.CertFile)
+		if err != nil {
+			return nil, fmt.Errorf("read cert file: %w", err)
+		}
+	}
+
+	switch k := cfg.GetKey().(type) {
+	case *protoconf_agent_config.AgentConfig_TLSConfig_KeyText:
+		keyPEM = []byte(k.KeyText)
+	case *protoconf_agent_config.AgentConfig_TLSConfig_KeyFile:
+		keyPEM, err = os.ReadFile(k.KeyFile)
+		if err != nil {
+			return nil, fmt.Errorf("read key file: %w", err)
+		}
+	}
+
+	cert, err := tls.X509KeyPair(certPEM, keyPEM)
+	if err != nil {
+		return nil, fmt.Errorf("parse key pair: %w", err)
+	}
+
+	return &tls.Config{
+		Certificates: []tls.Certificate{cert},
+		ClientAuth:   tls.NoClientCert, // unless you're doing mTLS
+	}, nil
 }
