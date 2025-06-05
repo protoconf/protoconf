@@ -15,7 +15,7 @@ jobs:
           - 2379:2379
         options: >-
           --name etcd-test
-          --data-dir /tmp/etcd-test
+
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
