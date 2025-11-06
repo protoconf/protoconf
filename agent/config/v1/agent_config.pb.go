@@ -154,6 +154,7 @@ type AgentConfig struct {
 	AgentId       string                 `protobuf:"bytes,14,opt,name=agent_id,json=agentId,proto3" json:"agent_id,omitempty"`
 	Namespace     string                 `protobuf:"bytes,15,opt,name=namespace,proto3" json:"namespace,omitempty"`
 	EnableRollout bool                   `protobuf:"varint,16,opt,name=enable_rollout,json=enable-rollout,proto3" json:"enable_rollout,omitempty"`
+	ConsulToken   string                 `protobuf:"bytes,17,opt,name=consul_token,json=consul-token,proto3" json:"consul_token,omitempty"`
 }
 
 func (x *AgentConfig) Reset() {
@@ -298,6 +299,13 @@ func (x *AgentConfig) GetEnableRollout() bool {
 		return x.EnableRollout
 	}
 	return false
+}
+
+func (x *AgentConfig) GetConsulToken() string {
+	if x != nil {
+		return x.ConsulToken
+	}
+	return ""
 }
 
 type AgentConfig_TLSConfig struct {

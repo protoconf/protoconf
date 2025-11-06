@@ -75,6 +75,8 @@ func Command() (cli.Command, error) {
 			f.Usage = "Key-value store addresses\n" + f.Usage
 		case "store":
 			f.Usage = "Key-value store type\n" + f.Usage
+		case "consul-token":
+			f.Usage = "Consul authentication token\n[env: PROTOCONF_AGENT_CONSUL_TOKEN]"
 		}
 	})
 	c.flag.Func("config-file", "Agent configuration file (available formats: json, jsonnet, yaml, pb)", func(filename string) error {

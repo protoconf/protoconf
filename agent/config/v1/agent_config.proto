@@ -30,6 +30,7 @@ message AgentConfig {
     string agent_id = 14;
     string namespace = 15;
     bool enable_rollout = 16 [json_name = "enable-rollout"];
+    string consul_token = 17 [json_name = "consul-token"];
 
     enum StoreType {
         consul = 0;

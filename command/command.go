@@ -58,10 +58,11 @@ const (
 
 // KVStoreConfig holds the key-value store configuration set from the command line
 type KVStoreConfig struct {
-	Address   string
-	Store     string
-	Prefix    string
-	Namespace string
+	Address     string
+	Store       string
+	Prefix      string
+	Namespace   string
+	ConsulToken string
 }
 
 // AddKVStoreFlags adds to an existing flagset the command lines flags to configure the key-value store connection
@@ -70,6 +71,7 @@ func AddKVStoreFlags(fs *flag.FlagSet, kv *KVStoreConfig) {
 	fs.StringVar(&kv.Store, "store", KVStoreConsul, "Key-value store type (consul/zookeeper/etcd)")
 	fs.StringVar(&kv.Prefix, "prefix", "", "Key-value store key prefix")
 	fs.StringVar(&kv.Namespace, "namespace", "", "Kubernetes namespace for config maps insertion")
+	fs.StringVar(&kv.ConsulToken, "consul-token", "", "Consul authentication token")
 }
 
 var DefaultUI = &cli.ConcurrentUi{

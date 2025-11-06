@@ -132,7 +132,9 @@ func RunAgent(ctx context.Context, config *protoconf_agent_config.AgentConfig) e
 		logger.Info("Connecting to store", slog.Any("type", config.Store), slog.Any("servers", defaultServers(config)), slog.String("prefix", config.Prefix))
 		switch config.Store {
 		case protoconf_agent_config.AgentConfig_consul:
-			store, err = consul.New(ctx, defaultServers(config), &consul.Config{})
+			store, err = consul.New(ctx, defaultServers(config), &consul.Config{
+				Token: config.ConsulToken,
+			})
 		case protoconf_agent_config.AgentConfig_zookeeper:
 			store, err = zookeeper.New(ctx, defaultServers(config), &zookeeper.Config{})
 		case protoconf_agent_config.AgentConfig_etcd:

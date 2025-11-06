@@ -82,7 +82,9 @@ func (c *cliCommand) Run(args []string) int {
 	var err error
 	ctx := context.Background()
 	if kVConfig.Store == command.KVStoreConsul {
-		kvStore, err = valkeyrie.NewStore(ctx, consul.StoreName, []string{kVConfig.Address}, nil)
+		kvStore, err = valkeyrie.NewStore(ctx, consul.StoreName, []string{kVConfig.Address}, &consul.Config{
+			Token: kVConfig.ConsulToken,
+		})
 	} else if kVConfig.Store == command.KVStoreEtcd {
 		var address string
 		if kVConfig.Address != "" {
