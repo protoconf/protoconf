@@ -2,20 +2,36 @@
 
 ## GitHub App Permission Issue
 
-Due to GitHub App security restrictions, the workflow file `.github/workflows/e2e.yml` cannot be pushed automatically. The GitHub App requires the `workflows` permission to create or modify workflow files.
+Due to GitHub App security restrictions, workflow files in `.github/workflows/` cannot be pushed automatically. The GitHub App requires the `workflows` permission to create or modify workflow files.
+
+## Workflow File Location
+
+The e2e workflow has been added to the repository as:
+- **File**: `e2e-workflow.yml` (at repository root)
+- **Target**: `.github/workflows/e2e.yml`
 
 ## Solutions
 
-### Option 1: Manually Add the Workflow File
+### Option 1: Move the File Manually (Recommended)
 
-Copy the workflow file from your local repository to GitHub:
+The workflow file is already in the repository, just needs to be moved:
 
-1. The workflow file is already created locally at `.github/workflows/e2e.yml`
-2. You can either:
-   - Commit and push it using a personal access token or SSH key
-   - Manually create the file on GitHub through the web interface
+```bash
+# Move to correct location
+git mv e2e-workflow.yml .github/workflows/e2e.yml
+git commit -m "feat: enable e2e workflow in GitHub Actions"
+git push
+```
 
-### Option 2: Grant Workflow Permission to GitHub App
+### Option 2: Add via GitHub Web Interface
+
+1. Copy the content from `e2e-workflow.yml` in the repository
+2. Go to GitHub → Your repo → `.github/workflows/`
+3. Click "Add file" → "Create new file"
+4. Name it `e2e.yml`
+5. Paste the content and commit
+
+### Option 3: Grant Workflow Permission to GitHub App
 
 If you're using a GitHub App for this repository, grant it the `workflows` permission:
 
@@ -24,12 +40,9 @@ If you're using a GitHub App for this repository, grant it the `workflows` permi
 3. Under "Repository permissions" → "Workflows" → Set to "Read and write"
 4. Save changes
 
-## Workflow File Location
+## Implementation Details
 
-The complete workflow file is available at:
-- **Local path**: `.github/workflows/e2e.yml`
-- **Size**: ~154 lines
-- **Format**: YAML
+The e2e workflow is included in this PR as `e2e-workflow.yml` to bypass GitHub App restrictions.
 
 ## Workflow Overview
 
@@ -39,28 +52,27 @@ The e2e.yml workflow provides three test jobs:
 2. **e2e-backends**: Matrix job testing each backend individually (etcd, consul, zookeeper)
 3. **e2e-all-together**: Comprehensive test with all backends running simultaneously
 
-## Temporary Workaround
+## Testing Before Activation
 
-Until the workflow file is added to the repository, you can:
+Until the workflow is moved to `.github/workflows/`, you can still run e2e tests:
 
 1. **Run tests locally** using the instructions in `test/E2E_README.md`
-2. **Manually trigger tests** using docker-compose and go test commands
-3. **Copy the workflow content** from `.github/workflows/e2e.yml` and add it through GitHub's web interface
+2. **Use docker-compose** with the provided `docker-compose.e2e.yml`
+3. **Review workflow** by examining `e2e-workflow.yml` in the repository
 
 ## Next Steps
 
-After resolving the permission issue:
+To activate the workflow (choose one):
 
-```bash
-# Verify the workflow file exists locally
-ls -la .github/workflows/e2e.yml
+1. **Simple move** (recommended):
+   ```bash
+   git mv e2e-workflow.yml .github/workflows/e2e.yml
+   git commit -m "feat: enable e2e workflow in GitHub Actions"
+   git push
+   ```
 
-# If using personal credentials, push directly:
-git add .github/workflows/e2e.yml
-git commit -m "feat: add GitHub Actions workflow for e2e tests"
-git push
-```
+2. **Add via GitHub web interface** (copy content from `e2e-workflow.yml`)
 
-The workflow will then automatically run on:
+Once activated, the workflow will automatically run on:
 - All pull requests targeting the main branch
 - All pushes to the main branch
