@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  # etcd service
+  etcd:
+    image: quay.io/coreos/etcd:v3.5.14
+    ports:
+      - "2379:2379"
+    environment:
+      - ETCD_NAME=etcd0
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+      - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://etcd:2380
+      - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380
+      - ETCD_INITIAL_CLUSTER=etcd0=http://etcd:2380
+      - ETCD_INITIAL_CLUSTER_STATE=new
+      - ETCD_INITIAL_CLUSTER_TOKEN=etcd-cluster-1
+    healthcheck:
+      test: ["CMD", "etcdctl", "endpoint", "health"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - protoconf-e2e
+
+  # Consul service
+  consul:
+    image: hashicorp/consul:1.18
+    ports:
+      - "8500:8500"
+    command: agent -server -ui -bootstrap-expect=1 -client=0.0.0.0
+    healthcheck:
+      test: ["CMD", "consul", "members"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - protoconf-e2e
+
+  # Zookeeper service
+  zookeeper:
+    image: zookeeper:3.9
+    ports:
+      - "2181:2181"
+    environment:
+      - ZOO_MY_ID=1
+      - ZOO_SERVERS=server.1=zookeeper:2888:3888;2181
+      - ZOO_4LW_COMMANDS_WHITELIST=*
+    healthcheck:
+      test: ["CMD", "zkServer.sh", "status"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - protoconf-e2e
+
+networks:
+  protoconf-e2e:
+    driver: bridge
