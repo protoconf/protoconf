@@ -25,130 +25,166 @@ jobs:
         env:
           E2E_BACKENDS: "dummy"
 
-  e2e-backends:
-    name: E2E Tests (All Backends)
+  e2e-etcd:
+    name: E2E Tests (etcd)
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        backend:
-          - name: etcd
-            env_var: ETCD_ADDRESS
-            port: 2379
-          - name: consul
-            env_var: CONSUL_ADDRESS
-            port: 8500
-          - name: zookeeper
-            env_var: ZOOKEEPER_ADDRESS
-            port: 2181
+    services:
+      etcd:
+        image: quay.io/coreos/etcd:v3.5.14
+        env:
+          ETCD_NAME: etcd0
+          ETCD_ADVERTISE_CLIENT_URLS: http://localhost:2379
+          ETCD_LISTEN_CLIENT_URLS: http://0.0.0.0:2379
+          ETCD_INITIAL_ADVERTISE_PEER_URLS: http://localhost:2380
+          ETCD_LISTEN_PEER_URLS: http://0.0.0.0:2380
+          ETCD_INITIAL_CLUSTER: etcd0=http://localhost:2380
+          ETCD_INITIAL_CLUSTER_STATE: new
+        ports:
+          - 2379:2379
+        options: >-
+          --health-cmd "etcdctl endpoint health"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version: 1.22
-
-      - name: Start ${{ matrix.backend.name }} service
-        run: |
-          docker-compose -f docker-compose.e2e.yml up -d ${{ matrix.backend.name }}
-          echo "Waiting for ${{ matrix.backend.name }} to be healthy..."
-          timeout 60 bash -c 'until docker-compose -f docker-compose.e2e.yml ps ${{ matrix.backend.name }} | grep -q "healthy"; do sleep 2; done' || {
-            echo "${{ matrix.backend.name }} failed to become healthy"
-            docker-compose -f docker-compose.e2e.yml logs ${{ matrix.backend.name }}
-            exit 1
-          }
-
-      - name: Verify ${{ matrix.backend.name }} is accessible
-        run: |
-          max_attempts=30
-          attempt=0
-          while [ $attempt -lt $max_attempts ]; do
-            if nc -zv 127.0.0.1 ${{ matrix.backend.port }} 2>&1; then
-              echo "${{ matrix.backend.name }} is accessible on port ${{ matrix.backend.port }}"
-              exit 0
-            fi
-            attempt=$((attempt + 1))
-            echo "Waiting for ${{ matrix.backend.name }} to be accessible (attempt $attempt/$max_attempts)..."
-            sleep 2
-          done
-          echo "${{ matrix.backend.name }} is not accessible after $max_attempts attempts"
-          docker-compose -f docker-compose.e2e.yml logs ${{ matrix.backend.name }}
-          exit 1
-
-      - name: Run E2E tests with ${{ matrix.backend.name }}
+      - name: Run E2E tests with etcd
         run: go test -v -run TestE2EMultiBackend ./test/...
         env:
           CI: "true"
           E2E_BACKENDS: "all"
-          ETCD_ADDRESS: "127.0.0.1:2379"
-          CONSUL_ADDRESS: "127.0.0.1:8500"
-          ZOOKEEPER_ADDRESS: "127.0.0.1:2181"
+          ETCD_ADDRESS: "localhost:2379"
+          CONSUL_ADDRESS: "localhost:8500"
+          ZOOKEEPER_ADDRESS: "localhost:2181"
 
-      - name: Stop ${{ matrix.backend.name }} service
-        if: always()
-        run: |
-          docker-compose -f docker-compose.e2e.yml logs ${{ matrix.backend.name }}
-          docker-compose -f docker-compose.e2e.yml down -v
-
-  e2e-all-together:
-    name: E2E Tests (All Backends Together)
+  e2e-consul:
+    name: E2E Tests (consul)
     runs-on: ubuntu-latest
+    services:
+      consul:
+        image: hashicorp/consul:1.18
+        ports:
+          - 8500:8500
+        options: >-
+          --health-cmd "consul members"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version: 1.22
+      - name: Run E2E tests with consul
+        run: go test -v -run TestE2EMultiBackend ./test/...
+        env:
+          CI: "true"
+          E2E_BACKENDS: "all"
+          ETCD_ADDRESS: "localhost:2379"
+          CONSUL_ADDRESS: "localhost:8500"
+          ZOOKEEPER_ADDRESS: "localhost:2181"
 
-      - name: Start all backend services
-        run: |
-          docker-compose -f docker-compose.e2e.yml up -d
-          echo "Waiting for all services to be healthy..."
-          timeout 90 bash -c '
-            until docker-compose -f docker-compose.e2e.yml ps | grep -E "(etcd|consul|zookeeper)" | grep -v "Up" | wc -l | grep -q "^0$"; do
-              sleep 2
-            done
-          ' || {
-            echo "Some services failed to start"
-            docker-compose -f docker-compose.e2e.yml ps
-            docker-compose -f docker-compose.e2e.yml logs
-            exit 1
-          }
-          sleep 5
+  e2e-zookeeper:
+    name: E2E Tests (zookeeper)
+    runs-on: ubuntu-latest
+    services:
+      zookeeper:
+        image: zookeeper:3.9
+        env:
+          ZOO_MY_ID: 1
+          ZOO_SERVERS: server.1=localhost:2888:3888;2181
+          ZOO_4LW_COMMANDS_WHITELIST: "*"
 
-      - name: Verify all services are accessible
-        run: |
-          for service in "etcd:2379" "consul:8500" "zookeeper:2181"; do
-            name=${service%%:*}
-            port=${service##*:}
-            echo "Checking $name on port $port..."
-            if ! nc -zv 127.0.0.1 $port 2>&1; then
-              echo "$name is not accessible on port $port"
-              docker-compose -f docker-compose.e2e.yml logs $name
-              exit 1
-            fi
-          done
-          echo "All services are accessible"
+        ports:
+          - 2181:2181
+        options: >-
+          --health-cmd "zkServer.sh status"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.22
+      - name: Run E2E tests with zookeeper
+        run: go test -v -run TestE2EMultiBackend ./test/...
+        env:
+          CI: "true"
+          E2E_BACKENDS: "all"
+          ETCD_ADDRESS: "localhost:2379"
+          CONSUL_ADDRESS: "localhost:8500"
+          ZOOKEEPER_ADDRESS: "localhost:2181"
 
+  e2e-all-together:
+    name: E2E Tests (All Backends Together)
+    runs-on: ubuntu-latest
+    services:
+      etcd:
+        image: quay.io/coreos/etcd:v3.5.14
+        env:
+          ETCD_NAME: etcd0
+          ETCD_ADVERTISE_CLIENT_URLS: http://localhost:2379
+          ETCD_LISTEN_CLIENT_URLS: http://0.0.0.0:2379
+          ETCD_INITIAL_ADVERTISE_PEER_URLS: http://localhost:2380
+          ETCD_LISTEN_PEER_URLS: http://0.0.0.0:2380
+          ETCD_INITIAL_CLUSTER: etcd0=http://localhost:2380
+          ETCD_INITIAL_CLUSTER_STATE: new
+        ports:
+          - 2379:2379
+        options: >-
+          --health-cmd "etcdctl endpoint health"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      consul:
+        image: hashicorp/consul:1.18
+        ports:
+          - 8500:8500
+        options: >-
+          --health-cmd "consul members"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      zookeeper:
+        image: zookeeper:3.9
+        env:
+          ZOO_MY_ID: 1
+          ZOO_SERVERS: server.1=localhost:2888:3888;2181
+          ZOO_4LW_COMMANDS_WHITELIST: "*"
+        ports:
+          - 2181:2181
+        options: >-
+          --health-cmd "zkServer.sh status"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.22
       - name: Run E2E tests with all backends
         run: go test -v -run TestE2EMultiBackend ./test/... -timeout 10m
         env:
           CI: "true"
           E2E_BACKENDS: "all"
-          ETCD_ADDRESS: "127.0.0.1:2379"
-          CONSUL_ADDRESS: "127.0.0.1:8500"
-          ZOOKEEPER_ADDRESS: "127.0.0.1:2181"
-
-      - name: Show service logs
-        if: always()
-        run: docker-compose -f docker-compose.e2e.yml logs
-
-      - name: Stop all services
-        if: always()
-        run: docker-compose -f docker-compose.e2e.yml down -v
+          ETCD_ADDRESS: "localhost:2379"
+          CONSUL_ADDRESS: "localhost:8500"
+          ZOOKEEPER_ADDRESS: "localhost:2181"
