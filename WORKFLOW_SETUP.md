@@ -1,78 +1,87 @@
-# GitHub Actions Workflow Setup
+# GitHub Actions Workflow - E2E Tests
 
-## GitHub App Permission Issue
+## Status
 
-Due to GitHub App security restrictions, workflow files in `.github/workflows/` cannot be pushed automatically. The GitHub App requires the `workflows` permission to create or modify workflow files.
-
-## Workflow File Location
-
-The e2e workflow has been added to the repository as:
-- **File**: `e2e-workflow.yml` (at repository root)
-- **Target**: `.github/workflows/e2e.yml`
-
-## Solutions
-
-### Option 1: Move the File Manually (Recommended)
-
-The workflow file is already in the repository, just needs to be moved:
-
-```bash
-# Move to correct location
-git mv e2e-workflow.yml .github/workflows/e2e.yml
-git commit -m "feat: enable e2e workflow in GitHub Actions"
-git push
-```
-
-### Option 2: Add via GitHub Web Interface
-
-1. Copy the content from `e2e-workflow.yml` in the repository
-2. Go to GitHub → Your repo → `.github/workflows/`
-3. Click "Add file" → "Create new file"
-4. Name it `e2e.yml`
-5. Paste the content and commit
-
-### Option 3: Grant Workflow Permission to GitHub App
-
-If you're using a GitHub App for this repository, grant it the `workflows` permission:
-
-1. Go to GitHub Settings → Developer settings → GitHub Apps
-2. Select your app
-3. Under "Repository permissions" → "Workflows" → Set to "Read and write"
-4. Save changes
+✅ The e2e workflow is already active at `.github/workflows/e2e-workflow.yml`
 
 ## Implementation Details
 
-The e2e workflow is included in this PR as `e2e-workflow.yml` to bypass GitHub App restrictions.
+The e2e workflow uses **GitHub Actions service containers** instead of docker-compose for:
+- Reliable, fast testing with built-in health checks
+- Native lifecycle management by GitHub Actions
+- No external dependencies required in the workflow
 
 ## Workflow Overview
 
-The e2e.yml workflow provides three test jobs:
+The workflow provides comprehensive testing across all supported backends:
 
 1. **e2e-dummy**: Fast tests with in-memory dummy backend (no infrastructure required)
-2. **e2e-backends**: Matrix job testing each backend individually (etcd, consul, zookeeper)
-3. **e2e-all-together**: Comprehensive test with all backends running simultaneously
+2. **e2e-etcd**: Tests with etcd backend using GitHub Actions service container
+3. **e2e-consul**: Tests with consul backend using GitHub Actions service container
+4. **e2e-zookeeper**: Tests with zookeeper backend using GitHub Actions service container
+5. **e2e-all-together**: Comprehensive test with all three backends running simultaneously
 
-## Testing Before Activation
+Each backend job uses native GitHub Actions service containers with built-in health checks, providing reliable and fast test execution.
 
-Until the workflow is moved to `.github/workflows/`, you can still run e2e tests:
+## How It Works
 
-1. **Run tests locally** using the instructions in `test/E2E_README.md`
-2. **Use docker-compose** with the provided `docker-compose.e2e.yml`
-3. **Review workflow** by examining `e2e-workflow.yml` in the repository
+### Service Container Configuration
 
-## Next Steps
+Each backend test job defines service containers that GitHub Actions manages:
 
-To activate the workflow (choose one):
+```yaml
+services:
+  etcd:
+    image: quay.io/coreos/etcd:v3.5.14
+    ports:
+      - 2379:2379
+    options: >-
+      --health-cmd "etcdctl endpoint health"
+      --health-interval 10s
+      --health-timeout 5s
+      --health-retries 5
+```
 
-1. **Simple move** (recommended):
-   ```bash
-   git mv e2e-workflow.yml .github/workflows/e2e.yml
-   git commit -m "feat: enable e2e workflow in GitHub Actions"
-   git push
-   ```
+### Benefits Over Docker Compose
 
-2. **Add via GitHub web interface** (copy content from `e2e-workflow.yml`)
+- **Automatic lifecycle**: Services start before tests and stop after
+- **Built-in health checks**: Tests only run when services are ready
+- **Better isolation**: Each job gets its own service instances
+- **Faster execution**: No docker-compose startup overhead
+- **Cleaner logs**: Service output is automatically captured
 
-Once activated, the workflow will automatically run on:
+## Running Tests Locally
+
+For local development, use the docker-compose setup:
+
+```bash
+# Start services
+docker-compose -f docker-compose.e2e.yml up -d
+
+# Run tests
+E2E_BACKENDS=all go test -v -run TestE2EMultiBackend ./test/...
+
+# Cleanup
+docker-compose -f docker-compose.e2e.yml down -v
+```
+
+Or run without infrastructure (dummy backend only):
+
+```bash
+go test -v -run TestE2EMultiBackend ./test/...
+```
+
+## Workflow Triggers
+
+The workflow runs automatically on:
 - All pull requests targeting the main branch
 - All pushes to the main branch
+
+## Service Container Addresses
+
+In CI, services are accessible at:
+- **etcd**: `localhost:2379`
+- **consul**: `localhost:8500`
+- **zookeeper**: `localhost:2181`
+
+The test code automatically detects when running in CI and uses these addresses.
