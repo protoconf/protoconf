@@ -10,6 +10,7 @@ import (
 	"github.com/protoconf/protoconf/command"
 	"github.com/protoconf/protoconf/compiler"
 	"github.com/protoconf/protoconf/devserver"
+	protoconffmt "github.com/protoconf/protoconf/fmt"
 	"github.com/protoconf/protoconf/inserter"
 	"github.com/protoconf/protoconf/mod"
 	"github.com/protoconf/protoconf/mutate"
@@ -27,6 +28,7 @@ func main() {
 			"agent":     agent.Command,
 			"compile":   compiler.Command,
 			"devserver": devserver.Command,
+			"fmt":       protoconffmt.Command,
 			"insert":    inserter.Command,
 			"mutate":    mutate.Command,
 			"serve":     server.Command,
