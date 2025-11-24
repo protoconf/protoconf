@@ -27,7 +27,7 @@ func (c *cliCommand) Run(args []string) int {
 		return 2
 	}
 	if err := RunAgent(context.Background(), c.config); err != nil {
-		slog.Default().Error("error", err)
+		slog.Default().Error("error running agent", "error", err)
 		return 1
 	}
 	return 0

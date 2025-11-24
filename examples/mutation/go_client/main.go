@@ -46,7 +46,7 @@ func main() {
 	}
 
 	if err := mutate(path, &pb.Crawler{HttpTimeout: 30, UserAgent: userAgent}, scriptMetadata); err != nil {
-		slog.Error("error", err)
+		slog.Error("mutation failed", "error", err)
 		os.Exit(1)
 	}
 

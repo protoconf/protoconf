@@ -442,7 +442,7 @@ func (s *ProtoconfMutationServer) ReportProgress(ctx context.Context, in *protoc
 }
 
 func logError(err error) error {
-	slog.Error("error", err)
+	slog.Error("error occurred", "error", err)
 	return err
 }
 

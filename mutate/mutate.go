@@ -115,7 +115,7 @@ func (c *cliCommand) Run(args []string) int {
 	}
 	wrap, err := desc.WrapMessage(messageType.Descriptor())
 	if err != nil {
-		slog.Error("error", err)
+		slog.Error("error wrapping message", "error", err)
 		os.Exit(1)
 	}
 
@@ -146,7 +146,7 @@ func (c *cliCommand) Run(args []string) int {
 		case descriptorpb.FieldDescriptorProto_TYPE_BOOL:
 			b, e := strconv.ParseBool(ret[1])
 			if e != nil {
-				slog.Error("error", e)
+				slog.Error("error parsing bool", "error", e)
 				os.Exit(1)
 			}
 			setField(msg, ret[0], b, func(s interface{}) interface{} {
@@ -204,7 +204,7 @@ type typerFunc func(interface{}) interface{}
 func setNumeric(msg *dynamic.Message, key, val string, typer typerFunc) {
 	i, err := strconv.ParseInt(val, 0, 64)
 	if err != nil {
-		slog.Error("error", err)
+		slog.Error("error parsing int", "error", err)
 		os.Exit(1)
 	}
 	setField(msg, key, i, typer)
@@ -213,7 +213,7 @@ func setNumeric(msg *dynamic.Message, key, val string, typer typerFunc) {
 func setFloat(msg *dynamic.Message, key, val string, typer typerFunc) {
 	i, err := strconv.ParseFloat(val, 64)
 	if err != nil {
-		slog.Error("error", err)
+		slog.Error("error parsing float", "error", err)
 		os.Exit(1)
 	}
 	setField(msg, key, i, typer)
@@ -222,7 +222,7 @@ func setFloat(msg *dynamic.Message, key, val string, typer typerFunc) {
 func setField(msg *dynamic.Message, key string, val interface{}, typer typerFunc) {
 	err := msg.TrySetFieldByName(key, typer(val))
 	if err != nil {
-		slog.Error("error", err)
+		slog.Error("error setting field", "error", err)
 	}
 }
 

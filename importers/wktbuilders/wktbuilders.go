@@ -17,12 +17,12 @@ var (
 func fromFile(fileName string) *builder.FileBuilder {
 	fileDesc, err := desc.LoadFileDescriptor(fileName)
 	if err != nil {
-		slog.Error("error", err)
+		slog.Error("error loading file descriptor", "error", err)
 		os.Exit(1)
 	}
 	builder, err := builder.FromFile(fileDesc)
 	if err != nil {
-		slog.Error("error", err)
+		slog.Error("error creating file builder", "error", err)
 		os.Exit(1)
 	}
 	return builder
