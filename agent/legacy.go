@@ -2,10 +2,12 @@ package agent
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"log"
 	"log/slog"
 	"net"
+	"net/http"
 
 	protoconfagent "github.com/protoconf/protoconf/agent/api/proto/v1"
 	protoconf_pb "github.com/protoconf/protoconf/pb/protoconf/v1"
@@ -59,6 +61,60 @@ func upgrade(in proto.Message, out proto.Message) error {
 		return err
 	}
 	return nil
+}
+
+func (s *legacyProtoconfServer) GetConfig(ctx context.Context, request *protoconfagent.ConfigRequest) (*protoconfagent.ConfigUpdate, error) {
+	next := &protoconf_pb.ConfigRequest{}
+	err := upgrade(request, next)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := s.stub.GetConfig(ctx, next)
+	if err != nil {
+		return nil, err
+	}
+	result := &protoconfagent.ConfigUpdate{}
+	err = upgrade(resp, result)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+func (s *legacyProtoconfServer) GetJsonConfig(ctx context.Context, request *protoconfagent.ConfigRequest) (*protoconfagent.ConfigUpdate, error) {
+	next := &protoconf_pb.ConfigRequest{}
+	err := upgrade(request, next)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := s.stub.GetConfig(ctx, next)
+	if err != nil {
+		return nil, err
+	}
+	result := &protoconfagent.ConfigUpdate{}
+	err = upgrade(resp, result)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+func (s *legacyProtoconfServer) GetJsonConfigHttp(w http.ResponseWriter, r *http.Request) {
+	config := r.URL.Query().Get("config")
+	if config == "" {
+		http.Error(w, "Missing required 'config' query parameter", http.StatusBadRequest)
+		return
+	}
+	cfg, err := s.GetJsonConfig(context.Background(), &protoconfagent.ConfigRequest{
+		Path: config,
+	})
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Unable to fetch config [%s]", config), http.StatusBadRequest)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(cfg.GetRaw())
 }
 
 func (s *legacyProtoconfServer) SubscribeForConfig(request *protoconfagent.ConfigSubscriptionRequest, srv protoconfagent.ProtoconfService_SubscribeForConfigServer) error {

@@ -337,7 +337,7 @@ func (i *ProtoconfInserter) XXXinsertVersion(configName string, version string, 
 	logger.Debug("writing config binary data")
 	data, err := proto.Marshal(protoconfValue)
 	if err != nil {
-		return fmt.Errorf("error marshaling ProtoconfValue to bytes, value=%v", protoconfValue)
+		return fmt.Errorf("error marshaling config binary data ProtoconfValue to bytes, value=%v", protoconfValue)
 	}
 	write := base64.StdEncoding.EncodeToString(data)
 	if err := kvStore.Put(ctx, kvConfigPbPath, []byte(write), nil); err != nil {
@@ -356,10 +356,9 @@ func (i *ProtoconfInserter) XXXinsertVersion(configName string, version string, 
 	if err != nil {
 		return err
 	}
-
-	data, err = protojson.MarshalOptions{Multiline: true}.Marshal(new)
+	data, err = protojson.MarshalOptions{Multiline: true, Resolver: i.parser.LocalResolver}.Marshal(new)
 	if err != nil {
-		return errors.Join(err, fmt.Errorf("error marshaling ProtoconfValue to json, value=%v", protoconfValue))
+		return errors.Join(err, fmt.Errorf("error marshaling config json ProtoconfValue to json, value=%v", protoconfValue))
 	}
 	if err := kvStore.Put(ctx, kvConfigJsonPath, data, nil); err != nil {
 		return errors.Join(err, fmt.Errorf("error writing to key-value store, path=%s", kvConfigJsonPath))

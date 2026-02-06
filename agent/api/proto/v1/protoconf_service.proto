@@ -11,11 +11,18 @@ message ConfigSubscriptionRequest {
     string channel = 2;
 }
 
+message ConfigRequest {
+    string path = 1;
+    string channel = 2;
+  }
+  
 message ConfigUpdate {
     google.protobuf.Any value = 1;
-    string error =2;
+    string error = 2;
+    bytes raw = 3;
 }
 
 service ProtoconfService{
     rpc SubscribeForConfig(ConfigSubscriptionRequest) returns (stream ConfigUpdate);
+    rpc GetConfig(ConfigRequest) returns (ConfigUpdate);
 }
