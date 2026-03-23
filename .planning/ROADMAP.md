@@ -33,7 +33,9 @@ Decimal phases appear between their surrounding integers in numeric order.
   1. No call site in the codebase uses grpc.WithInsecure() — all use grpc.WithTransportCredentials(insecure.NewCredentials())
   2. All gRPC servers register reflection using grpc_reflection_v1, not grpc_reflection_v1alpha
   3. The binary compiles and existing tests pass after migration
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 01-01-PLAN.md — Migrate all deprecated gRPC APIs (WithInsecure, reflection v1alpha, Dial/DialContext)
 
 ### Phase 2: os.Exit Refactoring
 **Goal**: Library code never terminates the process — errors propagate to CLI entry points
@@ -142,11 +144,11 @@ Decimal phases appear between their surrounding integers in numeric order.
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Deprecated API Migrations | 0/TBD | Not started | - |
+| 1. Deprecated API Migrations | 0/1 | Planning complete | - |
 | 2. os.Exit Refactoring | 0/TBD | Not started | - |
 | 3. Observability & Global State Cleanup | 0/TBD | Not started | - |
 | 4. Dead Code Removal | 0/TBD | Not started | - |
