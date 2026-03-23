@@ -47,6 +47,7 @@ import (
 	"google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/reflection"
+	"google.golang.org/grpc/reflection/grpc_reflection_v1"
 	"google.golang.org/grpc/reflection/grpc_reflection_v1alpha"
 	"google.golang.org/grpc/test/bufconn"
 	"google.golang.org/protobuf/encoding/protojson"
@@ -228,6 +229,7 @@ func NewProtoconfMutationServer(protoconfRoot string, opts ...MutationServerOpti
 	ms := lib.NewModuleService(protoconfRoot)
 	ms.LoadFromLockFile()
 	parser := parser.NewParserWithDescriptorRegistry(ms.GetProtoRegistry())
+	parser.FilesResolver.RegisterFile(grpc_reflection_v1.File_grpc_reflection_v1_reflection_proto)
 	parser.FilesResolver.RegisterFile(grpc_reflection_v1alpha.File_grpc_reflection_v1alpha_reflection_proto)
 	parser.FilesResolver.RegisterFile(grpc_health_v1.File_grpc_health_v1_health_proto)
 	parser.FilesResolver.RegisterFile(protoconfmutation.File_server_api_proto_v1_protoconf_mutation_proto)
@@ -328,13 +330,18 @@ func (s *ProtoconfMutationServer) Init(rpcServer *grpc.Server) {
 		return true
 	})
 	logger.Debug("examples", "maker", s.exampleMaker)
-	reflectionServer := reflection.NewServer(reflection.ServerOptions{
+	reflectionServer := reflection.NewServerV1(reflection.ServerOptions{
 		Services:           rpcServer,
 		DescriptorResolver: s.parser.FilesResolver,
 		ExtensionResolver:  s.parser.LocalResolver,
 	})
 
-	grpc_reflection_v1alpha.RegisterServerReflectionServer(rpcServer, reflectionServer)
+	grpc_reflection_v1.RegisterServerReflectionServer(rpcServer, reflectionServer)
+	grpc_reflection_v1alpha.RegisterServerReflectionServer(rpcServer, reflection.NewServer(reflection.ServerOptions{
+		Services:           rpcServer,
+		DescriptorResolver: s.parser.FilesResolver,
+		ExtensionResolver:  s.parser.LocalResolver,
+	}))
 }
 
 func (s *ProtoconfMutationServer) StoreReport(id string, f func(*protoconf_pb.ConfigMutationResponse) *protoconf_pb.ConfigMutationResponse) {
@@ -518,7 +525,7 @@ func (s *ProtoconfMutationServer) GenReflectionUI(ctx context.Context, rpcServer
 		}
 	}()
 
-	conn, err := grpc.DialContext(ctx, "",
+	conn, err := grpc.NewClient("passthrough:///bufnet",
 		grpc.WithContextDialer(func(context.Context, string) (net.Conn, error) {
 			return lis.Dial()
 		}), grpc.WithTransportCredentials(insecure.NewCredentials()))

@@ -23,6 +23,7 @@ import (
 	"go.starlark.net/starlark"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 type cliCommand struct{}
@@ -98,7 +99,7 @@ func (c *cliCommand) Run(args []string) int {
 }
 
 func runRemote(config *cliConfig, configs []string) int {
-	conn, err := grpc.Dial(config.compilerAddress, grpc.WithInsecure())
+	conn, err := grpc.NewClient(config.compilerAddress, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		slog.Error("error connecting to server", "error", err)
 	}
