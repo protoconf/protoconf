@@ -1,0 +1,158 @@
+# Roadmap: Protoconf Quality & Consistency Overhaul
+
+## Overview
+
+This milestone transforms Protoconf from a functional but organically-grown codebase into a consistently structured, thoroughly tested, and security-hardened platform. Work proceeds from foundational hygiene (deprecated APIs, os.Exit cleanup) through security hardening (TLS, auth) to proto-defined CLI configuration and comprehensive test coverage — each phase unblocking the next.
+
+## Phases
+
+**Phase Numbering:**
+- Integer phases (1, 2, 3): Planned milestone work
+- Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
+
+Decimal phases appear between their surrounding integers in numeric order.
+
+- [ ] **Phase 1: Deprecated API Migrations** - Replace grpc.WithInsecure and v1alpha reflection with current stable APIs
+- [ ] **Phase 2: os.Exit Refactoring** - Remove os.Exit from library code and propagate errors to CLI entry points
+- [ ] **Phase 3: Observability & Global State Cleanup** - Extract shared OTel bootstrap and remove global mutable state
+- [ ] **Phase 4: Dead Code Removal** - Remove unnecessary init functions and dead error checks
+- [ ] **Phase 5: TLS Support** - Add TLS to gRPC servers and clients with insecure-mode warning
+- [ ] **Phase 6: Token Auth & Script Security** - Add token-based mutation auth with credential forwarding and script validation
+- [ ] **Phase 7: Proto-Defined CLI Configs** - Define protobuf messages for all component configurations
+- [ ] **Phase 8: CLI Flag Generation & Config Loading** - Generate CLI flags from protos and add env/file config loading
+- [ ] **Phase 9: Unit Test Coverage & Infrastructure** - Add test files for untested packages and shared test helpers
+- [ ] **Phase 10: Placeholder Fixes & Integration Tests** - Replace placeholder assertions and add e2e integration tests
+
+## Phase Details
+
+### Phase 1: Deprecated API Migrations
+**Goal**: All gRPC connections and reflection registrations use current stable APIs
+**Depends on**: Nothing (first phase)
+**Requirements**: DEPR-01, DEPR-02
+**Success Criteria** (what must be TRUE):
+  1. No call site in the codebase uses grpc.WithInsecure() — all use grpc.WithTransportCredentials(insecure.NewCredentials())
+  2. All gRPC servers register reflection using grpc_reflection_v1, not grpc_reflection_v1alpha
+  3. The binary compiles and existing tests pass after migration
+**Plans**: TBD
+
+### Phase 2: os.Exit Refactoring
+**Goal**: Library code never terminates the process — errors propagate to CLI entry points
+**Depends on**: Phase 1
+**Requirements**: REFC-01, REFC-02, REFC-03, REFC-04
+**Success Criteria** (what must be TRUE):
+  1. compiler/lib/module_service.go contains no os.Exit calls
+  2. compiler/lib/starlark_loader.go contains no os.Exit calls (all 3 locations resolved)
+  3. mutate/mutate.go contains no os.Exit calls (all ~10 locations resolved)
+  4. All refactored functions return errors that propagate up to CLI-layer entry points where os.Exit is appropriate
+  5. Existing CLI behavior is unchanged — error cases still exit the process with non-zero status
+**Plans**: TBD
+
+### Phase 3: Observability & Global State Cleanup
+**Goal**: OTel initialization is shared and non-fatal; global mutable state is eliminated from library packages
+**Depends on**: Phase 2
+**Requirements**: REFC-05, REFC-06, REFC-07, REFC-08
+**Success Criteria** (what must be TRUE):
+  1. A single shared observability package initializes OTel — server/server.go and agent/agent.go both import it instead of duplicating setup
+  2. An OTel init failure logs a warning and continues rather than panicking
+  3. Starlark resolve.* global settings are configured at program startup, not inside the Compiler constructor
+  4. mutate/mutate.go holds its gRPC ClientConn as a local variable within Run, not as a package-level global
+**Plans**: TBD
+
+### Phase 4: Dead Code Removal
+**Goal**: Codebase contains no unnecessary init functions or unreachable error handling
+**Depends on**: Phase 3
+**Requirements**: REFC-09, REFC-10
+**Success Criteria** (what must be TRUE):
+  1. inserter/inserter.go has no runtime.GOMAXPROCS init() function
+  2. filekv.Watch lines 143-145 dead error check is removed and the surrounding logic is correct
+  3. All tests still pass after removal
+**Plans**: TBD
+
+### Phase 5: TLS Support
+**Goal**: gRPC servers and clients support TLS connections; insecure mode warns operators
+**Depends on**: Phase 4
+**Requirements**: SECR-01, SECR-02, SECR-03
+**Success Criteria** (what must be TRUE):
+  1. A gRPC server started with --tls-cert and --tls-key flags accepts only TLS connections
+  2. A gRPC client can connect to a TLS-enabled server using a matching certificate
+  3. A server started without TLS flags logs a visible warning that the connection is insecure
+  4. Existing insecure-mode usage continues to work without any flag changes
+**Plans**: TBD
+
+### Phase 6: Token Auth & Script Security
+**Goal**: Mutation server enforces token-based auth; credentials reach pre/post scripts; script paths are validated
+**Depends on**: Phase 5
+**Requirements**: SECR-04, SECR-05, SECR-06, SECR-07
+**Success Criteria** (what must be TRUE):
+  1. A mutation request with a valid token in gRPC metadata succeeds
+  2. A mutation request with no token (when auth is configured) is rejected with an Unauthenticated error
+  3. Pre/post mutation scripts receive auth credentials as environment variables
+  4. A mutation request referencing a non-existent or non-executable script path is rejected with a clear error before execution begins
+**Plans**: TBD
+
+### Phase 7: Proto-Defined CLI Configs
+**Goal**: Every component's configuration is expressed as a protobuf message
+**Depends on**: Phase 6
+**Requirements**: PCLI-01, PCLI-02, PCLI-03, PCLI-04
+**Success Criteria** (what must be TRUE):
+  1. A .proto file defines the server configuration message (address, TLS, auth, scripts)
+  2. A .proto file defines the compiler configuration message (proto paths, output settings)
+  3. A .proto file defines the inserter configuration message (KV store, prefix, rollout)
+  4. A .proto file defines the mutate CLI configuration message (target server, field path, value)
+  5. All proto definitions pass protoc compilation without errors
+**Plans**: TBD
+
+### Phase 8: CLI Flag Generation & Config Loading
+**Goal**: CLI flags are generated from proto definitions; all components accept env vars and config files
+**Depends on**: Phase 7
+**Requirements**: PCLI-05, PCLI-06, PCLI-07, PCLI-08, PCLI-09
+**Success Criteria** (what must be TRUE):
+  1. Running any component with --help shows flags generated from the proto definition, not hand-written ones
+  2. All existing flags are present in the generated output (backward compatible)
+  3. Setting a PROTOCONF_* environment variable configures the corresponding component option
+  4. Passing a config file path loads configuration from JSON, YAML, or protobuf format
+  5. Flag values override env vars, which override config file values, which override compiled defaults
+**Plans**: TBD
+**UI hint**: no
+
+### Phase 9: Unit Test Coverage & Infrastructure
+**Goal**: Every previously-untested package has test files; shared test helpers eliminate boilerplate
+**Depends on**: Phase 2
+**Requirements**: TEST-01, TEST-02, TEST-03, TEST-04, TEST-05, TEST-06, TEST-14, TEST-15, TEST-16
+**Success Criteria** (what must be TRUE):
+  1. mutate/, fmt/, command/, and devserver/ each have at least one _test.go file with passing tests
+  2. All four KV store packages (dummykv, filekv, configmaps, otelkv) have dedicated test files covering their implemented methods
+  3. compiler/starproto/ has tests covering message wrapping, field access, enum handling, and Any type support
+  4. A shared test helpers package exists and is used by at least two test files (gRPC server setup, KV store creation, config compilation)
+  5. CI reports coverage with a minimum threshold enforced; test failures on edge cases and error paths are present
+**Plans**: TBD
+
+### Phase 10: Placeholder Fixes & Integration Tests
+**Goal**: No test in the codebase has placeholder assertions; e2e tests cover mutation, TLS, and auth flows
+**Depends on**: Phase 6, Phase 9
+**Requirements**: TEST-07, TEST-08, TEST-09, TEST-10, TEST-11, TEST-12, TEST-13
+**Success Criteria** (what must be TRUE):
+  1. server/server_test.go MutateConfig test asserts actual response content, not a TODO stub
+  2. compiler/lib/parser/parser_test.go and inserter/inserter_test.go contain real assertions against known inputs and outputs
+  3. agent/kv_agent_rollout_impl_test.go placeholder cases are completed with meaningful assertions
+  4. An e2e test exercises the full mutation flow including pre/post script execution and verifies the outcome
+  5. E2e tests cover TLS-enabled gRPC connections and token-based auth rejection/acceptance
+**Plans**: TBD
+
+## Progress
+
+**Execution Order:**
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10
+
+| Phase | Plans Complete | Status | Completed |
+|-------|----------------|--------|-----------|
+| 1. Deprecated API Migrations | 0/TBD | Not started | - |
+| 2. os.Exit Refactoring | 0/TBD | Not started | - |
+| 3. Observability & Global State Cleanup | 0/TBD | Not started | - |
+| 4. Dead Code Removal | 0/TBD | Not started | - |
+| 5. TLS Support | 0/TBD | Not started | - |
+| 6. Token Auth & Script Security | 0/TBD | Not started | - |
+| 7. Proto-Defined CLI Configs | 0/TBD | Not started | - |
+| 8. CLI Flag Generation & Config Loading | 0/TBD | Not started | - |
+| 9. Unit Test Coverage & Infrastructure | 0/TBD | Not started | - |
+| 10. Placeholder Fixes & Integration Tests | 0/TBD | Not started | - |

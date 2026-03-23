@@ -130,13 +130,56 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| (populated by roadmap) | | |
+| DEPR-01 | Phase 1 | Pending |
+| DEPR-02 | Phase 1 | Pending |
+| REFC-01 | Phase 2 | Pending |
+| REFC-02 | Phase 2 | Pending |
+| REFC-03 | Phase 2 | Pending |
+| REFC-04 | Phase 2 | Pending |
+| REFC-05 | Phase 3 | Pending |
+| REFC-06 | Phase 3 | Pending |
+| REFC-07 | Phase 3 | Pending |
+| REFC-08 | Phase 3 | Pending |
+| REFC-09 | Phase 4 | Pending |
+| REFC-10 | Phase 4 | Pending |
+| SECR-01 | Phase 5 | Pending |
+| SECR-02 | Phase 5 | Pending |
+| SECR-03 | Phase 5 | Pending |
+| SECR-04 | Phase 6 | Pending |
+| SECR-05 | Phase 6 | Pending |
+| SECR-06 | Phase 6 | Pending |
+| SECR-07 | Phase 6 | Pending |
+| PCLI-01 | Phase 7 | Pending |
+| PCLI-02 | Phase 7 | Pending |
+| PCLI-03 | Phase 7 | Pending |
+| PCLI-04 | Phase 7 | Pending |
+| PCLI-05 | Phase 8 | Pending |
+| PCLI-06 | Phase 8 | Pending |
+| PCLI-07 | Phase 8 | Pending |
+| PCLI-08 | Phase 8 | Pending |
+| PCLI-09 | Phase 8 | Pending |
+| TEST-01 | Phase 9 | Pending |
+| TEST-02 | Phase 9 | Pending |
+| TEST-03 | Phase 9 | Pending |
+| TEST-04 | Phase 9 | Pending |
+| TEST-05 | Phase 9 | Pending |
+| TEST-06 | Phase 9 | Pending |
+| TEST-14 | Phase 9 | Pending |
+| TEST-15 | Phase 9 | Pending |
+| TEST-16 | Phase 9 | Pending |
+| TEST-07 | Phase 10 | Pending |
+| TEST-08 | Phase 10 | Pending |
+| TEST-09 | Phase 10 | Pending |
+| TEST-10 | Phase 10 | Pending |
+| TEST-11 | Phase 10 | Pending |
+| TEST-12 | Phase 10 | Pending |
+| TEST-13 | Phase 10 | Pending |
 
 **Coverage:**
 - v1 requirements: 37 total
-- Mapped to phases: 0
-- Unmapped: 37
+- Mapped to phases: 37
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-23*
-*Last updated: 2026-03-23 after initial definition*
+*Last updated: 2026-03-23 after roadmap creation*
