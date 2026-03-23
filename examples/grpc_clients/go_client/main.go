@@ -32,7 +32,7 @@ func main() {
 
 func listenToChanges(path string) {
 	address := consts.AgentDefaultAddress
-	conn, err := grpc.Dial(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		slog.Error("Error connecting to server ", "address", address, "error", err)
 		os.Exit(1)

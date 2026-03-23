@@ -169,7 +169,7 @@ func (c *cliCommand) Run(args []string) int {
 
 	slog.Info(msg.String())
 	address := config.serverAddress
-	conn, err = grpc.Dial(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err = grpc.NewClient(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		slog.Error("error connecting to server", "address", address, "error", err)
 		os.Exit(1)

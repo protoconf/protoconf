@@ -62,7 +62,7 @@ func mutate(path string, value proto.Message, scriptMetadata string) error {
 	request := &pc.ConfigMutationRequest{Path: path, Value: config, ScriptMetadata: scriptMetadata}
 
 	address := consts.ServerDefaultAddress
-	conn, err := grpc.Dial(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return fmt.Errorf("error connecting to server address=%s err=%s", address, err)
 	}

@@ -25,7 +25,7 @@ func TestServer(ctx context.Context, regServer RegServer, addConnectionToClient 
 		}
 	}()
 
-	conn, err := grpc.DialContext(ctx, "",
+	conn, err := grpc.NewClient("passthrough:///bufnet",
 		grpc.WithContextDialer(func(context.Context, string) (net.Conn, error) {
 			return lis.Dial()
 		}), grpc.WithTransportCredentials(insecure.NewCredentials()))
