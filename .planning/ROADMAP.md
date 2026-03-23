@@ -12,7 +12,7 @@ This milestone transforms Protoconf from a functional but organically-grown code
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Deprecated API Migrations** - Replace grpc.WithInsecure and v1alpha reflection with current stable APIs
+- [x] **Phase 1: Deprecated API Migrations** - Replace grpc.WithInsecure and v1alpha reflection with current stable APIs (completed 2026-03-23)
 - [ ] **Phase 2: os.Exit Refactoring** - Remove os.Exit from library code and propagate errors to CLI entry points
 - [ ] **Phase 3: Observability & Global State Cleanup** - Extract shared OTel bootstrap and remove global mutable state
 - [ ] **Phase 4: Dead Code Removal** - Remove unnecessary init functions and dead error checks
@@ -35,7 +35,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. The binary compiles and existing tests pass after migration
 **Plans**: 1 plan
 Plans:
-- [ ] 01-01-PLAN.md — Migrate all deprecated gRPC APIs (WithInsecure, reflection v1alpha, Dial/DialContext)
+- [x] 01-01-PLAN.md — Migrate all deprecated gRPC APIs (WithInsecure, reflection v1alpha, Dial/DialContext)
 
 ### Phase 2: os.Exit Refactoring
 **Goal**: Library code never terminates the process — errors propagate to CLI entry points
@@ -148,7 +148,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Deprecated API Migrations | 0/1 | Planning complete | - |
+| 1. Deprecated API Migrations | 1/1 | Complete   | 2026-03-23 |
 | 2. os.Exit Refactoring | 0/TBD | Not started | - |
 | 3. Observability & Global State Cleanup | 0/TBD | Not started | - |
 | 4. Dead Code Removal | 0/TBD | Not started | - |

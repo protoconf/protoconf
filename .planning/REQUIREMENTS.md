@@ -75,8 +75,8 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Deprecated APIs
 
-- [ ] **DEPR-01**: All grpc.WithInsecure() calls migrated to grpc.WithTransportCredentials(insecure.NewCredentials())
-- [ ] **DEPR-02**: grpc_reflection_v1alpha migrated to grpc_reflection_v1
+- [x] **DEPR-01**: All grpc.WithInsecure() calls migrated to grpc.WithTransportCredentials(insecure.NewCredentials())
+- [x] **DEPR-02**: grpc_reflection_v1alpha migrated to grpc_reflection_v1
 
 ### Proto CLI — Config Definitions
 
@@ -130,8 +130,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DEPR-01 | Phase 1 | Pending |
-| DEPR-02 | Phase 1 | Pending |
+| DEPR-01 | Phase 1 | Complete |
+| DEPR-02 | Phase 1 | Complete |
 | REFC-01 | Phase 2 | Pending |
 | REFC-02 | Phase 2 | Pending |
 | REFC-03 | Phase 2 | Pending |
