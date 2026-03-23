@@ -28,7 +28,7 @@ Every component must be testable, consistent, and free of runtime surprises — 
 - [ ] Comprehensive test coverage across all packages
 - [ ] Refactor os.Exit calls in library code to error returns
 - [ ] Extract shared OTel bootstrap to common package
-- [ ] Migrate all deprecated gRPC APIs (WithInsecure, v1alpha reflection)
+- [x] Migrate all deprecated gRPC APIs (WithInsecure, v1alpha reflection) — Validated in Phase 1: Deprecated API Migrations
 - [ ] Migrate from jhump/protoreflect/dynamic to dynamicpb
 - [ ] Add TLS support for gRPC connections
 - [ ] Token-based auth with credential forwarding to pre/post scripts
@@ -90,4 +90,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-23 after initialization*
+*Last updated: 2026-03-23 after Phase 1 completion*
