@@ -21,7 +21,6 @@ import (
 	"github.com/jhump/protoreflect/desc/protoparse"
 	"github.com/jhump/protoreflect/dynamic/msgregistry"
 
-	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protodesc"
 	"google.golang.org/protobuf/reflect/protoreflect"
@@ -226,7 +225,7 @@ func (f fdsSorter) Swap(i, j int) {
 func fileDescriptorSetSum(fds *descriptorpb.FileDescriptorSet) string {
 	sorted := fdsSorter{fds}
 	sort.Stable(sorted)
-	b, _ := protojson.Marshal(sorted)
+	b, _ := proto.MarshalOptions{Deterministic: true}.Marshal(sorted.FileDescriptorSet)
 
 	return fmt.Sprintf("%x", md5.Sum(b))
 }

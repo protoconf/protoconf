@@ -12,6 +12,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/bufbuild/protovalidate-go"
+	"github.com/bufbuild/protovalidate-go/legacy"
 	"github.com/ghodss/yaml"
 	"github.com/jhump/protoreflect/dynamic"
 	"github.com/pelletier/go-toml"
@@ -50,12 +52,20 @@ func NewCompiler(protoconfRoot string, verboseLogging bool) (*Compiler, error) {
 	registry := ms.GetProtoRegistry()
 	slog.Info("module service loaded", "took", time.Since(t))
 
+	validator, err := protovalidate.New(
+		legacy.WithLegacySupport(legacy.ModeMerge),
+	)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create proto validator: %w", err)
+	}
+
 	return &Compiler{
 		protoconfRoot:   protoconfRoot,
 		verboseLogging:  verboseLogging,
 		MaterializedDir: filepath.Join(protoconfRoot, consts.CompiledConfigPath),
 		parser:          parser.NewParserWithDescriptorRegistry(registry),
 		ModuleService:   ms,
+		validator:       validator,
 	}, nil
 }
 
@@ -65,6 +75,7 @@ type Compiler struct {
 	MaterializedDir string
 	parser          *parser.Parser
 	ModuleService   *ModuleService
+	validator       *protovalidate.Validator
 }
 
 var (
@@ -329,6 +340,7 @@ func (c *Compiler) load(filename string) (*config, error) {
 		validators:      validators,
 		protoResolver:   c.parser.LocalResolver,
 		messageRegistry: c.ModuleService.GetProtoRegistry().MessageRegistry,
+		protoValidator:  c.validator,
 	}, nil
 }
 

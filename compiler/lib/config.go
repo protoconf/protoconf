@@ -17,7 +17,6 @@ import (
 	"google.golang.org/protobuf/types/known/anypb"
 
 	"github.com/bufbuild/protovalidate-go"
-	"github.com/bufbuild/protovalidate-go/legacy"
 )
 
 type config struct {
@@ -26,6 +25,7 @@ type config struct {
 	validators      map[string]*starlark.Function
 	messageRegistry msgregistry.MessageRegistry
 	protoResolver   protoregistry.MessageTypeResolver
+	protoValidator  *protovalidate.Validator
 }
 
 var (
@@ -98,15 +98,7 @@ func (c *config) validate(value interface{}) error {
 	b, _ := message.Marshal()
 	proto.Unmarshal(b, pbmsg)
 
-	validator, err := protovalidate.New(
-		legacy.WithLegacySupport(legacy.ModeMerge),
-		protovalidate.WithDescriptors(message.GetMessageDescriptor().UnwrapMessage()),
-	)
-	if err != nil {
-		return err
-	}
-	err = validator.Validate(pbmsg)
-	if err != nil {
+	if err := c.protoValidator.Validate(pbmsg); err != nil {
 		return errors.Join(ErrInvalidConfig, err)
 	}
 
