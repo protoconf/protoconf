@@ -49,7 +49,7 @@ Plans:
   5. Existing CLI behavior is unchanged — error cases still exit the process with non-zero status
 **Plans**: 2 plans
 Plans:
-- [ ] 02-01-PLAN.md — Remove os.Exit from compiler/lib (module_service + starlark_loader) and propagate errors through NewCompiler to all callers
+- [x] 02-01-PLAN.md — Remove os.Exit from compiler/lib (module_service + starlark_loader) and propagate errors through NewCompiler to all callers
 - [x] 02-02-PLAN.md — Remove os.Exit from mutate/mutate.go (Run method + setNumeric/setFloat helpers)
 
 ### Phase 3: Observability & Global State Cleanup
