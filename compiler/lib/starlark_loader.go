@@ -4,8 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log/slog"
-	"os"
 	"path"
 	"path/filepath"
 	"strings"
@@ -113,18 +111,18 @@ func (l *starlarkLoader) Load(thread *starlark.Thread, moduleName string) (starl
 
 func (l *starlarkLoader) loadValidators() (map[string]*starlark.Function, error) {
 	validators := make(map[string]*starlark.Function)
-
 	l.Modules["add_validator"] = starlark.NewBuiltin("add_validator", starAddValidator(&validators))
+	var walkErr error
 	l.parser.FilesResolver.RangeFiles(func(fd protoreflect.FileDescriptor) bool {
 		protoFile := fd.Path()
 		validatorFile := protoFile + consts.ValidatorExtensionSuffix
 		validatorAbsPath := filepath.Join(l.srcDir, validatorFile)
 		if exists, isDir, err := stat(validatorAbsPath); err != nil {
-			slog.Error("error getting file stat for validator", "error", err)
-			os.Exit(1)
+			walkErr = fmt.Errorf("error getting file stat for validator %s: %w", validatorAbsPath, err)
+			return false
 		} else if isDir {
-			slog.Error("expected validator file and not a directory, file", "file", validatorAbsPath)
-			os.Exit(1)
+			walkErr = fmt.Errorf("expected validator file, got directory: %s", validatorAbsPath)
+			return false
 		} else if !exists {
 			return true
 		}
@@ -132,14 +130,15 @@ func (l *starlarkLoader) loadValidators() (map[string]*starlark.Function, error)
 			Print: starPrint,
 			Load:  l.Load,
 		}
-
 		if _, err := l.Load(thread, filepath.ToSlash(validatorFile)); err != nil {
-			slog.Error("error loading validator", "error", err)
-			os.Exit(1)
+			walkErr = fmt.Errorf("error loading validator %s: %w", validatorFile, err)
+			return false
 		}
 		return true
 	})
-
+	if walkErr != nil {
+		return nil, walkErr
+	}
 	return validators, nil
 }
 

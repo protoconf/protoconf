@@ -41,11 +41,15 @@ type ModuleService struct {
 	cachedRegistry *utils.DescriptorRegistry
 }
 
-func NewModuleService(protoconfRoot string) *ModuleService {
+func NewModuleService(protoconfRoot string) (*ModuleService, error) {
+	absPath, err := filepath.Abs(protoconfRoot)
+	if err != nil {
+		return nil, fmt.Errorf("invalid protoconf root %q: %w", protoconfRoot, err)
+	}
 	const lockFile = `protoconf.lock`
 	const cacheDir = `.protoconf_cache`
 	config := &module.ModuleServiceConfig{
-		ProtoconfPath: protoconfRoot,
+		ProtoconfPath: absPath,
 		CacheDir:      cacheDir,
 		LockFile:      lockFile,
 	}
@@ -57,16 +61,11 @@ func NewModuleService(protoconfRoot string) *ModuleService {
 			Url:  ".",
 			Deps: map[string]*module.RemoteRepo{},
 		},
-	}
+	}, nil
 }
 
 func (m *ModuleService) getProtoconfPath() string {
-	path, err := filepath.Abs(m.Config.ProtoconfPath)
-	if err != nil {
-		slog.Error("error getting protoconf path", "error", err)
-		os.Exit(1)
-	}
-	return path
+	return m.Config.ProtoconfPath
 }
 
 func (m *ModuleService) getCacheDir() string {
