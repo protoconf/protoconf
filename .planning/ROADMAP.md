@@ -50,7 +50,7 @@ Plans:
 **Plans**: 2 plans
 Plans:
 - [ ] 02-01-PLAN.md — Remove os.Exit from compiler/lib (module_service + starlark_loader) and propagate errors through NewCompiler to all callers
-- [ ] 02-02-PLAN.md — Remove os.Exit from mutate/mutate.go (Run method + setNumeric/setFloat helpers)
+- [x] 02-02-PLAN.md — Remove os.Exit from mutate/mutate.go (Run method + setNumeric/setFloat helpers)
 
 ### Phase 3: Observability & Global State Cleanup
 **Goal**: OTel initialization is shared and non-fatal; global mutable state is eliminated from library packages
@@ -152,7 +152,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Deprecated API Migrations | 1/1 | Complete   | 2026-03-23 |
-| 2. os.Exit Refactoring | 0/2 | Not started | - |
+| 2. os.Exit Refactoring | 1/2 | In Progress|  |
 | 3. Observability & Global State Cleanup | 0/TBD | Not started | - |
 | 4. Dead Code Removal | 0/TBD | Not started | - |
 | 5. TLS Support | 0/TBD | Not started | - |

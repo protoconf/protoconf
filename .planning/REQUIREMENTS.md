@@ -39,8 +39,8 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 - [ ] **REFC-01**: compiler/lib/module_service.go os.Exit replaced with error return
 - [ ] **REFC-02**: compiler/lib/starlark_loader.go os.Exit calls (3 locations) replaced with error returns
-- [ ] **REFC-03**: mutate/mutate.go os.Exit calls (~10 locations) replaced with error returns
-- [ ] **REFC-04**: All refactored functions propagate errors to CLI entry points where os.Exit is appropriate
+- [x] **REFC-03**: mutate/mutate.go os.Exit calls (~10 locations) replaced with error returns
+- [x] **REFC-04**: All refactored functions propagate errors to CLI entry points where os.Exit is appropriate
 
 ### Refactoring — OTel
 
@@ -134,8 +134,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DEPR-02 | Phase 1 | Complete |
 | REFC-01 | Phase 2 | Pending |
 | REFC-02 | Phase 2 | Pending |
-| REFC-03 | Phase 2 | Pending |
-| REFC-04 | Phase 2 | Pending |
+| REFC-03 | Phase 2 | Complete |
+| REFC-04 | Phase 2 | Complete |
 | REFC-05 | Phase 3 | Pending |
 | REFC-06 | Phase 3 | Pending |
 | REFC-07 | Phase 3 | Pending |

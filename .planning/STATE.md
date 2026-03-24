@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Ready to plan
-stopped_at: Completed 01-01-PLAN.md
-last_updated: "2026-03-23T18:03:40.404Z"
+status: Ready to execute
+stopped_at: Completed 02-02-PLAN.md
+last_updated: "2026-03-24T05:40:04.404Z"
 progress:
   total_phases: 10
   completed_phases: 1
-  total_plans: 1
-  completed_plans: 1
+  total_plans: 3
+  completed_plans: 2
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-23)
 
 **Core value:** Every component must be testable, consistent, and free of runtime surprises
-**Current focus:** Phase 01 — deprecated-api-migrations
+**Current focus:** Phase 02 — os-exit-refactoring
 
 ## Current Position
 
-Phase: 2
-Plan: Not started
+Phase: 02 (os-exit-refactoring) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -47,6 +47,7 @@ Plan: Not started
 
 *Updated after each plan completion*
 | Phase 01 P01 | 1363 | 2 tasks | 8 files |
+| Phase 02 P02 | 588 | 1 tasks | 14 files |
 
 ## Accumulated Context
 
@@ -61,6 +62,7 @@ Recent decisions affecting current work:
 - Migrate jhump/protoreflect to dynamicpb: Deferred to v2 — large scope, touches compiler/starproto extensively
 - [Phase 01]: Register both grpc_reflection_v1 and grpc_reflection_v1alpha in server.go: v1 is primary, v1alpha kept for grpcui@v1.4.1 backward compatibility
 - [Phase 01]: Use passthrough:///bufnet as grpc.NewClient target for in-process bufconn: grpc.NewClient requires non-empty DNS-resolvable target
+- [Phase 02]: Fix all NewModuleService/NewCompiler caller sites as Rule 3 deviation to unblock the full project build
 
 ### Pending Todos
 
@@ -73,6 +75,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-23T17:58:15.697Z
-Stopped at: Completed 01-01-PLAN.md
+Last session: 2026-03-24T05:40:04.398Z
+Stopped at: Completed 02-02-PLAN.md
 Resume file: None
