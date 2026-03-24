@@ -57,7 +57,11 @@ func (d *DevServerCommand) Run(args []string) int {
 	protoconf_pb.RegisterProtoconfServiceServer(rpcServer, agentSvc)
 
 	slog.Default().Info("starting compiler service...")
-	compilerSvc := compiler.NewCompilerService(protoconfRoot, false)
+	compilerSvc, err := compiler.NewCompilerService(protoconfRoot, false)
+	if err != nil {
+		slog.Error("error creating compiler service", "error", err)
+		return 1
+	}
 	protoconf_pb.RegisterProtoconfCompileServer(rpcServer, compilerSvc)
 
 	healthcheck := health.NewServer()
@@ -69,7 +73,11 @@ func (d *DevServerCommand) Run(args []string) int {
 	healthcheck.SetServingStatus("reporting", healthgrpc.HealthCheckResponse_SERVING)
 
 	slog.Default().Info("starting mutation server...")
-	mutationServer := server.NewProtoconfMutationServer(protoconfRoot, server.WithCompiler(compilerSvc.Compiler))
+	mutationServer, err := server.NewProtoconfMutationServer(protoconfRoot, server.WithCompiler(compilerSvc.Compiler))
+	if err != nil {
+		slog.Error("error creating mutation server", "error", err)
+		return 1
+	}
 	// mutationServer.PostMutationScript = ``
 	mutationServer.Init(rpcServer)
 

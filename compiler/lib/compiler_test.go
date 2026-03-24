@@ -23,7 +23,9 @@ func TestCompiler_CompileFile(t *testing.T) {
 		dir = testdata.SmallTestDir()
 	})
 	t.Run("NewModuleService", func(t *testing.T) {
-		ms = NewModuleService(dir)
+		var err error
+		ms, err = NewModuleService(dir)
+		require.NoError(t, err)
 	})
 	t.Run("Setup", func(t *testing.T) {
 		require.NoError(t, ms.Init(context.Background(), "CONFIGSPACE"))
@@ -31,7 +33,9 @@ func TestCompiler_CompileFile(t *testing.T) {
 	})
 
 	t.Run("NewCompiler", func(t *testing.T) {
-		c = NewCompiler(dir, false)
+		var err error
+		c, err = NewCompiler(dir, false)
+		require.NoError(t, err)
 	})
 
 	t.Run("with_config_rollout_validator.pconf", compilerTest(c, ErrInvalidConfig))

@@ -30,7 +30,7 @@ const (
 	RolloutStage  = "RolloutStage"
 )
 
-func NewCompiler(protoconfRoot string, verboseLogging bool) *Compiler {
+func NewCompiler(protoconfRoot string, verboseLogging bool) (*Compiler, error) {
 	resolve.AllowNestedDef = true      // allow def statements within function bodies
 	resolve.AllowLambda = true         // allow lambda expressions
 	resolve.AllowFloat = true          // allow floating point literals, the 'float' built-in, and x / y
@@ -39,8 +39,11 @@ func NewCompiler(protoconfRoot string, verboseLogging bool) *Compiler {
 	resolve.AllowRecursion = true      // allow while statements and recursive functions
 
 	t := time.Now()
-	ms := NewModuleService(protoconfRoot)
-	err := ms.LoadFromLockFile()
+	ms, err := NewModuleService(protoconfRoot)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create module service: %w", err)
+	}
+	err = ms.LoadFromLockFile()
 	if err != nil {
 		slog.Error("error loading from lock file", "err", err)
 	}
@@ -53,7 +56,7 @@ func NewCompiler(protoconfRoot string, verboseLogging bool) *Compiler {
 		MaterializedDir: filepath.Join(protoconfRoot, consts.CompiledConfigPath),
 		parser:          parser.NewParserWithDescriptorRegistry(registry),
 		ModuleService:   ms,
-	}
+	}, nil
 }
 
 type Compiler struct {

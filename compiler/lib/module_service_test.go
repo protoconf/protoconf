@@ -12,6 +12,7 @@ import (
 	"github.com/hashicorp/go-getter"
 	"github.com/protoconf/protoconf/compiler/module/v1"
 	"github.com/protoconf/protoconf/utils/testdata"
+	"github.com/stretchr/testify/require"
 )
 
 func TestParseModulePath(t *testing.T) {
@@ -135,7 +136,8 @@ func TestModuleService_Sync(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			logger := slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{})).With("test", t.Name())
 			slog.SetDefault(logger)
-			m := NewModuleService(testdata.SmallTestDir())
+			m, err := NewModuleService(testdata.SmallTestDir())
+			require.NoError(t, err)
 			m.head = tt.head
 			m.Walk(func(r *module.RemoteRepo) error {
 				if r.Url == "." {

@@ -149,7 +149,11 @@ func (c *cliCommand) run(ctx context.Context, args []string) int {
 	otel.SetMeterProvider(meterProvider)
 
 	protoconfRoot := strings.TrimSpace(flags.Args()[0])
-	protoconfServer := NewProtoconfMutationServer(protoconfRoot)
+	protoconfServer, err := NewProtoconfMutationServer(protoconfRoot)
+	if err != nil {
+		slog.Error("failed to create mutation server", "error", err)
+		return 1
+	}
 	protoconfServer.config = config
 	protoconfServer.PreMutationScript = config.preMutationScript
 	protoconfServer.PostMutationScript = config.postMutationScript
@@ -225,8 +229,11 @@ func WithCompiler(c *lib.Compiler) func(*ProtoconfMutationServer) {
 	}
 }
 
-func NewProtoconfMutationServer(protoconfRoot string, opts ...MutationServerOption) *ProtoconfMutationServer {
-	ms := lib.NewModuleService(protoconfRoot)
+func NewProtoconfMutationServer(protoconfRoot string, opts ...MutationServerOption) (*ProtoconfMutationServer, error) {
+	ms, err := lib.NewModuleService(protoconfRoot)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create module service: %w", err)
+	}
 	ms.LoadFromLockFile()
 	parser := parser.NewParserWithDescriptorRegistry(ms.GetProtoRegistry())
 	parser.FilesResolver.RegisterFile(grpc_reflection_v1.File_grpc_reflection_v1_reflection_proto)
@@ -239,7 +246,7 @@ func NewProtoconfMutationServer(protoconfRoot string, opts ...MutationServerOpti
 	for _, opt := range opts {
 		opt(s)
 	}
-	return s
+	return s, nil
 }
 
 func (s *ProtoconfMutationServer) Put(ctx context.Context, in *dynamicpb.Message) (proto.Message, error) {

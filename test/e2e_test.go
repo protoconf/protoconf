@@ -33,12 +33,14 @@ func Test(t *testing.T) {
 	// Init
 	protoconfRoot := testdata.SmallTestDir()
 	t.Run("mod tidy", func(t *testing.T) {
-		ms := lib.NewModuleService(protoconfRoot)
+		ms, err := lib.NewModuleService(protoconfRoot)
+		require.NoError(t, err)
 		require.NoError(t, ms.Init(ctx, "CONFIGSPACE"))
 		require.NoError(t, ms.Sync(ctx))
 	})
 
-	c := lib.NewCompiler(protoconfRoot, false)
+	c, err := lib.NewCompiler(protoconfRoot, false)
+	require.NoError(t, err)
 	// Create dev agent
 	devConfig := &protoconf_agent_config.AgentConfig{
 		Prefix: consts.CompiledConfigPath,
@@ -51,7 +53,8 @@ func Test(t *testing.T) {
 	var devAgentClient protoconf_pb.ProtoconfServiceClient
 	assert.NoError(t, err)
 
-	devMutationServer := server.NewProtoconfMutationServer(protoconfRoot)
+	devMutationServer, err := server.NewProtoconfMutationServer(protoconfRoot)
+	require.NoError(t, err)
 	var devMutationClient protoconf_pb.ProtoconfMutationServiceClient
 	devCloser := TestServer(ctx, func(s *grpc.Server) {
 		protoconf_pb.RegisterProtoconfServiceServer(s, devAgentServer)

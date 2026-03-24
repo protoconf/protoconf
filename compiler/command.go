@@ -134,7 +134,11 @@ func runRemote(config *cliConfig, configs []string) int {
 }
 
 func runLocally(protoconfRoot string, config *cliConfig, configs []string) int {
-	compiler := compilerlib.NewCompiler(protoconfRoot, config.verboseLogging)
+	compiler, err := compilerlib.NewCompiler(protoconfRoot, config.verboseLogging)
+	if err != nil {
+		slog.Error("Failed to initialize compiler", "error", err)
+		return 1
+	}
 	ui := &cli.BasicUi{
 		Reader:      os.Stdin,
 		Writer:      os.Stdout,
@@ -163,8 +167,7 @@ func runLocally(protoconfRoot string, config *cliConfig, configs []string) int {
 			return err
 		})
 	}
-	err := g.Wait()
-	if err != nil {
+	if err = g.Wait(); err != nil {
 		// log.Println(err)
 		return 1
 	}

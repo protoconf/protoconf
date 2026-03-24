@@ -66,7 +66,10 @@ func New(ctx context.Context, endpoints []string, options *Config) (*Store, erro
 	if err != nil {
 		return nil, err
 	}
-	ms := lib.NewModuleService(absRoot)
+	ms, err := lib.NewModuleService(absRoot)
+	if err != nil {
+		return nil, fmt.Errorf("error creating module service: %w", err)
+	}
 	ms.LoadFromLockFile()
 
 	watcher := &Store{

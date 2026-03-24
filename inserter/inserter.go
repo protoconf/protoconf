@@ -174,7 +174,11 @@ type ProtoconfInserter struct {
 func NewProtoconfInserter(protoconfRoot string, kvStore store.Store) *ProtoconfInserter {
 	logger := slog.Default()
 	logger.Debug("loading module service")
-	ms := lib.NewModuleService(protoconfRoot)
+	ms, err := lib.NewModuleService(protoconfRoot)
+	if err != nil {
+		logger.Error("error creating module service", "error", err)
+		return nil
+	}
 	ms.LoadFromLockFile()
 	protoconfRootAbs, _ := filepath.Abs(protoconfRoot)
 	gitRoot := protoconfRootAbs

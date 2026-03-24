@@ -3,6 +3,7 @@ package compiler
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log/slog"
 
 	"github.com/protoconf/protoconf/compiler/lib"
@@ -17,10 +18,14 @@ type CompilerService struct {
 
 var _ protoconf_pb.ProtoconfCompileServer = &CompilerService{}
 
-func NewCompilerService(dir string, verbose bool) *CompilerService {
-	return &CompilerService{
-		Compiler: lib.NewCompiler(dir, verbose),
+func NewCompilerService(dir string, verbose bool) (*CompilerService, error) {
+	c, err := lib.NewCompiler(dir, verbose)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create compiler: %w", err)
 	}
+	return &CompilerService{
+		Compiler: c,
+	}, nil
 }
 
 func (s *CompilerService) CompileFiles(in *protoconf_pb.CompileRequest, srv protoconf_pb.ProtoconfCompile_CompileFilesServer) error {

@@ -13,6 +13,7 @@ import (
 	protoconf_pb "github.com/protoconf/protoconf/pb/protoconf/v1"
 	"github.com/protoconf/protoconf/utils/testdata"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/proto"
@@ -132,12 +133,13 @@ func Test_server_MutateConfig(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			s := NewProtoconfMutationServer(tt.fields.protoconfRoot)
+			s, err := NewProtoconfMutationServer(tt.fields.protoconfRoot)
+			require.NoError(t, err)
 			s.config = tt.fields.config
 			s.PreMutationScript = tt.fields.config.preMutationScript
 			s.PostMutationScript = tt.fields.config.postMutationScript
 			// TODO(smintz): assert the response
-			_, err := s.MutateConfig(tt.args.ctx, tt.args.in)
+			_, err = s.MutateConfig(tt.args.ctx, tt.args.in)
 			if !errors.Is(err, tt.wantErr) {
 				t.Errorf("server.MutateConfig() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -147,14 +149,15 @@ func Test_server_MutateConfig(t *testing.T) {
 }
 func TestProtoconfMutationServer_GenReflectionUI(t *testing.T) {
 	protoconfRoot := testdata.SmallTestDir()
-	server := NewProtoconfMutationServer(protoconfRoot)
+	server, err := NewProtoconfMutationServer(protoconfRoot)
+	require.NoError(t, err)
 
 	ctx := context.Background()
 	rpcServer := grpc.NewServer()
 	server.Init(rpcServer)
 	httpServer := &http.Server{}
 
-	err := server.GenReflectionUI(ctx, rpcServer, httpServer)
+	err = server.GenReflectionUI(ctx, rpcServer, httpServer)
 	if err != nil {
 		t.Errorf("GenReflectionUI returned an error: %v", err)
 	}
@@ -163,9 +166,11 @@ func TestProtoconfMutationServer_GenReflectionUI(t *testing.T) {
 }
 func TestProtoconfMutationServer_ReportProgress(t *testing.T) {
 	protoconfRoot := testdata.SmallTestDir()
-	compiler := lib.NewCompiler(protoconfRoot, false)
+	compiler, err := lib.NewCompiler(protoconfRoot, false)
+	require.NoError(t, err)
 
-	s := NewProtoconfMutationServer(protoconfRoot, WithCompiler(compiler))
+	s, err := NewProtoconfMutationServer(protoconfRoot, WithCompiler(compiler))
+	require.NoError(t, err)
 	ctx := context.Background()
 	in := &protoconf_pb.ConfigMutationResponse{
 		Uuid: "test-uuid",
@@ -238,15 +243,17 @@ func Test_cliCommand_Synopsis(t *testing.T) {
 }
 func TestProtoconfMutationServer_Put(t *testing.T) {
 	protoconfRoot := testdata.SmallTestDir()
-	compiler := lib.NewCompiler(protoconfRoot, false)
-	s := NewProtoconfMutationServer(protoconfRoot, WithCompiler(compiler))
+	compiler, err := lib.NewCompiler(protoconfRoot, false)
+	require.NoError(t, err)
+	s, err := NewProtoconfMutationServer(protoconfRoot, WithCompiler(compiler))
+	require.NoError(t, err)
 	ctx := context.Background()
 	ctx = metadata.NewIncomingContext(ctx, metadata.New(map[string]string{"path": "test"}))
 	tmp := &protoconf_pb.CompileRequest{}
 	in := dynamicpb.NewMessage(tmp.ProtoReflect().Descriptor())
 	proto.Merge(in, tmp)
 
-	_, err := s.Put(ctx, in)
+	_, err = s.Put(ctx, in)
 	if !errors.Is(err, ErrInternalCompilerError) {
 		t.Errorf("Put() error = %v", err)
 		return

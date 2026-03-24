@@ -69,7 +69,7 @@ func newFlagSet() (*flag.FlagSet, *cliConfig) {
 	flags.Usage = func() {
 		fmt.Fprintln(flags.Output(), "Usage: [OPTION]...")
 		helpText := `
-A CLI util to communicate with the mutation server easily. 
+A CLI util to communicate with the mutation server easily.
 	`
 		fmt.Fprintln(flags.Output(), helpText)
 		flags.PrintDefaults()
@@ -100,9 +100,13 @@ func (c *cliCommand) Run(args []string) int {
 	root, err := filepath.Abs(config.protoconfRoot)
 	if err != nil {
 		slog.Error("failed to get root path", "error", err)
-		os.Exit(1)
+		return 1
 	}
-	ms := lib.NewModuleService(root)
+	ms, err := lib.NewModuleService(root)
+	if err != nil {
+		slog.Error("error creating module service", "error", err)
+		return 1
+	}
 	ms.LoadFromLockFile()
 	parser := parser.NewParserWithDescriptorRegistry(ms.GetProtoRegistry())
 	anyResolver := parser.LocalResolver
@@ -111,12 +115,12 @@ func (c *cliCommand) Run(args []string) int {
 
 	if err != nil {
 		slog.Error("could not find typeUrl for", "msg", config.protoMsg, "error", err)
-		os.Exit(1)
+		return 1
 	}
 	wrap, err := desc.WrapMessage(messageType.Descriptor())
 	if err != nil {
 		slog.Error("error wrapping message", "error", err)
-		os.Exit(1)
+		return 1
 	}
 
 	msg := dynamic.NewMessage(wrap)
@@ -126,28 +130,49 @@ func (c *cliCommand) Run(args []string) int {
 		field := msg.GetMessageDescriptor().FindFieldByName(ret[0])
 		if field == nil {
 			slog.Error("is not a field in ", "field", ret[0], "message", msg.XXX_MessageName())
-			os.Exit(1)
+			return 1
 		}
 		switch field.GetType() {
 		case descriptorpb.FieldDescriptorProto_TYPE_DOUBLE:
-			setFloat(msg, ret[0], ret[1], func(s interface{}) interface{} { return s })
+			if err := setFloat(msg, ret[0], ret[1], func(s interface{}) interface{} { return s }); err != nil {
+				slog.Error("error setting field", "field", ret[0], "error", err)
+				return 1
+			}
 		case descriptorpb.FieldDescriptorProto_TYPE_FLOAT:
-			setFloat(msg, ret[0], ret[1], func(s interface{}) interface{} { return s })
+			if err := setFloat(msg, ret[0], ret[1], func(s interface{}) interface{} { return s }); err != nil {
+				slog.Error("error setting field", "field", ret[0], "error", err)
+				return 1
+			}
 		case descriptorpb.FieldDescriptorProto_TYPE_INT64:
-			setNumeric(msg, ret[0], ret[1], func(s interface{}) interface{} { return s })
+			if err := setNumeric(msg, ret[0], ret[1], func(s interface{}) interface{} { return s }); err != nil {
+				slog.Error("error setting field", "field", ret[0], "error", err)
+				return 1
+			}
 		case descriptorpb.FieldDescriptorProto_TYPE_UINT64:
-			setNumeric(msg, ret[0], ret[1], func(s interface{}) interface{} { return s })
+			if err := setNumeric(msg, ret[0], ret[1], func(s interface{}) interface{} { return s }); err != nil {
+				slog.Error("error setting field", "field", ret[0], "error", err)
+				return 1
+			}
 		case descriptorpb.FieldDescriptorProto_TYPE_INT32:
-			setNumeric(msg, ret[0], ret[1], func(s interface{}) interface{} { return int32(s.(int64)) })
+			if err := setNumeric(msg, ret[0], ret[1], func(s interface{}) interface{} { return int32(s.(int64)) }); err != nil {
+				slog.Error("error setting field", "field", ret[0], "error", err)
+				return 1
+			}
 		case descriptorpb.FieldDescriptorProto_TYPE_FIXED64:
-			setNumeric(msg, ret[0], ret[1], func(s interface{}) interface{} { return s })
+			if err := setNumeric(msg, ret[0], ret[1], func(s interface{}) interface{} { return s }); err != nil {
+				slog.Error("error setting field", "field", ret[0], "error", err)
+				return 1
+			}
 		case descriptorpb.FieldDescriptorProto_TYPE_FIXED32:
-			setNumeric(msg, ret[0], ret[1], func(s interface{}) interface{} { return int32(s.(int64)) })
+			if err := setNumeric(msg, ret[0], ret[1], func(s interface{}) interface{} { return int32(s.(int64)) }); err != nil {
+				slog.Error("error setting field", "field", ret[0], "error", err)
+				return 1
+			}
 		case descriptorpb.FieldDescriptorProto_TYPE_BOOL:
 			b, e := strconv.ParseBool(ret[1])
 			if e != nil {
 				slog.Error("error parsing bool", "error", e)
-				os.Exit(1)
+				return 1
 			}
 			setField(msg, ret[0], b, func(s interface{}) interface{} {
 				return s
@@ -155,15 +180,30 @@ func (c *cliCommand) Run(args []string) int {
 		case descriptorpb.FieldDescriptorProto_TYPE_STRING:
 			setField(msg, ret[0], ret[1], func(s interface{}) interface{} { return s })
 		case descriptorpb.FieldDescriptorProto_TYPE_UINT32:
-			setNumeric(msg, ret[0], ret[1], func(s interface{}) interface{} { return uint32(s.(int64)) })
+			if err := setNumeric(msg, ret[0], ret[1], func(s interface{}) interface{} { return uint32(s.(int64)) }); err != nil {
+				slog.Error("error setting field", "field", ret[0], "error", err)
+				return 1
+			}
 		case descriptorpb.FieldDescriptorProto_TYPE_SFIXED32:
-			setNumeric(msg, ret[0], ret[1], func(s interface{}) interface{} { return int32(s.(int64)) })
+			if err := setNumeric(msg, ret[0], ret[1], func(s interface{}) interface{} { return int32(s.(int64)) }); err != nil {
+				slog.Error("error setting field", "field", ret[0], "error", err)
+				return 1
+			}
 		case descriptorpb.FieldDescriptorProto_TYPE_SFIXED64:
-			setNumeric(msg, ret[0], ret[1], func(s interface{}) interface{} { return s })
+			if err := setNumeric(msg, ret[0], ret[1], func(s interface{}) interface{} { return s }); err != nil {
+				slog.Error("error setting field", "field", ret[0], "error", err)
+				return 1
+			}
 		case descriptorpb.FieldDescriptorProto_TYPE_SINT32:
-			setNumeric(msg, ret[0], ret[1], func(s interface{}) interface{} { return uint32(s.(int64)) })
+			if err := setNumeric(msg, ret[0], ret[1], func(s interface{}) interface{} { return uint32(s.(int64)) }); err != nil {
+				slog.Error("error setting field", "field", ret[0], "error", err)
+				return 1
+			}
 		case descriptorpb.FieldDescriptorProto_TYPE_SINT64:
-			setNumeric(msg, ret[0], ret[1], func(s interface{}) interface{} { return s })
+			if err := setNumeric(msg, ret[0], ret[1], func(s interface{}) interface{} { return s }); err != nil {
+				slog.Error("error setting field", "field", ret[0], "error", err)
+				return 1
+			}
 		}
 	}
 
@@ -172,13 +212,13 @@ func (c *cliCommand) Run(args []string) int {
 	conn, err = grpc.NewClient(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		slog.Error("error connecting to server", "address", address, "error", err)
-		os.Exit(1)
+		return 1
 	}
 	defer conn.Close()
 	any, err := anypb.New(starproto.ToDynamicPb(msg))
 	if err != nil {
 		slog.Error("error marshalling message to any", "message", msg, "error", err)
-		os.Exit(1)
+		return 1
 	}
 	slog.Info(msg.String())
 	slog.Info("Info", "any", any)
@@ -193,7 +233,7 @@ func (c *cliCommand) Run(args []string) int {
 
 	if _, err := client.MutateConfig(ctx, request); err != nil {
 		slog.Error("error mutating", "path", path, "error", err)
-		os.Exit(1)
+		return 1
 	}
 	slog.Info("Mutated successfully", "path", path)
 	return 0
@@ -201,22 +241,22 @@ func (c *cliCommand) Run(args []string) int {
 
 type typerFunc func(interface{}) interface{}
 
-func setNumeric(msg *dynamic.Message, key, val string, typer typerFunc) {
+func setNumeric(msg *dynamic.Message, key, val string, typer typerFunc) error {
 	i, err := strconv.ParseInt(val, 0, 64)
 	if err != nil {
-		slog.Error("error parsing int", "error", err)
-		os.Exit(1)
+		return fmt.Errorf("error parsing int field %q value %q: %w", key, val, err)
 	}
 	setField(msg, key, i, typer)
+	return nil
 }
 
-func setFloat(msg *dynamic.Message, key, val string, typer typerFunc) {
+func setFloat(msg *dynamic.Message, key, val string, typer typerFunc) error {
 	i, err := strconv.ParseFloat(val, 64)
 	if err != nil {
-		slog.Error("error parsing float", "error", err)
-		os.Exit(1)
+		return fmt.Errorf("error parsing float field %q value %q: %w", key, val, err)
 	}
 	setField(msg, key, i, typer)
+	return nil
 }
 
 func setField(msg *dynamic.Message, key string, val interface{}, typer typerFunc) {

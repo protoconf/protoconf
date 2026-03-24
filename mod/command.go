@@ -62,7 +62,10 @@ func (c *modInitCommand) Run(args []string) int {
 }
 
 func defaultModuleService(fs *flag.FlagSet) *lib.ModuleService {
-	ms := lib.NewModuleService(".")
+	ms, err := lib.NewModuleService(".")
+	if err != nil {
+		return nil
+	}
 	lpc := libprotoconf.NewConfig(ms.Config)
 	lpc.SetEnvKeyPrefix("PROTOCONF_MOD")
 	lpc.Environment()
