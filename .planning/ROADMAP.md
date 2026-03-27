@@ -74,7 +74,9 @@ Plans:
   1. inserter/inserter.go has no runtime.GOMAXPROCS init() function
   2. filekv.Watch lines 143-145 dead error check is removed and the surrounding logic is correct
   3. All tests still pass after removal
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 04-01-PLAN.md — Remove dead init() from inserter and dead error check from filekv
 
 ### Phase 5: TLS Support
 **Goal**: gRPC servers and clients support TLS connections; insecure mode warns operators
@@ -85,7 +87,9 @@ Plans:
   2. A gRPC client can connect to a TLS-enabled server using a matching certificate
   3. A server started without TLS flags logs a visible warning that the connection is insecure
   4. Existing insecure-mode usage continues to work without any flag changes
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 04-01-PLAN.md — Remove dead init() from inserter and dead error check from filekv
 
 ### Phase 6: Token Auth & Script Security
 **Goal**: Mutation server enforces token-based auth; credentials reach pre/post scripts; script paths are validated
@@ -96,7 +100,9 @@ Plans:
   2. A mutation request with no token (when auth is configured) is rejected with an Unauthenticated error
   3. Pre/post mutation scripts receive auth credentials as environment variables
   4. A mutation request referencing a non-existent or non-executable script path is rejected with a clear error before execution begins
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 04-01-PLAN.md — Remove dead init() from inserter and dead error check from filekv
 
 ### Phase 7: Proto-Defined CLI Configs
 **Goal**: Every component's configuration is expressed as a protobuf message
@@ -108,7 +114,9 @@ Plans:
   3. A .proto file defines the inserter configuration message (KV store, prefix, rollout)
   4. A .proto file defines the mutate CLI configuration message (target server, field path, value)
   5. All proto definitions pass protoc compilation without errors
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 04-01-PLAN.md — Remove dead init() from inserter and dead error check from filekv
 
 ### Phase 8: CLI Flag Generation & Config Loading
 **Goal**: CLI flags are generated from proto definitions; all components accept env vars and config files
@@ -120,7 +128,9 @@ Plans:
   3. Setting a PROTOCONF_* environment variable configures the corresponding component option
   4. Passing a config file path loads configuration from JSON, YAML, or protobuf format
   5. Flag values override env vars, which override config file values, which override compiled defaults
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 04-01-PLAN.md — Remove dead init() from inserter and dead error check from filekv
 **UI hint**: no
 
 ### Phase 9: Unit Test Coverage & Infrastructure
@@ -133,7 +143,9 @@ Plans:
   3. compiler/starproto/ has tests covering message wrapping, field access, enum handling, and Any type support
   4. A shared test helpers package exists and is used by at least two test files (gRPC server setup, KV store creation, config compilation)
   5. CI reports coverage with a minimum threshold enforced; test failures on edge cases and error paths are present
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 04-01-PLAN.md — Remove dead init() from inserter and dead error check from filekv
 
 ### Phase 10: Placeholder Fixes & Integration Tests
 **Goal**: No test in the codebase has placeholder assertions; e2e tests cover mutation, TLS, and auth flows
@@ -145,7 +157,9 @@ Plans:
   3. agent/kv_agent_rollout_impl_test.go placeholder cases are completed with meaningful assertions
   4. An e2e test exercises the full mutation flow including pre/post script execution and verifies the outcome
   5. E2e tests cover TLS-enabled gRPC connections and token-based auth rejection/acceptance
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 04-01-PLAN.md — Remove dead init() from inserter and dead error check from filekv
 
 ## Progress
 
