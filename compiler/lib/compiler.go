@@ -10,6 +10,7 @@ import (
 	"log/slog"
 	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/bufbuild/protovalidate-go"
@@ -32,13 +33,25 @@ const (
 	RolloutStage  = "RolloutStage"
 )
 
+var initResolveOnce sync.Once
+
+func initResolveSettings() {
+	initResolveOnce.Do(func() {
+		// AllowNestedDef, AllowLambda, AllowFloat are no-ops in current
+		// go.starlark.net version (features now always enabled) but set
+		// for forward compatibility documentation.
+		resolve.AllowNestedDef = true
+		resolve.AllowLambda = true
+		resolve.AllowFloat = true
+		// These three are still operative:
+		resolve.AllowSet = true
+		resolve.AllowGlobalReassign = true
+		resolve.AllowRecursion = true
+	})
+}
+
 func NewCompiler(protoconfRoot string, verboseLogging bool) (*Compiler, error) {
-	resolve.AllowNestedDef = true      // allow def statements within function bodies
-	resolve.AllowLambda = true         // allow lambda expressions
-	resolve.AllowFloat = true          // allow floating point literals, the 'float' built-in, and x / y
-	resolve.AllowSet = true            // allow the 'set' built-in
-	resolve.AllowGlobalReassign = true // allow reassignment to top-level names; also, allow if/for/while at top-level
-	resolve.AllowRecursion = true      // allow while statements and recursive functions
+	initResolveSettings()
 
 	t := time.Now()
 	ms, err := NewModuleService(protoconfRoot)
