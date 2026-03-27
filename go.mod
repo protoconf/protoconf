@@ -5,6 +5,7 @@ go 1.22.4
 require (
 	github.com/Masterminds/sprig/v3 v3.2.3
 	github.com/bazelbuild/bazel-gazelle v0.37.0
+	github.com/bazelbuild/buildtools v0.0.0-20240313121412-66c605173954
 	github.com/bufbuild/protovalidate-go v0.6.2
 	github.com/cheggaaa/pb v1.0.29
 	github.com/fsnotify/fsnotify v1.7.0
@@ -14,7 +15,7 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
 	github.com/hashicorp/go-getter v1.7.4
-	github.com/hashicorp/go-getter/v2 v2.2.2
+	github.com/hashicorp/go-getter/v2 v2.2.3
 	github.com/jhump/protoreflect v1.16.0
 	github.com/kvtools/consul v1.0.2
 	github.com/kvtools/etcdv3 v1.0.2
@@ -69,7 +70,6 @@ require (
 	github.com/armon/go-metrics v0.4.1 // indirect
 	github.com/armon/go-radix v1.0.0 // indirect
 	github.com/aws/aws-sdk-go v1.44.122 // indirect
-	github.com/bazelbuild/buildtools v0.0.0-20240313121412-66c605173954 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bgentry/go-netrc v0.0.0-20140422174119-9fd32a8b3d3d // indirect
 	github.com/bgentry/speakeasy v0.1.0 // indirect
