@@ -23,17 +23,11 @@ import (
 	"github.com/protoconf/protoconf/agent/filekv"
 	"github.com/protoconf/protoconf/agent/otelkv"
 	"github.com/protoconf/protoconf/consts"
+	"github.com/protoconf/protoconf/observability"
 	protoconf_pb "github.com/protoconf/protoconf/pb/protoconf/v1"
 	slogotel "github.com/remychantenay/slog-otel"
 	"github.com/stephenafamo/orchestra"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
-	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc"
-	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
-	"go.opentelemetry.io/otel/sdk/metric"
-	"go.opentelemetry.io/otel/sdk/resource"
-	"go.opentelemetry.io/otel/sdk/trace"
-	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
 	"google.golang.org/grpc"
 )
 
@@ -57,50 +51,15 @@ func RunAgent(ctx context.Context, config *protoconf_agent_config.AgentConfig) e
 	var err error
 	var store store.Store
 
-	expTracer, err := otlptracegrpc.New(ctx)
-	if err != nil {
-		panic(err)
+	shutdown, otelErr := observability.Init(ctx, "protoconf")
+	if otelErr != nil {
+		slog.Warn("OTel init failed, continuing without telemetry", "error", otelErr)
 	}
-
-	resources, _ := resource.New(ctx,
-		resource.WithFromEnv(),   // pull attributes from OTEL_RESOURCE_ATTRIBUTES and OTEL_SERVICE_NAME environment variables
-		resource.WithProcess(),   // This option configures a set of Detectors that discover process information
-		resource.WithOS(),        // This option configures a set of Detectors that discover OS information
-		resource.WithContainer(), // This option configures a set of Detectors that discover container information
-		resource.WithHost(),      // This option configures a set of Detectors that discover host information
-		resource.WithAttributes(
-			semconv.ServiceNameKey.String("protoconf"),
-			semconv.ServiceVersionKey.String(consts.Version),
-		),
-	)
-	tracerProvider := trace.NewTracerProvider(
-		trace.WithBatcher(expTracer),
-		trace.WithResource(resources),
-	)
 	defer func() {
-		if err := tracerProvider.Shutdown(ctx); err != nil {
-			slog.Default().Error("error shutting down tracer provider", slog.String("error", err.Error()))
+		if err := shutdown(ctx); err != nil {
+			slog.Default().Error("error shutting down OTel providers", "error", err)
 		}
 	}()
-	otel.SetTracerProvider(tracerProvider)
-
-	// From here, the tracerProvider can be used by instrumentation to collect
-	// telemetry.
-	expMeter, err := otlpmetricgrpc.New(ctx)
-	if err != nil {
-		panic(err)
-	}
-
-	meterProvider := metric.NewMeterProvider(
-		metric.WithReader(metric.NewPeriodicReader(expMeter)),
-		metric.WithResource(resources),
-	)
-	defer func() {
-		if err := meterProvider.Shutdown(ctx); err != nil {
-			slog.Default().Error("error shutting down meter provider", slog.String("error", err.Error()))
-		}
-	}()
-	otel.SetMeterProvider(meterProvider)
 
 	var loggerHandler slog.Handler
 	loggerHandlerOptions := &slog.HandlerOptions{
