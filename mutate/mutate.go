@@ -27,8 +27,6 @@ import (
 	"google.golang.org/protobuf/types/known/anypb"
 )
 
-var conn *grpc.ClientConn
-
 type cliCommand struct {
 	ui cli.Ui
 }
@@ -209,7 +207,7 @@ func (c *cliCommand) Run(args []string) int {
 
 	slog.Info(msg.String())
 	address := config.serverAddress
-	conn, err = grpc.NewClient(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		slog.Error("error connecting to server", "address", address, "error", err)
 		return 1
