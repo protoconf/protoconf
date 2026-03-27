@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Deprecated API Migrations** - Replace grpc.WithInsecure and v1alpha reflection with current stable APIs (completed 2026-03-23)
 - [ ] **Phase 2: os.Exit Refactoring** - Remove os.Exit from library code and propagate errors to CLI entry points
-- [ ] **Phase 3: Observability & Global State Cleanup** - Extract shared OTel bootstrap and remove global mutable state
+- [x] **Phase 3: Observability & Global State Cleanup** - Extract shared OTel bootstrap and remove global mutable state (completed 2026-03-27)
 - [ ] **Phase 4: Dead Code Removal** - Remove unnecessary init functions and dead error checks
 - [ ] **Phase 5: TLS Support** - Add TLS to gRPC servers and clients with insecure-mode warning
 - [ ] **Phase 6: Token Auth & Script Security** - Add token-based mutation auth with credential forwarding and script validation
@@ -63,8 +63,8 @@ Plans:
   4. mutate/mutate.go holds its gRPC ClientConn as a local variable within Run, not as a package-level global
 **Plans**: 2 plans
 Plans:
-- [ ] 03-01-PLAN.md — Extract shared OTel bootstrap with noop fallback into observability package
-- [ ] 03-02-PLAN.md — Move Starlark resolve globals to sync.Once and localize mutate grpc.ClientConn
+- [x] 03-01-PLAN.md — Extract shared OTel bootstrap with noop fallback into observability package
+- [x] 03-02-PLAN.md — Move Starlark resolve globals to sync.Once and localize mutate grpc.ClientConn
 
 ### Phase 4: Dead Code Removal
 **Goal**: Codebase contains no unnecessary init functions or unreachable error handling
@@ -156,7 +156,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 |-------|----------------|--------|-----------|
 | 1. Deprecated API Migrations | 1/1 | Complete   | 2026-03-23 |
 | 2. os.Exit Refactoring | 1/2 | In Progress|  |
-| 3. Observability & Global State Cleanup | 0/2 | Not started | - |
+| 3. Observability & Global State Cleanup | 2/2 | Complete   | 2026-03-27 |
 | 4. Dead Code Removal | 0/TBD | Not started | - |
 | 5. TLS Support | 0/TBD | Not started | - |
 | 6. Token Auth & Script Security | 0/TBD | Not started | - |

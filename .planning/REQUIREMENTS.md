@@ -44,8 +44,8 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Refactoring — OTel
 
-- [ ] **REFC-05**: Shared observability package extracts duplicate OTel tracer/meter setup from server/server.go and agent/agent.go
-- [ ] **REFC-06**: OTel init failures log warnings and continue instead of panicking
+- [x] **REFC-05**: Shared observability package extracts duplicate OTel tracer/meter setup from server/server.go and agent/agent.go
+- [x] **REFC-06**: OTel init failures log warnings and continue instead of panicking
 
 ### Refactoring — Global State
 
@@ -136,8 +136,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | REFC-02 | Phase 2 | Complete |
 | REFC-03 | Phase 2 | Complete |
 | REFC-04 | Phase 2 | Complete |
-| REFC-05 | Phase 3 | Pending |
-| REFC-06 | Phase 3 | Pending |
+| REFC-05 | Phase 3 | Complete |
+| REFC-06 | Phase 3 | Complete |
 | REFC-07 | Phase 3 | Pending |
 | REFC-08 | Phase 3 | Pending |
 | REFC-09 | Phase 4 | Pending |

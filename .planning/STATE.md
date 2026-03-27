@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Ready to plan
-stopped_at: Phase 3 context gathered
-last_updated: "2026-03-27T06:15:40.364Z"
+status: Phase complete — ready for verification
+stopped_at: Completed 03-02-PLAN.md
+last_updated: "2026-03-27T06:37:22.201Z"
 progress:
   total_phases: 10
-  completed_phases: 2
-  total_plans: 3
-  completed_plans: 3
+  completed_phases: 3
+  total_plans: 5
+  completed_plans: 5
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-23)
 
 **Core value:** Every component must be testable, consistent, and free of runtime surprises
-**Current focus:** Phase 02 — os-exit-refactoring
+**Current focus:** Phase 03 — observability-global-state-cleanup
 
 ## Current Position
 
-Phase: 3
-Plan: Not started
+Phase: 03 (observability-global-state-cleanup) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -49,6 +49,8 @@ Plan: Not started
 | Phase 01 P01 | 1363 | 2 tasks | 8 files |
 | Phase 02 P02 | 588 | 1 tasks | 14 files |
 | Phase 02 P01 | 15 | 2 tasks | 11 files |
+| Phase 03 P01 | 420 | 2 tasks | 3 files |
+| Phase 03 P02 | 5 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -66,6 +68,11 @@ Recent decisions affecting current work:
 - [Phase 02]: Fix all NewModuleService/NewCompiler caller sites as Rule 3 deviation to unblock the full project build
 - [Phase 02]: Resolve filepath.Abs at construction time in NewModuleService - eliminates error propagation through all string-returning helpers
 - [Phase 02]: NewCompiler/NewCompilerService/NewProtoconfMutationServer all return errors - library code must propagate to CLI entry points, never silently fail
+- [Phase 03]: observability.Init returns (shutdown, error) to let callers choose shutdown strategy
+- [Phase 03]: noop providers installed on exporter failure so OTel instrumentation downstream never panics
+- [Phase 03]: Init always returns non-nil shutdown function for safe deferred calls
+- [Phase 03]: sync.Once guards all six resolve.Allow* assignments so concurrent NewCompiler calls are race-free
+- [Phase 03]: grpc.ClientConn localized to Run() — no package-level mutable connection state needed
 
 ### Pending Todos
 
@@ -78,6 +85,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-27T06:15:40.361Z
-Stopped at: Phase 3 context gathered
-Resume file: .planning/phases/03-observability-global-state-cleanup/03-CONTEXT.md
+Last session: 2026-03-27T06:37:22.198Z
+Stopped at: Completed 03-02-PLAN.md
+Resume file: None
