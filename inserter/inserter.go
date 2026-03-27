@@ -11,7 +11,6 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
-	"runtime"
 	"strings"
 	"sync"
 	"time"
@@ -44,13 +43,6 @@ type cliConfig struct {
 	delete bool
 }
 
-func init() {
-	// set the number of CPUs to use.
-	// By default, the number of CPUs is the number of CPUs on the machine.
-	// Just to show we can change the number of CPUs
-	// I have added this below command.
-	runtime.GOMAXPROCS(runtime.NumCPU())
-}
 func newFlagSet() (*flag.FlagSet, *cliConfig, *command.KVStoreConfig) {
 	flags := flag.NewFlagSet("", flag.ExitOnError)
 	flags.Usage = func() {
