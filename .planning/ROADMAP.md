@@ -76,7 +76,7 @@ Plans:
   3. All tests still pass after removal
 **Plans**: 1 plan
 Plans:
-- [ ] 04-01-PLAN.md — Remove dead init() from inserter and dead error check from filekv
+- [x] 04-01-PLAN.md — Remove dead init() from inserter and dead error check from filekv
 
 ### Phase 5: TLS Support
 **Goal**: gRPC servers and clients support TLS connections; insecure mode warns operators

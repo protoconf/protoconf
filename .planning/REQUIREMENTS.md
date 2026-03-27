@@ -54,8 +54,8 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Refactoring — Dead Code
 
-- [ ] **REFC-09**: inserter/inserter.go unnecessary runtime.GOMAXPROCS init() function removed
-- [ ] **REFC-10**: filekv.Watch dead error check at lines 143-145 cleaned up
+- [x] **REFC-09**: inserter/inserter.go unnecessary runtime.GOMAXPROCS init() function removed
+- [x] **REFC-10**: filekv.Watch dead error check at lines 143-145 cleaned up
 
 ### Security — TLS
 
@@ -140,8 +140,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | REFC-06 | Phase 3 | Complete |
 | REFC-07 | Phase 3 | Complete |
 | REFC-08 | Phase 3 | Complete |
-| REFC-09 | Phase 4 | Pending |
-| REFC-10 | Phase 4 | Pending |
+| REFC-09 | Phase 4 | Complete |
+| REFC-10 | Phase 4 | Complete |
 | SECR-01 | Phase 5 | Pending |
 | SECR-02 | Phase 5 | Pending |
 | SECR-03 | Phase 5 | Pending |
