@@ -27,7 +27,7 @@ Every component must be testable, consistent, and free of runtime surprises — 
 
 - [ ] Comprehensive test coverage across all packages
 - [x] Refactor os.Exit calls in library code to error returns — Validated in Phase 2: os.Exit Refactoring
-- [ ] Extract shared OTel bootstrap to common package
+- [x] Extract shared OTel bootstrap to common package — Validated in Phase 3: Observability & Global State Cleanup
 - [x] Migrate all deprecated gRPC APIs (WithInsecure, v1alpha reflection) — Validated in Phase 1: Deprecated API Migrations
 - [ ] Migrate from jhump/protoreflect/dynamic to dynamicpb
 - [ ] Add TLS support for gRPC connections
@@ -35,7 +35,7 @@ Every component must be testable, consistent, and free of runtime surprises — 
 - [ ] Proto-defined CLI configuration (research + implement)
 - [ ] Fix known bugs (missing `=` in env var, dummykv.Exists always true)
 - [ ] Remove dead code and unnecessary init functions
-- [ ] Fix global mutable state issues (Starlark resolver settings, mutate package)
+- [x] Fix global mutable state issues (Starlark resolver settings, mutate package) — Validated in Phase 3: Observability & Global State Cleanup
 
 ### Out of Scope
 
