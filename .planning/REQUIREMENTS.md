@@ -49,8 +49,8 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Refactoring — Global State
 
-- [ ] **REFC-07**: Starlark resolve.* global settings moved to program startup, not Compiler constructor
-- [ ] **REFC-08**: mutate/mutate.go global grpc.ClientConn moved to local scope within Run method
+- [x] **REFC-07**: Starlark resolve.* global settings moved to program startup, not Compiler constructor
+- [x] **REFC-08**: mutate/mutate.go global grpc.ClientConn moved to local scope within Run method
 
 ### Refactoring — Dead Code
 
@@ -138,8 +138,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | REFC-04 | Phase 2 | Complete |
 | REFC-05 | Phase 3 | Complete |
 | REFC-06 | Phase 3 | Complete |
-| REFC-07 | Phase 3 | Pending |
-| REFC-08 | Phase 3 | Pending |
+| REFC-07 | Phase 3 | Complete |
+| REFC-08 | Phase 3 | Complete |
 | REFC-09 | Phase 4 | Pending |
 | REFC-10 | Phase 4 | Pending |
 | SECR-01 | Phase 5 | Pending |
