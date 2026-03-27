@@ -34,7 +34,7 @@ Every component must be testable, consistent, and free of runtime surprises — 
 - [ ] Token-based auth with credential forwarding to pre/post scripts
 - [ ] Proto-defined CLI configuration (research + implement)
 - [ ] Fix known bugs (missing `=` in env var, dummykv.Exists always true)
-- [ ] Remove dead code and unnecessary init functions
+- [x] Remove dead code and unnecessary init functions — Validated in Phase 4: Dead Code Removal
 - [x] Fix global mutable state issues (Starlark resolver settings, mutate package) — Validated in Phase 3: Observability & Global State Cleanup
 
 ### Out of Scope
