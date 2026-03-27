@@ -143,9 +143,6 @@ func (s *Store) Watch(ctx context.Context, key string, opts *store.ReadOptions) 
 				Key:   key,
 				Value: []byte(base64.StdEncoding.EncodeToString(b)),
 			}
-			if err != nil {
-				return
-			}
 
 			select {
 			case _, ok := <-fsCh:
