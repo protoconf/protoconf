@@ -15,9 +15,11 @@ import (
 	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/dynamic"
 	"github.com/mitchellh/cli"
+	configtool "github.com/protoconf/libprotoconf"
 	"github.com/protoconf/protoconf/compiler/lib"
 	"github.com/protoconf/protoconf/compiler/lib/parser"
 	"github.com/protoconf/protoconf/compiler/starproto"
+	protoconf_mutate_config "github.com/protoconf/protoconf/mutate/config/v1"
 	pv "github.com/protoconf/protoconf/datatypes/proto/v1"
 	pc "github.com/protoconf/protoconf/server/api/proto/v1"
 	"github.com/protoconf/protoconf/utils"
@@ -25,13 +27,16 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/known/anypb"
 )
 
 type cliCommand struct {
-	ui cli.Ui
+	ui     cli.Ui
+	config *protoconf_mutate_config.MutateConfig
+	flag   *flag.FlagSet
 }
 
 var ui = &cli.BasicUi{
@@ -40,73 +45,20 @@ var ui = &cli.BasicUi{
 	ErrorWriter: os.Stderr,
 }
 
-type fieldsArray []string
-
-func (i *fieldsArray) String() string {
-	arr := []string{}
-	for _, s := range *i {
-		arr = append(arr, s)
-	}
-	return fmt.Sprintf("%v", arr)
-}
-
-func (i *fieldsArray) Set(value string) error {
-	*i = append(*i, value)
-	return nil
-}
-
-type cliConfig struct {
-	protoconfRoot string
-	protoFile     string
-	protoMsg      string
-	serverAddress string
-	configPath    string
-	metadataStr   string
-	fieldsArray   fieldsArray
-	tlsCert       string
-	tlsKey        string
-	tlsCA         string
-	insecureTLS   bool
-}
-
-func newFlagSet() (*flag.FlagSet, *cliConfig) {
-	flags := flag.NewFlagSet("mutate", flag.ExitOnError)
-	flags.Usage = func() {
-		fmt.Fprintln(flags.Output(), "Usage: [OPTION]...")
-		helpText := `
-A CLI util to communicate with the mutation server easily.
-	`
-		fmt.Fprintln(flags.Output(), helpText)
-		flags.PrintDefaults()
-	}
-
-	config := &cliConfig{}
-	flags.StringVar(&config.protoconfRoot, "root", "./src", "The root of protoconf src.")
-	flags.StringVar(&config.protoFile, "proto", "", "Path to the proto file")
-	flags.StringVar(&config.protoMsg, "msg", "", "Name of the message inside the -proto file")
-	flags.StringVar(&config.serverAddress, "addr", "localhost:4301", "Server address")
-	flags.StringVar(&config.configPath, "path", "", "Path to put the config in")
-	flags.StringVar(&config.metadataStr, "metadata", "", "Metadata string to pass to the pre/post install script")
-	flags.Var(&config.fieldsArray, "field", "fields to set inside -msg")
-	flags.StringVar(&config.tlsCert, "tls-cert", "", "TLS client certificate file")
-	flags.StringVar(&config.tlsKey, "tls-key", "", "TLS client key file")
-	flags.StringVar(&config.tlsCA, "tls-ca", "", "TLS CA certificate file")
-	flags.BoolVar(&config.insecureTLS, "insecure", false, "Use insecure connection (no TLS)")
-
-	return flags, config
-}
-
 func (c *cliCommand) Run(args []string) int {
-	flags, config := newFlagSet()
-	flags.Parse(args)
+	err := c.flag.Parse(args)
+	if err != nil {
+		fmt.Fprint(os.Stderr, "failed to parse flags", err)
+		return 2
+	}
 
-	if config.protoFile == "" || config.configPath == "" || config.protoMsg == "" || len(config.fieldsArray) < 1 {
+	if c.config.ProtoFile == "" || c.config.ConfigPath == "" || c.config.ProtoMsg == "" || len(c.config.Fields) < 1 {
 		c.ui.Output(c.Help())
 		return 0
 	}
-	path := config.configPath
+	path := c.config.ConfigPath
 
-	root, err := filepath.Abs(config.protoconfRoot)
+	root, err := filepath.Abs(c.config.ProtoconfRoot)
 	if err != nil {
 		slog.Error("failed to get root path", "error", err)
 		return 1
@@ -120,10 +72,10 @@ func (c *cliCommand) Run(args []string) int {
 	parser := parser.NewParserWithDescriptorRegistry(ms.GetProtoRegistry())
 	anyResolver := parser.LocalResolver
 
-	messageType, err := anyResolver.FindMessageByName(protoreflect.FullName(config.protoMsg))
+	messageType, err := anyResolver.FindMessageByName(protoreflect.FullName(c.config.ProtoMsg))
 
 	if err != nil {
-		slog.Error("could not find typeUrl for", "msg", config.protoMsg, "error", err)
+		slog.Error("could not find typeUrl for", "msg", c.config.ProtoMsg, "error", err)
 		return 1
 	}
 	wrap, err := desc.WrapMessage(messageType.Descriptor())
@@ -134,7 +86,7 @@ func (c *cliCommand) Run(args []string) int {
 
 	msg := dynamic.NewMessage(wrap)
 
-	for _, fName := range config.fieldsArray {
+	for _, fName := range c.config.Fields {
 		ret := strings.SplitN(fName, "=", 2)
 		field := msg.GetMessageDescriptor().FindFieldByName(ret[0])
 		if field == nil {
@@ -217,13 +169,13 @@ func (c *cliCommand) Run(args []string) int {
 	}
 
 	slog.Info(msg.String())
-	address := config.serverAddress
+	address := c.config.ServerAddress
 	var dialOpt grpc.DialOption
-	if config.tlsCert != "" || config.tlsKey != "" || config.tlsCA != "" {
+	if c.config.TlsCert != "" || c.config.TlsKey != "" || c.config.TlsCa != "" {
 		tlsCfg, err := utils.BuildTLSConfig(utils.TLSFiles{
-			CertFile: config.tlsCert,
-			KeyFile:  config.tlsKey,
-			CAFile:   config.tlsCA,
+			CertFile: c.config.TlsCert,
+			KeyFile:  c.config.TlsKey,
+			CAFile:   c.config.TlsCa,
 		})
 		if err != nil {
 			slog.Error("failed to build TLS config", "error", err)
@@ -250,8 +202,8 @@ func (c *cliCommand) Run(args []string) int {
 	}
 	slog.Info(msg.String())
 	slog.Info("Info", "any", any)
-	configValue := &pv.ProtoconfValue{ProtoFile: config.protoFile, Value: any}
-	request := &pc.ConfigMutationRequest{Path: config.configPath, Value: configValue, ScriptMetadata: config.metadataStr}
+	configValue := &pv.ProtoconfValue{ProtoFile: c.config.ProtoFile, Value: any}
+	request := &pc.ConfigMutationRequest{Path: c.config.ConfigPath, Value: configValue, ScriptMetadata: c.config.MetadataStr}
 
 	client := pc.NewProtoconfMutationServiceClient(conn)
 	// Wait until the server finishes long git operations
@@ -298,9 +250,8 @@ func (c *cliCommand) Help() string {
 	var b bytes.Buffer
 	b.WriteString(c.Synopsis())
 	b.WriteString("\n")
-	flags, _ := newFlagSet()
-	flags.SetOutput(&b)
-	flags.Usage()
+	c.flag.SetOutput(&b)
+	c.flag.Usage()
 	return b.String()
 }
 
@@ -310,5 +261,36 @@ func (c *cliCommand) Synopsis() string {
 
 // Command is a cli.CommandFactory
 func Command() (cli.Command, error) {
-	return &cliCommand{ui: ui}, nil
+	c := &cliCommand{
+		ui: ui,
+		config: &protoconf_mutate_config.MutateConfig{
+			ProtoconfRoot: "./src",
+			ServerAddress: "localhost:4301",
+		},
+	}
+	lpc := configtool.NewConfig(c.config)
+	lpc.SetEnvKeyPrefix("PROTOCONF_MUTATE")
+	lpc.Environment()
+	c.flag = flag.NewFlagSet(string(c.config.ProtoReflect().Descriptor().FullName()), flag.ContinueOnError)
+	lpc.PopulateFlagSet(c.flag)
+	c.flag.Func("config-file", "Mutate configuration file (available formats: json, yaml, pb)", func(filename string) error {
+		b, err := os.ReadFile(filename)
+		if err != nil {
+			return fmt.Errorf("failed to read config file: %v", err)
+		}
+		orig := proto.Clone(c.config)
+		err = lpc.Unmarshal(filename, b)
+		if err != nil {
+			return fmt.Errorf("failed to parse config file: %v", err)
+		}
+		// NOTE: proto.Merge(orig, c.config) merges file values ON TOP of env var values,
+		// meaning file values override env vars. This matches the agent pattern per D-13.
+		// The stated precedence in PCLI-09 (env > file) would require the reverse merge
+		// direction, but we intentionally match the existing agent behavior here. Fixing
+		// the agent's merge direction is a separate concern outside this phase.
+		proto.Merge(orig, c.config)
+		c.config, _ = orig.(*protoconf_mutate_config.MutateConfig)
+		return nil
+	})
+	return c, nil
 }

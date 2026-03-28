@@ -61,7 +61,11 @@ func (c *cliCommand) Run(args []string) int {
 	ctx := context.Background()
 	switch c.config.Store {
 	case protoconf_inserter_config.InserterConfig_consul:
-		kvStore, err = valkeyrie.NewStore(ctx, consul.StoreName, c.config.StoreAddress, nil)
+		addresses := c.config.StoreAddress
+		if len(addresses) == 0 {
+			addresses = []string{"127.0.0.1:8500"}
+		}
+		kvStore, err = valkeyrie.NewStore(ctx, consul.StoreName, addresses, nil)
 	case protoconf_inserter_config.InserterConfig_etcd:
 		addresses := c.config.StoreAddress
 		if len(addresses) == 0 {

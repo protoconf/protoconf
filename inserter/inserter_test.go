@@ -3,12 +3,10 @@ package inserter
 import (
 	"context"
 	"errors"
-	"reflect"
 	"strings"
 	"testing"
 
 	"github.com/kvtools/valkeyrie/store"
-	"github.com/mitchellh/cli"
 	"github.com/protoconf/protoconf/agent/dummykv"
 	"github.com/protoconf/protoconf/utils/testdata"
 	"github.com/stretchr/testify/assert"
@@ -103,8 +101,11 @@ func Test_cliCommand_Run(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := &cliCommand{}
-			if got := c.Run(tt.args.args); got != tt.want {
+			cmd, err := Command()
+			if err != nil {
+				t.Fatalf("Command() error = %v", err)
+			}
+			if got := cmd.Run(tt.args.args); got != tt.want {
 				t.Errorf("cliCommand.Run() = %v, want %v", got, tt.want)
 			}
 		})
@@ -120,22 +121,26 @@ func Test_cliCommand_Help(t *testing.T) {
 			name: "test",
 			want: []string{
 				`Insert a materialized config to the key-value store`,
-				`Usage: [OPTION]... [protoconf_root] config...`,
-				`-d`, `Delete a config from the key-value store`,
+				`-d`,
 				`-prefix`,
-				`Key-value store key prefix`,
 				`-store`,
-				`Key-value store type (consul/zookeeper/etcd) (default "consul")`,
+				`consul`,
+				`etcd`,
+				`zookeeper`,
+				`configmaps`,
 				`-store-address`,
-				`Key-value store address`,
+				`-config-file`,
 			},
 		},
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := &cliCommand{}
-			got := c.Help()
+			cmd, err := Command()
+			if err != nil {
+				t.Fatalf("Command() error = %v", err)
+			}
+			got := cmd.Help()
 			for _, w := range tt.want {
 				if !strings.Contains(got, w) {
 					t.Errorf("cliCommand.Help() = %v, want %v", got, w)
@@ -149,10 +154,9 @@ func Test_cliCommand_Help(t *testing.T) {
 func TestCommand(t *testing.T) {
 	tests := []struct {
 		name    string
-		want    cli.Command
 		wantErr bool
 	}{
-		{name: "test", want: &cliCommand{}},
+		{name: "test"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -161,8 +165,8 @@ func TestCommand(t *testing.T) {
 				t.Errorf("Command() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Command() = %v, want %v", got, tt.want)
+			if got == nil {
+				t.Error("Command() returned nil")
 			}
 		})
 	}
