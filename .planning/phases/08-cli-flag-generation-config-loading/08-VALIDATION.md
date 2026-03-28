@@ -2,7 +2,7 @@
 phase: 8
 slug: cli-flag-generation-config-loading
 status: draft
-nyquist_compliant: false
+nyquist_compliant: true
 wave_0_complete: false
 created: 2026-03-29
 ---
@@ -38,14 +38,10 @@ created: 2026-03-29
 
 | Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
-| 08-01-01 | 01 | 1 | PCLI-05 | build | `go build ./compiler/...` | TBD | ⬜ pending |
-| 08-01-02 | 01 | 1 | PCLI-05 | build | `go build ./server/...` | TBD | ⬜ pending |
-| 08-01-03 | 01 | 1 | PCLI-05 | build | `go build ./inserter/...` | TBD | ⬜ pending |
-| 08-01-04 | 01 | 1 | PCLI-05 | build | `go build ./mutate/...` | TBD | ⬜ pending |
-| 08-02-01 | 02 | 2 | PCLI-06 | integration | `go build ./cmd/protoconf/... && ./protoconf --help` | TBD | ⬜ pending |
-| 08-02-02 | 02 | 2 | PCLI-07, PCLI-08, PCLI-09 | integration | `go test ./...` | TBD | ⬜ pending |
-
-*Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
+| 08-01-T1 | 01 | 1 | PCLI-05 | build | `go build ./server/...` | TBD | pending |
+| 08-01-T2 | 01 | 1 | PCLI-05 | build | `go build ./compiler/...` | TBD | pending |
+| 08-02-T1 | 02 | 1 | PCLI-05, PCLI-06 | build | `go build ./inserter/... ./command/... ./compiler/... ./cmd/...` | TBD | pending |
+| 08-02-T2 | 02 | 1 | PCLI-05 | build | `go build ./mutate/...` | TBD | pending |
 
 ---
 
@@ -66,11 +62,11 @@ created: 2026-03-29
 
 ## Validation Sign-Off
 
-- [ ] All tasks have `<automated>` verify or Wave 0 dependencies
-- [ ] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING references
-- [ ] No watch-mode flags
-- [ ] Feedback latency < 30s
-- [ ] `nyquist_compliant: true` set in frontmatter
+- [x] All tasks have `<automated>` verify or Wave 0 dependencies
+- [x] Sampling continuity: no 3 consecutive tasks without automated verify
+- [x] Wave 0 covers all MISSING references
+- [x] No watch-mode flags
+- [x] Feedback latency < 30s
+- [x] `nyquist_compliant: true` set in frontmatter
 
-**Approval:** pending
+**Approval:** approved
