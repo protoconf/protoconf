@@ -103,7 +103,7 @@ Plans:
   4. A mutation request referencing a non-existent or non-executable script path is rejected with a clear error before execution begins
 **Plans**: 2 plans
 Plans:
-- [ ] 06-01-PLAN.md — Add bearer token auth interceptor with --auth-token flag and unit tests
+- [x] 06-01-PLAN.md — Add bearer token auth interceptor with --auth-token flag and unit tests
 - [ ] 06-02-PLAN.md — Add script path validation, credential forwarding to scripts, and COMPILER_ADDR bug fix
 
 ### Phase 7: Proto-Defined CLI Configs
@@ -175,7 +175,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 3. Observability & Global State Cleanup | 2/2 | Complete   | 2026-03-27 |
 | 4. Dead Code Removal | 0/TBD | Not started | - |
 | 5. TLS Support | 2/2 | Complete   | 2026-03-28 |
-| 6. Token Auth & Script Security | 0/2 | Not started | - |
+| 6. Token Auth & Script Security | 1/2 | In Progress|  |
 | 7. Proto-Defined CLI Configs | 0/TBD | Not started | - |
 | 8. CLI Flag Generation & Config Loading | 0/TBD | Not started | - |
 | 9. Unit Test Coverage & Infrastructure | 0/TBD | Not started | - |

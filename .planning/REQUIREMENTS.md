@@ -65,9 +65,9 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Security — Auth
 
-- [ ] **SECR-04**: Mutation server supports token-based authentication (JWT or API key) via gRPC metadata
+- [x] **SECR-04**: Mutation server supports token-based authentication (JWT or API key) via gRPC metadata
 - [ ] **SECR-05**: Auth credentials are forwarded to pre/post mutation scripts as environment variables
-- [ ] **SECR-06**: Unauthenticated requests are rejected when auth is configured
+- [x] **SECR-06**: Unauthenticated requests are rejected when auth is configured
 
 ### Security — Scripts
 
@@ -145,9 +145,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SECR-01 | Phase 5 | Complete |
 | SECR-02 | Phase 5 | Complete |
 | SECR-03 | Phase 5 | Complete |
-| SECR-04 | Phase 6 | Pending |
+| SECR-04 | Phase 6 | Complete |
 | SECR-05 | Phase 6 | Pending |
-| SECR-06 | Phase 6 | Pending |
+| SECR-06 | Phase 6 | Complete |
 | SECR-07 | Phase 6 | Pending |
 | PCLI-01 | Phase 7 | Pending |
 | PCLI-02 | Phase 7 | Pending |
