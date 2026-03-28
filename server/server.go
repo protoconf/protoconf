@@ -3,6 +3,7 @@ package server
 import (
 	"bytes"
 	"context"
+	"crypto/subtle"
 	"errors"
 	"flag"
 	"fmt"
@@ -37,12 +38,14 @@ import (
 	"golang.org/x/sync/errgroup"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/health"
 	"google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/reflection"
+	"google.golang.org/grpc/status"
 	"google.golang.org/grpc/reflection/grpc_reflection_v1"
 	"google.golang.org/grpc/reflection/grpc_reflection_v1alpha"
 	"google.golang.org/grpc/test/bufconn"
@@ -66,6 +69,7 @@ type cliConfig struct {
 	tlsCert            string
 	tlsKey             string
 	tlsCA              string
+	authToken          string
 }
 
 func newFlagSet() (*flag.FlagSet, *cliConfig) {
@@ -82,8 +86,32 @@ func newFlagSet() (*flag.FlagSet, *cliConfig) {
 	flags.StringVar(&config.tlsCert, "tls-cert", "", "TLS certificate file path")
 	flags.StringVar(&config.tlsKey, "tls-key", "", "TLS key file path")
 	flags.StringVar(&config.tlsCA, "tls-ca", "", "TLS CA certificate file path (enables client cert verification)")
+	flags.StringVar(&config.authToken, "auth-token", "", "Bearer token for mutation authentication (if empty, auth is disabled)")
 
 	return flags, config
+}
+
+// bearerTokenInterceptor returns a gRPC unary interceptor that validates Bearer tokens.
+// When expectedToken is empty, all requests pass through (backward compatible).
+func bearerTokenInterceptor(expectedToken string) grpc.UnaryServerInterceptor {
+	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+		if expectedToken == "" {
+			return handler(ctx, req)
+		}
+		md, ok := metadata.FromIncomingContext(ctx)
+		if !ok {
+			return nil, status.Error(codes.Unauthenticated, "missing metadata")
+		}
+		values := md.Get("authorization")
+		if len(values) == 0 {
+			return nil, status.Error(codes.Unauthenticated, "missing authorization header")
+		}
+		token := strings.TrimPrefix(values[0], "Bearer ")
+		if subtle.ConstantTimeCompare([]byte(token), []byte(expectedToken)) != 1 {
+			return nil, status.Error(codes.Unauthenticated, "invalid token")
+		}
+		return handler(ctx, req)
+	}
 }
 
 type exampleFunc func(path string, msg proto.Message) standalone.Example
@@ -141,6 +169,11 @@ func (c *cliCommand) run(ctx context.Context, args []string) int {
 		logger.Info("gRPC server TLS enabled")
 	} else {
 		slog.Warn("gRPC server running without TLS -- connections are not encrypted")
+	}
+
+	serverOpts = append(serverOpts, grpc.ChainUnaryInterceptor(bearerTokenInterceptor(config.authToken)))
+	if config.authToken == "" {
+		slog.Warn("mutation server running without authentication -- requests are not authenticated")
 	}
 
 	rpcServer := grpc.NewServer(serverOpts...)

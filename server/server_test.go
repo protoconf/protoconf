@@ -15,7 +15,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/dynamicpb"
 )
@@ -231,6 +233,64 @@ func Test_cliCommand_Run(t *testing.T) {
 	}
 
 	// Add assertions here to verify the expected behavior of the Run function
+}
+
+func Test_bearerTokenInterceptor(t *testing.T) {
+	noopHandler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return nil, nil
+	}
+
+	tests := []struct {
+		name          string
+		expectedToken string
+		ctx           context.Context
+		wantCode      codes.Code
+	}{
+		{
+			name:          "no_auth_configured",
+			expectedToken: "",
+			ctx:           context.Background(),
+			wantCode:      codes.OK,
+		},
+		{
+			name:          "valid_token",
+			expectedToken: "secret123",
+			ctx:           metadata.NewIncomingContext(context.Background(), metadata.New(map[string]string{"authorization": "Bearer secret123"})),
+			wantCode:      codes.OK,
+		},
+		{
+			name:          "missing_metadata",
+			expectedToken: "secret123",
+			ctx:           context.Background(),
+			wantCode:      codes.Unauthenticated,
+		},
+		{
+			name:          "missing_authorization_header",
+			expectedToken: "secret123",
+			ctx:           metadata.NewIncomingContext(context.Background(), metadata.New(map[string]string{"other-key": "value"})),
+			wantCode:      codes.Unauthenticated,
+		},
+		{
+			name:          "invalid_token",
+			expectedToken: "secret123",
+			ctx:           metadata.NewIncomingContext(context.Background(), metadata.New(map[string]string{"authorization": "Bearer wrongtoken"})),
+			wantCode:      codes.Unauthenticated,
+		},
+		{
+			name:          "raw_token_without_bearer_prefix",
+			expectedToken: "secret123",
+			ctx:           metadata.NewIncomingContext(context.Background(), metadata.New(map[string]string{"authorization": "secret123"})),
+			wantCode:      codes.OK,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			interceptor := bearerTokenInterceptor(tt.expectedToken)
+			_, err := interceptor(tt.ctx, nil, &grpc.UnaryServerInfo{}, noopHandler)
+			require.Equal(t, tt.wantCode, status.Code(err))
+		})
+	}
 }
 
 func Test_cliCommand_Synopsis(t *testing.T) {
