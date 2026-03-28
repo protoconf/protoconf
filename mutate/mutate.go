@@ -2,6 +2,7 @@ package mutate
 
 import (
 	"bytes"
+	"crypto/tls"
 	"flag"
 	"fmt"
 	"log/slog"
@@ -19,8 +20,10 @@ import (
 	"github.com/protoconf/protoconf/compiler/starproto"
 	pv "github.com/protoconf/protoconf/datatypes/proto/v1"
 	pc "github.com/protoconf/protoconf/server/api/proto/v1"
+	"github.com/protoconf/protoconf/utils"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/types/descriptorpb"
@@ -60,6 +63,10 @@ type cliConfig struct {
 	configPath    string
 	metadataStr   string
 	fieldsArray   fieldsArray
+	tlsCert       string
+	tlsKey        string
+	tlsCA         string
+	insecureTLS   bool
 }
 
 func newFlagSet() (*flag.FlagSet, *cliConfig) {
@@ -81,6 +88,10 @@ A CLI util to communicate with the mutation server easily.
 	flags.StringVar(&config.configPath, "path", "", "Path to put the config in")
 	flags.StringVar(&config.metadataStr, "metadata", "", "Metadata string to pass to the pre/post install script")
 	flags.Var(&config.fieldsArray, "field", "fields to set inside -msg")
+	flags.StringVar(&config.tlsCert, "tls-cert", "", "TLS client certificate file")
+	flags.StringVar(&config.tlsKey, "tls-key", "", "TLS client key file")
+	flags.StringVar(&config.tlsCA, "tls-ca", "", "TLS CA certificate file")
+	flags.BoolVar(&config.insecureTLS, "insecure", false, "Use insecure connection (no TLS)")
 
 	return flags, config
 }
@@ -207,7 +218,26 @@ func (c *cliCommand) Run(args []string) int {
 
 	slog.Info(msg.String())
 	address := config.serverAddress
-	conn, err := grpc.NewClient(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	var dialOpt grpc.DialOption
+	if config.tlsCert != "" || config.tlsKey != "" || config.tlsCA != "" {
+		tlsCfg, err := utils.BuildTLSConfig(utils.TLSFiles{
+			CertFile: config.tlsCert,
+			KeyFile:  config.tlsKey,
+			CAFile:   config.tlsCA,
+		})
+		if err != nil {
+			slog.Error("failed to build TLS config", "error", err)
+			return 1
+		}
+		if tlsCfg == nil {
+			// CA-only: use system roots + provided CA, no client cert
+			tlsCfg = &tls.Config{}
+		}
+		dialOpt = grpc.WithTransportCredentials(credentials.NewTLS(tlsCfg))
+	} else {
+		dialOpt = grpc.WithTransportCredentials(insecure.NewCredentials())
+	}
+	conn, err := grpc.NewClient(address, dialOpt)
 	if err != nil {
 		slog.Error("error connecting to server", "address", address, "error", err)
 		return 1

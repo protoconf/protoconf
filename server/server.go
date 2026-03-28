@@ -29,6 +29,7 @@ import (
 	"github.com/protoconf/protoconf/consts"
 	"github.com/protoconf/protoconf/observability"
 	protoconf_pb "github.com/protoconf/protoconf/pb/protoconf/v1"
+	"github.com/protoconf/protoconf/utils"
 	protoconfmutation "github.com/protoconf/protoconf/server/api/proto/v1"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"golang.org/x/net/http2"
@@ -36,6 +37,7 @@ import (
 	"golang.org/x/sync/errgroup"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/health"
 	"google.golang.org/grpc/health/grpc_health_v1"
@@ -61,6 +63,9 @@ type cliConfig struct {
 	grpcAddress        string
 	preMutationScript  string
 	postMutationScript string
+	tlsCert            string
+	tlsKey             string
+	tlsCA              string
 }
 
 func newFlagSet() (*flag.FlagSet, *cliConfig) {
@@ -74,6 +79,9 @@ func newFlagSet() (*flag.FlagSet, *cliConfig) {
 	flags.StringVar(&config.grpcAddress, "grpc-address", consts.ServerDefaultAddress, "Server gRPC address")
 	flags.StringVar(&config.preMutationScript, "pre", "", "Pre mutation script")
 	flags.StringVar(&config.postMutationScript, "post", "", "Post mutation script")
+	flags.StringVar(&config.tlsCert, "tls-cert", "", "TLS certificate file path")
+	flags.StringVar(&config.tlsKey, "tls-key", "", "TLS key file path")
+	flags.StringVar(&config.tlsCA, "tls-ca", "", "TLS CA certificate file path (enables client cert verification)")
 
 	return flags, config
 }
@@ -117,7 +125,25 @@ func (c *cliCommand) run(ctx context.Context, args []string) int {
 
 	logger.Info("starting protoconf server", "address", config.grpcAddress, "version", consts.Version, "root", protoconfRoot, "pre", config.preMutationScript, "post", config.postMutationScript)
 
-	rpcServer := grpc.NewServer(grpc.StatsHandler(otelgrpc.NewServerHandler()))
+	serverOpts := []grpc.ServerOption{grpc.StatsHandler(otelgrpc.NewServerHandler())}
+
+	tlsCfg, err := utils.BuildTLSConfig(utils.TLSFiles{
+		CertFile: config.tlsCert,
+		KeyFile:  config.tlsKey,
+		CAFile:   config.tlsCA,
+	})
+	if err != nil {
+		slog.Error("failed to build TLS config", "error", err)
+		return 1
+	}
+	if tlsCfg != nil {
+		serverOpts = append(serverOpts, grpc.Creds(credentials.NewTLS(tlsCfg)))
+		logger.Info("gRPC server TLS enabled")
+	} else {
+		slog.Warn("gRPC server running without TLS -- connections are not encrypted")
+	}
+
+	rpcServer := grpc.NewServer(serverOpts...)
 	protoconfServer.Init(rpcServer)
 
 	logger.Info("protoconf server running")
