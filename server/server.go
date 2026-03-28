@@ -23,6 +23,7 @@ import (
 	"github.com/fullstorydev/grpcui/standalone"
 	"github.com/google/uuid"
 	"github.com/mitchellh/cli"
+	configtool "github.com/protoconf/libprotoconf"
 	protoconfservice "github.com/protoconf/protoconf/agent/api/proto/v1"
 	"github.com/protoconf/protoconf/compiler"
 	"github.com/protoconf/protoconf/compiler/lib"
@@ -32,6 +33,7 @@ import (
 	protoconf_pb "github.com/protoconf/protoconf/pb/protoconf/v1"
 	"github.com/protoconf/protoconf/utils"
 	protoconfmutation "github.com/protoconf/protoconf/server/api/proto/v1"
+	protoconf_server_config "github.com/protoconf/protoconf/server/config/v1"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
@@ -60,35 +62,9 @@ import (
 
 var logger = slog.Default()
 
-type cliCommand struct{}
-
-type cliConfig struct {
-	grpcAddress        string
-	preMutationScript  string
-	postMutationScript string
-	tlsCert            string
-	tlsKey             string
-	tlsCA              string
-	authToken          string
-}
-
-func newFlagSet() (*flag.FlagSet, *cliConfig) {
-	flags := flag.NewFlagSet("", flag.ExitOnError)
-	flags.Usage = func() {
-		fmt.Fprintln(flags.Output(), "Usage: [OPTION]... protoconfRoot")
-		flags.PrintDefaults()
-	}
-
-	config := &cliConfig{}
-	flags.StringVar(&config.grpcAddress, "grpc-address", consts.ServerDefaultAddress, "Server gRPC address")
-	flags.StringVar(&config.preMutationScript, "pre", "", "Pre mutation script")
-	flags.StringVar(&config.postMutationScript, "post", "", "Post mutation script")
-	flags.StringVar(&config.tlsCert, "tls-cert", "", "TLS certificate file path")
-	flags.StringVar(&config.tlsKey, "tls-key", "", "TLS key file path")
-	flags.StringVar(&config.tlsCA, "tls-ca", "", "TLS CA certificate file path (enables client cert verification)")
-	flags.StringVar(&config.authToken, "auth-token", "", "Bearer token for mutation authentication (if empty, auth is disabled)")
-
-	return flags, config
+type cliCommand struct {
+	config *protoconf_server_config.ServerConfig
+	flag   *flag.FlagSet
 }
 
 // bearerTokenInterceptor returns a gRPC unary interceptor that validates Bearer tokens.
@@ -121,11 +97,14 @@ func (c *cliCommand) Run(args []string) int {
 }
 
 func (c *cliCommand) run(ctx context.Context, args []string) int {
-	flags, config := newFlagSet()
-	flags.Parse(args)
+	err := c.flag.Parse(args)
+	if err != nil {
+		fmt.Fprint(os.Stderr, "failed to parse flags: ", err)
+		return 2
+	}
 
-	if flags.NArg() < 1 {
-		flags.Usage()
+	if c.flag.NArg() < 1 {
+		c.flag.Usage()
 		return 1
 	}
 	ctx, cancel := signal.NotifyContext(ctx, os.Interrupt)
@@ -141,33 +120,33 @@ func (c *cliCommand) run(ctx context.Context, args []string) int {
 		}
 	})
 
-	protoconfRoot := strings.TrimSpace(flags.Args()[0])
+	protoconfRoot := strings.TrimSpace(c.flag.Args()[0])
 	protoconfServer, err := NewProtoconfMutationServer(protoconfRoot)
 	if err != nil {
 		slog.Error("failed to create mutation server", "error", err)
 		return 1
 	}
-	protoconfServer.config = config
-	protoconfServer.PreMutationScript = config.preMutationScript
-	protoconfServer.PostMutationScript = config.postMutationScript
+	protoconfServer.config = c.config
+	protoconfServer.PreMutationScript = c.config.PreMutationScript
+	protoconfServer.PostMutationScript = c.config.PostMutationScript
 
-	if err := validateScriptPath(config.preMutationScript); err != nil {
+	if err := validateScriptPath(c.config.PreMutationScript); err != nil {
 		slog.Error("invalid pre-mutation script", "error", err)
 		return 1
 	}
-	if err := validateScriptPath(config.postMutationScript); err != nil {
+	if err := validateScriptPath(c.config.PostMutationScript); err != nil {
 		slog.Error("invalid post-mutation script", "error", err)
 		return 1
 	}
 
-	logger.Info("starting protoconf server", "address", config.grpcAddress, "version", consts.Version, "root", protoconfRoot, "pre", config.preMutationScript, "post", config.postMutationScript)
+	logger.Info("starting protoconf server", "address", c.config.GrpcAddress, "version", consts.Version, "root", protoconfRoot, "pre", c.config.PreMutationScript, "post", c.config.PostMutationScript)
 
 	serverOpts := []grpc.ServerOption{grpc.StatsHandler(otelgrpc.NewServerHandler())}
 
 	tlsCfg, err := utils.BuildTLSConfig(utils.TLSFiles{
-		CertFile: config.tlsCert,
-		KeyFile:  config.tlsKey,
-		CAFile:   config.tlsCA,
+		CertFile: c.config.TlsCert,
+		KeyFile:  c.config.TlsKey,
+		CAFile:   c.config.TlsCa,
 	})
 	if err != nil {
 		slog.Error("failed to build TLS config", "error", err)
@@ -180,8 +159,8 @@ func (c *cliCommand) run(ctx context.Context, args []string) int {
 		slog.Warn("gRPC server running without TLS -- connections are not encrypted")
 	}
 
-	serverOpts = append(serverOpts, grpc.ChainUnaryInterceptor(bearerTokenInterceptor(config.authToken)))
-	if config.authToken == "" {
+	serverOpts = append(serverOpts, grpc.ChainUnaryInterceptor(bearerTokenInterceptor(c.config.AuthToken)))
+	if c.config.AuthToken == "" {
 		slog.Warn("mutation server running without authentication -- requests are not authenticated")
 	}
 
@@ -191,7 +170,7 @@ func (c *cliCommand) run(ctx context.Context, args []string) int {
 	logger.Info("protoconf server running")
 
 	httpServer := &http.Server{
-		Addr: config.grpcAddress,
+		Addr: c.config.GrpcAddress,
 	}
 	go func() {
 		ticker := time.NewTicker(5 * time.Second)
@@ -218,9 +197,8 @@ func (c *cliCommand) Help() string {
 	var b bytes.Buffer
 	b.WriteString(c.Synopsis())
 	b.WriteString("\n")
-	flags, _ := newFlagSet()
-	flags.SetOutput(&b)
-	flags.Usage()
+	c.flag.SetOutput(&b)
+	c.flag.Usage()
 	return b.String()
 }
 
@@ -230,13 +208,42 @@ func (c *cliCommand) Synopsis() string {
 
 // Command is a cli.CommandFactory
 func Command() (cli.Command, error) {
-	return &cliCommand{}, nil
+	c := &cliCommand{
+		config: &protoconf_server_config.ServerConfig{
+			GrpcAddress: consts.ServerDefaultAddress,
+		},
+	}
+	lpc := configtool.NewConfig(c.config)
+	lpc.SetEnvKeyPrefix("PROTOCONF_SERVER")
+	lpc.Environment()
+	c.flag = flag.NewFlagSet(string(c.config.ProtoReflect().Descriptor().FullName()), flag.ContinueOnError)
+	lpc.PopulateFlagSet(c.flag)
+	c.flag.Func("config-file", "Server configuration file (available formats: json, yaml, pb)", func(filename string) error {
+		b, err := os.ReadFile(filename)
+		if err != nil {
+			return fmt.Errorf("failed to read config file: %v", err)
+		}
+		orig := proto.Clone(c.config)
+		err = lpc.Unmarshal(filename, b)
+		if err != nil {
+			return fmt.Errorf("failed to parse config file: %v", err)
+		}
+		// NOTE: proto.Merge(orig, c.config) merges file values ON TOP of env var values,
+		// meaning file values override env vars. This matches the agent pattern per D-13.
+		// The stated precedence in PCLI-09 (env > file) would require the reverse merge
+		// direction, but we intentionally match the existing agent behavior here. Fixing
+		// the agent's merge direction is a separate concern outside this phase.
+		proto.Merge(orig, c.config)
+		c.config, _ = orig.(*protoconf_server_config.ServerConfig)
+		return nil
+	})
+	return c, nil
 }
 
 type ProtoconfMutationServer struct {
 	protoconf_pb.UnimplementedProtoconfMutationServiceServer
 	protoconf_pb.UnimplementedProtoconfMutationReportServiceServer
-	config             *cliConfig
+	config             *protoconf_server_config.ServerConfig
 	protoconfRoot      string
 	parser             *parser.Parser
 	reports            *sync.Map
@@ -267,7 +274,7 @@ func NewProtoconfMutationServer(protoconfRoot string, opts ...MutationServerOpti
 	parser.FilesResolver.RegisterFile(protoconfmutation.File_server_api_proto_v1_protoconf_mutation_proto)
 	parser.FilesResolver.RegisterFile(protoconf_pb.File_protoconf_v1_protoconf_proto)
 	parser.FilesResolver.RegisterFile(protoconfservice.File_agent_api_proto_v1_protoconf_service_proto)
-	s := &ProtoconfMutationServer{protoconfRoot: protoconfRoot, config: &cliConfig{}, parser: parser, reports: &sync.Map{}}
+	s := &ProtoconfMutationServer{protoconfRoot: protoconfRoot, config: &protoconf_server_config.ServerConfig{}, parser: parser, reports: &sync.Map{}}
 	for _, opt := range opts {
 		opt(s)
 	}
@@ -403,7 +410,7 @@ func (s *ProtoconfMutationServer) MutateConfig(ctx context.Context, in *protocon
 
 	if s.PreMutationScript != "" {
 		t := time.Now()
-		if err := s.runScript(s.PreMutationScript, id, s.config.authToken, in.GetScriptMetadata()); err != nil {
+		if err := s.runScript(s.PreMutationScript, id, s.config.AuthToken, in.GetScriptMetadata()); err != nil {
 			return nil, logError(errors.Join(ErrPreMutationScriptError, err))
 		}
 		s.StoreReport(id, func(cmr *protoconf_pb.ConfigMutationResponse) *protoconf_pb.ConfigMutationResponse {
@@ -454,7 +461,7 @@ func (s *ProtoconfMutationServer) MutateConfig(ctx context.Context, in *protocon
 
 	if s.PostMutationScript != "" {
 		t := time.Now()
-		if err := s.runScript(s.PostMutationScript, id, s.config.authToken, in.GetScriptMetadata()); err != nil {
+		if err := s.runScript(s.PostMutationScript, id, s.config.AuthToken, in.GetScriptMetadata()); err != nil {
 			return nil, logError(errors.Join(ErrPostMutationScriptError, err))
 		}
 		s.StoreReport(id, func(cmr *protoconf_pb.ConfigMutationResponse) *protoconf_pb.ConfigMutationResponse {
@@ -516,7 +523,7 @@ func (s *ProtoconfMutationServer) runScript(filename, uuid, authToken, scriptMet
 	cmd := exec.Command(filename)
 	cmd.Env = append(cmd.Env,
 		"PROTOCONF_MUTATION_UUID="+uuid,
-		"PROTOCONF_COMPILER_ADDR="+s.config.grpcAddress,
+		"PROTOCONF_COMPILER_ADDR="+s.config.GrpcAddress, // Legacy env var name kept for script backward compatibility
 		"PROTOCONF_AUTH_TOKEN="+authToken,
 		"PROTOCONF_SCRIPT_METADATA="+scriptMetadata,
 	)
