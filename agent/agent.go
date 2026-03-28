@@ -25,10 +25,12 @@ import (
 	"github.com/protoconf/protoconf/consts"
 	"github.com/protoconf/protoconf/observability"
 	protoconf_pb "github.com/protoconf/protoconf/pb/protoconf/v1"
+	"github.com/protoconf/protoconf/utils"
 	slogotel "github.com/remychantenay/slog-otel"
 	"github.com/stephenafamo/orchestra"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 )
 
 func defaultServers(config *protoconf_agent_config.AgentConfig) []string {
@@ -125,11 +127,33 @@ func RunAgent(ctx context.Context, config *protoconf_agent_config.AgentConfig) e
 	}
 	legacy := newLegacyProtoconfServer(agent)
 
-	rpcServer := grpc.NewServer(
+	serverOpts := []grpc.ServerOption{
 		grpc.StatsHandler(otelgrpc.NewServerHandler()),
 		grpc.StreamInterceptor(grpc_prometheus.StreamServerInterceptor),
 		grpc.UnaryInterceptor(grpc_prometheus.UnaryServerInterceptor),
-	)
+	}
+
+	if config.TlsConfig != nil && !config.Insecure {
+		tlsCfg, err := utils.BuildTLSConfig(utils.TLSFiles{
+			CertFile: config.TlsConfig.GetCertFile(),
+			CertText: config.TlsConfig.GetCertText(),
+			KeyFile:  config.TlsConfig.GetKeyFile(),
+			KeyText:  config.TlsConfig.GetKeyText(),
+			CAFile:   config.TlsConfig.GetCaFile(),
+			CAText:   config.TlsConfig.GetCaText(),
+		})
+		if err != nil {
+			return fmt.Errorf("agent tls config: %w", err)
+		}
+		if tlsCfg != nil {
+			serverOpts = append(serverOpts, grpc.Creds(credentials.NewTLS(tlsCfg)))
+			logger.Info("gRPC server TLS enabled")
+		}
+	} else {
+		slog.Warn("gRPC server running without TLS -- connections are not encrypted")
+	}
+
+	rpcServer := grpc.NewServer(serverOpts...)
 	protoconf_pb.RegisterProtoconfServiceServer(rpcServer, agent)
 	protoconfagent.RegisterProtoconfServiceServer(rpcServer, legacy)
 
