@@ -101,9 +101,10 @@ Plans:
   2. A mutation request with no token (when auth is configured) is rejected with an Unauthenticated error
   3. Pre/post mutation scripts receive auth credentials as environment variables
   4. A mutation request referencing a non-existent or non-executable script path is rejected with a clear error before execution begins
-**Plans**: 1 plan
+**Plans**: 2 plans
 Plans:
-- [ ] 04-01-PLAN.md — Remove dead init() from inserter and dead error check from filekv
+- [ ] 06-01-PLAN.md — Add bearer token auth interceptor with --auth-token flag and unit tests
+- [ ] 06-02-PLAN.md — Add script path validation, credential forwarding to scripts, and COMPILER_ADDR bug fix
 
 ### Phase 7: Proto-Defined CLI Configs
 **Goal**: Every component's configuration is expressed as a protobuf message
@@ -174,7 +175,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 3. Observability & Global State Cleanup | 2/2 | Complete   | 2026-03-27 |
 | 4. Dead Code Removal | 0/TBD | Not started | - |
 | 5. TLS Support | 2/2 | Complete   | 2026-03-28 |
-| 6. Token Auth & Script Security | 0/TBD | Not started | - |
+| 6. Token Auth & Script Security | 0/2 | Not started | - |
 | 7. Proto-Defined CLI Configs | 0/TBD | Not started | - |
 | 8. CLI Flag Generation & Config Loading | 0/TBD | Not started | - |
 | 9. Unit Test Coverage & Infrastructure | 0/TBD | Not started | - |
