@@ -89,7 +89,7 @@ Plans:
   4. Existing insecure-mode usage continues to work without any flag changes
 **Plans**: 2 plans
 Plans:
-- [ ] 05-01-PLAN.md — Create shared TLS helper (BuildTLSConfig) with unit tests
+- [x] 05-01-PLAN.md — Create shared TLS helper (BuildTLSConfig) with unit tests
 - [ ] 05-02-PLAN.md — Wire TLS into agent, mutation server, and mutate CLI with insecure warnings
 
 ### Phase 6: Token Auth & Script Security
@@ -173,7 +173,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 2. os.Exit Refactoring | 1/2 | In Progress|  |
 | 3. Observability & Global State Cleanup | 2/2 | Complete   | 2026-03-27 |
 | 4. Dead Code Removal | 0/TBD | Not started | - |
-| 5. TLS Support | 0/2 | Not started | - |
+| 5. TLS Support | 1/2 | In Progress|  |
 | 6. Token Auth & Script Security | 0/TBD | Not started | - |
 | 7. Proto-Defined CLI Configs | 0/TBD | Not started | - |
 | 8. CLI Flag Generation & Config Loading | 0/TBD | Not started | - |

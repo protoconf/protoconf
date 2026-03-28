@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Ready to plan
-stopped_at: Phase 5 context gathered
-last_updated: "2026-03-28T02:28:19.227Z"
+status: Ready to execute
+stopped_at: Completed 05-01-PLAN.md
+last_updated: "2026-03-28T15:22:28.169Z"
 progress:
   total_phases: 10
   completed_phases: 4
-  total_plans: 6
-  completed_plans: 6
+  total_plans: 8
+  completed_plans: 7
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-23)
 
 **Core value:** Every component must be testable, consistent, and free of runtime surprises
-**Current focus:** Phase 04 — dead-code-removal
+**Current focus:** Phase 05 — tls-support
 
 ## Current Position
 
-Phase: 5
-Plan: Not started
+Phase: 05 (tls-support) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -52,6 +52,7 @@ Plan: Not started
 | Phase 03 P01 | 420 | 2 tasks | 3 files |
 | Phase 03 P02 | 5 | 2 tasks | 2 files |
 | Phase 04 P01 | 3 | 2 tasks | 2 files |
+| Phase 05 P01 | 77 | 1 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -74,6 +75,9 @@ Recent decisions affecting current work:
 - [Phase 03]: Init always returns non-nil shutdown function for safe deferred calls
 - [Phase 03]: sync.Once guards all six resolve.Allow* assignments so concurrent NewCompiler calls are race-free
 - [Phase 03]: grpc.ClientConn localized to Run() — no package-level mutable connection state needed
+- [Phase 05]: TLSFiles is a plain struct (not tied to proto types) for reuse across agent, server, and mutate CLI
+- [Phase 05]: Use tls.X509KeyPair with bytes (not tls.LoadX509KeyPair) to support both file and text PEM inputs
+- [Phase 05]: CAFile/CAText sets both ClientCAs pool and RequireAndVerifyClientCert for mutual TLS
 
 ### Pending Todos
 
@@ -86,6 +90,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-28T02:28:19.220Z
-Stopped at: Phase 5 context gathered
-Resume file: .planning/phases/05-tls-support/05-CONTEXT.md
+Last session: 2026-03-28T15:22:28.167Z
+Stopped at: Completed 05-01-PLAN.md
+Resume file: None
