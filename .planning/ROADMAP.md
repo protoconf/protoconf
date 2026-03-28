@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 2: os.Exit Refactoring** - Remove os.Exit from library code and propagate errors to CLI entry points
 - [x] **Phase 3: Observability & Global State Cleanup** - Extract shared OTel bootstrap and remove global mutable state (completed 2026-03-27)
 - [ ] **Phase 4: Dead Code Removal** - Remove unnecessary init functions and dead error checks
-- [ ] **Phase 5: TLS Support** - Add TLS to gRPC servers and clients with insecure-mode warning
+- [x] **Phase 5: TLS Support** - Add TLS to gRPC servers and clients with insecure-mode warning (completed 2026-03-28)
 - [ ] **Phase 6: Token Auth & Script Security** - Add token-based mutation auth with credential forwarding and script validation
 - [ ] **Phase 7: Proto-Defined CLI Configs** - Define protobuf messages for all component configurations
 - [ ] **Phase 8: CLI Flag Generation & Config Loading** - Generate CLI flags from protos and add env/file config loading
@@ -90,7 +90,7 @@ Plans:
 **Plans**: 2 plans
 Plans:
 - [x] 05-01-PLAN.md — Create shared TLS helper (BuildTLSConfig) with unit tests
-- [ ] 05-02-PLAN.md — Wire TLS into agent, mutation server, and mutate CLI with insecure warnings
+- [x] 05-02-PLAN.md — Wire TLS into agent, mutation server, and mutate CLI with insecure warnings
 
 ### Phase 6: Token Auth & Script Security
 **Goal**: Mutation server enforces token-based auth; credentials reach pre/post scripts; script paths are validated
@@ -173,7 +173,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 2. os.Exit Refactoring | 1/2 | In Progress|  |
 | 3. Observability & Global State Cleanup | 2/2 | Complete   | 2026-03-27 |
 | 4. Dead Code Removal | 0/TBD | Not started | - |
-| 5. TLS Support | 1/2 | In Progress|  |
+| 5. TLS Support | 2/2 | Complete   | 2026-03-28 |
 | 6. Token Auth & Script Security | 0/TBD | Not started | - |
 | 7. Proto-Defined CLI Configs | 0/TBD | Not started | - |
 | 8. CLI Flag Generation & Config Loading | 0/TBD | Not started | - |

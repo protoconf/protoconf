@@ -60,8 +60,8 @@ Requirements for this milestone. Each maps to roadmap phases.
 ### Security — TLS
 
 - [x] **SECR-01**: gRPC servers accept --tls-cert and --tls-key flags to enable TLS
-- [ ] **SECR-02**: gRPC clients support TLS connections when server has TLS enabled
-- [ ] **SECR-03**: Insecure mode remains the default but logs a warning
+- [x] **SECR-02**: gRPC clients support TLS connections when server has TLS enabled
+- [x] **SECR-03**: Insecure mode remains the default but logs a warning
 
 ### Security — Auth
 
@@ -143,8 +143,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | REFC-09 | Phase 4 | Complete |
 | REFC-10 | Phase 4 | Complete |
 | SECR-01 | Phase 5 | Complete |
-| SECR-02 | Phase 5 | Pending |
-| SECR-03 | Phase 5 | Pending |
+| SECR-02 | Phase 5 | Complete |
+| SECR-03 | Phase 5 | Complete |
 | SECR-04 | Phase 6 | Pending |
 | SECR-05 | Phase 6 | Pending |
 | SECR-06 | Phase 6 | Pending |
