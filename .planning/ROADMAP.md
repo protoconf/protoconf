@@ -18,7 +18,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 4: Dead Code Removal** - Remove unnecessary init functions and dead error checks
 - [x] **Phase 5: TLS Support** - Add TLS to gRPC servers and clients with insecure-mode warning (completed 2026-03-28)
 - [ ] **Phase 6: Token Auth & Script Security** - Add token-based mutation auth with credential forwarding and script validation
-- [ ] **Phase 7: Proto-Defined CLI Configs** - Define protobuf messages for all component configurations
+- [x] **Phase 7: Proto-Defined CLI Configs** - Define protobuf messages for all component configurations (completed 2026-03-28)
 - [ ] **Phase 8: CLI Flag Generation & Config Loading** - Generate CLI flags from protos and add env/file config loading
 - [ ] **Phase 9: Unit Test Coverage & Infrastructure** - Add test files for untested packages and shared test helpers
 - [ ] **Phase 10: Placeholder Fixes & Integration Tests** - Replace placeholder assertions and add e2e integration tests
@@ -118,7 +118,7 @@ Plans:
   5. All proto definitions pass protoc compilation without errors
 **Plans**: 1 plan
 Plans:
-- [ ] 07-01-PLAN.md — Define proto config messages for server, compiler, inserter, and mutate CLI
+- [x] 07-01-PLAN.md — Define proto config messages for server, compiler, inserter, and mutate CLI
 
 ### Phase 8: CLI Flag Generation & Config Loading
 **Goal**: CLI flags are generated from proto definitions; all components accept env vars and config files
@@ -176,7 +176,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 4. Dead Code Removal | 0/TBD | Not started | - |
 | 5. TLS Support | 2/2 | Complete   | 2026-03-28 |
 | 6. Token Auth & Script Security | 1/2 | In Progress|  |
-| 7. Proto-Defined CLI Configs | 0/1 | Not started | - |
+| 7. Proto-Defined CLI Configs | 1/1 | Complete   | 2026-03-28 |
 | 8. CLI Flag Generation & Config Loading | 0/TBD | Not started | - |
 | 9. Unit Test Coverage & Infrastructure | 0/TBD | Not started | - |
 | 10. Placeholder Fixes & Integration Tests | 0/TBD | Not started | - |

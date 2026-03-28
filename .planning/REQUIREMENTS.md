@@ -66,12 +66,12 @@ Requirements for this milestone. Each maps to roadmap phases.
 ### Security — Auth
 
 - [x] **SECR-04**: Mutation server supports token-based authentication (JWT or API key) via gRPC metadata
-- [ ] **SECR-05**: Auth credentials are forwarded to pre/post mutation scripts as environment variables
+- [x] **SECR-05**: Auth credentials are forwarded to pre/post mutation scripts as environment variables
 - [x] **SECR-06**: Unauthenticated requests are rejected when auth is configured
 
 ### Security — Scripts
 
-- [ ] **SECR-07**: Pre/post mutation script paths are validated (exist, executable) before execution
+- [x] **SECR-07**: Pre/post mutation script paths are validated (exist, executable) before execution
 
 ### Deprecated APIs
 
@@ -80,10 +80,10 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Proto CLI — Config Definitions
 
-- [ ] **PCLI-01**: Proto definitions exist for server configuration (address, TLS, auth, scripts)
-- [ ] **PCLI-02**: Proto definitions exist for compiler configuration (proto paths, output settings)
-- [ ] **PCLI-03**: Proto definitions exist for inserter configuration (KV store, prefix, rollout)
-- [ ] **PCLI-04**: Proto definitions exist for mutate CLI configuration (target server, field path, value)
+- [x] **PCLI-01**: Proto definitions exist for server configuration (address, TLS, auth, scripts)
+- [x] **PCLI-02**: Proto definitions exist for compiler configuration (proto paths, output settings)
+- [x] **PCLI-03**: Proto definitions exist for inserter configuration (KV store, prefix, rollout)
+- [x] **PCLI-04**: Proto definitions exist for mutate CLI configuration (target server, field path, value)
 
 ### Proto CLI — Generation
 
@@ -146,13 +146,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SECR-02 | Phase 5 | Complete |
 | SECR-03 | Phase 5 | Complete |
 | SECR-04 | Phase 6 | Complete |
-| SECR-05 | Phase 6 | Pending |
+| SECR-05 | Phase 6 | Complete |
 | SECR-06 | Phase 6 | Complete |
-| SECR-07 | Phase 6 | Pending |
-| PCLI-01 | Phase 7 | Pending |
-| PCLI-02 | Phase 7 | Pending |
-| PCLI-03 | Phase 7 | Pending |
-| PCLI-04 | Phase 7 | Pending |
+| SECR-07 | Phase 6 | Complete |
+| PCLI-01 | Phase 7 | Complete |
+| PCLI-02 | Phase 7 | Complete |
+| PCLI-03 | Phase 7 | Complete |
+| PCLI-04 | Phase 7 | Complete |
 | PCLI-05 | Phase 8 | Pending |
 | PCLI-06 | Phase 8 | Pending |
 | PCLI-07 | Phase 8 | Pending |
