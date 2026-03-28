@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package protoconf.inserter.config.v1;
+
+option go_package = "github.com/protoconf/protoconf/inserter/config/v1;protoconf_inserter_config";
+
+// InserterConfig defines the configuration for the protoconf inserter.
+message InserterConfig {
+    // Key-value store type.
+    StoreType store = 1;
+
+    // Key-value store addresses (supports multiple addresses).
+    repeated string store_address = 2 [json_name = "store-address"];
+
+    // Key-value store key prefix.
+    string prefix = 3;
+
+    // Kubernetes namespace for ConfigMaps insertion.
+    string namespace = 4;
+
+    // Delete a config from the key-value store instead of inserting.
+    bool delete = 5 [json_name = "d"];
+
+    // StoreType enumerates supported key-value store backends.
+    enum StoreType {
+        consul = 0;
+        etcd = 1;
+        zookeeper = 2;
+        configmaps = 3;
+    }
+}

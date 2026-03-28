@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package protoconf.mutate.config.v1;
+
+option go_package = "github.com/protoconf/protoconf/mutate/config/v1;protoconf_mutate_config";
+
+// MutateConfig defines the configuration for the protoconf mutate CLI.
+message MutateConfig {
+    // The root of protoconf src.
+    string protoconf_root = 1 [json_name = "root"];
+
+    // Path to the proto file.
+    string proto_file = 2 [json_name = "proto"];
+
+    // Name of the message inside the proto file.
+    string proto_msg = 3 [json_name = "msg"];
+
+    // Mutation server address.
+    string server_address = 4 [json_name = "addr"];
+
+    // Path to put the config in.
+    string config_path = 5 [json_name = "path"];
+
+    // Metadata string to pass to the pre/post install script.
+    string metadata_str = 6 [json_name = "metadata"];
+
+    // Fields to set inside the message (key=value pairs).
+    repeated string fields = 7 [json_name = "field"];
+
+    // TLS client certificate file.
+    string tls_cert = 8 [json_name = "tls-cert"];
+
+    // TLS client key file.
+    string tls_key = 9 [json_name = "tls-key"];
+
+    // TLS CA certificate file.
+    string tls_ca = 10 [json_name = "tls-ca"];
+
+    // Use insecure connection (no TLS).
+    bool insecure_tls = 11 [json_name = "insecure"];
+}

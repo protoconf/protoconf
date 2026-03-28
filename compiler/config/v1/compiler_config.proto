@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package protoconf.compiler.config.v1;
+
+option go_package = "github.com/protoconf/protoconf/compiler/config/v1;protoconf_compiler_config";
+
+// CompilerConfig defines the configuration for the protoconf compiler.
+message CompilerConfig {
+    // Run in interactive REPL mode.
+    bool repl = 1;
+
+    // Enable verbose logging.
+    bool verbose_logging = 2 [json_name = "V"];
+
+    // Process template files before compiling.
+    bool process_templates = 3 [json_name = "process-templates"];
+
+    // Write CPU profiling info to this file.
+    string cpuprofile = 4;
+
+    // Write memory profiling info to this file.
+    string memprofile = 5;
+
+    // If set, issue a gRPC request to the compiler service at the given address
+    // instead of running the compiler locally.
+    string compiler_address = 6 [json_name = "compiler-address"];
+}

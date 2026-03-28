@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package protoconf.server.config.v1;
+
+option go_package = "github.com/protoconf/protoconf/server/config/v1;protoconf_server_config";
+
+// ServerConfig defines the configuration for the protoconf mutation server.
+message ServerConfig {
+    // gRPC address to bind to. For example: "0.0.0.0:4301"
+    string grpc_address = 1 [json_name = "grpc-address"];
+
+    // Pre-mutation script to run before applying a mutation.
+    string pre_mutation_script = 2 [json_name = "pre"];
+
+    // Post-mutation script to run after applying a mutation.
+    string post_mutation_script = 3 [json_name = "post"];
+
+    // TLS certificate file path.
+    string tls_cert = 4 [json_name = "tls-cert"];
+
+    // TLS key file path.
+    string tls_key = 5 [json_name = "tls-key"];
+
+    // TLS CA certificate file path (enables client cert verification).
+    string tls_ca = 6 [json_name = "tls-ca"];
+
+    // Bearer token for mutation authentication (if empty, auth is disabled).
+    string auth_token = 7 [json_name = "auth-token"];
+}
