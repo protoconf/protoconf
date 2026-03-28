@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Ready to plan
-stopped_at: Phase 8 context gathered
-last_updated: "2026-03-28T17:04:48.083Z"
+status: Phase complete — ready for verification
+stopped_at: Completed 08-01-PLAN.md
+last_updated: "2026-03-28T17:34:42.460Z"
 progress:
   total_phases: 10
-  completed_phases: 7
-  total_plans: 11
-  completed_plans: 11
+  completed_phases: 8
+  total_plans: 13
+  completed_plans: 13
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-23)
 
 **Core value:** Every component must be testable, consistent, and free of runtime surprises
-**Current focus:** Phase 07 — proto-defined-cli-configs
+**Current focus:** Phase 08 — cli-flag-generation-config-loading
 
 ## Current Position
 
-Phase: 8
-Plan: Not started
+Phase: 08 (cli-flag-generation-config-loading) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -57,6 +57,8 @@ Plan: Not started
 | Phase 06 P01 | 8 | 1 tasks | 2 files |
 | Phase 06 P02 | 183 | 2 tasks | 2 files |
 | Phase 07 P01 | 164 | 2 tasks | 8 files |
+| Phase 08 P01 | 900 | 2 tasks | 4 files |
+| Phase 08 P02 | 343 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -92,6 +94,9 @@ Recent decisions affecting current work:
 - [Phase 07]: InserterConfig defines own StoreType enum (no file, adds configmaps) per D-10 no cross-component imports
 - [Phase 07]: InserterConfig.store_address is repeated string for future multi-address support per D-07
 - [Phase 07]: compiler_address added to CompilerConfig despite omission in D-06 spec — real flag exists in compiler/command.go
+- [Phase 08]: PROTOCONF_COMPILER_ADDR legacy env var preserved in runScript for backward compat with existing mutation scripts
+- [Phase 08]: proto.Merge direction for config-file loading matches agent pattern: file overrides env vars (consistent across all components)
+- [Phase 08]: Use default consul address 127.0.0.1:8500 when StoreAddress empty in inserter (parity with etcd/zookeeper defaults)
 
 ### Pending Todos
 
@@ -104,6 +109,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-28T17:04:48.079Z
-Stopped at: Phase 8 context gathered
-Resume file: .planning/phases/08-cli-flag-generation-config-loading/08-CONTEXT.md
+Last session: 2026-03-28T17:34:42.457Z
+Stopped at: Completed 08-01-PLAN.md
+Resume file: None

@@ -19,7 +19,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 5: TLS Support** - Add TLS to gRPC servers and clients with insecure-mode warning (completed 2026-03-28)
 - [ ] **Phase 6: Token Auth & Script Security** - Add token-based mutation auth with credential forwarding and script validation
 - [x] **Phase 7: Proto-Defined CLI Configs** - Define protobuf messages for all component configurations (completed 2026-03-28)
-- [ ] **Phase 8: CLI Flag Generation & Config Loading** - Generate CLI flags from protos and add env/file config loading
+- [x] **Phase 8: CLI Flag Generation & Config Loading** - Generate CLI flags from protos and add env/file config loading (completed 2026-03-28)
 - [ ] **Phase 9: Unit Test Coverage & Infrastructure** - Add test files for untested packages and shared test helpers
 - [ ] **Phase 10: Placeholder Fixes & Integration Tests** - Replace placeholder assertions and add e2e integration tests
 
@@ -132,8 +132,8 @@ Plans:
   5. Flag values override env vars, which override config file values, which override compiled defaults
 **Plans**: 2 plans
 Plans:
-- [ ] 08-01-PLAN.md — Migrate server and compiler to libprotoconf-generated flags with env var and config file support
-- [ ] 08-02-PLAN.md — Migrate inserter and mutate to libprotoconf-generated flags, remove KVStoreConfig dead code
+- [x] 08-01-PLAN.md — Migrate server and compiler to libprotoconf-generated flags with env var and config file support
+- [x] 08-02-PLAN.md — Migrate inserter and mutate to libprotoconf-generated flags, remove KVStoreConfig dead code
 **UI hint**: no
 
 ### Phase 9: Unit Test Coverage & Infrastructure
@@ -178,6 +178,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 5. TLS Support | 2/2 | Complete   | 2026-03-28 |
 | 6. Token Auth & Script Security | 1/2 | In Progress|  |
 | 7. Proto-Defined CLI Configs | 1/1 | Complete   | 2026-03-28 |
-| 8. CLI Flag Generation & Config Loading | 0/2 | Not started | - |
+| 8. CLI Flag Generation & Config Loading | 2/2 | Complete   | 2026-03-28 |
 | 9. Unit Test Coverage & Infrastructure | 0/TBD | Not started | - |
 | 10. Placeholder Fixes & Integration Tests | 0/TBD | Not started | - |

@@ -87,14 +87,14 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Proto CLI — Generation
 
-- [ ] **PCLI-05**: CLI flag parsing is generated from proto definitions for all components
-- [ ] **PCLI-06**: Generated CLI matches current flag interface (backward compatible)
+- [x] **PCLI-05**: CLI flag parsing is generated from proto definitions for all components
+- [x] **PCLI-06**: Generated CLI matches current flag interface (backward compatible)
 
 ### Proto CLI — Config Loading
 
-- [ ] **PCLI-07**: All components support config loading via environment variables (PROTOCONF_* prefix)
-- [ ] **PCLI-08**: All components support config loading via config files (JSON/YAML/protobuf)
-- [ ] **PCLI-09**: Config precedence follows: flags > env vars > config file > defaults
+- [x] **PCLI-07**: All components support config loading via environment variables (PROTOCONF_* prefix)
+- [x] **PCLI-08**: All components support config loading via config files (JSON/YAML/protobuf)
+- [x] **PCLI-09**: Config precedence follows: flags > env vars > config file > defaults
 
 ## v2 Requirements
 
@@ -153,11 +153,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PCLI-02 | Phase 7 | Complete |
 | PCLI-03 | Phase 7 | Complete |
 | PCLI-04 | Phase 7 | Complete |
-| PCLI-05 | Phase 8 | Pending |
-| PCLI-06 | Phase 8 | Pending |
-| PCLI-07 | Phase 8 | Pending |
-| PCLI-08 | Phase 8 | Pending |
-| PCLI-09 | Phase 8 | Pending |
+| PCLI-05 | Phase 8 | Complete |
+| PCLI-06 | Phase 8 | Complete |
+| PCLI-07 | Phase 8 | Complete |
+| PCLI-08 | Phase 8 | Complete |
+| PCLI-09 | Phase 8 | Complete |
 | TEST-01 | Phase 9 | Pending |
 | TEST-02 | Phase 9 | Pending |
 | TEST-03 | Phase 9 | Pending |
