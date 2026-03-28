@@ -403,7 +403,7 @@ func (s *ProtoconfMutationServer) MutateConfig(ctx context.Context, in *protocon
 
 	if s.PreMutationScript != "" {
 		t := time.Now()
-		if err := s.runScript(s.PreMutationScript, id); err != nil {
+		if err := s.runScript(s.PreMutationScript, id, s.config.authToken, in.GetScriptMetadata()); err != nil {
 			return nil, logError(errors.Join(ErrPreMutationScriptError, err))
 		}
 		s.StoreReport(id, func(cmr *protoconf_pb.ConfigMutationResponse) *protoconf_pb.ConfigMutationResponse {
@@ -454,7 +454,7 @@ func (s *ProtoconfMutationServer) MutateConfig(ctx context.Context, in *protocon
 
 	if s.PostMutationScript != "" {
 		t := time.Now()
-		if err := s.runScript(s.PostMutationScript, id); err != nil {
+		if err := s.runScript(s.PostMutationScript, id, s.config.authToken, in.GetScriptMetadata()); err != nil {
 			return nil, logError(errors.Join(ErrPostMutationScriptError, err))
 		}
 		s.StoreReport(id, func(cmr *protoconf_pb.ConfigMutationResponse) *protoconf_pb.ConfigMutationResponse {
@@ -508,7 +508,7 @@ func validateScriptPath(path string) error {
 	return nil
 }
 
-func (s *ProtoconfMutationServer) runScript(filename string, uuid string) error {
+func (s *ProtoconfMutationServer) runScript(filename, uuid, authToken, scriptMetadata string) error {
 	// Defense-in-depth: re-check file existence before exec (file may have been removed after startup validation).
 	if _, err := os.Stat(filename); err != nil {
 		return fmt.Errorf("script no longer exists: %w", err)
@@ -516,7 +516,9 @@ func (s *ProtoconfMutationServer) runScript(filename string, uuid string) error 
 	cmd := exec.Command(filename)
 	cmd.Env = append(cmd.Env,
 		"PROTOCONF_MUTATION_UUID="+uuid,
-		"PROTOCONF_COMPILER_ADDR"+s.config.grpcAddress,
+		"PROTOCONF_COMPILER_ADDR="+s.config.grpcAddress,
+		"PROTOCONF_AUTH_TOKEN="+authToken,
+		"PROTOCONF_SCRIPT_METADATA="+scriptMetadata,
 	)
 	_, err := cmd.Output()
 	if err != nil {

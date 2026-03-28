@@ -22,132 +22,111 @@ import (
 	"google.golang.org/protobuf/types/dynamicpb"
 )
 
+// makeTempScript creates a temp executable shell script with the given body (e.g. "exit 0" or "exit 1").
+func makeTempScript(t *testing.T, body string) string {
+	t.Helper()
+	f, err := os.CreateTemp(t.TempDir(), "test-script-*.sh")
+	require.NoError(t, err)
+	_, err = f.WriteString("#!/bin/sh\n" + body + "\n")
+	require.NoError(t, err)
+	require.NoError(t, f.Close())
+	require.NoError(t, os.Chmod(f.Name(), 0755))
+	return f.Name()
+}
+
 func Test_server_MutateConfig(t *testing.T) {
-	type fields struct {
-		config        *cliConfig
-		protoconfRoot string
-	}
-	type args struct {
-		ctx context.Context
-		in  *protoconf_pb.ConfigMutationRequest
-	}
-	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		want    *protoconf_pb.ConfigMutationResponse
-		wantErr error
-	}{
-		{
-			name: "test no workspace",
-			fields: fields{
-				config:        &cliConfig{},
-				protoconfRoot: os.TempDir(),
-			},
-			args: args{
-				ctx: context.Background(),
-				in: &protoconf_pb.ConfigMutationRequest{
-					Path:  "test",
-					Value: &protoconf_pb.ProtoconfValue{},
-				},
-			},
-			want:    &protoconf_pb.ConfigMutationResponse{},
-			wantErr: nil,
-		},
-		{
-			name: "test",
-			fields: fields{
-				config:        &cliConfig{},
-				protoconfRoot: testdata.SmallTestDir(),
-			},
-			args: args{
-				ctx: context.Background(),
-				in: &protoconf_pb.ConfigMutationRequest{
-					Path: "test",
-					Value: &protoconf_pb.ProtoconfValue{
-						ProtoFile: "test.proto",
-					},
-				},
-			},
-			want:    &protoconf_pb.ConfigMutationResponse{},
-			wantErr: nil,
-		},
-		{
-			name: "run scripts",
-			fields: fields{
-				config: &cliConfig{
-					preMutationScript:  "true",
-					postMutationScript: "true",
-				},
-				protoconfRoot: testdata.SmallTestDir(),
-			},
-			args: args{
-				ctx: context.Background(),
-				in: &protoconf_pb.ConfigMutationRequest{
-					Path: "test",
-					Value: &protoconf_pb.ProtoconfValue{
-						ProtoFile: "test.proto",
-					},
-				},
-			},
-			want:    &protoconf_pb.ConfigMutationResponse{},
-			wantErr: nil,
-		},
-		{
-			name: "run bad pre scripts",
-			fields: fields{
-				config: &cliConfig{
-					preMutationScript: "false",
-				},
-				protoconfRoot: testdata.SmallTestDir(),
-			},
-			args: args{
-				ctx: context.Background(),
-				in: &protoconf_pb.ConfigMutationRequest{
-					Path: "test",
-					Value: &protoconf_pb.ProtoconfValue{
-						ProtoFile: "test.proto",
-					},
-				},
-			},
-			wantErr: ErrPreMutationScriptError,
-		},
-		{
-			name: "run bad post scripts",
-			fields: fields{
-				config: &cliConfig{
-					postMutationScript: "false",
-				},
-				protoconfRoot: testdata.SmallTestDir(),
-			},
-			args: args{
-				ctx: context.Background(),
-				in: &protoconf_pb.ConfigMutationRequest{
-					Path: "test",
-					Value: &protoconf_pb.ProtoconfValue{
-						ProtoFile: "test.proto",
-					},
-				},
-			},
-			wantErr: ErrPostMutationScriptError,
-		},
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			s, err := NewProtoconfMutationServer(tt.fields.protoconfRoot)
-			require.NoError(t, err)
-			s.config = tt.fields.config
-			s.PreMutationScript = tt.fields.config.preMutationScript
-			s.PostMutationScript = tt.fields.config.postMutationScript
-			// TODO(smintz): assert the response
-			_, err = s.MutateConfig(tt.args.ctx, tt.args.in)
-			if !errors.Is(err, tt.wantErr) {
-				t.Errorf("server.MutateConfig() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
+	t.Run("test no workspace", func(t *testing.T) {
+		s, err := NewProtoconfMutationServer(os.TempDir())
+		require.NoError(t, err)
+		s.config = &cliConfig{}
+		_, err = s.MutateConfig(context.Background(), &protoconf_pb.ConfigMutationRequest{
+			Path:  "test",
+			Value: &protoconf_pb.ProtoconfValue{},
 		})
-	}
+		require.NoError(t, err)
+	})
+
+	t.Run("test", func(t *testing.T) {
+		s, err := NewProtoconfMutationServer(testdata.SmallTestDir())
+		require.NoError(t, err)
+		s.config = &cliConfig{}
+		_, err = s.MutateConfig(context.Background(), &protoconf_pb.ConfigMutationRequest{
+			Path: "test",
+			Value: &protoconf_pb.ProtoconfValue{
+				ProtoFile: "test.proto",
+			},
+		})
+		require.NoError(t, err)
+	})
+
+	t.Run("run scripts", func(t *testing.T) {
+		preScript := makeTempScript(t, "exit 0")
+		postScript := makeTempScript(t, "exit 0")
+		s, err := NewProtoconfMutationServer(testdata.SmallTestDir())
+		require.NoError(t, err)
+		s.config = &cliConfig{
+			preMutationScript:  preScript,
+			postMutationScript: postScript,
+		}
+		s.PreMutationScript = preScript
+		s.PostMutationScript = postScript
+		_, err = s.MutateConfig(context.Background(), &protoconf_pb.ConfigMutationRequest{
+			Path: "test",
+			Value: &protoconf_pb.ProtoconfValue{
+				ProtoFile: "test.proto",
+			},
+		})
+		require.NoError(t, err)
+	})
+
+	t.Run("run bad pre scripts", func(t *testing.T) {
+		preScript := makeTempScript(t, "exit 1")
+		s, err := NewProtoconfMutationServer(testdata.SmallTestDir())
+		require.NoError(t, err)
+		s.config = &cliConfig{preMutationScript: preScript}
+		s.PreMutationScript = preScript
+		_, err = s.MutateConfig(context.Background(), &protoconf_pb.ConfigMutationRequest{
+			Path: "test",
+			Value: &protoconf_pb.ProtoconfValue{
+				ProtoFile: "test.proto",
+			},
+		})
+		require.True(t, errors.Is(err, ErrPreMutationScriptError), "expected ErrPreMutationScriptError, got %v", err)
+	})
+
+	t.Run("run bad post scripts", func(t *testing.T) {
+		postScript := makeTempScript(t, "exit 1")
+		s, err := NewProtoconfMutationServer(testdata.SmallTestDir())
+		require.NoError(t, err)
+		s.config = &cliConfig{postMutationScript: postScript}
+		s.PostMutationScript = postScript
+		_, err = s.MutateConfig(context.Background(), &protoconf_pb.ConfigMutationRequest{
+			Path: "test",
+			Value: &protoconf_pb.ProtoconfValue{
+				ProtoFile: "test.proto",
+			},
+		})
+		require.True(t, errors.Is(err, ErrPostMutationScriptError), "expected ErrPostMutationScriptError, got %v", err)
+	})
+
+	t.Run("scripts receive auth credentials", func(t *testing.T) {
+		preScript := makeTempScript(t, "exit 0")
+		s, err := NewProtoconfMutationServer(testdata.SmallTestDir())
+		require.NoError(t, err)
+		s.config = &cliConfig{
+			preMutationScript: preScript,
+			authToken:         "test-token-123",
+		}
+		s.PreMutationScript = preScript
+		_, err = s.MutateConfig(context.Background(), &protoconf_pb.ConfigMutationRequest{
+			Path:           "test",
+			ScriptMetadata: "meta-data-value",
+			Value: &protoconf_pb.ProtoconfValue{
+				ProtoFile: "test.proto",
+			},
+		})
+		require.NoError(t, err)
+	})
 }
 func TestProtoconfMutationServer_GenReflectionUI(t *testing.T) {
 	protoconfRoot := testdata.SmallTestDir()
