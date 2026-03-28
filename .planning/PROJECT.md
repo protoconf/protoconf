@@ -31,9 +31,9 @@ Every component must be testable, consistent, and free of runtime surprises — 
 - [x] Migrate all deprecated gRPC APIs (WithInsecure, v1alpha reflection) — Validated in Phase 1: Deprecated API Migrations
 - [ ] Migrate from jhump/protoreflect/dynamic to dynamicpb
 - [x] Add TLS support for gRPC connections — Validated in Phase 5: TLS Support
-- [ ] Token-based auth with credential forwarding to pre/post scripts
+- [x] Token-based auth with credential forwarding to pre/post scripts — Validated in Phase 6: Token Auth & Script Security
 - [ ] Proto-defined CLI configuration (research + implement)
-- [ ] Fix known bugs (missing `=` in env var, dummykv.Exists always true)
+- [ ] Fix known bugs (dummykv.Exists always true) — PROTOCONF_COMPILER_ADDR `=` bug fixed in Phase 6
 - [x] Remove dead code and unnecessary init functions — Validated in Phase 4: Dead Code Removal
 - [x] Fix global mutable state issues (Starlark resolver settings, mutate package) — Validated in Phase 3: Observability & Global State Cleanup
 
