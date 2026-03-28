@@ -293,6 +293,64 @@ func Test_bearerTokenInterceptor(t *testing.T) {
 	}
 }
 
+func Test_validateScriptPath(t *testing.T) {
+	t.Run("empty path returns nil", func(t *testing.T) {
+		err := validateScriptPath("")
+		require.NoError(t, err)
+	})
+
+	t.Run("nonexistent path returns error containing does not exist", func(t *testing.T) {
+		err := validateScriptPath("/nonexistent/path/that/should/not/exist")
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "does not exist")
+	})
+
+	t.Run("non-executable file returns error containing not executable", func(t *testing.T) {
+		f, err := os.CreateTemp("", "test-script-*.sh")
+		require.NoError(t, err)
+		defer os.Remove(f.Name())
+		f.Close()
+		require.NoError(t, os.Chmod(f.Name(), 0644))
+
+		err = validateScriptPath(f.Name())
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "not executable")
+	})
+
+	t.Run("path with .. returns error containing ..", func(t *testing.T) {
+		err := validateScriptPath("../etc/passwd")
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "..")
+	})
+
+	t.Run("path with embedded .. returns error containing ..", func(t *testing.T) {
+		err := validateScriptPath("/usr/local/../bin/something")
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "..")
+	})
+
+	t.Run("valid executable temp file returns nil", func(t *testing.T) {
+		f, err := os.CreateTemp("", "test-script-*.sh")
+		require.NoError(t, err)
+		defer os.Remove(f.Name())
+		f.Close()
+		require.NoError(t, os.Chmod(f.Name(), 0755))
+
+		err = validateScriptPath(f.Name())
+		require.NoError(t, err)
+	})
+
+	t.Run("directory path returns error containing directory", func(t *testing.T) {
+		dir, err := os.MkdirTemp("", "test-script-dir-*")
+		require.NoError(t, err)
+		defer os.RemoveAll(dir)
+
+		err = validateScriptPath(dir)
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "directory")
+	})
+}
+
 func Test_cliCommand_Synopsis(t *testing.T) {
 	command := &cliCommand{}
 	got := command.Synopsis()
