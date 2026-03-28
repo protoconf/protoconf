@@ -3,7 +3,6 @@ package server
 import (
 	"context"
 	"errors"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"testing"
@@ -11,6 +10,7 @@ import (
 
 	"github.com/protoconf/protoconf/compiler/lib"
 	protoconf_pb "github.com/protoconf/protoconf/pb/protoconf/v1"
+	protoconf_server_config "github.com/protoconf/protoconf/server/config/v1"
 	"github.com/protoconf/protoconf/utils/testdata"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -38,7 +38,7 @@ func Test_server_MutateConfig(t *testing.T) {
 	t.Run("test no workspace", func(t *testing.T) {
 		s, err := NewProtoconfMutationServer(os.TempDir())
 		require.NoError(t, err)
-		s.config = &cliConfig{}
+		s.config = &protoconf_server_config.ServerConfig{}
 		_, err = s.MutateConfig(context.Background(), &protoconf_pb.ConfigMutationRequest{
 			Path:  "test",
 			Value: &protoconf_pb.ProtoconfValue{},
@@ -49,7 +49,7 @@ func Test_server_MutateConfig(t *testing.T) {
 	t.Run("test", func(t *testing.T) {
 		s, err := NewProtoconfMutationServer(testdata.SmallTestDir())
 		require.NoError(t, err)
-		s.config = &cliConfig{}
+		s.config = &protoconf_server_config.ServerConfig{}
 		_, err = s.MutateConfig(context.Background(), &protoconf_pb.ConfigMutationRequest{
 			Path: "test",
 			Value: &protoconf_pb.ProtoconfValue{
@@ -64,9 +64,9 @@ func Test_server_MutateConfig(t *testing.T) {
 		postScript := makeTempScript(t, "exit 0")
 		s, err := NewProtoconfMutationServer(testdata.SmallTestDir())
 		require.NoError(t, err)
-		s.config = &cliConfig{
-			preMutationScript:  preScript,
-			postMutationScript: postScript,
+		s.config = &protoconf_server_config.ServerConfig{
+			PreMutationScript:  preScript,
+			PostMutationScript: postScript,
 		}
 		s.PreMutationScript = preScript
 		s.PostMutationScript = postScript
@@ -83,7 +83,7 @@ func Test_server_MutateConfig(t *testing.T) {
 		preScript := makeTempScript(t, "exit 1")
 		s, err := NewProtoconfMutationServer(testdata.SmallTestDir())
 		require.NoError(t, err)
-		s.config = &cliConfig{preMutationScript: preScript}
+		s.config = &protoconf_server_config.ServerConfig{PreMutationScript: preScript}
 		s.PreMutationScript = preScript
 		_, err = s.MutateConfig(context.Background(), &protoconf_pb.ConfigMutationRequest{
 			Path: "test",
@@ -98,7 +98,7 @@ func Test_server_MutateConfig(t *testing.T) {
 		postScript := makeTempScript(t, "exit 1")
 		s, err := NewProtoconfMutationServer(testdata.SmallTestDir())
 		require.NoError(t, err)
-		s.config = &cliConfig{postMutationScript: postScript}
+		s.config = &protoconf_server_config.ServerConfig{PostMutationScript: postScript}
 		s.PostMutationScript = postScript
 		_, err = s.MutateConfig(context.Background(), &protoconf_pb.ConfigMutationRequest{
 			Path: "test",
@@ -113,9 +113,9 @@ func Test_server_MutateConfig(t *testing.T) {
 		preScript := makeTempScript(t, "exit 0")
 		s, err := NewProtoconfMutationServer(testdata.SmallTestDir())
 		require.NoError(t, err)
-		s.config = &cliConfig{
-			preMutationScript: preScript,
-			authToken:         "test-token-123",
+		s.config = &protoconf_server_config.ServerConfig{
+			PreMutationScript: preScript,
+			AuthToken:         "test-token-123",
 		}
 		s.PreMutationScript = preScript
 		_, err = s.MutateConfig(context.Background(), &protoconf_pb.ConfigMutationRequest{
@@ -176,35 +176,29 @@ func Test_cliCommand_Run(t *testing.T) {
 	protoconfRoot := testdata.SmallTestDir()
 	defer os.RemoveAll(protoconfRoot)
 
-	// Create a temporary file for the preMutationScript
-	preMutationScript, err := ioutil.TempFile("", "preMutationScript")
+	// Create a temporary executable file for the preMutationScript
+	preMutationScript := makeTempScript(t, "exit 0")
+	defer os.Remove(preMutationScript)
+
+	// Create a temporary executable file for the postMutationScript
+	postMutationScript := makeTempScript(t, "exit 0")
+	defer os.Remove(postMutationScript)
+
+	// Set up the command using Command() to get properly initialized cliCommand
+	cmd, err := Command()
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer os.Remove(preMutationScript.Name())
 
-	// Create a temporary file for the postMutationScript
-	postMutationScript, err := ioutil.TempFile("", "postMutationScript")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.Remove(postMutationScript.Name())
-
-	// Set up the command and flags
-	command := &cliCommand{}
-	flags, _ := newFlagSet()
-	flags.SetOutput(ioutil.Discard)
-	flags.Parse([]string{
-		"-grpc-address", "localhost:50051",
-		"-pre", preMutationScript.Name(),
-		"-post", postMutationScript.Name(),
-		protoconfRoot,
-	})
-
-	// Run the command
+	// Run the command with flags
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
-	exitCode := command.run(ctx, flags.Args())
+	exitCode := cmd.(*cliCommand).run(ctx, []string{
+		"-grpc-address", "localhost:50051",
+		"-pre", preMutationScript,
+		"-post", postMutationScript,
+		protoconfRoot,
+	})
 
 	// Check the exit code
 	if exitCode != 0 {

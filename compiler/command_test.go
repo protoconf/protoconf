@@ -56,7 +56,8 @@ func Test_cliCommand_Run(t *testing.T) {
 }
 
 func Test_cliCommand_Help(t *testing.T) {
-	c := &cliCommand{}
+	c, err := Command()
+	require.NoError(t, err)
 	result := c.Help()
 	assert.NotEmpty(t, result)
 }

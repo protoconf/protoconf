@@ -16,6 +16,8 @@ import (
 	"strings"
 
 	"github.com/mitchellh/cli"
+	configtool "github.com/protoconf/libprotoconf"
+	protoconf_compiler_config "github.com/protoconf/protoconf/compiler/config/v1"
 	compilerlib "github.com/protoconf/protoconf/compiler/lib"
 	"github.com/protoconf/protoconf/consts"
 	protoconf_pb "github.com/protoconf/protoconf/pb/protoconf/v1"
@@ -24,48 +26,27 @@ import (
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/protobuf/proto"
 )
 
-type cliCommand struct{}
-
-type cliConfig struct {
-	repl             bool
-	verboseLogging   bool
-	processTemplates bool
-	cpuprofile       string
-	memprofile       string
-	compilerAddress  string
-}
-
-func newFlagSet() (*flag.FlagSet, *cliConfig) {
-	flags := flag.NewFlagSet("", flag.ExitOnError)
-	flags.Usage = func() {
-		fmt.Fprintln(flags.Output(), "Usage: [OPTION]... protoconf_root [config]...")
-		flags.PrintDefaults()
-	}
-
-	compilerAddress := os.Getenv(`PROTOCONF_COMPILER_ADDR`)
-	config := &cliConfig{}
-	flags.BoolVar(&config.repl, "repl", false, "Interactive REPL mode")
-	flags.BoolVar(&config.verboseLogging, "V", false, "Verbose logging")
-	flags.BoolVar(&config.processTemplates, "process-templates", false, "Process template files")
-	flags.StringVar(&config.cpuprofile, "cpuprofile", "", "Write cpu profiling info to this file")
-	flags.StringVar(&config.memprofile, "memprofile", "", "Write memory profiling info to this file")
-	flags.StringVar(&config.compilerAddress, "compiler-address", compilerAddress, "if set, the command will issue a gRPC request to the compiler service at the given address instead of running the compiler locally. The compiler service must be running.")
-
-	return flags, config
+type cliCommand struct {
+	config *protoconf_compiler_config.CompilerConfig
+	flag   *flag.FlagSet
 }
 
 func (c *cliCommand) Run(args []string) int {
-	flags, config := newFlagSet()
-	flags.Parse(args)
+	err := c.flag.Parse(args)
+	if err != nil {
+		fmt.Fprint(os.Stderr, "failed to parse flags: ", err)
+		return 2
+	}
 
-	if flags.NArg() < 1 {
-		flags.Usage()
+	if c.flag.NArg() < 1 {
+		c.flag.Usage()
 		return 1
 	}
-	if config.cpuprofile != "" {
-		f, err := os.Create(config.cpuprofile)
+	if c.config.Cpuprofile != "" {
+		f, err := os.Create(c.config.Cpuprofile)
 		if err != nil {
 			slog.Error("Could not create CPU profile:", "error", err)
 			os.Exit(1)
@@ -78,10 +59,10 @@ func (c *cliCommand) Run(args []string) int {
 		defer pprof.StopCPUProfile()
 	}
 
-	protoconfRoot := strings.TrimSpace(flags.Args()[0])
+	protoconfRoot := strings.TrimSpace(c.flag.Args()[0])
 	var configs []string
 
-	if flags.NArg() == 1 {
+	if c.flag.NArg() == 1 {
 		var err error
 		configs, err = GetAllConfigs(protoconfRoot)
 		if err != nil {
@@ -89,17 +70,17 @@ func (c *cliCommand) Run(args []string) int {
 			return 1
 		}
 	} else {
-		configs = flags.Args()[1:]
+		configs = c.flag.Args()[1:]
 	}
 
-	if config.compilerAddress != "" {
-		return runRemote(config, configs)
+	if c.config.CompilerAddress != "" {
+		return runRemote(c.config, configs)
 	}
-	return runLocally(protoconfRoot, config, configs)
+	return runLocally(protoconfRoot, c.config, configs)
 }
 
-func runRemote(config *cliConfig, configs []string) int {
-	conn, err := grpc.NewClient(config.compilerAddress, grpc.WithTransportCredentials(insecure.NewCredentials()))
+func runRemote(config *protoconf_compiler_config.CompilerConfig, configs []string) int {
+	conn, err := grpc.NewClient(config.CompilerAddress, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		slog.Error("error connecting to server", "error", err)
 	}
@@ -125,7 +106,7 @@ func runRemote(config *cliConfig, configs []string) int {
 				ret = 1
 				continue
 			}
-			if config.verboseLogging {
+			if config.VerboseLogging {
 				slog.Error("Compiled", "path", resp.Path, "result", resp.Result)
 			}
 		}
@@ -133,8 +114,8 @@ func runRemote(config *cliConfig, configs []string) int {
 
 }
 
-func runLocally(protoconfRoot string, config *cliConfig, configs []string) int {
-	compiler, err := compilerlib.NewCompiler(protoconfRoot, config.verboseLogging)
+func runLocally(protoconfRoot string, config *protoconf_compiler_config.CompilerConfig, configs []string) int {
+	compiler, err := compilerlib.NewCompiler(protoconfRoot, config.VerboseLogging)
 	if err != nil {
 		slog.Error("Failed to initialize compiler", "error", err)
 		return 1
@@ -145,12 +126,12 @@ func runLocally(protoconfRoot string, config *cliConfig, configs []string) int {
 		ErrorWriter: os.Stderr,
 	}
 
-	if config.repl {
+	if config.Repl {
 		REPL(compiler)
 		return 0
 	}
 
-	if config.processTemplates {
+	if config.ProcessTemplates {
 		if err := findTemplateFilesAndProccess(); err != nil {
 			log.Fatal(err)
 		}
@@ -172,8 +153,8 @@ func runLocally(protoconfRoot string, config *cliConfig, configs []string) int {
 		return 1
 	}
 
-	if config.memprofile != "" {
-		f, err := os.Create(config.memprofile)
+	if config.Memprofile != "" {
+		f, err := os.Create(config.Memprofile)
 		if err != nil {
 			log.Fatal("Could not create memory profile:", err)
 		}
@@ -190,9 +171,8 @@ func (c *cliCommand) Help() string {
 	var b bytes.Buffer
 	b.WriteString(c.Synopsis())
 	b.WriteString("\n")
-	flags, _ := newFlagSet()
-	flags.SetOutput(&b)
-	flags.Usage()
+	c.flag.SetOutput(&b)
+	c.flag.Usage()
 	return b.String()
 }
 
@@ -202,7 +182,34 @@ func (c *cliCommand) Synopsis() string {
 
 // Command is a cli.CommandFactory
 func Command() (cli.Command, error) {
-	return &cliCommand{}, nil
+	c := &cliCommand{
+		config: &protoconf_compiler_config.CompilerConfig{},
+	}
+	lpc := configtool.NewConfig(c.config)
+	lpc.SetEnvKeyPrefix("PROTOCONF_COMPILER")
+	lpc.Environment()
+	c.flag = flag.NewFlagSet(string(c.config.ProtoReflect().Descriptor().FullName()), flag.ContinueOnError)
+	lpc.PopulateFlagSet(c.flag)
+	c.flag.Func("config-file", "Compiler configuration file (available formats: json, yaml, pb)", func(filename string) error {
+		b, err := os.ReadFile(filename)
+		if err != nil {
+			return fmt.Errorf("failed to read config file: %v", err)
+		}
+		orig := proto.Clone(c.config)
+		err = lpc.Unmarshal(filename, b)
+		if err != nil {
+			return fmt.Errorf("failed to parse config file: %v", err)
+		}
+		// NOTE: proto.Merge(orig, c.config) merges file values ON TOP of env var values,
+		// meaning file values override env vars. This matches the agent pattern per D-13.
+		// The stated precedence in PCLI-09 (env > file) would require the reverse merge
+		// direction, but we intentionally match the existing agent behavior here. Fixing
+		// the agent's merge direction is a separate concern outside this phase.
+		proto.Merge(orig, c.config)
+		c.config, _ = orig.(*protoconf_compiler_config.CompilerConfig)
+		return nil
+	})
+	return c, nil
 }
 
 func GetAllConfigs(protoconfRoot string) ([]string, error) {
