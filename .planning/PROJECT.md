@@ -30,7 +30,7 @@ Every component must be testable, consistent, and free of runtime surprises — 
 - [x] Extract shared OTel bootstrap to common package — Validated in Phase 3: Observability & Global State Cleanup
 - [x] Migrate all deprecated gRPC APIs (WithInsecure, v1alpha reflection) — Validated in Phase 1: Deprecated API Migrations
 - [ ] Migrate from jhump/protoreflect/dynamic to dynamicpb
-- [ ] Add TLS support for gRPC connections
+- [x] Add TLS support for gRPC connections — Validated in Phase 5: TLS Support
 - [ ] Token-based auth with credential forwarding to pre/post scripts
 - [ ] Proto-defined CLI configuration (research + implement)
 - [ ] Fix known bugs (missing `=` in env var, dummykv.Exists always true)
