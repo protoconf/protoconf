@@ -130,9 +130,10 @@ Plans:
   3. Setting a PROTOCONF_* environment variable configures the corresponding component option
   4. Passing a config file path loads configuration from JSON, YAML, or protobuf format
   5. Flag values override env vars, which override config file values, which override compiled defaults
-**Plans**: 1 plan
+**Plans**: 2 plans
 Plans:
-- [ ] 04-01-PLAN.md — Remove dead init() from inserter and dead error check from filekv
+- [ ] 08-01-PLAN.md — Migrate server and compiler to libprotoconf-generated flags with env var and config file support
+- [ ] 08-02-PLAN.md — Migrate inserter and mutate to libprotoconf-generated flags, remove KVStoreConfig dead code
 **UI hint**: no
 
 ### Phase 9: Unit Test Coverage & Infrastructure
@@ -177,6 +178,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 5. TLS Support | 2/2 | Complete   | 2026-03-28 |
 | 6. Token Auth & Script Security | 1/2 | In Progress|  |
 | 7. Proto-Defined CLI Configs | 1/1 | Complete   | 2026-03-28 |
-| 8. CLI Flag Generation & Config Loading | 0/TBD | Not started | - |
+| 8. CLI Flag Generation & Config Loading | 0/2 | Not started | - |
 | 9. Unit Test Coverage & Infrastructure | 0/TBD | Not started | - |
 | 10. Placeholder Fixes & Integration Tests | 0/TBD | Not started | - |
