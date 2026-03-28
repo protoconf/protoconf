@@ -87,9 +87,10 @@ Plans:
   2. A gRPC client can connect to a TLS-enabled server using a matching certificate
   3. A server started without TLS flags logs a visible warning that the connection is insecure
   4. Existing insecure-mode usage continues to work without any flag changes
-**Plans**: 1 plan
+**Plans**: 2 plans
 Plans:
-- [ ] 04-01-PLAN.md — Remove dead init() from inserter and dead error check from filekv
+- [ ] 05-01-PLAN.md — Create shared TLS helper (BuildTLSConfig) with unit tests
+- [ ] 05-02-PLAN.md — Wire TLS into agent, mutation server, and mutate CLI with insecure warnings
 
 ### Phase 6: Token Auth & Script Security
 **Goal**: Mutation server enforces token-based auth; credentials reach pre/post scripts; script paths are validated
@@ -172,7 +173,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 2. os.Exit Refactoring | 1/2 | In Progress|  |
 | 3. Observability & Global State Cleanup | 2/2 | Complete   | 2026-03-27 |
 | 4. Dead Code Removal | 0/TBD | Not started | - |
-| 5. TLS Support | 0/TBD | Not started | - |
+| 5. TLS Support | 0/2 | Not started | - |
 | 6. Token Auth & Script Security | 0/TBD | Not started | - |
 | 7. Proto-Defined CLI Configs | 0/TBD | Not started | - |
 | 8. CLI Flag Generation & Config Loading | 0/TBD | Not started | - |
