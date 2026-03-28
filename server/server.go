@@ -151,6 +151,15 @@ func (c *cliCommand) run(ctx context.Context, args []string) int {
 	protoconfServer.PreMutationScript = config.preMutationScript
 	protoconfServer.PostMutationScript = config.postMutationScript
 
+	if err := validateScriptPath(config.preMutationScript); err != nil {
+		slog.Error("invalid pre-mutation script", "error", err)
+		return 1
+	}
+	if err := validateScriptPath(config.postMutationScript); err != nil {
+		slog.Error("invalid post-mutation script", "error", err)
+		return 1
+	}
+
 	logger.Info("starting protoconf server", "address", config.grpcAddress, "version", consts.Version, "root", protoconfRoot, "pre", config.preMutationScript, "post", config.postMutationScript)
 
 	serverOpts := []grpc.ServerOption{grpc.StatsHandler(otelgrpc.NewServerHandler())}
@@ -476,7 +485,34 @@ func logError(err error) error {
 	return err
 }
 
+// validateScriptPath checks that a script path is safe to use at server startup.
+// It returns nil if path is empty (no script configured).
+// It rejects paths containing "..", non-existent files, directories, and non-executable files.
+func validateScriptPath(path string) error {
+	if path == "" {
+		return nil
+	}
+	if strings.Contains(path, "..") {
+		return fmt.Errorf("script path must not contain '..': %q", path)
+	}
+	info, err := os.Stat(path)
+	if err != nil {
+		return fmt.Errorf("script path does not exist: %w", err)
+	}
+	if info.IsDir() {
+		return fmt.Errorf("script path is a directory, not a file: %q", path)
+	}
+	if info.Mode()&0111 == 0 {
+		return fmt.Errorf("script path is not executable: %q", path)
+	}
+	return nil
+}
+
 func (s *ProtoconfMutationServer) runScript(filename string, uuid string) error {
+	// Defense-in-depth: re-check file existence before exec (file may have been removed after startup validation).
+	if _, err := os.Stat(filename); err != nil {
+		return fmt.Errorf("script no longer exists: %w", err)
+	}
 	cmd := exec.Command(filename)
 	cmd.Env = append(cmd.Env,
 		"PROTOCONF_MUTATION_UUID="+uuid,
