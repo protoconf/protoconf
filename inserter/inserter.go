@@ -22,11 +22,12 @@ import (
 	"github.com/kvtools/valkeyrie/store"
 	"github.com/kvtools/zookeeper"
 	"github.com/mitchellh/cli"
+	configtool "github.com/protoconf/libprotoconf"
 	"github.com/protoconf/protoconf/agent/configmaps"
-	"github.com/protoconf/protoconf/command"
 	"github.com/protoconf/protoconf/compiler/lib"
 	"github.com/protoconf/protoconf/compiler/lib/parser"
 	"github.com/protoconf/protoconf/consts"
+	protoconf_inserter_config "github.com/protoconf/protoconf/inserter/config/v1"
 	protoconf_pb "github.com/protoconf/protoconf/pb/protoconf/v1"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
@@ -37,65 +38,47 @@ import (
 
 const Stable = "STABLE"
 
-type cliCommand struct{}
-
-type cliConfig struct {
-	delete bool
-}
-
-func newFlagSet() (*flag.FlagSet, *cliConfig, *command.KVStoreConfig) {
-	flags := flag.NewFlagSet("", flag.ExitOnError)
-	flags.Usage = func() {
-		fmt.Fprintln(flags.Output(), "Usage: [OPTION]... [protoconf_root] config...")
-		flags.PrintDefaults()
-	}
-
-	kVConfig := &command.KVStoreConfig{}
-	command.AddKVStoreFlags(flags, kVConfig)
-
-	config := &cliConfig{}
-	flags.BoolVar(&config.delete, "d", false, "Delete a config from the key-value store")
-
-	return flags, config, kVConfig
+type cliCommand struct {
+	config *protoconf_inserter_config.InserterConfig
+	flag   *flag.FlagSet
 }
 
 func (c *cliCommand) Run(args []string) int {
 	logger := slog.Default()
 	logger.With("args", args).Info("starting inserter")
-	flags, config, kVConfig := newFlagSet()
-	flags.Parse(args)
+	err := c.flag.Parse(args)
+	if err != nil {
+		fmt.Fprint(os.Stderr, "failed to parse flags", err)
+		return 2
+	}
 
-	if flags.NArg() < 1 || (!config.delete && flags.NArg() < 2) {
-		flags.Usage()
+	if c.flag.NArg() < 1 || (!c.config.Delete && c.flag.NArg() < 2) {
+		c.flag.Usage()
 		return 1
 	}
 
 	var kvStore store.Store
-	var err error
 	ctx := context.Background()
-	if kVConfig.Store == command.KVStoreConsul {
-		kvStore, err = valkeyrie.NewStore(ctx, consul.StoreName, []string{kVConfig.Address}, nil)
-	} else if kVConfig.Store == command.KVStoreEtcd {
-		var address string
-		if kVConfig.Address != "" {
-			address = kVConfig.Address
-		} else {
-			address = consts.EtcdDefaultAddress
+	switch c.config.Store {
+	case protoconf_inserter_config.InserterConfig_consul:
+		kvStore, err = valkeyrie.NewStore(ctx, consul.StoreName, c.config.StoreAddress, nil)
+	case protoconf_inserter_config.InserterConfig_etcd:
+		addresses := c.config.StoreAddress
+		if len(addresses) == 0 {
+			addresses = []string{consts.EtcdDefaultAddress}
 		}
-		kvStore, err = valkeyrie.NewStore(ctx, etcdv3.StoreName, []string{address}, nil)
-	} else if kVConfig.Store == command.KVStoreZookeeper {
-		var address string
-		if kVConfig.Address != "" {
-			address = kVConfig.Address
-		} else {
-			address = consts.ZookeeperDefaultAddress
+		kvStore, err = valkeyrie.NewStore(ctx, etcdv3.StoreName, addresses, nil)
+	case protoconf_inserter_config.InserterConfig_zookeeper:
+		addresses := c.config.StoreAddress
+		if len(addresses) == 0 {
+			addresses = []string{consts.ZookeeperDefaultAddress}
 		}
-		kvStore, err = valkeyrie.NewStore(ctx, zookeeper.StoreName, []string{address}, nil)
-	} else if kVConfig.Store == command.KVStoreConfigMaps {
-		kvStore, err = configmaps.New(ctx, []string{}, &configmaps.Config{Namespace: kVConfig.Namespace})
-	} else {
-		slog.Error("Unknown key-value store", "store", kVConfig.Store)
-		os.Exit(1)
+		kvStore, err = valkeyrie.NewStore(ctx, zookeeper.StoreName, addresses, nil)
+	case protoconf_inserter_config.InserterConfig_configmaps:
+		kvStore, err = configmaps.New(ctx, []string{}, &configmaps.Config{Namespace: c.config.Namespace})
+	default:
+		slog.Error("Unknown key-value store", "store", c.config.Store)
+		return 1
 	}
 
 	if err != nil {
@@ -103,20 +86,20 @@ func (c *cliCommand) Run(args []string) int {
 		return 1
 	}
 
-	if config.delete {
-		for i := 0; i < flags.NArg(); i++ {
-			configName := filepath.ToSlash(strings.TrimSpace(flags.Args()[i]))
-			if err := kvStore.Delete(ctx, kVConfig.Prefix+configName); err != nil {
+	if c.config.Delete {
+		for i := 0; i < c.flag.NArg(); i++ {
+			configName := filepath.ToSlash(strings.TrimSpace(c.flag.Args()[i]))
+			if err := kvStore.Delete(ctx, c.config.Prefix+configName); err != nil {
 				logger.With("error", err, "key", configName).Error("Error deleting config")
 				return 1
 			}
 		}
 	} else {
-		protoconfRoot := strings.TrimSpace(flags.Args()[0])
+		protoconfRoot := strings.TrimSpace(c.flag.Args()[0])
 		inserter := NewProtoconfInserter(protoconfRoot, kvStore)
-		inserter.Prefix = kVConfig.Prefix
+		inserter.Prefix = c.config.Prefix
 		wg := &sync.WaitGroup{}
-		for i := 1; i < flags.NArg(); i++ {
+		for i := 1; i < c.flag.NArg(); i++ {
 			wg.Add(1)
 			go func(path string) {
 				defer wg.Done()
@@ -125,7 +108,7 @@ func (c *cliCommand) Run(args []string) int {
 				if err := inserter.InsertConfigFile(configName); err != nil {
 					logger.With("key", configName, "error", err).Error("Error inserting config")
 				}
-			}(flags.Args()[i])
+			}(c.flag.Args()[i])
 		}
 		wg.Wait()
 	}
@@ -137,9 +120,8 @@ func (c *cliCommand) Help() string {
 	var b bytes.Buffer
 	b.WriteString(c.Synopsis())
 	b.WriteString("\n")
-	flags, _, _ := newFlagSet()
-	flags.SetOutput(&b)
-	flags.Usage()
+	c.flag.SetOutput(&b)
+	c.flag.Usage()
 	return b.String()
 }
 
@@ -149,7 +131,34 @@ func (c *cliCommand) Synopsis() string {
 
 // Command is a cli.CommandFactory
 func Command() (cli.Command, error) {
-	return &cliCommand{}, nil
+	c := &cliCommand{
+		config: &protoconf_inserter_config.InserterConfig{},
+	}
+	lpc := configtool.NewConfig(c.config)
+	lpc.SetEnvKeyPrefix("PROTOCONF_INSERTER")
+	lpc.Environment()
+	c.flag = flag.NewFlagSet(string(c.config.ProtoReflect().Descriptor().FullName()), flag.ContinueOnError)
+	lpc.PopulateFlagSet(c.flag)
+	c.flag.Func("config-file", "Inserter configuration file (available formats: json, yaml, pb)", func(filename string) error {
+		b, err := os.ReadFile(filename)
+		if err != nil {
+			return fmt.Errorf("failed to read config file: %v", err)
+		}
+		orig := proto.Clone(c.config)
+		err = lpc.Unmarshal(filename, b)
+		if err != nil {
+			return fmt.Errorf("failed to parse config file: %v", err)
+		}
+		// NOTE: proto.Merge(orig, c.config) merges file values ON TOP of env var values,
+		// meaning file values override env vars. This matches the agent pattern per D-13.
+		// The stated precedence in PCLI-09 (env > file) would require the reverse merge
+		// direction, but we intentionally match the existing agent behavior here. Fixing
+		// the agent's merge direction is a separate concern outside this phase.
+		proto.Merge(orig, c.config)
+		c.config, _ = orig.(*protoconf_inserter_config.InserterConfig)
+		return nil
+	})
+	return c, nil
 }
 
 type ProtoconfInserter struct {
