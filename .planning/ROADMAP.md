@@ -104,7 +104,7 @@ Plans:
 **Plans**: 2 plans
 Plans:
 - [x] 06-01-PLAN.md — Add bearer token auth interceptor with --auth-token flag and unit tests
-- [ ] 06-02-PLAN.md — Add script path validation, credential forwarding to scripts, and COMPILER_ADDR bug fix
+- [x] 06-02-PLAN.md — Add script path validation, credential forwarding to scripts, and COMPILER_ADDR bug fix
 
 ### Phase 7: Proto-Defined CLI Configs
 **Goal**: Every component's configuration is expressed as a protobuf message

@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Ready to execute
-stopped_at: Completed 06-01-PLAN.md
-last_updated: "2026-03-28T15:58:47.096Z"
+status: Phase complete — ready for verification
+stopped_at: Completed 06-02-PLAN.md
+last_updated: "2026-03-28T16:03:46.834Z"
 progress:
   total_phases: 10
-  completed_phases: 5
+  completed_phases: 6
   total_plans: 10
-  completed_plans: 9
+  completed_plans: 10
 ---
 
 # Project State
@@ -55,6 +55,7 @@ Plan: 2 of 2
 | Phase 05 P01 | 77 | 1 tasks | 2 files |
 | Phase 05 P02 | 8 | 2 tasks | 3 files |
 | Phase 06 P01 | 8 | 1 tasks | 2 files |
+| Phase 06 P02 | 183 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -84,6 +85,8 @@ Recent decisions affecting current work:
 - [Phase 05]: mutate CLI insecureTLS field name avoids collision; no TLS flags defaults to insecure.NewCredentials() for backward compat
 - [Phase 06]: Use crypto/subtle.ConstantTimeCompare to prevent timing attacks on token comparison
 - [Phase 06]: bearerTokenInterceptor pass-through when authToken empty for backward compatibility
+- [Phase 06]: validateScriptPath rejects bare command names implicitly via existence check, enforcing absolute path convention
+- [Phase 06]: Defense-in-depth os.Stat in runScript handles TOCTOU between startup validation and script execution
 
 ### Pending Todos
 
@@ -96,6 +99,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-28T15:58:47.094Z
-Stopped at: Completed 06-01-PLAN.md
+Last session: 2026-03-28T16:03:46.832Z
+Stopped at: Completed 06-02-PLAN.md
 Resume file: None
