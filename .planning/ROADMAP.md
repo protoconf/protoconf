@@ -118,7 +118,7 @@ Plans:
   5. All proto definitions pass protoc compilation without errors
 **Plans**: 1 plan
 Plans:
-- [ ] 04-01-PLAN.md — Remove dead init() from inserter and dead error check from filekv
+- [ ] 07-01-PLAN.md — Define proto config messages for server, compiler, inserter, and mutate CLI
 
 ### Phase 8: CLI Flag Generation & Config Loading
 **Goal**: CLI flags are generated from proto definitions; all components accept env vars and config files
@@ -176,7 +176,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 4. Dead Code Removal | 0/TBD | Not started | - |
 | 5. TLS Support | 2/2 | Complete   | 2026-03-28 |
 | 6. Token Auth & Script Security | 1/2 | In Progress|  |
-| 7. Proto-Defined CLI Configs | 0/TBD | Not started | - |
+| 7. Proto-Defined CLI Configs | 0/1 | Not started | - |
 | 8. CLI Flag Generation & Config Loading | 0/TBD | Not started | - |
 | 9. Unit Test Coverage & Infrastructure | 0/TBD | Not started | - |
 | 10. Placeholder Fixes & Integration Tests | 0/TBD | Not started | - |
