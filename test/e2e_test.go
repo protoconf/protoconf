@@ -2,6 +2,7 @@ package test
 
 import (
 	"context"
+	"os"
 	"testing"
 	"time"
 
@@ -22,6 +23,59 @@ import (
 	"google.golang.org/protobuf/types/known/anypb"
 	"google.golang.org/protobuf/types/known/structpb"
 )
+
+// makeTempScript creates a temp executable shell script with the given body (e.g. "exit 0" or "exit 1").
+func makeTempScript(t *testing.T, body string) string {
+	t.Helper()
+	f, err := os.CreateTemp(t.TempDir(), "test-script-*.sh")
+	require.NoError(t, err)
+	_, err = f.WriteString("#!/bin/sh\n" + body + "\n")
+	require.NoError(t, err)
+	require.NoError(t, f.Close())
+	require.NoError(t, os.Chmod(f.Name(), 0755))
+	return f.Name()
+}
+
+// mustNewAny wraps a proto.Message in an anypb.Any, panicking on error.
+func mustNewAny(msg proto.Message) *anypb.Any {
+	a, _ := anypb.New(msg)
+	return a
+}
+
+func TestMutationWithScripts(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	protoconfRoot := testdata.SmallTestDir()
+	preScript := makeTempScript(t, "exit 0")
+	postScript := makeTempScript(t, "exit 0")
+
+	srv, err := server.NewProtoconfMutationServer(protoconfRoot)
+	require.NoError(t, err)
+	srv.PreMutationScript = preScript
+	srv.PostMutationScript = postScript
+
+	var mutClient protoconf_pb.ProtoconfMutationServiceClient
+	closer := TestServer(ctx, func(s *grpc.Server) {
+		protoconf_pb.RegisterProtoconfMutationServiceServer(s, srv)
+	}, func(conn *grpc.ClientConn) {
+		mutClient = protoconf_pb.NewProtoconfMutationServiceClient(conn)
+	})
+	defer closer()
+
+	resp, err := mutClient.MutateConfig(ctx, &protoconf_pb.ConfigMutationRequest{
+		Path: "mutation_test",
+		Value: &protoconf_pb.ProtoconfValue{
+			ProtoFile: "google/protobuf/struct.proto",
+			Value:     mustNewAny(structpb.NewStringValue("scripted mutation")),
+		},
+	})
+	require.NoError(t, err)
+	require.NotNil(t, resp)
+	assert.NotEmpty(t, resp.Uuid)
+	assert.NotNil(t, resp.PreScriptDuration, "PreScriptDuration should be set when pre script runs")
+	assert.NotNil(t, resp.PostScriptDuration, "PostScriptDuration should be set when post script runs")
+}
 
 func Test(t *testing.T) {
 	if testing.Short() {
