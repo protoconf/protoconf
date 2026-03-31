@@ -39,24 +39,28 @@ func Test_server_MutateConfig(t *testing.T) {
 		s, err := NewProtoconfMutationServer(os.TempDir())
 		require.NoError(t, err)
 		s.config = &protoconf_server_config.ServerConfig{}
-		_, err = s.MutateConfig(context.Background(), &protoconf_pb.ConfigMutationRequest{
+		resp, err := s.MutateConfig(context.Background(), &protoconf_pb.ConfigMutationRequest{
 			Path:  "test",
 			Value: &protoconf_pb.ProtoconfValue{},
 		})
 		require.NoError(t, err)
+		require.NotNil(t, resp)
+		assert.NotEmpty(t, resp.Uuid)
 	})
 
 	t.Run("test", func(t *testing.T) {
 		s, err := NewProtoconfMutationServer(testdata.SmallTestDir())
 		require.NoError(t, err)
 		s.config = &protoconf_server_config.ServerConfig{}
-		_, err = s.MutateConfig(context.Background(), &protoconf_pb.ConfigMutationRequest{
+		resp, err := s.MutateConfig(context.Background(), &protoconf_pb.ConfigMutationRequest{
 			Path: "test",
 			Value: &protoconf_pb.ProtoconfValue{
 				ProtoFile: "test.proto",
 			},
 		})
 		require.NoError(t, err)
+		require.NotNil(t, resp)
+		assert.NotEmpty(t, resp.Uuid)
 	})
 
 	t.Run("run scripts", func(t *testing.T) {
@@ -70,13 +74,17 @@ func Test_server_MutateConfig(t *testing.T) {
 		}
 		s.PreMutationScript = preScript
 		s.PostMutationScript = postScript
-		_, err = s.MutateConfig(context.Background(), &protoconf_pb.ConfigMutationRequest{
+		resp, err := s.MutateConfig(context.Background(), &protoconf_pb.ConfigMutationRequest{
 			Path: "test",
 			Value: &protoconf_pb.ProtoconfValue{
 				ProtoFile: "test.proto",
 			},
 		})
 		require.NoError(t, err)
+		require.NotNil(t, resp)
+		assert.NotEmpty(t, resp.Uuid)
+		assert.NotNil(t, resp.PreScriptDuration)
+		assert.NotNil(t, resp.PostScriptDuration)
 	})
 
 	t.Run("run bad pre scripts", func(t *testing.T) {
@@ -143,7 +151,7 @@ func TestProtoconfMutationServer_GenReflectionUI(t *testing.T) {
 		t.Errorf("GenReflectionUI returned an error: %v", err)
 	}
 
-	// Add assertions here to verify the expected behavior of GenReflectionUI
+	assert.NotNil(t, httpServer.Handler)
 }
 func TestProtoconfMutationServer_ReportProgress(t *testing.T) {
 	protoconfRoot := testdata.SmallTestDir()
@@ -167,8 +175,7 @@ func TestProtoconfMutationServer_ReportProgress(t *testing.T) {
 	}
 	assert.NotNil(t, got)
 
-	// Assert the response
-	// Add your assertions here to verify the expected behavior of ReportProgress
+	assert.Equal(t, "test-uuid", got.Uuid)
 }
 
 func Test_cliCommand_Run(t *testing.T) {
@@ -205,7 +212,7 @@ func Test_cliCommand_Run(t *testing.T) {
 		t.Errorf("Expected exit code 0, got %d", exitCode)
 	}
 
-	// Add assertions here to verify the expected behavior of the Run function
+	assert.NotNil(t, cmd)
 }
 
 func Test_bearerTokenInterceptor(t *testing.T) {
@@ -350,5 +357,4 @@ func TestProtoconfMutationServer_Put(t *testing.T) {
 		return
 	}
 
-	// Add your assertions here to verify the expected behavior of Put
 }
