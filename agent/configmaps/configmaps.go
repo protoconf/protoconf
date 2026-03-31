@@ -57,13 +57,13 @@ func newStore(ctx context.Context, endpoints []string, options valkeyrie.Config)
 // Store implements the store.Store interface.
 // TODO implement me.
 type Store struct {
-	clientset *kubernetes.Clientset
+	clientset kubernetes.Interface
 	config    *Config
 	mutex     *sync.Mutex
 	logger    *slog.Logger
 }
 
-func getClientset() (*kubernetes.Clientset, error) {
+func getClientset() (kubernetes.Interface, error) {
 	config, err := rest.InClusterConfig()
 	if err != nil {
 		slog.Default().Debug("could not get in cluster config", slog.String("error", err.Error()))
@@ -126,6 +126,7 @@ func (s *Store) Put(ctx context.Context, key string, value []byte, opts *store.W
 	cmClient := s.clientset.CoreV1().ConfigMaps(s.config.Namespace)
 	cm, err := cmClient.Get(ctx, configMapName, v1.GetOptions{})
 	if err != nil {
+		cm = &cv1.ConfigMap{}
 		cm.ObjectMeta.Name = configMapName
 		retryErr := retry.OnError(retry.DefaultBackoff, retryableFn, func() error {
 			cm, err = cmClient.Create(ctx, cm, v1.CreateOptions{})
