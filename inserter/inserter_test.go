@@ -33,13 +33,19 @@ func TestProtoconfInserter_InsertConfig(t *testing.T) {
 			args:    args{configFile: "test.materialized_JSON"},
 			wantErr: nil,
 			want: map[string]string{
-				"test/config.data": `Cgp0ZXN0LnByb3RvEjQKJ3R5cGUuZ29vZ2xlYXBpcy5jb20vdGVzdC52MS5UZXN0TWVzc2FnZRIJCgdJbSBoZXJlIm`,
+				"test/config.data":   `Cgp0ZXN0LnByb3RvEjQKJ3R5cGUuZ29vZ2xlYXBpcy5jb20vdGVzdC52MS5UZXN0TWVzc2FnZRIJCgdJbSBoZXJlIm`,
+				"test/config.json":   "{",
+				"test/metadata.json": "{",
 			},
 		},
 		{
 			name:    "with_rollout_config",
 			args:    args{configFile: "with_config_rollout.materialized_JSON"},
 			wantErr: nil,
+			want: map[string]string{
+				"with_config_rollout/config.data": "",
+				"with_config_rollout/config.json": "{",
+			},
 		},
 	}
 	for _, tt := range tests {
@@ -132,7 +138,13 @@ func Test_cliCommand_Help(t *testing.T) {
 				`-config-file`,
 			},
 		},
-		// TODO: Add test cases.
+		{
+			name: "synopsis contains inserter description",
+			want: []string{
+				"Insert a materialized config",
+				"-store-address",
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

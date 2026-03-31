@@ -113,7 +113,44 @@ func TestProtoconfKVAgentRollout_SubscribeForConfig(t *testing.T) {
 				},
 			},
 		},
-		// TODO: Add test cases.
+		{
+			name: "no_rollout",
+			args: args{
+				updates: []*update{
+					{
+						configName:     "simple_key",
+						protoconfValue: &protoconf_pb.ProtoconfValue{Value: newAny(structpb.NewStringValue("plain value"))},
+						metadata:       &protoconf_pb.Metadata{Commit: "abcdef1234567890abcdef1234567890abcdef12", CommittedAt: timestamppb.Now()},
+					},
+				},
+				want: []*want{
+					{
+						agentChannel: "alpha",
+						agentClient:  alphaClient,
+						request:      &protoconf_pb.ConfigSubscriptionRequest{Path: "simple_key"},
+						expects: []*result{
+							{update: &protoconf_pb.ConfigUpdate{Value: newAny(structpb.NewStringValue("plain value"))}, within: time.Second * 5},
+						},
+					},
+					{
+						agentChannel: "beta",
+						agentClient:  betaClient,
+						request:      &protoconf_pb.ConfigSubscriptionRequest{Path: "simple_key"},
+						expects: []*result{
+							{update: &protoconf_pb.ConfigUpdate{Value: newAny(structpb.NewStringValue("plain value"))}, within: time.Second * 5},
+						},
+					},
+					{
+						agentChannel: "prod",
+						agentClient:  prodClient,
+						request:      &protoconf_pb.ConfigSubscriptionRequest{Path: "simple_key"},
+						expects: []*result{
+							{update: &protoconf_pb.ConfigUpdate{Value: newAny(structpb.NewStringValue("plain value"))}, within: time.Second * 5},
+						},
+					},
+				},
+			},
+		},
 	}
 	for _, tt := range tests {
 		kvStore.DeleteTree(ctx, "/")
