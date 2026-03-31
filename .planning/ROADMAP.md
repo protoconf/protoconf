@@ -20,7 +20,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 6: Token Auth & Script Security** - Add token-based mutation auth with credential forwarding and script validation
 - [x] **Phase 7: Proto-Defined CLI Configs** - Define protobuf messages for all component configurations (completed 2026-03-28)
 - [x] **Phase 8: CLI Flag Generation & Config Loading** - Generate CLI flags from protos and add env/file config loading (completed 2026-03-28)
-- [ ] **Phase 9: Unit Test Coverage & Infrastructure** - Add test files for untested packages and shared test helpers
+- [x] **Phase 9: Unit Test Coverage & Infrastructure** - Add test files for untested packages and shared test helpers (completed 2026-03-31)
 - [ ] **Phase 10: Placeholder Fixes & Integration Tests** - Replace placeholder assertions and add e2e integration tests
 
 ## Phase Details
@@ -150,7 +150,7 @@ Plans:
 Plans:
 - [x] 09-01-PLAN.md — Create testutil/ package, add tests for command/ and fmt/
 - [x] 09-02-PLAN.md — Add tests for all four KV store implementations (dummykv, filekv, otelkv, configmaps)
-- [ ] 09-03-PLAN.md — Add tests for mutate/ and devserver/ packages
+- [x] 09-03-PLAN.md — Add tests for mutate/ and devserver/ packages
 - [x] 09-04-PLAN.md — Add tests for compiler/starproto/ (message wrapping, field access, Any type)
 
 ### Phase 10: Placeholder Fixes & Integration Tests
@@ -182,5 +182,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 6. Token Auth & Script Security | 1/2 | In Progress|  |
 | 7. Proto-Defined CLI Configs | 1/1 | Complete   | 2026-03-28 |
 | 8. CLI Flag Generation & Config Loading | 2/2 | Complete   | 2026-03-28 |
-| 9. Unit Test Coverage & Infrastructure | 3/4 | In Progress|  |
+| 9. Unit Test Coverage & Infrastructure | 4/4 | Complete   | 2026-03-31 |
 | 10. Placeholder Fixes & Integration Tests | 0/TBD | Not started | - |

@@ -9,10 +9,10 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Testing — Coverage
 
-- [ ] **TEST-01**: mutate/ package has unit tests covering field parsing, type conversion, and gRPC mutation flow
+- [x] **TEST-01**: mutate/ package has unit tests covering field parsing, type conversion, and gRPC mutation flow
 - [x] **TEST-02**: fmt/ package has unit tests covering Starlark file formatting
 - [x] **TEST-03**: command/ package has unit tests covering subcommand routing and KV store config
-- [ ] **TEST-04**: devserver/ package has tests covering combined server startup and service registration
+- [x] **TEST-04**: devserver/ package has tests covering combined server startup and service registration
 - [x] **TEST-05**: KV store implementations (dummykv, filekv, configmaps, otelkv) have dedicated test files covering implemented methods
 - [x] **TEST-06**: compiler/starproto/ package has tests covering message wrapping, field access, enum handling, and Any type support
 
@@ -158,10 +158,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PCLI-07 | Phase 8 | Complete |
 | PCLI-08 | Phase 8 | Complete |
 | PCLI-09 | Phase 8 | Complete |
-| TEST-01 | Phase 9 | Pending |
+| TEST-01 | Phase 9 | Complete |
 | TEST-02 | Phase 9 | Complete |
 | TEST-03 | Phase 9 | Complete |
-| TEST-04 | Phase 9 | Pending |
+| TEST-04 | Phase 9 | Complete |
 | TEST-05 | Phase 9 | Complete |
 | TEST-06 | Phase 9 | Complete |
 | TEST-14 | Phase 9 | Complete |
