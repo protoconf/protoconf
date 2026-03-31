@@ -146,9 +146,12 @@ Plans:
   3. compiler/starproto/ has tests covering message wrapping, field access, enum handling, and Any type support
   4. A shared test helpers package exists and is used by at least two test files (gRPC server setup, KV store creation, config compilation)
   5. CI reports coverage with a minimum threshold enforced; test failures on edge cases and error paths are present
-**Plans**: 1 plan
+**Plans**: 4 plans
 Plans:
-- [ ] 04-01-PLAN.md — Remove dead init() from inserter and dead error check from filekv
+- [ ] 09-01-PLAN.md — Create testutil/ package, add tests for command/ and fmt/
+- [ ] 09-02-PLAN.md — Add tests for all four KV store implementations (dummykv, filekv, otelkv, configmaps)
+- [ ] 09-03-PLAN.md — Add tests for mutate/ and devserver/ packages
+- [ ] 09-04-PLAN.md — Add tests for compiler/starproto/ (message wrapping, field access, Any type)
 
 ### Phase 10: Placeholder Fixes & Integration Tests
 **Goal**: No test in the codebase has placeholder assertions; e2e tests cover mutation, TLS, and auth flows
@@ -179,5 +182,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 6. Token Auth & Script Security | 1/2 | In Progress|  |
 | 7. Proto-Defined CLI Configs | 1/1 | Complete   | 2026-03-28 |
 | 8. CLI Flag Generation & Config Loading | 2/2 | Complete   | 2026-03-28 |
-| 9. Unit Test Coverage & Infrastructure | 0/TBD | Not started | - |
+| 9. Unit Test Coverage & Infrastructure | 0/4 | Not started | - |
 | 10. Placeholder Fixes & Integration Tests | 0/TBD | Not started | - |
