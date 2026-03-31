@@ -49,7 +49,7 @@ Every component must be testable, consistent, and free of runtime surprises — 
 - Brownfield Go project with ~15 packages, serving as a configuration management platform
 - Codebase has grown organically with inconsistencies: mixed error handling (os.Exit vs error returns), duplicate code (OTel setup), deprecated APIs still in use
 - Several packages have zero test files: mutate/, devserver/, fmt/, command/, KV stores
-- Existing tests have placeholder assertions and TODO comments providing false coverage confidence
+- ~~Existing tests have placeholder assertions and TODO comments providing false coverage confidence~~ — Resolved in Phase 10: all placeholders replaced with real assertions, e2e tests added for mutation/TLS/auth
 - The project uses mitchellh/cli (maintenance mode) but the deeper issue is that CLI configurations should be defined as protobuf messages and CLI flags generated from those definitions
 - Agent already self-configures via protobuf (agent/config/v1/agent_config.proto) — this pattern should be extended to all components
 - Pre/post mutation scripts need auth credentials forwarded as environment variables for git operations
