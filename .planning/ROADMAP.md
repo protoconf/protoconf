@@ -166,7 +166,7 @@ Plans:
 **Plans**: 2 plans
 Plans:
 - [ ] 10-01-PLAN.md — Replace placeholder assertions in server, parser, inserter, and rollout test files
-- [ ] 10-02-PLAN.md — Add e2e integration tests for mutation+scripts, TLS, and token auth
+- [x] 10-02-PLAN.md — Add e2e integration tests for mutation+scripts, TLS, and token auth
 
 ## Progress
 
@@ -184,4 +184,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 7. Proto-Defined CLI Configs | 1/1 | Complete   | 2026-03-28 |
 | 8. CLI Flag Generation & Config Loading | 2/2 | Complete   | 2026-03-28 |
 | 9. Unit Test Coverage & Infrastructure | 4/4 | Complete   | 2026-03-31 |
-| 10. Placeholder Fixes & Integration Tests | 0/2 | Not started | - |
+| 10. Placeholder Fixes & Integration Tests | 1/2 | In Progress|  |
