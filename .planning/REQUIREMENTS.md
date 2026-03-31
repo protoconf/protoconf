@@ -10,8 +10,8 @@ Requirements for this milestone. Each maps to roadmap phases.
 ### Testing — Coverage
 
 - [ ] **TEST-01**: mutate/ package has unit tests covering field parsing, type conversion, and gRPC mutation flow
-- [ ] **TEST-02**: fmt/ package has unit tests covering Starlark file formatting
-- [ ] **TEST-03**: command/ package has unit tests covering subcommand routing and KV store config
+- [x] **TEST-02**: fmt/ package has unit tests covering Starlark file formatting
+- [x] **TEST-03**: command/ package has unit tests covering subcommand routing and KV store config
 - [ ] **TEST-04**: devserver/ package has tests covering combined server startup and service registration
 - [ ] **TEST-05**: KV store implementations (dummykv, filekv, configmaps, otelkv) have dedicated test files covering implemented methods
 - [ ] **TEST-06**: compiler/starproto/ package has tests covering message wrapping, field access, enum handling, and Any type support
@@ -31,9 +31,9 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Testing — Infrastructure
 
-- [ ] **TEST-14**: Shared test helpers extracted for common patterns (gRPC server setup, config compilation, KV store creation)
-- [ ] **TEST-15**: CI enforces minimum coverage threshold with clear reporting
-- [ ] **TEST-16**: Test fixtures cover error paths and edge cases, not just happy paths
+- [x] **TEST-14**: Shared test helpers extracted for common patterns (gRPC server setup, config compilation, KV store creation)
+- [x] **TEST-15**: CI enforces minimum coverage threshold with clear reporting
+- [x] **TEST-16**: Test fixtures cover error paths and edge cases, not just happy paths
 
 ### Refactoring — os.Exit
 
@@ -159,14 +159,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PCLI-08 | Phase 8 | Complete |
 | PCLI-09 | Phase 8 | Complete |
 | TEST-01 | Phase 9 | Pending |
-| TEST-02 | Phase 9 | Pending |
-| TEST-03 | Phase 9 | Pending |
+| TEST-02 | Phase 9 | Complete |
+| TEST-03 | Phase 9 | Complete |
 | TEST-04 | Phase 9 | Pending |
 | TEST-05 | Phase 9 | Pending |
 | TEST-06 | Phase 9 | Pending |
-| TEST-14 | Phase 9 | Pending |
-| TEST-15 | Phase 9 | Pending |
-| TEST-16 | Phase 9 | Pending |
+| TEST-14 | Phase 9 | Complete |
+| TEST-15 | Phase 9 | Complete |
+| TEST-16 | Phase 9 | Complete |
 | TEST-07 | Phase 10 | Pending |
 | TEST-08 | Phase 10 | Pending |
 | TEST-09 | Phase 10 | Pending |
