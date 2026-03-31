@@ -163,9 +163,10 @@ Plans:
   3. agent/kv_agent_rollout_impl_test.go placeholder cases are completed with meaningful assertions
   4. An e2e test exercises the full mutation flow including pre/post script execution and verifies the outcome
   5. E2e tests cover TLS-enabled gRPC connections and token-based auth rejection/acceptance
-**Plans**: 1 plan
+**Plans**: 2 plans
 Plans:
-- [ ] 04-01-PLAN.md — Remove dead init() from inserter and dead error check from filekv
+- [ ] 10-01-PLAN.md — Replace placeholder assertions in server, parser, inserter, and rollout test files
+- [ ] 10-02-PLAN.md — Add e2e integration tests for mutation+scripts, TLS, and token auth
 
 ## Progress
 
@@ -183,4 +184,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 7. Proto-Defined CLI Configs | 1/1 | Complete   | 2026-03-28 |
 | 8. CLI Flag Generation & Config Loading | 2/2 | Complete   | 2026-03-28 |
 | 9. Unit Test Coverage & Infrastructure | 4/4 | Complete   | 2026-03-31 |
-| 10. Placeholder Fixes & Integration Tests | 0/TBD | Not started | - |
+| 10. Placeholder Fixes & Integration Tests | 0/2 | Not started | - |
