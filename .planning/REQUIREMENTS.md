@@ -14,7 +14,7 @@ Requirements for this milestone. Each maps to roadmap phases.
 - [x] **TEST-03**: command/ package has unit tests covering subcommand routing and KV store config
 - [ ] **TEST-04**: devserver/ package has tests covering combined server startup and service registration
 - [ ] **TEST-05**: KV store implementations (dummykv, filekv, configmaps, otelkv) have dedicated test files covering implemented methods
-- [ ] **TEST-06**: compiler/starproto/ package has tests covering message wrapping, field access, enum handling, and Any type support
+- [x] **TEST-06**: compiler/starproto/ package has tests covering message wrapping, field access, enum handling, and Any type support
 
 ### Testing — Fix Placeholders
 
@@ -163,7 +163,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TEST-03 | Phase 9 | Complete |
 | TEST-04 | Phase 9 | Pending |
 | TEST-05 | Phase 9 | Pending |
-| TEST-06 | Phase 9 | Pending |
+| TEST-06 | Phase 9 | Complete |
 | TEST-14 | Phase 9 | Complete |
 | TEST-15 | Phase 9 | Complete |
 | TEST-16 | Phase 9 | Complete |
