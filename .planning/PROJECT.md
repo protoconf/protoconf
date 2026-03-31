@@ -25,7 +25,7 @@ Every component must be testable, consistent, and free of runtime surprises — 
 
 ### Active
 
-- [ ] Comprehensive test coverage across all packages
+- [x] Unit test coverage for previously-untested packages — Validated in Phase 9: Unit Test Coverage & Infrastructure (mutate, fmt, command, devserver, KV stores, starproto + shared testutil)
 - [x] Refactor os.Exit calls in library code to error returns — Validated in Phase 2: os.Exit Refactoring
 - [x] Extract shared OTel bootstrap to common package — Validated in Phase 3: Observability & Global State Cleanup
 - [x] Migrate all deprecated gRPC APIs (WithInsecure, v1alpha reflection) — Validated in Phase 1: Deprecated API Migrations
