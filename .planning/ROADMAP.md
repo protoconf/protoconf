@@ -21,7 +21,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 7: Proto-Defined CLI Configs** - Define protobuf messages for all component configurations (completed 2026-03-28)
 - [x] **Phase 8: CLI Flag Generation & Config Loading** - Generate CLI flags from protos and add env/file config loading (completed 2026-03-28)
 - [x] **Phase 9: Unit Test Coverage & Infrastructure** - Add test files for untested packages and shared test helpers (completed 2026-03-31)
-- [ ] **Phase 10: Placeholder Fixes & Integration Tests** - Replace placeholder assertions and add e2e integration tests
+- [x] **Phase 10: Placeholder Fixes & Integration Tests** - Replace placeholder assertions and add e2e integration tests (completed 2026-03-31)
 
 ## Phase Details
 
@@ -165,7 +165,7 @@ Plans:
   5. E2e tests cover TLS-enabled gRPC connections and token-based auth rejection/acceptance
 **Plans**: 2 plans
 Plans:
-- [ ] 10-01-PLAN.md — Replace placeholder assertions in server, parser, inserter, and rollout test files
+- [x] 10-01-PLAN.md — Replace placeholder assertions in server, parser, inserter, and rollout test files
 - [x] 10-02-PLAN.md — Add e2e integration tests for mutation+scripts, TLS, and token auth
 
 ## Progress
@@ -184,4 +184,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 7. Proto-Defined CLI Configs | 1/1 | Complete   | 2026-03-28 |
 | 8. CLI Flag Generation & Config Loading | 2/2 | Complete   | 2026-03-28 |
 | 9. Unit Test Coverage & Infrastructure | 4/4 | Complete   | 2026-03-31 |
-| 10. Placeholder Fixes & Integration Tests | 1/2 | In Progress|  |
+| 10. Placeholder Fixes & Integration Tests | 2/2 | Complete   | 2026-03-31 |
