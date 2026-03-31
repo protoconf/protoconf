@@ -2,7 +2,18 @@ package test
 
 import (
 	"context"
+	"crypto/ecdsa"
+	"crypto/elliptic"
+	"crypto/rand"
+	"crypto/subtle"
+	"crypto/tls"
+	"crypto/x509"
+	"crypto/x509/pkix"
+	"encoding/pem"
+	"math/big"
+	"net"
 	"os"
+	"strings"
 	"testing"
 	"time"
 
@@ -15,10 +26,17 @@ import (
 	"github.com/protoconf/protoconf/inserter"
 	protoconf_pb "github.com/protoconf/protoconf/pb/protoconf/v1"
 	"github.com/protoconf/protoconf/server"
+	"github.com/protoconf/protoconf/utils"
 	"github.com/protoconf/protoconf/utils/testdata"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/status"
+	"google.golang.org/grpc/test/bufconn"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/anypb"
 	"google.golang.org/protobuf/types/known/structpb"
@@ -75,6 +93,157 @@ func TestMutationWithScripts(t *testing.T) {
 	assert.NotEmpty(t, resp.Uuid)
 	assert.NotNil(t, resp.PreScriptDuration, "PreScriptDuration should be set when pre script runs")
 	assert.NotNil(t, resp.PostScriptDuration, "PostScriptDuration should be set when post script runs")
+}
+
+// generateSelfSignedCert generates a self-signed ECDSA P-256 cert for 127.0.0.1 valid for 1 hour.
+func generateSelfSignedCert(t *testing.T) (certPEM, keyPEM []byte) {
+	t.Helper()
+	priv, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+	require.NoError(t, err)
+	template := &x509.Certificate{
+		SerialNumber: big.NewInt(1),
+		Subject:      pkix.Name{Organization: []string{"Test"}},
+		IPAddresses:  []net.IP{net.ParseIP("127.0.0.1")},
+		NotBefore:    time.Now().Add(-time.Minute),
+		NotAfter:     time.Now().Add(time.Hour),
+		KeyUsage:     x509.KeyUsageKeyEncipherment | x509.KeyUsageDigitalSignature,
+		ExtKeyUsage:  []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth, x509.ExtKeyUsageClientAuth},
+	}
+	derBytes, err := x509.CreateCertificate(rand.Reader, template, template, &priv.PublicKey, priv)
+	require.NoError(t, err)
+	certPEM = pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: derBytes})
+	keyBytes, err := x509.MarshalECPrivateKey(priv)
+	require.NoError(t, err)
+	keyPEM = pem.EncodeToMemory(&pem.Block{Type: "EC PRIVATE KEY", Bytes: keyBytes})
+	return certPEM, keyPEM
+}
+
+func TestTLSMutation(t *testing.T) {
+	protoconfRoot := testdata.SmallTestDir()
+	certPEM, keyPEM := generateSelfSignedCert(t)
+
+	// Server-side TLS
+	serverTLS, err := utils.BuildTLSConfig(utils.TLSFiles{
+		CertText: string(certPEM),
+		KeyText:  string(keyPEM),
+	})
+	require.NoError(t, err)
+
+	srv, err := server.NewProtoconfMutationServer(protoconfRoot)
+	require.NoError(t, err)
+
+	lis, err := net.Listen("tcp", "127.0.0.1:0")
+	require.NoError(t, err)
+
+	rpcServer := grpc.NewServer(grpc.Creds(credentials.NewTLS(serverTLS)))
+	protoconf_pb.RegisterProtoconfMutationServiceServer(rpcServer, srv)
+	go rpcServer.Serve(lis)
+	defer rpcServer.Stop()
+
+	// Client-side TLS
+	pool := x509.NewCertPool()
+	pool.AppendCertsFromPEM(certPEM)
+	clientTLS := &tls.Config{RootCAs: pool, ServerName: "127.0.0.1"}
+
+	conn, err := grpc.NewClient(lis.Addr().String(),
+		grpc.WithTransportCredentials(credentials.NewTLS(clientTLS)))
+	require.NoError(t, err)
+	defer conn.Close()
+
+	client := protoconf_pb.NewProtoconfMutationServiceClient(conn)
+	resp, err := client.MutateConfig(context.Background(), &protoconf_pb.ConfigMutationRequest{
+		Path: "tls_test",
+		Value: &protoconf_pb.ProtoconfValue{
+			ProtoFile: "google/protobuf/struct.proto",
+			Value:     mustNewAny(structpb.NewStringValue("tls value")),
+		},
+	})
+	require.NoError(t, err)
+	require.NotNil(t, resp)
+	assert.NotEmpty(t, resp.Uuid)
+}
+
+// makeTokenInterceptor returns a gRPC unary interceptor that validates Bearer tokens.
+// Mirrors the bearerTokenInterceptor in server/server.go.
+func makeTokenInterceptor(token string) grpc.UnaryServerInterceptor {
+	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+		if token == "" {
+			return handler(ctx, req)
+		}
+		md, ok := metadata.FromIncomingContext(ctx)
+		if !ok {
+			return nil, status.Error(codes.Unauthenticated, "missing metadata")
+		}
+		values := md.Get("authorization")
+		if len(values) == 0 {
+			return nil, status.Error(codes.Unauthenticated, "missing authorization header")
+		}
+		tok := strings.TrimPrefix(values[0], "Bearer ")
+		if subtle.ConstantTimeCompare([]byte(tok), []byte(token)) != 1 {
+			return nil, status.Error(codes.Unauthenticated, "invalid token")
+		}
+		return handler(ctx, req)
+	}
+}
+
+func TestAuthFlow(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	protoconfRoot := testdata.SmallTestDir()
+	srv, err := server.NewProtoconfMutationServer(protoconfRoot)
+	require.NoError(t, err)
+
+	const secretToken = "test-secret-token-42"
+	buffer := 1024 * 1024
+	lis := bufconn.Listen(buffer)
+	rpcServer := grpc.NewServer(grpc.ChainUnaryInterceptor(makeTokenInterceptor(secretToken)))
+	protoconf_pb.RegisterProtoconfMutationServiceServer(rpcServer, srv)
+	go func() {
+		context.AfterFunc(ctx, func() { rpcServer.GracefulStop() })
+		rpcServer.Serve(lis)
+	}()
+	defer func() { lis.Close(); rpcServer.Stop() }()
+
+	conn, err := grpc.NewClient("passthrough:///bufnet",
+		grpc.WithContextDialer(func(context.Context, string) (net.Conn, error) {
+			return lis.Dial()
+		}),
+		grpc.WithTransportCredentials(insecure.NewCredentials()))
+	require.NoError(t, err)
+	defer conn.Close()
+
+	client := protoconf_pb.NewProtoconfMutationServiceClient(conn)
+	mutReq := &protoconf_pb.ConfigMutationRequest{
+		Path: "auth_test",
+		Value: &protoconf_pb.ProtoconfValue{
+			ProtoFile: "google/protobuf/struct.proto",
+			Value:     mustNewAny(structpb.NewStringValue("auth value")),
+		},
+	}
+
+	t.Run("valid_token_accepted", func(t *testing.T) {
+		md := metadata.New(map[string]string{"authorization": "Bearer " + secretToken})
+		authCtx := metadata.NewOutgoingContext(ctx, md)
+		resp, err := client.MutateConfig(authCtx, mutReq)
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		assert.NotEmpty(t, resp.Uuid)
+	})
+
+	t.Run("invalid_token_rejected", func(t *testing.T) {
+		md := metadata.New(map[string]string{"authorization": "Bearer wrong-token"})
+		authCtx := metadata.NewOutgoingContext(ctx, md)
+		_, err := client.MutateConfig(authCtx, mutReq)
+		require.Error(t, err)
+		assert.Equal(t, codes.Unauthenticated, status.Code(err))
+	})
+
+	t.Run("missing_token_rejected", func(t *testing.T) {
+		_, err := client.MutateConfig(ctx, mutReq)
+		require.Error(t, err)
+		assert.Equal(t, codes.Unauthenticated, status.Code(err))
+	})
 }
 
 func Test(t *testing.T) {
