@@ -130,7 +130,7 @@ func (c *cliCommand) Help() string {
 }
 
 func (c *cliCommand) Synopsis() string {
-	return "Insert a materialized config to the key-value store"
+	return "Insert materialized configs into a key-value store (Consul, etcd, ZooKeeper, or ConfigMaps)"
 }
 
 // Command is a cli.CommandFactory

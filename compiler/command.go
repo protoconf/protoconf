@@ -177,7 +177,7 @@ func (c *cliCommand) Help() string {
 }
 
 func (c *cliCommand) Synopsis() string {
-	return "Compile configs"
+	return "Compile Starlark .pconf/.mpconf files into materialized protobuf configs"
 }
 
 // Command is a cli.CommandFactory

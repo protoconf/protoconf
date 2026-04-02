@@ -203,7 +203,7 @@ func (c *cliCommand) Help() string {
 }
 
 func (c *cliCommand) Synopsis() string {
-	return "Runs a server"
+	return "Start the mutation server that accepts config changes via gRPC"
 }
 
 // Command is a cli.CommandFactory

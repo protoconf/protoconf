@@ -43,7 +43,7 @@ func (c *cliCommand) Help() string {
 }
 
 func (c *cliCommand) Synopsis() string {
-	return "Runs a Protoconf agent"
+	return "Start a gRPC agent that serves configs from a key-value store to subscribers"
 }
 
 // Command is a cli.CommandFactory

@@ -32,6 +32,7 @@ func main() {
 			"insert":    inserter.Command,
 			"mutate":    mutate.Command,
 			"serve":     server.Command,
+			"mod":       mod.NewModCommand,
 			"mod init":  mod.NewInitCommand,
 			"mod sync":  mod.NewSyncCommand,
 			"mod tidy":  mod.NewTidyCommand,

@@ -334,7 +334,7 @@ func Test_validateScriptPath(t *testing.T) {
 func Test_cliCommand_Synopsis(t *testing.T) {
 	command := &cliCommand{}
 	got := command.Synopsis()
-	want := "Runs a server"
+	want := "Start the mutation server that accepts config changes via gRPC"
 	if got != want {
 		t.Errorf("cliCommand.Synopsis() = %q, want %q", got, want)
 	}

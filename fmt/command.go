@@ -206,7 +206,7 @@ func (c *cliCommand) Help() string {
 }
 
 func (c *cliCommand) Synopsis() string {
-	return "Format starlark configuration files"
+	return "Format Starlark .pconf and .mpconf configuration files in place"
 }
 
 // Command is a cli.CommandFactory

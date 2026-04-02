@@ -38,11 +38,24 @@ func help(synopsis string, fs *flag.FlagSet) string {
 	return b.String()
 }
 
+type modCommand struct{}
+
+func (c *modCommand) Run(args []string) int { return cli.RunResultHelp }
+func (c *modCommand) Help() string          { return "" }
+func (c *modCommand) Synopsis() string {
+	return "Manage protoconf module dependencies (init, sync, tidy)"
+}
+
+func NewModCommand() (cli.Command, error) {
+	return &modCommand{}, nil
+}
+
+var _ cli.Command = (*modCommand)(nil)
 var _ cli.Command = (*modInitCommand)(nil)
 var _ cli.Command = (*modSyncCommand)(nil)
 
 func (c *modInitCommand) Synopsis() string {
-	return "Init"
+	return "Initialize a protoconf.lock file from proto module dependencies"
 }
 
 func (c *modInitCommand) Help() string {
@@ -87,7 +100,7 @@ func NewInitCommand() (cli.Command, error) {
 }
 
 func (c *modSyncCommand) Synopsis() string {
-	return "Sync"
+	return "Download and cache proto dependencies declared in protoconf.lock"
 }
 
 func (c *modSyncCommand) Help() string {
@@ -123,7 +136,7 @@ func NewSyncCommand() (cli.Command, error) {
 }
 
 func (c *modTidyCommand) Synopsis() string {
-	return "Same as init + sync"
+	return "Resolve, lock, and download all proto module dependencies (init + sync)"
 }
 
 func (c *modTidyCommand) Help() string {

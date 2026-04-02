@@ -256,7 +256,7 @@ func (c *cliCommand) Help() string {
 }
 
 func (c *cliCommand) Synopsis() string {
-	return "Write to mutation server"
+	return "Send a config mutation to the mutation server via gRPC"
 }
 
 // Command is a cli.CommandFactory

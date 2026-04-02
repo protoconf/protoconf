@@ -109,7 +109,7 @@ func (d *DevServerCommand) Run(args []string) int {
 }
 
 func (d *DevServerCommand) Synopsis() string {
-	return "runs a dev server"
+	return "Start an all-in-one development server (agent + compiler + mutation server)"
 }
 
 func Command() (cli.Command, error) {
