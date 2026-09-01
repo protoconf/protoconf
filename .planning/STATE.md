@@ -4,14 +4,14 @@ milestone: v1.0
 current_phase: 08
 current_phase_name: CLI Flag Generation & Config Loading
 status: Milestone complete
-stopped_at: Completed 08-03-PLAN.md
-last_updated: "2026-09-01T10:08:14.691Z"
-state_head: 44fcc78ea5bd2f71761b0f13e24c2e5a440c542a
+stopped_at: Completed 08-04-PLAN.md
+last_updated: "2026-09-01T10:40:33.007Z"
+state_head: a624406d5cf47034ebb3b511abeef33149219ef5
 progress:
   total_phases: 10
   completed_phases: 9
   total_plans: 21
-  completed_plans: 20
+  completed_plans: 21
 milestone_name: milestone
 ---
 
@@ -27,7 +27,7 @@ See: .planning/PROJECT.md (updated 2026-03-23)
 ## Current Position
 
 Phase: 08 (CLI Flag Generation & Config Loading) — EXECUTING
-Plan: 2 of 4
+Plan: 4 of 4
 
 ## Performance Metrics
 
@@ -73,6 +73,7 @@ Plan: 2 of 4
 | Plan | Duration | Tasks | Files |
 |------|----------|-------|-------|
 | Phase 08 P03 | 20min | 2 tasks | 4 files |
+| Phase 08 P04 | 25min | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -123,6 +124,8 @@ Recent decisions affecting current work:
 - [Phase 10]: no_rollout test case uses full 40-char commit hash to satisfy inserter[0:8] slice requirement
 - [Phase 08]: Superseded D-03's proto.Merge(orig, config) file-loading mechanism with command.LayerConfigFile, since the one-line merge-direction reversal was wrong in two independent ways — Reversing proto.Merge(orig, c.config) alone would make factory defaults in orig beat the file, and reassigning c.config orphans flags parsed after -config-file
 - [Phase 08]: command.LayerConfigFile base accumulates only the config-file layer across multiple -config-file flags, never env/flag values — Lets a second file be told apart from the first without also needing to exclude env-supplied fields from that comparison
+- [Phase 08]: Replicated 08-03's command.LayerConfigFile rewiring across compiler, inserter, mutate and agent, closing PCLI-09 project-wide
+- [Phase 08]: agent/command.go's precedence comment is newly added (not replaced) and explicitly flags the config-vs-env behavior change for operators
 
 ### Pending Todos
 
@@ -135,6 +138,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-01T10:08:14.404Z
-Stopped at: Completed 08-03-PLAN.md
+Last session: 2026-09-01T10:40:32.674Z
+Stopped at: Completed 08-04-PLAN.md
 Resume file: None
