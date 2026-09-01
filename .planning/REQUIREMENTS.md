@@ -87,14 +87,14 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Proto CLI — Generation
 
-- [x] **PCLI-05**: CLI flag parsing is generated from proto definitions for all components
-- [x] **PCLI-06**: Generated CLI matches current flag interface (backward compatible)
+- [ ] **PCLI-05**: CLI flag parsing is generated from proto definitions for all components
+- [ ] **PCLI-06**: Generated CLI matches current flag interface (backward compatible)
 
 ### Proto CLI — Config Loading
 
-- [x] **PCLI-07**: All components support config loading via environment variables (PROTOCONF_* prefix)
-- [x] **PCLI-08**: All components support config loading via config files (JSON/YAML/protobuf)
-- [x] **PCLI-09**: Config precedence follows: flags > env vars > config file > defaults
+- [ ] **PCLI-07**: All components support config loading via environment variables (PROTOCONF_* prefix)
+- [ ] **PCLI-08**: All components support config loading via config files (JSON/YAML/protobuf)
+- [ ] **PCLI-09**: Config precedence follows: flags > env vars > config file > defaults
 
 ## v2 Requirements
 
@@ -153,11 +153,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PCLI-02 | Phase 7 | Complete |
 | PCLI-03 | Phase 7 | Complete |
 | PCLI-04 | Phase 7 | Complete |
-| PCLI-05 | Phase 8 | Complete |
-| PCLI-06 | Phase 8 | Complete |
-| PCLI-07 | Phase 8 | Complete |
-| PCLI-08 | Phase 8 | Complete |
-| PCLI-09 | Phase 8 | Complete |
+| PCLI-05 | Phase 8 | Gaps Found |
+| PCLI-06 | Phase 8 | Gaps Found |
+| PCLI-07 | Phase 8 | Gaps Found |
+| PCLI-08 | Phase 8 | Gaps Found |
+| PCLI-09 | Phase 8 | Gaps Found |
 | TEST-01 | Phase 9 | Complete |
 | TEST-02 | Phase 9 | Complete |
 | TEST-03 | Phase 9 | Complete |
@@ -176,6 +176,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TEST-13 | Phase 10 | Pending |
 
 **Coverage:**
+
 - v1 requirements: 37 total
 - Mapped to phases: 37
 - Unmapped: 0
