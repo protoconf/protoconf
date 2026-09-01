@@ -6,13 +6,19 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Set up Go
         uses: actions/setup-go@v5
@@ -27,7 +33,7 @@ jobs:
 
       - name: Test report
         if: always()
-        run: cat test_results.json | go run gotest.tools/gotestsum@latest --format testdox
+        run: go run gotest.tools/gotestsum@v1.13.0 --format testdox --raw-command -- cat test_results.json
 
       - name: Upload Go test results
         if: always()
