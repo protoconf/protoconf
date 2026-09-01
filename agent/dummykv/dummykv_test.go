@@ -2,6 +2,8 @@ package dummykv
 
 import (
 	"context"
+	"fmt"
+	"sync"
 	"testing"
 	"time"
 
@@ -217,6 +219,51 @@ func TestPut_MultipleTimes(t *testing.T) {
 	pair, err := s.Get(ctx, key, nil)
 	require.NoError(t, err)
 	assert.Equal(t, []byte("v3"), pair.Value)
+}
+
+// TestWatch_ConcurrentSubscribersAllReceive asserts that when N goroutines
+// call Watch on the same not-yet-existing key concurrently, every one of
+// them ends up registered and receives a subsequent Put. This is a
+// delivery-based assertion through the public Watch/Put surface rather than
+// an internal registration count, both because -race cannot catch this
+// class of logical race (each individual sync.Map op is atomic) and because
+// a delivery test compiles unchanged against the pre-fix pubSub.
+func TestWatch_ConcurrentSubscribersAllReceive(t *testing.T) {
+	const trials = 200
+	const watchers = 8
+
+	for trial := 0; trial < trials; trial++ {
+		s := newTestStore(t)
+		key := fmt.Sprintf("concurrent-key-%d", trial)
+
+		start := make(chan struct{})
+		chans := make([]<-chan *store.KVPair, watchers)
+		var wg sync.WaitGroup
+		wg.Add(watchers)
+		for i := 0; i < watchers; i++ {
+			go func(i int) {
+				defer wg.Done()
+				<-start
+				ch, err := s.Watch(context.Background(), key, nil)
+				require.NoError(t, err)
+				chans[i] = ch
+			}(i)
+		}
+		close(start)
+		wg.Wait()
+
+		err := s.Put(context.Background(), key, []byte("value"), nil)
+		require.NoError(t, err)
+
+		for i, ch := range chans {
+			select {
+			case kv := <-ch:
+				require.NotNil(t, kv)
+			case <-time.After(2 * time.Second):
+				t.Fatalf("trial %d: watcher %d never received the Put", trial, i)
+			}
+		}
+	}
 }
 
 func TestGet_WithWriteOptions(t *testing.T) {
