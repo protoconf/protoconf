@@ -2,7 +2,7 @@ package agent
 
 import (
 	"context"
-	"fmt"
+	"sync"
 	"testing"
 	"time"
 
@@ -155,38 +155,54 @@ func TestProtoconfKVAgentRollout_SubscribeForConfig(t *testing.T) {
 	for _, tt := range tests {
 		kvStore.DeleteTree(ctx, "/")
 		t.Run(tt.name, func(t *testing.T) {
+			var ready sync.WaitGroup
+			var done sync.WaitGroup
+			ready.Add(len(tt.args.want))
+			done.Add(len(tt.args.want))
 			for _, wantResults := range tt.args.want {
 				go func(want *want) {
-					t.Run(want.agentChannel, func(t *testing.T) {
-						ctx, cancel := context.WithCancel(context.Background())
-						defer cancel()
-						watcher, err := want.agentClient.SubscribeForConfig(ctx, want.request)
-						configCh := recvCh(ctx, watcher)
-						assert.NoError(t, err)
-						for i, expect := range want.expects {
-							t.Run(fmt.Sprint(i), func(t *testing.T) {
-								sleep, cancelSleep := context.WithTimeout(ctx, expect.within)
-								defer cancelSleep()
-								select {
-								case <-sleep.Done():
-									err := context.Cause(ctx)
-									assert.NoError(t, err)
-									t.Errorf("timeout waiting for update")
-									cancel()
-									return
-								case item := <-configCh:
-									assert.Truef(t, proto.Equal(expect.update, item), "expected \n%s, got \n%s", expect.update, item)
-									cancelSleep()
-								}
-							})
+					defer done.Done()
+					ctx, cancel := context.WithCancel(context.Background())
+					defer cancel()
+					watcher, err := want.agentClient.SubscribeForConfig(ctx, want.request)
+					if !assert.NoErrorf(t, err, "%s: subscribe failed", want.agentChannel) {
+						ready.Done()
+						return
+					}
+					configCh := recvCh(ctx, watcher)
+					ready.Done()
+					for i, expect := range want.expects {
+						sleep, cancelSleep := context.WithTimeout(ctx, expect.within)
+						select {
+						case <-sleep.Done():
+							err := context.Cause(ctx)
+							assert.NoErrorf(t, err, "%s: expectation %d", want.agentChannel, i)
+							t.Errorf("%s: expectation %d: timeout waiting for update", want.agentChannel, i)
+							cancelSleep()
+							cancel()
+							return
+						case item := <-configCh:
+							assert.Truef(t, proto.Equal(expect.update, item), "%s: expectation %d: expected \n%s, got \n%s", want.agentChannel, i, expect.update, item)
+							cancelSleep()
 						}
-					})
+					}
 				}(wantResults)
 			}
+			// ready.Wait() proves the client-side stream exists before the first
+			// insert, not that the server handler has already reached
+			// store.Watch. The residual window is closed by the initial-value
+			// path in dummykv.Store.Watch — if a Put beats the server's Watch,
+			// the key now exists and Get delivers the current value to the new
+			// watcher.
+			// ponytail: this barrier cannot survive a server handler stalling
+			// for the full 2s between inserts (a scheduling pathology, not a
+			// race) — upgrade to a server-side ack if that ever proves flaky.
+			ready.Wait()
 			for _, update := range tt.args.updates {
 				assert.NoError(t, inserter.InsertConfig(update.configName, update.protoconfValue, update.metadata))
 				time.Sleep(time.Second * 2)
 			}
+			done.Wait()
 		})
 	}
 }
