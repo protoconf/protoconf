@@ -32,8 +32,9 @@ Every component must be testable, consistent, and free of runtime surprises — 
 - [ ] Migrate from jhump/protoreflect/dynamic to dynamicpb
 - [x] Add TLS support for gRPC connections — Validated in Phase 5: TLS Support
 - [x] Token-based auth with credential forwarding to pre/post scripts — Validated in Phase 6: Token Auth & Script Security
-- [x] Proto-defined CLI configuration (definitions) — Validated in Phase 7: Proto-Defined CLI Configs (flag generation in Phase 8)
-- [ ] Fix known bugs (dummykv.Exists always true) — PROTOCONF_COMPILER_ADDR `=` bug fixed in Phase 6
+- [x] Proto-defined CLI configuration (definitions + flag generation) — Validated in Phase 7: Proto-Defined CLI Configs and Phase 8: CLI Flag Generation & Config Loading
+- [x] Env var and config file loading for all components, precedence flags > env > config file > proto defaults — Validated in Phase 8: CLI Flag Generation & Config Loading
+- [ ] Fix known bugs (dummykv.Exists always true) — PROTOCONF_COMPILER_ADDR `=` bug fixed in Phase 6; `mutate/mutate.go` TYPE_SINT32 converts to uint32 instead of int32 (found by Phase 8 code review, 08-REVIEW.md WR-02)
 - [x] Remove dead code and unnecessary init functions — Validated in Phase 4: Dead Code Removal
 - [x] Fix global mutable state issues (Starlark resolver settings, mutate package) — Validated in Phase 3: Observability & Global State Cleanup
 
@@ -50,7 +51,7 @@ Every component must be testable, consistent, and free of runtime surprises — 
 - Codebase has grown organically with inconsistencies: mixed error handling (os.Exit vs error returns), duplicate code (OTel setup), deprecated APIs still in use
 - Several packages have zero test files: mutate/, devserver/, fmt/, command/, KV stores
 - ~~Existing tests have placeholder assertions and TODO comments providing false coverage confidence~~ — Resolved in Phase 10: all placeholders replaced with real assertions, e2e tests added for mutation/TLS/auth
-- The project uses mitchellh/cli (maintenance mode) but the deeper issue is that CLI configurations should be defined as protobuf messages and CLI flags generated from those definitions
+- ~~The project uses mitchellh/cli (maintenance mode) but the deeper issue is that CLI configurations should be defined as protobuf messages and CLI flags generated from those definitions~~ — Resolved across Phases 7-8: all five components define config in proto and generate flags from it via libprotoconf; mitchellh/cli remains only as the subcommand router
 - Agent already self-configures via protobuf (agent/config/v1/agent_config.proto) — this pattern should be extended to all components
 - Pre/post mutation scripts need auth credentials forwarded as environment variables for git operations
 
@@ -68,8 +69,9 @@ Every component must be testable, consistent, and free of runtime surprises — 
 |----------|-----------|---------|
 | Keep KV store panic stubs | Intentional interface satisfaction; panics signal future needs | — Pending |
 | Token-based auth over mTLS | Simpler to implement and forward to scripts as env vars | — Pending |
-| Proto-defined CLI configs | Consistency with protoconf's own philosophy; agent already does this | — Pending |
-| Research proto-to-CLI generation | Need to find the right approach before committing to implementation | — Pending |
+| Proto-defined CLI configs | Consistency with protoconf's own philosophy; agent already does this | ✓ Shipped — all five components (agent, serve, compile, insert, mutate) in Phases 7-8 |
+| Research proto-to-CLI generation | Need to find the right approach before committing to implementation | ✓ Resolved — libprotoconf `PopulateFlagSet`/`Environment` adopted in Phase 8 |
+| Track flag/env provenance from the `flag.FlagSet`, not by comparing values against defaults | Value comparison cannot distinguish "explicitly set to the default" from "unset", and loses an env var to a config file that coincidentally matches it | ✓ Shipped in Phase 8 — `command.ConfigLayerer`, after two rounds of gap closure |
 | Migrate jhump/protoreflect to dynamicpb | Official package is the recommended replacement | — Pending |
 
 ## Evolution
@@ -90,4 +92,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-24 after Phase 2 completion*
+*Last updated: 2026-09-01 after Phase 8 completion*
