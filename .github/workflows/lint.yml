@@ -1,0 +1,38 @@
+name: Lint
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  trunk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Trunk Check
+        uses: trunk-io/trunk-action@v1
+
+  buf-breaking:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Make main available locally
+        run: |
+          git fetch origin main
+          git branch -f main origin/main
+
+      - uses: bufbuild/buf-setup-action@v1
+
+      - name: Check for breaking changes
+        run: buf breaking --against '.git#branch=main' --against-config buf.yaml
