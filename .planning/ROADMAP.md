@@ -162,7 +162,7 @@ Plans:
   4. Passing a config file path loads configuration from JSON, YAML, or protobuf format
   5. Flag values override env vars, which override config file values, which override compiled defaults
 
-**Plans**: 4/4 plans executed
+**Plans**: 6 plans (4 executed, 2 open gap closure)
 Plans:
 **Wave 1**
 
@@ -173,6 +173,11 @@ Plans:
 **Wave 2** *(blocked on Wave 1 completion)*
 
 - [x] 08-04-PLAN.md — Gap closure (PCLI-09): apply precedence fix to compiler, inserter, mutate and agent; record the agent behavior change
+
+**Gap closure round 2** *(from 08-VERIFICATION.md failed truths #7 and #8 — multi-`-config-file` precedence)*
+
+- [ ] 08-05-PLAN.md — Gap closure (PCLI-09): replace value-comparison layering with provenance tracking (`command.ConfigLayerer`), proven end-to-end on the agent including `tls_config`/`store_tls`
+- [ ] 08-06-PLAN.md — Gap closure (PCLI-09): migrate server, compiler, inserter and mutate onto the layerer, remove the superseded path, add scalar and repeated-field CLI regressions
 
 **Cross-cutting constraints:**
 

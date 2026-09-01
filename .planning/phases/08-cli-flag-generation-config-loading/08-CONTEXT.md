@@ -38,6 +38,18 @@ Wire Phase 7's proto config definitions to `libprotoconf.PopulateFlagSet` for al
      *after* `-config-file` was silently discarded.
 
   See `08-03-PLAN.md` `<why_not_the_one_line_reversal>` for the full derivation.
+
+  **Superseded again (corrected 2026-09-01 during 08 gap closure round 2):** the named helper
+  changes from the free function `command.LayerConfigFile(live, base, preFile)` to the
+  provenance-tracking `command.NewConfigLayerer(base, flagSet)` plus its
+  `(*ConfigLayerer).LayerConfigFile(live, preFile)` method. The free function decided "was this
+  value explicitly supplied?" by comparing against a `base` that accumulates every config file's
+  raw values, which is false whenever an env/flag value coincides with an earlier file's value and
+  is short-circuited entirely for message-typed fields. Both failure modes were reproduced by
+  execution and are recorded as `08-VERIFICATION.md` failed truths #7 and #8. Everything else D-03
+  states — in-place mutation of the live config message, never reassigning the component's `config`
+  field, `lpc.Unmarshal` for json/yaml/pb — is unchanged and still binding.
+  See `08-05-PLAN.md` `<why_provenance_and_not_a_comparison_patch>` for the full derivation.
 - **D-04 [folded]:** [satisfied by 08-01/08-02] Config file format detection follows the agent pattern — libprotoconf infers format from file extension.
 
 ### Config Precedence — PCLI-09
@@ -51,6 +63,16 @@ Wire Phase 7's proto config definitions to `libprotoconf.PopulateFlagSet` for al
   agent's `proto.Merge()` pattern. That attribution was false — that pattern yields
   `flags > config file > env vars`. The precedence goal stated here is unchanged and remains the target;
   only the claimed mechanism was wrong. Implemented by `08-03-PLAN.md` / `08-04-PLAN.md`.
+
+  **Correction 2 (2026-09-01, 08 gap closure round 2):** 08-03/08-04 delivered this ordering only for
+  a SINGLE `-config-file`. Verification reproduced two ways it inverts once `-config-file` is passed
+  twice: an env var whose value coincides with an earlier file's value is silently dropped
+  (scalar/list fields), and the FIRST file always wins for message-typed fields such as
+  `AgentConfig.tls_config` / `store_tls` regardless of any later file. The ordering stated here is
+  unchanged and remains the target; it must now hold for repeated `-config-file` flags and for every
+  field kind. Delivered by `08-05-PLAN.md` (agent) and `08-06-PLAN.md` (server, compiler, inserter,
+  mutate). The `base` snapshot keeps its role as the pristine factory-default reference but is no
+  longer mutated as an accumulator — provenance is recorded, not inferred from value equality.
 
   **Known limitation (tested, not a defect):** proto3 implicit presence means a zero-valued enum set
   via an env var is indistinguishable from unset, so `PROTOCONF_INSERTER_STORE=consul` (where
