@@ -9,7 +9,7 @@ Protoconf is a configuration management tool that uses Protocol Buffers as schem
 
 ### Constraints
 
-- **Tech stack**: Go 1.22+, must maintain backward compatibility with existing config repos
+- **Tech stack**: Go 1.25.8+, must maintain backward compatibility with existing config repos
 - **Proto compatibility**: Cannot break existing protobuf wire formats or gRPC service definitions
 - **KV store interface**: Must remain compatible with valkeyrie store.Store interface
 - **Build**: CGO_ENABLED=0, must produce static binaries
@@ -20,12 +20,12 @@ Protoconf is a configuration management tool that uses Protocol Buffers as schem
 ## Technology Stack
 
 ## Languages
-- Go 1.22.4 - All core application code (`go.mod` line 3)
+- Go 1.25.8 - All core application code (`go.mod` line 3)
 - Protocol Buffers (proto3) - Service and data type definitions (`agent/api/proto/v1/`, `server/api/proto/v1/`, `datatypes/proto/v1/`, `pb/protoconf/v1/`)
 - Starlark - Configuration language executed by the compiler (`go.starlark.net v0.0.0-20240314022150`), user-authored `.pconf` and `.mpconf` files
 - Python - Client SDK in `python/` (grpclib-based, `python/requirements.txt`)
 ## Runtime
-- Go 1.22+ (CI uses `go-version: 1.22` in `.github/workflows/go.yml`)
+- Go 1.25.8+ (all three CI workflows use `go-version-file: go.mod` to read the floor directly from the module)
 - CGO disabled for production builds (`CGO_ENABLED=0` in `.goreleaser.yaml`)
 - Go Modules
 - Lockfile: `go.sum` present
@@ -76,7 +76,7 @@ Protoconf is a configuration management tool that uses Protocol Buffers as schem
 - `buf.yaml` - Buf module `buf.build/protoconf/protoconf` for proto linting
 - `docker/Dockerfile` - Scratch-based container image
 ## Platform Requirements
-- Go 1.22+
+- Go 1.25.8+
 - `protoc` compiler with Go plugins (`protoc-gen-go`, `protoc-gen-go-grpc`)
 - Buf CLI (for linting)
 - Static binary (CGO disabled, scratch Docker image)
