@@ -5,8 +5,8 @@ current_phase: 2
 current_phase_name: os.Exit Refactoring
 status: Milestone complete
 stopped_at: Quick task 260901-wom complete — Lint workflow + trunk/buf/go.yml/renovate hardening on ci/hardening
-last_updated: "2026-09-01T16:45:21.432Z"
-state_head: 47b85cdb5c7227b8c252aabe35744f0e123df37b
+last_updated: "2026-09-01T17:31:10.140Z"
+state_head: 3238abe063793889ae105fa56e72af45e1c88412
 progress:
   total_phases: 10
   completed_phases: 10
@@ -153,6 +153,7 @@ None yet.
 |---|-------------|------|--------|-----------|
 | 260901-vaj | Merge 5 stale security dependency bumps (grpc, x/net, go-git, go-getter, otel) + raise Go floor to 1.25.8 | 2026-09-01 | 1817300 | [260901-vaj-merge-5-stale-security-dependency-bumps-](./quick/260901-vaj-merge-5-stale-security-dependency-bumps-/) |
 | 260901-wom | CI hardening: enforce lint via trunk gate — Lint workflow (trunk + buf breaking), repaired trunk/buf configs, hardened go.yml, consolidated renovate.json | 2026-09-01 | 47b85cd | [260901-wom-ci-hardening-enforce-lint-via-trunk-gate](./quick/260901-wom-ci-hardening-enforce-lint-via-trunk-gate/) |
+| 3 | Give codecov a 1% threshold so codecov/project stops failing on rounding noise | 2026-09-01 | 3238abe | — |
 
 ## Session Continuity
 
