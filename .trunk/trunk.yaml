@@ -43,7 +43,10 @@ lint:
     - trufflehog@3.63.8
     - yamllint@1.33.0
   disabled:
-    - buf-lint@1.28.1
+    # buf lint is gated in CI via buf-breaking only -- `buf lint` reports 73
+    # findings whose fixes would rename enum values and packages, breaking
+    # wire compat. Disabled entries must be bare names, no version pin.
+    - buf-lint
 actions:
   disabled:
     - trunk-announce
