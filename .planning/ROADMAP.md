@@ -130,10 +130,12 @@ Plans:
   3. Setting a PROTOCONF_* environment variable configures the corresponding component option
   4. Passing a config file path loads configuration from JSON, YAML, or protobuf format
   5. Flag values override env vars, which override config file values, which override compiled defaults
-**Plans**: 2 plans
+**Plans**: 4 plans
 Plans:
 - [x] 08-01-PLAN.md — Migrate server and compiler to libprotoconf-generated flags with env var and config file support
 - [x] 08-02-PLAN.md — Migrate inserter and mutate to libprotoconf-generated flags, remove KVStoreConfig dead code
+- [ ] 08-03-PLAN.md — Gap closure (PCLI-09): shared config-file layering helper + server env-over-file precedence, proven end-to-end
+- [ ] 08-04-PLAN.md — Gap closure (PCLI-09): apply precedence fix to compiler, inserter, mutate and agent; record the agent behavior change
 **UI hint**: no
 
 ### Phase 9: Unit Test Coverage & Infrastructure
