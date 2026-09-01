@@ -4,9 +4,9 @@ milestone: v1.0
 current_phase: 2
 current_phase_name: os.Exit Refactoring
 status: Milestone complete
-stopped_at: Phase 08 complete, ready to plan Phase 2
-last_updated: "2026-09-01T14:11:34.554Z"
-state_head: a3096cb28da4dae50db7713ba2dac61a2b21bac0
+stopped_at: Milestone v1.0 summary generated
+last_updated: "2026-09-01T14:56:09.292Z"
+state_head: d7bbd9751e8a8d6c9c5d16390813f14922cda1dd
 progress:
   total_phases: 10
   completed_phases: 10
@@ -143,9 +143,16 @@ None yet.
 
 - Phase 9 (Unit Test Coverage) depends on Phase 2 (os.Exit Refactoring) so tests can test real error paths — plan Phase 9 only after Phase 2 is complete
 - Phase 10 (Integration Tests) depends on both Phase 6 (Auth) and Phase 9 (Unit Tests) — schedule last
+- `TestProtoconfKVAgentRollout_SubscribeForConfig` is a pre-existing flaky test (2–5 failures per 10 runs) — unsynchronised subscriber goroutines race the insert loop. Will make CI red at random until fixed. See quick task 260901-vaj deferred-items.
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260901-vaj | Merge 5 stale security dependency bumps (grpc, x/net, go-git, go-getter, otel) + raise Go floor to 1.25.8 | 2026-09-01 | 1817300 | [260901-vaj-merge-5-stale-security-dependency-bumps-](./quick/260901-vaj-merge-5-stale-security-dependency-bumps-/) |
 
 ## Session Continuity
 
-Last session: 2026-09-01T14:30:00.000Z
-Stopped at: Phase 08 complete, ready to plan Phase 2
-Resume file: None
+Last session: 2026-09-01T14:56:08.920Z
+Stopped at: Quick task 260901-vaj complete — 5 security dep bumps on deps/security-bumps
+Resume file: .planning/reports/MILESTONE_SUMMARY-v1.0.md

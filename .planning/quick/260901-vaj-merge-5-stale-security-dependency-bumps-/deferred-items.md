@@ -32,3 +32,33 @@ with "race detected during execution of test", flagged inside
 Confirmed pre-existing: reproduces identically with go-git/v5 reverted to
 the baseline v5.12.0 (pre-bump). Not introduced by the go-git v5.12.0 ->
 v5.19.2 bump. Out of scope per SCOPE BOUNDARY; not fixed here.
+
+## Flaky test: TestProtoconfKVAgentRollout_SubscribeForConfig
+
+`agent/kv_agent_rollout_impl_test.go` fails intermittently with
+"timeout waiting for update" at line 174.
+
+Measured failure rate over 10 consecutive runs of the isolated test:
+
+| Commit | Fails / 10 |
+|---|---|
+| 7fdffc4 (pre-bump) | 2 |
+| post-bump | 5 |
+
+Pre-existing — it fails at the pre-bump commit too, so the dependency bump did
+not introduce it. The apparent rate increase is not statistically meaningful at
+n=10 and is consistent with the bump perturbing goroutine/gRPC-dial scheduling.
+
+Root cause is a test-design race, not a product bug: the subtest goroutines
+(`go func(want *want)`) call `SubscribeForConfig` concurrently with the main
+goroutine's `inserter.InsertConfig` loop, and nothing synchronises "all
+subscribers registered" against "start inserting". A subscriber that registers
+after its update has already been published waits out its 5s budget and times
+out.
+
+Fix (deferred, out of scope here): signal readiness from each subscriber
+goroutine — a `sync.WaitGroup` or ready-channel awaited before the insert loop
+begins — instead of relying on the `time.Sleep(2s)` between inserts.
+
+Impact if left: CI on this branch will go red randomly at roughly a 1-in-5 to
+1-in-2 rate for the `agent` package.
