@@ -19,10 +19,10 @@ milestone_name: milestone
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-23)
+See: .planning/PROJECT.md (updated 2026-09-01)
 
 **Core value:** Every component must be testable, consistent, and free of runtime surprises
-**Current focus:** Phase 08 — CLI Flag Generation & Config Loading
+**Current focus:** Phase 2 — os.Exit Refactoring
 
 ## Current Position
 
@@ -112,7 +112,10 @@ Recent decisions affecting current work:
 - [Phase 07]: InserterConfig.store_address is repeated string for future multi-address support per D-07
 - [Phase 07]: compiler_address added to CompilerConfig despite omission in D-06 spec — real flag exists in compiler/command.go
 - [Phase 08]: PROTOCONF_COMPILER_ADDR legacy env var preserved in runScript for backward compat with existing mutation scripts
-- [Phase 08]: proto.Merge direction for config-file loading matches agent pattern: file overrides env vars (consistent across all components)
+- [Phase 08]: ~~proto.Merge direction for config-file loading: file overrides env vars~~ — SUPERSEDED in 08-03/08-05/08-06. PCLI-09 requires flags > env vars > config file > proto defaults, so env vars now win over config files
+- [Phase 08]: Provenance is recorded from the flag.FlagSet, never inferred by comparing a value to the compiled-in default — value comparison cannot tell "explicitly set to the default" from "unset", and loses an env var to a config file that coincidentally matches it
+- [Phase 08]: command.ConfigLayerer is the single layering entry point for all five components; the free LayerConfigFile function and matchesBase helper were deleted in 08-06 so no component can be wired to the defective path
+- [Phase 08]: setFieldReplacing deep-copies message-typed values — the layerer's accumulated file layer outlives a single call and must not alias a caller's message
 - [Phase 08]: Use default consul address 127.0.0.1:8500 when StoreAddress empty in inserter (parity with etcd/zookeeper defaults)
 - [Phase 09]: NewTestProtoconfRoot delegates to testdata.SmallTestDir() which already provides isolated temp dir per call
 - [Phase 09]: testutil imports no protoconf service protos to prevent circular dependency risk across all packages
@@ -143,6 +146,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-01T13:53:25.953Z
+Last session: 2026-09-01T14:30:00.000Z
 Stopped at: Phase 08 complete, ready to plan Phase 2
 Resume file: None
