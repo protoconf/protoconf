@@ -14,6 +14,11 @@ jobs:
   trunk:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    # trunk-action posts findings as check annotations, which the default
+    # read-only token cannot create (403 Resource not accessible).
+    permissions:
+      contents: read
+      checks: write
     steps:
       - uses: actions/checkout@v4
 
