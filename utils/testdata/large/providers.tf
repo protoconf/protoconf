@@ -1,2 +1,0 @@
-provider "google" {}
-provider "aws" {}

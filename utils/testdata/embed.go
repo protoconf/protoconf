@@ -16,7 +16,7 @@ import (
 	"github.com/go-git/go-git/v5/plumbing/object"
 )
 
-//go:embed bad_proto large small
+//go:embed bad_proto small
 var TestData embed.FS
 
 func TestDir(name string) string {
@@ -108,10 +108,6 @@ func TestDir(name string) string {
 
 func SmallTestDir() string {
 	return TestDir("small")
-}
-
-func LargeTestDir() string {
-	return TestDir("large")
 }
 
 func BadProtoTestDir() string {
