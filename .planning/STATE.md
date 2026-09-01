@@ -152,7 +152,8 @@ None yet.
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 260901-vaj | Merge 5 stale security dependency bumps (grpc, x/net, go-git, go-getter, otel) + raise Go floor to 1.25.8 | 2026-09-01 | 1817300 | [260901-vaj-merge-5-stale-security-dependency-bumps-](./quick/260901-vaj-merge-5-stale-security-dependency-bumps-/) |
-| 260901-wom | CI hardening: enforce lint via trunk gate — Lint workflow (trunk + buf breaking), repaired trunk/buf configs, hardened go.yml, consolidated renovate.json | 2026-09-01 | 47b85cd | [260901-wom-ci-hardening-enforce-lint-via-trunk-gate](./quick/260901-wom-ci-hardening-enforce-lint-via-trunk-gate/) |
+| 260901-wom | CI hardening: Lint workflow (golangci-lint + buf breaking + actionlint), buf.yaml excludes, hardened go.yml, consolidated renovate.json. Trunk job dropped — its pinned tools had rotted upstream | 2026-09-01 | 74a193b | [260901-wom-ci-hardening-enforce-lint-via-trunk-gate](./quick/260901-wom-ci-hardening-enforce-lint-via-trunk-gate/) |
+| 260902-cov | Give codecov a 1% project threshold and mark patch informational, so codecov/project stops failing on rounding noise | 2026-09-02 | 3238abe | — |
 | 3 | Give codecov a 1% threshold so codecov/project stops failing on rounding noise | 2026-09-01 | 3238abe | — |
 
 ## Session Continuity
