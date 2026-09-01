@@ -2,27 +2,48 @@
 phase: 08-cli-flag-generation-config-loading
 reviewed: 2026-09-01T00:00:00Z
 depth: standard
-files_reviewed: 14
+files_reviewed: 34
 files_reviewed_list:
   - agent/command.go
   - agent/command_test.go
+  - agent/configmaps/configmaps.go
+  - agent/configmaps/configmaps_test.go
+  - agent/dummykv/dummykv_test.go
+  - agent/filekv/filekv_test.go
+  - agent/kv_agent_rollout_impl_test.go
+  - agent/otelkv/otelkv_test.go
   - CHANGELOG.md
+  - cmd/protoconf/main.go
   - command/command.go
+  - command/command_test.go
   - command/configfile.go
   - command/configfile_test.go
   - compiler/command.go
   - compiler/command_test.go
+  - compiler/lib/parser/parser_test.go
+  - compiler/starproto/any_test.go
+  - compiler/starproto/field_test.go
+  - compiler/starproto/message_test.go
+  - devserver/command.go
+  - devserver/command_test.go
+  - fmt/command.go
+  - fmt/command_test.go
+  - go.mod
+  - go.sum
   - inserter/inserter.go
   - inserter/inserter_test.go
+  - mod/command.go
   - mutate/mutate.go
   - mutate/mutate_test.go
   - server/server.go
   - server/server_test.go
+  - test/e2e_test.go
+  - testutil/testutil.go
 findings:
-  critical: 1
-  warning: 2
-  info: 1
-  total: 4
+  critical: 0
+  warning: 3
+  info: 2
+  total: 5
 status: issues_found
 ---
 
@@ -30,258 +51,177 @@ status: issues_found
 
 **Reviewed:** 2026-09-01T00:00:00Z
 **Depth:** standard
-**Files Reviewed:** 14
+**Files Reviewed:** 34
 **Status:** issues_found
 
 ## Summary
 
-All five CLI components (`agent`, `compile`, `insert`, `mutate`, `serve`) consistently call the new
-`command.LayerConfigFile` abstraction from their `-config-file` flag handler, none of them
-reassign the `c.config` pointer (the historical `serve` bug this phase fixed), and `base` is
-always captured via `proto.Clone` before `lpc.Environment()` runs, so the single-config-file /
-single-env-var precedence scenarios that the test suites exercise are all correctly implemented
-and pass. The `matchesBase`/`setFieldReplacing` machinery in `command/configfile.go` is careful
-and well-commented for the cases it was built and tested for (scalars, lists of scalars, one
-config file at a time).
+This is a re-review of Phase 08 (CLI flag generation & config precedence), superseding the
+earlier 08-REVIEW.md at this path. The phase migrated `agent`, `serve`, `compile`, `insert`, and
+`mutate` off manual `cliConfig` structs onto libprotoconf-generated flags, then replaced a
+value-comparison provenance guess with a real `ConfigLayerer` in `command/configfile.go` that
+tracks env/flag provenance explicitly across repeated `-config-file` occurrences.
 
-However, the abstraction has a genuine, reproducible correctness gap for the **multiple
-`-config-file` flags in one invocation** scenario, which is itself an explicitly supported and
-tested feature (`server/server_test.go`'s `later_config_file_wins` /
-`same_config_file_twice_is_idempotent` cases, and `command/configfile_test.go`'s
-`second_file_overrides_first`). I built and ran standalone reproductions (against the actual
-`command.LayerConfigFile` function, then discarded — no source files were modified) that prove
-two independent ways the documented `flags > env vars > config file > proto defaults` precedence
-silently breaks once two `-config-file` flags are combined with an env var or with a message-typed
-field. See CR-01 below for both reproductions and root-cause analysis.
+I traced `ConfigLayerer.LayerConfigFile`'s six numbered steps by hand against every call site
+(`agent/command.go`, `server/server.go`, `compiler/command.go`, `inserter/inserter.go`,
+`mutate/mutate.go`) and against every scenario exercised in `configfile_test.go` and each
+component's `Test_cliCommand_ConfigPrecedence` / `Test_cliCommand_MultiConfigFilePrecedence`
+suite: single file, two files, three files, coincidental env/file value collisions, message-typed
+fields (`tls_config`, `store_tls`), and repeated-string fields (`store_address`). The provenance
+bookkeeping (`markExplicitFlags` + the preFile-vs-lastResult diff), the deep-copy fix in
+`setFieldReplacing`'s message arm (IN-01), and the list/map "replace not append" correction all
+hold up under this tracing — I could not construct a case in the documented precedence contract
+(flags > env vars > config file > proto defaults) that the current implementation gets wrong. The
+two previously-open gaps referenced in the code's own comments (VERIFICATION.md #7 and #8) are
+now closed and covered by regression tests.
 
-I also found a pre-existing type-conversion bug in `mutate.go`'s `TYPE_SINT32` handling (present
-in the reviewed file, though not introduced by this phase's diffs) and a consistently-repeated
-unchecked error return (`lpc.Environment()`) across all five `Command()` constructors.
-
-## Critical Issues
-
-### CR-01: `LayerConfigFile`'s precedence guarantee breaks when 2+ `-config-file` flags are combined with an env var (scalars) or with any message-typed field (deterministically)
-
-**File:** `command/configfile.go:22-127` (root cause), affects every caller: `agent/command.go:86-103`, `compiler/command.go:198-214`, `server/server.go:226-242`, `inserter/inserter.go:151-167`, `mutate/mutate.go:282-298`
-
-**Issue:**
-
-`matchesBase` decides whether a field's value in `preFile` (the pre-unmarshal snapshot, i.e. "env
-vars + already-parsed flags") should override what the just-loaded config file set, by comparing
-`preFile`'s value against `prev` (`proto.Clone(base)`, taken *before* the current file is folded
-into `base`). This works for the tested single-config-file case, but `base` is not an immutable
-factory-default snapshot — every processed config file's raw values get folded into it
-(`proto.Merge(base, live)` at `configfile.go:32`). That makes `prev` a moving target: after
-processing file N, `base`/`prev` reflects file N's *raw* value for every field it touched, not the
-*effective* (env/flag-overridden) value that actually ended up in `live`. Two independent classes
-of bug fall out of this:
-
-**1) Scalar/list fields — silent break when an env var (or already-parsed flag) value
-coincidentally equals what an earlier `-config-file` set for the same field.** Reproduced with a
-standalone test against `LayerConfigFile` directly (test file created, run, and then deleted — no
-tracked source was modified):
-
-```go
-base := &protoconf_server_config.ServerConfig{GrpcAddress: ":4301"}
-
-// file1: env is already ":9999" before file1 loads; file1 happens to also set ":9999".
-preFile1 := &protoconf_server_config.ServerConfig{GrpcAddress: ":9999"}
-live1 := &protoconf_server_config.ServerConfig{GrpcAddress: ":9999"}
-LayerConfigFile(live1, base, preFile1)
-// live1.GrpcAddress == ":9999" -- correct so far.
-
-// file2: sets a *different* value. Per PCLI-09, env must still win (":9999").
-preFile2 := proto.Clone(live1).(*protoconf_server_config.ServerConfig) // still ":9999"
-live2 := &protoconf_server_config.ServerConfig{GrpcAddress: ":8888"}
-LayerConfigFile(live2, base, preFile2)
-
-// ACTUAL: live2.GrpcAddress == ":8888"  <-- env value silently lost.
-// EXPECTED (and what every other test in this suite asserts as the contract): ":9999".
-```
-
-Trace: after file1, `base.GrpcAddress` becomes `":9999"` (file1's own raw value, which
-*coincidentally* equals the env value). When file2 is processed, `prev = clone(base) = ":9999"`
-and `preFile2 = ":9999"` (still the real env value) — they're equal, so `matchesBase` returns
-`true` ("this looks unchanged, leave the file's value alone"), and file2's `":8888"` is kept
-instead of the env override being reapplied. This is not a corner case tied to the already-excluded
-"value equals proto3 zero value" limitation — it is a distinct bug where an env/flag override is
-lost specifically because an *earlier* config file's value happened to match it.
-
-**2) Message-typed fields — deterministic break on *any* two `-config-file` flags, no env
-required.** `matchesBase` hard-codes `return false` (`configfile.go:120-124`) for
-`MessageKind`/`GroupKind`/`BytesKind`/map fields — i.e. it always treats them as "explicitly
-supplied," bypassing the equality check lists get. `AgentConfig.tls_config` and
-`AgentConfig.store_tls` (`agent/config/v1/agent_config.proto:23-24`) are exactly such fields, and
-neither `agent/command_test.go` nor `command/configfile_test.go` exercises them. Reproduced
-(again as a throwaway test, not committed):
-
-```go
-base := &protoconf_agent_config.AgentConfig{}
-
-preFile1 := &protoconf_agent_config.AgentConfig{}
-live1 := &protoconf_agent_config.AgentConfig{
-    TlsConfig: &protoconf_agent_config.AgentConfig_TLSConfig{
-        Cert: &protoconf_agent_config.AgentConfig_TLSConfig_CertFile{CertFile: "a.pem"},
-    },
-}
-LayerConfigFile(live1, base, preFile1) // live1.TlsConfig.CertFile == "a.pem"
-
-preFile2 := proto.Clone(live1).(*protoconf_agent_config.AgentConfig)
-live2 := &protoconf_agent_config.AgentConfig{
-    TlsConfig: &protoconf_agent_config.AgentConfig_TLSConfig{
-        Cert: &protoconf_agent_config.AgentConfig_TLSConfig_CertFile{CertFile: "b.pem"},
-    },
-}
-LayerConfigFile(live2, base, preFile2)
-
-// ACTUAL: live2.TlsConfig.CertFile == "a.pem"  <-- file2's explicit value silently discarded.
-// EXPECTED (per the "later config file wins" guarantee this phase documents and tests for
-// scalars/lists): "b.pem".
-```
-
-i.e. `protoconf agent -config-file first.json -config-file second.json` where both files set
-`tls-config.cert-file` to different values silently keeps the *first* file's certificate/key,
-regardless of what the second, later, presumably-more-specific file says — a real operational and
-security-relevant footgun (wrong TLS material silently in effect) for a documented, working
-feature (repeatable `-config-file`).
-
-Both reproductions were verified against the actual code by running
-`go test ./command/... -run TestRepro_ -v`; both fail with the "BUG CONFIRMED" messages shown
-above. The throwaway test file was deleted afterward and is not part of this diff.
-
-**Fix:**
-
-The two sub-bugs need different fixes; neither is a one-line patch and I'd caution against a
-partial fix that only "feels" right without re-running the full `command/configfile_test.go` and
-per-component `Test_cliCommand_ConfigPrecedence` suites:
-
-- For the **message-typed field case**, `matchesBase`'s comment claims composite values are "not
-  comparable with `==`" and treats that as license to always return `false`. That's true for `==`,
-  but the file already solves exactly this problem for lists via element-wise comparison — the
-  same technique works here via `proto.Equal`:
-
-  ```go
-  if fd.IsMap() || fd.Kind() == protoreflect.MessageKind || fd.Kind() == protoreflect.GroupKind {
-      if !v.Message().IsValid() || !prev.Get(fd).Message().IsValid() {
-          return false
-      }
-      return proto.Equal(v.Message().Interface(), prev.Get(fd).Message().Interface())
-  }
-  if fd.Kind() == protoreflect.BytesKind {
-      return false // still not safely comparable; documented limitation stays for bytes/map.
-  }
-  ```
-
-  I traced this change against the existing message-field repro above and it produces the correct
-  result (file2's `b.pem` wins), without touching the scalar/list paths that the current test
-  suite already locks in. It should still be added under a test in
-  `command/configfile_test.go` (e.g. using `AgentConfig.TlsConfig` or a small local message type)
-  before landing, since it's currently entirely uncovered.
-
-- For the **scalar/list coincidental-value case**, there is no safe drop-in fix: I also traced
-  "compare against a pristine, never-mutated factory-default snapshot instead of the evolving
-  `base`" as a candidate fix, and it *breaks* the already-passing `second_file_overrides_first` /
-  `later_config_file_wins` tests (a value carried over from an earlier file with no env/flag
-  involved would then incorrectly look "explicit" and become permanently sticky). This is because
-  value-equality against any single baseline cannot, in general, distinguish "value carried over
-  from an earlier config file" from "value explicitly supplied by an env var or flag" when the two
-  coincide. A correct fix needs real provenance tracking (e.g. a field-number set populated once,
-  right after `lpc.Environment()` runs and before any flag/config-file parsing, by diffing
-  `c.config` against the pristine `base` snapshot — capturing exactly the fields env explicitly
-  set — and a similar mechanism for flags parsed before this `-config-file` occurrence), not value
-  comparison. Given the complexity, this should at minimum be turned into a tracked, explicitly
-  documented limitation (parallel to the existing "consul == enum 0" note) rather than left as an
-  undocumented, untested gap, since right now nothing in the code or test suite calls it out and a
-  user combining `-config-file` twice with an env var can silently get the wrong server address,
-  auth token, or store address.
+I did find one real precedence gap the code and tests do not cover (later config files cannot
+clear a repeated/map field an earlier file set to a non-empty value, because proto3 implicit
+presence makes an explicitly-empty repeated field indistinguishable from "not set" — see WR-01),
+one pre-existing but load-bearing type-conversion bug in a file this phase substantially rewrote
+(`mutate/mutate.go`'s `TYPE_SINT32` case, WR-02), and a maintainability concern in the ~20-line
+`ConfigLayerer` wiring block that is now duplicated verbatim across all five CLI components
+(WR-03) — the exact kind of duplication that made the prior gap-closure rounds (08-05, 08-06)
+necessary in the first place. No critical/security findings.
 
 ## Warnings
 
-### WR-01: `mutate.go`'s `TYPE_SINT32` branch converts to the wrong Go type, breaking `-field` for any `sint32` proto field
+### WR-01: Later config file cannot clear an earlier file's repeated/map field to empty
+
+**File:** `command/configfile.go:36-41` (list arm of `setFieldReplacing`), exercised via
+`ConfigLayerer.LayerConfigFile` steps 3-4 (`command/configfile.go:143-164`)
+
+**Issue:** `setFieldReplacing`'s list arm correctly *replaces* (rather than appends to) a
+repeated field when the new file sets a non-empty list. But the correction is only invoked when
+`live.ProtoReflect().Range` visits the field — and per proto3 implicit-presence semantics,
+`protoreflect.Message.Range`/`Has` report a repeated field as absent when its length is 0,
+regardless of whether the just-loaded config file explicitly set it to `[]`. Concretely: file A
+sets `inserter.store_address = ["a:1"]`; file B explicitly sets `"store-address": []` intending
+to reset it to the default/empty. Because `live.store_address` has length 0 after loading file B,
+`Range` never visits it in step 3, `fileLayer.store_address` keeps `["a:1"]` from file A, and the
+final result still contains `["a:1"]` — the opposite of file B's stated intent, and inconsistent
+with `LayerConfigFile`'s doc comment ("The order ... is load-bearing: recording provenance before
+folding the file is the whole fix" — this case isn't about provenance, it's about the file layer
+itself never being able to shrink). The existing doc comment on `ConfigLayerer` (lines 59-74)
+documents an analogous zero-value limitation for scalars/bools/enums but does not call out this
+repeated/map-field variant, and none of the `same_file_twice_is_idempotent_for_list` /
+`second_file_replaces_first_list` tests in `configfile_test.go` exercise an explicit-empty-list
+row.
+
+**Fix:** Either document this as a third accepted limitation alongside the existing two (cheapest
+fix — add it to the doc comment on `ConfigLayerer` at `command/configfile.go:59-74`), or, if
+resettable list fields are actually needed, track per-field "explicitly present in this file"
+using the raw decoded document instead of `protoreflect.Message.Range` (e.g. by having
+`lpc.Unmarshal` report presence via a `protojson`-style `FieldMask` prior to reset). Given this is
+an edge case with no test coverage either way, at minimum add a `configfile_test.go` row proving
+current behavior so a future change to `setFieldReplacing` doesn't silently regress either
+direction without a failing test noticing.
+
+### WR-02: `mutate` CLI sets SINT32 fields with a `uint32` conversion instead of `int32`
 
 **File:** `mutate/mutate.go:159-163`
 
-**Issue:** Every other signed 32-bit numeric kind (`TYPE_INT32`, `TYPE_SFIXED32`) uses
-`int32(s.(int64))` as the type converter passed to `setNumeric`. `TYPE_SINT32` instead uses
-`uint32(s.(int64))` — the same converter as `TYPE_UINT32` just above it:
-
+**Issue:**
 ```go
 case descriptorpb.FieldDescriptorProto_TYPE_SINT32:
     if err := setNumeric(msg, ret[0], ret[1], func(s interface{}) interface{} { return uint32(s.(int64)) }); err != nil {
 ```
-
-`dynamic.Message.TrySetFieldByName` validates the Go type against the field's descriptor kind;
-`sint32` fields expect `int32`, not `uint32`. Any `mutate -field name=value` call targeting a
-`sint32` field will fail type validation, log `"error setting field"`, and `Run` returns exit code
-1 — the feature is completely non-functional for this one proto field kind, and there's no test
-coverage for it (`mutate_test.go`'s `TestSetNumeric` only exercises `google.protobuf.Duration`'s
-`int64`/`int32` fields via `identityTyper`/`int32Typer`, never the `sint32` branch specifically).
-This predates phase 08 (confirmed via `git log -p -- mutate/mutate.go`, present since the
-`dpb.FieldDescriptorProto_TYPE_SINT32` era before the `descriptorpb` rename), but it is live in the
-file under review and worth fixing while the surrounding switch is being touched.
+This case (evidently copy-pasted from the `TYPE_UINT32` case two blocks above at line 144-148)
+converts the parsed `int64` to `uint32` for a `sint32`-typed field. `dynamic.Message.TrySetField`
+type-checks the Go value against the field's Go kind, so setting a `sint32` field with a `uint32`
+either fails outright (logged via `slog.Error("error setting field", ...)` at line 246-248 inside
+`setField`, silently swallowed since `setNumeric`'s caller only checks the *parsing* error, not
+whether the subsequent `msg.TrySetFieldByName` succeeded — see `setField` at line 243-248, which
+logs and returns without propagating) or, worse, silently reinterprets negative values. Either
+way, `protoconf mutate -field somesint32field=-5 ...` cannot set that field correctly today. This
+predates this phase's rewrite of `mutate/mutate.go`'s CLI wiring (the switch statement itself is
+untouched by this diff — confirmed via `git diff` against the parent commit), but it is present
+in a file this phase substantially changed and is squarely a logic/correctness bug.
 
 **Fix:**
 ```go
 case descriptorpb.FieldDescriptorProto_TYPE_SINT32:
     if err := setNumeric(msg, ret[0], ret[1], func(s interface{}) interface{} { return int32(s.(int64)) }); err != nil {
-        slog.Error("error setting field", "field", ret[0], "error", err)
-        return 1
-    }
 ```
-Add a `sint32`/`sint64` case to `TestSetNumeric` (or a dedicated dynamic message with sint32/64
-fields) so a regression here fails a test instead of silently breaking a field type.
+Also consider making `setField` (line 243-248) return the `TrySetFieldByName` error to its caller
+instead of only logging it, so a type-mismatch like this one surfaces as a non-zero exit code
+rather than a log line the caller may not see (mutate's exit path continues after `setField`
+logs, meaning the command reports success/continues even when a field failed to set).
 
-### WR-02: `lpc.Environment()`'s error return is discarded in all five `Command()` constructors
+### WR-03: ConfigLayerer wiring is duplicated near-verbatim across all five CLI components
 
-**File:** `agent/command.go:64`, `compiler/command.go:195`, `server/server.go:223`,
-`inserter/inserter.go:148`, `mutate/mutate.go:279`
+**Files:** `agent/command.go:57-111`, `server/server.go:217-249`, `compiler/command.go:189-221`,
+`inserter/inserter.go:142-174`, `mutate/mutate.go:272-305`
 
-**Issue:** Every component calls `lpc.Environment()` as a bare statement, discarding its `error`
-return:
+**Issue:** Each `Command()` factory repeats the identical ~20-line sequence: clone `c.config`
+into `base` before `lpc.Environment()`, call `lpc.Environment()`, build the `flag.FlagSet`, call
+`lpc.PopulateFlagSet`, construct `command.NewConfigLayerer(base, c.flag)`, then register a
+`config-file` `flag.Func` whose body — read file, clone `c.config` into `preFile`, call
+`lpc.Unmarshal`, call `layerer.LayerConfigFile(c.config, preFile)` — is byte-for-byte identical
+except for the config type and the log/usage string. The phase's own history (08-05, 08-06
+gap-closure rounds referenced in `command/configfile.go`'s comments) shows that getting this
+sequencing right is subtle (ordering of `base` clone vs. `Environment()`, `NewConfigLayerer`
+timing relative to `PopulateFlagSet`/`Parse`), which is exactly the kind of invariant that a
+5x-duplicated block is likely to drift on the next time one component needs a fix and the other
+four are missed.
 
+**Fix:** Extract a shared helper in `command/configfile.go`, e.g.
 ```go
-base := proto.Clone(c.config)
-lpc.Environment()
-c.flag = flag.NewFlagSet(...)
-```
-
-In the currently-vendored `libprotoconf@v0.1.0`, `Environment()`'s internal `iterateFields`
-callback also swallows the per-field `flaggable.Set` error and always returns `nil`, so this is
-functionally a no-op today — but that's an implementation detail of a dependency this package
-doesn't control, and relying on it means a future `libprotoconf` release that starts propagating a
-malformed-env-var error (e.g. an invalid enum string in `PROTOCONF_AGENT_STORE`) would fail
-silently here instead of surfacing to the operator, with no compiler warning to catch the
-regression since the return value is never named. The pattern is duplicated identically five
-times, so a fix in one place (or a lint rule) is cheap.
-
-**Fix:**
-```go
-if err := lpc.Environment(); err != nil {
-    return nil, fmt.Errorf("failed to read environment variables: %w", err)
+func RegisterConfigFileFlag(fs *flag.FlagSet, lpc *configtool.Config, config proto.Message, envPrefix, usage string) {
+    base := proto.Clone(config)
+    lpc.Environment()
+    lpc.PopulateFlagSet(fs)
+    layerer := NewConfigLayerer(base, fs)
+    fs.Func("config-file", usage, func(filename string) error {
+        b, err := os.ReadFile(filename)
+        if err != nil {
+            return fmt.Errorf("failed to read config file: %v", err)
+        }
+        preFile := proto.Clone(config)
+        if err := lpc.Unmarshal(filename, b); err != nil {
+            return fmt.Errorf("failed to parse config file: %v", err)
+        }
+        layerer.LayerConfigFile(config, preFile)
+        return nil
+    })
 }
 ```
-(`Command()` already returns `(cli.Command, error)` in every one of the five files, so this is a
-non-breaking signature-compatible change everywhere.)
+and call it from all five `Command()` factories, keeping only the `SetEnvKeyPrefix` call and any
+component-specific flag usage overrides (e.g. agent's `VisitAll` env-var doc strings) at the call
+site.
 
 ## Info
 
-### IN-01: `setFieldReplacing`'s default branch aliases the source `protoreflect.Value` for message-typed fields instead of cloning
+### IN-01: Dead helper function `newAnyDescriptor` in `compiler/starproto/any_test.go`
 
-**File:** `command/configfile.go:69-88`
+**File:** `compiler/starproto/any_test.go:13-22`
 
-**Issue:** The function's own doc comment acknowledges an aliasing hazard for repeated message
-fields ("a future repeated-message field would need `proto.Clone` per element before `Append`"),
-but the same hazard exists today, unguarded, in the `default: dst.Set(fd, v)` branch for
-*singular* message-typed fields (e.g. `AgentConfig.tls_config`) — `v` is a
-`protoreflect.Value` obtained via `Range` over `preFile` (itself only a `proto.Clone`, not
-re-cloned again here), and `dst.Set(fd, v)` installs that same submessage reference into `merged`
-without copying it first. In the current call sites this doesn't cause an observable bug because
-`preFile` is a short-lived local that nothing else mutates afterward, but it's inconsistent with
-the defensive-copying discipline the file otherwise documents and applies to lists, and it becomes
-a real hazard if `LayerConfigFile` or its helpers are ever reused in a context where `preFile` (or
-whatever supplies `v`) outlives this call or is mutated elsewhere.
+**Issue:** `newAnyDescriptor` is defined (loads the `google.protobuf.Any` descriptor) but never
+called anywhere in the package (verified via repo-wide grep). All tests in this file instead use
+`loadDurationDescriptor` from `message_test.go`. Since it's an unexported top-level function, Go
+does not error on it being unused, but it's dead code left over from test authoring.
 
-**Fix:** `dst.Set(fd, protoreflect.ValueOfMessage(v.Message().Interface().(proto.Message).ProtoReflect().New().Interface().ProtoReflect()))` is unwieldy; simplest is `dst.Set(fd, protoreflect.ValueOfMessage(proto.Clone(v.Message().Interface()).ProtoReflect()))` for the message case specifically, guarded by `fd.Kind() == protoreflect.MessageKind || fd.Kind() == protoreflect.GroupKind` before falling into the generic `default` branch.
+**Fix:** Remove `newAnyDescriptor`, or use it in place of `loadDurationDescriptor` in a test that
+actually needs the `Any` descriptor itself (as opposed to a `Duration` wrapped in `Any`).
+
+### IN-02: `agent/kv_agent_rollout_impl_test.go` spawns unsynchronized goroutines that call `t.Run`
+
+**File:** `agent/kv_agent_rollout_impl_test.go:157-190`
+
+**Issue:** `TestProtoconfKVAgentRollout_SubscribeForConfig`'s subtest body launches one goroutine
+per `want` entry (line 159), each of which calls `t.Run(want.agentChannel, ...)` using the outer
+subtest's `*testing.T`, while the outer subtest function itself continues running its own loop
+(with `time.Sleep(time.Second*2)` at line 188) and then returns without any `sync.WaitGroup` or
+channel to wait for those goroutines. Calling `t.Run` from a goroutine that may still be starting
+up after the enclosing test function has already returned is a known-fragile Go testing pattern
+(subtests started this way are not reliably tracked by the parent `T`). This pattern predates
+this phase (only a new `no_rollout` test-table row was added by this diff; the goroutine/`t.Run`
+structure itself is unchanged), so it is not a regression introduced here, but it remains a
+flakiness risk in a file this phase touched.
+
+**Fix:** Not required for this phase, but if revisited: collect results on a channel from the
+goroutines and call `t.Run` only from the main test goroutine, or use `t.Parallel()` subtests
+started synchronously before any blocking work begins.
 
 ---
 
