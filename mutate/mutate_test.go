@@ -1,6 +1,9 @@
 package mutate
 
 import (
+	"fmt"
+	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/jhump/protoreflect/desc"
@@ -225,4 +228,108 @@ func TestRun_InvalidServer(t *testing.T) {
 		"-addr=localhost:19999",
 	})
 	assert.NotEqual(t, 0, code, "invalid protoconf root should return non-zero exit code")
+}
+
+// writeConfigJSON writes a minimal mutate config JSON file setting addr and returns its path.
+// dir must already exist (e.g. t.TempDir()).
+func writeConfigJSON(t *testing.T, dir, name, addr string) string {
+	t.Helper()
+	path := filepath.Join(dir, name)
+	data := fmt.Sprintf(`{"addr": %q}`, addr)
+	require.NoError(t, os.WriteFile(path, []byte(data), 0644))
+	return path
+}
+
+// Test_cliCommand_ConfigPrecedence locks in PCLI-09: flags > env vars > config file > proto
+// defaults, in every direction and regardless of flag position in argv.
+//
+// No t.Parallel() anywhere in this test: t.Setenv forbids it.
+func Test_cliCommand_ConfigPrecedence(t *testing.T) {
+	const envKey = "PROTOCONF_MUTATE_SERVER_ADDRESS"
+	const factoryDefault = "localhost:4301"
+
+	type testCase struct {
+		name      string
+		envSet    bool
+		envVal    string
+		buildArgs func(t *testing.T, dir string) []string
+		want      string
+	}
+
+	tests := []testCase{
+		{
+			name:   "env_overrides_config_file",
+			envSet: true,
+			envVal: "env:9999",
+			buildArgs: func(t *testing.T, dir string) []string {
+				f := writeConfigJSON(t, dir, "a.json", "file:8888")
+				return []string{"-config-file", f}
+			},
+			want: "env:9999",
+		},
+		{
+			name:   "flag_overrides_env_and_file_flag_last",
+			envSet: true,
+			envVal: "env:9999",
+			buildArgs: func(t *testing.T, dir string) []string {
+				f := writeConfigJSON(t, dir, "a.json", "file:8888")
+				return []string{"-config-file", f, "-addr", "flag:7777"}
+			},
+			want: "flag:7777",
+		},
+		{
+			name:   "flag_overrides_env_and_file_flag_first",
+			envSet: true,
+			envVal: "env:9999",
+			buildArgs: func(t *testing.T, dir string) []string {
+				f := writeConfigJSON(t, dir, "a.json", "file:8888")
+				return []string{"-addr", "flag:7777", "-config-file", f}
+			},
+			want: "flag:7777",
+		},
+		{
+			name: "config_file_overrides_proto_default",
+			buildArgs: func(t *testing.T, dir string) []string {
+				f := writeConfigJSON(t, dir, "a.json", "file:8888")
+				return []string{"-config-file", f}
+			},
+			want: "file:8888",
+		},
+		{
+			name: "empty_config_file_keeps_default",
+			buildArgs: func(t *testing.T, dir string) []string {
+				f := filepath.Join(dir, "empty.json")
+				require.NoError(t, os.WriteFile(f, []byte("{}"), 0644))
+				return []string{"-config-file", f}
+			},
+			want: factoryDefault,
+		},
+		{
+			name:   "empty_env_var_is_treated_as_unset",
+			envSet: true,
+			envVal: "",
+			buildArgs: func(t *testing.T, dir string) []string {
+				f := writeConfigJSON(t, dir, "a.json", "file:8888")
+				return []string{"-config-file", f}
+			},
+			want: "file:8888",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if tt.envSet {
+				t.Setenv(envKey, tt.envVal)
+			}
+			dir := t.TempDir()
+			args := tt.buildArgs(t, dir)
+
+			cmd, err := Command()
+			require.NoError(t, err)
+			cc := cmd.(*cliCommand)
+
+			require.NoError(t, cc.flag.Parse(args))
+			assert.Equal(t, tt.want, cc.config.ServerAddress)
+		})
+	}
 }
