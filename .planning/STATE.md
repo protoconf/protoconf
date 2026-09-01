@@ -145,7 +145,6 @@ None yet.
 
 - Phase 9 (Unit Test Coverage) depends on Phase 2 (os.Exit Refactoring) so tests can test real error paths — plan Phase 9 only after Phase 2 is complete
 - Phase 10 (Integration Tests) depends on both Phase 6 (Auth) and Phase 9 (Unit Tests) — schedule last
-- `TestProtoconfKVAgentRollout_SubscribeForConfig` is a pre-existing flaky test (2–5 failures per 10 runs) — unsynchronised subscriber goroutines race the insert loop. Will make CI red at random until fixed. See quick task 260901-vaj deferred-items.
 
 ### Quick Tasks Completed
 
@@ -153,6 +152,7 @@ None yet.
 |---|-------------|------|--------|-----------|
 | 260901-vaj | Merge 5 stale security dependency bumps (grpc, x/net, go-git, go-getter, otel) + raise Go floor to 1.25.8 | 2026-09-01 | 1817300 | [260901-vaj-merge-5-stale-security-dependency-bumps-](./quick/260901-vaj-merge-5-stale-security-dependency-bumps-/) |
 | 260901-wom | CI hardening: Lint workflow (golangci-lint + buf breaking + actionlint), buf.yaml excludes, hardened go.yml, consolidated renovate.json. Trunk job dropped — its pinned tools had rotted upstream | 2026-09-01 | 74a193b | [260901-wom-ci-hardening-enforce-lint-via-trunk-gate](./quick/260901-wom-ci-hardening-enforce-lint-via-trunk-gate/) |
+| 260902-14f | Fix dummykv pubSub races — lost watcher registrations and duplicate delivery; TestProtoconfKVAgentRollout_SubscribeForConfig now 20/20 | 2026-09-02 | 807bf7b | [260902-14f-fix-dummykv-pubsub-registration-race-roo](./quick/260902-14f-fix-dummykv-pubsub-registration-race-roo/) |
 | 260902-cov | Give codecov a 1% project threshold and mark patch informational, so codecov/project stops failing on rounding noise | 2026-09-02 | 3238abe | — |
 | 3 | Give codecov a 1% threshold so codecov/project stops failing on rounding noise | 2026-09-01 | 3238abe | — |
 
