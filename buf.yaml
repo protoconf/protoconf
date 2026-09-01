@@ -1,5 +1,10 @@
 version: v1
 name: buf.build/protoconf/protoconf
+build:
+  excludes:
+    - utils/testdata
+    - examples
+    - node_modules
 breaking:
   use:
     - FILE
