@@ -482,6 +482,103 @@ func Test_cliCommand_ConfigPrecedence(t *testing.T) {
 	}
 }
 
+// writeRawConfig writes body verbatim to dir/name and returns its path. Used where
+// writeConfigJSON's signature cannot produce the needed body (an empty "{}" object or a
+// non-json-extension path). dir must already exist (e.g. t.TempDir()).
+func writeRawConfig(t *testing.T, dir, name, body string) string {
+	t.Helper()
+	path := filepath.Join(dir, name)
+	require.NoError(t, os.WriteFile(path, []byte(body), 0644))
+	return path
+}
+
+// Test_cliCommand_MultiConfigFilePrecedence is the 08-06 CLI-level regression coverage for the
+// scalar half of 08-VERIFICATION.md gap 1 (an env var whose value coincidentally equals an
+// earlier -config-file's value must still beat a later -config-file), plus the PCLI-08
+// same-file-twice and empty/unparsable-file edges. Each row drives cc.flag.Parse directly, never
+// cc.Run, matching Test_cliCommand_ConfigPrecedence's shape.
+//
+// No t.Parallel() anywhere in this test: t.Setenv forbids it.
+func Test_cliCommand_MultiConfigFilePrecedence(t *testing.T) {
+	const envKey = "PROTOCONF_SERVER_GRPC_ADDRESS"
+
+	t.Run("env_wins_over_two_files_when_first_file_coincides", func(t *testing.T) {
+		t.Setenv(envKey, ":9999")
+		dir := t.TempDir()
+		fa := writeConfigJSON(t, dir, "a.json", ":9999")
+		fb := writeConfigJSON(t, dir, "b.json", ":8888")
+
+		cmd, err := Command()
+		require.NoError(t, err)
+		cc := cmd.(*cliCommand)
+
+		require.NoError(t, cc.flag.Parse([]string{"-config-file", fa, "-config-file", fb}))
+		assert.Equal(t, ":9999", cc.config.GrpcAddress)
+	})
+
+	t.Run("flag_before_config_file_wins_when_flag_equals_factory_default", func(t *testing.T) {
+		dir := t.TempDir()
+		fa := writeConfigJSON(t, dir, "a.json", ":8888")
+
+		cmd, err := Command()
+		require.NoError(t, err)
+		cc := cmd.(*cliCommand)
+
+		require.NoError(t, cc.flag.Parse([]string{"-grpc-address", consts.ServerDefaultAddress, "-config-file", fa}))
+		assert.Equal(t, consts.ServerDefaultAddress, cc.config.GrpcAddress)
+	})
+
+	t.Run("later_file_wins_for_scalar_without_env", func(t *testing.T) {
+		dir := t.TempDir()
+		fa := writeConfigJSON(t, dir, "a.json", ":8888")
+		fb := writeConfigJSON(t, dir, "b.json", ":7777")
+
+		cmd, err := Command()
+		require.NoError(t, err)
+		cc := cmd.(*cliCommand)
+
+		require.NoError(t, cc.flag.Parse([]string{"-config-file", fa, "-config-file", fb}))
+		assert.Equal(t, ":7777", cc.config.GrpcAddress)
+	})
+
+	t.Run("same_config_file_twice_is_idempotent_across_two_flags", func(t *testing.T) {
+		dir := t.TempDir()
+		fa := writeConfigJSON(t, dir, "a.json", ":8888")
+
+		cmd, err := Command()
+		require.NoError(t, err)
+		cc := cmd.(*cliCommand)
+
+		require.NoError(t, cc.flag.Parse([]string{"-config-file", fa, "-config-file", fa}))
+		assert.Equal(t, ":8888", cc.config.GrpcAddress)
+	})
+
+	t.Run("empty_second_config_file_does_not_erase_first", func(t *testing.T) {
+		dir := t.TempDir()
+		fa := writeConfigJSON(t, dir, "a.json", ":8888")
+		fb := writeRawConfig(t, dir, "b.json", "{}")
+
+		cmd, err := Command()
+		require.NoError(t, err)
+		cc := cmd.(*cliCommand)
+
+		require.NoError(t, cc.flag.Parse([]string{"-config-file", fa, "-config-file", fb}))
+		assert.Equal(t, ":8888", cc.config.GrpcAddress)
+	})
+
+	t.Run("unparsable_config_file_extension_errors", func(t *testing.T) {
+		dir := t.TempDir()
+		fa := writeRawConfig(t, dir, "a.txt", "{}")
+
+		cmd, err := Command()
+		require.NoError(t, err)
+		cc := cmd.(*cliCommand)
+
+		err = cc.flag.Parse([]string{"-config-file", fa})
+		require.Error(t, err)
+	})
+}
+
 func Test_cliCommand_Synopsis(t *testing.T) {
 	command := &cliCommand{}
 	got := command.Synopsis()

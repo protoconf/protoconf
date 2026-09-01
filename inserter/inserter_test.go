@@ -396,3 +396,57 @@ func Test_cliCommand_ConfigPrecedence(t *testing.T) {
 		assert.Equal(t, protoconf_inserter_config.InserterConfig_consul, cc.config.Store)
 	})
 }
+
+// Test_cliCommand_MultiConfigFilePrecedence is the 08-06 CLI-level regression coverage for the
+// repeated-string half of 08-VERIFICATION.md gap 1 (an env var whose value coincidentally
+// equals an earlier -config-file's list must still beat a later -config-file), plus the
+// later-file-replaces-earlier-list guarantee across two and three files. Each row drives
+// cc.flag.Parse directly, never cc.Run, matching Test_cliCommand_ConfigPrecedence's shape.
+//
+// No t.Parallel() anywhere in this test: t.Setenv forbids it.
+func Test_cliCommand_MultiConfigFilePrecedence(t *testing.T) {
+	const storeAddressEnvKey = "PROTOCONF_INSERTER_STORE_ADDRESS"
+
+	t.Run("env_list_wins_over_two_files_when_first_file_coincides", func(t *testing.T) {
+		t.Setenv(storeAddressEnvKey, "env1:1,env2:2")
+		dir := t.TempDir()
+		fa := writeStoreAddressJSON(t, dir, "a.json", []string{"env1:1", "env2:2"}, "")
+		fb := writeStoreAddressJSON(t, dir, "b.json", []string{"file2:2"}, "")
+
+		cmd, err := Command()
+		require.NoError(t, err)
+		cc := cmd.(*cliCommand)
+
+		require.NoError(t, cc.flag.Parse([]string{"-config-file", fa, "-config-file", fb}))
+		assert.Equal(t, []string{"env1:1", "env2:2"}, cc.config.StoreAddress)
+	})
+
+	t.Run("later_file_replaces_earlier_list_without_env", func(t *testing.T) {
+		dir := t.TempDir()
+		fa := writeStoreAddressJSON(t, dir, "a.json", []string{"file1:1"}, "")
+		fb := writeStoreAddressJSON(t, dir, "b.json", []string{"file2:2"}, "")
+
+		cmd, err := Command()
+		require.NoError(t, err)
+		cc := cmd.(*cliCommand)
+
+		require.NoError(t, cc.flag.Parse([]string{"-config-file", fa, "-config-file", fb}))
+		require.Len(t, cc.config.StoreAddress, 1)
+		assert.Equal(t, []string{"file2:2"}, cc.config.StoreAddress)
+	})
+
+	t.Run("three_files_last_list_wins", func(t *testing.T) {
+		dir := t.TempDir()
+		fa := writeStoreAddressJSON(t, dir, "a.json", []string{"file1:1"}, "")
+		fb := writeStoreAddressJSON(t, dir, "b.json", []string{"file2:2"}, "")
+		fc := writeStoreAddressJSON(t, dir, "c.json", []string{"file3:3"}, "")
+
+		cmd, err := Command()
+		require.NoError(t, err)
+		cc := cmd.(*cliCommand)
+
+		require.NoError(t, cc.flag.Parse([]string{"-config-file", fa, "-config-file", fb, "-config-file", fc}))
+		require.Len(t, cc.config.StoreAddress, 1)
+		assert.Equal(t, []string{"file3:3"}, cc.config.StoreAddress)
+	})
+}
