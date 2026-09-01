@@ -177,7 +177,7 @@ Plans:
 **Gap closure round 2** *(from 08-VERIFICATION.md failed truths #7 and #8 — multi-`-config-file` precedence)*
 
 - [x] 08-05-PLAN.md — Gap closure (PCLI-09): replace value-comparison layering with provenance tracking (`command.ConfigLayerer`), proven end-to-end on the agent including `tls_config`/`store_tls`
-- [ ] 08-06-PLAN.md — Gap closure (PCLI-09): migrate server, compiler, inserter and mutate onto the layerer, remove the superseded path, add scalar and repeated-field CLI regressions
+- [x] 08-06-PLAN.md — Gap closure (PCLI-09): migrate server, compiler, inserter and mutate onto the layerer, remove the superseded path, add scalar and repeated-field CLI regressions
 
 **Cross-cutting constraints:**
 

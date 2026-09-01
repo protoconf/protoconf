@@ -18,16 +18,16 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Testing — Fix Placeholders
 
-- [ ] **TEST-07**: server/server_test.go MutateConfig test asserts response content (resolves TODO(smintz))
-- [ ] **TEST-08**: compiler/lib/parser/parser_test.go placeholder test cases are filled with real assertions
-- [ ] **TEST-09**: inserter/inserter_test.go placeholder test cases are filled with real assertions
-- [ ] **TEST-10**: agent/kv_agent_rollout_impl_test.go placeholder test cases are completed
+- [x] **TEST-07**: server/server_test.go MutateConfig test asserts response content (resolves TODO(smintz))
+- [x] **TEST-08**: compiler/lib/parser/parser_test.go placeholder test cases are filled with real assertions
+- [x] **TEST-09**: inserter/inserter_test.go placeholder test cases are filled with real assertions
+- [x] **TEST-10**: agent/kv_agent_rollout_impl_test.go placeholder test cases are completed
 
 ### Testing — Integration
 
-- [ ] **TEST-11**: e2e test suite covers the mutation flow with pre/post script execution
-- [ ] **TEST-12**: e2e test suite covers TLS-enabled gRPC connections (once TLS is implemented)
-- [ ] **TEST-13**: e2e test suite covers token-based auth flow (once auth is implemented)
+- [x] **TEST-11**: e2e test suite covers the mutation flow with pre/post script execution
+- [x] **TEST-12**: e2e test suite covers TLS-enabled gRPC connections (once TLS is implemented)
+- [x] **TEST-13**: e2e test suite covers token-based auth flow (once auth is implemented)
 
 ### Testing — Infrastructure
 
@@ -87,14 +87,14 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Proto CLI — Generation
 
-- [ ] **PCLI-05**: CLI flag parsing is generated from proto definitions for all components
-- [ ] **PCLI-06**: Generated CLI matches current flag interface (backward compatible)
+- [x] **PCLI-05**: CLI flag parsing is generated from proto definitions for all components
+- [x] **PCLI-06**: Generated CLI matches current flag interface (backward compatible)
 
 ### Proto CLI — Config Loading
 
-- [ ] **PCLI-07**: All components support config loading via environment variables (PROTOCONF_* prefix)
-- [ ] **PCLI-08**: All components support config loading via config files (JSON/YAML/protobuf)
-- [ ] **PCLI-09**: Config precedence follows: flags > env vars > config file > defaults
+- [x] **PCLI-07**: All components support config loading via environment variables (PROTOCONF_* prefix)
+- [x] **PCLI-08**: All components support config loading via config files (JSON/YAML/protobuf)
+- [x] **PCLI-09**: Config precedence follows: flags > env vars > config file > defaults
 
 ## v2 Requirements
 
@@ -153,11 +153,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PCLI-02 | Phase 7 | Complete |
 | PCLI-03 | Phase 7 | Complete |
 | PCLI-04 | Phase 7 | Complete |
-| PCLI-05 | Phase 8 | Gaps Found |
-| PCLI-06 | Phase 8 | Gaps Found |
-| PCLI-07 | Phase 8 | Gaps Found |
-| PCLI-08 | Phase 8 | Gaps Found |
-| PCLI-09 | Phase 8 | Gaps Found |
+| PCLI-05 | Phase 8 | Complete |
+| PCLI-06 | Phase 8 | Complete |
+| PCLI-07 | Phase 8 | Complete |
+| PCLI-08 | Phase 8 | Complete |
+| PCLI-09 | Phase 8 | Complete |
 | TEST-01 | Phase 9 | Complete |
 | TEST-02 | Phase 9 | Complete |
 | TEST-03 | Phase 9 | Complete |
@@ -167,13 +167,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TEST-14 | Phase 9 | Complete |
 | TEST-15 | Phase 9 | Complete |
 | TEST-16 | Phase 9 | Complete |
-| TEST-07 | Phase 10 | Pending |
-| TEST-08 | Phase 10 | Pending |
-| TEST-09 | Phase 10 | Pending |
-| TEST-10 | Phase 10 | Pending |
-| TEST-11 | Phase 10 | Pending |
-| TEST-12 | Phase 10 | Pending |
-| TEST-13 | Phase 10 | Pending |
+| TEST-07 | Phase 10 | Complete |
+| TEST-08 | Phase 10 | Complete |
+| TEST-09 | Phase 10 | Complete |
+| TEST-10 | Phase 10 | Complete |
+| TEST-11 | Phase 10 | Complete |
+| TEST-12 | Phase 10 | Complete |
+| TEST-13 | Phase 10 | Complete |
 
 **Coverage:**
 
