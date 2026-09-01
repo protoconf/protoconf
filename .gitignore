@@ -10,3 +10,4 @@ trace.out
 __debug_bin*
 
 outputs
+tls/
