@@ -13,6 +13,7 @@ import (
 
 	configtool "github.com/protoconf/libprotoconf"
 	protoconf_agent_config "github.com/protoconf/protoconf/agent/config/v1"
+	"github.com/protoconf/protoconf/command"
 )
 
 type cliCommand struct {
@@ -55,6 +56,11 @@ func Command() (cli.Command, error) {
 		}}
 	lpc := configtool.NewConfig(c.config)
 	lpc.SetEnvKeyPrefix("PROTOCONF_AGENT")
+	// base is the factory-default snapshot the config-file handler needs to tell a value
+	// explicitly supplied by an env var or flag apart from one that is merely a built-in
+	// default (see command.LayerConfigFile). Captures GrpcAddress: ":4300" and
+	// HttpAddress: ":4380".
+	base := proto.Clone(c.config)
 	lpc.Environment()
 	c.flag = flag.NewFlagSet(string(c.config.ProtoReflect().Descriptor().FullName()), flag.ContinueOnError)
 	lpc.PopulateFlagSet(c.flag)
@@ -77,18 +83,22 @@ func Command() (cli.Command, error) {
 			f.Usage = "Key-value store type\n" + f.Usage
 		}
 	})
-	c.flag.Func("config-file", "Agent configuration file (available formats: json, jsonnet, yaml, pb)", func(filename string) error {
+	c.flag.Func("config-file", "Agent configuration file (available formats: json, jsonnet, yaml, pb). Values are overridden by PROTOCONF_AGENT_* environment variables and by command-line flags.", func(filename string) error {
 		b, err := os.ReadFile(filename)
 		if err != nil {
 			return fmt.Errorf("failed to read config file: %v", err)
 		}
-		orig := proto.Clone(c.config)
+		preFile := proto.Clone(c.config)
 		err = lpc.Unmarshal(filename, b)
 		if err != nil {
 			return fmt.Errorf("failed to parse config file: %v", err)
 		}
-		proto.Merge(orig, c.config)
-		c.config, _ = orig.(*protoconf_agent_config.AgentConfig)
+		// Precedence implemented here: flags > env vars > config file > proto defaults
+		// (PCLI-09). Flags win because flag.Parse runs after lpc.Environment() and writes
+		// into this same message; see command.LayerConfigFile for the file/env/default
+		// layering. This is a change from the agent's historical behavior, where a
+		// config file previously overrode PROTOCONF_AGENT_* environment variables.
+		command.LayerConfigFile(c.config, base, preFile)
 		return nil
 	})
 

@@ -16,11 +16,12 @@ import (
 	"github.com/jhump/protoreflect/dynamic"
 	"github.com/mitchellh/cli"
 	configtool "github.com/protoconf/libprotoconf"
+	"github.com/protoconf/protoconf/command"
 	"github.com/protoconf/protoconf/compiler/lib"
 	"github.com/protoconf/protoconf/compiler/lib/parser"
 	"github.com/protoconf/protoconf/compiler/starproto"
-	protoconf_mutate_config "github.com/protoconf/protoconf/mutate/config/v1"
 	pv "github.com/protoconf/protoconf/datatypes/proto/v1"
+	protoconf_mutate_config "github.com/protoconf/protoconf/mutate/config/v1"
 	pc "github.com/protoconf/protoconf/server/api/proto/v1"
 	"github.com/protoconf/protoconf/utils"
 	"golang.org/x/net/context"
@@ -270,26 +271,29 @@ func Command() (cli.Command, error) {
 	}
 	lpc := configtool.NewConfig(c.config)
 	lpc.SetEnvKeyPrefix("PROTOCONF_MUTATE")
+	// base is the factory-default snapshot the config-file handler needs to tell a value
+	// explicitly supplied by an env var or flag apart from one that is merely a built-in
+	// default (see command.LayerConfigFile). Captures ProtoconfRoot: "./src" and
+	// ServerAddress: "localhost:4301".
+	base := proto.Clone(c.config)
 	lpc.Environment()
 	c.flag = flag.NewFlagSet(string(c.config.ProtoReflect().Descriptor().FullName()), flag.ContinueOnError)
 	lpc.PopulateFlagSet(c.flag)
-	c.flag.Func("config-file", "Mutate configuration file (available formats: json, yaml, pb)", func(filename string) error {
+	c.flag.Func("config-file", "Mutate configuration file (available formats: json, yaml, pb). Values are overridden by PROTOCONF_MUTATE_* environment variables and by command-line flags.", func(filename string) error {
 		b, err := os.ReadFile(filename)
 		if err != nil {
 			return fmt.Errorf("failed to read config file: %v", err)
 		}
-		orig := proto.Clone(c.config)
+		preFile := proto.Clone(c.config)
 		err = lpc.Unmarshal(filename, b)
 		if err != nil {
 			return fmt.Errorf("failed to parse config file: %v", err)
 		}
-		// NOTE: proto.Merge(orig, c.config) merges file values ON TOP of env var values,
-		// meaning file values override env vars. This matches the agent pattern per D-13.
-		// The stated precedence in PCLI-09 (env > file) would require the reverse merge
-		// direction, but we intentionally match the existing agent behavior here. Fixing
-		// the agent's merge direction is a separate concern outside this phase.
-		proto.Merge(orig, c.config)
-		c.config, _ = orig.(*protoconf_mutate_config.MutateConfig)
+		// Precedence implemented here: flags > env vars > config file > proto defaults
+		// (PCLI-09). Flags win because flag.Parse runs after lpc.Environment() and writes
+		// into this same message; see command.LayerConfigFile for the file/env/default
+		// layering.
+		command.LayerConfigFile(c.config, base, preFile)
 		return nil
 	})
 	return c, nil
