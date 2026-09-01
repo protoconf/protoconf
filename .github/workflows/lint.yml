@@ -21,6 +21,27 @@ jobs:
       - name: Trunk Check
         uses: trunk-io/trunk-action@v1
 
+  # trunk no longer carries golangci-lint: its v1-line pin (1.55.2) cannot
+  # typecheck a go1.25.8 module, and the v2-line tool only exists in a much
+  # newer plugins ref than the one pinned above. Run it directly instead.
+  # only-new-issues holds the line against the existing 84-issue backlog
+  # (50 errcheck, 15 govet, 15 staticcheck, 3 unused, 1 ineffassign) rather
+  # than blocking every PR on pre-existing findings.
+  golangci-lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - uses: golangci/golangci-lint-action@v9
+        with:
+          version: v2.8.0
+          only-new-issues: true
+
   buf-breaking:
     runs-on: ubuntu-latest
     timeout-minutes: 10
