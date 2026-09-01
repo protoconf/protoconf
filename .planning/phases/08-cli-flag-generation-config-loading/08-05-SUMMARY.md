@@ -219,3 +219,7 @@ None - no external service configuration required.
 ---
 *Phase: 08-cli-flag-generation-config-loading*
 *Completed: 2026-09-01*
+
+## Self-Check: PASSED
+
+All key files confirmed present on disk (`command/configfile.go`, `agent/command.go`, `agent/command_test.go`, `command/configfile_test.go`, this SUMMARY.md), and all four task/summary commit hashes (`843325c`, `9f09ab2`, `168851b`, `5cc5c41`) confirmed present in `git log --oneline --all`.

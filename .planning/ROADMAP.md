@@ -162,7 +162,7 @@ Plans:
   4. Passing a config file path loads configuration from JSON, YAML, or protobuf format
   5. Flag values override env vars, which override config file values, which override compiled defaults
 
-**Plans**: 6 plans (4 executed, 2 open gap closure)
+**Plans**: 5/6 plans executed (4 executed, 2 open gap closure)
 Plans:
 **Wave 1**
 
@@ -176,7 +176,7 @@ Plans:
 
 **Gap closure round 2** *(from 08-VERIFICATION.md failed truths #7 and #8 — multi-`-config-file` precedence)*
 
-- [ ] 08-05-PLAN.md — Gap closure (PCLI-09): replace value-comparison layering with provenance tracking (`command.ConfigLayerer`), proven end-to-end on the agent including `tls_config`/`store_tls`
+- [x] 08-05-PLAN.md — Gap closure (PCLI-09): replace value-comparison layering with provenance tracking (`command.ConfigLayerer`), proven end-to-end on the agent including `tls_config`/`store_tls`
 - [ ] 08-06-PLAN.md — Gap closure (PCLI-09): migrate server, compiler, inserter and mutate onto the layerer, remove the superseded path, add scalar and repeated-field CLI regressions
 
 **Cross-cutting constraints:**
@@ -240,6 +240,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 5. TLS Support | 2/2 | Complete   | 2026-03-28 |
 | 6. Token Auth & Script Security | 1/2 | In Progress|  |
 | 7. Proto-Defined CLI Configs | 1/1 | Complete   | 2026-03-28 |
-| 8. CLI Flag Generation & Config Loading | 4/4 | In Progress|  |
+| 8. CLI Flag Generation & Config Loading | 5/6 | In Progress|  |
 | 9. Unit Test Coverage & Infrastructure | 4/4 | Complete   | 2026-03-31 |
 | 10. Placeholder Fixes & Integration Tests | 2/2 | Complete    | 2026-03-31 |

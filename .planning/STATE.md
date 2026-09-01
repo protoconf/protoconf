@@ -4,14 +4,14 @@ milestone: v1.0
 current_phase: 08
 current_phase_name: CLI Flag Generation & Config Loading
 status: Milestone complete
-stopped_at: Completed 08-04-PLAN.md
-last_updated: "2026-09-01T12:51:00.298Z"
-state_head: d223e7fd3da6665e9d0445e2c24abe0da90dab5d
+stopped_at: Completed 08-05-PLAN.md
+last_updated: "2026-09-01T13:11:15.148Z"
+state_head: 5cc5c416ae472b09815559d488ccf39de59b2250
 progress:
   total_phases: 10
   completed_phases: 9
   total_plans: 23
-  completed_plans: 21
+  completed_plans: 22
 milestone_name: milestone
 ---
 
@@ -26,8 +26,8 @@ See: .planning/PROJECT.md (updated 2026-03-23)
 
 ## Current Position
 
-Phase: 08 (CLI Flag Generation & Config Loading) — READY TO EXECUTE
-Plan: 4 of 4
+Phase: 08 (CLI Flag Generation & Config Loading) — EXECUTING
+Plan: 2 of 6
 
 ## Performance Metrics
 
@@ -74,6 +74,7 @@ Plan: 4 of 4
 |------|----------|-------|-------|
 | Phase 08 P03 | 20min | 2 tasks | 4 files |
 | Phase 08 P04 | 25min | 3 tasks | 9 files |
+| Phase 08 P05 | 30min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -126,6 +127,8 @@ Recent decisions affecting current work:
 - [Phase 08]: command.LayerConfigFile base accumulates only the config-file layer across multiple -config-file flags, never env/flag values — Lets a second file be told apart from the first without also needing to exclude env-supplied fields from that comparison
 - [Phase 08]: Replicated 08-03's command.LayerConfigFile rewiring across compiler, inserter, mutate and agent, closing PCLI-09 project-wide
 - [Phase 08]: agent/command.go's precedence comment is newly added (not replaced) and explicitly flags the config-vs-env behavior change for operators
+- [Phase 08]: Replaced command.LayerConfigFile's value-comparison provenance with command.ConfigLayerer, a field-number provenance set recorded from flag.FlagSet.Visit and env-difference-against-lastResult — Closes VERIFICATION.md gaps #7 (env value coinciding with an earlier file's value was silently lost) and #8 (later-file-wins was inverted for message-typed tls_config/store_tls fields) at the root: 08-REVIEW.md CR-01 shows value equality against one accumulating baseline cannot distinguish explicitly-supplied from carried-over.
+- [Phase 08]: Retained LayerConfigFile and matchesBase as superseded-but-compiling free functions in command/configfile.go rather than deleting them in 08-05 — compiler, server, inserter, and mutate still call the free function; 08-06 owns migrating them onto ConfigLayerer and removing the superseded code, so 08-05 must keep the package compiling for those four components.
 
 ### Pending Todos
 
@@ -138,6 +141,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-01T10:40:32.674Z
-Stopped at: Completed 08-04-PLAN.md
+Last session: 2026-09-01T13:10:53.624Z
+Stopped at: Completed 08-05-PLAN.md
 Resume file: None
