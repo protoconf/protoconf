@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## Unreleased
+
+### ⚠ BREAKING CHANGES
+
+* **cli:** configuration precedence is now `flags > env vars > config file > proto defaults` for every CLI component (`agent`, `serve`, `compile`, `insert`, `mutate`), closing PCLI-09. Previously, `protoconf agent` let a `-config-file` value override `PROTOCONF_AGENT_*` environment variables; it no longer does. If you rely on a config file overriding an environment variable for the agent, move the value you need to win into the environment or onto the command line, or remove the now-lower-priority duplicate from the config file. The other four components (`serve`, `compile`, `insert`, `mutate`) already treated the config file as lower priority than env vars and are unaffected in practice; only `agent` changes observable behavior.
+
 ### [0.1.5](https://github.com/protoconf/protoconf/compare/v0.1.4...v0.1.5) (2022-01-17)
 
 
