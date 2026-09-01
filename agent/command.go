@@ -56,10 +56,9 @@ func Command() (cli.Command, error) {
 		}}
 	lpc := configtool.NewConfig(c.config)
 	lpc.SetEnvKeyPrefix("PROTOCONF_AGENT")
-	// base is the factory-default snapshot the config-file handler needs to tell a value
-	// explicitly supplied by an env var or flag apart from one that is merely a built-in
-	// default (see command.LayerConfigFile). Captures GrpcAddress: ":4300" and
-	// HttpAddress: ":4380".
+	// base is the pristine factory-default snapshot handed to command.NewConfigLayerer below.
+	// It is no longer mutated as an accumulator (that role now belongs to layerer.fileLayer);
+	// it captures GrpcAddress: ":4300" and HttpAddress: ":4380".
 	base := proto.Clone(c.config)
 	lpc.Environment()
 	c.flag = flag.NewFlagSet(string(c.config.ProtoReflect().Descriptor().FullName()), flag.ContinueOnError)
@@ -83,6 +82,11 @@ func Command() (cli.Command, error) {
 			f.Usage = "Key-value store type\n" + f.Usage
 		}
 	})
+	// layerer owns the accumulated config-file layer and the env/flag provenance set for
+	// this Command() instance. Constructed after PopulateFlagSet (so c.flag is fully
+	// populated) and before flag.Parse runs (so markExplicitFlags can observe flags parsed
+	// before each -config-file occurrence via c.flag.Visit).
+	layerer := command.NewConfigLayerer(base, c.flag)
 	c.flag.Func("config-file", "Agent configuration file (available formats: json, jsonnet, yaml, pb). Values are overridden by PROTOCONF_AGENT_* environment variables and by command-line flags.", func(filename string) error {
 		b, err := os.ReadFile(filename)
 		if err != nil {
@@ -95,10 +99,14 @@ func Command() (cli.Command, error) {
 		}
 		// Precedence implemented here: flags > env vars > config file > proto defaults
 		// (PCLI-09). Flags win because flag.Parse runs after lpc.Environment() and writes
-		// into this same message; see command.LayerConfigFile for the file/env/default
-		// layering. This is a change from the agent's historical behavior, where a
-		// config file previously overrode PROTOCONF_AGENT_* environment variables.
-		command.LayerConfigFile(c.config, base, preFile)
+		// into this same message; see command.ConfigLayerer for the file/env/default
+		// layering, which tracks provenance explicitly rather than inferring it from value
+		// comparison (08-REVIEW.md CR-01). This is a change from the agent's historical
+		// behavior, where a config file previously overrode PROTOCONF_AGENT_* environment
+		// variables. The ordering now holds across repeated -config-file flags and for the
+		// message-typed tls_config / store_tls fields, not only for a single file and
+		// scalar fields.
+		layerer.LayerConfigFile(c.config, preFile)
 		return nil
 	})
 
