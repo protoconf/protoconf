@@ -1,2 +1,2 @@
-grpclib==0.4.7
+grpclib==0.4.9
 h2>=4.3.0 # not directly required, pinned by Snyk to avoid a vulnerability
