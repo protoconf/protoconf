@@ -162,13 +162,13 @@ Plans:
   4. Passing a config file path loads configuration from JSON, YAML, or protobuf format
   5. Flag values override env vars, which override config file values, which override compiled defaults
 
-**Plans**: 4 plans
+**Plans**: 3/4 plans executed
 Plans:
 **Wave 1**
 
 - [x] 08-01-PLAN.md — Migrate server and compiler to libprotoconf-generated flags with env var and config file support
 - [x] 08-02-PLAN.md — Migrate inserter and mutate to libprotoconf-generated flags, remove KVStoreConfig dead code
-- [ ] 08-03-PLAN.md — Gap closure (PCLI-09): shared config-file layering helper + server env-over-file precedence, proven end-to-end
+- [x] 08-03-PLAN.md — Gap closure (PCLI-09): shared config-file layering helper + server env-over-file precedence, proven end-to-end
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -235,6 +235,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 5. TLS Support | 2/2 | Complete   | 2026-03-28 |
 | 6. Token Auth & Script Security | 1/2 | In Progress|  |
 | 7. Proto-Defined CLI Configs | 1/1 | Complete   | 2026-03-28 |
-| 8. CLI Flag Generation & Config Loading | 2/2 | Complete   | 2026-03-28 |
+| 8. CLI Flag Generation & Config Loading | 3/4 | In Progress|  |
 | 9. Unit Test Coverage & Infrastructure | 4/4 | Complete   | 2026-03-31 |
 | 10. Placeholder Fixes & Integration Tests | 2/2 | Complete    | 2026-03-31 |

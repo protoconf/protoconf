@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 current_phase: 08
-current_phase_name: cli-flag-generation-config-loading
+current_phase_name: CLI Flag Generation & Config Loading
 status: Milestone complete
-stopped_at: Completed 10-01-PLAN.md
-last_updated: "2026-09-01T09:45:07.569Z"
-state_head: 1370b17115bb6372f46284e37447590d31a883a1
+stopped_at: Completed 08-03-PLAN.md
+last_updated: "2026-09-01T10:08:14.691Z"
+state_head: 44fcc78ea5bd2f71761b0f13e24c2e5a440c542a
 progress:
   total_phases: 10
-  completed_phases: 10
+  completed_phases: 9
   total_plans: 21
-  completed_plans: 19
+  completed_plans: 20
 milestone_name: milestone
 ---
 
@@ -22,12 +22,12 @@ milestone_name: milestone
 See: .planning/PROJECT.md (updated 2026-03-23)
 
 **Core value:** Every component must be testable, consistent, and free of runtime surprises
-**Current focus:** Phase 10 — placeholder-fixes-integration-tests
+**Current focus:** Phase 08 — CLI Flag Generation & Config Loading
 
 ## Current Position
 
-Phase: 08 (cli-flag-generation-config-loading) — READY TO EXECUTE
-Plan: Not started
+Phase: 08 (CLI Flag Generation & Config Loading) — EXECUTING
+Plan: 2 of 4
 
 ## Performance Metrics
 
@@ -68,6 +68,11 @@ Plan: Not started
 | Phase 09 P03 | 600 | 2 tasks | 2 files |
 | Phase 10 P02 | 123 | 2 tasks | 1 files |
 | Phase 10 P01 | 6 | 2 tasks | 4 files |
+**Per-Plan Metrics:**
+
+| Plan | Duration | Tasks | Files |
+|------|----------|-------|-------|
+| Phase 08 P03 | 20min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -116,6 +121,8 @@ Recent decisions affecting current work:
 - [Phase 10]: makeTokenInterceptor duplicates unexported server.bearerTokenInterceptor — subtle.ConstantTimeCompare used to match production timing-safe behavior
 - [Phase 10]: with_config_rollout fixture has no proto_file field so wantProtoFile guarded by empty check to avoid false failures
 - [Phase 10]: no_rollout test case uses full 40-char commit hash to satisfy inserter[0:8] slice requirement
+- [Phase 08]: Superseded D-03's proto.Merge(orig, config) file-loading mechanism with command.LayerConfigFile, since the one-line merge-direction reversal was wrong in two independent ways — Reversing proto.Merge(orig, c.config) alone would make factory defaults in orig beat the file, and reassigning c.config orphans flags parsed after -config-file
+- [Phase 08]: command.LayerConfigFile base accumulates only the config-file layer across multiple -config-file flags, never env/flag values — Lets a second file be told apart from the first without also needing to exclude env-supplied fields from that comparison
 
 ### Pending Todos
 
@@ -128,6 +135,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-31T14:57:48.001Z
-Stopped at: Completed 10-01-PLAN.md
+Last session: 2026-09-01T10:08:14.404Z
+Stopped at: Completed 08-03-PLAN.md
 Resume file: None
