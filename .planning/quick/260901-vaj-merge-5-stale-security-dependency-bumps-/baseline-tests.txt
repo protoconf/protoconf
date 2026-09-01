@@ -1,0 +1,48 @@
+?   	github.com/protoconf/protoconf	[no test files]
+ok  	github.com/protoconf/protoconf/agent	27.807s
+?   	github.com/protoconf/protoconf/agent/api/proto/v1	[no test files]
+?   	github.com/protoconf/protoconf/agent/config/v1	[no test files]
+ok  	github.com/protoconf/protoconf/agent/configmaps	3.314s
+ok  	github.com/protoconf/protoconf/agent/dummykv	1.427s
+ok  	github.com/protoconf/protoconf/agent/filekv	7.943s
+ok  	github.com/protoconf/protoconf/agent/otelkv	3.067s
+?   	github.com/protoconf/protoconf/cmd/agent	[no test files]
+?   	github.com/protoconf/protoconf/cmd/compiler	[no test files]
+?   	github.com/protoconf/protoconf/cmd/inserter	[no test files]
+?   	github.com/protoconf/protoconf/cmd/protoconf	[no test files]
+?   	github.com/protoconf/protoconf/cmd/server	[no test files]
+ok  	github.com/protoconf/protoconf/command	3.324s
+ok  	github.com/protoconf/protoconf/compiler	5.975s
+?   	github.com/protoconf/protoconf/compiler/config/v1	[no test files]
+ok  	github.com/protoconf/protoconf/compiler/lib	34.567s
+ok  	github.com/protoconf/protoconf/compiler/lib/parser	6.737s
+?   	github.com/protoconf/protoconf/compiler/module/v1	[no test files]
+ok  	github.com/protoconf/protoconf/compiler/starproto	5.342s
+?   	github.com/protoconf/protoconf/consts	[no test files]
+?   	github.com/protoconf/protoconf/datatypes/proto/v1	[no test files]
+ok  	github.com/protoconf/protoconf/devserver	8.669s
+?   	github.com/protoconf/protoconf/examples/grpc_clients/go_client	[no test files]
+?   	github.com/protoconf/protoconf/examples/mutation/go_client	[no test files]
+?   	github.com/protoconf/protoconf/examples/protoconf/src/crawler	[no test files]
+ok  	github.com/protoconf/protoconf/fmt	5.646s
+ok  	github.com/protoconf/protoconf/importers	6.080s
+?   	github.com/protoconf/protoconf/importers/wktbuilders	[no test files]
+ok  	github.com/protoconf/protoconf/inserter	22.217s
+?   	github.com/protoconf/protoconf/inserter/config/v1	[no test files]
+?   	github.com/protoconf/protoconf/mod	[no test files]
+ok  	github.com/protoconf/protoconf/mutate	6.177s
+?   	github.com/protoconf/protoconf/mutate/config/v1	[no test files]
+?   	github.com/protoconf/protoconf/observability	[no test files]
+?   	github.com/protoconf/protoconf/pb	[no test files]
+?   	github.com/protoconf/protoconf/pb/protoconf/v1	[no test files]
+ok  	github.com/protoconf/protoconf/server	16.830s
+?   	github.com/protoconf/protoconf/server/api/proto/v1	[no test files]
+?   	github.com/protoconf/protoconf/server/config/v1	[no test files]
+ok  	github.com/protoconf/protoconf/test	10.802s
+?   	github.com/protoconf/protoconf/testutil	[no test files]
+ok  	github.com/protoconf/protoconf/utils	6.436s
+
+## Pre-existing failures
+none
+
+go version go1.25.1 darwin/arm64
