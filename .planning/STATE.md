@@ -4,9 +4,9 @@ milestone: v1.0
 current_phase: 2
 current_phase_name: os.Exit Refactoring
 status: Milestone complete
-stopped_at: Milestone v1.0 summary generated
-last_updated: "2026-09-01T14:56:09.292Z"
-state_head: d7bbd9751e8a8d6c9c5d16390813f14922cda1dd
+stopped_at: Quick task 260901-wom complete — Lint workflow + trunk/buf/go.yml/renovate hardening on ci/hardening
+last_updated: "2026-09-01T16:45:21.432Z"
+state_head: 47b85cdb5c7227b8c252aabe35744f0e123df37b
 progress:
   total_phases: 10
   completed_phases: 10
@@ -134,6 +134,8 @@ Recent decisions affecting current work:
 - [Phase 08]: Replaced command.LayerConfigFile's value-comparison provenance with command.ConfigLayerer, a field-number provenance set recorded from flag.FlagSet.Visit and env-difference-against-lastResult — Closes VERIFICATION.md gaps #7 (env value coinciding with an earlier file's value was silently lost) and #8 (later-file-wins was inverted for message-typed tls_config/store_tls fields) at the root: 08-REVIEW.md CR-01 shows value equality against one accumulating baseline cannot distinguish explicitly-supplied from carried-over.
 - [Phase 08]: Retained LayerConfigFile and matchesBase as superseded-but-compiling free functions in command/configfile.go rather than deleting them in 08-05 — compiler, server, inserter, and mutate still call the free function; 08-06 owns migrating them onto ConfigLayerer and removing the superseded code, so 08-05 must keep the package compiling for those four components.
 - [Phase 08]: Generalized command.ConfigLayerer from the agent (08-05) to serve/compile/insert/mutate and removed the superseded LayerConfigFile/matchesBase pair — Closes PCLI-09 for all five CLI components, not only the agent; leaving two layering entry points would let a future component be wired to the defective one
+- [Phase 2]: [260901-wom]: golangci-lint removed entirely from trunk.yaml rather than re-pinned — trunk CLI install blocked by sudo, no v1-line pin can typecheck go1.25.8; go build/vet/test already cover Go correctness
+- [Phase 2]: [260901-wom]: buf-lint moved to trunk lint.disabled (not deleted) — 73 findings require enum/package renames that break wire compatibility, a hard CLAUDE.md constraint
 
 ### Pending Todos
 
@@ -150,9 +152,10 @@ None yet.
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 260901-vaj | Merge 5 stale security dependency bumps (grpc, x/net, go-git, go-getter, otel) + raise Go floor to 1.25.8 | 2026-09-01 | 1817300 | [260901-vaj-merge-5-stale-security-dependency-bumps-](./quick/260901-vaj-merge-5-stale-security-dependency-bumps-/) |
+| 260901-wom | CI hardening: enforce lint via trunk gate — Lint workflow (trunk + buf breaking), repaired trunk/buf configs, hardened go.yml, consolidated renovate.json | 2026-09-01 | 47b85cd | [260901-wom-ci-hardening-enforce-lint-via-trunk-gate](./quick/260901-wom-ci-hardening-enforce-lint-via-trunk-gate/) |
 
 ## Session Continuity
 
-Last session: 2026-09-01T14:56:08.920Z
-Stopped at: Quick task 260901-vaj complete — 5 security dep bumps on deps/security-bumps
-Resume file: .planning/reports/MILESTONE_SUMMARY-v1.0.md
+Last session: 2026-09-01T16:45:21.013Z
+Stopped at: Quick task 260901-wom complete — Lint workflow + trunk/buf/go.yml/renovate hardening on ci/hardening
+Resume file: None
