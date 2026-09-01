@@ -3,12 +3,15 @@ package server
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"os"
+	"path/filepath"
 	"testing"
 	"time"
 
 	"github.com/protoconf/protoconf/compiler/lib"
+	"github.com/protoconf/protoconf/consts"
 	protoconf_pb "github.com/protoconf/protoconf/pb/protoconf/v1"
 	protoconf_server_config "github.com/protoconf/protoconf/server/config/v1"
 	"github.com/protoconf/protoconf/utils/testdata"
@@ -329,6 +332,154 @@ func Test_validateScriptPath(t *testing.T) {
 		require.Error(t, err)
 		assert.Contains(t, err.Error(), "directory")
 	})
+}
+
+// writeConfigJSON writes a minimal server config JSON file setting grpc-address and returns its
+// path. dir must already exist (e.g. t.TempDir()).
+func writeConfigJSON(t *testing.T, dir, name, grpcAddress string) string {
+	t.Helper()
+	path := filepath.Join(dir, name)
+	data := fmt.Sprintf(`{"grpc-address": %q}`, grpcAddress)
+	require.NoError(t, os.WriteFile(path, []byte(data), 0644))
+	return path
+}
+
+// Test_cliCommand_ConfigPrecedence locks in PCLI-09: flags > env vars > config file > proto
+// defaults, in every direction and regardless of flag position in argv.
+//
+// No t.Parallel() anywhere in this test: t.Setenv forbids it.
+func Test_cliCommand_ConfigPrecedence(t *testing.T) {
+	const envKey = "PROTOCONF_SERVER_GRPC_ADDRESS"
+
+	type testCase struct {
+		name      string
+		envSet    bool
+		envVal    string
+		buildArgs func(t *testing.T, dir string) []string
+		wantErr   bool
+		want      string
+	}
+
+	tests := []testCase{
+		{
+			// THIS IS THE GAP; it fails before the fix.
+			name:   "env_overrides_config_file",
+			envSet: true,
+			envVal: ":9999",
+			buildArgs: func(t *testing.T, dir string) []string {
+				f := writeConfigJSON(t, dir, "a.json", ":8888")
+				return []string{"-config-file", f}
+			},
+			want: ":9999",
+		},
+		{
+			// Also fails before the fix: the handler reassigns c.config, so the later flag
+			// lands in the orphaned message instead of the live one.
+			name:   "flag_overrides_env_and_file_flag_last",
+			envSet: true,
+			envVal: ":9999",
+			buildArgs: func(t *testing.T, dir string) []string {
+				f := writeConfigJSON(t, dir, "a.json", ":8888")
+				return []string{"-config-file", f, "-grpc-address", ":7777"}
+			},
+			want: ":7777",
+		},
+		{
+			name:   "flag_overrides_env_and_file_flag_first",
+			envSet: true,
+			envVal: ":9999",
+			buildArgs: func(t *testing.T, dir string) []string {
+				f := writeConfigJSON(t, dir, "a.json", ":8888")
+				return []string{"-grpc-address", ":7777", "-config-file", f}
+			},
+			want: ":7777",
+		},
+		{
+			name: "config_file_overrides_proto_default",
+			buildArgs: func(t *testing.T, dir string) []string {
+				f := writeConfigJSON(t, dir, "a.json", ":8888")
+				return []string{"-config-file", f}
+			},
+			want: ":8888",
+		},
+		{
+			name: "empty_config_file_keeps_default",
+			buildArgs: func(t *testing.T, dir string) []string {
+				f := filepath.Join(dir, "empty.json")
+				require.NoError(t, os.WriteFile(f, []byte("{}"), 0644))
+				return []string{"-config-file", f}
+			},
+			want: consts.ServerDefaultAddress,
+		},
+		{
+			name:   "empty_env_var_is_treated_as_unset",
+			envSet: true,
+			envVal: "",
+			buildArgs: func(t *testing.T, dir string) []string {
+				f := writeConfigJSON(t, dir, "a.json", ":8888")
+				return []string{"-config-file", f}
+			},
+			want: ":8888",
+		},
+		{
+			name:   "env_and_file_agree",
+			envSet: true,
+			envVal: ":9999",
+			buildArgs: func(t *testing.T, dir string) []string {
+				f := writeConfigJSON(t, dir, "a.json", ":9999")
+				return []string{"-config-file", f}
+			},
+			want: ":9999",
+		},
+		{
+			name: "later_config_file_wins",
+			buildArgs: func(t *testing.T, dir string) []string {
+				fa := writeConfigJSON(t, dir, "a.json", ":8888")
+				fb := writeConfigJSON(t, dir, "b.json", ":7777")
+				return []string{"-config-file", fa, "-config-file", fb}
+			},
+			want: ":7777",
+		},
+		{
+			name: "same_config_file_twice_is_idempotent",
+			buildArgs: func(t *testing.T, dir string) []string {
+				f := writeConfigJSON(t, dir, "a.json", ":8888")
+				return []string{"-config-file", f, "-config-file", f}
+			},
+			want: ":8888",
+		},
+		{
+			name: "unparsable_config_file_extension_errors",
+			buildArgs: func(t *testing.T, dir string) []string {
+				f := filepath.Join(dir, "a.txt")
+				require.NoError(t, os.WriteFile(f, []byte("{}"), 0644))
+				return []string{"-config-file", f}
+			},
+			wantErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if tt.envSet {
+				t.Setenv(envKey, tt.envVal)
+			}
+			dir := t.TempDir()
+			args := tt.buildArgs(t, dir)
+
+			cmd, err := Command()
+			require.NoError(t, err)
+			cc := cmd.(*cliCommand)
+
+			err = cc.flag.Parse(args)
+			if tt.wantErr {
+				require.Error(t, err)
+				return
+			}
+			require.NoError(t, err)
+			assert.Equal(t, tt.want, cc.config.GrpcAddress)
+		})
+	}
 }
 
 func Test_cliCommand_Synopsis(t *testing.T) {
