@@ -14,7 +14,7 @@ Wire Phase 7's proto config definitions to `libprotoconf.PopulateFlagSet` for al
 ## Implementation Decisions
 
 ### Env Var Prefix Naming — PCLI-07
-- **D-01:** Each component gets a component-specific env var prefix following the agent pattern:
+- **D-01 [folded]:** [satisfied by 08-01/08-02] Each component gets a component-specific env var prefix following the agent pattern:
   - Compiler: `PROTOCONF_COMPILER_*`
   - Server: `PROTOCONF_SERVER_*`
   - Inserter: `PROTOCONF_INSERTER_*`
@@ -22,14 +22,41 @@ Wire Phase 7's proto config definitions to `libprotoconf.PopulateFlagSet` for al
 - **D-02:** The existing `PROTOCONF_COMPILER_ADDR` manual env var becomes `PROTOCONF_COMPILER_COMPILER_ADDRESS` via libprotoconf's automatic naming. The old manual `os.Getenv("PROTOCONF_COMPILER_ADDR")` call is removed.
 
 ### Config File Loading — PCLI-08
-- **D-03:** All four components get a `--config-file` flag using the same pattern as `agent/command.go`:
+- **D-03:** All five components (the four migrated plus the pre-existing agent) get a `--config-file` flag:
   - `lpc.Unmarshal(filename, bytes)` for json/yaml/pb format support
-  - `proto.Merge(orig, config)` to merge file values with existing config
-  - Config file values are overridden by CLI flags (standard precedence)
-- **D-04:** Config file format detection follows the agent pattern — libprotoconf infers format from file extension.
+  - Layering is performed by the shared `command.LayerConfigFile` helper, which mutates the live config message in place and never reassigns the component's `config` field
+  - Config file values are overridden by env vars and by CLI flags
+
+  **Superseded (corrected 2026-09-01 during 08 gap closure):** this decision originally specified
+  `proto.Merge(orig, config)` "to merge file values with existing config", copied from
+  `agent/command.go`. That mechanism is wrong in two independent ways, both confirmed against
+  `libprotoconf@v0.1.0` source:
+  1. It merges file values *on top of* env values, producing `flags > config file > env vars`
+     — the inversion of PCLI-09 that verification caught as the phase's only gap.
+  2. `flaggable.Set` writes through `f.cfg.msg`, the message handed to `NewConfig`, resolved at
+     call time. Reassigning `config` to the merged clone unbinds the flag set, so any flag parsed
+     *after* `-config-file` was silently discarded.
+
+  See `08-03-PLAN.md` `<why_not_the_one_line_reversal>` for the full derivation.
+- **D-04 [folded]:** [satisfied by 08-01/08-02] Config file format detection follows the agent pattern — libprotoconf infers format from file extension.
 
 ### Config Precedence — PCLI-09
-- **D-05:** Precedence order: CLI flags > env vars > config file > proto defaults. This matches the agent pattern where `lpc.Environment()` is called before `lpc.PopulateFlagSet()`, and `--config-file` handler uses `proto.Merge()`.
+- **D-05:** Precedence order: CLI flags > env vars > config file > proto defaults, as stated by PCLI-09
+  and ROADMAP Success Criterion #5. `lpc.Environment()` is called before `lpc.PopulateFlagSet()`, so
+  flags override env vars. The env-over-file half is delivered by `command.LayerConfigFile` (see D-03),
+  which takes a `base` snapshot *before* `lpc.Environment()` in order to tell an operator-supplied env
+  value apart from a built-in factory default.
+
+  **Correction (2026-09-01, 08 gap closure):** the original wording attributed this ordering to the
+  agent's `proto.Merge()` pattern. That attribution was false — that pattern yields
+  `flags > config file > env vars`. The precedence goal stated here is unchanged and remains the target;
+  only the claimed mechanism was wrong. Implemented by `08-03-PLAN.md` / `08-04-PLAN.md`.
+
+  **Known limitation (tested, not a defect):** proto3 implicit presence means a zero-valued enum set
+  via an env var is indistinguishable from unset, so `PROTOCONF_INSERTER_STORE=consul` (where
+  `consul = 0`) cannot override a config file. The command-line flag `-store consul` still works as the
+  escape hatch. Pinned by `zero_value_enum_from_env_is_indistinguishable_from_unset` and
+  `flag_can_still_select_the_zero_value_enum`.
 
 ### Backward Compatibility Migration — PCLI-05, PCLI-06
 - **D-06:** Replace manual `cliConfig` structs and `flag.StringVar`/`flag.BoolVar` calls entirely with `libprotoconf.PopulateFlagSet`. Phase 7's `json_name` options (D-03 from Phase 7) ensure generated flag names match current ones exactly.
@@ -37,8 +64,12 @@ Wire Phase 7's proto config definitions to `libprotoconf.PopulateFlagSet` for al
 - **D-08:** The `Run()` method in each component reads fields from the proto config struct instead of the old `cliConfig` struct.
 
 ### DevServer Composition
-- **D-09:** DevServer does NOT get its own proto config. It creates component configs inline (AgentConfig, CompilerConfig, ServerConfig) and passes them to the component constructors, matching the current pattern where devserver constructs services directly.
-- **D-10:** DevServer's minimal flag parsing (just `protoconfRoot` positional arg) remains manual — it delegates config to composed components.
+> [informational] DevServer was not in the plan set for this phase — neither the executed plans
+> (08-01, 08-02) nor the gap-closure plans (08-03, 08-04) touch it. These two entries record the
+> intended shape for a future phase; they are not tracked deliverables of Phase 8.
+
+- **D-09 [informational]:** DevServer does NOT get its own proto config. It creates component configs inline (AgentConfig, CompilerConfig, ServerConfig) and passes them to the component constructors, matching the current pattern where devserver constructs services directly.
+- **D-10 [informational]:** DevServer's minimal flag parsing (just `protoconfRoot` positional arg) remains manual — it delegates config to composed components.
 
 ### KVStoreConfig Transition
 - **D-11:** `command.AddKVStoreFlags()` and `command.KVStoreConfig` struct become dead code after inserter migrates to its own proto config. Remove them in this phase.
@@ -69,7 +100,7 @@ Wire Phase 7's proto config definitions to `libprotoconf.PopulateFlagSet` for al
 **Downstream agents MUST read these before planning or implementing.**
 
 ### Reference implementation (agent — the pattern to replicate)
-- `agent/command.go` — Complete libprotoconf integration: NewConfig, SetEnvKeyPrefix, Environment, PopulateFlagSet, config-file handler with proto.Merge
+- `agent/command.go` — Complete libprotoconf integration: NewConfig, SetEnvKeyPrefix, Environment, PopulateFlagSet, config-file handler. **Note (08 gap closure):** its `proto.Merge(orig, c.config)` config-file handler is the source of the PCLI-09 inversion and is itself rewired by `08-04-PLAN.md`. Treat the initialization sequence (D-13) as the pattern to replicate; do NOT copy its config-file merge — use `command.LayerConfigFile` (D-03).
 - `agent/config/v1/agent_config.proto` — Proto config with json_name field options for CLI flag mapping
 
 ### Proto definitions to wire (Phase 7 output)
