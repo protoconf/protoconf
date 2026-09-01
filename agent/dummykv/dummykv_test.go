@@ -277,3 +277,56 @@ func TestGet_WithWriteOptions(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, []byte("opts-val"), pair.Value)
 }
+
+// TestWatch_NoDuplicateDeliveryRacingPut asserts that a subscriber racing a
+// concurrent Put receives that value exactly once.
+//
+// Watch registers a channel and then reads the current value; Put stores the
+// value and then publishes it. If those two pairs are not atomic with respect
+// to each other, this interleaving delivers the same value twice:
+//
+//	watcher: Channel(key)          -- registered
+//	putter:  store.Store(key, kv)  -- value now visible
+//	watcher: Get(key)              -- finds it, delivers  (#1)
+//	putter:  Publish(kv)           -- delivers again      (#2)
+//
+// A duplicate is not cosmetic: a subscriber that expects a sequence of updates
+// consumes the repeat in place of the next one and then stalls, which is how
+// this surfaced as a flake in TestProtoconfKVAgentRollout_SubscribeForConfig.
+func TestWatch_NoDuplicateDeliveryRacingPut(t *testing.T) {
+	const trials = 300
+
+	for i := 0; i < trials; i++ {
+		ctx := context.Background()
+		s, err := New(ctx, nil, &Config{})
+		require.NoError(t, err)
+
+		key := "racing-key"
+		var start sync.WaitGroup
+		start.Add(1)
+
+		// Put races Watch, released together to maximise the overlap.
+		go func() {
+			start.Wait()
+			_ = s.Put(ctx, key, []byte("v"), nil)
+		}()
+
+		start.Done()
+		ch, err := s.Watch(ctx, key, &store.ReadOptions{})
+		require.NoError(t, err)
+
+		// Exactly one delivery: take the first, then assert nothing else
+		// arrives within a short grace period.
+		select {
+		case first := <-ch:
+			require.NotNil(t, first, "trial %d: received a nil KVPair", i)
+			select {
+			case dup := <-ch:
+				t.Fatalf("trial %d: value delivered twice (second delivery: %q)", i, dup.Value)
+			case <-time.After(20 * time.Millisecond):
+			}
+		case <-time.After(2 * time.Second):
+			t.Fatalf("trial %d: no delivery at all -- the watcher registration was lost", i)
+		}
+	}
+}

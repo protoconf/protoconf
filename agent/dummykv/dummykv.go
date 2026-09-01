@@ -73,6 +73,14 @@ func (p *pubSub) Channel(key string) chan *store.KVPair {
 type Store struct {
 	channels *pubSub
 	store    *sync.Map
+	// mu orders Put's (store value, then publish) against Watch's (register
+	// channel, then read current value). Each pair must be atomic with respect
+	// to the other, or a subscriber sees the same value twice: it registers,
+	// Put stores the value, the subscriber's Get now finds it and delivers,
+	// and Put's Publish then delivers the identical value again.
+	//
+	// Held as a pointer so Store's value receivers do not copy a lock.
+	mu *sync.Mutex
 }
 
 // New creates a new Example client.
@@ -81,14 +89,19 @@ func New(ctx context.Context, endpoints []string, options *Config) (*Store, erro
 	return &Store{
 		channels: newPubSub(),
 		store:    &sync.Map{},
+		mu:       &sync.Mutex{},
 	}, nil
 }
 
 // Put a value at the specified key.
 func (s *Store) Put(ctx context.Context, key string, value []byte, opts *store.WriteOptions) error {
 	kv := &store.KVPair{Key: key, Value: value}
+	s.mu.Lock()
 	s.store.Store(key, kv)
-	go s.channels.Publish(kv)
+	// Publish under the same lock as the store write. It only spawns the
+	// per-subscriber sends, so this does not block on slow readers.
+	s.channels.Publish(kv)
+	s.mu.Unlock()
 	return nil
 }
 
@@ -117,9 +130,17 @@ func (s Store) Exists(ctx context.Context, key string, opts *store.ReadOptions) 
 
 // Watch for changes on a key.
 func (s Store) Watch(ctx context.Context, key string, opts *store.ReadOptions) (<-chan *store.KVPair, error) {
+	// Registering and reading the current value must happen together: either
+	// this whole section runs before a concurrent Put (key absent, so no
+	// initial delivery, and Put's Publish reaches us) or entirely after it
+	// (key present, so we deliver it once, and Publish has already run without
+	// us). Split them and both paths can fire for the same value.
+	s.mu.Lock()
 	ch := s.channels.Channel(key)
+	current, err := s.Get(ctx, key, opts)
+	s.mu.Unlock()
 
-	if current, err := s.Get(ctx, key, opts); err == nil {
+	if err == nil && current != nil {
 		go func(ch chan *store.KVPair) {
 			ch <- current
 		}(ch)
