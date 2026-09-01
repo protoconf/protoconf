@@ -34,41 +34,37 @@ func newStore(ctx context.Context, endpoints []string, options valkeyrie.Config)
 	return New(ctx, endpoints, cfg)
 }
 
+// topics is guarded by mu: Channel performs a read-modify-write (load,
+// append, store) that is not safe under sync.Map alone — two goroutines
+// subscribing to the same key concurrently can both read the old slice and
+// both write, silently dropping one registration. Publish takes the same
+// mutex so it never iterates a slice that Channel is mid-replace on.
 type pubSub struct {
-	topics *sync.Map
+	mu     sync.Mutex
+	topics map[string][]chan *store.KVPair
 }
 
 func newPubSub() *pubSub {
 	return &pubSub{
-		topics: &sync.Map{},
+		topics: map[string][]chan *store.KVPair{},
 	}
 }
 
 func (p *pubSub) Publish(kv *store.KVPair) {
-	result, ok := p.topics.Load(kv.Key)
-	if ok {
-		switch x := result.(type) {
-		case []chan *store.KVPair:
-			for _, ch := range x {
-				go func(ch chan *store.KVPair) {
-					ch <- kv
-				}(ch)
-			}
-		}
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	for _, ch := range p.topics[kv.Key] {
+		go func(ch chan *store.KVPair) {
+			ch <- kv
+		}(ch)
 	}
 }
 
 func (p *pubSub) Channel(key string) chan *store.KVPair {
 	ch := make(chan *store.KVPair)
-	arr := []chan *store.KVPair{ch}
-	result, ok := p.topics.Load(key)
-	if ok {
-		switch x := result.(type) {
-		case []chan *store.KVPair:
-			arr = append(arr, x...)
-		}
-	}
-	p.topics.Store(key, arr)
+	p.mu.Lock()
+	p.topics[key] = append(p.topics[key], ch)
+	p.mu.Unlock()
 	return ch
 }
 
@@ -77,7 +73,6 @@ func (p *pubSub) Channel(key string) chan *store.KVPair {
 type Store struct {
 	channels *pubSub
 	store    *sync.Map
-	mux      *sync.RWMutex
 }
 
 // New creates a new Example client.
@@ -86,7 +81,6 @@ func New(ctx context.Context, endpoints []string, options *Config) (*Store, erro
 	return &Store{
 		channels: newPubSub(),
 		store:    &sync.Map{},
-		mux:      &sync.RWMutex{},
 	}, nil
 }
 
