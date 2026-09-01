@@ -141,13 +141,17 @@ func Command() (cli.Command, error) {
 	}
 	lpc := configtool.NewConfig(c.config)
 	lpc.SetEnvKeyPrefix("PROTOCONF_INSERTER")
-	// base is the factory-default snapshot the config-file handler needs to tell a value
-	// explicitly supplied by an env var or flag apart from one that is merely a built-in
-	// default (see command.LayerConfigFile).
+	// base is the pristine factory-default snapshot handed to command.NewConfigLayerer below.
+	// It is no longer mutated as an accumulator (that role now belongs to layerer.fileLayer).
 	base := proto.Clone(c.config)
 	lpc.Environment()
 	c.flag = flag.NewFlagSet(string(c.config.ProtoReflect().Descriptor().FullName()), flag.ContinueOnError)
 	lpc.PopulateFlagSet(c.flag)
+	// layerer owns the accumulated config-file layer and the env/flag provenance set for
+	// this Command() instance. Constructed after PopulateFlagSet (so c.flag is fully
+	// populated) and before flag.Parse runs (so markExplicitFlags can observe flags parsed
+	// before each -config-file occurrence via c.flag.Visit).
+	layerer := command.NewConfigLayerer(base, c.flag)
 	c.flag.Func("config-file", "Inserter configuration file (available formats: json, yaml, pb). Values are overridden by PROTOCONF_INSERTER_* environment variables and by command-line flags.", func(filename string) error {
 		b, err := os.ReadFile(filename)
 		if err != nil {
@@ -160,9 +164,12 @@ func Command() (cli.Command, error) {
 		}
 		// Precedence implemented here: flags > env vars > config file > proto defaults
 		// (PCLI-09). Flags win because flag.Parse runs after lpc.Environment() and writes
-		// into this same message; see command.LayerConfigFile for the file/env/default
-		// layering.
-		command.LayerConfigFile(c.config, base, preFile)
+		// into this same message; see command.ConfigLayerer for the file/env/default
+		// layering, which tracks provenance explicitly rather than inferring it from value
+		// comparison (08-REVIEW.md CR-01). The ordering now holds across repeated
+		// -config-file flags and for message-typed fields, not only for a single file and
+		// scalar fields.
+		layerer.LayerConfigFile(c.config, preFile)
 		return nil
 	})
 	return c, nil
