@@ -11,23 +11,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  trunk:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    # trunk-action posts findings as check annotations, which the default
-    # read-only token cannot create (403 Resource not accessible).
-    permissions:
-      contents: read
-      checks: write
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Trunk Check
-        uses: trunk-io/trunk-action@v1
-
-  # trunk no longer carries golangci-lint: its v1-line pin (1.55.2) cannot
-  # typecheck a go1.25.8 module, and the v2-line tool only exists in a much
-  # newer plugins ref than the one pinned above. Run it directly instead.
   # only-new-issues holds the line against the existing 84-issue backlog
   # (50 errcheck, 15 govet, 15 staticcheck, 3 unused, 1 ineffassign) rather
   # than blocking every PR on pre-existing findings.
@@ -61,3 +44,12 @@ jobs:
 
       - name: Check for breaking changes
         run: buf breaking --against '.git#branch=main' --against-config buf.yaml
+
+  actionlint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Lint workflow files
+        uses: raven-actions/actionlint@v2
