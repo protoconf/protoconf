@@ -165,7 +165,8 @@ None — plan executed exactly as written. The gofmt pre-existing import-orderin
 
 ## Issues Encountered
 
-None. `pre-commit`/git hooks ran normally on both commits with no failures. The `dangerouslyDisableSandbox`-free `cp`/redirect commands in this sandbox prompt for overwrite confirmation on existing files and silently no-op when declined, which required using the `Write` tool (with content read via `git show`) instead of shell `cp`/redirect to swap `server/server.go` between its pre-fix and post-fix states for the red-first proof — noted here only because it changed the mechanics of proving RED, not the result.
+- The `dangerouslyDisableSandbox`-free `cp`/redirect commands in this sandbox prompt for overwrite confirmation on existing files and silently no-op when declined, which required using the `Write` tool (with content read via `git show`) instead of shell `cp`/redirect to swap `server/server.go` between its pre-fix and post-fix states for the red-first proof. Mechanical only — did not change the RED/GREEN result.
+- The `docs(08-03)` metadata commit (`ba0100b`) initially staged `.planning/REQUIREMENTS.md` per the standard commit-files list, which folded in pre-existing, uncommitted `TEST-07`..`TEST-13` checkbox edits that the session's `<sequential_execution>` instructions had explicitly flagged as not this plan's to touch. Caught immediately and corrected with a follow-up commit (`6e6d09b`) that restores `REQUIREMENTS.md` to its pre-08-03 committed content; the `TEST-07`..`TEST-13` edits were then re-applied to the working tree as an uncommitted local diff, exactly as they were before this session started, for their owning agent/session to commit. `requirements.mark-complete` was NOT called with `TEST-*` IDs at any point — only `PCLI-05`..`PCLI-09` were considered (and none marked, since `08-04` — a sibling plan declaring the same IDs — has not yet produced a SUMMARY, per the shared-ID gate).
 
 ## Next Phase Readiness
 
@@ -176,3 +177,19 @@ None. `pre-commit`/git hooks ran normally on both commits with no failures. The 
 ---
 *Phase: 08-cli-flag-generation-config-loading*
 *Completed: 2026-09-01*
+
+## Self-Check: PASSED
+
+- `command/configfile.go` — FOUND
+- `command/configfile_test.go` — FOUND
+- `.planning/phases/08-cli-flag-generation-config-loading/08-03-SUMMARY.md` — FOUND
+- Commit `e1f4c3a` (test: add failing test) — FOUND
+- Commit `789590b` (feat: implement LayerConfigFile) — FOUND
+- Commit `44fcc78` (test: unit-test the helper) — FOUND
+- Commit `ba0100b` (docs: plan metadata) — FOUND
+- Commit `6e6d09b` (docs: correct REQUIREMENTS.md scope) — FOUND
+- `go build ./command/... ./server/... ./cmd/...` — exits 0
+- `go test ./command ./server -count=1` — both `ok`
+- `go test ./server -run Test_cliCommand_ConfigPrecedence -count=1 -v` — 10/10 `--- PASS`
+- `go test ./command -run TestLayerConfigFile -count=1 -v` — 12/12 `--- PASS`
+- `git diff --exit-code go.mod go.sum` — no changes
