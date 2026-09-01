@@ -28,7 +28,13 @@ jobs:
         run: go build -v ./...
 
       - name: Run coverage
-        run: export GOROOT=$(go env GOROOT); go test -race -coverprofile=coverage.txt -covermode=atomic -v ./... -json > test_results.json
+        run: |
+          # SC2155: declare and assign separately. This GOROOT export looks like
+          # a stale workaround -- setup-go already sets it -- but it is left in
+          # place rather than deleted, since nothing here proves it is dead.
+          GOROOT="$(go env GOROOT)"
+          export GOROOT
+          go test -race -coverprofile=coverage.txt -covermode=atomic -v ./... -json > test_results.json
 
       - name: Test report
         if: always()
