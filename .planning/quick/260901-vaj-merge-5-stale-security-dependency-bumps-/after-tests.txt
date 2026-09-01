@@ -1,0 +1,43 @@
+?   	github.com/protoconf/protoconf	[no test files]
+ok  	github.com/protoconf/protoconf/agent	27.719s
+?   	github.com/protoconf/protoconf/agent/api/proto/v1	[no test files]
+?   	github.com/protoconf/protoconf/agent/config/v1	[no test files]
+ok  	github.com/protoconf/protoconf/agent/configmaps	2.059s
+ok  	github.com/protoconf/protoconf/agent/dummykv	1.807s
+ok  	github.com/protoconf/protoconf/agent/filekv	8.444s
+ok  	github.com/protoconf/protoconf/agent/otelkv	2.224s
+?   	github.com/protoconf/protoconf/cmd/agent	[no test files]
+?   	github.com/protoconf/protoconf/cmd/compiler	[no test files]
+?   	github.com/protoconf/protoconf/cmd/inserter	[no test files]
+?   	github.com/protoconf/protoconf/cmd/protoconf	[no test files]
+?   	github.com/protoconf/protoconf/cmd/server	[no test files]
+ok  	github.com/protoconf/protoconf/command	3.413s
+ok  	github.com/protoconf/protoconf/compiler	6.072s
+?   	github.com/protoconf/protoconf/compiler/config/v1	[no test files]
+ok  	github.com/protoconf/protoconf/compiler/lib	37.104s
+ok  	github.com/protoconf/protoconf/compiler/lib/parser	6.541s
+?   	github.com/protoconf/protoconf/compiler/module/v1	[no test files]
+ok  	github.com/protoconf/protoconf/compiler/starproto	5.497s
+?   	github.com/protoconf/protoconf/consts	[no test files]
+?   	github.com/protoconf/protoconf/datatypes/proto/v1	[no test files]
+ok  	github.com/protoconf/protoconf/devserver	8.794s
+?   	github.com/protoconf/protoconf/examples/grpc_clients/go_client	[no test files]
+?   	github.com/protoconf/protoconf/examples/mutation/go_client	[no test files]
+?   	github.com/protoconf/protoconf/examples/protoconf/src/crawler	[no test files]
+ok  	github.com/protoconf/protoconf/fmt	5.815s
+ok  	github.com/protoconf/protoconf/importers	6.290s
+?   	github.com/protoconf/protoconf/importers/wktbuilders	[no test files]
+ok  	github.com/protoconf/protoconf/inserter	22.058s
+?   	github.com/protoconf/protoconf/inserter/config/v1	[no test files]
+?   	github.com/protoconf/protoconf/mod	[no test files]
+ok  	github.com/protoconf/protoconf/mutate	6.716s
+?   	github.com/protoconf/protoconf/mutate/config/v1	[no test files]
+?   	github.com/protoconf/protoconf/observability	[no test files]
+?   	github.com/protoconf/protoconf/pb	[no test files]
+?   	github.com/protoconf/protoconf/pb/protoconf/v1	[no test files]
+ok  	github.com/protoconf/protoconf/server	16.722s
+?   	github.com/protoconf/protoconf/server/api/proto/v1	[no test files]
+?   	github.com/protoconf/protoconf/server/config/v1	[no test files]
+ok  	github.com/protoconf/protoconf/test	10.495s
+?   	github.com/protoconf/protoconf/testutil	[no test files]
+ok  	github.com/protoconf/protoconf/utils	6.451s
