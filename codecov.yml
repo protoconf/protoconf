@@ -1,2 +1,24 @@
+# Generated protobuf code is excluded from coverage entirely.
 ignore:
   - "**/*.pb.go"
+
+coverage:
+  status:
+    # Without an explicit status block Codecov defaults to `threshold: 0%`, which
+    # fails the check on any decrease at all -- including the sub-percent drift
+    # you get from Go's per-run coverage rounding and from timing-sensitive tests
+    # taking different branches. That fired on #513, a pure dependency bump that
+    # changed no Go source. A 1% band absorbs the noise while still catching a
+    # real regression.
+    project:
+      default:
+        target: auto
+        threshold: 1%
+    # Patch coverage is advisory: it reports on the diff but does not block. A
+    # dependency bump or a config-only change has no coverable lines, and a
+    # blocking patch status turns those into red checks for no signal.
+    patch:
+      default:
+        target: auto
+        threshold: 1%
+        informational: true
