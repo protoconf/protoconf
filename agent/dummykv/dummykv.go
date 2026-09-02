@@ -4,7 +4,6 @@ package dummykv
 
 import (
 	"context"
-	"fmt"
 	"sync"
 
 	"github.com/kvtools/valkeyrie"
@@ -113,7 +112,7 @@ func (s Store) Get(ctx context.Context, key string, opts *store.ReadOptions) (*s
 			return x, nil
 		}
 	}
-	return nil, fmt.Errorf("could not find key %s", key)
+	return nil, store.ErrKeyNotFound
 }
 
 // Delete the value at the specified key.
