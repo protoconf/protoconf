@@ -2,6 +2,7 @@ package agent
 
 import (
 	"context"
+	"encoding/json"
 	"sync"
 	"testing"
 	"time"
@@ -37,6 +38,14 @@ func TestProtoconfKVAgentRollout_GetConfig(t *testing.T) {
 		got, err := client.GetConfig(ctx, &protoconf_pb.ConfigRequest{Path: "getconfig_rollout_test"})
 		require.NoError(t, err)
 		assert.True(t, proto.Equal(got.Value, value.Value))
+
+		// A real inserter.InsertConfig writes both config.data and config.json;
+		// this proves getRawConfigJSON's key shape matches the production
+		// layout, not just the hand-seeded dummykv fixtures in http_test.go.
+		require.NotNil(t, got.Raw)
+		assert.Equal(t, "application/json", got.Raw.ContentType)
+		var decoded any
+		assert.NoError(t, json.Unmarshal(got.Raw.Data, &decoded), "raw.data must parse as JSON")
 	})
 
 	t.Run("uninserted path returns NotFound", func(t *testing.T) {

@@ -121,6 +121,40 @@ func TestProtoconfKVAgent_GetConfig(t *testing.T) {
 		require.Error(t, err)
 		assert.Equal(t, codes.Internal, status.Code(err))
 	})
+
+	t.Run("raw is populated from a sibling config.json key", func(t *testing.T) {
+		expects := &protoconfservice.ConfigUpdate{
+			Value: newAny(&structpb.Value{Kind: &structpb.Value_StringValue{StringValue: "hello raw"}}),
+		}
+		b, _ := proto.Marshal(&protoconfvalue.ProtoconfValue{Value: expects.Value})
+		require.NoError(t, storeClient.Put(
+			ctx, "getconfig_raw_test",
+			[]byte(base64.StdEncoding.EncodeToString(b)),
+			&store.WriteOptions{}))
+		wantJSON := []byte(`{"greeting":"hello raw"}`)
+		require.NoError(t, storeClient.Put(ctx, "getconfig_raw_test/config.json", wantJSON, &store.WriteOptions{}))
+
+		got, err := stub.GetConfig(ctx, &protoconf_pb.ConfigRequest{Path: "getconfig_raw_test"})
+		require.NoError(t, err)
+		require.NotNil(t, got.Raw)
+		assert.Equal(t, "application/json", got.Raw.ContentType)
+		assert.Equal(t, wantJSON, got.Raw.Data)
+	})
+
+	t.Run("raw is nil when the config.json sibling is absent", func(t *testing.T) {
+		expects := &protoconfservice.ConfigUpdate{
+			Value: newAny(&structpb.Value{Kind: &structpb.Value_StringValue{StringValue: "hello no raw"}}),
+		}
+		b, _ := proto.Marshal(&protoconfvalue.ProtoconfValue{Value: expects.Value})
+		require.NoError(t, storeClient.Put(
+			ctx, "getconfig_no_raw_test",
+			[]byte(base64.StdEncoding.EncodeToString(b)),
+			&store.WriteOptions{}))
+
+		got, err := stub.GetConfig(ctx, &protoconf_pb.ConfigRequest{Path: "getconfig_no_raw_test"})
+		require.NoError(t, err)
+		assert.Nil(t, got.Raw)
+	})
 }
 
 func protoB64Bytes(msg proto.Message) []byte {

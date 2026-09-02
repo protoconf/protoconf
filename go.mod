@@ -3,6 +3,7 @@ module github.com/protoconf/protoconf
 go 1.25.8
 
 require (
+	connectrpc.com/vanguard v0.4.0
 	github.com/Masterminds/sprig/v3 v3.2.3
 	github.com/bazelbuild/bazel-gazelle v0.37.0
 	github.com/bazelbuild/buildtools v0.0.0-20240313121412-66c605173954
@@ -61,7 +62,6 @@ require (
 	cloud.google.com/go/monitoring v1.29.0 // indirect
 	cloud.google.com/go/storage v1.64.0 // indirect
 	connectrpc.com/connect v1.19.1 // indirect
-	connectrpc.com/vanguard v0.4.0 // indirect
 	dario.cat/mergo v1.0.0 // indirect
 	github.com/360EntSecGroup-Skylar/excelize v1.4.1 // indirect
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/detectors/gcp v1.33.0 // indirect
