@@ -70,6 +70,30 @@ func TestProtoconfInserter_InsertConfig(t *testing.T) {
 	}
 }
 
+// TestProtoconfInserter_InsertConfig_AnyResolution is a dedicated regression test (not a row in
+// TestProtoconfInserter_InsertConfig's table) for XXXinsertVersion's config.json marshal
+// resolving google.protobuf.Any values whose type only exists in the parser's LocalResolver.
+// The existing table asserts with strings.HasPrefix against "{", which cannot distinguish a
+// resolved Any from any other JSON, and protojson deliberately randomizes indentation
+// whitespace, so a longer literal prefix would be flaky; substring assertions are
+// whitespace-proof.
+func TestProtoconfInserter_InsertConfig_AnyResolution(t *testing.T) {
+	kvStore, _ := dummykv.New(context.Background(), []string{}, &dummykv.Config{})
+	testDir := testdata.SmallTestDir()
+	i := NewProtoconfInserter(testDir, kvStore)
+
+	err := i.InsertConfigFile("field_type_any_test.materialized_JSON")
+	require.NoError(t, err)
+
+	v, err := kvStore.Get(context.Background(), "field_type_any_test/config.json", &store.ReadOptions{})
+	require.NoError(t, err)
+	got := string(v.Value)
+	assert.Contains(t, got, "type.googleapis.com/test.v1.TestMessage")
+	assert.Contains(t, got, "test_any")
+	assert.Contains(t, got, "test_any_repeated")
+	assert.Contains(t, got, "test_any_map")
+}
+
 func Test_cliCommand_Run(t *testing.T) {
 	testDir := testdata.SmallTestDir()
 	type args struct {
