@@ -23,6 +23,7 @@ import (
 	"go.opentelemetry.io/otel/metric"
 	"go.opentelemetry.io/otel/trace"
 	"golang.org/x/sync/errgroup"
+	"google.golang.org/genproto/googleapis/api/httpbody"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/peer"
 	"google.golang.org/grpc/status"
@@ -303,7 +304,13 @@ func (s *ProtoconfKVAgentRollout) GetConfig(ctx context.Context, request *protoc
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	return &protoconfservice.ConfigUpdate{Value: result.Value}, nil
+	raw, err := getRawConfigJSON(ctx, s.store, s.config.Prefix, request.Path)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return &protoconfservice.ConfigUpdate{Value: result.Value, Raw: raw}, nil
 }
 
 func (s *ProtoconfKVAgentRollout) matchStage(request *protoconfservice.ConfigSubscriptionRequest, stage *protoconfvalue.ProtoconfValue_ConfigRollout_Stage) bool {
@@ -333,6 +340,35 @@ func (s *ProtoconfKVAgentRollout) getChannelName(request *protoconfservice.Confi
 		return request.Channel
 	}
 	return s.channelName
+}
+
+// getRawConfigJSON reads the config.json sibling the inserter writes next to
+// a config's primary key (inserter.XXXinsertVersion) and returns it as an
+// *httpbody.HttpBody so it can be written verbatim to an HTTP response by
+// the vanguard transcoder. The agent cannot render ConfigUpdate.value to
+// JSON itself: value is a google.protobuf.Any holding a user-defined
+// message with no generated Go code, so its descriptor is never present in
+// protoregistry.GlobalTypes and protojson has nothing to resolve it with.
+// The inserter, by contrast, has the descriptor via parser.LocalResolver at
+// insert time and writes the rendering once, up front.
+//
+// ponytail: a missing config.json (absent sibling, or dev-mode filekv which
+// never writes one at all) returns (nil, nil), which vanguard renders as an
+// empty 200 body -- accepted ceiling (D-03/D-04). Upgrade path: render
+// config.json in filekv.Get for dev mode, or 404 the REST route
+// specifically, if that empty body ever bites.
+func getRawConfigJSON(ctx context.Context, kvStore store.Store, prefix, configPath string) (*httpbody.HttpBody, error) {
+	kvPair, err := kvStore.Get(ctx, path.Join(prefix, configPath, "config.json"), &store.ReadOptions{})
+	if err != nil {
+		if errors.Is(err, store.ErrKeyNotFound) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	if kvPair == nil {
+		return nil, nil
+	}
+	return &httpbody.HttpBody{ContentType: "application/json", Data: kvPair.Value}, nil
 }
 
 func parseProtoconfValue(kvPair *store.KVPair) (*protoconfvalue.ProtoconfValue, error) {

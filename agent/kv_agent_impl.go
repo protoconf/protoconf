@@ -146,5 +146,11 @@ func (s *ProtoconfKVAgent) GetConfig(ctx context.Context, request *protoconf_pb.
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	return &protoconf_pb.ConfigUpdate{Value: result.Value}, nil
+	raw, err := getRawConfigJSON(ctx, s.store, s.config.Prefix, request.Path)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return &protoconf_pb.ConfigUpdate{Value: result.Value, Raw: raw}, nil
 }
