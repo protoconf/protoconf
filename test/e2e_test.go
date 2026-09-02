@@ -316,6 +316,14 @@ func Test(t *testing.T) {
 		}
 	})
 
+	t.Run("get config on devClient via GetConfig", func(t *testing.T) {
+		devConfigValue, err := devAgentClient.GetConfig(ctx, &protoconf_pb.ConfigRequest{Path: "load_mutable_test"})
+		require.NoError(t, err)
+		if !proto.Equal(devConfigValue.Value, expected) {
+			t.Errorf("expected \n%s, got \n%s", expected, devConfigValue.Value)
+		}
+	})
+
 	tCtx, _ := context.WithTimeout(ctx, 60*time.Second)
 	prodWatcher, err := prodAgentClient.SubscribeForConfig(tCtx, &protoconf_pb.ConfigSubscriptionRequest{Path: "load_mutable_test"})
 	assert.NoError(t, err)

@@ -96,3 +96,23 @@ func (s *legacyProtoconfServer) SubscribeForConfig(request *protoconfagent.Confi
 
 	return nil
 }
+
+func (s *legacyProtoconfServer) GetConfig(ctx context.Context, request *protoconfagent.ConfigRequest) (*protoconfagent.ConfigUpdate, error) {
+	next := &protoconf_pb.ConfigRequest{}
+	err := upgrade(request, next)
+	if err != nil {
+		return nil, err
+	}
+
+	reply, err := s.stub.GetConfig(ctx, next)
+	if err != nil {
+		return nil, err
+	}
+
+	result := &protoconfagent.ConfigUpdate{}
+	err = upgrade(reply, result)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
