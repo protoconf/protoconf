@@ -579,6 +579,27 @@ func Test_cliCommand_MultiConfigFilePrecedence(t *testing.T) {
 	})
 }
 
+// Test_cliCommand_EnableOtelFlag mirrors agent's Test_cliCommand_EnableOtelFlag, locking in the
+// default config leaves telemetry off guarantee at the layer where it could actually regress:
+// the flag plumbing between the proto-derived -enable-otel flag and cliCommand.config.
+func Test_cliCommand_EnableOtelFlag(t *testing.T) {
+	t.Run("default is false", func(t *testing.T) {
+		cmd, err := Command()
+		require.NoError(t, err)
+		cc := cmd.(*cliCommand)
+		require.NoError(t, cc.flag.Parse([]string{}))
+		assert.False(t, cc.config.EnableOtel)
+	})
+
+	t.Run("bare flag sets true", func(t *testing.T) {
+		cmd, err := Command()
+		require.NoError(t, err)
+		cc := cmd.(*cliCommand)
+		require.NoError(t, cc.flag.Parse([]string{"-enable-otel"}))
+		assert.True(t, cc.config.EnableOtel)
+	})
+}
+
 func Test_cliCommand_Synopsis(t *testing.T) {
 	command := &cliCommand{}
 	got := command.Synopsis()

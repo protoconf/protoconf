@@ -111,7 +111,7 @@ func (c *cliCommand) run(ctx context.Context, args []string) int {
 	ctx, cancel := signal.NotifyContext(ctx, os.Interrupt)
 	defer cancel()
 
-	shutdown, err := observability.Init(ctx, "protoconf")
+	shutdown, err := observability.Init(ctx, "protoconf", c.config.EnableOtel)
 	if err != nil {
 		slog.Warn("OTel init failed, continuing without telemetry", "error", err)
 	}
@@ -142,7 +142,10 @@ func (c *cliCommand) run(ctx context.Context, args []string) int {
 
 	logger.Info("starting protoconf server", "address", c.config.GrpcAddress, "version", consts.Version, "root", protoconfRoot, "pre", c.config.PreMutationScript, "post", c.config.PostMutationScript)
 
-	serverOpts := []grpc.ServerOption{grpc.StatsHandler(otelgrpc.NewServerHandler())}
+	serverOpts := []grpc.ServerOption{}
+	if c.config.EnableOtel {
+		serverOpts = append(serverOpts, grpc.StatsHandler(otelgrpc.NewServerHandler()))
+	}
 
 	tlsCfg, err := utils.BuildTLSConfig(utils.TLSFiles{
 		CertFile: c.config.TlsCert,
@@ -222,6 +225,13 @@ func Command() (cli.Command, error) {
 	lpc.Environment()
 	c.flag = flag.NewFlagSet(string(c.config.ProtoReflect().Descriptor().FullName()), flag.ContinueOnError)
 	lpc.PopulateFlagSet(c.flag)
+
+	c.flag.VisitAll(func(f *flag.Flag) {
+		switch f.Name {
+		case "enable-otel":
+			f.Usage = "Export OpenTelemetry traces and metrics to an OTLP/gRPC collector. Off by default -- no collector is contacted when unset\n[env: PROTOCONF_SERVER_ENABLE_OTEL]"
+		}
+	})
 	// layerer owns the accumulated config-file layer and the env/flag provenance set for
 	// this Command() instance. Constructed after PopulateFlagSet (so c.flag is fully
 	// populated) and before flag.Parse runs (so markExplicitFlags can observe flags parsed
