@@ -129,6 +129,39 @@ func Test_cliCommand_Help(t *testing.T) {
 	c.Help()
 }
 
+// Test_cliCommand_EnableOtelFlag locks in the default config leaves telemetry off
+// guarantee at the layer where it could actually regress: the flag plumbing between the
+// proto-derived -enable-otel flag and cliCommand.config.
+func Test_cliCommand_EnableOtelFlag(t *testing.T) {
+	t.Run("default is false", func(t *testing.T) {
+		cmd, err := Command()
+		if err != nil {
+			t.Fatalf("Command() error = %v", err)
+		}
+		cc := cmd.(*cliCommand)
+		if err := cc.flag.Parse([]string{}); err != nil {
+			t.Fatalf("flag.Parse() error = %v", err)
+		}
+		if cc.config.EnableOtel {
+			t.Errorf("EnableOtel = true, want false with no flags")
+		}
+	})
+
+	t.Run("bare flag sets true", func(t *testing.T) {
+		cmd, err := Command()
+		if err != nil {
+			t.Fatalf("Command() error = %v", err)
+		}
+		cc := cmd.(*cliCommand)
+		if err := cc.flag.Parse([]string{"-enable-otel"}); err != nil {
+			t.Fatalf("flag.Parse() error = %v", err)
+		}
+		if !cc.config.EnableOtel {
+			t.Errorf("EnableOtel = false, want true with -enable-otel")
+		}
+	})
+}
+
 // writeAgentConfigJSON writes a minimal agent config JSON file setting grpc-address, into dir
 // (which must already exist, e.g. t.TempDir()), and returns its path. Named distinctly from a
 // generic writeConfigJSON to avoid colliding with this file's shared os.TempDir() jsonConfig

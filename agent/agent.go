@@ -56,7 +56,7 @@ func RunAgent(ctx context.Context, config *protoconf_agent_config.AgentConfig) e
 	var err error
 	var store store.Store
 
-	shutdown, otelErr := observability.Init(ctx, "protoconf")
+	shutdown, otelErr := observability.Init(ctx, "protoconf", config.EnableOtel)
 	if otelErr != nil {
 		slog.Warn("OTel init failed, continuing without telemetry", "error", otelErr)
 	}
@@ -131,9 +131,11 @@ func RunAgent(ctx context.Context, config *protoconf_agent_config.AgentConfig) e
 	legacy := newLegacyProtoconfServer(agent)
 
 	serverOpts := []grpc.ServerOption{
-		grpc.StatsHandler(otelgrpc.NewServerHandler()),
 		grpc.StreamInterceptor(grpc_prometheus.StreamServerInterceptor),
 		grpc.UnaryInterceptor(grpc_prometheus.UnaryServerInterceptor),
+	}
+	if config.EnableOtel {
+		serverOpts = append(serverOpts, grpc.StatsHandler(otelgrpc.NewServerHandler()))
 	}
 
 	if config.TlsConfig != nil && !config.Insecure {
