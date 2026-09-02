@@ -85,25 +85,25 @@ func New(ctx context.Context, endpoints []string, options *Config) (*Store, erro
 }
 
 // Put a value at the specified key.
-func (s Store) Put(ctx context.Context, key string, value []byte, opts *store.WriteOptions) error {
+func (s *Store) Put(ctx context.Context, key string, value []byte, opts *store.WriteOptions) error {
 	return nil
 
 }
 
 // Get a value given its key.
-func (s Store) Get(ctx context.Context, key string, opts *store.ReadOptions) (*store.KVPair, error) {
+func (s *Store) Get(ctx context.Context, key string, opts *store.ReadOptions) (*store.KVPair, error) {
 	// TODO implement me
 	panic("implement me")
 }
 
 // Delete the value at the specified key.
-func (s Store) Delete(ctx context.Context, key string) error {
+func (s *Store) Delete(ctx context.Context, key string) error {
 	// TODO implement me
 	panic("implement me")
 }
 
 // Exists Verify if a Key exists in the store.
-func (s Store) Exists(ctx context.Context, key string, opts *store.ReadOptions) (bool, error) {
+func (s *Store) Exists(ctx context.Context, key string, opts *store.ReadOptions) (bool, error) {
 	return true, nil
 }
 
@@ -159,7 +159,7 @@ func (s *Store) Watch(ctx context.Context, key string, opts *store.ReadOptions) 
 }
 
 // WatchTree watches for changes on child nodes under a given directory.
-func (s Store) WatchTree(ctx context.Context, directory string, opts *store.ReadOptions) (<-chan []*store.KVPair, error) {
+func (s *Store) WatchTree(ctx context.Context, directory string, opts *store.ReadOptions) (<-chan []*store.KVPair, error) {
 	// TODO implement me
 	panic("implement me")
 }
@@ -167,32 +167,32 @@ func (s Store) WatchTree(ctx context.Context, directory string, opts *store.Read
 // NewLock creates a lock for a given key.
 // The returned Locker is not held and must be acquired with `.Lock`.
 // The Value is optional.
-func (s Store) NewLock(ctx context.Context, key string, opts *store.LockOptions) (store.Locker, error) {
+func (s *Store) NewLock(ctx context.Context, key string, opts *store.LockOptions) (store.Locker, error) {
 	// TODO implement me
 	panic("implement me")
 }
 
 // List the content of a given prefix.
-func (s Store) List(ctx context.Context, directory string, opts *store.ReadOptions) ([]*store.KVPair, error) {
+func (s *Store) List(ctx context.Context, directory string, opts *store.ReadOptions) ([]*store.KVPair, error) {
 	// TODO implement me
 	panic("implement me")
 }
 
 // DeleteTree deletes a range of keys under a given directory.
-func (s Store) DeleteTree(ctx context.Context, directory string) error {
+func (s *Store) DeleteTree(ctx context.Context, directory string) error {
 	// TODO implement me
 	panic("implement me")
 }
 
 // AtomicPut Atomic CAS operation on a single value.
 // Pass previous = nil to create a new key.
-func (s Store) AtomicPut(ctx context.Context, key string, value []byte, previous *store.KVPair, opts *store.WriteOptions) (bool, *store.KVPair, error) {
+func (s *Store) AtomicPut(ctx context.Context, key string, value []byte, previous *store.KVPair, opts *store.WriteOptions) (bool, *store.KVPair, error) {
 	// TODO implement me
 	panic("implement me")
 }
 
 // AtomicDelete Atomic delete of a single value.
-func (s Store) AtomicDelete(ctx context.Context, key string, previous *store.KVPair) (bool, error) {
+func (s *Store) AtomicDelete(ctx context.Context, key string, previous *store.KVPair) (bool, error) {
 	// TODO implement me
 	panic("implement me")
 }
@@ -242,23 +242,38 @@ func (w *Store) readEvents() {
 				return
 			}
 			if event.Op&fsnotify.Write == fsnotify.Write {
-				for _, channel := range w.watches[event.Name] {
+				w.lock.Lock()
+				channels := append([]chan struct{}(nil), w.watches[event.Name]...)
+				w.lock.Unlock()
+
+				// ponytail: a concurrent Close can close one of these channels
+				// between the unlock above and the send below, which panics.
+				// Ceiling: fine under normal operation, since Close() is
+				// typically called once at shutdown. Upgrade path: replace
+				// channel-close-as-signal with a single shared `done` channel
+				// closed once by Close, and have Watch's select read from it
+				// instead of relying on a closed per-watch channel.
+				for _, channel := range channels {
 					channel <- struct{}{}
 				}
 			}
 		case <-w.fsnotifyWatcher.Errors:
 			w.closeWatchers()
+			return
 		}
 	}
 }
 
 func (w *Store) closeWatchers() {
+	w.lock.Lock()
+	defer w.lock.Unlock()
+
 	for _, pathWatches := range w.watches {
 		for _, watch := range pathWatches {
 			close(watch)
 		}
 	}
-	w.watches = nil
+	w.watches = make(map[string]([]chan struct{}))
 }
 
 func (w *Store) Close() error {
