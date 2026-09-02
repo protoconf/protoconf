@@ -51,9 +51,8 @@ var (
 )
 
 func NewProtoconfKVAgentRollout(store store.Store, config *protoconf_agent_config.AgentConfig) (*ProtoconfKVAgentRollout, error) {
-	_, err := store.Exists(context.Background(), "/", nil)
-	if err != nil {
-		return nil, errors.Join(errors.New("store is not available"), err)
+	if err := checkStoreAvailable(context.Background(), store, config); err != nil {
+		return nil, err
 	}
 	return newProtoconfKVAgentRollout(store, config), nil
 }
