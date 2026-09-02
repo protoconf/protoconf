@@ -24,10 +24,34 @@ type ProtoconfKVAgent struct {
 
 var tracer = otel.Tracer("protoconf-agent")
 
-func NewProtoconfKVAgent(store store.Store, config *protoconf_agent_config.AgentConfig) (*ProtoconfKVAgent, error) {
-	_, err := store.Exists(context.Background(), "/", nil)
+// storeProbeKey is the sentinel key used by checkStoreAvailable to verify the
+// store is reachable at startup. It is dot-prefixed so it will not collide
+// with a real config path.
+const storeProbeKey = ".protoconf-agent-healthcheck"
+
+// checkStoreAvailable does a read-only reachability check against the store
+// at construction time, so an unreachable store fails fast once at boot
+// rather than on every client subscription.
+//
+// The probe key must stay non-empty after the backend's leading-slash
+// normalization: etcd rejects an empty key with a transport error that
+// Exists does not swallow, so path.Join(config.GetPrefix(), storeProbeKey)
+// is used instead of a bare "/" to guarantee the joined key is never empty,
+// for any value of config.Prefix including empty. An absent key is
+// deliberately treated as success — Exists maps store.ErrKeyNotFound to
+// (false, nil), so only a transport error reaches the caller here.
+func checkStoreAvailable(ctx context.Context, s store.Store, config *protoconf_agent_config.AgentConfig) error {
+	key := path.Join(config.GetPrefix(), storeProbeKey)
+	_, err := s.Exists(ctx, key, nil)
 	if err != nil {
-		return nil, errors.Join(errors.New("store is not available"), err)
+		return errors.Join(errors.New("store is not available"), err)
+	}
+	return nil
+}
+
+func NewProtoconfKVAgent(store store.Store, config *protoconf_agent_config.AgentConfig) (*ProtoconfKVAgent, error) {
+	if err := checkStoreAvailable(context.Background(), store, config); err != nil {
+		return nil, err
 	}
 	logger := slog.Default()
 	return &ProtoconfKVAgent{store: store, config: config, Logger: logger}, nil
