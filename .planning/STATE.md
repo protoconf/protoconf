@@ -155,6 +155,7 @@ None yet.
 | 260902-14f | Fix dummykv pubSub races — lost watcher registrations and duplicate delivery; TestProtoconfKVAgentRollout_SubscribeForConfig now 20/20 | 2026-09-02 | 807bf7b | [260902-14f-fix-dummykv-pubsub-registration-race-roo](./quick/260902-14f-fix-dummykv-pubsub-registration-race-roo/) |
 | 260902-cov | Give codecov a 1% project threshold and mark patch informational, so codecov/project stops failing on rounding noise | 2026-09-02 | 3238abe | — |
 | 3 | Give codecov a 1% threshold so codecov/project stops failing on rounding noise | 2026-09-01 | 3238abe | — |
+| 260902-eie | Resolve google.protobuf.Any types when the inserter marshals config.json (backport of upstream PR #496) | 2026-09-02 | 841ca1b | [260902-eie-fix-any-resolution-in-inserter-json-mars](./quick/260902-eie-fix-any-resolution-in-inserter-json-mars/) |
 
 ## Session Continuity
 
