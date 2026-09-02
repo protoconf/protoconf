@@ -6,7 +6,7 @@ require (
 	github.com/Masterminds/sprig/v3 v3.2.3
 	github.com/bazelbuild/bazel-gazelle v0.37.0
 	github.com/bazelbuild/buildtools v0.0.0-20240313121412-66c605173954
-	github.com/bufbuild/protovalidate-go v0.6.2
+	github.com/bufbuild/protovalidate-go v1.4.0
 	github.com/cheggaaa/pb v1.0.30
 	github.com/fsnotify/fsnotify v1.7.0
 	github.com/fullstorydev/grpcui v1.4.1
@@ -14,7 +14,7 @@ require (
 	github.com/go-git/go-git/v5 v5.19.2
 	github.com/google/uuid v1.6.0
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
-	github.com/hashicorp/go-getter v1.8.8
+	github.com/hashicorp/go-getter/v2 v2.2.3
 	github.com/hashicorp/go-getter/v2 v2.2.3
 	github.com/jhump/protoreflect v1.16.0
 	github.com/kvtools/consul v1.0.2
@@ -22,7 +22,7 @@ require (
 	github.com/kvtools/valkeyrie v1.0.0
 	github.com/kvtools/zookeeper v1.0.2
 	github.com/mitchellh/cli v1.1.5
-	github.com/pelletier/go-toml v1.9.4
+	github.com/pelletier/go-toml/v2 v2.4.3
 	github.com/pelletier/go-toml/v2 v2.4.3
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.20.5
