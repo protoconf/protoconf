@@ -96,4 +96,49 @@ func TestHTTP_GetConfig(t *testing.T) {
 		assert.Equal(t, "application/json", got.Raw.ContentType)
 		assert.Equal(t, wantJSON, got.Raw.Data)
 	})
+
+	t.Run("GET for a missing config returns 404", func(t *testing.T) {
+		resp, err := http.Get(srv.URL + "/v1/config/does/not/exist")
+		require.NoError(t, err)
+		defer resp.Body.Close()
+		assert.Equal(t, http.StatusNotFound, resp.StatusCode)
+	})
+
+	t.Run("/metrics still resolves to the Prometheus handler with the transcoder mounted at /", func(t *testing.T) {
+		resp, err := http.Get(srv.URL + "/metrics")
+		require.NoError(t, err)
+		defer resp.Body.Close()
+		body, err := io.ReadAll(resp.Body)
+		require.NoError(t, err)
+		assert.Equal(t, http.StatusOK, resp.StatusCode)
+		assert.Contains(t, string(body), "# HELP", "expected Prometheus exposition format from the metrics handler, not the transcoder")
+	})
+
+	t.Run("absent config.json sibling: gRPC succeeds with nil raw, HTTP GET is 200 with an empty body", func(t *testing.T) {
+		// ponytail: this pins the accepted D-03 ceiling -- a missing config.json
+		// sibling degrades to an empty HTTP body rather than a 404 or 500.
+		seedConfig(t, kvStore,
+			"no/json/sibling",
+			&protoconfvalue.ProtoconfValue{Value: newAny(structpb.NewStringValue("no sibling"))},
+			nil,
+		)
+
+		agent, err := NewProtoconfKVAgent(kvStore, &protoconf_agent_config.AgentConfig{})
+		require.NoError(t, err)
+		client, closer := testServer(context.Background(), agent)
+		defer closer()
+
+		got, err := client.GetConfig(context.Background(), &protoconf_pb.ConfigRequest{Path: "no/json/sibling"})
+		require.NoError(t, err)
+		assert.True(t, proto.Equal(got.Value, newAny(structpb.NewStringValue("no sibling"))))
+		assert.Nil(t, got.Raw)
+
+		resp, err := http.Get(srv.URL + "/v1/config/no/json/sibling")
+		require.NoError(t, err)
+		defer resp.Body.Close()
+		body, err := io.ReadAll(resp.Body)
+		require.NoError(t, err)
+		assert.Equal(t, http.StatusOK, resp.StatusCode)
+		assert.Empty(t, body)
+	})
 }
