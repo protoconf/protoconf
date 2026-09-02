@@ -158,6 +158,7 @@ None yet.
 | 260902-eie | Resolve google.protobuf.Any types when the inserter marshals config.json (backport of upstream PR #496) | 2026-09-02 | 841ca1b | [260902-eie-fix-any-resolution-in-inserter-json-mars](./quick/260902-eie-fix-any-resolution-in-inserter-json-mars/) |
 | 260902-erj | Fix agent startup against etcd — store health probe used "/", which etcd normalizes to an empty key and rejects (backport of upstream PR #496) | 2026-09-02 | db33bbd | [260902-erj-fix-etcd-agent-startup-invalid-store-hea](./quick/260902-erj-fix-etcd-agent-startup-invalid-store-hea/) |
 | 260902-hp5 | Fix filekv data race and double-close between Close() and readEvents(); make closeWatchers locked and idempotent; sound pointer receivers (10 copylocks) | 2026-09-02 | ffda1bb | [260902-hp5-fix-filekv-data-race-and-double-close-be](./quick/260902-hp5-fix-filekv-data-race-and-double-close-be/) |
+| 260902-f8i | Add GetConfig one-shot RPC to ProtoconfService — both agent impls, filekv.Get, legacy passthrough (backport of upstream PR #496) | 2026-09-02 | d871d10 | [260902-f8i-add-getconfig-one-shot-rpc-to-protoconfs](./quick/260902-f8i-add-getconfig-one-shot-rpc-to-protoconfs/) |
 
 ## Session Continuity
 
