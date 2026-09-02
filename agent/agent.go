@@ -11,6 +11,8 @@ import (
 	"os"
 	"syscall"
 
+	"connectrpc.com/vanguard"
+	"connectrpc.com/vanguard/vanguardgrpc"
 	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 	"github.com/kvtools/consul"
 	"github.com/kvtools/etcdv3"
@@ -29,6 +31,7 @@ import (
 	slogotel "github.com/remychantenay/slog-otel"
 	"github.com/stephenafamo/orchestra"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
+	"google.golang.org/genproto/googleapis/api/annotations"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 )
@@ -158,9 +161,16 @@ func RunAgent(ctx context.Context, config *protoconf_agent_config.AgentConfig) e
 	protoconfagent.RegisterProtoconfServiceServer(rpcServer, legacy)
 
 	grpc_prometheus.Register(rpcServer)
-	mux := http.NewServeMux()
-	mux.HandleFunc("/debug/pprof", pprof.Profile)
-	mux.Handle("/metrics", promhttp.Handler())
+
+	// newAgentMux must be called here, after both RegisterProtoconfServiceServer
+	// calls: vanguardgrpc.NewTranscoder snapshots rpcServer.GetServiceInfo(), so
+	// calling it earlier would silently register zero services and every REST
+	// path would 404.
+	mux, err := newAgentMux(rpcServer)
+	if err != nil {
+		return errors.Join(errors.New("error building agent http mux"), err)
+	}
+	logger.Warn("serving GetConfig over plain HTTP, unauthenticated and without TLS", slog.String("http-address", config.HttpAddress))
 
 	err = orchestra.PlayUntilSignal(ctx, &orchestra.Conductor{Players: map[string]orchestra.Player{
 		"grpc": orchestra.PlayerFunc(func(ctx context.Context) error {
@@ -183,4 +193,35 @@ func RunAgent(ctx context.Context, config *protoconf_agent_config.AgentConfig) e
 	}
 
 	return nil
+}
+
+// newAgentMux wraps rpcServer with a vanguard transcoder so GetConfig is also
+// reachable over plain HTTP GET, and mounts it alongside the existing pprof
+// and metrics handlers. It must be called after every
+// RegisterXXXServiceServer call on rpcServer: vanguardgrpc.NewTranscoder
+// snapshots rpcServer.GetServiceInfo() when constructed.
+//
+// No JSON gRPC codec is registered here (see vanguardgrpc.NewTranscoder's
+// doc comment) -- doing so would make the transcoder ask the gRPC handler to
+// protojson-marshal ConfigUpdate for REST responses, which fails on the
+// unresolvable Any in ConfigUpdate.value and would break GetConfig outright.
+func newAgentMux(rpcServer *grpc.Server) (*http.ServeMux, error) {
+	transcoder, err := vanguardgrpc.NewTranscoder(rpcServer, vanguard.WithRules(
+		&annotations.HttpRule{
+			Selector: "protoconf.v1.ProtoconfService.GetConfig",
+			Pattern: &annotations.HttpRule_Get{
+				Get: "/v1/config/{path=**}",
+			},
+			ResponseBody: "raw",
+		},
+	))
+	if err != nil {
+		return nil, errors.Join(errors.New("error building vanguard transcoder"), err)
+	}
+
+	mux := http.NewServeMux()
+	mux.HandleFunc("/debug/pprof", pprof.Profile)
+	mux.Handle("/metrics", promhttp.Handler())
+	mux.Handle("/", transcoder)
+	return mux, nil
 }
