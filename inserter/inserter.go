@@ -376,7 +376,7 @@ func (i *ProtoconfInserter) XXXinsertVersion(configName string, version string, 
 		return err
 	}
 
-	data, err = protojson.MarshalOptions{Multiline: true}.Marshal(new)
+	data, err = protojson.MarshalOptions{Multiline: true, Resolver: i.parser.LocalResolver}.Marshal(new)
 	if err != nil {
 		return errors.Join(err, fmt.Errorf("error marshaling ProtoconfValue to json, value=%v", protoconfValue))
 	}
