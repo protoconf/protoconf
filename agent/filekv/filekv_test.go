@@ -83,6 +83,17 @@ func TestClose(t *testing.T) {
 	assert.NoError(t, err)
 }
 
+func TestClose_Idempotent(t *testing.T) {
+	root := testdata.SmallTestDir()
+	ctx := context.Background()
+	s, err := New(ctx, []string{}, &Config{ProtoconfRoot: root})
+	require.NoError(t, err)
+	require.NotNil(t, s)
+
+	assert.NoError(t, s.Close())
+	assert.NoError(t, s.Close())
+}
+
 func TestWatch_InvalidPath(t *testing.T) {
 	s := newTestStore(t)
 	ctx := context.Background()
