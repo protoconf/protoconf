@@ -11,7 +11,9 @@ import (
 	protoconf_agent_config "github.com/protoconf/protoconf/agent/config/v1"
 	protoconf_pb "github.com/protoconf/protoconf/pb/protoconf/v1"
 	"go.opentelemetry.io/otel"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/peer"
+	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -112,4 +114,37 @@ func (s *ProtoconfKVAgent) SubscribeForConfig(request *protoconf_pb.ConfigSubscr
 		}
 	}
 
+}
+
+// GetConfig reads a single config value without opening a watch stream.
+func (s *ProtoconfKVAgent) GetConfig(ctx context.Context, request *protoconf_pb.ConfigRequest) (*protoconf_pb.ConfigUpdate, error) {
+	ctx, span := tracer.Start(ctx, "GetConfig")
+	defer span.End()
+
+	logger := s.Logger.With(slog.String("key", request.Path))
+	if peer, ok := peer.FromContext(ctx); ok {
+		logger = logger.With(slog.Any("peer_addr", peer.Addr))
+	}
+	logger.Info("got get request")
+
+	key := path.Join(s.config.Prefix, request.Path)
+	kvPair, err := s.store.Get(ctx, key, &store.ReadOptions{})
+	if err != nil {
+		logger.Error(err.Error())
+		if errors.Is(err, store.ErrKeyNotFound) {
+			return nil, status.Error(codes.NotFound, err.Error())
+		}
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+	if kvPair == nil {
+		return nil, status.Error(codes.NotFound, "key not found in store")
+	}
+
+	result, err := parseProtoconfValue(kvPair)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return &protoconf_pb.ConfigUpdate{Value: result.Value}, nil
 }

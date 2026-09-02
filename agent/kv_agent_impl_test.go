@@ -21,7 +21,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/status"
 	"google.golang.org/grpc/test/bufconn"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/anypb"
@@ -74,6 +76,50 @@ func TestProtoconfKVAgent_SubscribeForConfig(t *testing.T) {
 		storeClient.Put(ctx, request.GetPath(), []byte(base64.StdEncoding.EncodeToString([]byte("Fail"))), &store.WriteOptions{})
 		_, err := watcher.Recv()
 		assert.NoError(t, err)
+	})
+}
+
+func TestProtoconfKVAgent_GetConfig(t *testing.T) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	storeClient, _ := dummykv.New(ctx, []string{}, &dummykv.Config{})
+	server, err := NewProtoconfKVAgent(storeClient, &protoconf_agent_config.AgentConfig{})
+	require.NoError(t, err)
+	stub, closer := testServer(ctx, server)
+	defer closer()
+
+	t.Run("returns same value as SubscribeForConfig's first message", func(t *testing.T) {
+		expects := &protoconfservice.ConfigUpdate{
+			Value: newAny(&structpb.Value{Kind: &structpb.Value_StringValue{StringValue: "hello get"}}),
+		}
+		b, _ := proto.Marshal(&protoconfvalue.ProtoconfValue{Value: expects.Value})
+		require.NoError(t, storeClient.Put(
+			ctx, "getconfig_test",
+			[]byte(base64.StdEncoding.EncodeToString(b)),
+			&store.WriteOptions{}))
+
+		got, err := stub.GetConfig(ctx, &protoconf_pb.ConfigRequest{Path: "getconfig_test"})
+		require.NoError(t, err)
+		assert.True(t, proto.Equal(got.Value, expects.Value))
+
+		watcher, err := stub.SubscribeForConfig(ctx, &protoconf_pb.ConfigSubscriptionRequest{Path: "getconfig_test"})
+		require.NoError(t, err)
+		item, err := watcher.Recv()
+		require.NoError(t, err)
+		assert.True(t, proto.Equal(got.Value, item.Value))
+	})
+
+	t.Run("missing key returns NotFound", func(t *testing.T) {
+		_, err := stub.GetConfig(ctx, &protoconf_pb.ConfigRequest{Path: "does_not_exist"})
+		require.Error(t, err)
+		assert.Equal(t, codes.NotFound, status.Code(err))
+	})
+
+	t.Run("non-proto bytes return Internal", func(t *testing.T) {
+		require.NoError(t, storeClient.Put(ctx, "bad_config", []byte("not base64!"), &store.WriteOptions{}))
+		_, err := stub.GetConfig(ctx, &protoconf_pb.ConfigRequest{Path: "bad_config"})
+		require.Error(t, err)
+		assert.Equal(t, codes.Internal, status.Code(err))
 	})
 }
 
