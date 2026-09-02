@@ -68,6 +68,8 @@ func Command() (cli.Command, error) {
 		switch f.Name {
 		case "dev":
 			f.Usage = "Run the agent in development mode watching local protoconf directory for file changes\n[env: PROTOCONF_AGENT_DEV]"
+		case "enable-otel":
+			f.Usage = "Export OpenTelemetry traces and metrics to an OTLP/gRPC collector. Off by default -- no collector is contacted when unset\n[env: PROTOCONF_AGENT_ENABLE_OTEL]"
 		case "grpc-address":
 			f.Usage = "Address to bind the gRPC listener\n[env: PROTOCONF_AGENT_GRPC_ADDRESS]"
 		case "http-address":
