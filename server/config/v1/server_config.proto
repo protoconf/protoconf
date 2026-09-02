@@ -26,4 +26,8 @@ message ServerConfig {
 
     // Bearer token for mutation authentication (if empty, auth is disabled).
     string auth_token = 7 [json_name = "auth-token"];
+
+    // Enables OpenTelemetry trace and metric export over OTLP/gRPC. Off by
+    // default -- no collector is contacted when this is unset.
+    bool enable_otel = 8 [json_name = "enable-otel"];
 }
