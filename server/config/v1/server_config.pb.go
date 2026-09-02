@@ -37,7 +37,10 @@ type ServerConfig struct {
 	// TLS CA certificate file path (enables client cert verification).
 	TlsCa string `protobuf:"bytes,6,opt,name=tls_ca,json=tls-ca,proto3" json:"tls_ca,omitempty"`
 	// Bearer token for mutation authentication (if empty, auth is disabled).
-	AuthToken     string `protobuf:"bytes,7,opt,name=auth_token,json=auth-token,proto3" json:"auth_token,omitempty"`
+	AuthToken string `protobuf:"bytes,7,opt,name=auth_token,json=auth-token,proto3" json:"auth_token,omitempty"`
+	// Enables OpenTelemetry trace and metric export over OTLP/gRPC. Off by
+	// default -- no collector is contacted when this is unset.
+	EnableOtel    bool `protobuf:"varint,8,opt,name=enable_otel,json=enable-otel,proto3" json:"enable_otel,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -121,11 +124,18 @@ func (x *ServerConfig) GetAuthToken() string {
 	return ""
 }
 
+func (x *ServerConfig) GetEnableOtel() bool {
+	if x != nil {
+		return x.EnableOtel
+	}
+	return false
+}
+
 var File_server_config_v1_server_config_proto protoreflect.FileDescriptor
 
 const file_server_config_v1_server_config_proto_rawDesc = "" +
 	"\n" +
-	"$server/config/v1/server_config.proto\x12\x1aprotoconf.server.config.v1\"\xe6\x01\n" +
+	"$server/config/v1/server_config.proto\x12\x1aprotoconf.server.config.v1\"\x88\x02\n" +
 	"\fServerConfig\x12\"\n" +
 	"\fgrpc_address\x18\x01 \x01(\tR\fgrpc-address\x12 \n" +
 	"\x13pre_mutation_script\x18\x02 \x01(\tR\x03pre\x12\"\n" +
@@ -135,7 +145,8 @@ const file_server_config_v1_server_config_proto_rawDesc = "" +
 	"\x06tls_ca\x18\x06 \x01(\tR\x06tls-ca\x12\x1e\n" +
 	"\n" +
 	"auth_token\x18\a \x01(\tR\n" +
-	"auth-tokenBIZGgithub.com/protoconf/protoconf/server/config/v1;protoconf_server_configb\x06proto3"
+	"auth-token\x12 \n" +
+	"\venable_otel\x18\b \x01(\bR\venable-otelBIZGgithub.com/protoconf/protoconf/server/config/v1;protoconf_server_configb\x06proto3"
 
 var (
 	file_server_config_v1_server_config_proto_rawDescOnce sync.Once

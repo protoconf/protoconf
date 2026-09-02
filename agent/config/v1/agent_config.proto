@@ -31,6 +31,10 @@ message AgentConfig {
     string namespace = 15;
     bool enable_rollout = 16 [json_name = "enable-rollout"];
 
+    // Enables OpenTelemetry trace and metric export over OTLP/gRPC. Off by
+    // default -- no collector is contacted when this is unset.
+    bool enable_otel = 17 [json_name = "enable-otel"];
+
     enum StoreType {
         consul = 0;
         etcd = 1;
