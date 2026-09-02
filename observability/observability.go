@@ -20,12 +20,21 @@ import (
 )
 
 // Init initializes OpenTelemetry trace and metric providers with OTLP gRPC exporters.
+// If enabled is false, no exporter is constructed and no resource detection is performed:
+// noop trace and meter providers are installed explicitly and Init returns a nil error
+// alongside a working no-op shutdown function -- being switched off is not a failure.
 // If the trace exporter is unavailable, noop providers are installed and a non-nil error
 // is returned alongside a no-op shutdown function.
 // If the metric exporter is unavailable, a noop meter provider is installed and a partial
 // shutdown function (trace only) is returned with the error.
 // Init always returns a non-nil shutdown function.
-func Init(ctx context.Context, serviceName string) (func(context.Context) error, error) {
+func Init(ctx context.Context, serviceName string, enabled bool) (func(context.Context) error, error) {
+	if !enabled {
+		otel.SetTracerProvider(tracenoop.NewTracerProvider())
+		otel.SetMeterProvider(metricnoop.NewMeterProvider())
+		return func(context.Context) error { return nil }, nil
+	}
+
 	resources, _ := resource.New(ctx,
 		resource.WithFromEnv(),
 		resource.WithProcess(),
