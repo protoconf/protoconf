@@ -71,7 +71,7 @@ func TestHTTP_GetConfig(t *testing.T) {
 	t.Run("plain HTTP GET returns the seeded config.json verbatim", func(t *testing.T) {
 		resp, err := http.Get(srv.URL + "/v1/config/some/config")
 		require.NoError(t, err)
-		defer resp.Body.Close()
+		defer func() { _ = resp.Body.Close() }()
 
 		body, err := io.ReadAll(resp.Body)
 		require.NoError(t, err)
@@ -100,14 +100,14 @@ func TestHTTP_GetConfig(t *testing.T) {
 	t.Run("GET for a missing config returns 404", func(t *testing.T) {
 		resp, err := http.Get(srv.URL + "/v1/config/does/not/exist")
 		require.NoError(t, err)
-		defer resp.Body.Close()
+		defer func() { _ = resp.Body.Close() }()
 		assert.Equal(t, http.StatusNotFound, resp.StatusCode)
 	})
 
 	t.Run("/metrics still resolves to the Prometheus handler with the transcoder mounted at /", func(t *testing.T) {
 		resp, err := http.Get(srv.URL + "/metrics")
 		require.NoError(t, err)
-		defer resp.Body.Close()
+		defer func() { _ = resp.Body.Close() }()
 		body, err := io.ReadAll(resp.Body)
 		require.NoError(t, err)
 		assert.Equal(t, http.StatusOK, resp.StatusCode)
@@ -135,7 +135,7 @@ func TestHTTP_GetConfig(t *testing.T) {
 
 		resp, err := http.Get(srv.URL + "/v1/config/no/json/sibling")
 		require.NoError(t, err)
-		defer resp.Body.Close()
+		defer func() { _ = resp.Body.Close() }()
 		body, err := io.ReadAll(resp.Body)
 		require.NoError(t, err)
 		assert.Equal(t, http.StatusOK, resp.StatusCode)
