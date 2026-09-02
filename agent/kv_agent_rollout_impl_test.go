@@ -12,11 +12,39 @@ import (
 	protoconf_pb "github.com/protoconf/protoconf/pb/protoconf/v1"
 	"github.com/protoconf/protoconf/utils/testdata"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/durationpb"
 	"google.golang.org/protobuf/types/known/structpb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
+
+func TestProtoconfKVAgentRollout_GetConfig(t *testing.T) {
+	ctx := context.Background()
+	testDir := testdata.SmallTestDir()
+	kvStore, _ := dummykv.New(ctx, []string{}, &dummykv.Config{})
+	ins := inserter.NewProtoconfInserter(testDir, kvStore)
+	client, closeFn := testServer(ctx, newProtoconfKVAgentRollout(kvStore, &protoconf_agent_config.AgentConfig{}))
+	defer closeFn()
+
+	value := &protoconf_pb.ProtoconfValue{Value: newAny(structpb.NewStringValue("hello getconfig"))}
+	metadata := &protoconf_pb.Metadata{Commit: "commit_getconfig", CommittedAt: timestamppb.Now()}
+	require.NoError(t, ins.InsertConfig("getconfig_rollout_test", value, metadata))
+
+	t.Run("returns inserted value", func(t *testing.T) {
+		got, err := client.GetConfig(ctx, &protoconf_pb.ConfigRequest{Path: "getconfig_rollout_test"})
+		require.NoError(t, err)
+		assert.True(t, proto.Equal(got.Value, value.Value))
+	})
+
+	t.Run("uninserted path returns NotFound", func(t *testing.T) {
+		_, err := client.GetConfig(ctx, &protoconf_pb.ConfigRequest{Path: "never_inserted"})
+		require.Error(t, err)
+		assert.Equal(t, codes.NotFound, status.Code(err))
+	})
+}
 
 func TestProtoconfKVAgentRollout_SubscribeForConfig(t *testing.T) {
 	ctx := context.Background()
