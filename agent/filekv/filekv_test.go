@@ -2,13 +2,16 @@ package filekv
 
 import (
 	"context"
+	"encoding/base64"
 	"testing"
 	"time"
 
 	"github.com/kvtools/valkeyrie/store"
+	protoconfvalue "github.com/protoconf/protoconf/datatypes/proto/v1"
 	"github.com/protoconf/protoconf/utils/testdata"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"google.golang.org/protobuf/proto"
 )
 
 func newTestStore(t *testing.T) *Store {
@@ -94,6 +97,40 @@ func TestClose_Idempotent(t *testing.T) {
 	assert.NoError(t, s.Close())
 }
 
+func TestGet_ValidKey(t *testing.T) {
+	s := newTestStore(t)
+	ctx := context.Background()
+
+	pair, err := s.Get(ctx, "materialized_config/test", nil)
+	require.NoError(t, err)
+	require.NotNil(t, pair)
+
+	b, err := base64.StdEncoding.DecodeString(string(pair.Value))
+	require.NoError(t, err)
+	protoconfValue := &protoconfvalue.ProtoconfValue{}
+	require.NoError(t, proto.Unmarshal(b, protoconfValue))
+	assert.Equal(t, "test.proto", protoconfValue.ProtoFile)
+}
+
+func TestGet_InvalidPath(t *testing.T) {
+	s := newTestStore(t)
+	ctx := context.Background()
+
+	_, err := s.Get(ctx, "", nil)
+	assert.Error(t, err)
+
+	_, err = s.Get(ctx, "../escape", nil)
+	assert.Error(t, err)
+}
+
+func TestGet_NotFound(t *testing.T) {
+	s := newTestStore(t)
+	ctx := context.Background()
+
+	_, err := s.Get(ctx, "materialized_config/does_not_exist", nil)
+	assert.ErrorIs(t, err, store.ErrKeyNotFound)
+}
+
 func TestWatch_InvalidPath(t *testing.T) {
 	s := newTestStore(t)
 	ctx := context.Background()
@@ -121,6 +158,35 @@ func TestWatch_NonExistentFile(t *testing.T) {
 	_, err := s.Watch(ctx, "nonexistent/config", nil)
 	// fsnotify.Add on non-existent file should fail
 	assert.Error(t, err)
+}
+
+func TestWatch_DeliversSameKVPairAsGet(t *testing.T) {
+	s := newTestStore(t)
+	ctx := context.Background()
+
+	want, err := s.Get(ctx, "materialized_config/test", nil)
+	require.NoError(t, err)
+
+	watchCtx, watchCancel := context.WithCancel(ctx)
+	ch, err := s.Watch(watchCtx, "materialized_config/test", nil)
+	require.NoError(t, err)
+
+	select {
+	case got := <-ch:
+		require.NotNil(t, got)
+		assert.Equal(t, want.Key, got.Key)
+		assert.Equal(t, want.Value, got.Value)
+	case <-time.After(5 * time.Second):
+		watchCancel()
+		t.Fatal("timed out waiting for watch delivery")
+	}
+
+	// Cancel and drain until Watch's goroutine closes the channel, so its
+	// exit (and removeWatch call) is complete before the store is closed by
+	// t.Cleanup — avoids racing Watch's cleanup against Store.Close's.
+	watchCancel()
+	for range ch {
+	}
 }
 
 func TestWatch_ContextCancellation(t *testing.T) {
