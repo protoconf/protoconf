@@ -7,6 +7,7 @@
 package protoconf_pb
 
 import (
+	httpbody "google.golang.org/genproto/googleapis/api/httpbody"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	anypb "google.golang.org/protobuf/types/known/anypb"
@@ -293,6 +294,7 @@ type ConfigUpdate struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Value         *anypb.Any             `protobuf:"bytes,1,opt,name=value,proto3" json:"value,omitempty"`
 	Error         string                 `protobuf:"bytes,2,opt,name=error,proto3" json:"error,omitempty"`
+	Raw           *httpbody.HttpBody     `protobuf:"bytes,3,opt,name=raw,proto3" json:"raw,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -339,6 +341,13 @@ func (x *ConfigUpdate) GetError() string {
 		return x.Error
 	}
 	return ""
+}
+
+func (x *ConfigUpdate) GetRaw() *httpbody.HttpBody {
+	if x != nil {
+		return x.Raw
+	}
+	return nil
 }
 
 // Mutation Server
@@ -838,7 +847,7 @@ var File_protoconf_v1_protoconf_proto protoreflect.FileDescriptor
 
 const file_protoconf_v1_protoconf_proto_rawDesc = "" +
 	"\n" +
-	"\x1cprotoconf/v1/protoconf.proto\x12\fprotoconf.v1\x1a\x19google/protobuf/any.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xb2\a\n" +
+	"\x1cprotoconf/v1/protoconf.proto\x12\fprotoconf.v1\x1a\x19google/protobuf/any.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x19google/api/httpbody.proto\"\xb2\a\n" +
 	"\x0eProtoconfValue\x12\x1d\n" +
 	"\n" +
 	"proto_file\x18\x01 \x01(\tR\tprotoFile\x12*\n" +
@@ -882,10 +891,11 @@ const file_protoconf_v1_protoconf_proto_rawDesc = "" +
 	"\achannel\x18\x02 \x01(\tR\achannel\"=\n" +
 	"\rConfigRequest\x12\x12\n" +
 	"\x04path\x18\x01 \x01(\tR\x04path\x12\x18\n" +
-	"\achannel\x18\x02 \x01(\tR\achannel\"P\n" +
+	"\achannel\x18\x02 \x01(\tR\achannel\"x\n" +
 	"\fConfigUpdate\x12*\n" +
 	"\x05value\x18\x01 \x01(\v2\x14.google.protobuf.AnyR\x05value\x12\x14\n" +
-	"\x05error\x18\x02 \x01(\tR\x05error\"\x88\x01\n" +
+	"\x05error\x18\x02 \x01(\tR\x05error\x12&\n" +
+	"\x03raw\x18\x03 \x01(\v2\x14.google.api.HttpBodyR\x03raw\"\x88\x01\n" +
 	"\x15ConfigMutationRequest\x12\x12\n" +
 	"\x04path\x18\x01 \x01(\tR\x04path\x122\n" +
 	"\x05value\x18\x02 \x01(\v2\x1c.protoconf.v1.ProtoconfValueR\x05value\x12'\n" +
@@ -954,7 +964,8 @@ var file_protoconf_v1_protoconf_proto_goTypes = []any{
 	nil,                           // 12: protoconf.v1.ConfigMutationResponse.LinksEntry
 	(*anypb.Any)(nil),             // 13: google.protobuf.Any
 	(*timestamppb.Timestamp)(nil), // 14: google.protobuf.Timestamp
-	(*durationpb.Duration)(nil),   // 15: google.protobuf.Duration
+	(*httpbody.HttpBody)(nil),     // 15: google.api.HttpBody
+	(*durationpb.Duration)(nil),   // 16: google.protobuf.Duration
 }
 var file_protoconf_v1_protoconf_proto_depIdxs = []int32{
 	13, // 0: protoconf.v1.ProtoconfValue.value:type_name -> google.protobuf.Any
@@ -964,34 +975,35 @@ var file_protoconf_v1_protoconf_proto_depIdxs = []int32{
 	14, // 4: protoconf.v1.Metadata.authored_at:type_name -> google.protobuf.Timestamp
 	14, // 5: protoconf.v1.Metadata.inserted_at:type_name -> google.protobuf.Timestamp
 	13, // 6: protoconf.v1.ConfigUpdate.value:type_name -> google.protobuf.Any
-	0,  // 7: protoconf.v1.ConfigMutationRequest.value:type_name -> protoconf.v1.ProtoconfValue
-	12, // 8: protoconf.v1.ConfigMutationResponse.links:type_name -> protoconf.v1.ConfigMutationResponse.LinksEntry
-	15, // 9: protoconf.v1.ConfigMutationResponse.pre_script_duration:type_name -> google.protobuf.Duration
-	15, // 10: protoconf.v1.ConfigMutationResponse.post_script_duration:type_name -> google.protobuf.Duration
-	15, // 11: protoconf.v1.ConfigMutationResponse.compile_duration:type_name -> google.protobuf.Duration
-	0,  // 12: protoconf.v1.CompileResponse.result:type_name -> protoconf.v1.ProtoconfValue
-	15, // 13: protoconf.v1.ProtoconfValue.ConfigRollout.default_cooldown_time:type_name -> google.protobuf.Duration
-	15, // 14: protoconf.v1.ProtoconfValue.ConfigRollout.default_expiration_time:type_name -> google.protobuf.Duration
-	10, // 15: protoconf.v1.ProtoconfValue.ConfigRollout.stages:type_name -> protoconf.v1.ProtoconfValue.ConfigRollout.Stage
-	11, // 16: protoconf.v1.ProtoconfValue.ConfigRollout.Stage.labels:type_name -> protoconf.v1.ProtoconfValue.ConfigRollout.Stage.LabelsEntry
-	15, // 17: protoconf.v1.ProtoconfValue.ConfigRollout.Stage.cooldown:type_name -> google.protobuf.Duration
-	15, // 18: protoconf.v1.ProtoconfValue.ConfigRollout.Stage.expiration:type_name -> google.protobuf.Duration
-	14, // 19: protoconf.v1.ProtoconfValue.ConfigRollout.Stage.expires_at:type_name -> google.protobuf.Timestamp
-	2,  // 20: protoconf.v1.ProtoconfService.SubscribeForConfig:input_type -> protoconf.v1.ConfigSubscriptionRequest
-	3,  // 21: protoconf.v1.ProtoconfService.GetConfig:input_type -> protoconf.v1.ConfigRequest
-	5,  // 22: protoconf.v1.ProtoconfMutationService.MutateConfig:input_type -> protoconf.v1.ConfigMutationRequest
-	6,  // 23: protoconf.v1.ProtoconfMutationReportService.ReportProgress:input_type -> protoconf.v1.ConfigMutationResponse
-	7,  // 24: protoconf.v1.ProtoconfCompile.CompileFiles:input_type -> protoconf.v1.CompileRequest
-	4,  // 25: protoconf.v1.ProtoconfService.SubscribeForConfig:output_type -> protoconf.v1.ConfigUpdate
-	4,  // 26: protoconf.v1.ProtoconfService.GetConfig:output_type -> protoconf.v1.ConfigUpdate
-	6,  // 27: protoconf.v1.ProtoconfMutationService.MutateConfig:output_type -> protoconf.v1.ConfigMutationResponse
-	6,  // 28: protoconf.v1.ProtoconfMutationReportService.ReportProgress:output_type -> protoconf.v1.ConfigMutationResponse
-	8,  // 29: protoconf.v1.ProtoconfCompile.CompileFiles:output_type -> protoconf.v1.CompileResponse
-	25, // [25:30] is the sub-list for method output_type
-	20, // [20:25] is the sub-list for method input_type
-	20, // [20:20] is the sub-list for extension type_name
-	20, // [20:20] is the sub-list for extension extendee
-	0,  // [0:20] is the sub-list for field type_name
+	15, // 7: protoconf.v1.ConfigUpdate.raw:type_name -> google.api.HttpBody
+	0,  // 8: protoconf.v1.ConfigMutationRequest.value:type_name -> protoconf.v1.ProtoconfValue
+	12, // 9: protoconf.v1.ConfigMutationResponse.links:type_name -> protoconf.v1.ConfigMutationResponse.LinksEntry
+	16, // 10: protoconf.v1.ConfigMutationResponse.pre_script_duration:type_name -> google.protobuf.Duration
+	16, // 11: protoconf.v1.ConfigMutationResponse.post_script_duration:type_name -> google.protobuf.Duration
+	16, // 12: protoconf.v1.ConfigMutationResponse.compile_duration:type_name -> google.protobuf.Duration
+	0,  // 13: protoconf.v1.CompileResponse.result:type_name -> protoconf.v1.ProtoconfValue
+	16, // 14: protoconf.v1.ProtoconfValue.ConfigRollout.default_cooldown_time:type_name -> google.protobuf.Duration
+	16, // 15: protoconf.v1.ProtoconfValue.ConfigRollout.default_expiration_time:type_name -> google.protobuf.Duration
+	10, // 16: protoconf.v1.ProtoconfValue.ConfigRollout.stages:type_name -> protoconf.v1.ProtoconfValue.ConfigRollout.Stage
+	11, // 17: protoconf.v1.ProtoconfValue.ConfigRollout.Stage.labels:type_name -> protoconf.v1.ProtoconfValue.ConfigRollout.Stage.LabelsEntry
+	16, // 18: protoconf.v1.ProtoconfValue.ConfigRollout.Stage.cooldown:type_name -> google.protobuf.Duration
+	16, // 19: protoconf.v1.ProtoconfValue.ConfigRollout.Stage.expiration:type_name -> google.protobuf.Duration
+	14, // 20: protoconf.v1.ProtoconfValue.ConfigRollout.Stage.expires_at:type_name -> google.protobuf.Timestamp
+	2,  // 21: protoconf.v1.ProtoconfService.SubscribeForConfig:input_type -> protoconf.v1.ConfigSubscriptionRequest
+	3,  // 22: protoconf.v1.ProtoconfService.GetConfig:input_type -> protoconf.v1.ConfigRequest
+	5,  // 23: protoconf.v1.ProtoconfMutationService.MutateConfig:input_type -> protoconf.v1.ConfigMutationRequest
+	6,  // 24: protoconf.v1.ProtoconfMutationReportService.ReportProgress:input_type -> protoconf.v1.ConfigMutationResponse
+	7,  // 25: protoconf.v1.ProtoconfCompile.CompileFiles:input_type -> protoconf.v1.CompileRequest
+	4,  // 26: protoconf.v1.ProtoconfService.SubscribeForConfig:output_type -> protoconf.v1.ConfigUpdate
+	4,  // 27: protoconf.v1.ProtoconfService.GetConfig:output_type -> protoconf.v1.ConfigUpdate
+	6,  // 28: protoconf.v1.ProtoconfMutationService.MutateConfig:output_type -> protoconf.v1.ConfigMutationResponse
+	6,  // 29: protoconf.v1.ProtoconfMutationReportService.ReportProgress:output_type -> protoconf.v1.ConfigMutationResponse
+	8,  // 30: protoconf.v1.ProtoconfCompile.CompileFiles:output_type -> protoconf.v1.CompileResponse
+	26, // [26:31] is the sub-list for method output_type
+	21, // [21:26] is the sub-list for method input_type
+	21, // [21:21] is the sub-list for extension type_name
+	21, // [21:21] is the sub-list for extension extendee
+	0,  // [0:21] is the sub-list for field type_name
 }
 
 func init() { file_protoconf_v1_protoconf_proto_init() }
