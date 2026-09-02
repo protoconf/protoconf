@@ -267,6 +267,45 @@ func (s *ProtoconfKVAgentRollout) SubscribeForConfig(request *protoconfservice.C
 	return nil
 }
 
+// GetConfig reads a single config value without opening a watch stream.
+//
+// ponytail: this reads only the stable config path, never rollout.json — a
+// one-shot read always returns the default config, not the caller's stage.
+// request.Channel is therefore carried but unused here. Upgrade path: resolve
+// the matching stage the way SubscribeForConfig's rollout watcher does, if a
+// caller ever needs channel-aware one-shot reads.
+func (s *ProtoconfKVAgentRollout) GetConfig(ctx context.Context, request *protoconfservice.ConfigRequest) (*protoconfservice.ConfigUpdate, error) {
+	ctx, span := s.tracer.Start(ctx, "GetConfig")
+	defer span.End()
+
+	logger := s.Logger.With(slog.String("key", request.Path))
+	if peer, ok := peer.FromContext(ctx); ok {
+		logger = logger.With(slog.Any("peer_addr", peer.Addr))
+	}
+	logger.InfoContext(ctx, "got get request")
+
+	kvStableConfigPath := path.Join(s.config.Prefix, request.Path, "config.data")
+	kvPair, err := s.store.Get(ctx, kvStableConfigPath, &store.ReadOptions{})
+	if err != nil {
+		logger.Error(err.Error())
+		if errors.Is(err, store.ErrKeyNotFound) {
+			return nil, status.Error(codes.NotFound, err.Error())
+		}
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+	if kvPair == nil {
+		return nil, status.Error(codes.NotFound, "key not found in store")
+	}
+
+	result, err := parseProtoconfValue(kvPair)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return &protoconfservice.ConfigUpdate{Value: result.Value}, nil
+}
+
 func (s *ProtoconfKVAgentRollout) matchStage(request *protoconfservice.ConfigSubscriptionRequest, stage *protoconfvalue.ProtoconfValue_ConfigRollout_Stage) bool {
 	if chName := s.getChannelName(request); chName != "" && chName == stage.Channel {
 		return true
