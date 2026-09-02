@@ -15,13 +15,15 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
 	github.com/hashicorp/go-getter v1.8.8
+	github.com/hashicorp/go-getter/v2 v2.2.3
 	github.com/jhump/protoreflect v1.16.0
 	github.com/kvtools/consul v1.0.2
 	github.com/kvtools/etcdv3 v1.0.3
 	github.com/kvtools/valkeyrie v1.0.0
 	github.com/kvtools/zookeeper v1.0.2
 	github.com/mitchellh/cli v1.1.5
-	github.com/pelletier/go-toml v1.9.5
+	github.com/pelletier/go-toml v1.9.4
+	github.com/pelletier/go-toml/v2 v2.4.3
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.20.5
 	github.com/protoconf/libprotoconf v0.1.0
