@@ -7,6 +7,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"log/slog"
+	"os"
 	"path/filepath"
 	"sync"
 
@@ -92,8 +93,32 @@ func (s *Store) Put(ctx context.Context, key string, value []byte, opts *store.W
 
 // Get a value given its key.
 func (s *Store) Get(ctx context.Context, key string, opts *store.ReadOptions) (*store.KVPair, error) {
-	// TODO implement me
-	panic("implement me")
+	// Validate before building any path — this is the only thing stopping a
+	// caller-supplied key from escaping protoconfRoot via "..".
+	if key != filepath.ToSlash(filepath.Clean(key)) || key == "" {
+		return nil, fmt.Errorf("invalid path to get, path=%s", key)
+	}
+
+	absPath := filepath.Join(s.protoconfRoot, key+consts.CompiledConfigExtension)
+	if _, err := os.Stat(absPath); err != nil {
+		if os.IsNotExist(err) {
+			return nil, store.ErrKeyNotFound
+		}
+		return nil, err
+	}
+
+	protoconfValue := &protoconfvalue.ProtoconfValue{}
+	if err := s.parser.ReadConfig(absPath, protoconfValue); err != nil {
+		return nil, fmt.Errorf("error reading config: %w", err)
+	}
+	b, err := proto.Marshal(protoconfValue)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling config: %w", err)
+	}
+	return &store.KVPair{
+		Key:   key,
+		Value: []byte(base64.StdEncoding.EncodeToString(b)),
+	}, nil
 }
 
 // Delete the value at the specified key.
@@ -128,21 +153,12 @@ func (s *Store) Watch(ctx context.Context, key string, opts *store.ReadOptions) 
 		}()
 
 		for {
-			protoconfValue := &protoconfvalue.ProtoconfValue{}
-			err := s.parser.ReadConfig(absPath, protoconfValue)
+			kvPair, err := s.Get(ctx, key, opts)
 			if err != nil {
 				slog.Error("Error reading config", "Error", err)
 				return
 			}
-			b, err := proto.Marshal(protoconfValue)
-			if err != nil {
-				slog.Error("Error Marshaling config", "Error", err)
-				return
-			}
-			watchCh <- &store.KVPair{
-				Key:   key,
-				Value: []byte(base64.StdEncoding.EncodeToString(b)),
-			}
+			watchCh <- kvPair
 
 			select {
 			case _, ok := <-fsCh:
