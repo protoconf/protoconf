@@ -6,6 +6,7 @@ option go_package = "github.com/protoconf/protoconf/pb/protoconf/v1;protoconf_pb
 import "google/protobuf/any.proto";
 import "google/protobuf/duration.proto";
 import "google/protobuf/timestamp.proto";
+import "google/api/httpbody.proto";
 
 message ProtoconfValue {
     string proto_file = 1;
@@ -66,6 +67,7 @@ message ConfigRequest {
 message ConfigUpdate {
     google.protobuf.Any value = 1;
     string error =2;
+    google.api.HttpBody raw = 3;
 }
 
 service ProtoconfService{

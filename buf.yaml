@@ -1,10 +1,13 @@
 version: v1
 name: buf.build/protoconf/protoconf
+deps:
+  - buf.build/googleapis/googleapis
 build:
   excludes:
     - utils/testdata
     - examples
     - node_modules
+    - third_party
 breaking:
   use:
     - FILE
