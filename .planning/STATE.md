@@ -4,9 +4,9 @@ milestone: v1.0
 current_phase: 2
 current_phase_name: os.Exit Refactoring
 status: Milestone complete
-stopped_at: Quick task 260901-wom complete — Lint workflow + trunk/buf/go.yml/renovate hardening on ci/hardening
-last_updated: "2026-09-01T17:31:10.140Z"
-state_head: 3238abe063793889ae105fa56e72af45e1c88412
+stopped_at: Quick task 260903-c93 complete — upgraded protovalidate-go v0.6.2 -> v0.8.0 (option-b), keeping protoc-gen-validate legacy support
+last_updated: "2026-09-03T02:30:24.780Z"
+state_head: 24aab2b6b37a8bdb11a09f895dc8282d656d6266
 progress:
   total_phases: 10
   completed_phases: 10
@@ -136,6 +136,7 @@ Recent decisions affecting current work:
 - [Phase 08]: Generalized command.ConfigLayerer from the agent (08-05) to serve/compile/insert/mutate and removed the superseded LayerConfigFile/matchesBase pair — Closes PCLI-09 for all five CLI components, not only the agent; leaving two layering entry points would let a future component be wired to the defective one
 - [Phase 2]: [260901-wom]: golangci-lint removed entirely from trunk.yaml rather than re-pinned — trunk CLI install blocked by sudo, no v1-line pin can typecheck go1.25.8; go build/vet/test already cover Go correctness
 - [Phase 2]: [260901-wom]: buf-lint moved to trunk lint.disabled (not deleted) — 73 findings require enum/package renames that break wire compatibility, a hard CLAUDE.md constraint
+- [Phase 2]: [quick-260903-c93]: Upgraded protovalidate-go v0.6.2 -> v0.8.0 (option-b); rejected v1.4.0 (module rename + Go 1.26 floor + legacy/ PGV removal, which breaks CLAUDE.md backward-compat constraint)
 
 ### Pending Todos
 
@@ -161,9 +162,10 @@ None yet.
 | 260902-hp5 | Fix filekv data race and double-close between Close() and readEvents(); make closeWatchers locked and idempotent; sound pointer receivers (10 copylocks) | 2026-09-02 | ffda1bb | [260902-hp5-fix-filekv-data-race-and-double-close-be](./quick/260902-hp5-fix-filekv-data-race-and-double-close-be/) |
 | 260902-ggd | Serve GetConfig to non-gRPC clients over plain HTTP via connectrpc vanguard-go, using google.api.HttpBody for verbatim JSON passthrough | 2026-09-02 | a412e19 | [260902-ggd-serve-getconfig-over-plain-http-via-conn](./quick/260902-ggd-serve-getconfig-over-plain-http-via-conn/) |
 | 260902-f8i | Add GetConfig one-shot RPC to ProtoconfService — both agent impls, filekv.Get, legacy passthrough (backport of upstream PR #496) | 2026-09-02 | d871d10 | [260902-f8i-add-getconfig-one-shot-rpc-to-protoconfs](./quick/260902-f8i-add-getconfig-one-shot-rpc-to-protoconfs/) |
+| 260903-c93 | Upgrade protovalidate-go v0.6.2 -> v0.8.0 (option-b); rejected v1.4.0 (module rename, Go 1.26 floor, legacy PGV package removal breaking CLAUDE.md backward-compat constraint) | 2026-09-03 | 24aab2b | [260903-c93-upgrade-protovalidate-go-to-v1-4-0](./quick/260903-c93-upgrade-protovalidate-go-to-v1-4-0/) |
 
 ## Session Continuity
 
-Last session: 2026-09-01T16:45:21.013Z
-Stopped at: Quick task 260901-wom complete — Lint workflow + trunk/buf/go.yml/renovate hardening on ci/hardening
+Last session: 2026-09-03T02:29:36.113Z
+Stopped at: Quick task 260903-c93 complete — upgraded protovalidate-go v0.6.2 -> v0.8.0 (option-b), keeping protoc-gen-validate legacy support
 Resume file: None
