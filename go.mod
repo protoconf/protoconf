@@ -7,7 +7,7 @@ require (
 	github.com/Masterminds/sprig/v3 v3.2.3
 	github.com/bazelbuild/bazel-gazelle v0.37.0
 	github.com/bazelbuild/buildtools v0.0.0-20240313121412-66c605173954
-	github.com/bufbuild/protovalidate-go v0.6.2
+	github.com/bufbuild/protovalidate-go v0.8.0
 	github.com/cheggaaa/pb v1.0.30
 	github.com/fsnotify/fsnotify v1.7.0
 	github.com/fullstorydev/grpcui v1.4.1
@@ -52,7 +52,7 @@ require (
 )
 
 require (
-	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.33.0-20240401165935-b983156c5e99.1 // indirect
+	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.35.2-20241127180247-a33202765966.1 // indirect
 	cel.dev/expr v0.25.2 // indirect
 	cloud.google.com/go v0.123.0 // indirect
 	cloud.google.com/go/auth v0.22.0 // indirect
@@ -128,7 +128,7 @@ require (
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/groupcache v0.0.0-20241129210726-2c02b8208cf8 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
-	github.com/google/cel-go v0.20.1 // indirect
+	github.com/google/cel-go v0.22.1 // indirect
 	github.com/google/gnostic-models v0.6.8 // indirect
 	github.com/google/go-jsonnet v0.20.0 // indirect
 	github.com/google/gofuzz v1.2.0 // indirect
