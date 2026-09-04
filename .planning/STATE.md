@@ -5,16 +5,16 @@ milestone_name: Compiler Startup Performance (Planned)
 current_phase: 11
 current_phase_name: Concurrency-Safe Lazy Registry Core
 status: executing
-stopped_at: v2.0 ROADMAP.md revised — Phase 13 (exact symbol index) and Phase 14 (shared type-URL resolution) merged into a single Phase 13 per user feedback; now Phases 11-15, 30/30 requirements mapped (100% coverage), success criteria derived goal-backward per phase. Ready for `/gsd-plan-phase 11`.
-last_updated: "2026-09-04T08:12:18.584Z"
+stopped_at: Completed 11-01-PLAN.md
+last_updated: "2026-09-04T09:07:17.059Z"
 last_activity: 2026-09-04
-last_activity_desc: "ROADMAP.md revised: Phase 13 (exact symbol index) and Phase 14 (shared type-URL resolution) merged into a single Phase 13; now Phases 11-15, 30/30 requirements mapped, 100% coverage"
-state_head: ef24bd2f590ae28516712d4633bfd43b5cef1bcc
+last_activity_desc: Phase 11 execution started
+state_head: 3f34374b431dcf5325c39b8cb52e41360bd91aaa
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 3
-  completed_plans: 0
+  completed_plans: 1
   percent: 0
 ---
 
@@ -29,10 +29,10 @@ See: .planning/PROJECT.md (updated 2026-09-04)
 
 ## Current Position
 
-Phase: 11 (Concurrency-Safe Lazy Registry Core) — READY TO EXECUTE
-Plan: — of — in current phase (not yet planned)
+Phase: 11 (Concurrency-Safe Lazy Registry Core) — EXECUTING
+Plan: 2 of 3
 Status: Ready to execute
-Last activity: 2026-09-04 — ROADMAP.md revised: Phase 13 (exact symbol index) and Phase 14 (shared type-URL resolution) merged into a single Phase 13; now Phases 11-15, 30/30 requirements mapped, 100% coverage
+Last activity: 2026-09-04 — Phase 11 execution started
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -83,6 +83,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 08 P04 | 25min | 3 tasks | 9 files |
 | Phase 08 P05 | 30min | 2 tasks | 4 files |
 | Phase 08-cli-flag-generation-config-loading P06 | 45min | 2 tasks | 8 files |
+| Phase 11 P01 | 55min | 3 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -149,6 +150,8 @@ Recent decisions affecting current work:
 - [Phase 2]: [260901-wom]: golangci-lint removed entirely from trunk.yaml rather than re-pinned — trunk CLI install blocked by sudo, no v1-line pin can typecheck go1.25.8; go build/vet/test already cover Go correctness
 - [Phase 2]: [260901-wom]: buf-lint moved to trunk lint.disabled (not deleted) — 73 findings require enum/package renames that break wire compatibility, a hard CLAUDE.md constraint
 - [Phase 2]: [quick-260903-c93]: Upgraded protovalidate-go v0.6.2 -> v0.8.0 (option-b); rejected v1.4.0 (module rename + Go 1.26 floor + legacy/ PGV removal, which breaks CLAUDE.md backward-compat constraint)
+- [Phase 11]: [Phase 11-01] Laziness is opt-in via NewLazyModuleService; D-01/D-02/D-03 followed as written, GetProtoRegistry()'s default behavior unchanged for the other four consumers
+- [Phase 11]: [Phase 11-01] RegistryTypeResolver retries the MessageRegistry lookup after ParseAll unconditionally, discarding only ParseAll's own error, so a partial whole-tree parse can't produce a false NotFound
 
 ### Pending Todos
 
@@ -181,6 +184,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-04T00:00:00.000Z
-Stopped at: v2.0 ROADMAP.md revised — Phase 13 (exact symbol index) and Phase 14 (shared type-URL resolution) merged into a single Phase 13 per user feedback; now Phases 11-15, 30/30 requirements mapped (100% coverage), success criteria derived goal-backward per phase. Ready for `/gsd-plan-phase 11`.
+Last session: 2026-09-04T09:07:17.048Z
+Stopped at: Completed 11-01-PLAN.md
 Resume file: None

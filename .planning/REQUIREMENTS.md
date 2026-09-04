@@ -10,11 +10,11 @@ Milestone v1.0 (Quality & Consistency Overhaul) shipped complete — its 44 requ
 
 ### Lazy Registry Core
 
-- [ ] **LAZY-01**: `GetProtoRegistry()` returns without bulk-walking, parsing or linking `src/` — a repository's proto count no longer determines compiler construction cost
+- [x] **LAZY-01**: `GetProtoRegistry()` returns without bulk-walking, parsing or linking `src/` — a repository's proto count no longer determines compiler construction cost
 - [ ] **LAZY-02**: A proto file is parsed and linked the first time it is requested by path, and memoised so a second request costs a map lookup
-- [ ] **LAZY-03**: On-demand single-file parsing never mutates `localFiles`, so `registry.Store` continues to serialise a complete `.fds` for `mod sync`
+- [x] **LAZY-03**: On-demand single-file parsing never mutates `localFiles`, so `registry.Store` continues to serialise a complete `.fds` for `mod sync`
 - [ ] **LAZY-04**: `protoconf mod sync` still parses and links the whole module tree, writing `.fds` cache files identical to today's
-- [ ] **LAZY-05**: An operator can see how many proto files a compile actually loaded, so an unexpectedly wide load is visible in the field rather than only under a profiler
+- [x] **LAZY-05**: An operator can see how many proto files a compile actually loaded, so an unexpectedly wide load is visible in the field rather than only under a profiler
 
 ### Resolver Views
 
@@ -117,11 +117,11 @@ Acknowledged, deferred beyond this milestone.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| LAZY-01 | Phase 11 | Pending |
+| LAZY-01 | Phase 11 | Complete |
 | LAZY-02 | Phase 11 | Pending |
-| LAZY-03 | Phase 11 | Pending |
+| LAZY-03 | Phase 11 | Complete |
 | LAZY-04 | Phase 11 | Pending |
-| LAZY-05 | Phase 11 | Pending |
+| LAZY-05 | Phase 11 | Complete |
 | CONS-01 | Phase 11 | Pending |
 | RSLV-01 | Phase 12 | Pending |
 | RSLV-02 | Phase 12 | Pending |
@@ -149,6 +149,7 @@ Acknowledged, deferred beyond this milestone.
 | GATE-05 | Phase 15 | Pending |
 
 **Coverage:**
+
 - v2.0 requirements: 30 total
 - Mapped to phases: 30
 - Unmapped: 0 ✓
