@@ -1,18 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-current_phase: 2
-current_phase_name: os.Exit Refactoring
-status: Milestone complete
-stopped_at: Quick task 260904-fwk complete — synthetic corpus generator + scaling gate; measurement apparatus ready for the lazy-loading milestone
-last_updated: "2026-09-04T04:15:00.000Z"
-state_head: c83f249
+milestone: v2.0
+milestone_name: Compiler Startup Performance
+status: planning
+last_updated: "2026-09-04T05:15:34.392Z"
+last_activity: 2026-09-04
 progress:
-  total_phases: 10
-  completed_phases: 10
-  total_plans: 23
-  completed_plans: 23
-milestone_name: milestone
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -26,8 +24,10 @@ See: .planning/PROJECT.md (updated 2026-09-01)
 
 ## Current Position
 
-Phase: 2 — os.Exit Refactoring
-Plan: Not started
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-09-04 — Milestone v2.0 started
 
 ## Performance Metrics
 

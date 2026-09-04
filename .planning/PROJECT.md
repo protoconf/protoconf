@@ -1,12 +1,35 @@
-# Protoconf — Quality & Consistency Overhaul
+# Protoconf
 
 ## What This Is
 
-Protoconf is a configuration management tool that uses Protocol Buffers as schema and Starlark as the configuration language. It compiles Starlark configs into materialized protobuf, distributes them via KV stores (Consul, etcd, ZooKeeper, Kubernetes ConfigMaps), and serves them to applications via gRPC streaming. This milestone focuses on comprehensive quality improvements: testing, consistency, security hardening, and modernizing deprecated patterns across the entire codebase.
+Protoconf is a configuration management tool that uses Protocol Buffers as schema and Starlark as the configuration language. It compiles Starlark configs into materialized protobuf, distributes them via KV stores (Consul, etcd, ZooKeeper, Kubernetes ConfigMaps), and serves them to applications via gRPC streaming. Milestone v1.0 delivered a quality and consistency overhaul: testing, security hardening, proto-defined CLI configuration, and removal of deprecated patterns. Milestone v2.0 targets compiler startup performance — making compile time proportional to the config being compiled rather than to the size of the repository it lives in.
 
 ## Core Value
 
 Every component must be testable, consistent, and free of runtime surprises — no panics in production code, no os.Exit in libraries, no deprecated APIs, and proper test coverage across all packages.
+
+## Current Milestone
+
+**v2.0 — Compiler Startup Performance**
+
+**Goal:** `protoconf compile` completes in under 200ms on a repository of any size, by parsing and linking only the protos a config actually reaches.
+
+**The problem, measured** (800-proto corpus, `.planning/research/compiler-performance/BASELINE.md`):
+
+| Stage | Time |
+|---|---|
+| `GetProtoRegistry()` — parse + link all 799 protos | 4,639ms |
+| Resolver construction over 864 files | 260ms |
+| `CompileFile` — Starlark eval, validate, write | 184ms (already at target) |
+| **Total** | **6.97s** |
+
+Cost scales with repository size, not with the config. The config `load()`s 5 protos, 7 transitively, which cost 2.7ms to parse in isolation — a ~1,700x gap.
+
+**Scope:** all five `GetProtoRegistry()` consumers — compiler, mutation server, inserter, agent filekv, mutate.
+
+**Definition of done:** `TestCompilerStartupScaling`'s alloc ratio at n=50→400 drops from 7.24x to ≤2.0x, and its `t.Skipf` branch is deleted, becoming a `require.LessOrEqual`.
+
+**Already shipped toward this** (v1.0 tail): `loadValidators` filesystem walk (quick 260904-f5j) and the synthetic corpus generator + scaling gate (quick 260904-fwk).
 
 ## Requirements
 
@@ -30,6 +53,10 @@ Every component must be testable, consistent, and free of runtime surprises — 
 - [x] Extract shared OTel bootstrap to common package — Validated in Phase 3: Observability & Global State Cleanup
 - [x] Migrate all deprecated gRPC APIs (WithInsecure, v1alpha reflection) — Validated in Phase 1: Deprecated API Migrations
 - [ ] Migrate from jhump/protoreflect/dynamic to dynamicpb
+- [ ] Lazy, load-driven proto resolution — parse and link only what a config reaches (v2.0)
+- [ ] Resolvers as lazy views over the registry, replacing eager snapshots (v2.0)
+- [ ] Type-URL resolution across all five registry consumers, including nested Any (v2.0)
+- [ ] Loud (never silent) fallback when a type URL cannot be resolved cheaply (v2.0)
 - [x] Add TLS support for gRPC connections — Validated in Phase 5: TLS Support
 - [x] Token-based auth with credential forwarding to pre/post scripts — Validated in Phase 6: Token Auth & Script Security
 - [x] Proto-defined CLI configuration (definitions + flag generation) — Validated in Phase 7: Proto-Defined CLI Configs and Phase 8: CLI Flag Generation & Config Loading
@@ -43,7 +70,11 @@ Every component must be testable, consistent, and free of runtime surprises — 
 - KV store unimplemented method implementations — panics are intentional interface stubs; they signal gaps if methods become needed
 - Full CLI framework migration (mitchellh/cli to cobra) — the real problem is configs not being proto-defined, which is in scope
 - Mobile or web client SDKs — focus is backend quality
-- New feature development — this milestone is purely quality/consistency
+- New feature development — v1.0 was purely quality/consistency; v2.0 is purely performance
+- Persisted linked-descriptor cache — optimises the ~3ms lazy path, not the 4.6s eager one; the `.fds` machinery already half-exists if warm-start ever justifies it
+- Parallelising the eager parse — divides 4.6s by core count at best, still 3-4x over budget, and burns every core on ~99% discarded work
+- Patching or bumping protocompile for the linker lookup — `linker.Files.FindFileByPath` scans a file's direct deps, not all 864, and v0.14.1 is byte-identical; there is no lookup to fix
+- Making `mod sync` lazy — it serialises the registry to `.fds`, and a lazy registry would write a truncated cache that then loads clean and is wrong
 
 ## Context
 
