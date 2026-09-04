@@ -350,11 +350,17 @@ func (c *Compiler) load(filename string) (*config, error) {
 	}
 
 	return &config{
-		filename:        filename,
-		locals:          locals,
-		validators:      validators,
-		protoResolver:   c.parser.LocalResolver,
-		messageRegistry: c.ModuleService.GetProtoRegistry().MessageRegistry,
+		filename:      filename,
+		locals:        locals,
+		validators:    validators,
+		protoResolver: c.parser.LocalResolver,
+		// Share the registry's MessageRegistry by pointer, not by value:
+		// copying msgregistry.MessageRegistry gives the copy its own
+		// zero-value mutex while the maps inside it stay shared with the
+		// original, so a reader through the copy is not synchronized
+		// against AddFile running on the original — which on-demand
+		// parsing now does mid-compile (D-04).
+		messageRegistry: &c.ModuleService.GetProtoRegistry().MessageRegistry,
 		protoValidator:  c.validator,
 	}, nil
 }
