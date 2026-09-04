@@ -79,8 +79,13 @@ Full phase detail archived under `.planning/milestones/v1.0-phases/`.
 **Plans**: 3 plans
 
 Plans:
+**Wave 1**
+
 - [ ] 11-01-PLAN.md — Lazy parse core: on-demand `ParseOne` with memoisation and lock, compiler wired onto it, loaded-file-count instrumentation (LAZY-01, LAZY-02, LAZY-03, LAZY-05)
 - [ ] 11-02-PLAN.md — Mutation server `Init()` discovers custom gRPC services with its own eager `src/` scan (CONS-01)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 11-03-PLAN.md — Concurrent-compile race test, shared-`MessageRegistry` pointer fix, and `mod sync` `.fds` byte-identity guard (LAZY-02 concurrency, LAZY-04)
 
 ### Phase 12: Growable Resolver Views & Race Safety
@@ -98,6 +103,7 @@ Plans:
 **Plans**: TBD
 
 Plans:
+
 - [ ] 12-01: TBD
 
 ### Phase 13: Exact Symbol Index & Shared Type-URL Resolution
@@ -116,6 +122,7 @@ Plans:
 **Plans**: TBD
 
 Plans:
+
 - [ ] 13-01: TBD
 
 ### Phase 14: Non-Compiler Consumer Correctness
@@ -135,6 +142,7 @@ Plans:
 **Plans**: TBD
 
 Plans:
+
 - [ ] 14-01: TBD
 
 ### Phase 15: Verification, Decision & Gate Flip
@@ -154,6 +162,7 @@ Plans:
 **Plans**: TBD
 
 Plans:
+
 - [ ] 15-01: TBD
 
 ## Progress
