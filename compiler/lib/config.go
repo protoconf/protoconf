@@ -23,7 +23,7 @@ type config struct {
 	filename        string
 	locals          starlark.StringDict
 	validators      map[string]*starlark.Function
-	messageRegistry msgregistry.MessageRegistry
+	messageRegistry *msgregistry.MessageRegistry
 	protoResolver   protoregistry.MessageTypeResolver
 	protoValidator  *protovalidate.Validator
 }
