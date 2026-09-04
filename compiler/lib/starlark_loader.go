@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/fs"
 	"path"
 	"path/filepath"
 	"strings"
@@ -16,7 +17,6 @@ import (
 	"github.com/qri-io/starlib"
 	"go.starlark.net/starlark"
 	"google.golang.org/protobuf/proto"
-	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/types/dynamicpb"
 )
 
@@ -112,32 +112,36 @@ func (l *starlarkLoader) Load(thread *starlark.Thread, moduleName string) (starl
 func (l *starlarkLoader) loadValidators() (map[string]*starlark.Function, error) {
 	validators := make(map[string]*starlark.Function)
 	l.Modules["add_validator"] = starlark.NewBuiltin("add_validator", starAddValidator(&validators))
-	var walkErr error
-	l.parser.FilesResolver.RangeFiles(func(fd protoreflect.FileDescriptor) bool {
-		protoFile := fd.Path()
-		validatorFile := protoFile + consts.ValidatorExtensionSuffix
-		validatorAbsPath := filepath.Join(l.srcDir, validatorFile)
-		if exists, isDir, err := stat(validatorAbsPath); err != nil {
-			walkErr = fmt.Errorf("error getting file stat for validator %s: %w", validatorAbsPath, err)
-			return false
-		} else if isDir {
-			walkErr = fmt.Errorf("expected validator file, got directory: %s", validatorAbsPath)
-			return false
-		} else if !exists {
-			return true
+	validatorSuffix := consts.ProtoExtension + consts.ValidatorExtensionSuffix
+	err := filepath.WalkDir(l.srcDir, func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			if errors.Is(err, fs.ErrNotExist) {
+				return nil
+			}
+			return err
 		}
+		if !strings.HasSuffix(path, validatorSuffix) {
+			return nil
+		}
+		if d.IsDir() {
+			return fmt.Errorf("expected validator file, got directory: %s", path)
+		}
+		rel, err := filepath.Rel(l.srcDir, path)
+		if err != nil {
+			return err
+		}
+		rel = filepath.ToSlash(rel)
 		thread := &starlark.Thread{
 			Print: starPrint,
 			Load:  l.Load,
 		}
-		if _, err := l.Load(thread, filepath.ToSlash(validatorFile)); err != nil {
-			walkErr = fmt.Errorf("error loading validator %s: %w", validatorFile, err)
-			return false
+		if _, err := l.Load(thread, rel); err != nil {
+			return fmt.Errorf("error loading validator %s: %w", rel, err)
 		}
-		return true
+		return nil
 	})
-	if walkErr != nil {
-		return nil, walkErr
+	if err != nil {
+		return nil, err
 	}
 	return validators, nil
 }
