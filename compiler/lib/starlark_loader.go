@@ -174,7 +174,7 @@ func (l *starlarkLoader) loadMutable(modulePath string) (starlark.StringDict, er
 		return nil, errors.Join(ErrLoadMutable, fmt.Errorf("file=%s", filename), err)
 	}
 
-	mt, err := l.parser.LocalResolver.FindMessageByURL(protoconfValue.Value.TypeUrl)
+	mt, err := l.parser.TypeResolver.FindMessageByURL(protoconfValue.Value.TypeUrl)
 	if err != nil {
 		return nil, err
 	}
