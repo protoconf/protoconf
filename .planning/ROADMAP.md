@@ -86,7 +86,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 11-03-PLAN.md — Concurrent-compile race test, shared-`MessageRegistry` pointer fix, and `mod sync` `.fds` byte-identity guard (LAZY-02 concurrency, LAZY-04)
+- [x] 11-03-PLAN.md — Concurrent-compile race test, shared-`MessageRegistry` pointer fix, and `mod sync` `.fds` byte-identity guard (LAZY-02 concurrency, LAZY-04)
 
 ### Phase 12: Growable Resolver Views & Race Safety
 

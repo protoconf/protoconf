@@ -4,17 +4,17 @@ milestone: v2.0
 milestone_name: Compiler Startup Performance (Planned)
 current_phase: 11
 current_phase_name: Concurrency-Safe Lazy Registry Core
-status: executing
-stopped_at: Completed 11-concurrency-safe-lazy-registry-core 11-02-PLAN.md
-last_updated: "2026-09-04T09:17:29.269Z"
+status: verifying
+stopped_at: Completed 11-concurrency-safe-lazy-registry-core 11-03-PLAN.md
+last_updated: "2026-09-04T10:01:20.142Z"
 last_activity: 2026-09-04
 last_activity_desc: Phase 11 execution started
-state_head: c32b74f04bf5f5d166f4da29ff4f901b9f71aad8
+state_head: 42e28f8f27bd45dd76c2e755cadaa09658fe7655
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 3
-  completed_plans: 2
+  completed_plans: 3
   percent: 0
 ---
 
@@ -31,7 +31,7 @@ See: .planning/PROJECT.md (updated 2026-09-04)
 
 Phase: 11 (Concurrency-Safe Lazy Registry Core) — EXECUTING
 Plan: 3 of 3
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-09-04 — Phase 11 execution started
 
 Progress: [░░░░░░░░░░] 0%
@@ -85,6 +85,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 08-cli-flag-generation-config-loading P06 | 45min | 2 tasks | 8 files |
 | Phase 11 P01 | 55min | 3 tasks | 8 files |
 | Phase 11-concurrency-safe-lazy-registry-core P02 | 8min | 2 tasks | 2 files |
+| Phase 11-concurrency-safe-lazy-registry-core P03 | 42min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -154,6 +155,8 @@ Recent decisions affecting current work:
 - [Phase 11]: [Phase 11-01] Laziness is opt-in via NewLazyModuleService; D-01/D-02/D-03 followed as written, GetProtoRegistry()'s default behavior unchanged for the other four consumers
 - [Phase 11]: [Phase 11-01] RegistryTypeResolver retries the MessageRegistry lookup after ParseAll unconditionally, discarding only ParseAll's own error, so a partial whole-tree parse can't produce a false NotFound
 - [Phase 11]: Phase 11-02: Init() discovers mutation services via own eager src/ scan (D-02: registration-only, reflection calls unchanged) — CONS-01 blocking co-requirement closed before registry laziness lands
+- [Phase 11]: D-04 executed: BUG-03 (go vet copylocks at compiler/lib/compiler.go) fixed in Phase 11, overriding REQUIREMENTS.md's 'deferred beyond this milestone' framing — LAZY-02 removed the invariant that made the value-copy benign (AddFile now runs mid-compile, not just at construction), making the shared-pointer fix a correctness prerequisite
+- [Phase 11]: TestModSyncFdsByteIdentical compares lazy vs eager FileRegistry counts directly instead of the plan's literal corpus-size threshold — NewDescriptorRegistry seeds ~65 well-known types before any src/ parsing, exceeding the 40-file corpus regardless of laziness, so the literal threshold fails unconditionally; comparing against eager's own count preserves the distinguishability guard
 
 ### Pending Todos
 
@@ -186,6 +189,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-04T09:17:29.161Z
-Stopped at: Completed 11-concurrency-safe-lazy-registry-core 11-02-PLAN.md
+Last session: 2026-09-04T10:01:20.131Z
+Stopped at: Completed 11-concurrency-safe-lazy-registry-core 11-03-PLAN.md
 Resume file: None
