@@ -16,6 +16,7 @@ import (
 	"os/exec"
 	"os/signal"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"sync"
 	"time"
@@ -327,7 +328,28 @@ func (s *ProtoconfMutationServer) Init(rpcServer *grpc.Server) {
 	protoconf_pb.RegisterProtoconfMutationReportServiceServer(rpcServer, s)
 
 	s.exampleMaker = map[string]exampleFunc{}
-	s.parser.FilesResolver.RangeFiles(func(fd protoreflect.FileDescriptor) bool {
+
+	// Service discovery structurally needs every proto under src/ at startup,
+	// which is a different question from "what has a config demanded so
+	// far". s.parser's resolver is a construction-time snapshot that, once
+	// the compiler's registry becomes lazy, is near-empty before any config
+	// has been compiled — ranging it here would silently drop every custom
+	// mutation service for the process lifetime (CONS-01). This scan gets
+	// its own fresh, throwaway registry instead, mirroring Sync()'s
+	// "everything under this tree, right now, once" eager import
+	// (compiler/lib/module_service.go). Per D-02, this discovery registry is
+	// NOT wired into the reflection.NewServerV1/NewServer calls below — they
+	// keep reading s.parser.FilesResolver/LocalResolver unchanged; widening
+	// reflection completeness under a lazy registry is a later phase's
+	// decision.
+	discoveryRegistry := utils.NewDescriptorRegistry()
+	srcPath := filepath.Join(s.protoconfRoot, consts.SrcPath)
+	if err := discoveryRegistry.Import(discoveryRegistry.Parse, []*regexp.Regexp{}, srcPath); err != nil {
+		logger.Error("failed to parse proto files for service discovery", "path", srcPath, "error", err)
+	}
+	discoveryFiles := discoveryRegistry.GetFilesResolver()
+
+	discoveryFiles.RangeFiles(func(fd protoreflect.FileDescriptor) bool {
 		_, err := protoregistry.GlobalFiles.FindFileByPath(fd.Path())
 		if !errors.Is(err, protoregistry.NotFound) {
 			return true
