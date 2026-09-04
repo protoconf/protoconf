@@ -66,13 +66,15 @@ a performance change**, and every risk it carries is a silent-wrong-answer risk:
    blocker, and the fix (walk the filesystem for `*.proto-validator` instead) is
    *also faster* — the terraform corpus has zero validators and still pays 864
    stat syscalls today. **Do this first, on its own merits.**
-2. **`Any` resolution is by type URL, not path** — a symbol, not a file. Lazy-by-path
-   cannot answer it, and four of the five registry consumers (server, inserter,
-   agent, mutate) depend on it. This is the genuinely hard part. Any eager index
-   blows the budget alone (623ms lexical scan, 1.29s parse-only), so it needs a
-   persisted index or a *loud* eager fallback — a silent one lets a repo regress
-   to 6.9s unnoticed. Scoping lazy to the compiler and leaving the long-lived
-   daemons eager is a legitimate simplification worth considering.
+2. **`Any` resolution is by type URL, not path** — but the envelope already
+   carries the answer. `ProtoconfValue.proto_file` (field 1) is populated on every
+   write, and every consumer resolving a type URL is reading a materialized config,
+   so the lookup is `type URL -> proto_file -> lazy parse by path`. No symbol index.
+   *(Corrected 2026-09-04 — the first pass called this the hard part and proposed
+   an index; see PITFALLS.md item 2.)* The real work is a pre-pass in
+   `parser.ReadConfig` to read `proto_file` before `protojson` needs the `Any`
+   type, plus an explicit, **loud** fallback when `proto_file` is absent or stale —
+   a silent one lets a repo regress to 6.9s with the benchmark still green.
 3. **The resolvers are eager snapshots** of the registry, taken at construction
    and consulted on the load path. Against a lazy registry that is a stale-cache
    bug — "works the first time, wrong the second".
@@ -104,7 +106,7 @@ loads) is the highest-value test in the set.
 2. Pin a benchmark corpus — nothing else is measurable without it.
 3. Make the resolvers lazy views — prerequisite for a lazy registry.
 4. Lazy-by-path registry — the actual win (~4.9s).
-5. Type-URL resolution — the hard part; scope may reduce to compiler-only.
+5. Type-URL resolution — `proto_file`-driven; the `ReadConfig` pre-pass and the absent-`proto_file` fallback.
 6. Decide and document the error-surface change (a broken proto no config loads is
    no longer reported at compile time — arguably better, but it is a behaviour
    change that will surface as "CI used to catch this").

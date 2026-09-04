@@ -40,38 +40,67 @@ than what happens now.
 Do this **before** making the registry lazy. It is independently correct, it is a
 speedup on its own, and it removes the ordering hazard rather than working around it.
 
-## 2. `Any` resolution by type URL has no file to be lazy about
+## 2. `Any` resolution by type URL — softer than first assessed
+
+**Corrected 2026-09-04.** This section originally claimed a symbol index was
+needed and called this "the one genuinely hard part of the work." That was wrong,
+and it would have misdirected planning. The correction is below; the original
+reasoning is kept at the end so the mistake is legible.
 
 Four of the five `GetProtoRegistry()` consumers (server, inserter, filekv, mutate)
 resolve `google.protobuf.Any` payloads through
 `MessageRegistry.FindMessageTypeByUrl` / `LocalResolver.FindMessageByURL`. The
-compiler does too, in `loadMutable` (`starlark_loader.go:173`, `:183`).
+compiler does too, in `loadMutable` (`starlark_loader.go:173`, `:183`), and at
+write time in `writeConfig`, which marshals a `ProtoconfValue` through
+`protojson` with `c.parser.LocalResolver`.
 
-A type URL is `type.googleapis.com/pkg.Message`. It names a **symbol**, not a
-file. Lazy-by-path cannot answer it: you cannot know which of 799 files declares
-`pkg.Message` without having looked inside them.
+A type URL names a symbol, not a file — but **the data model already carries the
+file**. `ProtoconfValue.proto_file` is field 1 of the envelope
+(`pb/protoconf/v1/protoconf.proto:12`) and is populated on every write by
+`toProtoconfValue` (`compiler/lib/compiler.go:281`) with
+`message.GetMessageDescriptor().GetFile().GetName()`.
 
-This is the one genuinely hard part of the work. Options, in increasing cost:
+Every consumer that resolves a type URL is reading a **materialized config**, and
+that config states which `.proto` produced it. So the lookup is
+`type URL -> proto_file -> lazy parse by path` — the same path-driven mechanism
+Option A already builds. No symbol index, no convention-probe, no eager fallback.
 
-- **Convention:** derive a candidate path from the package name and probe it.
-  Cheap, works for repos where `pkg/v1/foo.proto` declares `pkg.v1.*`. Fails
-  silently on repos that do not follow it — so it needs a fallback, not a bare bet.
-- **Persisted symbol index:** build once, store in `.protoconf_cache`, invalidate
-  on mtime/hash. Correct and fast warm. Costs 623ms-1.29s to build cold (see
-  OPTIONS.md) and adds an invalidation surface.
-- **Eager fallback:** on a miss, fall back to today's full parse. Correct by
-  construction, and the slow path only fires when the fast path cannot answer.
+Two cases split cleanly:
 
-The pragmatic combination is convention-probe, then index, then eager fallback —
-but note that a *silent* fallback to eager parsing means a repo can regress to
-6.9s without anyone noticing. Whatever is built, **make the fallback loud** (a
-one-line warn, or a counter surfaced in `-v`), or the benchmark will pass while
-real users stay slow.
+- **Types produced by the current compile** (`writeConfig`) are already in the
+  lazy registry, because the config `load()`ed them to build the message. The
+  resolver just has to be a lazy view rather than a snapshot — which is item 3,
+  not a separate problem.
+- **Types read from a materialized config** (`loadMutable`, and all four daemon
+  consumers) come with `proto_file` attached. Read it, parse that file, resolve.
 
-Also worth checking: whether the mutation server and agent — which are long-lived
-processes, not CLI invocations — actually want lazy at all. Paying 4.6s once at
-daemon startup is very different from paying it per compile. Lazy may be correct
-to scope to the compiler and leave the daemons eager.
+**The one real wrinkle is ordering.** `protojson` needs the `Any`'s type while it
+is unmarshaling the envelope, and it cannot be relied on to read `proto_file`
+first. So the read path needs a cheap pre-pass: pull `protoFile` out of the raw
+JSON, lazily load that proto, then unmarshal properly. Small and well-defined,
+but it is real work and it touches `parser.ReadConfig`, which every consumer uses.
+
+**Residual risk.** `proto_file` is only as good as what wrote it. A config
+materialized by an older protoconf, hand-edited, or produced by the
+`message.MergeInto` branch of `toProtoconfValue` (which returns early without
+setting `ProtoFile`) may carry an empty or stale value. The read path must handle
+an absent `proto_file` explicitly rather than assuming it — falling back to the
+eager parse is acceptable there, provided the fallback is **loud** (a one-line
+warn or a counter surfaced under `-v`). A silent fallback lets a repo regress to
+6.9s with the benchmark still green.
+
+<details>
+<summary>Original assessment, superseded</summary>
+
+The first pass claimed you "cannot know which of 799 files declares
+`pkg.Message` without having looked inside them", and proposed convention-probe
+-> persisted symbol index -> eager fallback, with the index costing 623ms-1.29s
+cold. That reasoning treated the type URL as the only available information and
+missed `proto_file` entirely. The index options in OPTIONS.md ("Rejected: eager
+symbol index") remain correctly rejected, now for a stronger reason: nothing
+needs an index.
+
+</details>
 
 ## 3. `GetFilesResolver` / `GetTypesResolver` snapshot the registry
 
@@ -124,5 +153,5 @@ rather than the compiler.
 2. Pin a benchmark corpus (item 6) — nothing else is measurable without it.
 3. Make the resolvers lazy views (item 3) — prerequisite for a lazy registry.
 4. Lazy-by-path registry — the actual win.
-5. Type-URL resolution (item 2) — the hard part; scope may reduce to compiler-only.
+5. Type-URL resolution (item 2) — `proto_file`-driven; the work is the `ReadConfig` pre-pass and the absent-`proto_file` fallback, not an index.
 6. Decide and document the error-surface change (item 5).
