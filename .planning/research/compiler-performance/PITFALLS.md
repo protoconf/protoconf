@@ -89,6 +89,61 @@ eager parse is acceptable there, provided the fallback is **loud** (a one-line
 warn or a counter surfaced under `-v`). A silent fallback lets a repo regress to
 6.9s with the benchmark still green.
 
+### Nested `Any` — the case `proto_file` structurally cannot answer
+
+**Added 2026-09-04, second correction to this item.** The `proto_file` correction
+above is right about the *top-level* message and wrong to imply it covers
+everything.
+
+`ProtoconfValue.proto_file` names the file of the top-level message only. A
+config may carry `Any` values *nested inside* that message, whose types live in
+any other file. This is a first-class, tested feature — `starproto.AnyModule`,
+exercised by `utils/testdata/small/src/field_type_any_test.pconf`:
+
+```python
+return TestMessage(
+    any_field=any.new(TestMessage(...)),
+    any_repeated=[any.new(...)],
+    any_map={"hello": any.new(...)},
+)
+```
+
+For any Any-carrying config the nested types are unreachable from `proto_file`.
+This is presumably why an earlier `repeated string proto_files` field existed
+(reported buggy; no trace in this repo's history, so it predates it or lives in a
+fork). So the fallback chain is not a rare edge case — it is the main path for
+these configs.
+
+**Measured on the terraform corpus (799 protos, 13 packages):**
+
+| Property | Value |
+|---|---|
+| Packages whose directory == dotted package path | **13/13 (exact)** |
+| Files per package | median **1**, max **256** (`terraform.aws.resources.v6`) |
+
+So a type URL narrows the search to one directory reliably, and in the median
+case that directory holds a single file — resolved with no scan. The worst case
+is 256 files, which a scoped lexical scan (~200ms, extrapolated from the 623ms
+full-corpus scan in OPTIONS.md) reduces to a single parse.
+
+**Chain to evaluate during phase planning** (mechanism deliberately left open):
+
+1. `proto_file` for the top-level message.
+2. Package name -> directory. Exact on this corpus; median case ends here.
+3. Scoped lexical scan of that directory for the declaring file.
+4. Loud eager fallback.
+
+Optionally ahead of step 2, revive `repeated string proto_files` as field 5
+(1-4 are taken, so it is a wire-compatible addition) written at marshal time.
+
+**Two non-negotiables regardless of mechanism.** Verify the symbol actually
+exists in the file after parsing, rather than trusting the heuristic or the hint
+— protobuf permits any package/path relationship, and 13/13 is one
+machine-generated corpus, a favourable sample that hand-written repos will break.
+And keep any revived `proto_files` a *hint*, never a source of truth, so a stale
+list degrades to slower-than-necessary instead of resolving to the wrong type —
+which is the bug class that sank it the first time.
+
 <details>
 <summary>Original assessment, superseded</summary>
 

@@ -75,6 +75,13 @@ a performance change**, and every risk it carries is a silent-wrong-answer risk:
    `parser.ReadConfig` to read `proto_file` before `protojson` needs the `Any`
    type, plus an explicit, **loud** fallback when `proto_file` is absent or stale —
    a silent one lets a repo regress to 6.9s with the benchmark still green.
+   **Second correction, same day:** `proto_file` covers the *top-level* message
+   only. Nested `Any` values (`any_field`/`any_repeated`/`any_map`, tested in
+   `field_type_any_test.pconf`) reference types from any other file, so for
+   Any-carrying configs the fallback chain is the main path, not an edge case.
+   Package name -> directory is exact on the terraform corpus (13/13) and holds a
+   single file in the median case, max 256; a scoped lexical scan closes the rest.
+   Mechanism is deliberately left to phase planning — see PITFALLS.md item 2.
 3. **The resolvers are eager snapshots** of the registry, taken at construction
    and consulted on the load path. Against a lazy registry that is a stale-cache
    bug — "works the first time, wrong the second".
