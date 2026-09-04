@@ -13,11 +13,6 @@ func mkdirAll(path string, perm os.FileMode) error {
 	return nil
 }
 
-func stat(path string) (bool, bool, error) {
-	contents := js.Global().Call("readFile", path)
-	return !contents.IsNull(), false, nil
-}
-
 func openFile(path string) (io.ReadCloser, error) {
 	contents := js.Global().Call("readFile", path)
 	if contents.IsNull() {
