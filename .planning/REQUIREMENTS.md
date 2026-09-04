@@ -42,6 +42,11 @@ to load. Going fully eager was the workaround, and it costs 4.6s per compile. Th
 index is the piece that was missing; this closes the original gap rather than
 repeating it.
 
+Roadmap note (2026-09-04, revision): the index (TYPE-01/02/04/05/06/07) and the
+shared resolution path that consults it (TYPE-03/08/09) ship together in one
+phase (Phase 13), not two — an index with nothing consulting it yet has no
+observable success criteria, only an artifact.
+
 - [ ] **TYPE-01**: A symbol index maps every message symbol under `src/`, nested types included, to the file that declares it
 - [ ] **TYPE-02**: The index is built by parsing without linking, so its cost is proportional to parsing alone
 - [ ] **TYPE-03**: A type URL nested inside an `Any` field, at any depth, resolves through the index — this is the case that broke the original lazy design
@@ -110,17 +115,44 @@ Acknowledged, deferred beyond this milestone.
 
 ## Traceability
 
-Populated during roadmap creation.
-
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| — | — | Pending |
+| LAZY-01 | Phase 11 | Pending |
+| LAZY-02 | Phase 11 | Pending |
+| LAZY-03 | Phase 11 | Pending |
+| LAZY-04 | Phase 11 | Pending |
+| LAZY-05 | Phase 11 | Pending |
+| CONS-01 | Phase 11 | Pending |
+| RSLV-01 | Phase 12 | Pending |
+| RSLV-02 | Phase 12 | Pending |
+| RSLV-03 | Phase 12 | Pending |
+| SAFE-01 | Phase 12 | Pending |
+| TYPE-01 | Phase 13 | Pending |
+| TYPE-02 | Phase 13 | Pending |
+| TYPE-03 | Phase 13 | Pending |
+| TYPE-04 | Phase 13 | Pending |
+| TYPE-05 | Phase 13 | Pending |
+| TYPE-06 | Phase 13 | Pending |
+| TYPE-07 | Phase 13 | Pending |
+| TYPE-08 | Phase 13 | Pending |
+| TYPE-09 | Phase 13 | Pending |
+| CONS-05 | Phase 13 | Pending |
+| CONS-02 | Phase 14 | Pending |
+| CONS-03 | Phase 14 | Pending |
+| CONS-04 | Phase 14 | Pending |
+| SAFE-02 | Phase 14 | Pending |
+| SAFE-03 | Phase 14 | Pending |
+| GATE-01 | Phase 15 | Pending |
+| GATE-02 | Phase 15 | Pending |
+| GATE-03 | Phase 15 | Pending |
+| GATE-04 | Phase 15 | Pending |
+| GATE-05 | Phase 15 | Pending |
 
 **Coverage:**
 - v2.0 requirements: 30 total
-- Mapped to phases: 0
-- Unmapped: 30 ⚠️
+- Mapped to phases: 30
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-09-04*
-*Last updated: 2026-09-04 at milestone v2.0 start*
+*Last updated: 2026-09-04 — Phase 13/14 merged into single Phase 13 per user revision (v2.0, Phases 11-15)*

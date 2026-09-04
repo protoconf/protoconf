@@ -3,10 +3,10 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Compiler Startup Performance
 status: planning
-last_updated: "2026-09-04T05:15:34.392Z"
+last_updated: "2026-09-04T00:00:00.000Z"
 last_activity: 2026-09-04
 progress:
-  total_phases: 0
+  total_phases: 5
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -17,17 +17,19 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-09-01)
+See: .planning/PROJECT.md (updated 2026-09-04)
 
 **Core value:** Every component must be testable, consistent, and free of runtime surprises
-**Current focus:** Phase 2 — os.Exit Refactoring
+**Current focus:** Phase 11 — Concurrency-Safe Lazy Registry Core
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-09-04 — Milestone v2.0 started
+Phase: 11 of 15 (Concurrency-Safe Lazy Registry Core) — first phase of v2.0
+Plan: — of — in current phase (not yet planned)
+Status: Ready to plan
+Last activity: 2026-09-04 — ROADMAP.md revised: Phase 13 (exact symbol index) and Phase 14 (shared type-URL resolution) merged into a single Phase 13; now Phases 11-15, 30/30 requirements mapped, 100% coverage
+
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
@@ -84,6 +86,11 @@ Last activity: 2026-09-04 — Milestone v2.0 started
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
+- v2.0 roadmap (2026-09-04, revision): Phase 13 (exact symbol index) and Phase 14 (shared type-URL resolution path) merged into a single Phase 13 — splitting them left the index phase's success criteria unobservable through real behavior (nothing consults the index until the wiring phase exists, so criteria could only assert the artifact exists). Roadmap is now 5 phases (11-15), not 6; the former Phase 15/16 renumbered to 14/15.
+- v2.0 roadmap (2026-09-04, revision): the unconditional global-registry seed (`utils/utils.go:38-45`) already seeds well-known types (`google/...`, `buf/validate/...`, `validate/...`, `protoconf/v1/...`) before any lazy path runs; `google.protobuf.Value` resolves via that seed with no index and no `src/` parsing. Since production mutable configs overwhelmingly carry `google.protobuf.Value` (String/Int64/Float64), the merged Phase 13 gained a success criterion asserting that resolving a mutable `google.protobuf.Value` never triggers index construction — a regression guard against putting index-build cost on the compiler's hot path.
+- v2.0 roadmap (2026-09-04): type-URL resolution mechanism is a decided exact symbol index (parse-without-link, persisted under `.protoconf_cache`, content-keyed) — NOT the heuristic/scan/verification menu research left open. `proto_file` is superseded as a resolution mechanism but the field stays populated for compatibility.
+- v2.0 roadmap (2026-09-04): mutation server `Init()`'s service-registration fix (CONS-01) is bundled into Phase 11, the same phase that makes the registry lazy — it is a blocking co-requirement, not a follow-up, per PITFALLS.md pitfall 1.
+- v2.0 roadmap (2026-09-04): only Phase 11 (lazy parse core) and Phase 12 (growable resolver) move the measured baseline numbers (4,639ms + 260ms of the 6.97s total). Phases 13-14 are correctness-only, protecting non-compiler-hot-path consumers from regressing under the change; Phase 13 also confirms the compiler's dominant mutable-config case (`google.protobuf.Value`) never builds the symbol index, since it resolves via the existing global-registry seed.
 - Keep KV store panic stubs: Intentional interface satisfaction; panics signal future needs
 - Token-based auth over mTLS: Simpler to implement and forward to scripts as env vars
 - Proto-defined CLI configs: Consistency with protoconf's own philosophy; agent already does this
@@ -144,8 +151,9 @@ None yet.
 
 ### Blockers/Concerns
 
-- Phase 9 (Unit Test Coverage) depends on Phase 2 (os.Exit Refactoring) so tests can test real error paths — plan Phase 9 only after Phase 2 is complete
-- Phase 10 (Integration Tests) depends on both Phase 6 (Auth) and Phase 9 (Unit Tests) — schedule last
+- Phase 11's mutation-server `Init()` fix (CONS-01) is a hard blocking co-requirement, not deferrable — a lazy registry with unfixed `Init()` silently drops every custom mutation service registration for the process lifetime (PITFALLS.md pitfall 1, orchestrator-verified most severe finding).
+- Phase 13's symbol index build shape (parse-without-link) and its shared type-URL resolution path are new design surface not present in prior milestones — no existing pattern in this codebase to copy; plan this phase with extra care. The two pieces are now a single merged phase (was split into 13/14 in the first draft), so both land together in one plan pass.
+- `add_validator`'s last-write-wins clobbering (BUG-01) must not be "fixed" incidentally by recoupling validator discovery to proto registry order during Phase 11 — keep `loadValidators`' filesystem-walk order explicitly decoupled from load()-driven proto order.
 
 ### Quick Tasks Completed
 
@@ -168,6 +176,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-04T04:15:00.000Z
-Stopped at: Quick task 260904-fwk complete — synthetic corpus generator + scaling gate; measurement apparatus ready for the lazy-loading milestone
+Last session: 2026-09-04T00:00:00.000Z
+Stopped at: v2.0 ROADMAP.md revised — Phase 13 (exact symbol index) and Phase 14 (shared type-URL resolution) merged into a single Phase 13 per user feedback; now Phases 11-15, 30/30 requirements mapped (100% coverage), success criteria derived goal-backward per phase. Ready for `/gsd-plan-phase 11`.
 Resume file: None
