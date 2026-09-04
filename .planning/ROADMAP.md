@@ -76,10 +76,12 @@ Full phase detail archived under `.planning/milestones/v1.0-phases/`.
   5. A custom gRPC mutation service defined anywhere under `src/` is registered and reachable at server startup, before any config has been compiled — proven by a fixture service and a test that fails without the fix.
 
 **Measured impact**: Moves the numbers — this phase eliminates the 4,639ms eager parse+link, 94% of the 6.97s baseline.
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 11-01: TBD
+- [ ] 11-01-PLAN.md — Lazy parse core: on-demand `ParseOne` with memoisation and lock, compiler wired onto it, loaded-file-count instrumentation (LAZY-01, LAZY-02, LAZY-03, LAZY-05)
+- [ ] 11-02-PLAN.md — Mutation server `Init()` discovers custom gRPC services with its own eager `src/` scan (CONS-01)
+- [ ] 11-03-PLAN.md — Concurrent-compile race test, shared-`MessageRegistry` pointer fix, and `mod sync` `.fds` byte-identity guard (LAZY-02 concurrency, LAZY-04)
 
 ### Phase 12: Growable Resolver Views & Race Safety
 
