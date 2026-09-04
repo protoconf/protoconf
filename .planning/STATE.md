@@ -1,33 +1,35 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-current_phase: 2
-current_phase_name: os.Exit Refactoring
-status: Milestone complete
-stopped_at: Quick task 260903-c93 complete — upgraded protovalidate-go v0.6.2 -> v0.8.0 (option-b), keeping protoc-gen-validate legacy support
-last_updated: "2026-09-03T02:30:24.780Z"
-state_head: 24aab2b6b37a8bdb11a09f895dc8282d656d6266
+milestone: v2.0
+milestone_name: Compiler Startup Performance
+status: planning
+last_updated: "2026-09-04T00:00:00.000Z"
+last_activity: 2026-09-04
 progress:
-  total_phases: 10
-  completed_phases: 10
-  total_plans: 23
-  completed_plans: 23
-milestone_name: milestone
+  total_phases: 5
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-09-01)
+See: .planning/PROJECT.md (updated 2026-09-04)
 
 **Core value:** Every component must be testable, consistent, and free of runtime surprises
-**Current focus:** Phase 2 — os.Exit Refactoring
+**Current focus:** Phase 11 — Concurrency-Safe Lazy Registry Core
 
 ## Current Position
 
-Phase: 2 — os.Exit Refactoring
-Plan: Not started
+Phase: 11 of 15 (Concurrency-Safe Lazy Registry Core) — first phase of v2.0
+Plan: — of — in current phase (not yet planned)
+Status: Ready to plan
+Last activity: 2026-09-04 — ROADMAP.md revised: Phase 13 (exact symbol index) and Phase 14 (shared type-URL resolution) merged into a single Phase 13; now Phases 11-15, 30/30 requirements mapped, 100% coverage
+
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
@@ -84,6 +86,11 @@ Plan: Not started
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
+- v2.0 roadmap (2026-09-04, revision): Phase 13 (exact symbol index) and Phase 14 (shared type-URL resolution path) merged into a single Phase 13 — splitting them left the index phase's success criteria unobservable through real behavior (nothing consults the index until the wiring phase exists, so criteria could only assert the artifact exists). Roadmap is now 5 phases (11-15), not 6; the former Phase 15/16 renumbered to 14/15.
+- v2.0 roadmap (2026-09-04, revision): the unconditional global-registry seed (`utils/utils.go:38-45`) already seeds well-known types (`google/...`, `buf/validate/...`, `validate/...`, `protoconf/v1/...`) before any lazy path runs; `google.protobuf.Value` resolves via that seed with no index and no `src/` parsing. Since production mutable configs overwhelmingly carry `google.protobuf.Value` (String/Int64/Float64), the merged Phase 13 gained a success criterion asserting that resolving a mutable `google.protobuf.Value` never triggers index construction — a regression guard against putting index-build cost on the compiler's hot path.
+- v2.0 roadmap (2026-09-04): type-URL resolution mechanism is a decided exact symbol index (parse-without-link, persisted under `.protoconf_cache`, content-keyed) — NOT the heuristic/scan/verification menu research left open. `proto_file` is superseded as a resolution mechanism but the field stays populated for compatibility.
+- v2.0 roadmap (2026-09-04): mutation server `Init()`'s service-registration fix (CONS-01) is bundled into Phase 11, the same phase that makes the registry lazy — it is a blocking co-requirement, not a follow-up, per PITFALLS.md pitfall 1.
+- v2.0 roadmap (2026-09-04): only Phase 11 (lazy parse core) and Phase 12 (growable resolver) move the measured baseline numbers (4,639ms + 260ms of the 6.97s total). Phases 13-14 are correctness-only, protecting non-compiler-hot-path consumers from regressing under the change; Phase 13 also confirms the compiler's dominant mutable-config case (`google.protobuf.Value`) never builds the symbol index, since it resolves via the existing global-registry seed.
 - Keep KV store panic stubs: Intentional interface satisfaction; panics signal future needs
 - Token-based auth over mTLS: Simpler to implement and forward to scripts as env vars
 - Proto-defined CLI configs: Consistency with protoconf's own philosophy; agent already does this
@@ -144,8 +151,9 @@ None yet.
 
 ### Blockers/Concerns
 
-- Phase 9 (Unit Test Coverage) depends on Phase 2 (os.Exit Refactoring) so tests can test real error paths — plan Phase 9 only after Phase 2 is complete
-- Phase 10 (Integration Tests) depends on both Phase 6 (Auth) and Phase 9 (Unit Tests) — schedule last
+- Phase 11's mutation-server `Init()` fix (CONS-01) is a hard blocking co-requirement, not deferrable — a lazy registry with unfixed `Init()` silently drops every custom mutation service registration for the process lifetime (PITFALLS.md pitfall 1, orchestrator-verified most severe finding).
+- Phase 13's symbol index build shape (parse-without-link) and its shared type-URL resolution path are new design surface not present in prior milestones — no existing pattern in this codebase to copy; plan this phase with extra care. The two pieces are now a single merged phase (was split into 13/14 in the first draft), so both land together in one plan pass.
+- `add_validator`'s last-write-wins clobbering (BUG-01) must not be "fixed" incidentally by recoupling validator discovery to proto registry order during Phase 11 — keep `loadValidators`' filesystem-walk order explicitly decoupled from load()-driven proto order.
 
 ### Quick Tasks Completed
 
@@ -163,9 +171,11 @@ None yet.
 | 260902-ggd | Serve GetConfig to non-gRPC clients over plain HTTP via connectrpc vanguard-go, using google.api.HttpBody for verbatim JSON passthrough | 2026-09-02 | a412e19 | [260902-ggd-serve-getconfig-over-plain-http-via-conn](./quick/260902-ggd-serve-getconfig-over-plain-http-via-conn/) |
 | 260902-f8i | Add GetConfig one-shot RPC to ProtoconfService — both agent impls, filekv.Get, legacy passthrough (backport of upstream PR #496) | 2026-09-02 | d871d10 | [260902-f8i-add-getconfig-one-shot-rpc-to-protoconfs](./quick/260902-f8i-add-getconfig-one-shot-rpc-to-protoconfs/) |
 | 260903-c93 | Upgrade protovalidate-go v0.6.2 -> v0.8.0 (option-b); rejected v1.4.0 (module rename, Go 1.26 floor, legacy PGV package removal breaking CLAUDE.md backward-compat constraint) | 2026-09-03 | 24aab2b | [260903-c93-upgrade-protovalidate-go-to-v1-4-0](./quick/260903-c93-upgrade-protovalidate-go-to-v1-4-0/) |
+| 260904-f5j | Fix loadValidators to walk srcDir for *.proto-validator files instead of ranging the descriptor registry — prerequisite for lazy proto loading (validators on unreached protos would be silently skipped); CompileFile 197ms -> 184ms | 2026-09-04 | c8a6ff6 | [260904-f5j-fix-loadvalidators-to-walk-the-filesyste](./quick/260904-f5j-fix-loadvalidators-to-walk-the-filesyste/) |
+| 260904-fwk | Synthetic proto corpus generator + scaling benchmark for compiler startup — alloc-ratio gate (7.24x today vs 2.0x target) is the lazy-loading milestone's definition of done | 2026-09-04 | c83f249 | [260904-fwk-add-a-synthetic-proto-corpus-generator-a](./quick/260904-fwk-add-a-synthetic-proto-corpus-generator-a/) |
 
 ## Session Continuity
 
-Last session: 2026-09-03T02:29:36.113Z
-Stopped at: Quick task 260903-c93 complete — upgraded protovalidate-go v0.6.2 -> v0.8.0 (option-b), keeping protoc-gen-validate legacy support
+Last session: 2026-09-04T00:00:00.000Z
+Stopped at: v2.0 ROADMAP.md revised — Phase 13 (exact symbol index) and Phase 14 (shared type-URL resolution) merged into a single Phase 13 per user feedback; now Phases 11-15, 30/30 requirements mapped (100% coverage), success criteria derived goal-backward per phase. Ready for `/gsd-plan-phase 11`.
 Resume file: None
