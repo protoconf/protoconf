@@ -11,9 +11,11 @@ import (
 	"time"
 
 	"github.com/protoconf/protoconf/compiler/lib"
+	protoconfparser "github.com/protoconf/protoconf/compiler/lib/parser"
 	"github.com/protoconf/protoconf/consts"
 	protoconf_pb "github.com/protoconf/protoconf/pb/protoconf/v1"
 	protoconf_server_config "github.com/protoconf/protoconf/server/config/v1"
+	"github.com/protoconf/protoconf/utils"
 	"github.com/protoconf/protoconf/utils/testdata"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -626,4 +628,53 @@ func TestProtoconfMutationServer_Put(t *testing.T) {
 		return
 	}
 
+}
+
+// TestInitRegistersCustomService is the CONS-01 regression test: Init must
+// discover custom mutation services with its own eager scan of src/, not by
+// ranging s.parser's construction-time resolver snapshot. Once the compiler's
+// registry becomes lazy, that snapshot is near-empty at server startup —
+// before any config has been compiled — so ranging it silently drops every
+// custom service for the process lifetime.
+func TestInitRegistersCustomService(t *testing.T) {
+	protoconfRoot := testdata.SmallTestDir()
+	s, err := NewProtoconfMutationServer(protoconfRoot)
+	require.NoError(t, err)
+
+	// Stand in for the lazy registry a later phase gives this server: a bare
+	// registry holds only the well-known-type seed, exactly the shape the
+	// construction-time resolver has at startup before any config has been
+	// compiled.
+	s.parser = protoconfparser.NewParserWithDescriptorRegistry(utils.NewDescriptorRegistry())
+
+	rpcServer := grpc.NewServer()
+	require.NotPanics(t, func() { s.Init(rpcServer) })
+
+	info := rpcServer.GetServiceInfo()
+	require.Contains(t, info, "test.v1.TestService")
+
+	svcInfo := info["test.v1.TestService"]
+	methodNames := make([]string, 0, len(svcInfo.Methods))
+	for _, m := range svcInfo.Methods {
+		methodNames = append(methodNames, m.Name)
+	}
+	require.ElementsMatch(t, []string{"PutTestMessage", "PutValidateMe"}, methodNames)
+}
+
+// TestInitWithNoCustomServices asserts the empty edge: a protoconf root whose
+// src/ declares no custom mutation services registers only the built-in
+// services and Init does not panic or error.
+func TestInitWithNoCustomServices(t *testing.T) {
+	dir := t.TempDir()
+	require.NoError(t, os.MkdirAll(filepath.Join(dir, consts.SrcPath), 0755))
+
+	s, err := NewProtoconfMutationServer(dir)
+	require.NoError(t, err)
+
+	rpcServer := grpc.NewServer()
+	require.NotPanics(t, func() { s.Init(rpcServer) })
+
+	info := rpcServer.GetServiceInfo()
+	require.NotContains(t, info, "test.v1.TestService")
+	require.Contains(t, info, "protoconf.v1.ProtoconfMutationService")
 }
