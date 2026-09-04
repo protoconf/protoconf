@@ -25,7 +25,9 @@ Every component must be testable, consistent, and free of runtime surprises — 
 
 Cost scales with repository size, not with the config. The config `load()`s 5 protos, 7 transitively, which cost 2.7ms to parse in isolation — a ~1,700x gap.
 
-**Scope:** all five `GetProtoRegistry()` consumers — compiler, mutation server, inserter, agent filekv, mutate.
+**Scope:** all six `GetProtoRegistry()` consumers — compiler (`load()` + `loadMutable`), mutation server (including its startup service enumeration), inserter, agent filekv, `mutate`, and `GenReflectionUI`'s periodic walk.
+
+**Key design decision:** type URLs resolve through an exact symbol index built by parsing without linking (1.41s vs 4.64s linked on the 799-proto corpus; 138,554 symbols, nested types included), persisted under `.protoconf_cache`. `proto_file` is superseded as a resolution mechanism. Lazy loading was protoconf's original design and `proto_file` exists because of it; it failed when `Any` arrived because lazy-by-path cannot answer a symbol it was never asked to load. The index is the missing piece, not a repeat of that mistake.
 
 **Definition of done:** `TestCompilerStartupScaling`'s alloc ratio at n=50→400 drops from 7.24x to ≤2.0x, and its `t.Skipf` branch is deleted, becoming a `require.LessOrEqual`.
 
@@ -55,8 +57,9 @@ Cost scales with repository size, not with the config. The config `load()`s 5 pr
 - [ ] Migrate from jhump/protoreflect/dynamic to dynamicpb
 - [ ] Lazy, load-driven proto resolution — parse and link only what a config reaches (v2.0)
 - [ ] Resolvers as lazy views over the registry, replacing eager snapshots (v2.0)
-- [ ] Type-URL resolution across all five registry consumers, including nested Any (v2.0)
-- [ ] Loud (never silent) fallback when a type URL cannot be resolved cheaply (v2.0)
+- [ ] Exact symbol index (parse without linking) resolving type URLs, including nested Any, across all six registry consumers (v2.0)
+- [ ] Symbol index persisted under `.protoconf_cache`, content-keyed and invalidated on change (v2.0)
+- [ ] Loud (never silent) fallback when a type URL cannot be resolved (v2.0)
 - [x] Add TLS support for gRPC connections — Validated in Phase 5: TLS Support
 - [x] Token-based auth with credential forwarding to pre/post scripts — Validated in Phase 6: Token Auth & Script Security
 - [x] Proto-defined CLI configuration (definitions + flag generation) — Validated in Phase 7: Proto-Defined CLI Configs and Phase 8: CLI Flag Generation & Config Loading
