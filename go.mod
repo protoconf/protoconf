@@ -4,19 +4,19 @@ go 1.25.8
 
 require (
 	connectrpc.com/vanguard v0.4.0
-	github.com/Masterminds/sprig/v3 v3.2.3
-	github.com/bazelbuild/bazel-gazelle v0.37.0
-	github.com/bazelbuild/buildtools v0.0.0-20240313121412-66c605173954
-	github.com/bufbuild/protovalidate-go v0.8.0
+	github.com/Masterminds/sprig/v3 v3.3.0
+	github.com/bazelbuild/bazel-gazelle v0.54.0
+	github.com/bazelbuild/buildtools v0.0.0-20260904073137-eaa4d125b423
+	github.com/bufbuild/protovalidate-go v0.14.0
 	github.com/cheggaaa/pb v1.0.30
-	github.com/fsnotify/fsnotify v1.7.0
-	github.com/fullstorydev/grpcui v1.4.1
+	github.com/fsnotify/fsnotify v1.10.1
+	github.com/fullstorydev/grpcui v1.5.4
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-git/go-git/v5 v5.19.2
 	github.com/google/uuid v1.6.0
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
 	github.com/hashicorp/go-getter v1.8.8
-	github.com/jhump/protoreflect v1.16.0
+	github.com/jhump/protoreflect v1.18.1
 	github.com/kvtools/consul v1.0.2
 	github.com/kvtools/etcdv3 v1.0.3
 	github.com/kvtools/valkeyrie v1.0.0
@@ -24,31 +24,31 @@ require (
 	github.com/mitchellh/cli v1.1.5
 	github.com/pelletier/go-toml v1.9.5
 	github.com/pkg/errors v0.9.1
-	github.com/prometheus/client_golang v1.20.5
+	github.com/prometheus/client_golang v1.24.1
 	github.com/protoconf/libprotoconf v0.1.0
 	github.com/qri-io/starlib v0.5.0
 	github.com/remychantenay/slog-otel v1.3.5
 	github.com/smintz/starlarkobject v0.0.0-20221130044148-40067250eba0
-	github.com/stephenafamo/orchestra v0.1.0
-	github.com/stretchr/testify v1.11.1
-	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.68.0
-	go.opentelemetry.io/otel v1.44.0
-	go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc v1.43.0
-	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.43.0
-	go.opentelemetry.io/otel/metric v1.44.0
-	go.opentelemetry.io/otel/sdk v1.44.0
-	go.opentelemetry.io/otel/sdk/metric v1.44.0
-	go.opentelemetry.io/otel/trace v1.44.0
-	go.starlark.net v0.0.0-20240314022150-ee8ed142361c
-	golang.org/x/mod v0.38.0
+	github.com/stephenafamo/orchestra v0.4.0
+	github.com/stretchr/testify v1.12.1
+	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.71.0
+	go.opentelemetry.io/otel v1.46.0
+	go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc v1.46.0
+	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.46.0
+	go.opentelemetry.io/otel/metric v1.46.0
+	go.opentelemetry.io/otel/sdk v1.46.0
+	go.opentelemetry.io/otel/sdk/metric v1.46.0
+	go.opentelemetry.io/otel/trace v1.46.0
+	go.starlark.net v0.0.0-20260904161901-6ecada49e42f
+	golang.org/x/mod v0.40.0
 	golang.org/x/net v0.58.0
 	golang.org/x/sync v0.22.0
-	google.golang.org/genproto/googleapis/api v0.0.0-20260630182238-925bb5da69e7
+	google.golang.org/genproto/googleapis/api v0.0.0-20260904194346-d0f1323225a4
 	google.golang.org/grpc v1.83.2
 	google.golang.org/protobuf v1.36.12
-	k8s.io/api v0.30.1
-	k8s.io/apimachinery v0.30.1
-	k8s.io/client-go v0.30.1
+	k8s.io/api v0.37.0
+	k8s.io/apimachinery v0.37.0
+	k8s.io/client-go v0.37.0
 )
 
 require (
