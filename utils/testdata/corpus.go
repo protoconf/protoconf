@@ -65,9 +65,25 @@ func pickDeps(rng *rand.Rand, i int) []int {
 	return deps
 }
 
-// protoFile renders proto i's source: proto3, package corpus.pkgN, a single
-// message MsgN with a string field plus one field per entry in deps typed as
-// the imported message.
+// Shape constants approximating a real provider schema. Terraform's AWS protos
+// run 80-613 lines with ~19 top-level messages per file, ~25 fields each, and a
+// [json_name = "..."] option on nearly every field.
+//
+// Earlier cuts of this generator emitted one 4-field message per file and were
+// 47x cheaper per file than the real corpus in BASELINE.md; raising the field
+// count alone left it 21x cheaper. The message count and the field options are
+// what close the rest: options must be interpreted during linking, which is the
+// cost this whole milestone is about. See
+// .planning/research/compiler-performance/BASELINE.md.
+const (
+	messagesPerFile        = 12
+	scalarFieldsPerMessage = 20
+)
+
+// protoFile renders proto i's source: proto3, package corpus.pkgN, several
+// top-level messages each carrying a spread of scalar, repeated, map and enum
+// fields with json_name options, a nested message, and — on the first message
+// only — one message-typed field per entry in deps so the imports resolve.
 func protoFile(i int, deps []int) string {
 	var b strings.Builder
 	b.WriteString("syntax = \"proto3\";\n\n")
@@ -78,12 +94,59 @@ func protoFile(i int, deps []int) string {
 	if len(deps) > 0 {
 		b.WriteString("\n")
 	}
-	fmt.Fprintf(&b, "message Msg%d {\n", i)
-	b.WriteString("  string name = 1;\n")
-	for idx, j := range deps {
-		fmt.Fprintf(&b, "  corpus.pkg%d.Msg%d dep_%d = %d;\n", j, j, j, idx+2)
+
+	fmt.Fprintf(&b, "enum Kind%d {\n", i)
+	fmt.Fprintf(&b, "  KIND%d_UNSPECIFIED = 0;\n", i)
+	fmt.Fprintf(&b, "  KIND%d_PRIMARY = 1;\n", i)
+	fmt.Fprintf(&b, "  KIND%d_SECONDARY = 2;\n", i)
+	b.WriteString("}\n\n")
+
+	scalars := []string{"string", "int64", "bool", "double", "int32", "bytes", "uint64", "float"}
+
+	for m := 0; m < messagesPerFile; m++ {
+		// Msg{i} is the entry point the .mpconf loads; the rest are bulk, the
+		// way a provider file carries one resource plus its config types.
+		name := fmt.Sprintf("Msg%d", i)
+		if m > 0 {
+			name = fmt.Sprintf("Msg%dPart%d", i, m)
+		}
+		fmt.Fprintf(&b, "// %s version is 0\n", name)
+		fmt.Fprintf(&b, "message %s {\n", name)
+		b.WriteString("  string name = 1;\n")
+
+		tag := 2
+		for f := 0; f < scalarFieldsPerMessage; f++ {
+			fmt.Fprintf(&b, "  %s field_%d = %d [json_name = \"field_%d\"];\n",
+				scalars[f%len(scalars)], f, tag, f)
+			tag++
+		}
+		fmt.Fprintf(&b, "  repeated string tags = %d [json_name = \"tags\"];\n", tag)
+		tag++
+		fmt.Fprintf(&b, "  map<string, string> labels = %d [json_name = \"labels\"];\n", tag)
+		tag++
+		fmt.Fprintf(&b, "  Kind%d kind = %d;\n", i, tag)
+		tag++
+		fmt.Fprintf(&b, "  Nested%d nested = %d;\n", i, tag)
+		tag++
+
+		// Only the entry-point message carries the cross-file references; that
+		// is enough for the imports to be used, and mirrors a provider file
+		// where the resource type is the one referencing shared meta types.
+		if m == 0 {
+			for _, j := range deps {
+				fmt.Fprintf(&b, "  corpus.pkg%d.Msg%d dep_%d = %d;\n", j, j, j, tag)
+				tag++
+			}
+		}
+		b.WriteString("}\n\n")
 	}
+
+	fmt.Fprintf(&b, "message Nested%d {\n", i)
+	b.WriteString("  string inner_name = 1;\n")
+	b.WriteString("  int64 inner_count = 2;\n")
+	b.WriteString("  repeated string inner_tags = 3;\n")
 	b.WriteString("}\n")
+
 	return b.String()
 }
 
