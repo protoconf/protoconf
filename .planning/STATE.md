@@ -4,9 +4,9 @@ milestone: v1.0
 current_phase: 2
 current_phase_name: os.Exit Refactoring
 status: Milestone complete
-stopped_at: Quick task 260904-f5j complete — loadValidators now walks srcDir for validator files instead of ranging the descriptor registry (unblocks lazy proto loading)
+stopped_at: Quick task 260904-fwk complete — synthetic corpus generator + scaling gate; measurement apparatus ready for the lazy-loading milestone
 last_updated: "2026-09-04T04:15:00.000Z"
-state_head: 14e5f14
+state_head: c83f249
 progress:
   total_phases: 10
   completed_phases: 10
@@ -164,9 +164,10 @@ None yet.
 | 260902-f8i | Add GetConfig one-shot RPC to ProtoconfService — both agent impls, filekv.Get, legacy passthrough (backport of upstream PR #496) | 2026-09-02 | d871d10 | [260902-f8i-add-getconfig-one-shot-rpc-to-protoconfs](./quick/260902-f8i-add-getconfig-one-shot-rpc-to-protoconfs/) |
 | 260903-c93 | Upgrade protovalidate-go v0.6.2 -> v0.8.0 (option-b); rejected v1.4.0 (module rename, Go 1.26 floor, legacy PGV package removal breaking CLAUDE.md backward-compat constraint) | 2026-09-03 | 24aab2b | [260903-c93-upgrade-protovalidate-go-to-v1-4-0](./quick/260903-c93-upgrade-protovalidate-go-to-v1-4-0/) |
 | 260904-f5j | Fix loadValidators to walk srcDir for *.proto-validator files instead of ranging the descriptor registry — prerequisite for lazy proto loading (validators on unreached protos would be silently skipped); CompileFile 197ms -> 184ms | 2026-09-04 | c8a6ff6 | [260904-f5j-fix-loadvalidators-to-walk-the-filesyste](./quick/260904-f5j-fix-loadvalidators-to-walk-the-filesyste/) |
+| 260904-fwk | Synthetic proto corpus generator + scaling benchmark for compiler startup — alloc-ratio gate (7.24x today vs 2.0x target) is the lazy-loading milestone's definition of done | 2026-09-04 | c83f249 | [260904-fwk-add-a-synthetic-proto-corpus-generator-a](./quick/260904-fwk-add-a-synthetic-proto-corpus-generator-a/) |
 
 ## Session Continuity
 
 Last session: 2026-09-04T04:15:00.000Z
-Stopped at: Quick task 260904-f5j complete — loadValidators now walks srcDir for validator files instead of ranging the descriptor registry (unblocks lazy proto loading)
+Stopped at: Quick task 260904-fwk complete — synthetic corpus generator + scaling gate; measurement apparatus ready for the lazy-loading milestone
 Resume file: None
