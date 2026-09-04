@@ -54,7 +54,7 @@ func NewCompiler(protoconfRoot string, verboseLogging bool) (*Compiler, error) {
 	initResolveSettings()
 
 	t := time.Now()
-	ms, err := NewModuleService(protoconfRoot)
+	ms, err := NewLazyModuleService(protoconfRoot)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create module service: %w", err)
 	}
@@ -217,6 +217,8 @@ func (c *Compiler) CompileFileAsync(ctx context.Context, cancel context.CancelCa
 				sendErr(err)
 			}
 		}
+		registry := c.ModuleService.GetProtoRegistry()
+		slog.Info("compile finished", "file", filename, "protoFilesLoaded", registry.LoadedFileCount(), "eagerFallback", registry.FellBackToEager())
 		cancel(nil)
 	}()
 	return ch, errCh
@@ -292,7 +294,7 @@ func (c *Compiler) writeConfig(message *dynamic.Message, filename string) error 
 	}
 
 	jsonData, err := protojson.MarshalOptions{
-		Resolver: c.parser.LocalResolver,
+		Resolver: c.parser.TypeResolver,
 	}.Marshal(protoconfValue)
 	if err != nil {
 		return fmt.Errorf("error marshaling ProtoconfValue to JSON, value=%v, err: %v", protoconfValue, err)

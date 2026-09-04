@@ -2,6 +2,7 @@ package lib
 
 import (
 	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -15,11 +16,25 @@ import (
 // TestGeneratedCorpusCompiles is a fixture test: it proves the generator
 // emits a corpus the real compiler accepts, end-to-end through NewCompiler +
 // CompileFile, with no lock file, no git repo, and no CONFIGSPACE marker. It
-// passes before and after the lazy-loading milestone and is NOT a
-// performance regression guard — see TestCompilerStartupScaling for that.
+// also asserts the lazy registry's core promise (LAZY-01): compiling
+// main.mpconf loads only its own transitive dependency graph, not the whole
+// generated corpus. It is NOT a performance regression guard — see
+// TestCompilerStartupScaling for that.
 func TestGeneratedCorpusCompiles(t *testing.T) {
 	dir := t.TempDir()
 	require.NoError(t, testdata.GenerateCorpus(dir, 50))
+
+	var onDiskProtos int
+	require.NoError(t, filepath.WalkDir(filepath.Join(dir, "src"), func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if !d.IsDir() && filepath.Ext(path) == ".proto" {
+			onDiskProtos++
+		}
+		return nil
+	}))
+	require.GreaterOrEqual(t, onDiskProtos, 50, "generator sanity: corpus should contain at least 50 .proto files on disk")
 
 	start := time.Now()
 	c, err := NewCompiler(dir, false)
@@ -32,13 +47,9 @@ func TestGeneratedCorpusCompiles(t *testing.T) {
 	require.NoError(t, err)
 	require.NotEmpty(t, entries, "expected materialized output under materialized_config/main/")
 
-	fileCount := len(c.ModuleService.GetProtoRegistry().FileRegistry)
-	// Sanity-check the generator against BASELINE.md: a wildly
-	// unrepresentative corpus (e.g. NewCompiler finishing in microseconds
-	// with a handful of files) should be visible here immediately, rather
-	// than surfacing later as a milestone planned against a fake number.
-	t.Logf("NewCompiler took %s for corpus n=50, FileRegistry has %d files", elapsed, fileCount)
-	require.GreaterOrEqual(t, fileCount, 50, "generated corpus should be reflected in the proto registry")
+	loadedCount := c.ModuleService.GetProtoRegistry().LoadedFileCount()
+	t.Logf("NewCompiler took %s for corpus n=50 (%d on-disk protos), compile loaded %d proto files", elapsed, onDiskProtos, loadedCount)
+	require.Less(t, loadedCount, 50, "compile should not have loaded the whole corpus")
 }
 
 // compileCorpus builds a Compiler over dir and compiles main.mpconf. It is

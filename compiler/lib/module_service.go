@@ -39,6 +39,25 @@ type ModuleService struct {
 	mutex          sync.RWMutex
 	downloadMux    *sync.Mutex
 	cachedRegistry *utils.DescriptorRegistry
+	// lazyRegistry marks the compiler-only construction path (D-01): when
+	// set, GetProtoRegistry skips the whole-src/ eager parse+link and
+	// returns a registry configured for on-demand parsing instead.
+	lazyRegistry bool
+}
+
+// NewLazyModuleService is the compiler's construction-only entry point
+// (D-01): its GetProtoRegistry() returns a near-empty registry configured
+// for on-demand parsing rather than eagerly walking and parsing all of
+// src/. Every other consumer (server, inserter, agent/filekv, mutate, mod
+// sync) must keep using NewModuleService — they still depend on an
+// eagerly-populated registry at construction time.
+func NewLazyModuleService(protoconfRoot string) (*ModuleService, error) {
+	m, err := NewModuleService(protoconfRoot)
+	if err != nil {
+		return nil, err
+	}
+	m.lazyRegistry = true
+	return m, nil
 }
 
 func NewModuleService(protoconfRoot string) (*ModuleService, error) {
@@ -363,10 +382,18 @@ func (m *ModuleService) GetProtoRegistry() *utils.DescriptorRegistry {
 		}
 		return nil
 	})
-	err := registry.Import(registry.Parse, []*regexp.Regexp{}, filepath.Join(m.getProtoconfPath(), consts.SrcPath))
-	if err != nil {
-		slog.Error("failed to parse proto files", slog.String("error", err.Error()))
+	srcPath := filepath.Join(m.getProtoconfPath(), consts.SrcPath)
+	if m.lazyRegistry {
+		// D-01: the compiler's construction path skips the whole-src/
+		// eager parse+link entirely. ImportPaths is what ParseOne resolves
+		// on-demand requests against.
+		registry.ImportPaths = []string{srcPath}
+	} else {
+		err := registry.Import(registry.Parse, []*regexp.Regexp{}, srcPath)
+		if err != nil {
+			slog.Error("failed to parse proto files", slog.String("error", err.Error()))
 
+		}
 	}
 	m.cachedRegistry = registry
 	return registry
