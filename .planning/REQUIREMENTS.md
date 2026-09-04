@@ -59,7 +59,7 @@ observable success criteria, only an artifact.
 
 ### Consumer Correctness
 
-- [ ] **CONS-01**: The mutation server registers every custom gRPC service declared under `src/` — service discovery does not depend on what a config happened to load
+- [x] **CONS-01**: The mutation server registers every custom gRPC service declared under `src/` — service discovery does not depend on what a config happened to load
 - [ ] **CONS-02**: The inserter reads and inserts materialized configs, resolving their types correctly
 - [ ] **CONS-03**: The agent's filekv store serves configs to subscribed clients, resolving their types correctly
 - [ ] **CONS-04**: `GenReflectionUI`'s periodic `mutable_config/` walk resolves every file's type, and reports rather than silently skips a file it cannot resolve
@@ -122,7 +122,7 @@ Acknowledged, deferred beyond this milestone.
 | LAZY-03 | Phase 11 | Complete |
 | LAZY-04 | Phase 11 | Pending |
 | LAZY-05 | Phase 11 | Complete |
-| CONS-01 | Phase 11 | Pending |
+| CONS-01 | Phase 11 | Complete |
 | RSLV-01 | Phase 12 | Pending |
 | RSLV-02 | Phase 12 | Pending |
 | RSLV-03 | Phase 12 | Pending |
