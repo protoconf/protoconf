@@ -74,9 +74,10 @@ func (r *RegistryTypeResolver) FindMessageByURL(url string) (protoreflect.Messag
 	if md, mErr := r.registry.MessageRegistry.FindMessageTypeByUrl(url); mErr == nil && md != nil {
 		return dynamicpb.NewMessageType(md.UnwrapMessage()), nil
 	}
-	if pErr := r.registry.ParseAll(); pErr != nil {
-		return nil, fmt.Errorf("%w: %s", protoregistry.NotFound, url)
-	}
+	// Trigger the D-03 fallback and retry once regardless of ParseAll's own
+	// error: a partial whole-tree parse may still have registered the
+	// requested type before hitting an unrelated broken file elsewhere.
+	_ = r.registry.ParseAll()
 	if md, mErr := r.registry.MessageRegistry.FindMessageTypeByUrl(url); mErr == nil && md != nil {
 		return dynamicpb.NewMessageType(md.UnwrapMessage()), nil
 	}
@@ -95,9 +96,7 @@ func (r *RegistryTypeResolver) FindMessageByName(name protoreflect.FullName) (pr
 	if md, mErr := r.registry.MessageRegistry.FindMessageTypeByUrl(url); mErr == nil && md != nil {
 		return dynamicpb.NewMessageType(md.UnwrapMessage()), nil
 	}
-	if pErr := r.registry.ParseAll(); pErr != nil {
-		return nil, fmt.Errorf("%w: %s", protoregistry.NotFound, name)
-	}
+	_ = r.registry.ParseAll()
 	if md, mErr := r.registry.MessageRegistry.FindMessageTypeByUrl(url); mErr == nil && md != nil {
 		return dynamicpb.NewMessageType(md.UnwrapMessage()), nil
 	}
