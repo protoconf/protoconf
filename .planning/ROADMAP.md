@@ -82,7 +82,7 @@ Plans:
 **Wave 1**
 
 - [x] 11-01-PLAN.md — Lazy parse core: on-demand `ParseOne` with memoisation and lock, compiler wired onto it, loaded-file-count instrumentation (LAZY-01, LAZY-02, LAZY-03, LAZY-05)
-- [ ] 11-02-PLAN.md — Mutation server `Init()` discovers custom gRPC services with its own eager `src/` scan (CONS-01)
+- [x] 11-02-PLAN.md — Mutation server `Init()` discovers custom gRPC services with its own eager `src/` scan (CONS-01)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
