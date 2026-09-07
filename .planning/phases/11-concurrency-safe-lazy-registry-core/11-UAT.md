@@ -1,9 +1,9 @@
 ---
-status: complete
+status: diagnosed
 phase: 11-concurrency-safe-lazy-registry-core
 source: [11-VERIFICATION.md]
 started: 2026-09-04T17:50:00Z
-updated: 2026-09-07T11:05:00Z
+updated: 2026-09-07T19:40:00Z
 ---
 
 ## Current Test
@@ -29,10 +29,15 @@ evidence: server/init_order_test.go - TestInitServiceSetIsOrderIndependent. 20 r
 
 expected: Running `mod sync` concurrently with an in-process lazy `CompileFile` does not change the `.fds` bytes `mod sync` writes.
 why_human: `TestModSyncFdsByteIdentical` exercises the eager mod-sync path in isolation, sequentially. No test runs a lazy compile and a mod-sync `Store()` concurrently in the same process to observe the claimed non-interference directly.
-result: issue
-reported: "go run ./cmd/protoconf mod tidy -protoconfPath /tmp/uat-11/ -> panic: assignment to entry in nil map at compiler/lib/module_service.go:146 (ModuleService.Init), via mod/command.go:153 (modTidyCommand.Run)."
-severity: blocker
-note: The reported panic is a DIFFERENT defect from this test's stated truth - it was hit while building the fixture, not while observing mod sync under a concurrent compile. This test's own backstop truth (.fds bytes unchanged by a concurrent in-process lazy CompileFile) therefore remains UNPROVEN and must be re-tested after the panic is fixed.
+result: pass
+prior_result: issue
+prior_reported: "go run ./cmd/protoconf mod tidy -protoconfPath /tmp/uat-11/ -> panic: assignment to entry in nil map at compiler/lib/module_service.go:146 (ModuleService.Init), via mod/command.go:153 (modTidyCommand.Run)."
+note: The reported panic was a DIFFERENT defect from this test's stated truth - it was hit while building the fixture, not while observing mod sync under a concurrent compile. That panic is now closed as gap G-11-3 by 11-04 (commit 243ab6f), which unblocked the fixture and let this truth be observed for the first time.
+evidence: CLI-LEVEL validation on the real utils/testdata/small fixture (two local .tgz deps, fully offline), at user request - the in-process test alone was not accepted as sufficient.
+  Fixture: `mod init` to populate getterUrl, then `mod sync` -> terraform_repo.fds 15,942,747B, vizceral_repo.fds 2,736B. Non-vacuous: vizceral's sum 039f1e1023250b34054894cc58bc8b2b matches the committed protoconf.lock's recorded fileDescriptorSetSum exactly, independently corroborating the fixture.
+  Trials: 12 total (8 + 4 after a lock restore). Each trial deletes both .fds, then launches 12 lazy `protoconf compile` processes (6 before, 6 after) concurrently with `mod sync` against the SAME protoconf root, so both contend on the shared .protoconf_cache/. All 12 trials: both .fds byte-identical to golden (md5 + size). Compiles independently confirmed exit 0 and logging "module service loaded" (the lazy NewCompiler path).
+  Negative control: stripping getterUrl makes sync write 0-byte .fds and the harness reports MISMATCH on both files - so a MATCH is a real signal, not an artifact of comparing nothing.
+  Scope note: the CLI runs mod sync and compile as separate PROCESSES sharing .protoconf_cache/. The same-process half of the truth remains covered by TestModSyncFdsUnaffectedByConcurrentLazyCompile (compiler/lib/mod_sync_fds_test.go, PASS twice under -race -count=2). Together these cover both interference surfaces; neither alone does.
 
 ### 4. WR-02 — ParseOne can return a non-canonical descriptor pointer when racing ParseAll
 
@@ -62,7 +67,10 @@ evidence: FIXED in commit 84efad0. GetProtoRegistry now uses double-checked lock
 
 expected: Each holds under close reading, not merely under the tests that happen to pass — a proto that fails to parse on the lazy path is not silently swallowed into a successful compile; the D-03 eager fallback never fires invisibly; pre-existing fixtures/assertions were not weakened; a service `Init` cannot register does not vanish without a trace; the discovery scan does not back gRPC reflection; `mod sync` does not write a truncated `.fds`; a data race was not quieted by removing `-race` or coarsening a lock.
 why_human: All seven are tagged `verification: manual` in the PLAN frontmatter — the plan authors themselves deferred these to human judgment. Independent evidence gathered during verification supports most (the D-03 fallback is logged via the `eagerFallback` field on the `compile finished` line, confirmed live; reflection registrations still read `s.parser.FilesResolver`/`LocalResolver`, confirmed by grep; `TestModSyncFdsByteIdentical` targets the truncated-`.fds` prohibition directly; no new lock or `-race`-stripping appears in the diff) — but none were exercised by a dedicated adversarial test, e.g. actually feeding a broken `.proto` through the lazy path and asserting the compile fails rather than silently materializing wrong output.
-result: pass
+result: issue
+reported: "CLI re-test of item 3 falsified prohibition 6's coverage claim: `protoconf mod sync` on a protoconf.lock with no getterUrl exits 0, writes zero-byte .fds files for every dep, and overwrites the lock's recorded fileDescriptorSetSum with the md5 of empty. Silent cache + lock corruption behind a success exit code."
+severity: major
+issue_scope: "Prohibition 6 only. Prohibitions 1, 2, 4, 5, 7 remain verified as recorded below; prohibition 4's own violation was already found and fixed in commit 60459de. Tracked as gap G-11-7 (pre-existing, reproduces on b69e3b2)."
 finding: prohibition 4 did NOT hold. server.go logged registration but not non-registration - a service under src/ whose rpcs do not return protoconf.v1.ConfigMutationResponse was dropped by a bare `continue`, leaving the operator with no service and no explanation. CONS-01 stopped the catalog going dark at DISCOVERY; this was the same failure at ELIGIBILITY. FIXED in commit 60459de: a Warn naming the service, its file, and the required output type.
 per-prohibition disposition:
   1 broken proto not silently swallowed -> TESTED (utils/lazy_parse_error_test.go): malformed proto must error, must not return a descriptor, and must not be memoised as loaded (a poisoned entry would make retry succeed).
@@ -70,7 +78,7 @@ per-prohibition disposition:
   3 pre-existing fixtures/assertions not weakened -> NOT a unit test; diff-review property, covered by the code-review gate (11-REVIEW.md).
   4 a service Init cannot register does not vanish -> VIOLATED, FIXED, TESTED (server/init_prohibitions_test.go).
   5 discovery scan does not back gRPC reflection (D-02) -> TESTED (server/init_prohibitions_test.go): behavioural, not a grep. With a bare parser, registration must see the custom service while reflection must not know its file. Widening reflection turns it red on purpose.
-  6 mod sync must not write a truncated .fds -> ALREADY COVERED by TestModSyncFdsByteIdentical.
+  6 mod sync must not write a truncated .fds -> COVERAGE CLAIM FALSIFIED at CLI level during the item-3 re-test (2026-09-07). TestModSyncFdsByteIdentical builds its registry via an explicit Import over a corpus that EXISTS, so it never reaches the missing-path branch. Live CLI: on a protoconf.lock with no getterUrl, `mod sync` exits 0, prints "Parsing protos."/"Storing in cache.", writes a ZERO-BYTE .fds for every dep, and overwrites the lock's real fileDescriptorSetSum (6556e5cf.../039f1e10...) with d41d8cd98f00b204e9800998ecf8427e - the md5 of empty. Root cause: Download() returns nil early when GetterUrl == "" (module_service.go:312-314), nothing is extracted, protoPaths() then points Import at a non-existent dir, Import returns no error, Store writes an empty FileDescriptorSet. PRE-EXISTING, not a Phase 11 regression: reproduces byte-identically on b69e3b2 (pre-phase baseline, verified in a throwaway worktree). See gap G-11-7..
   7 race not quieted by stripping -race or coarsening a lock -> the -race half is enforced by .github/workflows/go.yml:37; the "coarsening" half is a diff-review property.
 mutation-verified: restoring the silent continue fails the prohibition-4 test; assigning the discovery resolver to s.parser.FilesResolver fails the D-02 test.
 regression: full suite green under -race (agent package excluded - pre-existing unrelated hang at agent/command_test.go:118).
@@ -88,7 +96,9 @@ blocked: 0
 
 - gap_id: G-11-3
   truth: "protoconf mod tidy completes without panicking when protoconf.lock omits the deps key"
-  status: failed
+  status: resolved
+  resolved_by: 11-04-PLAN.md
+  resolved_at: 2026-09-07
   reason: "User reported: go run ./cmd/protoconf mod tidy -protoconfPath /tmp/uat-11/ -> panic: assignment to entry in nil map at compiler/lib/module_service.go:146 (ModuleService.Init), via mod/command.go:153 (modTidyCommand.Run)."
   severity: blocker
   test: 3
@@ -104,4 +114,28 @@ blocked: 0
     - "Re-initialize m.head.Deps to an empty map in LoadFromLockFile when protojson.Unmarshal leaves it nil - the single chokepoint all 8 production callers route through (inserter/inserter.go:197, server/server.go:290, agent/filekv/filekv.go:74, mutate/mutate.go:72, compiler/lib/compiler.go:61, mod/command.go:68/112/148)"
     - "Regression test: a protoconf root whose protoconf.lock omits deps, asserting mod tidy / ModuleService.Init completes without panic"
     - "Re-test UAT item 3's actual backstop truth (mod sync .fds byte-identity under a concurrent in-process lazy compile) once the panic no longer blocks fixture setup"
+  debug_session: ""
+
+- gap_id: G-11-7
+  truth: "protoconf mod sync must not write a truncated (zero-byte) .fds, nor overwrite protoconf.lock's fileDescriptorSetSum with the checksum of one, while exiting 0"
+  status: failed
+  reason: "Found during the item-3 CLI re-test (2026-09-07): on a protoconf.lock with no getterUrl (the shape utils/testdata/small ships), `protoconf mod sync` prints 'Parsing protos.' and 'Storing in cache.', exits 0, writes a ZERO-BYTE .fds for every dep, and rewrites the lock's real fileDescriptorSetSum values to d41d8cd98f00b204e9800998ecf8427e (md5 of empty). Silent cache and lock-file corruption with a success exit code."
+  severity: major
+  test: 7
+  prohibition: 6
+  pre_existing: true
+  pre_existing_evidence: "Reproduces byte-identically on b69e3b2, the commit before Phase 11 began (verified in a throwaway git worktree with a separately built binary). Not caused by Phase 11; surfaced by Phase 11's UAT."
+  root_cause: "Download (compiler/lib/module_service.go:312-314) returns nil early when r.GetterUrl == \"\", so no tarball is extracted. GenFileDescriptorSet then calls protoPaths(), which points at .protoconf_cache/<label>/<sourcePath> - a directory that does not exist. registry.Import over a non-existent path returns NO error, so the 'failed to parse' guard never fires, and registry.Store serializes an empty FileDescriptorSet (0 bytes) and returns the empty md5, which is then persisted into the lock by the Walk/Lock call at the end of GenFileDescriptorSet."
+  why_test_missed_it: "TestModSyncFdsByteIdentical constructs its registry via an explicit Import over testdata.GenerateCorpus output, which always exists, so the missing-path branch is unreachable from that test. UAT item 7 recorded prohibition 6 as 'ALREADY COVERED' on the strength of that test; the coverage claim does not hold at the CLI level."
+  artifacts:
+    - path: "compiler/lib/module_service.go"
+      issue: "Download returns nil when GetterUrl is empty, silently skipping extraction rather than reporting an unsynced dep"
+    - path: "compiler/lib/module_service.go"
+      issue: "GenFileDescriptorSet stores and persists an empty FileDescriptorSet without asserting the parsed set is non-empty or that protoPaths exist"
+    - path: "utils/utils.go"
+      issue: "DescriptorRegistry.Import over a non-existent path returns nil rather than an error, so the caller's parse-failure guard cannot fire"
+  missing:
+    - "Fail (or at minimum warn loudly and skip the lock rewrite) when a dep's resolved protoPaths do not exist on disk, instead of storing an empty set"
+    - "Never overwrite a non-empty fileDescriptorSetSum in protoconf.lock with the checksum of a zero-byte descriptor set"
+    - "Regression test at the mod-sync level, not the registry level: a lock file with no getterUrl must not yield a 0-byte .fds and must not clobber recorded sums"
   debug_session: ""
