@@ -60,6 +60,14 @@ type DescriptorRegistry struct {
 	group         singleflight.Group
 	lazyLoaded    map[string]struct{}
 	eagerFallback bool
+
+	// afterParseHook, when non-nil, runs inside ParseOne's singleflight
+	// closure after parser.ParseFiles returns and before d.mu is taken for
+	// the insert. It exists so a test can deterministically force the
+	// ParseOne/ParseAll interleaving that used to hand callers a
+	// non-canonical descriptor pointer; nil in every production path, so
+	// it costs one nil check.
+	afterParseHook func()
 }
 
 func NewDescriptorRegistry() *DescriptorRegistry {
@@ -284,11 +292,32 @@ func (d *DescriptorRegistry) ParseOne(path string) (*desc.FileDescriptor, error)
 			return nil, errors.Join(errors.New("failed to parse file on demand"), err)
 		}
 
+		d.mu.RLock()
+		hook := d.afterParseHook
+		d.mu.RUnlock()
+		if hook != nil {
+			hook()
+		}
+
 		d.mu.Lock()
 		d.recordFileLocked(fds[0])
+		// Return the CANONICAL registry entry, not the descriptor this
+		// goroutine just parsed. recordFileLocked is a no-op when the path
+		// is already present, so if anything inserted it while we parsed
+		// outside the lock — ParseAll holds d.mu across its whole
+		// whole-tree parse and can land exactly here — returning fds[0]
+		// would hand this caller a different pointer than every map lookup
+		// sees, breaking ParseOne's own pointer-identity contract.
+		// Keyed by GetName(), which is what recordFileLocked stores under;
+		// it normally equals path, and the fallback keeps a divergence from
+		// turning into a nil return.
+		canonical, ok := d.FileRegistry[fds[0].GetName()]
 		d.mu.Unlock()
+		if !ok {
+			canonical = fds[0]
+		}
 
-		return fds[0], nil
+		return canonical, nil
 	})
 	if err != nil {
 		return nil, err
