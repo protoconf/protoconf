@@ -288,4 +288,79 @@ func TestModSyncNeverPersistsEmptyDescriptorSet(t *testing.T) {
 		require.NotEqual(t, "d41d8cd98f00b204e9800998ecf8427e", terraformAfter)
 		require.NotEqual(t, "d41d8cd98f00b204e9800998ecf8427e", vizceralAfter)
 	})
+
+	// downloaded_dep_bad_source_path proves the guard is keyed on the
+	// resolved proto paths yielding nothing, not on GetterUrl being empty:
+	// this dependency is genuinely downloaded and extracted, and still
+	// corrupts the lock identically if the guard is narrowed to a GetterUrl
+	// check. It also exercises walk()'s error accumulation, since the
+	// untouched dependency succeeds and is processed after the broken one --
+	// exactly the shape that erased the failure before that fix.
+	t.Run("downloaded_dep_bad_source_path", func(t *testing.T) {
+		dir := testdata.SmallTestDir()
+
+		initExit, initErrOut := runModInitIn(t, dir)
+		require.Equal(t, 0, initExit, "errOutput: %s", initErrOut)
+
+		syncExit, syncErrOut := runModSync(t, dir)
+		require.Equal(t, 0, syncExit, "errOutput: %s", syncErrOut)
+
+		terraformExtractedDir := filepath.Join(dir, ".protoconf_cache", "terraform_repo")
+		_, err := os.Stat(terraformExtractedDir)
+		require.NoError(t, err, "dependency must be genuinely downloaded and extracted before this subtest rewrites its sourcePath")
+
+		lockPath := filepath.Join(dir, "protoconf.lock")
+		before := readLockDeps(t, lockPath)
+		terraformBefore := before.GetDeps()["terraform_repo"].GetFileDescriptorSetSum()
+		vizceralBefore := before.GetDeps()["vizceral_repo"].GetFileDescriptorSetSum()
+		require.NotEmpty(t, terraformBefore)
+		require.NotEmpty(t, vizceralBefore)
+
+		before.GetDeps()["terraform_repo"].SourcePath = "does-not-exist-in-extracted-archive"
+		writeLockDeps(t, lockPath, before)
+		deleteFdsFiles(t, dir)
+
+		exit, errOut := runModSync(t, dir)
+		require.NotZero(t, exit, "errOutput: %s", errOut)
+
+		after := readLockDeps(t, lockPath)
+		require.Equal(t, terraformBefore, after.GetDeps()["terraform_repo"].GetFileDescriptorSetSum(), "recorded sum must survive a failed sync unchanged")
+		require.Equal(t, vizceralBefore, after.GetDeps()["vizceral_repo"].GetFileDescriptorSetSum(), "the untouched dependency's own sum must also survive unchanged")
+		require.NotEqual(t, "d41d8cd98f00b204e9800998ecf8427e", after.GetDeps()["terraform_repo"].GetFileDescriptorSetSum())
+
+		require.NoFileExists(t, filepath.Join(dir, ".protoconf_cache", "terraform_repo.fds"), "the broken dependency's .fds must not exist")
+		vizceralFds := filepath.Join(dir, ".protoconf_cache", "vizceral_repo.fds")
+		info, err := os.Stat(vizceralFds)
+		require.NoError(t, err, "the succeeding dependency's .fds must exist")
+		require.Greater(t, info.Size(), int64(0))
+	})
+
+	// good_path_control is the non-vacuity control: it proves the guard
+	// does not pass by failing everything. Its expected sums come from the
+	// committed fixture (utils/testdata/small/protoconf.lock), not from a
+	// value this test computed and then compared against itself.
+	t.Run("good_path_control", func(t *testing.T) {
+		dir := testdata.SmallTestDir()
+		deleteFdsFiles(t, dir)
+
+		initExit, initErrOut := runModInitIn(t, dir)
+		require.Equal(t, 0, initExit, "errOutput: %s", initErrOut)
+
+		syncExit, syncErrOut := runModSync(t, dir)
+		require.Equal(t, 0, syncExit, "errOutput: %s", syncErrOut)
+
+		terraformFds := filepath.Join(dir, ".protoconf_cache", "terraform_repo.fds")
+		vizceralFds := filepath.Join(dir, ".protoconf_cache", "vizceral_repo.fds")
+		tInfo, err := os.Stat(terraformFds)
+		require.NoError(t, err)
+		require.Greater(t, tInfo.Size(), int64(0))
+		vInfo, err := os.Stat(vizceralFds)
+		require.NoError(t, err)
+		require.Greater(t, vInfo.Size(), int64(0))
+
+		lockPath := filepath.Join(dir, "protoconf.lock")
+		after := readLockDeps(t, lockPath)
+		require.Equal(t, "6556e5cfb73f535f9b91738dbd0df926", after.GetDeps()["terraform_repo"].GetFileDescriptorSetSum())
+		require.Equal(t, "039f1e1023250b34054894cc58bc8b2b", after.GetDeps()["vizceral_repo"].GetFileDescriptorSetSum())
+	})
 }
