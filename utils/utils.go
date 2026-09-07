@@ -447,6 +447,12 @@ func (d *DescriptorRegistry) ParseAll() error {
 	for k := range d.FileRegistry {
 		if _, ok := before[k]; !ok {
 			d.lazyLoaded[k] = struct{}{}
+			// Import/Parse write FileRegistry directly, bypassing
+			// recordFileLocked, so this diff loop is the one place the
+			// fallback's newly-present files are identified — the same
+			// insert point registerFileLocked already serves from
+			// recordFileLocked (D-02: one diff, one key set).
+			d.registerFileLocked(d.FileRegistry[k])
 		}
 	}
 	d.eagerFallback = true
@@ -478,6 +484,26 @@ func (d *DescriptorRegistry) RangeFiles(fn func(protoreflect.FileDescriptor) boo
 		return
 	}
 	d.filesResolver.RangeFiles(fn)
+}
+
+// FilesResolverRegistrationCount reports how many distinct files have been
+// successfully registered into the growable filesResolver (D-05). Test-only
+// (D-06): no log line, no CLI surface. Safe to call concurrently.
+func (d *DescriptorRegistry) FilesResolverRegistrationCount() int {
+	d.mu.RLock()
+	defer d.mu.RUnlock()
+	return d.registrationCount
+}
+
+// FilesResolverRegistrationErrorCount reports how many RegisterFile calls
+// have failed (D-05, research Open Question 1: paired with the count above
+// so a duplicate-registration error that is only logged cannot mask a
+// FileRegistry/filesResolver divergence). Test-only (D-06). Safe to call
+// concurrently.
+func (d *DescriptorRegistry) FilesResolverRegistrationErrorCount() int {
+	d.mu.RLock()
+	defer d.mu.RUnlock()
+	return d.registrationErrors
 }
 
 // LoadedFileCount reports how many proto files have been loaded on the lazy
