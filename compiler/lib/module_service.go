@@ -263,6 +263,7 @@ func (m *ModuleService) MergeLock() error {
 var ErrorRemoteRepoNoIntegrityInfo = errors.New("missing integrity data")
 var ErrorRemoteRepoNotDownloaded = errors.New("remote repo not in local cache")
 var ErrorRemoteRepoValidationFailed = errors.New("failed to validate integrity")
+var ErrorRemoteRepoNoProtoFiles = errors.New("no proto files found for dependency")
 
 func (m *ModuleService) Validate(r *module.RemoteRepo) (string, error) {
 	if r.Integrity == "" {
@@ -362,6 +363,27 @@ func (m *ModuleService) GenFileDescriptorSet(registry *utils.DescriptorRegistry,
 		ui.Error("Failed to parse proto files:")
 		ui.Error(err.Error())
 		return errors.Join(fmt.Errorf("failed generate file descriptor set for: %s", r.Label), err)
+	}
+
+	// Import succeeds silently over paths that do not exist, because find()
+	// discards filepath.WalkDir's error (utils/utils.go). An unsynced
+	// dependency (no getterUrl, so nothing was ever extracted into
+	// .protoconf_cache/<label>/) or a sourcePath absent from the extracted
+	// archive both resolve to zero parsed files here with no error -- and
+	// Store below would then write a zero-byte .fds and the closing Walk
+	// would persist the md5 of the empty set over the dependency's recorded
+	// checksum. The emptiness is measured on LocalFileCount (the exact set
+	// Store is about to serialize), not GetFileDescriptorSet, which ranges a
+	// registry pre-seeded with well-known types and so is never zero.
+	if registry.LocalFileCount() == 0 {
+		searched := strings.Join(paths, ", ")
+		ui.Error(fmt.Sprintf("No proto files found for dependency %q.", r.Label))
+		ui.Error(fmt.Sprintf("Searched: %s", searched))
+		ui.Error("Run `protoconf mod init` to resolve dependency urls, then `protoconf mod sync` again.")
+		return errors.Join(
+			fmt.Errorf("failed generate file descriptor set for: %s", r.Label),
+			fmt.Errorf("%w (searched: %s)", ErrorRemoteRepoNoProtoFiles, searched),
+		)
 	}
 
 	ui.Info("Storing in cache.")
@@ -526,7 +548,7 @@ func walk(head *module.RemoteRepo, walkFn WalkFunction) error {
 	}
 	sort.Strings(keys)
 	for i := range keys {
-		err = errors.Join(walk(deps[i], walkFn))
+		err = errors.Join(err, walk(deps[i], walkFn))
 	}
 	return errors.Join(err, walkFn(head))
 }

@@ -381,6 +381,18 @@ func (d *DescriptorRegistry) LoadedFileCount() int {
 	return len(d.lazyLoaded)
 }
 
+// LocalFileCount reports the size of the set Store will serialize -- the
+// set Parse (mod sync's whole-tree path) last populated into localFiles.
+// This is the emptiness signal GenFileDescriptorSet's guard checks before
+// ever calling Store: GetFileDescriptorSet cannot serve this purpose, since
+// it ranges FileRegistry, which NewDescriptorRegistry seeds with ~65
+// well-known types before any parsing happens and so is never zero.
+func (d *DescriptorRegistry) LocalFileCount() int {
+	d.mu.RLock()
+	defer d.mu.RUnlock()
+	return len(d.localFiles)
+}
+
 // FellBackToEager reports whether the D-03 whole-tree eager fallback has
 // fired for this registry.
 func (d *DescriptorRegistry) FellBackToEager() bool {
