@@ -108,7 +108,7 @@ Plans:
   3. Two concurrent compiles against one shared compiler, each reaching a proto the other hasn't touched, complete without error and without a data race under `go test -race`.
 
 **Measured impact**: Moves the numbers — this phase eliminates the 260ms resolver-snapshot rebuild. Together with Phase 11, this closes the full 6.97s → ~200ms compile-path gap; everything after this phase is correctness work protecting consumers that were never on this budget.
-**Plans**: 2/3 plans executed
+**Plans**: 3/3 plans executed
 
 Plans:
 **Wave 1**
@@ -118,7 +118,7 @@ Plans:
 **Wave 2** *(blocked on Wave 1 completion)*
 
 - [x] 12-02-PLAN.md — `ParseFilesX` returns the registry's canonical descriptor on a resolver hit, pointer-identity gate for load A → load B → re-reference A, and deletion of the dead `config.protoResolver` field (RSLV-03)
-- [ ] 12-03-PLAN.md — Race proofs: `TestConcurrentCompile` gains resolver-view assertions, plus a dedicated `utils` test racing `RegisterFile` against `RangeFiles`/`FindFileByPath` (SAFE-01)
+- [x] 12-03-PLAN.md — Race proofs: `TestConcurrentCompile` gains resolver-view assertions, plus a dedicated `utils` test racing `RegisterFile` against `RangeFiles`/`FindFileByPath` (SAFE-01)
 
 ### Phase 13: Exact Symbol Index & Shared Type-URL Resolution
 
@@ -188,7 +188,7 @@ Phases execute in numeric order: 1 → 2 → ... → 10 → 11 → 12 → 13 →
 |-------|-----------|-----------------|--------|-----------|
 | 1-10. (see v1.0 table above) | v1.0 | 23/23 | Complete | 2026-03-31 |
 | 11. Concurrency-Safe Lazy Registry Core | v2.0 | 5/5 | Complete    | 2026-09-07 |
-| 12. Growable Resolver Views & Race Safety | v2.0 | 2/3 | In Progress|  |
+| 12. Growable Resolver Views & Race Safety | v2.0 | 3/3 | In Progress|  |
 | 13. Exact Symbol Index & Shared Type-URL Resolution | v2.0 | 0/TBD | Not started | - |
 | 14. Non-Compiler Consumer Correctness | v2.0 | 0/TBD | Not started | - |
 | 15. Verification, Decision & Gate Flip | v2.0 | 0/TBD | Not started | - |
