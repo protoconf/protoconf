@@ -54,7 +54,7 @@ Full phase detail archived under `.planning/milestones/v1.0-phases/`.
 
 **Why 5 phases:** the strict dependency chain is on-demand parse primitive → growable resolver → index-backed shared resolution → non-compiler consumer correctness → verification — five natural links. Type-URL resolution's index build and its shared consulting path were originally drafted as two phases (index, then wiring), but that split leaves the index phase's success criteria unobservable through real behavior — nothing consults the index until the next phase exists, so its criteria could only assert that an artifact exists, not that anything works differently for a user or operator. Phase 13 below merges the two: the index is built AND consulted by the same phase, so every criterion is anchored in an observable round-trip (a config resolves correctly, a cache is reused, an unnecessary build is avoided) rather than an internal data structure. Consistent with this project's `fine` granularity setting, every phase below has 4-10 requirements and a coherent, independently-verifiable deliverable.
 
-- [ ] **Phase 11: Concurrency-Safe Lazy Registry Core** - `GetProtoRegistry()` stops bulk-parsing `src/`; parse-on-demand is memoised and thread-safe; the mutation server's service catalog survives the switch
+- [x] **Phase 11: Concurrency-Safe Lazy Registry Core** - `GetProtoRegistry()` stops bulk-parsing `src/`; parse-on-demand is memoised and thread-safe; the mutation server's service catalog survives the switch (completed 2026-09-07)
 - [ ] **Phase 12: Growable Resolver Views & Race Safety** - Resolvers grow incrementally instead of snapshotting, and concurrent compiles are proven race-free
 - [ ] **Phase 13: Exact Symbol Index & Shared Type-URL Resolution** - Every message symbol under `src/`, nested types included, resolves to its declaring file via a persisted, content-keyed, parse-without-link index, consulted through one shared resolution path that every nested `Any` lookup — including the compiler's own mutable-config load — resolves through
 - [ ] **Phase 14: Non-Compiler Consumer Correctness** - Mutation server, inserter, agent, and reflection UI resolve types correctly and safely with no regression
@@ -181,7 +181,7 @@ Phases execute in numeric order: 1 → 2 → ... → 10 → 11 → 12 → 13 →
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|-----------------|--------|-----------|
 | 1-10. (see v1.0 table above) | v1.0 | 23/23 | Complete | 2026-03-31 |
-| 11. Concurrency-Safe Lazy Registry Core | v2.0 | 5/5 | In Progress|  |
+| 11. Concurrency-Safe Lazy Registry Core | v2.0 | 5/5 | Complete    | 2026-09-07 |
 | 12. Growable Resolver Views & Race Safety | v2.0 | 0/TBD | Not started | - |
 | 13. Exact Symbol Index & Shared Type-URL Resolution | v2.0 | 0/TBD | Not started | - |
 | 14. Non-Compiler Consumer Correctness | v2.0 | 0/TBD | Not started | - |
