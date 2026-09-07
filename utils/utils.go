@@ -387,9 +387,20 @@ func (d *DescriptorRegistry) LoadedFileCount() int {
 // ever calling Store: GetFileDescriptorSet cannot serve this purpose, since
 // it ranges FileRegistry, which NewDescriptorRegistry seeds with ~65
 // well-known types before any parsing happens and so is never zero.
+//
+// NOT safe to call concurrently with Import/Parse on the same registry.
+// localFiles is deliberately absent from mu's guarantee (see the field
+// declaration): Parse writes it -- and resets it, per call -- with no lock
+// at all, so an RLock here would advertise a synchronisation that does not
+// exist. Every caller today runs on the goroutine that just finished
+// Import/Parse, which is what makes the read correct.
+//
+// ponytail: safe only because Sync's walk is serial and Parse resets
+// localFiles per dependency. Parallelising that walk needs a registry per
+// dependency, not a lock here -- a lock would silence the race detector
+// while leaving the reset to clobber a sibling's entries, which would make
+// the G-11-7 guard read 0 for a dependency that parsed fine.
 func (d *DescriptorRegistry) LocalFileCount() int {
-	d.mu.RLock()
-	defer d.mu.RUnlock()
 	return len(d.localFiles)
 }
 
