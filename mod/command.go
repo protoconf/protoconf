@@ -65,7 +65,10 @@ func (c *modInitCommand) Help() string {
 func (c *modInitCommand) Run(args []string) int {
 	c.flag.Parse(args)
 	c.ui.Info(c.ms.Config.String())
-	c.ms.LoadFromLockFile()
+	// Init loads the lock file itself now and returns its parse error
+	// before executing CONFIGSPACE (see ModuleService.Init), so this no
+	// longer needs its own unchecked LoadFromLockFile call -- which used to
+	// swallow a malformed lock file's parse error entirely.
 	err := c.ms.Init(context.Background(), "CONFIGSPACE")
 	if err != nil {
 		c.ui.Error(err.Error())
