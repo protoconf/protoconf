@@ -1,20 +1,20 @@
 ---
-gsd_state_version: 1.0
+gsd_state_version: "1.0"
 milestone: v2.0
 milestone_name: Compiler Startup Performance (Planned)
 current_phase: 11
 current_phase_name: Concurrency-Safe Lazy Registry Core
-status: verifying
-stopped_at: Completed 11-04-PLAN.md
-last_updated: "2026-09-07T10:53:36.893Z"
-last_activity: 2026-09-04
-last_activity_desc: Phase 11 execution started
-state_head: c4ee9049c5f3be885ad993567cf9a848712da9d0
+status: executing
+stopped_at: Completed 11-05-PLAN.md
+last_updated: "2026-09-07T13:57:43.573Z"
+last_activity: 2026-09-07
+last_activity_desc: Phase 11 execution complete (5/5 plans)
+state_head: fc7bfe37170a5eabae78fa820888e496301585e8
 progress:
   total_phases: 5
   completed_phases: 0
-  total_plans: 4
-  completed_plans: 4
+  total_plans: 5
+  completed_plans: 5
   percent: 0
 ---
 
@@ -29,10 +29,10 @@ See: .planning/PROJECT.md (updated 2026-09-04)
 
 ## Current Position
 
-Phase: 11 (Concurrency-Safe Lazy Registry Core) — READY TO EXECUTE
-Plan: 3 of 3
-Status: Phase complete — ready for verification
-Last activity: 2026-09-04 — Phase 11 execution started
+Phase: 11 (Concurrency-Safe Lazy Registry Core) — ALL PLANS COMPLETE
+Plan: 5 of 5
+Status: Phase 11 execution complete — ready for /gsd-verify-work and /gsd-plan-phase 12
+Last activity: 2026-09-07 — Completed 11-05-PLAN.md (G-11-7 gap closure)
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -87,6 +87,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 11-concurrency-safe-lazy-registry-core P02 | 8min | 2 tasks | 2 files |
 | Phase 11-concurrency-safe-lazy-registry-core P03 | 42min | 2 tasks | 4 files |
 | Phase 11 P04 | 45min | 2 tasks | 4 files |
+| Phase 11 P05 | 50min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -160,6 +161,8 @@ Recent decisions affecting current work:
 - [Phase 11]: TestModSyncFdsByteIdentical compares lazy vs eager FileRegistry counts directly instead of the plan's literal corpus-size threshold — NewDescriptorRegistry seeds ~65 well-known types before any src/ parsing, exceeding the 40-file corpus regardless of laziness, so the literal threshold fails unconditionally; comparing against eager's own count preserves the distinguishability guard
 - [Phase 11]: G-11-3 recorded as pre-existing (reproduces on b69e3b2), not attributed to Phase 11's LAZY/CONS work
 - [Phase 11]: LoadFromLockFile is the single chokepoint fix location for the nil-map invariant; no per-caller nil-checks added
+- [Phase 11]: G-11-7 recorded as pre-existing (reproduces on b69e3b2), not attributed to Phase 11's own LAZY-04/CONS-01 work; closed under Phase 11 by explicit user decision, matching G-11-3's treatment in 11-04
+- [Phase 11]: mod sync's empty-descriptor-set guard is keyed on utils.DescriptorRegistry.LocalFileCount() == 0, never on GetterUrl == "" -- a fully downloaded dependency with a bad sourcePath corrupts the lock identically to an unsynced one, so a GetterUrl check would leave that shape broken
 
 ### Pending Todos
 
@@ -192,6 +195,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-07T10:53:36.834Z
-Stopped at: Completed 11-04-PLAN.md
+Last session: 2026-09-07T13:57:34.043Z
+Stopped at: Completed 11-05-PLAN.md
 Resume file: None
