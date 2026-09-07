@@ -403,6 +403,16 @@ func (s *ProtoconfMutationServer) Init(rpcServer *grpc.Server) {
 				}
 			}
 			if len(svcDesc.Methods) < 1 {
+				// A service declared under src/ that Init considered but
+				// cannot register must not vanish without a trace. CONS-01
+				// stopped the catalog going dark at DISCOVERY; this is the
+				// same failure one level down, at ELIGIBILITY — an operator
+				// whose rpc returns the wrong type would otherwise see no
+				// service and no explanation.
+				logger.Warn("skipping service: no eligible mutation methods",
+					"service", svcDesc.ServiceName,
+					"file", fd.Path(),
+					"required_output", "protoconf.v1.ConfigMutationResponse")
 				continue
 			}
 			logger.Info("Registering service", "service", svcDesc.ServiceName)
