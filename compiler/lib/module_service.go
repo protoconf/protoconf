@@ -365,9 +365,32 @@ func (m *ModuleService) GetProtoFilesRegistry() *protoregistry.Files {
 }
 
 func (m *ModuleService) GetProtoRegistry() *utils.DescriptorRegistry {
+	// Fast path: an already-primed registry is the overwhelmingly common
+	// case (NewCompiler fills it synchronously at construction).
+	m.mutex.RLock()
+	cached := m.cachedRegistry
+	m.mutex.RUnlock()
+	if cached != nil {
+		return cached
+	}
+
+	// Slow path. The check-then-act below must be atomic: two callers racing
+	// an unprimed service would both build a registry and both assign, and
+	// the loser would return an ORPHAN registry that is not the one stored in
+	// the field. That orphan carries its own FileRegistry, so its descriptors
+	// are not pointer-identical to the winner's and LAZY-02's memoisation
+	// guarantee silently stops holding across those callers (code review
+	// WR-04; same class as WR-02).
+	//
+	// Holding the write lock across the build is safe: Walk below is
+	// walk(m.head, walkFn) and takes no lock, so there is no re-entrancy of
+	// the kind that would deadlock a non-reentrant sync.RWMutex.
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
 	if m.cachedRegistry != nil {
 		return m.cachedRegistry
 	}
+
 	registry := utils.NewDescriptorRegistry()
 	m.Walk(func(r *module.RemoteRepo) error {
 		if r.Url == "." {
