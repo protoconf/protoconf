@@ -84,8 +84,9 @@ func TestModuleService_Sync(t *testing.T) {
 				Url: ".",
 				Deps: map[string]*module.RemoteRepo{
 					"vizceral_repo": {
-						Url: filepath.Join(testDir, "internal/vizceral.tgz"),
-						Pin: &module.RemoteRepo_Checksum{Checksum: "896b13d56bd1787089ca5767656c7ef1"},
+						Url:        filepath.Join(testDir, "internal/vizceral.tgz"),
+						Pin:        &module.RemoteRepo_Checksum{Checksum: "896b13d56bd1787089ca5767656c7ef1"},
+						SourcePath: "src",
 					},
 				},
 			},
@@ -111,9 +112,10 @@ func TestModuleService_Sync(t *testing.T) {
 				Url: ".",
 				Deps: map[string]*module.RemoteRepo{
 					"vizceral_repo": {
-						Url:       filepath.Join(testDir, "internal/vizceral.tgz"),
-						Pin:       &module.RemoteRepo_Checksum{Checksum: "896b13d56bd1787089ca5767656c7ef1"},
-						Integrity: "h1:mKU/VAicQpQB3uVzxxAlTZsKPewktnNXQvwmBXI5W9o=",
+						Url:        filepath.Join(testDir, "internal/vizceral.tgz"),
+						Pin:        &module.RemoteRepo_Checksum{Checksum: "896b13d56bd1787089ca5767656c7ef1"},
+						Integrity:  "h1:mKU/VAicQpQB3uVzxxAlTZsKPewktnNXQvwmBXI5W9o=",
+						SourcePath: "src",
 					},
 				},
 			},
@@ -124,9 +126,10 @@ func TestModuleService_Sync(t *testing.T) {
 				Url: ".",
 				Deps: map[string]*module.RemoteRepo{
 					"vizceral_repo": {
-						Url:       "github.com/protoconf/protoconf-xds",
-						Pin:       &module.RemoteRepo_Commit{Commit: "27d699b"},
-						Integrity: "h1:MHam+LpdxRMBNGdU+WzfqO6HWpMNfS/6ZHEU+nI1KpI=",
+						Url:        "github.com/protoconf/protoconf-xds",
+						Pin:        &module.RemoteRepo_Commit{Commit: "27d699b"},
+						Integrity:  "h1:MHam+LpdxRMBNGdU+WzfqO6HWpMNfS/6ZHEU+nI1KpI=",
+						SourcePath: "src",
 					},
 				},
 			},
