@@ -350,10 +350,9 @@ func (c *Compiler) load(filename string) (*config, error) {
 	}
 
 	return &config{
-		filename:      filename,
-		locals:        locals,
-		validators:    validators,
-		protoResolver: c.parser.LocalResolver,
+		filename:   filename,
+		locals:     locals,
+		validators: validators,
 		// Share the registry's MessageRegistry by pointer, not by value:
 		// copying msgregistry.MessageRegistry gives the copy its own
 		// zero-value mutex while the maps inside it stay shared with the
