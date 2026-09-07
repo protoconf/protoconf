@@ -1,14 +1,21 @@
 ---
-status: diagnosed
+status: testing
 phase: 11-concurrency-safe-lazy-registry-core
 source: [11-VERIFICATION.md]
 started: 2026-09-04T17:50:00Z
-updated: 2026-09-07T19:40:00Z
+updated: 2026-09-07T21:20:00Z
 ---
 
 ## Current Test
 
-[testing complete]
+number: 8
+name: WR-02 (new) — LocalFileCount()'s RLock does not synchronize with localFiles's only writer
+expected: |
+  A decision on whether to extend mu's documented scope to genuinely cover localFiles
+  (lock Parse's writes too), or drop LocalFileCount's RLock/RUnlock and document plainly
+  that it is unsafe to call concurrently with Import/Parse on the same registry — so the
+  code's safety claim matches what callers can actually rely on.
+awaiting: user response
 
 ## Tests
 
@@ -83,12 +90,19 @@ per-prohibition disposition:
 mutation-verified: restoring the silent continue fails the prohibition-4 test; assigning the discovery resolver to s.parser.FilesResolver fails the D-02 test.
 regression: full suite green under -race (agent package excluded - pre-existing unrelated hang at agent/command_test.go:118).
 
+### 8. WR-02 — LocalFileCount()'s d.mu.RLock() does not synchronize with localFiles's only production writer
+
+expected: A decision on whether to extend mu's documented scope to genuinely cover localFiles (lock Parse's writes too), or drop LocalFileCount's RLock/RUnlock and document plainly that it is unsafe to call concurrently with Import/Parse on the same registry - so the code's safety claim matches what callers can actually rely on.
+why_human: LocalFileCount() (utils/utils.go:390-394, added by 11-05 to back the G-11-7 guard) takes d.mu.RLock(), but Parse() (utils/utils.go:210-222), the sole production writer of localFiles, writes it with zero locking. Not a live bug today - GenFileDescriptorSet calls Import/Parse to completion before calling LocalFileCount() synchronously on the same goroutine, and Sync()'s dependency walk is single-threaded - so -race cannot catch it until a future change (e.g. parallelizing Sync()'s walk) actually drives the interleaving. Same "latent, not yet live" class as WR-04 before it became a real bug and was fixed in this phase (84efad0). No must-have truth in any of the 5 plans covers LocalFileCount's lock discipline, and this finding postdates this file's own 2026-09-07T19:40Z sign-off (11-REVIEW.md, 2026-09-07T21:10Z), so it has never had a human verification pass.
+source: 11-REVIEW.md WR-02 (new), carried into 11-VERIFICATION.md human_verification
+result: [pending]
+
 ## Summary
 
-total: 7
+total: 8
 passed: 6
 issues: 1
-pending: 0
+pending: 1
 skipped: 0
 blocked: 0
 
