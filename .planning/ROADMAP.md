@@ -76,7 +76,7 @@ Full phase detail archived under `.planning/milestones/v1.0-phases/`.
   5. A custom gRPC mutation service defined anywhere under `src/` is registered and reachable at server startup, before any config has been compiled — proven by a fixture service and a test that fails without the fix.
 
 **Measured impact**: Moves the numbers — this phase eliminates the 4,639ms eager parse+link, 94% of the 6.97s baseline.
-**Plans**: 5 plans (4/5 executed)
+**Plans**: 5/5 plans executed (4/5 executed)
 
 Plans:
 **Wave 1**
@@ -94,7 +94,7 @@ Plans:
 
 **Wave 4** *(gap closure — run with `/gsd-execute-phase 11 --gaps-only`)*
 
-- [ ] 11-05-PLAN.md — Gap closure G-11-7: `mod sync` refuses to write a zero-byte `.fds` or persist the empty-set checksum over `protoconf.lock`'s recorded `fileDescriptorSetSum`, and a failed dependency survives the walk as a non-zero exit code (LAZY-04)
+- [x] 11-05-PLAN.md — Gap closure G-11-7: `mod sync` refuses to write a zero-byte `.fds` or persist the empty-set checksum over `protoconf.lock`'s recorded `fileDescriptorSetSum`, and a failed dependency survives the walk as a non-zero exit code (LAZY-04)
 
 ### Phase 12: Growable Resolver Views & Race Safety
 
@@ -181,7 +181,7 @@ Phases execute in numeric order: 1 → 2 → ... → 10 → 11 → 12 → 13 →
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|-----------------|--------|-----------|
 | 1-10. (see v1.0 table above) | v1.0 | 23/23 | Complete | 2026-03-31 |
-| 11. Concurrency-Safe Lazy Registry Core | v2.0 | 4/4 | In Progress|  |
+| 11. Concurrency-Safe Lazy Registry Core | v2.0 | 5/5 | In Progress|  |
 | 12. Growable Resolver Views & Race Safety | v2.0 | 0/TBD | Not started | - |
 | 13. Exact Symbol Index & Shared Type-URL Resolution | v2.0 | 0/TBD | Not started | - |
 | 14. Non-Compiler Consumer Correctness | v2.0 | 0/TBD | Not started | - |
