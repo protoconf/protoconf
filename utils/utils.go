@@ -44,6 +44,12 @@ var ErrLazyParseDisabled = errors.New("on-demand parsing requires import paths")
 // reach outside src/.
 var ErrUnsafeProtoPath = errors.New("proto path escapes the import root")
 
+// ErrNoGrowableResolver is returned by FindFileByPath/RangeFiles when the
+// registry has no growable filesResolver — i.e. it is on the eager,
+// D-03-excluded path (ImportPaths empty). Growth is opt-in per D-03/D-04, so
+// this is the expected signal for every non-compiler consumer, not a bug.
+var ErrNoGrowableResolver = errors.New("registry has no growable files resolver")
+
 type DescriptorRegistry struct {
 	MessageRegistry msgregistry.MessageRegistry
 	FileRegistry    map[string]*desc.FileDescriptor
@@ -60,6 +66,28 @@ type DescriptorRegistry struct {
 	group         singleflight.Group
 	lazyLoaded    map[string]struct{}
 	eagerFallback bool
+
+	// filesResolver, when non-nil, is the growable *protoregistry.Files view
+	// for a lazy registry (ImportPaths non-empty). Built once by the first
+	// GetFilesResolver call and grown incrementally by registerFileLocked
+	// thereafter — never rebuilt. Guarded by mu: a locally-constructed
+	// *protoregistry.Files gates its only internal lock on r == GlobalFiles,
+	// so it has zero synchronization of its own once it starts growing. nil
+	// for every eager registry (D-03), which keeps GetFilesResolver's
+	// fresh-build-per-call behavior unchanged for them.
+	filesResolver *protoregistry.Files
+	// registrationCount is the D-05 observable: incremented once per
+	// successful RegisterFile call, i.e. once per distinct file recorded —
+	// never once per demand. Guarded by mu. Test-only (D-06): no log line,
+	// no CLI surface.
+	registrationCount int
+	// registrationErrors tallies RegisterFile failures (e.g. a duplicate
+	// registration that would otherwise only be logged via slog.Error),
+	// resolving research Open Question 1 as yes: a count-only assertion
+	// cannot see a FileRegistry/filesResolver divergence hiding behind a
+	// swallowed error, but a non-zero error tally can. Guarded by mu.
+	// Test-only (D-06).
+	registrationErrors int
 
 	// afterParseHook, when non-nil, runs inside ParseOne's singleflight
 	// closure after parser.ParseFiles returns and before d.mu is taken for
@@ -113,23 +141,56 @@ func (d *DescriptorRegistry) FileDescriptor(name string) (*desc.FileDescriptor, 
 	return fd, ok
 }
 
-func (d *DescriptorRegistry) GetFileDescriptorSet() *descriptorpb.FileDescriptorSet {
-	d.mu.RLock()
+// fileDescriptorSetLocked builds a FileDescriptorSet from every entry
+// currently in FileRegistry. Callers must already hold d.mu (read or write).
+func (d *DescriptorRegistry) fileDescriptorSetLocked() *descriptorpb.FileDescriptorSet {
 	fileDescriptors := []*desc.FileDescriptor{}
 	for _, fd := range d.FileRegistry {
 		fileDescriptors = append(fileDescriptors, fd)
 	}
-	d.mu.RUnlock()
 	return desc.ToFileDescriptorSet(fileDescriptors...)
 }
 
+func (d *DescriptorRegistry) GetFileDescriptorSet() *descriptorpb.FileDescriptorSet {
+	d.mu.RLock()
+	defer d.mu.RUnlock()
+	return d.fileDescriptorSetLocked()
+}
+
+// GetFilesResolver returns the registry's file-resolution view. For an eager
+// registry (ImportPaths empty, D-03) this builds a fresh *protoregistry.Files
+// from the current FileRegistry on every call — byte-identical to the
+// pre-Phase-12 behavior every non-compiler consumer already relies on. For a
+// lazy registry it builds that same way exactly once, caches the result on
+// d.filesResolver, and returns the SAME object on every later call: the
+// object grows in place via registerFileLocked instead of being rebuilt, so
+// any file recorded before the first call here is still present afterwards
+// because the one-time build reads the then-current FileRegistry. A nil
+// build result (protodesc.NewFiles failure) leaves growth disabled rather
+// than panicking — the registry falls back to eager-style fresh builds.
 func (d *DescriptorRegistry) GetFilesResolver() *protoregistry.Files {
-	fds := d.GetFileDescriptorSet()
+	d.mu.Lock()
+	defer d.mu.Unlock()
+	if len(d.ImportPaths) == 0 {
+		fds := d.fileDescriptorSetLocked()
+		files, err := protodesc.FileOptions{AllowUnresolvable: true}.NewFiles(fds)
+		if err != nil {
+			slog.Error("failed to generate files resolver", "error", err.Error())
+		}
+		return files
+	}
+	if d.filesResolver != nil {
+		return d.filesResolver
+	}
+	fds := d.fileDescriptorSetLocked()
 	files, err := protodesc.FileOptions{AllowUnresolvable: true}.NewFiles(fds)
 	if err != nil {
 		slog.Error("failed to generate files resolver", "error", err.Error())
 	}
-	return files
+	if files != nil {
+		d.filesResolver = files
+	}
+	return d.filesResolver
 }
 
 func (d *DescriptorRegistry) GetTypesResolver(regs ...*protoregistry.Files) *protoregistry.Types {
@@ -325,6 +386,25 @@ func (d *DescriptorRegistry) ParseOne(path string) (*desc.FileDescriptor, error)
 	return v.(*desc.FileDescriptor), nil
 }
 
+// registerFileLocked registers fd into the growable filesResolver, if one is
+// armed, and increments registrationCount on success. A no-op when
+// d.filesResolver is nil (no growable view armed yet, or an eager registry).
+// A RegisterFile error (e.g. a duplicate) is logged and tallied into
+// registrationErrors, matching this file's best-effort slog.Error idiom for
+// background bookkeeping (see GetFilesResolver) — it must never abort the
+// calling parse. Callers must hold d.mu for writing.
+func (d *DescriptorRegistry) registerFileLocked(fd *desc.FileDescriptor) {
+	if d.filesResolver == nil {
+		return
+	}
+	if err := d.filesResolver.RegisterFile(fd.UnwrapFile()); err != nil {
+		slog.Error("failed to register file in growable resolver", "file", fd.GetName(), "error", err.Error())
+		d.registrationErrors++
+		return
+	}
+	d.registrationCount++
+}
+
 // recordFileLocked records fd and its whole transitive dependency closure
 // into FileRegistry and lazyLoaded, skipping names already present, and
 // registers every newly recorded file's messages with MessageRegistry
@@ -337,6 +417,7 @@ func (d *DescriptorRegistry) recordFileLocked(fd *desc.FileDescriptor) {
 	d.FileRegistry[fd.GetName()] = fd
 	d.lazyLoaded[fd.GetName()] = struct{}{}
 	d.MessageRegistry.AddFile("type.googleapis.com", fd)
+	d.registerFileLocked(fd)
 	for _, dep := range fd.GetDependencies() {
 		d.recordFileLocked(dep)
 	}
@@ -370,6 +451,33 @@ func (d *DescriptorRegistry) ParseAll() error {
 	}
 	d.eagerFallback = true
 	return err
+}
+
+// FindFileByPath delegates to the growable filesResolver, returning
+// ErrNoGrowableResolver when none is armed (eager registry, D-03). The read
+// lock is mandatory: a locally-constructed *protoregistry.Files gates its
+// only internal lock on r == GlobalFiles and therefore has no
+// synchronization of its own, so this is the only safe way to read it
+// concurrently with registerFileLocked's writes.
+func (d *DescriptorRegistry) FindFileByPath(path string) (protoreflect.FileDescriptor, error) {
+	d.mu.RLock()
+	defer d.mu.RUnlock()
+	if d.filesResolver == nil {
+		return nil, ErrNoGrowableResolver
+	}
+	return d.filesResolver.FindFileByPath(path)
+}
+
+// RangeFiles delegates to the growable filesResolver, and is a no-op when
+// none is armed (eager registry, D-03). The read lock is mandatory for the
+// same reason as FindFileByPath.
+func (d *DescriptorRegistry) RangeFiles(fn func(protoreflect.FileDescriptor) bool) {
+	d.mu.RLock()
+	defer d.mu.RUnlock()
+	if d.filesResolver == nil {
+		return
+	}
+	d.filesResolver.RangeFiles(fn)
 }
 
 // LoadedFileCount reports how many proto files have been loaded on the lazy

@@ -120,7 +120,9 @@ func (p *Parser) ParseFilesX(filenames ...string) (results []*desc.FileDescripto
 			results = append(results, fd)
 			continue
 		}
-		resolvedFd, resolverErr := p.FilesResolver.FindFileByPath(filename)
+		// Locked read: once filesResolver grows, this is the only reader in
+		// the tree that can observe it mid-write (T-12-01).
+		resolvedFd, resolverErr := p.registry.FindFileByPath(filename)
 		if resolverErr != nil {
 			parsed, parseErr := p.registry.ParseOne(filename)
 			if parseErr != nil {
