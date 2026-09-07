@@ -5,17 +5,17 @@ milestone_name: Compiler Startup Performance (Planned)
 current_phase: 12
 current_phase_name: Growable Resolver Views & Race Safety
 status: executing
-stopped_at: Phase 12 context gathered
-last_updated: "2026-09-07T17:10:18.519Z"
-last_activity: 2026-09-07
-last_activity_desc: Phase 11 complete, transitioned to Phase 12
-state_head: 2a1470e08803b9731e48e18deee76acd8fdca5e7
+stopped_at: Completed 12-01-PLAN.md
+last_updated: "2026-09-07T17:50:15.901Z"
+last_activity: 2026-09-08
+last_activity_desc: Phase 12 execution started
+state_head: 7363a94695ce17a2354885fb575b4b1881d0d8fd
 progress:
   total_phases: 5
-  completed_phases: 1
+  completed_phases: 0
   total_plans: 8
-  completed_plans: 5
-  percent: 20
+  completed_plans: 6
+  percent: 0
 ---
 
 # Project State
@@ -25,16 +25,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-04)
 
 **Core value:** Every component must be testable, consistent, and free of runtime surprises
-**Current focus:** Phase 11 — Concurrency-Safe Lazy Registry Core
+**Current focus:** Phase 12 — Growable Resolver Views & Race Safety
 
 ## Current Position
 
-Phase: 12 (Growable Resolver Views & Race Safety) — READY TO EXECUTE
-Plan: Not started
+Phase: 12 (Growable Resolver Views & Race Safety) — EXECUTING
+Plan: 2 of 3
 Status: Ready to execute
-Last activity: 2026-09-07 — Phase 11 complete, transitioned to Phase 12
+Last activity: 2026-09-08 — Phase 12 execution started
 
-Progress: [██░░░░░░░░] 20%
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
@@ -89,6 +89,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 11-concurrency-safe-lazy-registry-core P03 | 42min | 2 tasks | 4 files |
 | Phase 11 P04 | 45min | 2 tasks | 4 files |
 | Phase 11 P05 | 50min | 2 tasks | 4 files |
+| Phase 12 P01 | 35 min | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -164,6 +165,7 @@ Recent decisions affecting current work:
 - [Phase 11]: LoadFromLockFile is the single chokepoint fix location for the nil-map invariant; no per-caller nil-checks added
 - [Phase 11]: G-11-7 recorded as pre-existing (reproduces on b69e3b2), not attributed to Phase 11's own LAZY-04/CONS-01 work; closed under Phase 11 by explicit user decision, matching G-11-3's treatment in 11-04
 - [Phase 11]: mod sync's empty-descriptor-set guard is keyed on utils.DescriptorRegistry.LocalFileCount() == 0, never on GetterUrl == "" -- a fully downloaded dependency with a bad sourcePath corrupts the lock identically to an unsynced one, so a GetterUrl check would leave that shape broken
+- [Phase 12]: Growable FilesResolver hangs off the existing d.mu — no second lock; growth is the single registerFileLocked insert point called from both recordFileLocked and ParseAll's diff loop — Keeps FileRegistry and filesResolver from ever diverging and avoids a lock-ordering hazard in recordFileLocked
 
 ### Pending Todos
 
@@ -196,6 +198,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-07T16:27:41.380Z
-Stopped at: Phase 12 context gathered
-Resume file: .planning/phases/12-growable-resolver-views-race-safety/12-CONTEXT.md
+Last session: 2026-09-07T17:50:15.884Z
+Stopped at: Completed 12-01-PLAN.md
+Resume file: None

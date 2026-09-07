@@ -18,8 +18,8 @@ Milestone v1.0 (Quality & Consistency Overhaul) shipped complete — its 44 requ
 
 ### Resolver Views
 
-- [ ] **RSLV-01**: `FilesResolver` and `LocalResolver` reflect files parsed after their construction, rather than a snapshot taken at construction time
-- [ ] **RSLV-02**: A newly parsed file is registered into the resolvers incrementally, without rebuilding the full `FileDescriptorSet`
+- [x] **RSLV-01**: `FilesResolver` and `LocalResolver` reflect files parsed after their construction, rather than a snapshot taken at construction time
+- [x] **RSLV-02**: A newly parsed file is registered into the resolvers incrementally, without rebuilding the full `FileDescriptorSet`
 - [ ] **RSLV-03**: Compiling a config that `load()`s a proto, then a second proto, then re-reads the first, resolves all three correctly
 
 ### Type-URL Resolution
@@ -123,8 +123,8 @@ Acknowledged, deferred beyond this milestone.
 | LAZY-04 | Phase 11 | Complete |
 | LAZY-05 | Phase 11 | Complete |
 | CONS-01 | Phase 11 | Complete |
-| RSLV-01 | Phase 12 | Pending |
-| RSLV-02 | Phase 12 | Pending |
+| RSLV-01 | Phase 12 | Complete |
+| RSLV-02 | Phase 12 | Complete |
 | RSLV-03 | Phase 12 | Pending |
 | SAFE-01 | Phase 12 | Pending |
 | TYPE-01 | Phase 13 | Pending |
