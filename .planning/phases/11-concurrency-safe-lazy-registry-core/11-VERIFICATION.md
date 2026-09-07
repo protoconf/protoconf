@@ -182,3 +182,31 @@ None. All five roadmap success criteria, all six requirement IDs, and both UAT-d
 
 _Verified: 2026-09-07T21:50:00Z_
 _Verifier: Claude (gsd-verifier)_
+
+---
+
+## Post-Verification Digest Refresh (orchestrator, 2026-09-07)
+
+`covered_digest` was recomputed via `gsd_run query verification.fingerprint` (never hand-written)
+over the identical 25-file `covered_files` list, after this report's verdict was reached.
+
+**What changed after the verifier ran, and why the verdict is unaffected:**
+
+`git diff --name-only <verifier commit 330fdc0>..HEAD` returns exactly one path:
+`.planning/phases/11-concurrency-safe-lazy-registry-core/11-UAT.md`. No source file, PLAN, SUMMARY,
+REQUIREMENTS or REVIEW entry moved.
+
+The single edit was UAT test 7's `result:` field, `issue` -> `pass`, on the user's explicit
+decision (AskUserQuestion, "Re-test as passed"). This report's own body already assessed that
+field and found the `issue` value defensible as historical record; the user chose to re-test it
+instead, on the grounds that prohibition 6 -- the only one of the seven that failed -- has its
+falsifying condition fixed by 11-05 and now covered at the CLI level by
+`TestModSyncNeverPersistsEmptyDescriptorSet`, re-run live at 3/3 PASS including
+`good_path_control`. The original finding is preserved verbatim in the test's `reported:` field
+and in the full `G-11-7` gap entry; a `retested:` field records the basis for the change.
+
+The refresh exists because `11-UAT.md` is itself a covered file, so any UAT write after
+verification marks the report stale -- and UAT necessarily completes after verification in this
+workflow. Recomputing the digest records that the verdict covers the current contents. It is NOT
+a re-verification: no truth was re-derived here, and none needed to be, because no verified
+artifact other than that one UAT result field changed.
