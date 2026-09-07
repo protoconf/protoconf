@@ -1,8 +1,8 @@
 ---
 phase: 11-concurrency-safe-lazy-registry-core
-verified: 2026-09-07T21:15:00Z
-status: human_needed
-score: 25/25 must-have truths verified (5 roadmap success criteria + 6 requirement IDs + 14 gap-closure plan truths across 11-04/11-05), plus 6 pre-existing backstop/decision items closed via 11-UAT.md human sign-off
+verified: 2026-09-07T21:50:00Z
+status: passed
+score: 25/25 must-have truths verified (5 roadmap success criteria + 6 requirement IDs + 14 gap-closure plan truths across 11-04/11-05), plus 7 pre-existing backstop/decision items closed via 11-UAT.md human sign-off (8 tests total, 7 pass, 1 issue whose gap is resolved)
 behavior_unverified: 0
 overrides_applied: 0
 covered_files:
@@ -18,6 +18,7 @@ covered_files:
   - .planning/phases/11-concurrency-safe-lazy-registry-core/11-05-PLAN.md
   - .planning/phases/11-concurrency-safe-lazy-registry-core/11-05-SUMMARY.md
   - .planning/phases/11-concurrency-safe-lazy-registry-core/11-REVIEW.md
+  - .planning/phases/11-concurrency-safe-lazy-registry-core/11-SECURITY.md
   - .planning/phases/11-concurrency-safe-lazy-registry-core/11-UAT.md
   - compiler/lib/compiler.go
   - compiler/lib/config.go
@@ -30,104 +31,129 @@ covered_files:
   - mod/command_test.go
   - server/server.go
   - utils/utils.go
-covered_digest: "v1:sha256:1a1921fd5db575fa17e8ef665e83a67d85bc350b90422806d6418166e7d7900d"
+covered_digest: "v1:sha256:4462c35550480a9d9bafce7f2be8194c05ce2c188c074ce606dcc249cf8fc1e8"
 re_verification:
   previous_status: human_needed
-  previous_score: 18/18 must-have truths (plus 5 roadmap success criteria)
-  gaps_closed:
-    - "G-11-3 (protoconf.lock nil-map panic on mod init / mod tidy) — closed by 11-04, re-run live: TestModInitLockFileShapes 8/8 subtests PASS"
-    - "G-11-7 (mod sync silently persists a zero-byte .fds / empty checksum over protoconf.lock) — closed by 11-05, re-run live: TestModSyncNeverPersistsEmptyDescriptorSet 3/3 subtests PASS"
-    - "WR-02 (2026-09-04 code review, ParseOne non-canonical pointer race with ParseAll) — FIXED commit 0713f86, confirmed present in code (afterParseHook seam, canonical FileRegistry lookup)"
-    - "WR-04 (2026-09-04 code review, ModuleService.cachedRegistry unsynchronized check-then-act) — FIXED commit 84efad0, confirmed present in code (double-checked locking under m.mutex)"
-    - "Backstop truth B2 (11-02, Init's service set order-independence) — now has executed evidence: server/init_order_test.go TestInitServiceSetIsOrderIndependent, re-run live, PASS"
-    - "Backstop truth B3 (11-03, mod sync immune to concurrent in-process lazy compile) — now has executed evidence: compiler/lib/mod_sync_fds_test.go TestModSyncFdsUnaffectedByConcurrentLazyCompile, re-run live under -race, PASS"
+  previous_score: 25/25 must-have truths (5 roadmap success criteria + 6 requirement IDs + 14 gap-closure plan truths), 1 open human_verification item (WR-02)
+  gaps_closed: []
   gaps_remaining: []
   regressions: []
-human_verification:
-  - test: "WR-02 (11-REVIEW.md, new finding, 2026-09-07T21:10): LocalFileCount()'s d.mu.RLock() does not synchronize with localFiles's only production writer (Parse, which writes with no lock at all)"
-    expected: "A decision on whether to extend mu's documented scope to genuinely cover localFiles (lock Parse's writes too), or drop LocalFileCount's RLock/RUnlock and document plainly that it is unsafe to call concurrently with Import/Parse on the same registry — so the code's safety claim matches what callers can actually rely on"
-    why_human: "Confirmed by reading utils/utils.go: LocalFileCount() (utils/utils.go:390-394, added by 11-05 to back the G-11-7 guard) takes d.mu.RLock(), but Parse() (utils/utils.go:210-222), the sole production writer of localFiles, writes it with zero locking. Not a live bug today — GenFileDescriptorSet calls Import/Parse to completion before calling LocalFileCount() synchronously on the same goroutine, and Sync()'s dependency walk is single-threaded — so -race cannot catch it until a future change (e.g. parallelizing Sync()'s walk, a plausible follow-up given this phase's own concurrency-hardening work) actually drives the interleaving. This is the same 'latent, not yet live' class of issue WR-04 was before it became a real bug and was fixed in this same phase (84efad0). No must-have truth in any of the 5 plans covers LocalFileCount's lock discipline, and this finding postdates 11-UAT.md (UAT completed 2026-09-07T19:40Z; this review finding is timestamped 2026-09-07T21:10Z), so it has not yet had a human verification pass."
+human_verification_closed:
+  - "WR-02 (LocalFileCount()'s d.mu.RLock() did not synchronize with localFiles's only production writer, Parse) — human decision recorded in 11-UAT.md test 8 (2026-09-07): drop the RLock, document the constraint. Implemented in commit 3005e5a, confirmed live in this session against utils/utils.go: LocalFileCount() no longer takes d.mu.RLock(), carries a doc comment stating it is unsafe to call concurrently with Import/Parse, and a ponytail: marker naming the real upgrade path (a registry per dependency, not a lock on Parse's writes)."
 ---
 
 # Phase 11: Concurrency-Safe Lazy Registry Core Verification Report
 
 **Phase Goal:** A compile no longer pays for the whole repository's proto tree, and the mutation server's service catalog doesn't silently go dark under that change.
-**Verified:** 2026-09-07T21:15:00Z
-**Status:** human_needed
-**Re-verification:** Yes — after gap closure (11-04 closed G-11-3, 11-05 closed G-11-7; both independently re-run live in this session, not accepted from SUMMARY.md claims)
+**Verified:** 2026-09-07T21:50:00Z
+**Status:** passed
+**Re-verification:** Yes — the prior VERIFICATION.md (2026-09-07T21:15Z, `status: human_needed`) is stale. Two files changed since it was written: `utils/utils.go` (commit `3005e5a`, the fix for its own single open `human_verification` item, WR-02) and `11-UAT.md` (commits `dc2973a`, `4bd43aa`, recording that item's resolution). Nothing else in the previously-covered file set moved (confirmed via `git log --oneline` and `git status`). `11-SECURITY.md` is new since the prior report and is added to `covered_files` here.
+
+## What Was Re-Run Live vs. Carried Forward
+
+**Re-run live in this session** (the only thing that changed since the prior verification):
+- Read `utils/utils.go`'s current `LocalFileCount()` and `Parse()` directly — confirmed the RLock was dropped, the doc comment and `ponytail:` marker are present, matching the UAT-recorded decision exactly (see Human Verification Item Closed, below).
+- Confirmed via `git show 3005e5a -- utils/utils.go` that the diff is exactly the RLock removal plus documentation — no other behavioral change.
+- Confirmed `GenFileDescriptorSet` (`compiler/lib/module_service.go:378`) still calls `registry.LocalFileCount()` synchronously on the same goroutine that just ran `registry.Import(registry.Parse, ...)` a few lines above, and that `m.Walk` → `walk()` is a single-threaded recursive call (no goroutines) — so the G-11-7 guard's only production call site is unaffected by dropping the RLock.
+- `go test -race -count=1 ./utils/... ./compiler/... ./mod/... ./server/...` — full targeted suite across every phase-touched package, live: all packages `ok`, no `FAIL`, no `WARNING: DATA RACE`.
+- `go test ./mod/... -run TestModSyncNeverPersistsEmptyDescriptorSet -v -count=1` — 3/3 PASS (G-11-7 regression).
+- `go test ./mod/... -run TestModInitLockFileShapes -v` — 8/8 PASS (G-11-3 regression).
+- `go test ./compiler/lib/... -run TestGeneratedCorpusCompiles -v` — PASS, `protoFilesLoaded=5` against a 50-proto corpus (SC1).
+- `go run ./cmd/protoconf compile utils/testdata/small test.pconf` — live CLI, `compile finished file=test.pconf protoFilesLoaded=1 eagerFallback=false` (SC4).
+- `go test ./server/... -run 'TestInitRegistersCustomService|TestInitWithNoCustomServices|TestInitServiceSetIsOrderIndependent' -v -race` — 3/3 PASS (SC5/CONS-01).
+- `go vet ./utils/... ./compiler/... ./mod/... ./server/...` — clean.
+- Recomputed `covered_digest` via `verification.fingerprint` over the updated file set (added `11-SECURITY.md`).
+
+**Carried forward, not re-derived** (unchanged files, already independently re-run live in the prior verification pass on 2026-09-07T21:15Z, and now additionally re-confirmed passing as part of the full-suite `-race` run above): SC2 (`TestParseMemoization`), SC3's byte-identity half (`TestModSyncFdsByteIdentical`), the requirement-ID mapping, the anti-pattern scan of the 17 phase-touched non-test files, and the WR-01/WR-04/backstop-truth (B1/B2/B3) dispositions. Safe to carry forward because: (a) `compiler/lib/compiler.go`, `config.go`, `parser/parser.go`, `starlark_loader.go`, `server/server.go`, `mod/command.go` are byte-identical to the prior verification's digest (confirmed via `git log` showing zero commits touching them since), and (b) the full-suite `-race` re-run just executed exercises every test file in that set and came back green, which would have caught a regression even without re-deriving each claim from scratch.
 
 ## Goal Achievement
 
 ### Roadmap Success Criteria (the binding contract)
 
-All five re-run live in this session against the current working tree (not accepted from any prior VERIFICATION.md or SUMMARY.md claim).
-
 | # | Criterion | Status | Evidence |
 |---|-----------|--------|----------|
-| 1 | Compiling a config no longer incurs a delay proportional to total repo proto count | ✓ VERIFIED | `go test ./compiler/lib/... -run TestGeneratedCorpusCompiles -v` re-run live: `compile finished file=main.mpconf protoFilesLoaded=5` against a 50-proto-on-disk corpus |
-| 2 | Requesting the same proto file twice costs one parse — the second is a map lookup | ✓ VERIFIED | `go test ./compiler/lib/parser/... -run TestParseMemoization -v -race` re-run live: PASS |
-| 3 | `protoconf mod sync` still writes a `.fds` cache file identical in content to before this change | ✓ VERIFIED | `go test ./compiler/lib/... -run 'TestModSyncFdsByteIdentical\|TestModSyncFdsUnaffectedByConcurrentLazyCompile' -v -race` re-run live: both PASS. Second test (11-04's gap closure) additionally proves byte-identity holds under a concurrent in-process lazy compile |
-| 4 | An operator can see, from compiler output, how many proto files a compile loaded | ✓ VERIFIED | Live CLI: `go run ./cmd/protoconf compile utils/testdata/small test.pconf` → `INFO compile finished file=test.pconf protoFilesLoaded=1 eagerFallback=false` |
-| 5 | A custom gRPC mutation service defined under `src/` is registered and reachable at server startup, before any config has been compiled | ✓ VERIFIED | `go test ./server/... -run 'TestInitRegistersCustomService\|TestInitWithNoCustomServices\|TestInitServiceSetIsOrderIndependent' -v -race` re-run live: all PASS |
+| 1 | Compiling a config no longer incurs a delay proportional to total repo proto count | ✓ VERIFIED | Re-run live: `protoFilesLoaded=5` against a 50-proto-on-disk corpus |
+| 2 | Requesting the same proto file twice costs one parse — the second is a map lookup | ✓ VERIFIED | Carried forward (unchanged file); re-confirmed green in this session's full `-race` run of `./compiler/lib/parser/...` |
+| 3 | `protoconf mod sync` still writes a `.fds` cache file identical in content to before this change | ✓ VERIFIED | `TestModSyncFdsByteIdentical` carried forward (unchanged file, re-confirmed green in the full-suite run); `TestModSyncNeverPersistsEmptyDescriptorSet` re-run live: 3/3 PASS |
+| 4 | An operator can see, from compiler output, how many proto files a compile loaded | ✓ VERIFIED | Live CLI re-run: `compile finished file=test.pconf protoFilesLoaded=1 eagerFallback=false` |
+| 5 | A custom gRPC mutation service defined under `src/` is registered and reachable at server startup, before any config has been compiled | ✓ VERIFIED | Re-run live: `TestInitRegistersCustomService`/`TestInitWithNoCustomServices`/`TestInitServiceSetIsOrderIndependent`, all PASS under `-race` |
 
 ### Requirements Coverage
 
 | Requirement | Source Plan | Description | Status | Evidence |
 |-------------|------------|-------------|--------|----------|
 | LAZY-01 | 11-01 | `GetProtoRegistry()` stops bulk-parsing `src/` | ✓ SATISFIED | Roadmap SC1, above |
-| LAZY-02 | 11-01, 11-03 | On-demand parse, memoised, concurrency-safe | ✓ SATISFIED | Roadmap SC2, above; `TestConcurrentCompile` (11-03) confirmed present and green under `-race` in the full-suite run below |
-| LAZY-03 | 11-01 | On-demand parsing never mutates `localFiles` | ✓ SATISFIED | `TestLazyParseDoesNotMutateLocalFiles` confirmed present in `compiler/lib`; green in the full-suite run below |
-| LAZY-04 | 11-03, 11-04, 11-05 | `mod sync` still writes an identical `.fds`, survives a concurrent lazy compile, and never persists an empty descriptor set | ✓ SATISFIED | Roadmap SC3, above; `TestModInitLockFileShapes` (8/8) and `TestModSyncNeverPersistsEmptyDescriptorSet` (3/3) re-run live, all PASS |
+| LAZY-02 | 11-01, 11-03 | On-demand parse, memoised, concurrency-safe | ✓ SATISFIED | Roadmap SC2, above |
+| LAZY-03 | 11-01 | On-demand parsing never mutates `localFiles` | ✓ SATISFIED | `TestLazyParseDoesNotMutateLocalFiles` present and green in the full-suite run |
+| LAZY-04 | 11-03, 11-04, 11-05 | `mod sync` still writes an identical `.fds`, survives a concurrent lazy compile, never persists an empty descriptor set | ✓ SATISFIED | Roadmap SC3, above; `TestModInitLockFileShapes` (8/8) and `TestModSyncNeverPersistsEmptyDescriptorSet` (3/3) re-run live |
 | LAZY-05 | 11-01 | Operator-visible loaded-proto count | ✓ SATISFIED | Roadmap SC4, above |
 | CONS-01 | 11-02 | Custom gRPC service catalog survives the lazy switch | ✓ SATISFIED | Roadmap SC5, above |
 
-`.planning/REQUIREMENTS.md`'s Traceability table lists exactly these 6 IDs against "Phase 11 / Complete" (lines 120-125), matching the union of `requirements:` fields declared across all five plans. No orphaned requirements.
+`.planning/REQUIREMENTS.md`'s Traceability table lists exactly these 6 IDs against "Phase 11 / Complete" (lines 120-125), matching the union of `requirements:` fields declared across all five plans (re-confirmed by grep in this session). No orphaned requirements.
 
-### Gap Closure Verification (G-11-3, G-11-7 — re-run live, not accepted from SUMMARY.md)
+### Human Verification Item — Now Closed
 
-Both gaps were found by `11-UAT.md` (human-in-the-loop UAT, 2026-09-04–2026-09-07), explicitly recorded as pre-existing defects on `b69e3b2` (before Phase 11 began) that the user directed be closed under this phase.
+The prior verification's sole `human_needed` blocker was WR-02 from `11-REVIEW.md`: `LocalFileCount()` (`utils/utils.go`, added by 11-05 to back the G-11-7 empty-descriptor-set guard) took `d.mu.RLock()`, but `Parse()` — the only production writer of `localFiles` — wrote it with no lock at all, so the RLock advertised a synchronization guarantee that did not exist.
 
-| Gap | Plan | Truth | Status | Evidence |
-|-----|------|-------|--------|----------|
-| G-11-3 | 11-04 | `mod init`/`mod tidy` survive every `protoconf.lock` shape (missing `deps` key, empty object, absent file, corrupt/truncated/unknown-key file) without a nil-map panic, and never regenerate a lock file that failed to parse | ✓ VERIFIED | `go test ./mod/... -run TestModInitLockFileShapes -v` re-run live: 8/8 subtests PASS (`no_deps_key`, `empty_object`, `explicit_empty_deps`, `absent`, `zero_byte`, `truncated_json`, `unknown_key`, `merges_existing_entry`) |
-| G-11-3 (backstop) | 11-04 | `mod sync`'s serialized `.fds` bytes are unmoved by a concurrent in-process lazy compile | ✓ VERIFIED | `go test ./compiler/lib/... -run TestModSyncFdsUnaffectedByConcurrentLazyCompile -v -race` re-run live: PASS |
-| G-11-7 | 11-05 | `mod sync` over an unsynced dependency (no `getterUrl`) fails non-zero, writes no `.fds`, leaves the recorded `fileDescriptorSetSum` intact | ✓ VERIFIED | `go test ./mod/... -run TestModSyncNeverPersistsEmptyDescriptorSet -v -count=1` re-run live: `unsynced_dep_no_getter_url` PASS |
-| G-11-7 | 11-05 | The same guard catches a downloaded dependency with a bad `sourcePath` (not keyed on `getterUrl`), and a failed dependency's error survives `walk()`'s accumulation | ✓ VERIFIED | Same run: `downloaded_dep_bad_source_path` PASS; live-read `walk()` in `compiler/lib/module_service.go` confirms `err = errors.Join(err, walk(deps[i], walkFn))` (accumulates, does not replace) |
-| G-11-7 | 11-05 | Good path unchanged — `mod init` + `mod sync` over the fixture restores the committed checksums | ✓ VERIFIED | Same run: `good_path_control` PASS |
+**Decision recorded (`11-UAT.md` test 8, 2026-09-07):** Drop `LocalFileCount()`'s `RLock`/`RUnlock` and document the constraint, rather than extend `d.mu` to cover `Parse`'s writes.
 
-Both gaps' root causes were independently confirmed in the current code, not merely by test presence: `LoadFromLockFile` (`compiler/lib/module_service.go`) re-initializes `m.head.Deps` on every return path; `Init` self-loads the lock file first; `GenFileDescriptorSet` guards on `registry.LocalFileCount() == 0` before any `Store` call (`compiler/lib/module_service.go`); `utils.DescriptorRegistry.LocalFileCount()` exists in `utils/utils.go` as documented.
+**Verified live against the current code** (`utils/utils.go`):
+
+```go
+func (d *DescriptorRegistry) LocalFileCount() int {
+	return len(d.localFiles)
+}
+```
+
+with the doc comment immediately above stating plainly: *"NOT safe to call concurrently with Import/Parse on the same registry... Every caller today runs on the goroutine that just finished Import/Parse, which is what makes the read correct,"* followed by a `ponytail:` marker naming the real ceiling and upgrade path: *"safe only because Sync's walk is serial and Parse resets localFiles per dependency. Parallelising that walk needs a registry per dependency, not a lock here — a lock would silence the race detector while leaving the reset to clobber a sibling's entries, which would make the G-11-7 guard read 0 for a dependency that parsed fine."*
+
+**This does not weaken the G-11-7 guard.** Confirmed live: `GenFileDescriptorSet` (`compiler/lib/module_service.go:378`) calls `registry.LocalFileCount()` synchronously, on the same goroutine, immediately after `registry.Import(registry.Parse, ...)` returns (lines 361-378) — and `ModuleService.Walk` → the package-level `walk()` function recurses with no goroutines, so `GenFileDescriptorSet` is never invoked concurrently with itself on the same registry in the production call graph today. The RLock being dropped removes a false safety claim, not real protection — there was never a second lock-holder to race against on this path.
+
+**Sanity-check of the rejected alternative (lock `Parse`'s writes instead):** Agrees with the recorded reasoning. `Sync()` (`compiler/lib/module_service.go:490-497`) builds exactly ONE `*utils.DescriptorRegistry` outside its walk and passes the same pointer into every `GenFileDescriptorSet` call across all dependencies; `Parse()` unconditionally resets `d.localFiles = map[string]struct{}{}` on entry (line 211). If `Sync`'s walk were ever parallelized without also giving each dependency its own registry, wrapping `Parse`'s writes in `d.mu.Lock()` would make `-race` go quiet while a second dependency's `Parse` call reset and repopulated `localFiles` mid-flight of a sibling's `LocalFileCount()` read — silently making the G-11-7 guard observe 0 for a dependency that actually parsed fine, which is a correctness regression, not just a data race. A lock only serializes access to the *field*; it does nothing to protect the *per-dependency semantics* `LocalFileCount()` depends on, since every dependency shares one `localFiles` map that resets on every `Parse` call. The documented ceiling (registry-per-dependency as the real fix, not a lock) is the correct framing.
+
+**Verdict:** WR-02 is resolved as described. No remaining human verification items.
+
+### UAT Bookkeeping Note (non-blocking)
+
+`11-UAT.md` test 7's `result:` field still reads `issue` even though the gap it produced (G-11-7) is separately marked `status: resolved`, `resolved_by: 11-05-PLAN.md` in the `## Gaps` section. This is an accurate historical record, not a stale/incorrect field: test 7, as actually run on 2026-09-07, did find prohibition 6 violated — the `result: issue` field documents what that specific test run observed, while the `## Gaps` section separately tracks the resulting gap's resolution lifecycle. The two fields serve different purposes (point-in-time test outcome vs. gap disposition) and are not in conflict. No correction needed.
+
+### Out-of-Scope Defect Noted, Not Fixed (non-blocking)
+
+`walk()` (`compiler/lib/module_service.go:541-554`) sorts `keys` (the map keys of `head.GetDeps()`) but then indexes the *unsorted* `deps` slice (built in the same map-iteration pass, before the sort) with the sorted index — so `sort.Strings(keys)` has no effect on which `RemoteRepo` is visited at each position; the walk order remains as nondeterministic as Go map iteration. Confirmed live by reading the code:
+
+```go
+keys := []string{}
+deps := []*module.RemoteRepo{}
+for k, dep := range head.GetDeps() {
+	keys = append(keys, k)
+	deps = append(deps, dep)
+}
+sort.Strings(keys)          // sorts keys...
+for i := range keys {
+	err = errors.Join(err, walk(deps[i], walkFn))  // ...but indexes deps, which was never reordered
+}
+```
+
+**Does not affect any must-have truth.** T-11-23's error accumulation (`errors.Join`) is order-independent by construction — confirmed by reading the accumulation itself, which only joins errors regardless of sequence. It is the documented root cause of the "order-dependent red signal" noted in `11-05-SUMMARY.md`'s mutation-testing notes, and `11-SECURITY.md` records it as "Observation, out of scope, not a threat." Recorded here as an Info-level anti-pattern finding so it isn't lost; a real bug (the sort is dead code), but it fails no roadmap success criterion, no LAZY-01..05/CONS-01 requirement, and no plan-declared must-have — it affects visit *order* determinism, not correctness of any asserted outcome. Not a blocker.
 
 ### Code Review Findings Weighed (11-REVIEW.md: 0 critical, 2 warning, 3 info — advisory, does not gate)
 
-Independently re-read against the current code in this session, per instruction, not taken on faith:
-
-- **WR-01** (carried forward from the original 2026-09-04 review, still open): `ParseAll` holds `d.mu` across its entire whole-tree parse — confirmed still present at `utils/utils.go:352-373` (`d.mu.Lock(); defer d.mu.Unlock()` wraps the full `d.Import` call). Not deadlock-prone (backstopped by `utils/parse_all_deadlock_test.go`, re-run live: PASS). This was already explicitly decided by the human in `11-UAT.md` test 5 ("decision: DEFERRED as accepted, documented risk — lock duration is a performance property, not a correctness one, and fails no must-have truth"). **Treated as resolved**, not re-opened here.
-- **WR-02** (new, 2026-09-07T21:10, postdates `11-UAT.md`'s 2026-09-07T19:40 completion): `LocalFileCount()`'s `d.mu.RLock()` does not synchronize with `localFiles`'s only production writer (`Parse`, unlocked). Confirmed present by direct reading of `utils/utils.go:390-394` and `utils/utils.go:210-222`. Not a live bug today (single-goroutine call graph), but genuinely unresolved and never seen by a human verification pass — this is the one item routed to `human_verification` below, which is why overall status is `human_needed` rather than `passed`.
-- **IN-01, IN-02, IN-03** (info, no fix required): `modTidyCommand.Run`'s redundant `LoadFromLockFile` call, a stale doc comment on the lazy-registry branch, and a duplicate `src/` parse on mutation-server startup that defends against a scenario the current architecture cannot yet reach. None affect correctness or any must-have truth; recorded for completeness, not gating.
-
-### Backstop Truths — Now Closed (was `human_needed` in the previous verification)
-
-| # | Truth | Prior status | Current status | Evidence |
-|---|-------|--------------|-----------------|----------|
-| B1 | `NewCompiler`/`NewLazyModuleService` succeed against `src/` with zero or one `.proto` file (11-01) | ⚠️ insufficient_spec (human_needed) | Resolved via `11-UAT.md` test 1 human sign-off (`result: pass`) | Still no dedicated automated fixture (`utils/testdata/corpus.go`'s `GenerateCorpus` still refuses `n<5`, confirmed unchanged); a human explicitly reviewed and passed this in UAT. Not re-opened. |
-| B2 | `Init`'s registered service set is order-independent across `RangeFiles` iteration orders (11-02) | ⚠️ insufficient_spec (human_needed) | ✓ VERIFIED (upgraded to executed evidence) | `server/init_order_test.go` `TestInitServiceSetIsOrderIndependent`, re-run live: 20 repeated `Init` runs, both orderings observed, service SET equality asserted — PASS |
-| B3 | `mod sync` immune to a concurrent in-process lazy compile (11-03) | ⚠️ insufficient_spec (human_needed) | ✓ VERIFIED (upgraded to executed evidence) | `TestModSyncFdsUnaffectedByConcurrentLazyCompile` (11-04), re-run live under `-race`: PASS |
-| WR-01 (2026-09-04) | `ParseAll` lock-duration inconsistency — decision needed | human_needed | Resolved — human decision recorded in `11-UAT.md` test 5 (accept as documented risk) | See above |
-| WR-02 (2026-09-04, ParseOne/ParseAll pointer race) | Decision needed | human_needed | ✓ VERIFIED (FIXED) | Commit 0713f86, confirmed in code: `afterParseHook` seam, canonical `FileRegistry` lookup with `!ok` fallback |
-| WR-04 (2026-09-04, `cachedRegistry` unsynchronized) | Decision needed | human_needed | ✓ VERIFIED (FIXED) | Commit 84efad0, confirmed in code: double-checked locking under `m.mutex` in `GetProtoRegistry` |
-| 7 plan-declared `verification: manual` prohibitions (11-01/02/03) | Deferred to human | human_needed | Resolved via `11-UAT.md` test 7 (6/7 held; prohibition 6 violated, tracked as G-11-7, now closed above) | Per-prohibition disposition recorded in `11-UAT.md` |
+- **WR-01** (`ParseAll` holds `d.mu` across its whole-tree parse): confirmed still present at `utils/utils.go:352-354`. Explicitly accepted as documented risk, decision recorded in `11-UAT.md` test 5 ("lock duration is a performance property, not a correctness one, and fails no must-have truth"). Resolved, not re-opened.
+- **WR-02**: resolved — see above.
+- **IN-01, IN-02, IN-03** (info, no fix required): `modTidyCommand.Run`'s redundant `LoadFromLockFile` call, a stale doc comment, and a duplicate `src/` parse on mutation-server startup defending against a scenario the current architecture cannot yet reach. None affect correctness or any must-have truth.
 
 ### Required Artifacts
 
 | Artifact | Expected | Status | Details |
 |----------|----------|--------|---------|
-| `utils/utils.go` | `ParseOne`/`ParseAll`/`LoadedFileCount`/`LocalFileCount`/`FellBackToEager` | ✓ VERIFIED | All present; `LocalFileCount` (new in 11-05) confirmed at lines 390-394 |
-| `compiler/lib/module_service.go` | `NewLazyModuleService`, `GetProtoRegistry` double-checked lock, `GenFileDescriptorSet` empty-set guard, `walk()` accumulator, `LoadFromLockFile`/`Init`/`MergeLock` invariant fixes | ✓ VERIFIED | All confirmed present by direct reading |
+| `utils/utils.go` | `ParseOne`/`ParseAll`/`LoadedFileCount`/`LocalFileCount`/`FellBackToEager` | ✓ VERIFIED | All present; `LocalFileCount` confirmed updated (RLock dropped, doc comment + `ponytail:` marker added, commit `3005e5a`) |
+| `compiler/lib/module_service.go` | `NewLazyModuleService`, `GetProtoRegistry` double-checked lock, `GenFileDescriptorSet` empty-set guard, `walk()` accumulator, `LoadFromLockFile`/`Init`/`MergeLock` invariant fixes | ✓ VERIFIED | All confirmed present by direct reading; unchanged since prior verification |
 | `mod/command.go`, `mod/command_test.go` | `modInitCommand`/`modTidyCommand`/`modSyncCommand`, `TestModInitLockFileShapes`, `TestModSyncNeverPersistsEmptyDescriptorSet` | ✓ VERIFIED | Confirmed present and green (re-run live) |
-| `server/server.go` | `Init`'s throwaway discovery registry, unregistrable-service warning | ✓ VERIFIED | Confirmed at `server/server.go:325-360`; reflection registrations still read `s.parser.FilesResolver`/`LocalResolver` (D-02 boundary held) |
-| `compiler/lib/mod_sync_fds_test.go` | `TestModSyncFdsByteIdentical`, `TestModSyncFdsUnaffectedByConcurrentLazyCompile` | ✓ VERIFIED | Both present and green (re-run live under `-race`) |
+| `server/server.go` | `Init`'s throwaway discovery registry, unregistrable-service warning | ✓ VERIFIED | Confirmed at `server/server.go:325-360`; unchanged since prior verification |
+| `compiler/lib/mod_sync_fds_test.go` | `TestModSyncFdsByteIdentical`, `TestModSyncFdsUnaffectedByConcurrentLazyCompile` | ✓ VERIFIED | Both present and green (confirmed in the full-suite `-race` re-run) |
+| `.planning/phases/.../11-SECURITY.md` | Threat register for the phase | ✓ VERIFIED | Present, `threats_open: 0`, 28 threats all closed (16 mitigated, 12 accepted), sign-off complete |
 
-### Behavioral Spot-Checks (live, run in this session)
+### Behavioral Spot-Checks (live, re-run in this session)
 
 | Behavior | Command | Result | Status |
 |----------|---------|--------|--------|
@@ -136,30 +162,23 @@ Independently re-read against the current code in this session, per instruction,
 | G-11-3 regression suite | `go test ./mod/... -run TestModInitLockFileShapes -v` | 8/8 PASS | ✓ PASS |
 | G-11-7 regression suite | `go test ./mod/... -run TestModSyncNeverPersistsEmptyDescriptorSet -v -count=1` | 3/3 PASS | ✓ PASS |
 | CONS-01 regression suite | `go test ./server/... -run 'TestInitRegistersCustomService\|TestInitWithNoCustomServices\|TestInitServiceSetIsOrderIndependent' -v -race` | 3/3 PASS | ✓ PASS |
-| `go vet ./...` clean of copylocks | `go vet ./...` | Only pre-existing, unrelated findings in `test/e2e_test.go`, `agent/agent_test.go`, `agent/legacy.go` (context-leak / unreachable-code lints, none in phase-touched files) | ✓ PASS |
-| Full non-agent suite under `-race` | `go test -race -count=1 $(go list ./... \| grep -v '/agent$')` | All 24 packages `ok`, no `FAIL`, no `WARNING: DATA RACE` | ✓ PASS |
+| WR-02 fix live in code | Direct read of `utils/utils.go` | RLock dropped, doc comment + `ponytail:` marker present | ✓ PASS |
+| `go vet` clean | `go vet ./utils/... ./compiler/... ./mod/... ./server/...` | No output | ✓ PASS |
+| Full targeted suite under `-race` | `go test -race -count=1 ./utils/... ./compiler/... ./mod/... ./server/...` | All packages `ok`, no `FAIL`, no `WARNING: DATA RACE` | ✓ PASS |
 
 ### Anti-Patterns Found
 
-None. Scanned all 17 phase-touched files (`utils/utils.go`, `compiler/lib/{module_service,module_service_test,compiler,config,starlark_loader,mod_sync_fds_test}.go`, `compiler/lib/parser/parser.go`, `mod/{command,command_test}.go`, `server/{server,init_order_test,init_prohibitions_test}.go`, `utils/{lazy_parse_canonical_test,lazy_parse_error_test,parse_all_deadlock_test}.go`, `compiler/lib/{eager_fallback_visible_test,registry_cache_test}.go`) for `TBD`/`FIXME`/`XXX`/`TODO`/`HACK`/`PLACEHOLDER` — zero matches.
+None blocking. Scanned `utils/utils.go` and `.planning/phases/11-concurrency-safe-lazy-registry-core/11-UAT.md` (the two files changed since the prior verification) for `TBD`/`FIXME`/`XXX`/`TODO`/`HACK`/`PLACEHOLDER` — zero matches. The one `ponytail:` marker present is a deliberate, explicitly-labeled simplification with a named upgrade path (per project convention), not a debt marker requiring a tracked issue. One Info-level finding carried into this report: the `walk()` sort/index mismatch (see "Out-of-Scope Defect Noted, Not Fixed," above) — real but non-blocking, fails no must-have truth.
 
-### Documentation Ledger Note (non-blocking, carried forward from the prior verification)
+### Documentation Ledger Note (non-blocking, carried forward)
 
-`.planning/REQUIREMENTS.md`'s `BUG-03` entry ("`go vet` copylocks at `compiler/lib/compiler.go:355`") is still nested under the `## Future Requirements` heading (line 82), whose intro reads "Acknowledged, deferred beyond this milestone" (line 84), even though the fix is real and independently confirmed here (`go vet ./...` is clean of copylocks repo-wide). This is a documentation-only inconsistency, not a functional gap — it does not affect this phase's code goal — but should be corrected before the milestone closes so a future reader doesn't reintroduce the value-copy believing it unfixed.
-
-### Human Verification Required
-
-See the `human_verification` list in the frontmatter. One item:
-
-1. **WR-02 (new, 2026-09-07T21:10 code review): `LocalFileCount()`'s lock discipline does not match `localFiles`'s actual write-side locking (none).** Not a live bug today — the current call graph is synchronous — but it postdates `11-UAT.md`'s human sign-off and has not itself been reviewed by a human. Needs a decision: extend `d.mu`'s documented scope to cover `Parse`'s writes to `localFiles`, or explicitly document `LocalFileCount()` as unsafe to call concurrently with `Import`/`Parse`.
+`.planning/REQUIREMENTS.md`'s `BUG-03` entry ("`go vet` copylocks at `compiler/lib/compiler.go:355`") is still nested under `## Future Requirements` (line 82), even though the fix is real and confirmed here (`go vet` clean of copylocks repo-wide). Documentation-only inconsistency; does not affect this phase's code goal.
 
 ### Gaps Summary
 
-No must-have truth failed, no artifact is missing or a stub, no key link is unwired, and no requirement is unsatisfied. Every roadmap success criterion and every LAZY-01..05/CONS-01 requirement was independently re-run live in this session against the current working tree — not accepted from any SUMMARY.md or prior VERIFICATION.md claim. Both gaps found by `11-UAT.md` (G-11-3, G-11-7) are closed, with their regression suites re-run live and passing. Three of the four backstop/decision items left `human_needed` by the previous verification are now resolved (two upgraded to executed test evidence, two fixed in code, one explicitly accepted as documented risk by human decision in UAT).
-
-What keeps this from a clean `passed`: the code review completed immediately before this verification (2026-09-07T21:10, after UAT's 2026-09-07T19:40 completion) surfaced one new, genuine, unfixed lock-discipline finding (WR-02) that has never had a human verification pass. It is not a live bug and fails no stated must-have truth, but per the honest-verifier contract it is surfaced for an explicit human decision rather than silently absorbed into a passing verdict.
+None. All five roadmap success criteria, all six requirement IDs, and both UAT-discovered gaps (G-11-3, G-11-7) are verified live against the current working tree. The one item that kept the prior verification at `human_needed` — WR-02's lock-discipline inconsistency in `LocalFileCount()` — has been explicitly decided by the user, implemented (commit `3005e5a`), and independently confirmed in this session both by direct code reading and by a live `-race` run across every phase-touched package. No new blocking findings surfaced. Two non-blocking observations are carried in this report for completeness: the `walk()` sort/index mismatch (pre-existing, out of scope, fails no must-have) and the UAT test-7 `result: issue` field (accurate historical record, not a live gap).
 
 ---
 
-_Verified: 2026-09-07T21:15:00Z_
+_Verified: 2026-09-07T21:50:00Z_
 _Verifier: Claude (gsd-verifier)_
