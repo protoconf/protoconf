@@ -1,21 +1,14 @@
 ---
-status: testing
+status: complete
 phase: 11-concurrency-safe-lazy-registry-core
 source: [11-VERIFICATION.md]
 started: 2026-09-04T17:50:00Z
-updated: 2026-09-07T21:35:00Z
+updated: 2026-09-07T21:55:00Z
 ---
 
 ## Current Test
 
-number: 8
-name: WR-02 (new) — LocalFileCount()'s RLock does not synchronize with localFiles's only writer
-expected: |
-  A decision on whether to extend mu's documented scope to genuinely cover localFiles
-  (lock Parse's writes too), or drop LocalFileCount's RLock/RUnlock and document plainly
-  that it is unsafe to call concurrently with Import/Parse on the same registry — so the
-  code's safety claim matches what callers can actually rely on.
-awaiting: user response
+[testing complete]
 
 ## Tests
 
@@ -95,14 +88,17 @@ regression: full suite green under -race (agent package excluded - pre-existing 
 expected: A decision on whether to extend mu's documented scope to genuinely cover localFiles (lock Parse's writes too), or drop LocalFileCount's RLock/RUnlock and document plainly that it is unsafe to call concurrently with Import/Parse on the same registry - so the code's safety claim matches what callers can actually rely on.
 why_human: LocalFileCount() (utils/utils.go:390-394, added by 11-05 to back the G-11-7 guard) takes d.mu.RLock(), but Parse() (utils/utils.go:210-222), the sole production writer of localFiles, writes it with zero locking. Not a live bug today - GenFileDescriptorSet calls Import/Parse to completion before calling LocalFileCount() synchronously on the same goroutine, and Sync()'s dependency walk is single-threaded - so -race cannot catch it until a future change (e.g. parallelizing Sync()'s walk) actually drives the interleaving. Same "latent, not yet live" class as WR-04 before it became a real bug and was fixed in this phase (84efad0). No must-have truth in any of the 5 plans covers LocalFileCount's lock discipline, and this finding postdates this file's own 2026-09-07T19:40Z sign-off (11-REVIEW.md, 2026-09-07T21:10Z), so it has never had a human verification pass.
 source: 11-REVIEW.md WR-02 (new), carried into 11-VERIFICATION.md human_verification
-result: [pending]
+result: pass
+decision: "Drop LocalFileCount's RLock/RUnlock and document the constraint (user decision, 2026-09-07). Rejected the alternative of locking Parse's writes: Sync builds one registry outside its walk (module_service.go:490) and Parse resets localFiles per call, so locking would silence -race while leaving a parallelised walk to clobber sibling entries - making the G-11-7 guard read 0 for a dependency that parsed fine. Real fix if Sync is ever parallelised is a registry per dependency, recorded as a ponytail marker at the constraint."
+evidence: "Race confirmed by a throwaway test forcing the Import/Parse vs LocalFileCount interleaving (-race: write utils.go:211 vs read utils.go:393); serial -race is clean, which is why no committed test covers it. Fix in 3005e5a; utils, compiler/lib, compiler/lib/parser, mod, server all green under -race, go vet clean."
+resolved_by: 3005e5a
 
 ## Summary
 
 total: 8
-passed: 6
+passed: 7
 issues: 1
-pending: 1
+pending: 0
 skipped: 0
 blocked: 0
 
