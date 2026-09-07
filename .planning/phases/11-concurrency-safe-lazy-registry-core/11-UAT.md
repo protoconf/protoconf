@@ -3,7 +3,7 @@ status: testing
 phase: 11-concurrency-safe-lazy-registry-core
 source: [11-VERIFICATION.md]
 started: 2026-09-04T17:50:00Z
-updated: 2026-09-07T21:20:00Z
+updated: 2026-09-07T21:35:00Z
 ---
 
 ## Current Test
@@ -132,7 +132,9 @@ blocked: 0
 
 - gap_id: G-11-7
   truth: "protoconf mod sync must not write a truncated (zero-byte) .fds, nor overwrite protoconf.lock's fileDescriptorSetSum with the checksum of one, while exiting 0"
-  status: failed
+  status: resolved
+  resolved_by: 11-05-PLAN.md
+  resolved_at: 2026-09-07
   reason: "Found during the item-3 CLI re-test (2026-09-07): on a protoconf.lock with no getterUrl (the shape utils/testdata/small ships), `protoconf mod sync` prints 'Parsing protos.' and 'Storing in cache.', exits 0, writes a ZERO-BYTE .fds for every dep, and rewrites the lock's real fileDescriptorSetSum values to d41d8cd98f00b204e9800998ecf8427e (md5 of empty). Silent cache and lock-file corruption with a success exit code."
   severity: major
   test: 7
