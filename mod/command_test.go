@@ -22,6 +22,7 @@ import (
 
 	"github.com/mitchellh/cli"
 	"github.com/protoconf/protoconf/compiler/module/v1"
+	"github.com/protoconf/protoconf/utils/testdata"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/protobuf/encoding/protojson"
 )
@@ -171,5 +172,120 @@ func TestModInitLockFileShapes(t *testing.T) {
 		require.Equal(t, "./internal/NEW.tgz", r.GetUrl())
 		require.Empty(t, r.GetIntegrity(), "GetterUrl changed, so integrity must be cleared")
 		require.Equal(t, "deadbeef", r.GetFileDescriptorSetSum(), "fileDescriptorSetSum from the lock must survive the merge")
+	})
+}
+
+// runModSync drives modSyncCommand.Run through a real FlagSet and a
+// buffer-backed cli.Ui exactly as the CLI entry point does, against an
+// existing protoconf root -- a sibling of runModInit for the sync entry
+// point. It returns the exit code and the captured error output.
+func runModSync(t *testing.T, dir string) (exitCode int, errOutput string) {
+	t.Helper()
+	fs := flag.NewFlagSet("sync", flag.ContinueOnError)
+	ms := defaultModuleService(fs)
+	require.NotNil(t, ms)
+
+	var errBuf, outBuf bytes.Buffer
+	ui := &cli.BasicUi{
+		Writer:      &outBuf,
+		ErrorWriter: &errBuf,
+	}
+	cmd := &modSyncCommand{
+		ui:   ui,
+		ms:   ms,
+		flag: fs,
+	}
+
+	exitCode = cmd.Run([]string{"-protoconfPath", dir})
+	return exitCode, errBuf.String()
+}
+
+// runModInitIn mirrors runModInit but drives modInitCommand.Run against an
+// existing protoconf root directory that already carries its own CONFIGSPACE
+// (e.g. testdata.SmallTestDir()), instead of creating a fresh t.TempDir()
+// and writing a synthetic one.
+func runModInitIn(t *testing.T, dir string) (exitCode int, errOutput string) {
+	t.Helper()
+	fs := flag.NewFlagSet("init", flag.ContinueOnError)
+	ms := defaultModuleService(fs)
+	require.NotNil(t, ms)
+
+	var errBuf, outBuf bytes.Buffer
+	ui := &cli.BasicUi{
+		Writer:      &outBuf,
+		ErrorWriter: &errBuf,
+	}
+	cmd := &modInitCommand{
+		ui:   ui,
+		ms:   ms,
+		flag: fs,
+	}
+
+	exitCode = cmd.Run([]string{"-protoconfPath", dir})
+	return exitCode, errBuf.String()
+}
+
+// deleteFdsFiles removes every *.fds file under dir/.protoconf_cache,
+// keeping the directory itself, so GenFileDescriptorSet's registry.Load
+// cache-hit path misses and the parse path actually runs.
+func deleteFdsFiles(t *testing.T, dir string) {
+	t.Helper()
+	cacheDir := filepath.Join(dir, ".protoconf_cache")
+	entries, err := os.ReadDir(cacheDir)
+	require.NoError(t, err, "cache dir must exist")
+	for _, e := range entries {
+		if filepath.Ext(e.Name()) == ".fds" {
+			require.NoError(t, os.Remove(filepath.Join(cacheDir, e.Name())))
+		}
+	}
+}
+
+// writeLockDeps marshals rr back over lockPath, mirroring ModuleService.Lock's
+// own protojson options.
+func writeLockDeps(t *testing.T, lockPath string, rr *module.RemoteRepo) {
+	t.Helper()
+	b, err := protojson.MarshalOptions{Multiline: true, Indent: "  "}.Marshal(rr)
+	require.NoError(t, err)
+	require.NoError(t, os.WriteFile(lockPath, b, 0644))
+}
+
+// TestModSyncNeverPersistsEmptyDescriptorSet closes G-11-7 (UAT test 7's
+// prohibition 6): `mod sync` must never persist the checksum of an empty
+// descriptor set over a dependency's recorded fileDescriptorSetSum, and must
+// never leave a zero-byte .fds in .protoconf_cache. This is tested at the
+// mod sync CLI level rather than the registry level, because
+// TestModSyncFdsByteIdentical builds its registry via an explicit Import
+// over a corpus that always exists -- the missing-path branch this gap
+// exploits is structurally unreachable from that test.
+func TestModSyncNeverPersistsEmptyDescriptorSet(t *testing.T) {
+	t.Run("unsynced_dep_no_getter_url", func(t *testing.T) {
+		dir := testdata.SmallTestDir()
+		deleteFdsFiles(t, dir)
+		_, err := os.Stat(filepath.Join(dir, ".protoconf_cache"))
+		require.NoError(t, err, "cache dir must still exist after deleting .fds files")
+
+		lockPath := filepath.Join(dir, "protoconf.lock")
+		before := readLockDeps(t, lockPath)
+		terraformBefore := before.GetDeps()["terraform_repo"].GetFileDescriptorSetSum()
+		vizceralBefore := before.GetDeps()["vizceral_repo"].GetFileDescriptorSetSum()
+		require.NotEmpty(t, terraformBefore, "precondition: fixture must start with a real sum")
+		require.NotEmpty(t, vizceralBefore, "precondition: fixture must start with a real sum")
+
+		exit, errOut := runModSync(t, dir)
+		require.NotZero(t, exit, "errOutput: %s", errOut)
+		require.Contains(t, errOut, "terraform_repo", "error output must name a dependency")
+		require.Contains(t, errOut, filepath.Join(dir, ".protoconf_cache"), "error output must name a searched directory")
+
+		fdsFiles, err := filepath.Glob(filepath.Join(dir, ".protoconf_cache", "*.fds"))
+		require.NoError(t, err)
+		require.Empty(t, fdsFiles, "a failed generation must leave no .fds behind")
+
+		after := readLockDeps(t, lockPath)
+		terraformAfter := after.GetDeps()["terraform_repo"].GetFileDescriptorSetSum()
+		vizceralAfter := after.GetDeps()["vizceral_repo"].GetFileDescriptorSetSum()
+		require.Equal(t, terraformBefore, terraformAfter, "recorded sum must survive a failed sync unchanged")
+		require.Equal(t, vizceralBefore, vizceralAfter, "recorded sum must survive a failed sync unchanged")
+		require.NotEqual(t, "d41d8cd98f00b204e9800998ecf8427e", terraformAfter)
+		require.NotEqual(t, "d41d8cd98f00b204e9800998ecf8427e", vizceralAfter)
 	})
 }
