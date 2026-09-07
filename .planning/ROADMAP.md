@@ -108,11 +108,17 @@ Plans:
   3. Two concurrent compiles against one shared compiler, each reaching a proto the other hasn't touched, complete without error and without a data race under `go test -race`.
 
 **Measured impact**: Moves the numbers — this phase eliminates the 260ms resolver-snapshot rebuild. Together with Phase 11, this closes the full 6.97s → ~200ms compile-path gap; everything after this phase is correctness work protecting consumers that were never on this budget.
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
+**Wave 1**
 
-- [ ] 12-01: TBD
+- [ ] 12-01-PLAN.md — Growable `filesResolver` on `DescriptorRegistry` under the existing `d.mu`: incremental `RegisterFile` at `recordFileLocked` and in `ParseAll`'s existing diff, locked `FindFileByPath`/`RangeFiles` accessors, `ParseFilesX`'s read rerouted through them, and the D-05 registration counters (RSLV-01, RSLV-02, SAFE-01)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 12-02-PLAN.md — `ParseFilesX` returns the registry's canonical descriptor on a resolver hit, pointer-identity gate for load A → load B → re-reference A, and deletion of the dead `config.protoResolver` field (RSLV-03)
+- [ ] 12-03-PLAN.md — Race proofs: `TestConcurrentCompile` gains resolver-view assertions, plus a dedicated `utils` test racing `RegisterFile` against `RangeFiles`/`FindFileByPath` (SAFE-01)
 
 ### Phase 13: Exact Symbol Index & Shared Type-URL Resolution
 
