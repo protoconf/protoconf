@@ -4,17 +4,17 @@ milestone: v2.0
 milestone_name: Compiler Startup Performance (Planned)
 current_phase: 12
 current_phase_name: Growable Resolver Views & Race Safety
-status: executing
-stopped_at: Completed 12-02-PLAN.md
-last_updated: "2026-09-07T18:10:41.099Z"
+status: verifying
+stopped_at: Completed 12-03-PLAN.md
+last_updated: "2026-09-07T18:24:00.704Z"
 last_activity: 2026-09-08
 last_activity_desc: Phase 12 execution started
-state_head: 3d0371510c3d6b3fc59aba6fd6628730fff9ccff
+state_head: 2365d4ea55e7b365c34656e8a73df434b5aed844
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 8
-  completed_plans: 7
+  completed_plans: 8
   percent: 0
 ---
 
@@ -31,7 +31,7 @@ See: .planning/PROJECT.md (updated 2026-09-04)
 
 Phase: 12 (Growable Resolver Views & Race Safety) — EXECUTING
 Plan: 3 of 3
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-09-08 — Phase 12 execution started
 
 Progress: [░░░░░░░░░░] 0%
@@ -91,6 +91,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 11 P05 | 50min | 2 tasks | 4 files |
 | Phase 12 P01 | 35 min | 3 tasks | 4 files |
 | Phase 12 P02 | 28min | 3 tasks | 4 files |
+| Phase 12 P03 | 25min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -169,6 +170,7 @@ Recent decisions affecting current work:
 - [Phase 12]: Growable FilesResolver hangs off the existing d.mu — no second lock; growth is the single registerFileLocked insert point called from both recordFileLocked and ParseAll's diff loop — Keeps FileRegistry and filesResolver from ever diverging and avoids a lock-ordering hazard in recordFileLocked
 - [Phase 12]: ParseFilesX's resolver-hit branch now returns the registry's own canonical descriptor via FileDescriptor(resolved.Path()) before falling back to desc.WrapFile — Closes the RSLV-03 pointer-identity hazard growth made reachable, while preserving the wrap fallback the mutation server's hand-registered well-known files depend on
 - [Phase 12]: Deleted the dead config.protoResolver field instead of rewiring it to the growable TypeResolver — A frozen construction-time snapshot with zero readers is a stale-resolution hazard; a future consumer should read c.parser.TypeResolver directly
+- [Phase 12]: Proved SAFE-01 with two race tests: extended TestConcurrentCompile with a post-g.Wait() resolver-view assertion block, and added a dedicated utils.TestRegisterFileRacesRangeFiles with unpaced tight-loop readers forcing the RegisterFile-vs-RangeFiles interleaving continuously. — TestConcurrentCompile's goroutines spend most of their time inside protoparse.ParseFiles with no lock held, so the read/write window is rare there; only a dedicated test with continuously-running readers reliably forces it. Sanity-checked the dedicated test's failure-detection capability by temporarily removing the lock and confirming WARNING: DATA RACE before restoring.
 
 ### Pending Todos
 
@@ -201,6 +203,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-07T18:10:41.081Z
-Stopped at: Completed 12-02-PLAN.md
+Last session: 2026-09-07T18:23:51.498Z
+Stopped at: Completed 12-03-PLAN.md
 Resume file: None

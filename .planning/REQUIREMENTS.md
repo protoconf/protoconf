@@ -67,7 +67,7 @@ observable success criteria, only an artifact.
 
 ### Safety Under Concurrency
 
-- [ ] **SAFE-01**: Concurrent compiles against one shared compiler are race-free under `go test -race`
+- [x] **SAFE-01**: Concurrent compiles against one shared compiler are race-free under `go test -race`
 - [ ] **SAFE-02**: Concurrent requests against a long-lived mutation server or agent are race-free under `go test -race`
 - [ ] **SAFE-03**: A long-running process serving many different configs does not accumulate the full registry — the lazy set stays proportional to what was actually demanded
 
@@ -126,7 +126,7 @@ Acknowledged, deferred beyond this milestone.
 | RSLV-01 | Phase 12 | Complete |
 | RSLV-02 | Phase 12 | Complete |
 | RSLV-03 | Phase 12 | Complete |
-| SAFE-01 | Phase 12 | Pending |
+| SAFE-01 | Phase 12 | Complete |
 | TYPE-01 | Phase 13 | Pending |
 | TYPE-02 | Phase 13 | Pending |
 | TYPE-03 | Phase 13 | Pending |
