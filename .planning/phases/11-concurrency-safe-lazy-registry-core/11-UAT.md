@@ -3,7 +3,7 @@ status: complete
 phase: 11-concurrency-safe-lazy-registry-core
 source: [11-VERIFICATION.md]
 started: 2026-09-04T17:50:00Z
-updated: 2026-09-07T21:55:00Z
+updated: 2026-09-07T22:20:00Z
 ---
 
 ## Current Test
@@ -67,7 +67,8 @@ evidence: FIXED in commit 84efad0. GetProtoRegistry now uses double-checked lock
 
 expected: Each holds under close reading, not merely under the tests that happen to pass — a proto that fails to parse on the lazy path is not silently swallowed into a successful compile; the D-03 eager fallback never fires invisibly; pre-existing fixtures/assertions were not weakened; a service `Init` cannot register does not vanish without a trace; the discovery scan does not back gRPC reflection; `mod sync` does not write a truncated `.fds`; a data race was not quieted by removing `-race` or coarsening a lock.
 why_human: All seven are tagged `verification: manual` in the PLAN frontmatter — the plan authors themselves deferred these to human judgment. Independent evidence gathered during verification supports most (the D-03 fallback is logged via the `eagerFallback` field on the `compile finished` line, confirmed live; reflection registrations still read `s.parser.FilesResolver`/`LocalResolver`, confirmed by grep; `TestModSyncFdsByteIdentical` targets the truncated-`.fds` prohibition directly; no new lock or `-race`-stripping appears in the diff) — but none were exercised by a dedicated adversarial test, e.g. actually feeding a broken `.proto` through the lazy path and asserting the compile fails rather than silently materializing wrong output.
-result: issue
+result: pass
+retested: "2026-09-07, after gap closure. Prohibition 6 was the only one that failed; its falsifying condition is fixed by 11-05 (guard at compiler/lib/module_service.go:378) and now covered at the CLI level by TestModSyncNeverPersistsEmptyDescriptorSet - re-run live, 3/3 PASS including good_path_control. The other six prohibitions were unchallenged in the original run. Gap G-11-7 carries status: resolved, resolved_by: 11-05-PLAN.md. The original finding is preserved verbatim in `reported` below and in the G-11-7 gap entry; only the result field is updated, because it no longer describes a condition that exists."
 reported: "CLI re-test of item 3 falsified prohibition 6's coverage claim: `protoconf mod sync` on a protoconf.lock with no getterUrl exits 0, writes zero-byte .fds files for every dep, and overwrites the lock's recorded fileDescriptorSetSum with the md5 of empty. Silent cache + lock corruption behind a success exit code."
 severity: major
 issue_scope: "Prohibition 6 only. Prohibitions 1, 2, 4, 5, 7 remain verified as recorded below; prohibition 4's own violation was already found and fixed in commit 60459de. Tracked as gap G-11-7 (pre-existing, reproduces on b69e3b2)."
@@ -96,8 +97,8 @@ resolved_by: 3005e5a
 ## Summary
 
 total: 8
-passed: 7
-issues: 1
+passed: 8
+issues: 0
 pending: 0
 skipped: 0
 blocked: 0
