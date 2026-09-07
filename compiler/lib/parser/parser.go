@@ -131,6 +131,22 @@ func (p *Parser) ParseFilesX(filenames ...string) (results []*desc.FileDescripto
 			results = append(results, parsed)
 			continue
 		}
+		// A resolver hit means something registered this path, and on the
+		// compiler's lazy path that only ever happens at the same locked
+		// insert point (recordFileLocked/registerFileLocked) that also
+		// writes FileRegistry — so the canonical entry is there. Return it
+		// instead of minting a fresh desc.WrapFile/desc.CreateFileDescriptor
+		// wrapper, which would hand back a second Go pointer for one logical
+		// file (RSLV-03): every map keyed by descriptor and every
+		// require.Same assertion in the tree depends on one pointer per file.
+		if canonical, ok := p.registry.FileDescriptor(resolvedFd.Path()); ok {
+			results = append(results, canonical)
+			continue
+		}
+		// The file is in the resolver but genuinely absent from
+		// FileRegistry — the mutation server's six hand-registered
+		// well-known files (server/server.go). Fall back to wrapping the
+		// resolver's own descriptor, unchanged from before this phase.
 		fd := resolvedFd
 		d, err := desc.WrapFile(fd)
 		if err != nil {
