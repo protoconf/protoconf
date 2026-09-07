@@ -31,7 +31,7 @@ covered_files:
   - mod/command_test.go
   - server/server.go
   - utils/utils.go
-covered_digest: "v1:sha256:4462c35550480a9d9bafce7f2be8194c05ce2c188c074ce606dcc249cf8fc1e8"
+covered_digest: "v1:sha256:cf8aeaf31ae52d8ec3a11ce0c879f4aaedd0f6680b45647f4f9f1ea7be32d29d"
 re_verification:
   previous_status: human_needed
   previous_score: 25/25 must-have truths (5 roadmap success criteria + 6 requirement IDs + 14 gap-closure plan truths), 1 open human_verification item (WR-02)
