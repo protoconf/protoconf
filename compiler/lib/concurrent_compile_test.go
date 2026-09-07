@@ -9,6 +9,7 @@ import (
 	"github.com/protoconf/protoconf/utils/testdata"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/sync/errgroup"
+	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 // TestConcurrentCompile proves the production concurrency shape —
@@ -22,6 +23,11 @@ import (
 // demands one proto only it needs plus one proto every goroutine shares, so
 // both the ParseOne singleflight path and the MessageRegistry AddFile path
 // are exercised concurrently.
+//
+// Since phase 12, the same shared registry also owns a growable
+// *protoregistry.Files. The assertions after g.Wait() prove the concurrent
+// registrations all landed and that FileRegistry and the resolver did not
+// diverge under concurrency (SAFE-01, D-02).
 func TestConcurrentCompile(t *testing.T) {
 	dir := t.TempDir()
 	require.NoError(t, testdata.GenerateCorpus(dir, 30))
@@ -55,7 +61,35 @@ func TestConcurrentCompile(t *testing.T) {
 		require.NoError(t, err, "expected materialized output for concurrent%d.pconf", k)
 	}
 
-	loadedCount := c.ModuleService.GetProtoRegistry().LoadedFileCount()
+	reg := c.ModuleService.GetProtoRegistry()
+	loadedCount := reg.LoadedFileCount()
 	require.Greater(t, loadedCount, n, "each goroutine's own proto plus the shared pkg0 proto and their closures should be loaded")
 	require.Less(t, loadedCount, 30, "the corpus should not have been fully parsed")
+
+	// D-02 non-divergence: every key the registry holds must resolve
+	// through the growable resolver. A divergence here would mean a
+	// concurrent RegisterFile call was lost or landed under a different
+	// lock than the FileRegistry write it accompanies.
+	for key := range reg.FileRegistry {
+		_, err := reg.FindFileByPath(key)
+		require.NoError(t, err, "FileRegistry key %s must resolve through the growable resolver after concurrent compiles", key)
+	}
+
+	// The resolver holds at least every file the registry holds — not
+	// necessarily exactly the same count, since the one-time seed build can
+	// legitimately pull in a transitive dependency FileRegistry does not key
+	// separately.
+	resolverCount := 0
+	reg.RangeFiles(func(protoreflect.FileDescriptor) bool {
+		resolverCount++
+		return true
+	})
+	require.GreaterOrEqual(t, resolverCount, len(reg.FileRegistry),
+		"the resolver must hold at least every file the registry holds")
+
+	// No lost or duplicated registration: every RegisterFile call landed
+	// under the same d.mu write lock, so no registration was attempted
+	// twice.
+	require.Equal(t, 0, reg.FilesResolverRegistrationErrorCount())
+	require.Greater(t, reg.FilesResolverRegistrationCount(), 0)
 }
