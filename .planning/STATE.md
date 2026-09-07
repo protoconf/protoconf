@@ -5,16 +5,16 @@ milestone_name: Compiler Startup Performance (Planned)
 current_phase: 12
 current_phase_name: Growable Resolver Views & Race Safety
 status: executing
-stopped_at: Completed 12-01-PLAN.md
-last_updated: "2026-09-07T17:50:15.901Z"
+stopped_at: Completed 12-02-PLAN.md
+last_updated: "2026-09-07T18:10:41.099Z"
 last_activity: 2026-09-08
 last_activity_desc: Phase 12 execution started
-state_head: 7363a94695ce17a2354885fb575b4b1881d0d8fd
+state_head: 3d0371510c3d6b3fc59aba6fd6628730fff9ccff
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 8
-  completed_plans: 6
+  completed_plans: 7
   percent: 0
 ---
 
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-04)
 ## Current Position
 
 Phase: 12 (Growable Resolver Views & Race Safety) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 Status: Ready to execute
 Last activity: 2026-09-08 — Phase 12 execution started
 
@@ -90,6 +90,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 11 P04 | 45min | 2 tasks | 4 files |
 | Phase 11 P05 | 50min | 2 tasks | 4 files |
 | Phase 12 P01 | 35 min | 3 tasks | 4 files |
+| Phase 12 P02 | 28min | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -166,6 +167,8 @@ Recent decisions affecting current work:
 - [Phase 11]: G-11-7 recorded as pre-existing (reproduces on b69e3b2), not attributed to Phase 11's own LAZY-04/CONS-01 work; closed under Phase 11 by explicit user decision, matching G-11-3's treatment in 11-04
 - [Phase 11]: mod sync's empty-descriptor-set guard is keyed on utils.DescriptorRegistry.LocalFileCount() == 0, never on GetterUrl == "" -- a fully downloaded dependency with a bad sourcePath corrupts the lock identically to an unsynced one, so a GetterUrl check would leave that shape broken
 - [Phase 12]: Growable FilesResolver hangs off the existing d.mu — no second lock; growth is the single registerFileLocked insert point called from both recordFileLocked and ParseAll's diff loop — Keeps FileRegistry and filesResolver from ever diverging and avoids a lock-ordering hazard in recordFileLocked
+- [Phase 12]: ParseFilesX's resolver-hit branch now returns the registry's own canonical descriptor via FileDescriptor(resolved.Path()) before falling back to desc.WrapFile — Closes the RSLV-03 pointer-identity hazard growth made reachable, while preserving the wrap fallback the mutation server's hand-registered well-known files depend on
+- [Phase 12]: Deleted the dead config.protoResolver field instead of rewiring it to the growable TypeResolver — A frozen construction-time snapshot with zero readers is a stale-resolution hazard; a future consumer should read c.parser.TypeResolver directly
 
 ### Pending Todos
 
@@ -198,6 +201,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-07T17:50:15.884Z
-Stopped at: Completed 12-01-PLAN.md
+Last session: 2026-09-07T18:10:41.081Z
+Stopped at: Completed 12-02-PLAN.md
 Resume file: None
