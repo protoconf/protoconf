@@ -11,7 +11,6 @@ import (
 	"google.golang.org/protobuf/proto"
 	pbproto "google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/protoadapt"
-	"google.golang.org/protobuf/reflect/protoregistry"
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/dynamicpb"
 	"google.golang.org/protobuf/types/known/anypb"
@@ -24,7 +23,6 @@ type config struct {
 	locals          starlark.StringDict
 	validators      map[string]*starlark.Function
 	messageRegistry *msgregistry.MessageRegistry
-	protoResolver   protoregistry.MessageTypeResolver
 	protoValidator  *protovalidate.Validator
 }
 
