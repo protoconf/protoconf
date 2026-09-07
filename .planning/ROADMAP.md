@@ -76,7 +76,7 @@ Full phase detail archived under `.planning/milestones/v1.0-phases/`.
   5. A custom gRPC mutation service defined anywhere under `src/` is registered and reachable at server startup, before any config has been compiled — proven by a fixture service and a test that fails without the fix.
 
 **Measured impact**: Moves the numbers — this phase eliminates the 4,639ms eager parse+link, 94% of the 6.97s baseline.
-**Plans**: 4/4 plans executed
+**Plans**: 5 plans (4/5 executed)
 
 Plans:
 **Wave 1**
@@ -91,6 +91,10 @@ Plans:
 **Wave 3** *(gap closure — run with `/gsd-execute-phase 11 --gaps-only`)*
 
 - [x] 11-04-PLAN.md — Gap closure G-11-3: `mod tidy`/`mod init` survive every `protoconf.lock` shape (nil-`Deps` panic, discarded `CONFIGSPACE` merge, clobbered unparseable lock), plus the concurrent `mod sync` `.fds` backstop from UAT item 3 (LAZY-04)
+
+**Wave 4** *(gap closure — run with `/gsd-execute-phase 11 --gaps-only`)*
+
+- [ ] 11-05-PLAN.md — Gap closure G-11-7: `mod sync` refuses to write a zero-byte `.fds` or persist the empty-set checksum over `protoconf.lock`'s recorded `fileDescriptorSetSum`, and a failed dependency survives the walk as a non-zero exit code (LAZY-04)
 
 ### Phase 12: Growable Resolver Views & Race Safety
 
