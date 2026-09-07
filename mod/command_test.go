@@ -122,7 +122,9 @@ func TestModInitLockFileShapes(t *testing.T) {
 		before := []byte{}
 		exitCode, errOutput, lockPath := runModInit(t, testConfigspace, before, true)
 		require.Equal(t, 1, exitCode)
-		require.Contains(t, errOutput, "proto: syntax error")
+		// protojson's error text uses a non-breaking space (U+00A0) between
+		// "proto:" and "syntax" -- match on "syntax error" alone.
+		require.Contains(t, errOutput, "syntax error")
 		after, err := os.ReadFile(lockPath)
 		require.NoError(t, err)
 		require.Equal(t, before, after, "lock file must be left untouched on parse failure")

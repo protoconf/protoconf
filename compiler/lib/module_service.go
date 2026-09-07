@@ -111,6 +111,13 @@ func (m *ModuleService) protoPaths(r *module.RemoteRepo, input []string) []strin
 }
 
 func (m *ModuleService) Init(ctx context.Context, initFiles ...string) error {
+	// Load the on-disk lock file first, so it is always the base the
+	// CONFIGSPACE merge below is applied over, and so a lock file that
+	// cannot be parsed aborts Init before Lock() (called via MergeLock at
+	// the end of this function) can write over it.
+	if err := m.LoadFromLockFile(); err != nil {
+		return err
+	}
 	os.MkdirAll(m.getCacheDir(), 0755)
 	thread := &starlark.Thread{}
 	for _, file := range initFiles {
@@ -230,14 +237,26 @@ func (m *ModuleService) LoadFromLockFile() error {
 	if err != nil {
 		return nil
 	}
-	return protojson.Unmarshal(b, m.head)
+	// protojson.Unmarshal resets its destination message before populating
+	// it, so a lock file with no `deps` key (e.g. `{"url":"."}` or `{}`)
+	// wipes the map NewModuleService created, and Init's m.head.Deps[name] =
+	// msg then panics on a nil map. Capture the unmarshal error and restore
+	// the invariant regardless of whether it succeeded, so every one of the
+	// eight production callers -- whether or not it checks the returned
+	// error -- can never observe a nil m.head.Deps.
+	unmarshalErr := protojson.Unmarshal(b, m.head)
+	if m.head.Deps == nil {
+		m.head.Deps = map[string]*module.RemoteRepo{}
+	}
+	return unmarshalErr
 }
 
 func (m *ModuleService) MergeLock() error {
-	err := m.LoadFromLockFile()
-	if err != nil {
-		return err
-	}
+	// Init (below) now loads the lock file itself before applying the
+	// CONFIGSPACE merge, so reloading here would re-run LoadFromLockFile's
+	// protojson.Unmarshal, which resets m.head and discards the merge Init
+	// just performed -- silently persisting nothing for a newly declared
+	// dependency. Just write what Init already merged.
 	return m.Lock()
 }
 
