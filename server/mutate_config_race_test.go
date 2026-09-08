@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
@@ -147,4 +148,121 @@ func TestMutateConfigConcurrentClientsAreRaceFree(t *testing.T) {
 		}
 	}
 	require.Len(t, seen, mutateRaceClientCount, "expected %d distinct mutation files, got %v", mutateRaceClientCount, seen)
+}
+
+// tightLoopSymbolCount is the number of distinct, previously-unparsed custom
+// message types the writer side of TestMutationServerResolverTightLoopIsRaceFree
+// resolves concurrently -- one per goroutine, each in its own package
+// directory, so distinct symbols take ParseOne's write path concurrently
+// rather than collapsing into one singleflight-memoised entry.
+const tightLoopSymbolCount = 24
+
+// newMutationServerTightLoopRoot builds a temp protoconf root holding
+// tightLoopSymbolCount distinct message types under src/tight/v<N>/, each in
+// its own package-matching directory, and a matching materialized config for
+// each under materialized_config/ (not mutable_config/ -- this test exercises
+// the mutation server's ReadConfig/TypeResolver read paths directly, not
+// MutateConfig). Layout mirrors agent/filekv/filekv_race_test.go's
+// newTightLoopRoot precedent.
+func newMutationServerTightLoopRoot(t *testing.T) string {
+	t.Helper()
+	root := t.TempDir()
+
+	configDir := filepath.Join(root, consts.CompiledConfigPath)
+	require.NoError(t, os.MkdirAll(configDir, 0755))
+
+	for i := 0; i < tightLoopSymbolCount; i++ {
+		protoDir := filepath.Join(root, "src", "tight", fmt.Sprintf("v%d", i))
+		require.NoError(t, os.MkdirAll(protoDir, 0755))
+		protoSrc := fmt.Sprintf(
+			"syntax = \"proto3\";\npackage tight.v%d;\n\nmessage Msg {\n    string value = 1;\n}\n",
+			i,
+		)
+		require.NoError(t, os.WriteFile(filepath.Join(protoDir, "msg.proto"), []byte(protoSrc), 0644))
+
+		configJSON := fmt.Sprintf(
+			`{"protoFile":"tight/v%d/msg.proto","value":{"@type":"type.googleapis.com/tight.v%d.Msg","value":"hello-%d"}}`,
+			i, i, i,
+		)
+		require.NoError(t, os.WriteFile(
+			filepath.Join(configDir, fmt.Sprintf("tight%d%s", i, consts.CompiledConfigExtension)),
+			[]byte(configJSON), 0644,
+		))
+	}
+
+	return root
+}
+
+// TestMutationServerResolverTightLoopIsRaceFree forces the ParseOne
+// read/record interleaving on the mutation server's shared
+// *utils.DescriptorRegistry continuously, rather than trusting
+// TestMutateConfigConcurrentClientsAreRaceFree to hit it by luck (SAFE-02,
+// D-07 dedicated half): two unpaced reader goroutines hammer the mutation
+// server's two real read paths -- s.parser.TypeResolver.FindMessageByURL for
+// an already-resolved symbol, and s.parser.ReadConfig against a materialized
+// config -- with no sleep and no pacing for the whole run, while an errgroup
+// of writer goroutines each resolve one distinct, previously-unparsed symbol
+// concurrently, so ParseOne records into the shared registry while the
+// readers are mid-flight.
+//
+// See utils/growable_resolver_race_test.go's TestRegisterFileRacesRangeFiles
+// for the unpaced tight-loop precedent this adapts, and
+// agent/filekv/filekv_race_test.go's TestFileKVGetTightLoopIsRaceFree for the
+// per-consumer analog (agent-side) this plan mirrors for the mutation server.
+func TestMutationServerResolverTightLoopIsRaceFree(t *testing.T) {
+	root := newMutationServerTightLoopRoot(t)
+	srv, err := NewProtoconfMutationServer(root)
+	require.NoError(t, err)
+
+	// Warm symbol 0 so the FindMessageByURL reader hammers an already-resolved
+	// type while the writers below resolve symbols 1..N-1 for the first time.
+	_, err = srv.parser.TypeResolver.FindMessageByURL("type.googleapis.com/tight.v0.Msg")
+	require.NoError(t, err)
+
+	readConfigPath := filepath.Join(root, consts.CompiledConfigPath, "tight0"+consts.CompiledConfigExtension)
+
+	done := make(chan struct{})
+	var wg sync.WaitGroup
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		for {
+			select {
+			case <-done:
+				return
+			default:
+				_, _ = srv.parser.TypeResolver.FindMessageByURL("type.googleapis.com/tight.v0.Msg")
+			}
+		}
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		for {
+			select {
+			case <-done:
+				return
+			default:
+				v := &protoconf_pb.ProtoconfValue{}
+				_ = srv.parser.ReadConfig(readConfigPath, v)
+			}
+		}
+	}()
+
+	g := new(errgroup.Group)
+	for i := 1; i < tightLoopSymbolCount; i++ {
+		i := i
+		g.Go(func() error {
+			_, err := srv.parser.TypeResolver.FindMessageByURL(fmt.Sprintf("type.googleapis.com/tight.v%d.Msg", i))
+			return err
+		})
+	}
+	waitErr := g.Wait()
+
+	close(done)
+	wg.Wait()
+
+	require.NoError(t, waitErr)
 }
