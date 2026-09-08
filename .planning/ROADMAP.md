@@ -167,11 +167,28 @@ Plans:
   5. A long-running process handling many different configs over time keeps its loaded-file count proportional to what was actually demanded — it never jumps to the full repository count after one unusual request.
 
 **Measured impact**: Correctness-only — the "no regression, no silent wrong answers" pass. None of these four consumers were ever on the 200ms compile budget.
-**Plans**: TBD
+**Plans**: 8 plans in 4 waves
 
 Plans:
+**Wave 1** *(tracer — the whole architecture proven end-to-end on one consumer first)*
 
-- [ ] 14-01: TBD
+- [ ] 14-01-PLAN.md — Inserter tracer slice: lazy construction + both type-URL/`Any` resolution sites on the shared tiered resolver, proven on-demand against the construction snapshot (CONS-02)
+
+**Wave 2** *(blocked on Wave 1)*
+
+- [ ] 14-02-PLAN.md — `agent/filekv` lazy construction, with a test proving `Get` serves a type the snapshot never held (CONS-03)
+- [ ] 14-03-PLAN.md — Mutation server lazy construction, `MutateConfig` marshal on the tiered resolver, and reflection completeness restored via the retained discovery parse (CONS-04, SAFE-02)
+
+**Wave 3** *(blocked on Wave 2)*
+
+- [ ] 14-04-PLAN.md — `GenReflectionUI` completes the walk, aggregates failures, returns them, and logs only when the failure set changes (CONS-04)
+- [ ] 14-07-PLAN.md — SAFE-02 agent side: bufconn e2e over the lazy filekv store plus a dedicated tight-loop race test (SAFE-02, CONS-03)
+- [ ] 14-08-PLAN.md — SAFE-03 escalation guard and sequence guard, measured on the serving registry's loaded-file counter (SAFE-03)
+
+**Wave 4** *(blocked on Wave 3)*
+
+- [ ] 14-05-PLAN.md — `mutate` CLI flip, `NewLazyModuleService` doc-comment truth, and the repo-wide single-resolution-path end-state gate (CONS-02, CONS-03, CONS-04)
+- [ ] 14-06-PLAN.md — SAFE-02 mutation server: bufconn e2e with N concurrent clients plus a dedicated tight-loop race test (SAFE-02)
 
 ### Phase 15: Verification, Decision & Gate Flip
 
