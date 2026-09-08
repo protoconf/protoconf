@@ -189,7 +189,7 @@ type ProtoconfInserter struct {
 func NewProtoconfInserter(protoconfRoot string, kvStore store.Store) *ProtoconfInserter {
 	logger := slog.Default()
 	logger.Debug("loading module service")
-	ms, err := lib.NewModuleService(protoconfRoot)
+	ms, err := lib.NewLazyModuleService(protoconfRoot)
 	if err != nil {
 		logger.Error("error creating module service", "error", err)
 		return nil
@@ -366,7 +366,7 @@ func (i *ProtoconfInserter) XXXinsertVersion(configName string, version string, 
 
 	// Writing config json
 	logger.Debug("writing config json data")
-	mt, err := i.parser.LocalResolver.FindMessageByURL(protoconfValue.Value.TypeUrl)
+	mt, err := i.parser.TypeResolver.FindMessageByURL(protoconfValue.Value.TypeUrl)
 	if err != nil {
 		return err
 	}
@@ -376,7 +376,7 @@ func (i *ProtoconfInserter) XXXinsertVersion(configName string, version string, 
 		return err
 	}
 
-	data, err = protojson.MarshalOptions{Multiline: true, Resolver: i.parser.LocalResolver}.Marshal(new)
+	data, err = protojson.MarshalOptions{Multiline: true, Resolver: i.parser.TypeResolver}.Marshal(new)
 	if err != nil {
 		return errors.Join(err, fmt.Errorf("error marshaling ProtoconfValue to json, value=%v", protoconfValue))
 	}
