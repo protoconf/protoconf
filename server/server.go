@@ -292,7 +292,7 @@ func WithCompiler(c *lib.Compiler) func(*ProtoconfMutationServer) {
 }
 
 func NewProtoconfMutationServer(protoconfRoot string, opts ...MutationServerOption) (*ProtoconfMutationServer, error) {
-	ms, err := lib.NewModuleService(protoconfRoot)
+	ms, err := lib.NewLazyModuleService(protoconfRoot)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create module service: %w", err)
 	}
@@ -463,7 +463,7 @@ func (s *ProtoconfMutationServer) MutateConfig(ctx context.Context, in *protocon
 	slog.Info("Mutating path", "path", in.Path)
 	filename := filepath.Join(s.protoconfRoot, consts.MutableConfigPath, filepath.Clean(in.Path)+consts.CompiledConfigExtension)
 
-	resolver := s.parser.LocalResolver
+	resolver := s.parser.TypeResolver
 	jsonData, err := protojson.MarshalOptions{Resolver: resolver, Multiline: true}.Marshal(in.Value)
 	if err != nil {
 		return nil, logError(fmt.Errorf("error marshaling ProtoconfValue to JSON, value=%s, err=%s", in.Value, err))
