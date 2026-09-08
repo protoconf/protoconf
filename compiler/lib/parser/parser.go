@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 
 	_ "github.com/bufbuild/protovalidate-go"
 	_ "github.com/bufbuild/protovalidate-go/legacy"
@@ -49,11 +50,11 @@ func NewParserWithDescriptorRegistry(registry *utils.DescriptorRegistry) *Parser
 // construction-time *protoregistry.Types snapshot — byte-identical to every
 // eager consumer's existing behavior, since a *protoregistry.Types is never
 // written after construction and is documented concurrent-safe to read —
-// then falls through to the registry's growable MessageRegistry, populated
-// as ParseOne lazily parses files, and finally triggers the D-03 whole-tree
-// eager fallback on a second miss. Only top-level messages resolve through
-// the MessageRegistry branch, matching GetTypesResolver's existing
-// top-level-only registration; nested-type resolution is TYPE-01, Phase 13.
+// then falls through to resolveTiers: the registry's growable
+// MessageRegistry (populated as ParseOne lazily parses files, and
+// nested-type-aware via MessageRegistry.AddFile), then the D-01 scoped
+// lexical scan tier, and finally the D-03 whole-tree eager fallback on a
+// last miss (13-03 deletes this last tier).
 type RegistryTypeResolver struct {
 	registry *utils.DescriptorRegistry
 	snapshot *protoregistry.Types
@@ -61,6 +62,31 @@ type RegistryTypeResolver struct {
 
 func NewRegistryTypeResolver(registry *utils.DescriptorRegistry, snapshot *protoregistry.Types) *RegistryTypeResolver {
 	return &RegistryTypeResolver{registry: registry, snapshot: snapshot}
+}
+
+// resolveTiers is the single shared miss-fallthrough chain (TYPE-08) both
+// FindMessageByURL and FindMessageByName delegate to after their own
+// snapshot (Tier 0) lookup misses: Tier 1 (the growable MessageRegistry),
+// then Tier 2 (the D-01 scoped lexical scan, re-checking Tier 1 on a hit),
+// then the existing D-03 whole-tree ParseAll fallback (13-03 deletes this),
+// then a hard NotFound error naming display.
+func (r *RegistryTypeResolver) resolveTiers(url, display string) (protoreflect.MessageType, error) {
+	if md, mErr := r.registry.MessageRegistry.FindMessageTypeByUrl(url); mErr == nil && md != nil {
+		return dynamicpb.NewMessageType(md.UnwrapMessage()), nil
+	}
+	if r.registry.LoadSymbolByScan(strings.TrimPrefix(url, "type.googleapis.com/")) {
+		if md, mErr := r.registry.MessageRegistry.FindMessageTypeByUrl(url); mErr == nil && md != nil {
+			return dynamicpb.NewMessageType(md.UnwrapMessage()), nil
+		}
+	}
+	// Trigger the D-03 fallback and retry once regardless of ParseAll's own
+	// error: a partial whole-tree parse may still have registered the
+	// requested type before hitting an unrelated broken file elsewhere.
+	_ = r.registry.ParseAll()
+	if md, mErr := r.registry.MessageRegistry.FindMessageTypeByUrl(url); mErr == nil && md != nil {
+		return dynamicpb.NewMessageType(md.UnwrapMessage()), nil
+	}
+	return nil, fmt.Errorf("%w: %s", protoregistry.NotFound, display)
 }
 
 func (r *RegistryTypeResolver) FindMessageByURL(url string) (protoreflect.MessageType, error) {
@@ -71,17 +97,7 @@ func (r *RegistryTypeResolver) FindMessageByURL(url string) (protoreflect.Messag
 	if !errors.Is(err, protoregistry.NotFound) {
 		return nil, err
 	}
-	if md, mErr := r.registry.MessageRegistry.FindMessageTypeByUrl(url); mErr == nil && md != nil {
-		return dynamicpb.NewMessageType(md.UnwrapMessage()), nil
-	}
-	// Trigger the D-03 fallback and retry once regardless of ParseAll's own
-	// error: a partial whole-tree parse may still have registered the
-	// requested type before hitting an unrelated broken file elsewhere.
-	_ = r.registry.ParseAll()
-	if md, mErr := r.registry.MessageRegistry.FindMessageTypeByUrl(url); mErr == nil && md != nil {
-		return dynamicpb.NewMessageType(md.UnwrapMessage()), nil
-	}
-	return nil, fmt.Errorf("%w: %s", protoregistry.NotFound, url)
+	return r.resolveTiers(url, url)
 }
 
 func (r *RegistryTypeResolver) FindMessageByName(name protoreflect.FullName) (protoreflect.MessageType, error) {
@@ -93,14 +109,7 @@ func (r *RegistryTypeResolver) FindMessageByName(name protoreflect.FullName) (pr
 		return nil, err
 	}
 	url := "type.googleapis.com/" + string(name)
-	if md, mErr := r.registry.MessageRegistry.FindMessageTypeByUrl(url); mErr == nil && md != nil {
-		return dynamicpb.NewMessageType(md.UnwrapMessage()), nil
-	}
-	_ = r.registry.ParseAll()
-	if md, mErr := r.registry.MessageRegistry.FindMessageTypeByUrl(url); mErr == nil && md != nil {
-		return dynamicpb.NewMessageType(md.UnwrapMessage()), nil
-	}
-	return nil, fmt.Errorf("%w: %s", protoregistry.NotFound, name)
+	return r.resolveTiers(url, string(name))
 }
 
 // FindExtensionByName delegates to the snapshot only: GetTypesResolver
