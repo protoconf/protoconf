@@ -450,8 +450,12 @@ func (m *ModuleService) GetProtoRegistry() *utils.DescriptorRegistry {
 	if m.lazyRegistry {
 		// D-01: the compiler's construction path skips the whole-src/
 		// eager parse+link entirely. ImportPaths is what ParseOne resolves
-		// on-demand requests against.
+		// on-demand requests against, and CacheDir is what arms the 13-02
+		// symbol index's persistence -- an eager registry (else branch)
+		// never reaches ParseOne and never needs the index, so it is not
+		// set there.
 		registry.ImportPaths = []string{srcPath}
+		registry.CacheDir = m.getCacheDir()
 	} else {
 		err := registry.Import(registry.Parse, []*regexp.Regexp{}, srcPath)
 		if err != nil {
