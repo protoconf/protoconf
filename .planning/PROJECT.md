@@ -55,8 +55,8 @@ Cost scales with repository size, not with the config. The config `load()`s 5 pr
 - [x] Extract shared OTel bootstrap to common package — Validated in Phase 3: Observability & Global State Cleanup
 - [x] Migrate all deprecated gRPC APIs (WithInsecure, v1alpha reflection) — Validated in Phase 1: Deprecated API Migrations
 - [ ] Migrate from jhump/protoreflect/dynamic to dynamicpb
-- [ ] Lazy, load-driven proto resolution — parse and link only what a config reaches (v2.0)
-- [ ] Resolvers as lazy views over the registry, replacing eager snapshots (v2.0)
+- [x] Lazy, load-driven proto resolution — parse and link only what a config reaches (v2.0) — Validated in Phase 11: Concurrency-Safe Lazy Registry Core (LAZY-01..05)
+- [x] Resolvers as lazy views over the registry, replacing eager snapshots (v2.0) — Validated in Phase 12: Growable Resolver Views & Race Safety (RSLV-01..03, SAFE-01)
 - [ ] Exact symbol index (parse without linking) resolving type URLs, including nested Any, across all six registry consumers (v2.0)
 - [ ] Symbol index persisted under `.protoconf_cache`, content-keyed and invalidated on change (v2.0)
 - [ ] Loud (never silent) fallback when a type URL cannot be resolved (v2.0)
@@ -126,4 +126,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-09-01 after Phase 8 completion*
+*Last updated: 2026-09-08 after Phase 12 completion*
