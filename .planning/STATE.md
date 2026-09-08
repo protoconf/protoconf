@@ -5,16 +5,16 @@ milestone_name: Compiler Startup Performance (Planned)
 current_phase: 14
 current_phase_name: Non-Compiler Consumer Correctness
 status: executing
-stopped_at: Completed 14-03-PLAN.md
-last_updated: "2026-09-08T12:59:17.477Z"
+stopped_at: Completed 14-08-PLAN.md
+last_updated: "2026-09-08T13:10:26.575Z"
 last_activity: 2026-09-08
 last_activity_desc: Phase 14 execution started
-state_head: 5f7e27a6137f1e6b8f0f3978d5585ae9613624d7
+state_head: 7d8ec68c81e6065b4159246b7e6ef09448b5d278
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 21
-  completed_plans: 16
+  completed_plans: 17
   percent: 20
 ---
 
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-04)
 ## Current Position
 
 Phase: 14 (Non-Compiler Consumer Correctness) — EXECUTING
-Plan: 4 of 8
+Plan: 5 of 8
 Status: Ready to execute
 Last activity: 2026-09-08 — Phase 14 execution started
 
@@ -102,6 +102,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 14 P01 | 15min | 2 tasks | 2 files |
 | Phase 14 P02 | 22min | 2 tasks | 2 files |
 | Phase 14 P03 | 12min | 2 tasks | 2 files |
+| Phase 14 P08 | 15min | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -194,6 +195,7 @@ Recent decisions affecting current work:
 - [Phase 14]: [Phase 14-02] TDD task 2's four proof tests committed as a single test(14-02) commit with no feat/refactor -- Task 1 already shipped the only implementation change, matching 14-01's precedent — No new implementation exists for GREEN to make pass; the tests exist purely to prove Task 1's flip correct
 - [Phase 14]: [Phase 14-03] Mutation server flipped to lib.NewLazyModuleService (D-01) and MutateConfig's marshal resolver swapped to s.parser.TypeResolver (D-03)
 - [Phase 14]: [Phase 14-03] Init mirrors six well-known files onto the retained discovery-registry resolver and wires both reflection.ServerOptions.DescriptorResolver fields to it (D-06), proven by TestReflectionDescribesCustomAndBuiltinServices; no new struct field added, preserving D-04 narrowness
+- [Phase 14]: SAFE-03 escalation guard proven on the serving *utils.DescriptorRegistry handle: a single index-tier-only resolution grows the loaded-file count by exactly one closure, never the full candidate/corpus count; eight sequential resolutions over one long-lived registry stay bounded and end far below corpus size.
 
 ### Pending Todos
 
@@ -226,6 +228,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-08T12:59:17.453Z
-Stopped at: Completed 14-03-PLAN.md
+Last session: 2026-09-08T13:10:10.335Z
+Stopped at: Completed 14-08-PLAN.md
 Resume file: None
