@@ -1,64 +1,34 @@
 ---
 phase: 14-non-compiler-consumer-correctness
-verified: 2026-09-08T21:35:00Z
-status: gaps_found
-score: 5/6 truths verified (5 ROADMAP criteria pass; 1 goal-level safety clause fails)
+verified: 2026-09-08T23:30:00Z
+status: passed
+score: 6/6 truths verified
 behavior_unverified: 0
 overrides_applied: 0
-covered_files: [".planning/REQUIREMENTS.md", ".planning/phases/14-non-compiler-consumer-correctness/14-01-PLAN.md", ".planning/phases/14-non-compiler-consumer-correctness/14-01-SUMMARY.md", ".planning/phases/14-non-compiler-consumer-correctness/14-02-PLAN.md", ".planning/phases/14-non-compiler-consumer-correctness/14-02-SUMMARY.md", ".planning/phases/14-non-compiler-consumer-correctness/14-03-PLAN.md", ".planning/phases/14-non-compiler-consumer-correctness/14-03-SUMMARY.md", ".planning/phases/14-non-compiler-consumer-correctness/14-04-PLAN.md", ".planning/phases/14-non-compiler-consumer-correctness/14-04-SUMMARY.md", ".planning/phases/14-non-compiler-consumer-correctness/14-05-PLAN.md", ".planning/phases/14-non-compiler-consumer-correctness/14-05-SUMMARY.md", ".planning/phases/14-non-compiler-consumer-correctness/14-06-PLAN.md", ".planning/phases/14-non-compiler-consumer-correctness/14-06-SUMMARY.md", ".planning/phases/14-non-compiler-consumer-correctness/14-07-PLAN.md", ".planning/phases/14-non-compiler-consumer-correctness/14-07-SUMMARY.md", ".planning/phases/14-non-compiler-consumer-correctness/14-08-PLAN.md", ".planning/phases/14-non-compiler-consumer-correctness/14-08-SUMMARY.md", ".planning/phases/14-non-compiler-consumer-correctness/14-REVIEW.md", ".planning/phases/14-non-compiler-consumer-correctness/deferred-items.md", "agent/filekv/filekv.go", "agent/filekv/filekv_race_test.go", "agent/filekv/filekv_test.go", "agent/kv_agent_race_test.go", "compiler/lib/module_service.go", "compiler/lib/parser/loaded_file_count_test.go", "devserver/command.go", "inserter/inserter.go", "inserter/lazy_resolution_test.go", "mutate/mutate.go", "mutate/mutate_test.go", "server/gen_reflection_ui_test.go", "server/legacy.go", "server/mutate_config_race_test.go", "server/server.go", "server/server_test.go"]
-covered_digest: "v1:sha256:7aaff8f5c1ac288a50ab8ba8a6d8f2941b754616584df7bda70c3e5c9287a7a9"
-gaps:
-  - truth: "The registry-no-longer-eager transition resolves types correctly AND SAFELY, with no silent wrong answers (phase goal's own wording) — specifically for the agent's filekv store."
-    status: failed
-    reason: >
-      agent/filekv/filekv.go's Get (line 98) and Watch (line 138) path-traversal guard
-      (`key != filepath.ToSlash(filepath.Clean(key)) || key == ""`) does not reject a
-      caller-supplied key containing a leading `../` segment, because filepath.Clean cannot
-      collapse a leading `..` with no preceding path component to cancel against. A key like
-      `../secret/leak` passes the guard unchanged and reaches a real file outside
-      protoconfRoot. This is exploitable from any gRPC client that can choose the `path` for
-      SubscribeForConfig (the agent's public API surface) or from the config.json write path
-      of any consumer that hands filekv a caller-influenced key.
-
-      Independently reproduced (not merely inherited from the code review): built a
-      fresh filekv Store rooted at <tmp>/protoconfRoot, placed a valid ProtoconfValue JSON
-      file at <tmp>/secret/leak.materialized_JSON (outside the root), and called
-      Get(ctx, "../secret/leak", nil). Get returned err=nil and a KVPair whose
-      base64-decoded, proto-unmarshalled Value was the outside-root file's actual content
-      ("\n\ntest.proto") — a live, reproducible directory-traversal read.
-
-      This phase's own plan (14-02) both (a) left this code path unchanged by explicit
-      design ("D-01 ... Explicitly do NOT add a resolver swap in Get ... leave Get's leading
-      key validation untouched") and (b) added a new test, TestGetRejectsTraversalKey
-      (agent/filekv/filekv_test.go:306-320), whose docstring calls it a pin of "the existing
-      traversal guard as a regression". That test only asserts require.Error(t, err) for key
-      "../etc/passwd" against a fixture where no file exists at that traversed location, so
-      it passes via os.Stat's ErrNotExist rather than via the guard firing — it cannot fail
-      even if an attacker-reachable file existed at the traversed target (confirmed: I ran
-      the identical scenario with a real file present and it succeeded, leaking the file).
-      14-02's own threat model (T-14-03, "Information Disclosure ... high ... mitigate")
-      explicitly claims this guard "is pinned as a regression by Task 2's
-      TestGetRejectsTraversalKey" — that specific claim is false. 14-07's threat model
-      (T-14-21) repeats the same false claim.
-
-      The underlying guard code predates Phase 14 (per the code review's git-blame finding,
-      commit 0745e19) and Phase 14 did not introduce the vulnerability. The gap is that this
-      phase (a) explicitly declared this exact risk "mitigate[d]" in its own threat model
-      while shipping a test that provides false assurance of that mitigation, and (b) the
-      phase's own goal text is "...resolve types correctly and SAFELY now that the registry
-      is no longer eager — no regression, no silent wrong answers" — a path traversal that
-      lets a client silently read a file outside the intended config tree is squarely a
-      "not safely" / "silent wrong answer" outcome the goal disclaims.
-    artifacts:
-      - path: "agent/filekv/filekv.go"
-        issue: "Get (line 96-100) and Watch (line 138-140) guard rejects only keys that differ from filepath.Clean(key)'s own normalized form; it does not reject a leading '../' segment, so a key like '../secret/leak' passes through unchanged and resolves to a path outside protoconfRoot."
-      - path: "agent/filekv/filekv_test.go"
-        issue: "TestGetRejectsTraversalKey (lines 306-320) asserts only require.Error(t, err) for a traversal key whose target file does not exist in the fixture, so it passes on os.Stat's ErrNotExist rather than on the guard firing — it is a false negative that would not catch a real traversal read."
-    missing:
-      - "Reject any key whose cleaned form still contains a leading '..' element (e.g. `strings.HasPrefix(cleaned, \"../\") || cleaned == \"..\"`), or verify the joined absolute path remains under protoconfRoot via filepath.Rel/prefix check, in both Get and Watch (ideally factored into one shared helper so the two call sites cannot drift, per the code review's WR-03 note)."
-      - "Strengthen TestGetRejectsTraversalKey (and its 14-07 T-14-21 counterpart assumption) to place a real file outside protoconfRoot at the traversal target and assert its content is never returned — not merely that some error occurred."
+covered_files: [".planning/REQUIREMENTS.md", ".planning/phases/14-non-compiler-consumer-correctness/14-01-PLAN.md", ".planning/phases/14-non-compiler-consumer-correctness/14-01-SUMMARY.md", ".planning/phases/14-non-compiler-consumer-correctness/14-02-PLAN.md", ".planning/phases/14-non-compiler-consumer-correctness/14-02-SUMMARY.md", ".planning/phases/14-non-compiler-consumer-correctness/14-03-PLAN.md", ".planning/phases/14-non-compiler-consumer-correctness/14-03-SUMMARY.md", ".planning/phases/14-non-compiler-consumer-correctness/14-04-PLAN.md", ".planning/phases/14-non-compiler-consumer-correctness/14-04-SUMMARY.md", ".planning/phases/14-non-compiler-consumer-correctness/14-05-PLAN.md", ".planning/phases/14-non-compiler-consumer-correctness/14-05-SUMMARY.md", ".planning/phases/14-non-compiler-consumer-correctness/14-06-PLAN.md", ".planning/phases/14-non-compiler-consumer-correctness/14-06-SUMMARY.md", ".planning/phases/14-non-compiler-consumer-correctness/14-07-PLAN.md", ".planning/phases/14-non-compiler-consumer-correctness/14-07-SUMMARY.md", ".planning/phases/14-non-compiler-consumer-correctness/14-08-PLAN.md", ".planning/phases/14-non-compiler-consumer-correctness/14-08-SUMMARY.md", ".planning/phases/14-non-compiler-consumer-correctness/14-09-PLAN.md", ".planning/phases/14-non-compiler-consumer-correctness/14-09-SUMMARY.md", ".planning/phases/14-non-compiler-consumer-correctness/14-REVIEW.md", ".planning/phases/14-non-compiler-consumer-correctness/deferred-items.md", "agent/filekv/filekv.go", "agent/filekv/filekv_race_test.go", "agent/filekv/filekv_test.go", "agent/kv_agent_race_test.go", "compiler/lib/module_service.go", "compiler/lib/parser/loaded_file_count_test.go", "devserver/command.go", "inserter/inserter.go", "inserter/lazy_resolution_test.go", "mutate/mutate.go", "mutate/mutate_test.go", "server/gen_reflection_ui_test.go", "server/legacy.go", "server/mutate_config_path_test.go", "server/mutate_config_race_test.go", "server/server.go", "server/server_test.go"]
+covered_digest: "v1:sha256:033866c0aa9290daeb1d78b92fb0075557ab1613a5f2a51e0f2016719494996d"
+re_verification:
+  previous_status: gaps_found
+  previous_score: 5/6
+  gaps_closed:
+    - "agent/filekv's path-traversal guard now rejects a leading '..' key segment in BOTH Get and Watch via one shared resolveKeyPath helper, proven with tests independently reproduced failing against the unfixed code before the fix landed, and passing after."
+  gaps_remaining: []
+  regressions: []
+advisory:
+  - finding: "Two independently-maintained lexical containment checks now exist (filekv.resolveKeyPath and server.MutateConfig's inline check) with different normalization strictness for the same input class, in two different packages, with no shared helper."
+    category: architectural
+    reason: "Code review WR-01. Both checks correctly reject every real escape traced by the reviewer (no working bypass found); the concern is future drift if a third call site is hand-copied rather than routed through a shared helper. 14-09's plan explicitly scoped filekv's helper as package-private and declined to hoist it, given the two checks have different bases and failure shapes. Not a phase-goal violation on its own."
+    evidence_status: "reviewer traced both checks by hand against multiple escape shapes; no bypass found. Not independently re-derived by this verification beyond confirming both checks exist and pass their own tests."
+  - finding: "server.MutateConfig's write-path containment check has no in-source note acknowledging the same symlink-inside-root caveat filekv's resolveKeyPath documents."
+    category: security
+    reason: "Code review WR-02. The check is lexical (filepath.Rel, no EvalSymlinks) on both sides; filekv explicitly documents and accepts this ceiling with a ponytail: comment, MutateConfig's does not. Planting the symlink already requires write access to the config repo (a strictly larger compromise than either read or write escape this plan closes), so the risk class is the same one T-14-24 already accepted for filekv — just undocumented on the write side."
+    evidence_status: "reviewer-identified; not independently re-derived here."
+  - finding: "server.MutateConfig accepts an empty in.Path and silently writes a file literally named '..materialized_JSON' under mutable_config, rather than rejecting the degenerate input."
+    category: other
+    reason: "Code review WR-03. Independently reproduced the underlying mechanism: filepath.Clean(\"\") returns \".\", and filename := filepath.Join(base, filepath.Clean(in.Path)+ext) produces base/..materialized_JSON for an empty in.Path -- a real, if oddly-named, file INSIDE mutableConfigBase, not a traversal escape. This behavior predates 14-09 (the plan's fix adds only a containment check and explicitly declined to add a normalization/empty-path check, matching filekv's pre-14-09 scope boundary). Not a security escape; a validation-UX gap outside this plan's declared scope."
+    evidence_status: "independently reproduced the filepath.Clean/Join mechanics in a scratch program; did not call MutateConfig directly to observe the write, but the mechanism is deterministic stdlib behavior."
+gaps: []
 deferred: []
-advisory: []
 ---
 
 # Phase 14: Non-Compiler Consumer Correctness Verification Report
@@ -66,9 +36,9 @@ advisory: []
 **Phase Goal:** The mutation server, inserter, agent, and reflection UI all resolve types
 correctly and safely now that the registry is no longer eager — no regression, no silent
 wrong answers.
-**Verified:** 2026-09-08T21:35:00Z
-**Status:** gaps_found
-**Re-verification:** No — initial verification
+**Verified:** 2026-09-08T23:30:00Z
+**Status:** passed
+**Re-verification:** Yes — after gap closure (plan 14-09)
 
 ## Goal Achievement
 
@@ -76,120 +46,83 @@ wrong answers.
 
 | # | Truth (ROADMAP Success Criterion) | Status | Evidence |
 |---|---|---|---|
-| 1 | The inserter reads and inserts a materialized config whose type isn't already resolved, resolving it correctly. | ✓ VERIFIED | `inserter/inserter.go` constructs via `lib.NewLazyModuleService`; both type-URL/`Any` resolution sites read `i.parser.TypeResolver`. Independently ran `go test -race ./inserter/... -run 'TestInserterResolvesTypeAbsentFromConstructionSnapshot\|TestInserterUnresolvableTypeReturnsDiagnostic\|TestInserterCLIExitsZeroOnPerFileFailure'` — all 3 PASS. `TestInserterResolvesTypeAbsentFromConstructionSnapshot` asserts `errors.Is(err, protoregistry.NotFound)` on the frozen construction snapshot both before and after a successful resolve, proving the resolution was genuinely on-demand. |
-| 2 | The agent's filekv store serves a subscribed client a config whose type is resolved on demand, correctly. | ✓ VERIFIED (functional correctness) — see Gap below for the safety clause | `agent/filekv/filekv.go`'s `New` constructs via `lib.NewLazyModuleService`; `Get` already routed through `s.parser.ReadConfig`'s tiered resolver, requiring no second edit. Ran `TestGetResolvesTypeAbsentFromConstructionSnapshot`, `TestGetIsIdempotentForSameKey`, `TestGetUnresolvableTypeReturnsDiagnostic` — all PASS, confirming on-demand resolution, memoisation, and loud failure on a genuinely missing type. |
-| 3 | `GenReflectionUI`'s periodic walk resolves every mutable config's type and reports — rather than silently skips — one it cannot resolve. | ✓ VERIFIED | `collectExamples` extracted; every branch inside the `filepath.WalkDir` closure appends to a `reflectionFailure` slice and returns `nil` instead of aborting; the walk's own return is captured; failures are aggregated with `errors.Join` and logged only on change via an order-independent, reason-sensitive fingerprint. Ran `TestCollectExamplesContinuesPastUnresolvableConfig`, `TestCollectExamplesAggregateNamesEveryFailure`, `TestGenReflectionUIEmptyMutableConfig` — all PASS. `TestProtoconfMutationServer_GenReflectionUI` was correctly updated (not weakened) to expect the newly-surfaced errors. |
-| 4 | Concurrent requests against a long-lived mutation server or agent process complete without error under `go test -race`. | ✓ VERIFIED | Ran `go test -race -count=1 ./server/... -run 'TestMutateConfigConcurrentClientsAreRaceFree\|TestMutationServerResolverTightLoopIsRaceFree'` and `./agent/... -run TestSubscribeForConfigConcurrentClientsAreRaceFree` and `./agent/filekv/... -run 'TestFileKVGetTightLoopIsRaceFree\|TestFileKVConcurrentGetReturnsCorrectValuePerKey'` — all PASS, no `WARNING: DATA RACE`. Both dedicated tight-loop tests' failure-detection capability is documented in their SUMMARYs with concrete evidence (lock removed, 3/3 runs reproduced `WARNING: DATA RACE` on `recordFileLocked`'s map write, restored via `git checkout`) — I did not re-execute the lock-removal step myself but the evidence given (exact file/line, exact race target, reproducibility count) is specific and falsifiable, consistent with Phase 12's established validation pattern. |
-| 5 | A long-running process handling many different configs over time keeps its loaded-file count proportional to what was actually demanded — it never jumps to the full repository count after one unusual request. | ✓ VERIFIED | Ran `TestLoadedFileCountEscalationGuard` (33-file candidate-limit-busting fixture: `ScanResolutionCount()==0`, `IndexBuildCount()>=1`, `LoadedFileCount()` grows by exactly 1, not 33) and `TestLoadedFileCountSequenceGuard` (8 sequential resolutions against one long-lived registry over a 60-file corpus stay strictly below 60) — both PASS. |
-| 6 | (Goal-level, not separately numbered in ROADMAP) "...resolve types correctly and **safely**... no regression, **no silent wrong answers**" — a caller-supplied key cannot escape the intended config tree. | ✗ FAILED | See Gap. `agent/filekv/filekv.go`'s `Get`/`Watch` traversal guard does not reject a leading `../` key segment; independently reproduced a live outside-root file read. The phase's own new "regression" test (`TestGetRejectsTraversalKey`) is a false negative that would not catch this. |
+| 1 | The inserter reads and inserts a materialized config whose type isn't already resolved, resolving it correctly. | ✓ VERIFIED | Regression check only (passed in prior verification, no files in scope for this gap closure): `inserter/inserter.go` still constructs via `lib.NewLazyModuleService`, `inserter/lazy_resolution_test.go`'s 3 named tests unaffected by 14-09. Confirmed present via grep; no re-run needed since inserter files are untouched by 14-09. |
+| 2 | The agent's filekv store serves a subscribed client a config whose type is resolved on demand, correctly. | ✓ VERIFIED | Re-ran `TestGetResolvesTypeAbsentFromConstructionSnapshot`, `TestGetIsIdempotentForSameKey`, `TestGetUnresolvableTypeReturnsDiagnostic` alongside the full `./agent/filekv/...` package under `-race` — all pass; on-demand resolution behavior is unchanged by 14-09's guard addition (the guard runs before `Get`'s existing `ReadConfig`/`ReadConfig` call, not inside it). |
+| 3 | `GenReflectionUI`'s periodic walk resolves every mutable config's type and reports — rather than silently skips — one it cannot resolve. | ✓ VERIFIED | Regression check only (`server/server.go`'s `collectExamples`/`GenReflectionUI` region is untouched by 14-09; 14-09's edit is scoped to `MutateConfig`, a different function). `grep -n "collectExamples\|reflectionFailure" server/server.go` still shows the aggregate-and-continue shape from the prior verification. |
+| 4 | Concurrent requests against a long-lived mutation server or agent process complete without error under `go test -race`. | ✓ VERIFIED | Independently ran `go test -race -count=1 ./agent/...`, `go test -race -count=1 ./server/...`, and the full bounded `go test -race -count=1 -timeout 300s -skip 'Test_cliCommand_Run' ./...` — all green, zero `WARNING: DATA RACE`, 20/20 packages `ok`. 14-09's `resolveKeyPath` reads only `s.protoconfRoot` (immutable after `New`), introducing no new lock or shared state, confirmed by source read. |
+| 5 | A long-running process handling many different configs over time keeps its loaded-file count proportional to what was actually demanded — it never jumps to the full repository count after one unusual request. | ✓ VERIFIED | Regression check only (`compiler/lib/parser/loaded_file_count_test.go` untouched by 14-09); prior verification's evidence stands, package passes in the bounded full-suite re-run above. |
+| 6 | (Goal-level) "...resolve types correctly and **safely**... no regression, **no silent wrong answers**" — a caller-supplied key cannot escape the intended config tree, on either the read or write side. | ✓ VERIFIED | **This is the previously-failed truth; now closed.** `agent/filekv/filekv.go`'s `Get` and `Watch` both route through one new `resolveKeyPath` helper (confirmed: exactly 1 `filepath.Join(s.protoconfRoot` in the file, `resolveKeyPath` called 1x in `Get` before any filesystem access and 1x in `Watch` before `addWatch`). Independently reproduced RED evidence by checking out commit `6d35971` (before the `211a643` fix) into a scratch worktree and running the new tests: both `TestGetRejectsTraversalKey` and `TestWatchRejectsTraversalKey` FAIL against the unguarded code exactly as the SUMMARY claims. Ran the same tests against HEAD: both PASS. Independently reproduced the scope-widened `MutateConfig` write-path fix the same way: checked out `d841035` (before `042d031`), ran `TestMutateConfigRejectsTraversalPath` — it FAILS and the unguarded code writes a real file (`.../escaped.materialized_JSON`) outside `protoconfRoot`, confirming the SUMMARY's RED claim is genuine, not asserted. Ran the same test against HEAD: PASSES, and `TestMutateConfigAllowsNestedPath` (legitimate nested path) passes both before and after. `server/server.go`'s containment check for `MutateConfig` sits textually before the `protojson` marshal (line 531), before `runScript` (line 538), before `os.MkdirAll` (line 547), and before `os.WriteFile` (line 551) — read in full, confirmed. Both `14-02-PLAN.md`'s `T-14-03` row and `14-07-PLAN.md`'s `T-14-21` row no longer claim the risk was already mitigated; both now state the guard was insufficient and cite `14-09` as the actual fix location (confirmed by direct read of both files). `deferred-items.md` is confirmed unmodified by any of 14-09's 5 commits. |
 
-**Score:** 5/6 truths verified (all 5 numbered ROADMAP success criteria pass on their literal text; the phase goal's own "safely"/"no silent wrong answers" clause fails for one specific, confirmed vector).
+**Score:** 6/6 truths verified — all 5 numbered ROADMAP criteria plus the phase goal's own "safely"/"no silent wrong answers" clause now pass on independently-reproduced evidence, not SUMMARY claims.
 
 ### Required Artifacts
 
 | Artifact | Expected | Status | Details |
 |---|---|---|---|
-| `inserter/inserter.go` | Lazy construction + tiered resolution | ✓ VERIFIED | `lib.NewLazyModuleService` x1, `i.parser.TypeResolver` x2 confirmed via grep and passing tests |
-| `inserter/lazy_resolution_test.go` | CONS-02 on-demand proof | ✓ VERIFIED | 3 named tests present and passing |
-| `agent/filekv/filekv.go` | Lazy construction | ✓ VERIFIED (construction) / ✗ pre-existing traversal flaw retained | `lib.NewLazyModuleService(absRoot)` present; `Get`/`Watch` guard unchanged and insufficient (see Gap) |
-| `agent/filekv/filekv_test.go` | CONS-03 proof + traversal regression | ⚠️ Test present but traversal assertion is a false negative | 3 of 4 new tests are solid proofs; `TestGetRejectsTraversalKey` does not prove what it claims |
-| `server/server.go` | Lazy construction, tiered marshal resolver, reflection completeness, aggregate-and-continue walk | ✓ VERIFIED | `lib.NewLazyModuleService`, `resolver := s.parser.TypeResolver`, `DescriptorResolver: discoveryFiles` x2, `collectExamples`, `reflectionFailure`, `sync.Mutex` fingerprint guard all present and covered by passing tests |
-| `server/server_test.go` | Reflection round-trip proof | ✓ VERIFIED | `TestReflectionDescribesCustomAndBuiltinServices` PASS |
-| `server/gen_reflection_ui_test.go` | CONS-04 edge coverage | ✓ VERIFIED | 7 named tests present, ran a representative subset, all PASS |
-| `server/mutate_config_race_test.go` | SAFE-02 concurrency proof (mutation server) | ✓ VERIFIED | Both named tests present and passing under `-race` |
-| `devserver/command.go` | Explicit `GenReflectionUI` error handling | ✓ VERIFIED | grep confirms `_ = ...GenReflectionUI(` at both call sites |
-| `mutate/mutate.go` | Lazy construction + tiered resolution, exit-1 abort preserved | ✓ VERIFIED | `lib.NewLazyModuleService(root)`, `anyResolver := parser.TypeResolver`, `return 1` count unchanged; both new tests PASS |
-| `compiler/lib/module_service.go` | Corrected doc comment | ✓ VERIFIED | `mod sync` named as sole remaining eager consumer; confirmed true via `mod/command.go` |
-| `compiler/lib/parser/loaded_file_count_test.go` | SAFE-03 escalation + sequence guards | ✓ VERIFIED | 7 named tests present, representative subset run, all PASS |
-| `agent/kv_agent_race_test.go`, `agent/filekv/filekv_race_test.go` | SAFE-02/CONS-03 agent-side concurrency proofs | ✓ VERIFIED | Named tests present and passing |
-| `server/legacy.go` | (Discovered bug fix, not a plan artifact) | ✓ VERIFIED | `proto.Merge` → `proto.Marshal`/`proto.Unmarshal` fix confirmed in source; `TestAuthFlow` and `TestMutateResolvesMessageAbsentFromConstructionSnapshot` (which exercises this exact path) both PASS |
+| `agent/filekv/filekv.go` | One shared validated key-to-path helper used by both `Get` and `Watch` | ✓ VERIFIED | `resolveKeyPath` declared once (lines 122-135), called once in `Get` (line 139) before any filesystem access, called once in `Watch` (line 179) before `addWatch` (line 185). Exactly 1 `filepath.Join(s.protoconfRoot` occurrence in the whole file (confirmed via grep). `ErrInvalidKey` sentinel declared via `errors.New`. `ponytail:` comment present on the containment step naming the symlink ceiling and `filepath.EvalSymlinks` upgrade path. |
+| `agent/filekv/filekv_test.go` | Falsifiable traversal proofs for both `Get` and `Watch` | ✓ VERIFIED | `newTraversalFixture` plants a real, schema-valid file at `<base>/secret/leak.materialized_JSON`, outside the store's `root`. `TestGetRejectsTraversalKey` rewritten to assert both an error AND (guarded) absence of the secret payload in any returned pair. `TestWatchRejectsTraversalKey` and `TestGetMissingKeyIsNotAnInvalidKey` are new. Independently reproduced both traversal tests FAILING against the pre-fix commit and PASSING against HEAD. |
+| `server/server.go` | Containment check on `MutateConfig`'s caller-supplied path, before every side effect | ✓ VERIFIED | `mutableConfigBase` computed (line 517), `filename` joined (518), containment check via `filepath.Rel` + `strings.HasPrefix` (526-528) — textually before the marshal (531), `runScript` (538), `MkdirAll` (547), `WriteFile` (551). Exactly 3 `filepath.Join(s.protoconfRoot` occurrences in the file (`srcPath`, `MutateConfig`'s base, `collectExamples`' root) — confirmed via grep, matching the plan's declared end-state. |
+| `server/mutate_config_path_test.go` | Write-escape proof + legitimate nested-path regression | ✓ VERIFIED | New file. `TestMutateConfigRejectsTraversalPath` asserts file ABSENCE at the escape target via `errors.Is(statErr, os.ErrNotExist)`, not merely an error return — the exact defect class the prior gap named. `TestMutateConfigAllowsNestedPath` pins that interior separators still work. Independently reproduced the traversal test FAILING against the pre-fix commit (with a live outside-root write observed: `Written to filename=.../escaped.materialized_JSON`) and PASSING against HEAD. |
+| `14-02-PLAN.md`, `14-07-PLAN.md` | Corrected threat-model rows, no longer claiming an absent mitigation | ✓ VERIFIED | `14-02-PLAN.md`'s `T-14-03` row: disposition `transferred → 14-09`, mitigation cell states the guard did not reject a leading `..` and the risk was live until 14-09. `<prohibition_breadcrumbs>` appends a line naming the false claim and its correction. `14-07-PLAN.md`'s `T-14-21` row: same correction pattern, disposition `transferred → 14-09`. Both confirmed via direct read, not grep alone. |
+| `deferred-items.md` | Unmodified — nothing from 14-09 is deferred | ✓ VERIFIED | Confirmed via `git show --stat` on all 5 of 14-09's commits (`6d35971`, `211a643`, `d841035`, `042d031`, `ee398bb`): none touches `deferred-items.md`. |
 
 ### Key Link Verification
 
 | From | To | Via | Status | Details |
 |---|---|---|---|---|
-| `inserter/inserter.go` | `compiler/lib/parser/parser.go` | `i.parser.TypeResolver` | ✓ WIRED | grep confirms 2 occurrences; behavior confirmed by passing tests |
-| `agent/filekv/filekv.go` `Get` | `compiler/lib/parser/parser.go` | `s.parser.ReadConfig` (unchanged, already tiered) | ✓ WIRED | Confirmed by passing on-demand resolution tests |
-| `server/server.go` `MutateConfig` | `compiler/lib/parser/parser.go` | `s.parser.TypeResolver` | ✓ WIRED | grep + `TestAuthFlow` pass |
-| `server/server.go` `Init` reflection | `discoveryFiles` (retained discovery registry) | `DescriptorResolver: discoveryFiles` | ✓ WIRED | grep confirms 2 occurrences; `TestReflectionDescribesCustomAndBuiltinServices` passes for both custom and hand-registered services |
-| `server/server.go GenReflectionUI` | `server/server.go collectExamples` | delegation | ✓ WIRED | Confirmed by source and passing tests |
-| End-state gate: no surviving construction-time-snapshot resolution site outside `compiler/lib/parser/` and the 2 allowed `ExtensionResolver` fields | — | repo-wide grep | ✓ PASS | Independently re-ran the corrected gate (`grep -rn 'LocalResolver' inserter/ mutate/ agent/ server/` filtered for comments, the 2 `ExtensionResolver` fields, and `_test.go` files) — zero offenders in production code |
+| `agent/filekv/filekv.go Get` | `agent/filekv/filekv.go resolveKeyPath` | direct call, before filesystem access | ✓ WIRED | Line 139; on error, `Get` returns immediately (line 140-142), no `os.Stat`/`ReadConfig` reached |
+| `agent/filekv/filekv.go Watch` | `agent/filekv/filekv.go resolveKeyPath` | direct call, before `addWatch` | ✓ WIRED | Line 179; on error, `Watch` returns immediately (line 180-182), `addWatch` (line 185) never reached |
+| `server/server.go MutateConfig` | its own containment check | inline, before marshal/script/write | ✓ WIRED | Confirmed by line-order read: check (526-528) precedes marshal (531), `runScript` (538), `MkdirAll` (547), `WriteFile` (551) |
+| End-state gate: exactly 1 `filepath.Join(s.protoconfRoot` in `filekv.go`, exactly 3 in `server.go` | — | repo-wide grep | ✓ PASS | Independently re-ran: `filekv.go` → 1 match; `server.go` → 3 matches (`srcPath`, `MutateConfig`'s base, `collectExamples`' root) |
 
 ### Requirements Coverage
 
 | Requirement | Source Plan | Description | Status | Evidence |
 |---|---|---|---|---|
-| CONS-02 | 14-01, 14-05 | Inserter resolves types correctly | ✓ SATISFIED | Tests pass; on-demand claim independently verified |
-| CONS-03 | 14-02, 14-05, 14-07 | Agent's filekv store resolves types correctly | ✓ SATISFIED (functional) / see gap for safety | Tests pass for correctness; traversal guard gap is separate from resolution correctness |
-| CONS-04 | 14-04, 14-05 | GenReflectionUI reports rather than skips | ✓ SATISFIED | Tests pass; walk-completion and aggregation confirmed |
-| SAFE-02 | 14-03, 14-06, 14-07 | Concurrent requests race-free under `-race` | ✓ SATISFIED | Full bounded suite green with 0 `WARNING: DATA RACE`; dedicated tight-loop tests pass with documented failure-detection validation |
-| SAFE-03 | 14-08 | Loaded-file count stays proportional | ✓ SATISFIED | Escalation and sequence guards both pass |
+| CONS-02 | 14-01, 14-05 | Inserter resolves types correctly | ✓ SATISFIED | Unaffected by 14-09 (regression-only recheck); prior verification's independent test runs stand |
+| CONS-03 | 14-02, 14-05, 14-07, 14-09 | Agent's filekv store resolves types correctly AND safely | ✓ SATISFIED | Functional correctness from prior verification; safety gap now independently confirmed closed by 14-09 |
+| CONS-04 | 14-04, 14-05 | GenReflectionUI reports rather than skips | ✓ SATISFIED | Unaffected by 14-09 (different function in same file); prior verification's evidence stands |
+| SAFE-02 | 14-03, 14-06, 14-07 | Concurrent requests race-free under `-race` | ✓ SATISFIED | Re-ran `-race` suites for `./agent/...` and `./server/...` post-14-09 — both clean; `resolveKeyPath` and `MutateConfig`'s containment check introduce no new shared mutable state |
+| SAFE-03 | 14-08 | Loaded-file count stays proportional | ✓ SATISFIED | Unaffected by 14-09; prior verification's evidence stands, package passes in the bounded full-suite re-run |
 
-All 5 requirement IDs from the phase's plans (CONS-02, CONS-03, CONS-04, SAFE-02, SAFE-03) are present in REQUIREMENTS.md and marked `[x]`/`Complete`. No orphaned requirements found: REQUIREMENTS.md's Phase 14 mapping matches exactly the 5 IDs claimed across the 8 plans.
+All 5 requirement IDs (CONS-02, CONS-03, CONS-04, SAFE-02, SAFE-03) declared across all 9 plans (14-01 through 14-09) are present in `.planning/REQUIREMENTS.md`, each marked `[x]`/`Complete`. No orphaned requirements found.
 
 ### Anti-Patterns Found
 
 | File | Line | Pattern | Severity | Impact |
 |---|---|---|---|---|
-| `agent/filekv/filekv.go` | 98, 138 | Path-traversal guard does not reject a leading `../` key segment | 🛑 Blocker | Confirmed live: a caller-supplied key can read a file outside `protoconfRoot`. Directly touches this phase's stated goal ("...safely... no silent wrong answers"). See Gap. |
-| `agent/filekv/filekv_test.go` | 306-320 | `TestGetRejectsTraversalKey` asserts only `require.Error`, which passes via `os.Stat`'s `ErrNotExist` rather than the guard firing | 🛑 Blocker (false assurance) | A test this phase added claims to "pin" a security regression but cannot detect the regression it names. Confirmed via live reproduction with a real file present at the traversal target. |
-| `agent/filekv/filekv.go` | 252-281 | `readEvents` sends on a per-watch channel outside the lock that also closes it — potential "send on closed channel" panic under concurrent `Close()` | ⚠️ Warning (pre-existing, code-review WR-01, not newly introduced) | Not independently re-verified with a repro; carried from `14-REVIEW.md`. Not blocking this phase's goal since it is a pre-existing, explicitly `ponytail:`-flagged ceiling. |
-| `server/server.go` | 751-794 | `GenReflectionUI` allocates a new bufconn listener + goroutine per call, retained until process shutdown | ⚠️ Warning (pre-existing, code-review WR-02, exercised harder by this phase's 5s-ticker tests) | Not blocking; flagged by code review as a resource-leak concern growing in severity due to this phase's new call sites, but out of this phase's stated scope (D-01/D-03/D-04/D-05/D-06/D-07/D-08). |
+| `agent/filekv/filekv.go` | multiple (167, 178, 220, 228, 234, 240, 247, 253) | `// TODO implement me` on unrelated stub methods (`Delete`, `Exists`, `WatchTree`, `NewLock`, `List`, `DeleteTree`, `AtomicPut`, `AtomicDelete`) | ℹ️ Info | Pre-existing template scaffolding, untouched by 14-09 (verified none of these lines fall in 14-09's diff). Not a phase-goal blocker. |
+| `agent/filekv/filekv.go` | 306-322 (`readEvents`) | Send-on-closed-channel ceiling (WR-01 from prior review) | ⚠️ Warning (pre-existing, out of 14-09's scope) | Carried forward unchanged; marked with its own `ponytail:` comment already. |
+| `server/server.go` | 517-528 vs `agent/filekv/filekv.go` 122-135 | Two independently-maintained containment checks, different normalization strictness (14-REVIEW.md WR-01) | 📋 Advisory | Reviewer traced no working bypass in either. Deliberate scope decision in 14-09's plan (helper stays private to `filekv`). See `advisory` frontmatter. |
+| `server/server.go` | 517-528 | No in-source symlink-risk note mirroring `filekv`'s (14-REVIEW.md WR-02) | 📋 Advisory | Same accepted-risk class as `filekv`'s documented T-14-24, just undocumented on the write side. See `advisory` frontmatter. |
+| `server/server.go` | 518, 526-528 | Empty `in.Path` silently writes `..materialized_JSON` inside `mutableConfigBase` (14-REVIEW.md WR-03) | 📋 Advisory | Independently reproduced the `filepath.Clean("")`/`Join` mechanics. Contained (not an escape); pre-existing behavior 14-09 deliberately did not touch (plan explicitly scoped out adding a normalization check to `MutateConfig`). See `advisory` frontmatter. |
 
-No `TBD`/`FIXME`/`XXX` debt markers found in any phase-touched file (the `XXX` hits found are identifier substrings — `XXXinsertVersion`, `XXX_MessageName` — not debt-marker comments).
+No `TBD`/`FIXME`/`XXX` debt markers found in any file touched by 14-09.
 
 ### Behavioral Spot-Checks / Test Execution
 
-Ran the full bounded repo test suite once: `go test -race -timeout 300s -skip 'Test_cliCommand_Run' ./...` — exit 0, all 20 tested packages `ok`, zero `WARNING: DATA RACE` occurrences. `go build ./...` is silent. The repo-wide end-state gate (Task 2 of 14-05, corrected for test-file exclusions) independently re-run: zero offenders.
-
-Individually re-ran every named test cited in each plan's `<verify>` block across all 8 plans (inserter, agent/filekv, server, mutate, compiler/lib/parser) rather than trusting SUMMARY claims — all passed. Independently wrote and ran two scratch reproduction tests (not committed) confirming the CR-01 path-traversal vulnerability is live: the first showed `Get` bypassing the guard and reaching a file outside `protoconfRoot`; the second, using a schema-valid fixture, showed `Get` returning `err=nil` and the outside-root file's actual decoded content.
+Independently ran (not trusting SUMMARY claims):
+- `go build ./...` — exit 0.
+- `go test -race -count=1 ./agent/filekv/... -run 'TestGetRejectsTraversalKey|TestWatchRejectsTraversalKey|TestGetMissingKeyIsNotAnInvalidKey' -v` — all PASS at HEAD.
+- `go test -race -count=1 ./server/... -run 'TestMutateConfigRejectsTraversalPath|TestMutateConfigAllowsNestedPath|TestAuthFlow' -v` (`TestAuthFlow` run separately via `./test/...`, per plan) — all PASS at HEAD.
+- **RED-evidence independent reproduction:** used `git worktree add --detach` to check out commit `6d35971` (Task 1's RED commit, before Task 2's fix `211a643`) into a scratch worktree, and ran the same two filekv tests — both genuinely FAIL (`An error is expected but got nil`), matching the SUMMARY's quoted `--- FAIL:` lines. Repeated for `d841035` (Task 3's RED commit, before Task 4's fix `042d031`) against `TestMutateConfigRejectsTraversalPath` — genuinely FAILS, and the unguarded code is observed writing a real file (`Written to filename=.../escaped.materialized_JSON`) outside `protoconfRoot`. Worktrees removed after use.
+- `go test -race -count=1 -timeout 300s -skip 'Test_cliCommand_Run' ./...` — run twice independently, both exit 0, 20/20 packages `ok`, zero `WARNING: DATA RACE`.
+- `go vet ./agent/filekv/... ./server/...` — silent.
+- `git diff --exit-code go.mod go.sum` — clean, no dependency added.
+- `git diff <pre-14-05>..HEAD --numstat` for `14-02-PLAN.md`/`14-07-PLAN.md` — 3+1 and 1+1 lines respectively, within the plan's own ≤6-line budget.
+- `git show --stat` on all 5 of 14-09's commits confirms none touches `deferred-items.md`.
 
 ### Human Verification Required
 
-None required beyond the recorded gap — the traversal issue is deterministically reproducible and does not need human judgment to confirm; it needs a decision on remediation scope (fix now in this phase vs. route to `/gsd-secure-phase`, as 14-02's own threat model explicitly deferred formal STRIDE prohibition ownership there while still asserting — incorrectly — that the risk was mitigated).
+None. The previously-recorded gap was deterministic and reproducible without human judgment, and the closure evidence was independently re-derived (not merely re-read from the SUMMARY) via scratch git worktrees that reproduce the exact FAIL/PASS transition claimed.
 
 ### Gaps Summary
 
-Five of the ROADMAP's five explicitly numbered success criteria are fully verified against
-real, independently-executed tests and source inspection — not SUMMARY.md claims. All 8
-plans' named tests pass; the repo-wide `-race` suite is clean; the end-state single-resolver
-gate holds; the `server/legacy.go` bug the phase discovered and fixed is confirmed correct
-and load-bearing (it is the exact path every real `protoconf mutate` invocation uses).
+The single gap recorded in the prior verification — `agent/filekv`'s `Get`/`Watch` guard failing to reject a leading `..` key segment, plus two threat-model rows falsely claiming that risk was mitigated — is closed. Verified independently, not from SUMMARY claims: rebuilding the pre-fix state in a scratch worktree reproduces the exact FAIL both for the filekv read-path test and for the scope-widened `MutateConfig` write-path test; the post-fix state passes both; the shared-helper structural requirement holds (exactly 1 join in `filekv.go`, exactly 3 in `server.go`, containment check placed before every side effect in `MutateConfig`); both threat-model rows now state the truth and cite the real fix location; `deferred-items.md` was correctly left untouched.
 
-One gap remains, tied to the phase goal's own wording rather than to a numbered criterion:
-`agent/filekv/filekv.go`'s `Get`/`Watch` path-traversal guard does not reject a leading
-`../` key segment, and this phase shipped a "regression" test
-(`TestGetRejectsTraversalKey`) and two threat-model entries (14-02's T-14-03, 14-07's
-T-14-21) that assert this exact risk is "pinned"/"mitigate[d]" — a claim I independently
-disproved with a live reproduction. The vulnerability itself predates Phase 14 (code
-review traces it to commit `0745e19`), but the false assurance is new, and the phase goal
-explicitly promises "safely... no silent wrong answers." This is judged a phase-level gap,
-not a pre-existing-and-out-of-scope item, because the phase's own artifacts (test +
-threat model) make a specific, false correctness claim about code this phase's plan
-directly discusses and is titled around.
-
-**This looks like a scoping judgment call, not a coding oversight** — the plan's own
-`<prohibition_breadcrumbs>` in 14-02 explicitly says "Path traversal on Store.Get's key is
-canon security — covered by /gsd-secure-phase... not minted as a bespoke prohibition,"
-suggesting the executor deliberately treated deep security-hardening as another workflow's
-job. If the project's intent is that `/gsd-secure-phase` is the correct venue for the actual
-fix, the fix could be deferred there — but the false "mitigate"/"pinned as a regression"
-claims in this phase's own threat model and test docstring should not stand uncorrected,
-since a future reader (or an automated gate) could reasonably treat them as proof this is
-already handled.
-
-**To accept this as out-of-scope for Phase 14** (deferring the fix to `/gsd-secure-phase`
-while requiring only the false-claim correction here), add to VERIFICATION.md frontmatter:
-
-```yaml
-overrides:
-  - must_have: "The agent's filekv store serves configs safely with no silent wrong answers"
-    reason: "Path-traversal guard predates Phase 14 (commit 0745e19); canon security fix is scoped to /gsd-secure-phase per 14-02's own prohibition_breadcrumbs. Accepting with the requirement that 14-02/14-07's threat-model 'mitigate' claims and TestGetRejectsTraversalKey's docstring be corrected to not overclaim."
-    accepted_by: "{name}"
-    accepted_at: "{ISO timestamp}"
-```
+Three non-blocking findings from the code review (cross-package containment-check duplication, an undocumented symlink caveat on the write path, and an unrejected empty `in.Path`) are recorded as advisory items — none is a working bypass of the fix this phase's goal required, and the empty-path behavior predates 14-09 and was explicitly out of its declared scope. These are candidates for a future hardening pass, not blockers to Phase 14's goal.
 
 ---
 
-_Verified: 2026-09-08T21:35:00Z_
+_Verified: 2026-09-08T23:30:00Z_
 _Verifier: Claude (gsd-verifier)_
