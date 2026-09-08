@@ -2,29 +2,17 @@
 phase: 14-non-compiler-consumer-correctness
 reviewed: 2026-09-08T00:00:00Z
 depth: standard
-files_reviewed: 16
+files_reviewed: 4
 files_reviewed_list:
   - agent/filekv/filekv.go
-  - agent/filekv/filekv_race_test.go
   - agent/filekv/filekv_test.go
-  - agent/kv_agent_race_test.go
-  - compiler/lib/module_service.go
-  - compiler/lib/parser/loaded_file_count_test.go
-  - devserver/command.go
-  - inserter/inserter.go
-  - inserter/lazy_resolution_test.go
-  - mutate/mutate.go
-  - mutate/mutate_test.go
-  - server/gen_reflection_ui_test.go
-  - server/legacy.go
-  - server/mutate_config_race_test.go
+  - server/mutate_config_path_test.go
   - server/server.go
-  - server/server_test.go
 findings:
-  critical: 1
+  critical: 0
   warning: 3
-  info: 2
-  total: 6
+  info: 1
+  total: 4
 status: issues_found
 ---
 
@@ -32,94 +20,74 @@ status: issues_found
 
 **Reviewed:** 2026-09-08T00:00:00Z
 **Depth:** standard
-**Files Reviewed:** 16
+**Files Reviewed:** 4
 **Status:** issues_found
 
 ## Summary
 
-Phase 14 moves the inserter, agent/filekv, the mutation server, and the mutate CLI onto `lib.NewLazyModuleService` and the shared tiered `parser.TypeResolver`, and adds a substantial race/concurrency test suite plus a real fix in `server/legacy.go` (Marshal/Unmarshal replacing a `proto.Merge` across two wire-compatible-but-distinct message types). The `NewLazyModuleService` cutover itself is applied consistently — every non-`mod-sync` consumer now goes through it, and every place a resolver needed to see lazily-parsed types was switched from `LocalResolver` to `TypeResolver`. `server/legacy.go`'s fix is sound: both directions (request in→next, response result→out) are marshaled/unmarshaled with error checks on every step, and no path silently drops an error. `server/server.go`'s `collectExamples`/`reflectionFailure` refactor correctly continues past per-file failures instead of aborting the whole reflection walk, and the fingerprint-based log-on-change guard is order-independent and reason-sensitive as documented, verified with dedicated unit tests.
+This is an incremental review of gap-closure plan 14-09: `agent/filekv.resolveKeyPath` (shared by `Get`/`Watch`) and a containment check added to `server.MutateConfig` on the caller-supplied `in.Path`. Both checks were traced against the specific failure modes the prior review (`0ebb5b6`, CR-01/WR-03) recorded: prefix-match pitfalls, `..`-prefixed keys that `filepath.Clean` cannot collapse, and whether the guard precedes every filesystem/exec side effect.
 
-The one blocking issue is in `agent/filekv/filekv.go`'s `Get`/`Watch` path-traversal guard, which the phase's own new test (`TestGetRejectsTraversalKey`) asserts protects against directory traversal but which a live reproduction shows does not: it does not reject a caller-supplied key that already contains an unresolved `..` segment before the first real path component, so a key like `../etc/passwd` or `../secret/leak` sails through the guard and reaches `os.Stat`/`ReadConfig` for a path outside `protoconfRoot`. This guard predates this phase's diff, but the phase both retained the vulnerable code unchanged and added a new "regression" test that gives false confidence it is fixed, because the test only asserts "an error occurred" rather than "no file outside protoconfRoot was read."
+**Both fixes are correct for the lexical containment they claim.** `resolveKeyPath`'s `filepath.Rel`-based check (not a naive string-prefix check) correctly rejects sibling-directory-name-prefix escapes, and correctly rejects every traversal key traced through it (`../secret/leak`, `../../x`, a bare `..`, an absolute-looking key) — confirmed by tracing `filepath.Join`/`filepath.Clean`'s actual string-cleaning behavior against each case, not just by reading the code. `server.MutateConfig`'s new check is placed before every side effect on the write path (protojson marshal, pre/post scripts, `MkdirAll`, `WriteFile`) exactly as its comment claims, and the legacy gRPC service (`server/legacy.go`) and the dynamic `Put` handler both route through the same `MutateConfig`, so there is no bypass via an alternate entry point. I did not find a working traversal bypass in either check.
 
-## Critical Issues
-
-### CR-01: filekv path-traversal guard does not stop `../`-prefixed keys; new regression test is a false negative
-
-**File:** `agent/filekv/filekv.go:96-100` (also `agent/filekv/filekv.go:138-140` for `Watch`)
-**Issue:** `Get` and `Watch` both gate on:
-```go
-if key != filepath.ToSlash(filepath.Clean(key)) || key == "" {
-    return nil, fmt.Errorf("invalid path to get, path=%s", key)
-}
-```
-`filepath.Clean` only collapses lexical redundancy (`./`, `//`, trailing `/`, resolvable `a/../b`); it cannot remove a **leading** `..` because there is no preceding path segment to cancel it against. So for `key = "../etc/passwd"` or `key = "../secret/leak"`, `filepath.Clean(key) == key`, the guard's inequality is false, and the key passes straight through to:
-```go
-absPath := filepath.Join(s.protoconfRoot, key+consts.CompiledConfigExtension)
-```
-which resolves to a path *outside* `protoconfRoot`. Reproduced directly:
-```go
-// root = <tmp>/protoconfRoot, secret file at <tmp>/secret/leak.materialized_JSON
-key := "../secret/leak"
-key == filepath.ToSlash(filepath.Clean(key)) // true -- guard does NOT reject it
-absPath := filepath.Join(root, key+".materialized_JSON")
-// => <tmp>/secret/leak.materialized_JSON  (outside root)
-os.ReadFile(absPath) // succeeds, returns "SECRET_DATA"
-```
-This is a genuine path-traversal vulnerability in a KV store `Get`/`Watch` implementation that is reachable from any gRPC client that can pick the `path` for `SubscribeForConfig` (agent's public API surface).
-
-The phase's own new test, `TestGetRejectsTraversalKey` (`agent/filekv/filekv_test.go:306-320`), calls this "the existing traversal guard as a regression" but only asserts `require.Error(t, err)`. In the test's temp-dir fixture, `../etc/passwd.materialized_JSON` simply doesn't exist, so `os.Stat` returns `ErrNotExist` → `store.ErrKeyNotFound`, which is non-nil and passes the assertion — without the guard itself ever having fired. The test therefore cannot fail even if an attacker-reachable file did exist at the traversed location; it validates the wrong thing.
-
-**Fix:** Reject any key containing a `..` path element explicitly (mirroring `validateScriptPath`'s `strings.Contains(path, "..")` in `server/server.go`), or resolve the joined path and verify it remains under `protoconfRoot` via `filepath.Rel`/prefix check:
-```go
-cleaned := filepath.ToSlash(filepath.Clean(key))
-if key != cleaned || key == "" || strings.HasPrefix(cleaned, "../") || cleaned == ".." {
-    return nil, fmt.Errorf("invalid path to get, path=%s", key)
-}
-```
-and strengthen `TestGetRejectsTraversalKey` to place a real file outside `protoconfRoot` at the traversal target and assert it is *not* returned (or that the specific "invalid path" error is produced), not merely that some error occurred.
+What remains: the two containment checks are two independent, differently-strict implementations of the same pattern (a duplication the `resolveKeyPath` refactor explicitly set out to eliminate at the `Get`/`Watch` level, but not across packages); the symlink caveat that `filekv` documents and deliberately accepts is left undocumented for the higher-stakes write path in `server.go`; and `MutateConfig` silently accepts an empty `in.Path` instead of rejecting it, producing a confusingly-named file rather than a clear validation error.
 
 ## Warnings
 
-### WR-01: `filekv.readEvents` can panic on send-to-closed-channel under concurrent `Close`
+### WR-01: Containment logic is duplicated across packages with different strictness, reintroducing the drift risk the refactor was meant to close
 
-**File:** `agent/filekv/filekv.go:252-281`
-**Issue:** `readEvents` snapshots the channel slice for a path under `w.lock`, releases the lock, then sends on each channel outside the lock:
+**File:** `agent/filekv/filekv.go:122-135` vs `server/server.go:517-528`
+**Issue:** `resolveKeyPath`'s own doc comment (`filekv.go:101-103`) states its purpose is to be "the single place in this package that turns a caller-supplied key into a filesystem path... so the two call sites cannot drift apart." That's a direct response to the prior review's WR-03, which flagged `Get` and `Watch` drifting apart. But the same shape of check now exists a second time in `server.MutateConfig`, as an inline block with no shared helper, and it is *not* equivalent:
+
+- `resolveKeyPath` rejects the raw key outright unless it already equals `filepath.ToSlash(filepath.Clean(key))` — e.g. `"./x"`, `"a//b"`, `"a/../b"` are rejected even though they'd resolve to a contained path.
+- `server.MutateConfig` never checks the raw `in.Path` form at all; it runs `filepath.Clean(in.Path)` unconditionally and only checks the *result* for containment via `filepath.Rel`. The same three examples above are silently accepted and normalized.
+
+Neither is unsafe on its own (both correctly reject real escapes), but there are now two independently-maintained implementations of a security-relevant lexical check with different behavior for the same input class, in two different packages, with no shared test or shared code to keep them in sync. That is exactly the condition that produced the prior CR-01 (a variant of this check drifted in `Get` vs. the fix, and the regression test didn't catch it).
+**Fix:** Extract the "clean-and-contain" check into one small shared helper (e.g. a `pathsafe.ResolveContained(base, key string) (string, error)` in a tiny new package, or on `consts`) and have both `filekv.resolveKeyPath` and `server.MutateConfig` call it:
 ```go
-w.lock.Lock()
-channels := append([]chan struct{}(nil), w.watches[event.Name]...)
-w.lock.Unlock()
-for _, channel := range channels {
-    channel <- struct{}{}
+// pathsafe.ResolveContained joins key under base and guarantees the result
+// stays inside base, rejecting any non-canonical raw key form as well as
+// any lexical escape.
+func ResolveContained(base, key string) (string, error) {
+	if key == "" || key != filepath.ToSlash(filepath.Clean(key)) {
+		return "", fmt.Errorf("%w: path=%s", ErrInvalidPath, key)
+	}
+	abs := filepath.Join(base, key)
+	rel, err := filepath.Rel(base, abs)
+	if err != nil || rel == ".." || strings.HasPrefix(rel, ".."+string(filepath.Separator)) {
+		return "", fmt.Errorf("%w: path=%s", ErrInvalidPath, key)
+	}
+	return abs, nil
 }
 ```
-If `Store.Close()` (→ `closeWatchers`) runs concurrently between the unlock and the send, it closes the same channel that `readEvents` is about to write to, causing a "send on closed channel" panic. The code already carries a `ponytail:` comment acknowledging this as a known ceiling ("fine under normal operation... Close() is typically called once at shutdown"), but `Close()` is a public method with no documented single-caller contract, and `devserver`/tests call it from `t.Cleanup` while `readEvents` keeps running until the fsnotify watcher itself closes. This is a real crash path, not merely a style nit.
-**Fix:** Follow the upgrade path already named in the comment: replace per-watch channel-close-as-signal with one shared `done` channel closed exactly once by `Close`, and have `Watch`'s select read from `done` instead of relying on the closed per-watch channel; or send under the same lock that governs `closeWatchers`.
+Callers append their own suffix (extension) before or after calling, as needed.
 
-### WR-02: `GenReflectionUI` spins up a new bufconn listener + `grpc.Server.Serve` goroutine on every call, permanently retained until `ctx` cancellation
+### WR-02: Write-path containment check has no symlink caveat, unlike the read-path check it mirrors
 
-**File:** `server/server.go:751-794` (unchanged by this phase's diff, but exercised much harder by the new 5s-ticker `_ = ...GenReflectionUI(...)` call sites in `server/server.go:199`, `devserver/command.go:100`, and the new `TestMutateConfigConcurrentClientsAreRaceFree`/`TestGenReflectionUIConcurrentCallsAreRaceFree` tests that call it in a tight loop / on every tick)
-**Issue:** Each `GenReflectionUI` call does `bufconn.Listen`, spawns a goroutine calling `rpcServer.Serve(lis)`, and registers a `context.AfterFunc(ctx, func() { rpcServer.GracefulStop() })`. None of these are cleaned up between calls — they all live until the *outer* `ctx` (the process lifetime context) is cancelled. In production this call happens every 5 seconds for the life of the server, so every tick permanently adds one more listener, one more goroutine, and one more `AfterFunc` registration that is never released early. This is a resource/goroutine leak; flagged as a warning rather than blocker per the review's performance/out-of-scope carve-out, but it is now exercised far more aggressively by phase 14's new tests and ticker call sites, so its severity in a long-running mutation server grows accordingly.
-**Fix:** Track and explicitly stop/close the previous cycle's `lis`/goroutine before starting a new one, or restructure `GenReflectionUI` to reuse one long-lived bufconn/gRPC listener across calls instead of creating a fresh one per invocation.
+**File:** `server/server.go:517-528`
+**Issue:** `filekv.resolveKeyPath` carries an explicit `ponytail:` comment (`filekv.go:116-121`) acknowledging the check is lexical only — a symlink planted inside `protoconfRoot` pointing outside it defeats it — and argues the risk is acceptable because planting such a symlink already requires write access to the config repo. `server.MutateConfig`'s new check is the same lexical pattern (`filepath.Clean` + `filepath.Rel`, no `EvalSymlinks`), applied to the *write* path, but carries no equivalent note.
 
-### WR-03: `Watch`'s traversal guard shares the same flaw as `Get`'s (see CR-01) but is harder to exploit for read, still enables watching outside-root files
+The asymmetry matters here more than it might first appear: `MutateConfig` itself can only create regular files (`os.WriteFile`) and directories (`os.MkdirAll`), so it can't plant the symlink itself — but if a symlink is ever planted under `mutable_config/` by any other means (a prior less-strict server version, a manual ops action, a bind-mount, an admin script), every subsequent "contained" `MutateConfig` call whose path traverses through that symlinked directory component silently writes outside `mutableConfigBase` while this check reports success. That is a stronger consequence than `filekv`'s read-path case (an unexpected read vs. an unexpected write), so the same accepted-risk reasoning deserves being made explicit here rather than silently inherited.
+**Fix:** At minimum, mirror the `ponytail:` comment here with the write-path-specific risk noted explicitly. If the acceptance bar is different for a write path, consider resolving `mutableConfigBase` (and `filepath.Dir(filename)`) via `filepath.EvalSymlinks` once and re-checking containment against the resolved form before `MkdirAll`/`WriteFile` — the cost is one extra syscall on the already-infrequent mutation path, not the hot `Get` path where the `ponytail` comment's cost argument was made.
 
-**File:** `agent/filekv/filekv.go:138-140`
-**Issue:** `Watch` uses the identical `key != filepath.ToSlash(filepath.Clean(key))` guard as `Get`. While `fsnotify.Add` requires the target file to already exist (limiting blind exploitation), a caller who knows or can guess an absolute or `../`-reachable materialized-JSON path outside `protoconfRoot` can still register a watch and stream its contents via the returned channel (which itself calls the vulnerable `Get`).
-**Fix:** Same fix as CR-01, applied to both `Get` and `Watch` (ideally factored into one shared `validateKey` helper so the two call sites cannot drift).
+### WR-03: `MutateConfig` accepts an empty `in.Path` and silently writes a confusingly-named file instead of rejecting it
+
+**File:** `server/server.go:518, 526-528`
+**Issue:** `filekv.resolveKeyPath` explicitly rejects `key == ""` (`filekv.go:123`). `server.MutateConfig`'s new containment check has no equivalent: `filepath.Clean("")` returns `"."`, and because the extension is concatenated onto the cleaned string *before* `filepath.Join` (`filename := filepath.Join(mutableConfigBase, filepath.Clean(in.Path)+consts.CompiledConfigExtension)`), an empty `in.Path` produces the literal filename `..materialized_JSON` (two leading dots, not a `..` traversal segment) — which passes the containment check (it's a normal file under `mutableConfigBase`) and is silently written, scripted around, and (when `s.compiler` is set) picked up by the subsequent compile pass over `mutable_config/`. A client bug that leaves `Path` unset produces a working-but-bizarre config entry instead of a clear error.
+**Fix:** Reject the degenerate case explicitly, alongside the existing containment check:
+```go
+if in.Path == "" || filepath.Clean(in.Path) == "." {
+    return nil, logError(fmt.Errorf("mutation path must not be empty"))
+}
+```
+placed before `filename` is computed, so the empty-path rejection reads the same way as the containment rejection that follows it.
 
 ## Info
 
-### IN-01: `reflectionFailure.path` field is inconsistently absolute vs. relative depending on failure site
+### IN-01: Stale test comment describes behavior the test doesn't exercise
 
-**File:** `server/server.go:301-305`, `667-687`
-**Issue:** For a directory-level walk error (`err != nil` in the `WalkDir` callback), `failures` gets the raw (root-relative-or-absolute, whichever `WalkDir` handed in) `path`. For every other failure branch, `failures` gets `relPath` (computed via `filepath.Rel(root, path)`). The struct comment documents this ("mutable_config/-relative path, or the walk root on a directory-level error"), so it's intentional, but it means `reflectionFailureFingerprint`'s per-line format (`path|typeURL|err`) mixes two different path conventions depending on failure class, which could be surprising to a future maintainer diffing fingerprints across releases.
-**Fix:** Consider normalizing both branches to root-relative paths (falling back to the raw path only if `filepath.Rel` itself fails) for a more uniform fingerprint format. Low priority — no functional impact today.
-
-### IN-02: `compiler/lib/module_service.go` `DownloadDeps` retains dead-code error check
-
-**File:** `compiler/lib/module_service.go:512-531` (pre-existing, not modified by this phase's diff, but in the reviewed file set)
-**Issue:** `if errors.Is(err, os.ErrNotExist) || errors.Is(err, &os.PathError{})` — the second disjunct can never be true: `errors.Is` on a freshly-constructed `&os.PathError{}` target compares by identity/`Is()` method, and `*os.PathError` implements neither in a way that makes an unrelated `*os.PathError` instance match. The first disjunct (`os.ErrNotExist`) already does the real work, so this is harmless but dead.
-**Fix:** Drop the redundant `errors.Is(err, &os.PathError{})` disjunct.
+**File:** `agent/filekv/filekv_test.go:418-421`
+**Issue:** `TestWatch_ContextCancellation`'s body comment says "Let's test invalid path validation instead" and describes a `materialized_config` subdirectory scenario that the test doesn't actually build or assert against — the test just calls `Watch` with a nonexistent path. The comment reads as leftover exploration notes rather than documentation of the test's actual intent, which could mislead a future reader trying to understand what invariant this test protects.
+**Fix:** Trim the comment to state what the test actually checks (`Watch` returns an error for a path whose target file doesn't exist), or fold it into the existing `TestWatch_NonExistentFile` test above it, which already covers the same behavior.
 
 ---
 
