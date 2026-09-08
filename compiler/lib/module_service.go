@@ -45,12 +45,14 @@ type ModuleService struct {
 	lazyRegistry bool
 }
 
-// NewLazyModuleService is the compiler's construction-only entry point
-// (D-01): its GetProtoRegistry() returns a near-empty registry configured
-// for on-demand parsing rather than eagerly walking and parsing all of
-// src/. Every other consumer (server, inserter, agent/filekv, mutate, mod
-// sync) must keep using NewModuleService — they still depend on an
-// eagerly-populated registry at construction time.
+// NewLazyModuleService is a construction-only entry point (D-01): its
+// GetProtoRegistry() returns a near-empty registry configured for on-demand
+// parsing rather than eagerly walking and parsing all of src/. The compiler,
+// the mutation server, the inserter, agent/filekv and the mutate CLI all
+// construct through it. mod sync is the sole remaining NewModuleService
+// consumer, because it serializes the whole tree to a lock file and needs
+// every proto under src/ by definition — a lazy registry would write a
+// truncated cache that then loads clean and is wrong.
 func NewLazyModuleService(protoconfRoot string) (*ModuleService, error) {
 	m, err := NewModuleService(protoconfRoot)
 	if err != nil {
