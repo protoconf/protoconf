@@ -57,7 +57,7 @@ Cost scales with repository size, not with the config. The config `load()`s 5 pr
 - [ ] Migrate from jhump/protoreflect/dynamic to dynamicpb
 - [x] Lazy, load-driven proto resolution — parse and link only what a config reaches (v2.0) — Validated in Phase 11: Concurrency-Safe Lazy Registry Core (LAZY-01..05)
 - [x] Resolvers as lazy views over the registry, replacing eager snapshots (v2.0) — Validated in Phase 12: Growable Resolver Views & Race Safety (RSLV-01..03, SAFE-01)
-- [ ] Exact symbol index (parse without linking) resolving type URLs, including nested Any, across all six registry consumers (v2.0) — Compiler consumers done in Phase 13 (TYPE-01..09, CONS-05); `inserter/`, `mutate/` and three remaining `server.go` sites are fenced off by D-03 and land in Phase 14
+- [x] Exact symbol index (parse without linking) resolving type URLs, including nested Any, across all six registry consumers (v2.0) — Validated in Phase 13 (compiler consumers: TYPE-01..09, CONS-05) and Phase 14: Non-Compiler Consumer Correctness (`inserter/`, `mutate/`, the agent's filekv store and the remaining `server.go` sites: CONS-02..04, SAFE-02, SAFE-03)
 - [x] Symbol index persisted under `.protoconf_cache`, content-keyed and invalidated on change (v2.0) — Validated in Phase 13: Exact Symbol Index & Shared Type-URL Resolution (TYPE-04, TYPE-05, TYPE-06)
 - [x] Loud (never silent) fallback when a type URL cannot be resolved (v2.0) — Validated in Phase 13: the whole-tree eager fallback is deleted and an exhausted chain returns a `protoregistry.NotFound`-wrapping error naming the type URL, the roots searched, and the index state (TYPE-08)
 - [x] Add TLS support for gRPC connections — Validated in Phase 5: TLS Support
@@ -110,6 +110,8 @@ Cost scales with repository size, not with the config. The config `load()`s 5 pr
 | Delete the whole-tree eager fallback outright rather than keep it behind a warning (D-02) | Leaving the 4.6s path reachable is what this milestone exists to prevent; a scan and index blind spot should fail loudly, not silently cost 4.6s | ✓ Shipped in Phase 13 — confirmed at a one-way checkpoint after 13-01/13-02 evidence showed no uncovered resolution case |
 | Resolve every in-compiler type URL through one shared `RegistryTypeResolver` chokepoint, not per-consumer lookups | A per-consumer lookup is how `loadMutable` silently bypassed the chain (CONS-05); one chain means one place to fix and one place to observe | ✓ Shipped in Phase 13 — `resolveTiers` is the single chain both `FindMessageByURL` and `FindMessageByName` delegate to |
 | Marshal gRPC-UI examples with the shared resolver instead of handing grpcui a proto message | `standalone.ExampleRequest.MarshalJSON` hardcodes a resolver-less `protojson.Marshal` against `protoregistry.GlobalTypes`, which can never hold a type declared only in the user's `.proto` tree | ✓ Shipped in Phase 13 — caught by the regression gate; narrows CONS-04's Phase 14 surface |
+| Fix the `MutateConfig` write-path escape inside Phase 14 rather than deferring it | The gap-closure plan's sibling audit found the same defect class, in a weaker form, on a write path; deferring a known unguarded `os.WriteFile` of caller-controlled content to ship a narrower fix trades a real hole for schedule neatness | ✓ Shipped in Phase 14 (14-09) — containment check precedes marshal, pre-mutation script, `MkdirAll` and `WriteFile` |
+| A test cited as a security control must be demonstrated capable of failing before its guard lands | Phase 14 shipped a traversal test that could not fail, and two threat-model rows plus a docstring then cited it as a mitigation — false assurance is worse than a known gap | ✓ Shipped in Phase 14 (14-09) — RED `--- FAIL:` output recorded verbatim in each commit body; verification independently reproduced it against the pre-fix commits |
 
 ## Evolution
 
@@ -129,4 +131,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-09-08 after Phase 13 completion*
+*Last updated: 2026-09-08 after Phase 14 completion*

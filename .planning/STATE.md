@@ -25,7 +25,7 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-04)
 
 **Core value:** Every component must be testable, consistent, and free of runtime surprises
-**Current focus:** Phase 14 — Non-Compiler Consumer Correctness
+**Current focus:** Phase 15 — Verification, Decision & Gate Flip
 
 ## Current Position
 
@@ -34,7 +34,7 @@ Plan: Not started
 Status: Ready to plan
 Last activity: 2026-09-08 — Phase 14 complete, transitioned to Phase 15
 
-Progress: [██░░░░░░░░] 20%
+Progress: [████████████████░░░░] 4/5 phases (80%)
 
 ## Performance Metrics
 
