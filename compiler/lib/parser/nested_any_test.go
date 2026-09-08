@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
@@ -224,4 +225,32 @@ func TestReadConfigTwoSiblingAnysNamesTheFailingOne(t *testing.T) {
 	// sentinel at the boundary that actually owns it.
 	_, directErr := p.TypeResolver.FindMessageByURL(secondURL)
 	require.ErrorIs(t, directErr, protoregistry.NotFound)
+}
+
+// TestResolveEscalatesToIndex pins D-01's tier order: a symbol the scan
+// cannot narrow to a candidate -- because more than scanCandidateLimit (32,
+// unexported in utils) files under its package directory match the lexical
+// pattern -- still resolves, and does so through the index tier (Tier 3),
+// never the scan tier.
+func TestResolveEscalatesToIndex(t *testing.T) {
+	// One more than utils' unexported scanCandidateLimit (32), so
+	// symbolScanCandidates must return nil and LoadSymbolByScan must miss.
+	const overScanLimit = 33
+
+	src := t.TempDir()
+	dir := filepath.Join(src, "esc", "v1")
+	require.NoError(t, os.MkdirAll(dir, 0o755))
+	for i := 0; i < overScanLimit; i++ {
+		body := fmt.Sprintf("syntax = \"proto3\";\npackage esc.v1;\n\nmessage Thing {\n  string f%d = 1;\n}\n", i)
+		require.NoError(t, os.WriteFile(filepath.Join(dir, fmt.Sprintf("f%d.proto", i)), []byte(body), 0o644))
+	}
+
+	registry, p := newLazyParser(src)
+
+	mt, err := p.TypeResolver.FindMessageByURL("type.googleapis.com/esc.v1.Thing")
+	require.NoError(t, err)
+	require.NotNil(t, mt)
+
+	require.Equal(t, 1, registry.IndexBuildCount())
+	require.Equal(t, 0, registry.ScanResolutionCount())
 }
