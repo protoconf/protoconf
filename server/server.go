@@ -18,6 +18,7 @@ import (
 	"os/signal"
 	"path/filepath"
 	"regexp"
+	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -193,11 +194,15 @@ func (c *cliCommand) run(ctx context.Context, args []string) int {
 			case <-ctx.Done():
 				return
 			case <-ticker.C:
-				protoconfServer.GenReflectionUI(ctx, rpcServer, httpServer)
+				// GenReflectionUI logs failures itself (log-on-change); the
+				// ticker must keep running regardless of the returned error.
+				_ = protoconfServer.GenReflectionUI(ctx, rpcServer, httpServer)
 			}
 		}
 	}()
-	protoconfServer.GenReflectionUI(ctx, rpcServer, httpServer)
+	// GenReflectionUI logs failures itself (log-on-change); a failed pass
+	// here must not abort server startup.
+	_ = protoconfServer.GenReflectionUI(ctx, rpcServer, httpServer)
 	context.AfterFunc(ctx, func() {
 		httpServer.Shutdown(ctx)
 	})
@@ -281,6 +286,40 @@ type ProtoconfMutationServer struct {
 	PreMutationScript  string
 	PostMutationScript string
 	compiler           *lib.Compiler
+
+	// reflectionMu guards lastReflectionFingerprint, which is written by both
+	// the GenReflectionUI ticker goroutine and the inline caller (CONS-04
+	// change-detection state, T-14-09).
+	reflectionMu              sync.Mutex
+	lastReflectionFingerprint string
+}
+
+// reflectionFailure records one mutable_config/ entry that GenReflectionUI's
+// walk could not turn into a reflection example, so the walk can keep going
+// past it (CONS-04, D-05) instead of aborting and silently dropping every
+// example that would have followed it.
+type reflectionFailure struct {
+	path    string // mutable_config/-relative path, or the walk root on a directory-level error
+	typeURL string // empty when ReadConfig failed before a type URL was available
+	err     error
+}
+
+// reflectionFailureFingerprint builds an order-independent, reason-sensitive
+// summary of a failure set so GenReflectionUI can log the aggregate only when
+// it actually changes between passes (D-05 part 3). Sorting makes two passes
+// that surface the same failures in a different walk order compare equal;
+// including the error text makes a config that changes from one failure
+// reason to a different one re-log.
+func reflectionFailureFingerprint(failures []reflectionFailure) string {
+	if len(failures) == 0 {
+		return ""
+	}
+	lines := make([]string, 0, len(failures))
+	for _, f := range failures {
+		lines = append(lines, f.path+"|"+f.typeURL+"|"+f.err.Error())
+	}
+	sort.Strings(lines)
+	return strings.Join(lines, "\n")
 }
 
 type MutationServerOption func(*ProtoconfMutationServer)
@@ -612,51 +651,105 @@ func (s *ProtoconfMutationServer) runScript(filename, uuid, authToken, scriptMet
 	return nil
 }
 
-func (s *ProtoconfMutationServer) GenReflectionUI(ctx context.Context, rpcServer *grpc.Server, httpServer *http.Server) error {
+// collectExamples walks mutable_config/ and resolves each config into a
+// grpcui example. Unlike a plain filepath.WalkDir consumer, it never aborts
+// the walk on a resolution failure (CONS-04, D-05 part 1): every failure is
+// collected into the returned aggregate error instead, naming the failing
+// path, its type URL, and the wrapped underlying error (D-05 part 2). This
+// is an unexported method (not a free function) so a same-package test can
+// assert on both the surviving examples and the aggregate without reaching
+// through httpServer.Handler.
+func (s *ProtoconfMutationServer) collectExamples() ([]standalone.Example, error) {
 	examples := []standalone.Example{}
-	filepath.WalkDir(filepath.Join(s.protoconfRoot, consts.MutableConfigPath), func(path string, info fs.DirEntry, err error) error {
+	var failures []reflectionFailure
+
+	root := filepath.Join(s.protoconfRoot, consts.MutableConfigPath)
+	walkErr := filepath.WalkDir(root, func(path string, info fs.DirEntry, err error) error {
 		if err != nil {
-			return err
+			// An absent mutable_config/ directory is not a server failure —
+			// filepath.WalkDir reports it here, at the root path, as an
+			// fs.ErrNotExist. Every other directory-level I/O error (e.g. an
+			// unreadable subdirectory) is collected like a per-file failure,
+			// and the walk continues rather than aborting.
+			if path == root && errors.Is(err, fs.ErrNotExist) {
+				return nil
+			}
+			failures = append(failures, reflectionFailure{path: path, err: err})
+			return nil
 		}
 		if info.IsDir() {
 			return nil
 		}
+		relPath, _ := filepath.Rel(root, path)
 		value := &protoconf_pb.ProtoconfValue{}
-		err = s.parser.ReadConfig(path, value)
-		if err != nil {
+		if err := s.parser.ReadConfig(path, value); err != nil {
 			logger.Error("error reading config", "path", path, "err", err)
+			failures = append(failures, reflectionFailure{path: relPath, err: err})
 			return nil
 		}
 		// TypeResolver, not LocalResolver: LocalResolver is a construction-time
 		// snapshot and cannot see a type parsed lazily after it (CONS-05).
-		mt, err := s.parser.TypeResolver.FindMessageByURL(value.GetValue().GetTypeUrl())
+		typeURL := value.GetValue().GetTypeUrl()
+		mt, err := s.parser.TypeResolver.FindMessageByURL(typeURL)
 		if err != nil {
-			logger.Error("error finding message", "url", value.GetValue().GetTypeUrl(), "err", err)
-			return err
+			logger.Error("error finding message", "url", typeURL, "err", err)
+			failures = append(failures, reflectionFailure{path: relPath, typeURL: typeURL, err: err})
+			return nil
 		}
 		dynamic := dynamicpb.NewMessage(mt.New().Descriptor())
 
-		err = value.GetValue().UnmarshalTo(dynamic)
-		if err != nil {
+		if err := value.GetValue().UnmarshalTo(dynamic); err != nil {
 			logger.Error("error unmarshaling any", "err", err)
-			return err
+			failures = append(failures, reflectionFailure{path: relPath, typeURL: typeURL, err: err})
+			return nil
 		}
-		path, _ = filepath.Rel(filepath.Join(s.protoconfRoot, consts.MutableConfigPath), path)
-		path = strings.TrimSuffix(path, consts.CompiledConfigExtension)
-		logger.Debug("example", "path", path, "value", dynamic)
+		relPath = strings.TrimSuffix(relPath, consts.CompiledConfigExtension)
+		logger.Debug("example", "path", relPath, "value", dynamic)
 		if f, ok := s.exampleMaker[string(mt.Descriptor().FullName())]; ok {
 			// Marshal here, with the shared resolver, so a nested Any resolves.
 			data, err := protojson.MarshalOptions{Resolver: s.parser.TypeResolver}.Marshal(dynamic)
 			if err != nil {
-				logger.Error("error marshaling example", "path", path, "err", err)
+				logger.Error("error marshaling example", "path", relPath, "err", err)
 				return nil
 			}
-			examples = append(examples, f(path, json.RawMessage(data)))
+			examples = append(examples, f(relPath, json.RawMessage(data)))
 		}
 
 		return nil
 	})
+	if walkErr != nil && !errors.Is(walkErr, fs.ErrNotExist) {
+		failures = append(failures, reflectionFailure{path: root, err: walkErr})
+	}
 	logger.Debug("examples", "examples", examples)
+
+	// Log-on-change (D-05 part 3): only report the aggregate when the failure
+	// set actually differs from the previous pass, otherwise a persistently
+	// broken config on the 5-second ticker would emit ~720 lines an hour.
+	fingerprint := reflectionFailureFingerprint(failures)
+	s.reflectionMu.Lock()
+	changed := fingerprint != s.lastReflectionFingerprint
+	s.lastReflectionFingerprint = fingerprint
+	s.reflectionMu.Unlock()
+
+	if len(failures) == 0 {
+		if changed {
+			logger.Info("reflection UI examples recovered: no unresolvable mutable configs remain")
+		}
+		return examples, nil
+	}
+
+	var aggregate error
+	for _, f := range failures {
+		aggregate = errors.Join(aggregate, fmt.Errorf("mutable config %q (type %q): %w", f.path, f.typeURL, f.err))
+	}
+	if changed {
+		logger.Error("error generating reflection UI examples", "err", aggregate)
+	}
+	return examples, aggregate
+}
+
+func (s *ProtoconfMutationServer) GenReflectionUI(ctx context.Context, rpcServer *grpc.Server, httpServer *http.Server) error {
+	examples, collectErr := s.collectExamples()
 	ex, err := standalone.WithExamples(examples...)
 	if err != nil {
 		slog.Default().Error("error creating examples", "err", err)
@@ -697,5 +790,5 @@ func (s *ProtoconfMutationServer) GenReflectionUI(ctx context.Context, rpcServer
 		}
 	})
 	httpServer.Handler = h2c.NewHandler(mux, &http2.Server{})
-	return nil
+	return collectErr
 }

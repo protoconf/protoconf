@@ -156,9 +156,14 @@ func TestProtoconfMutationServer_GenReflectionUI(t *testing.T) {
 	httpServer := &http.Server{}
 
 	err = server.GenReflectionUI(ctx, rpcServer, httpServer)
-	if err != nil {
-		t.Errorf("GenReflectionUI returned an error: %v", err)
-	}
+	// SmallTestDir's mutable_config/ carries two intentionally-broken
+	// fixtures (bad_json, bad_proto_file) that fail inside ReadConfig.
+	// CONS-04/D-05 requires GenReflectionUI to report those rather than
+	// silently skip them, so a non-nil error naming both is the correct
+	// outcome here, not a failure.
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "bad_json")
+	assert.Contains(t, err.Error(), "bad_proto_file")
 
 	assert.NotNil(t, httpServer.Handler)
 }

@@ -84,7 +84,9 @@ func (d *DevServerCommand) Run(args []string) int {
 	httpSrv := &http.Server{
 		Addr: ":4300",
 	}
-	mutationServer.GenReflectionUI(ctx, rpcServer, httpSrv)
+	// GenReflectionUI logs failures itself (log-on-change); a failed pass
+	// here must not abort server startup.
+	_ = mutationServer.GenReflectionUI(ctx, rpcServer, httpSrv)
 
 	go func() {
 		ticker := time.NewTicker(5 * time.Second)
@@ -93,7 +95,9 @@ func (d *DevServerCommand) Run(args []string) int {
 			case <-ctx.Done():
 				return
 			case <-ticker.C:
-				mutationServer.GenReflectionUI(ctx, rpcServer, httpSrv)
+				// GenReflectionUI logs failures itself (log-on-change); the
+				// ticker must keep running regardless of the returned error.
+				_ = mutationServer.GenReflectionUI(ctx, rpcServer, httpSrv)
 			}
 		}
 	}()
