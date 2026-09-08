@@ -5,16 +5,16 @@ milestone_name: Compiler Startup Performance (Planned)
 current_phase: 14
 current_phase_name: Non-Compiler Consumer Correctness
 status: executing
-stopped_at: Completed 14-07-PLAN.md
-last_updated: "2026-09-08T13:42:02.321Z"
+stopped_at: Completed 14-05-PLAN.md
+last_updated: "2026-09-08T14:00:12.417Z"
 last_activity: 2026-09-08
 last_activity_desc: Phase 14 execution started
-state_head: 2bae1b815a42fe733d1a6649ffae84c9b9a8b2a5
+state_head: 7431153cb76132330cb634e507bc3bec6e0146f4
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 21
-  completed_plans: 19
+  completed_plans: 20
   percent: 0
 ---
 
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-04)
 ## Current Position
 
 Phase: 14 (Non-Compiler Consumer Correctness) — EXECUTING
-Plan: 7 of 8
+Plan: 8 of 8
 Status: Ready to execute
 Last activity: 2026-09-08 — Phase 14 execution started
 
@@ -105,6 +105,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 14 P08 | 15min | 2 tasks | 1 files |
 | Phase 14 P04 | 15min | 2 tasks | 4 files |
 | Phase 14 P07 | 35min | 2 tasks | 2 files |
+| Phase 14 P05 | 30min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -200,6 +201,8 @@ Recent decisions affecting current work:
 - [Phase 14]: SAFE-03 escalation guard proven on the serving *utils.DescriptorRegistry handle: a single index-tier-only resolution grows the loaded-file count by exactly one closure, never the full candidate/corpus count; eight sequential resolutions over one long-lived registry stay bounded and end far below corpus size.
 - [Phase 14]: [Phase 14] [Phase 14-04] Fingerprinting/log-on-change lives inside collectExamples (not GenReflectionUI) since the mandated two-value return signature has no room for a third failures slice; collectExamples is production-only-called-from GenReflectionUI
 - [Phase 14]: [Phase 14] [Phase 14-04] Updated TestProtoconfMutationServer_GenReflectionUI to expect a non-nil error naming bad_json/bad_proto_file -- D-05 correctly surfaces those pre-existing ReadConfig failures instead of silently swallowing them
+- [Phase 14]: [Phase 14] [Phase 14-05] mutate CLI flipped to lib.NewLazyModuleService and parser.TypeResolver (D-01/D-03), completing all four consumer conversions; fixed a pre-existing server/legacy.go proto.Merge panic on cross-package conversion (Rule 1), exposed by the first real end-to-end mutate-CLI-to-server round trip
+- [Phase 14]: [Phase 14] [Phase 14-05] Corrected the plan's literal end-state gate to exclude _test.go files -- 14-01/14-02's intentional snapshot-vs-tiered contrast test assertions are verification code, not a second production resolution source, and the gate's own worked example predated those tests
 
 ### Pending Todos
 
@@ -232,6 +235,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-08T13:42:02.297Z
-Stopped at: Completed 14-07-PLAN.md
+Last session: 2026-09-08T14:00:12.394Z
+Stopped at: Completed 14-05-PLAN.md
 Resume file: None

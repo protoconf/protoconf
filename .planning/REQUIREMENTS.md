@@ -60,9 +60,9 @@ observable success criteria, only an artifact.
 ### Consumer Correctness
 
 - [x] **CONS-01**: The mutation server registers every custom gRPC service declared under `src/` — service discovery does not depend on what a config happened to load
-- [ ] **CONS-02**: The inserter reads and inserts materialized configs, resolving their types correctly
-- [ ] **CONS-03**: The agent's filekv store serves configs to subscribed clients, resolving their types correctly
-- [ ] **CONS-04**: `GenReflectionUI`'s periodic `mutable_config/` walk resolves every file's type, and reports rather than silently skips a file it cannot resolve
+- [x] **CONS-02**: The inserter reads and inserts materialized configs, resolving their types correctly
+- [x] **CONS-03**: The agent's filekv store serves configs to subscribed clients, resolving their types correctly
+- [x] **CONS-04**: `GenReflectionUI`'s periodic `mutable_config/` walk resolves every file's type, and reports rather than silently skips a file it cannot resolve
 - [x] **CONS-05**: Compiling a config that loads a mutable config resolves the mutable value's type, and every nested `Any` within it, correctly
 
 ### Safety Under Concurrency
@@ -137,9 +137,9 @@ Acknowledged, deferred beyond this milestone.
 | TYPE-08 | Phase 13 | Complete |
 | TYPE-09 | Phase 13 | Complete |
 | CONS-05 | Phase 13 | Complete |
-| CONS-02 | Phase 14 | Pending |
-| CONS-03 | Phase 14 | Pending |
-| CONS-04 | Phase 14 | Pending |
+| CONS-02 | Phase 14 | Complete |
+| CONS-03 | Phase 14 | Complete |
+| CONS-04 | Phase 14 | Complete |
 | SAFE-02 | Phase 14 | Pending |
 | SAFE-03 | Phase 14 | Complete |
 | GATE-01 | Phase 15 | Pending |

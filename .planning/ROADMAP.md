@@ -167,7 +167,7 @@ Plans:
   5. A long-running process handling many different configs over time keeps its loaded-file count proportional to what was actually demanded — it never jumps to the full repository count after one unusual request.
 
 **Measured impact**: Correctness-only — the "no regression, no silent wrong answers" pass. None of these four consumers were ever on the 200ms compile budget.
-**Plans**: 6/8 plans executed in 4 waves
+**Plans**: 7/8 plans executed in 4 waves
 
 Plans:
 **Wave 1** *(tracer — the whole architecture proven end-to-end on one consumer first)*
@@ -187,7 +187,7 @@ Plans:
 
 **Wave 4** *(blocked on Wave 3)*
 
-- [ ] 14-05-PLAN.md — `mutate` CLI flip, `NewLazyModuleService` doc-comment truth, and the repo-wide single-resolution-path end-state gate (CONS-02, CONS-03, CONS-04)
+- [x] 14-05-PLAN.md — `mutate` CLI flip, `NewLazyModuleService` doc-comment truth, and the repo-wide single-resolution-path end-state gate (CONS-02, CONS-03, CONS-04)
 - [ ] 14-06-PLAN.md — SAFE-02 mutation server: bufconn e2e with N concurrent clients plus a dedicated tight-loop race test (SAFE-02)
 
 ### Phase 15: Verification, Decision & Gate Flip
@@ -221,5 +221,5 @@ Phases execute in numeric order: 1 → 2 → ... → 10 → 11 → 12 → 13 →
 | 11. Concurrency-Safe Lazy Registry Core | v2.0 | 5/5 | Complete    | 2026-09-07 |
 | 12. Growable Resolver Views & Race Safety | v2.0 | 4/4 | Complete    | 2026-09-08 |
 | 13. Exact Symbol Index & Shared Type-URL Resolution | v2.0 | 4/4 | Complete    | 2026-09-08 |
-| 14. Non-Compiler Consumer Correctness | v2.0 | 6/8 | In Progress|  |
+| 14. Non-Compiler Consumer Correctness | v2.0 | 7/8 | In Progress|  |
 | 15. Verification, Decision & Gate Flip | v2.0 | 0/TBD | Not started | - |
