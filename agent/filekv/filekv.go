@@ -5,10 +5,12 @@ package filekv
 import (
 	"context"
 	"encoding/base64"
+	"errors"
 	"fmt"
 	"log/slog"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 
 	"github.com/fsnotify/fsnotify"
@@ -24,6 +26,11 @@ import (
 // StoreName the name of the store.
 // TODO implement me.
 const StoreName = "filekv"
+
+// ErrInvalidKey is returned when a caller-supplied key fails validation --
+// either because it is empty, because it is not already in its own cleaned
+// form, or because it resolves outside protoconfRoot.
+var ErrInvalidKey = errors.New("invalid key")
 
 // registers Example to Valkeyrie.
 func init() {
@@ -91,15 +98,49 @@ func (s *Store) Put(ctx context.Context, key string, value []byte, opts *store.W
 
 }
 
-// Get a value given its key.
-func (s *Store) Get(ctx context.Context, key string, opts *store.ReadOptions) (*store.KVPair, error) {
-	// Validate before building any path — this is the only thing stopping a
-	// caller-supplied key from escaping protoconfRoot via "..".
-	if key != filepath.ToSlash(filepath.Clean(key)) || key == "" {
-		return nil, fmt.Errorf("invalid path to get, path=%s", key)
+// resolveKeyPath is the single place in this package that turns a
+// caller-supplied key into a filesystem path. Both Get and Watch route
+// through it so the two call sites cannot drift apart (14-REVIEW.md WR-03).
+//
+// It rejects the empty key and any key not already in its own
+// filepath.ToSlash(filepath.Clean(key)) form -- preserving the
+// normalization rejection this package always had, so "./x", "a//b" and
+// "a/../b" keep failing exactly as before. On top of that it independently
+// checks containment: the joined absolute path must resolve inside
+// s.protoconfRoot via filepath.Rel. That containment check stands on its
+// own -- it rejects a leading ".." segment (which filepath.Clean cannot
+// collapse, since there is no preceding component to cancel it against)
+// regardless of whether the normalization check above is present, which is
+// what stops the two from being one condition restated.
+//
+// ponytail: this containment check is lexical -- a symlink planted inside
+// protoconfRoot pointing outside it defeats it. Upgrade path:
+// filepath.EvalSymlinks, at the cost of a stat syscall on every Get. Not
+// applied here: planting such a symlink already requires write access to
+// the config repository, a strictly larger compromise than the
+// unauthenticated remote read this check closes.
+func (s *Store) resolveKeyPath(key string) (string, error) {
+	if key == "" || key != filepath.ToSlash(filepath.Clean(key)) {
+		return "", errors.Join(ErrInvalidKey, fmt.Errorf("path=%s", key))
 	}
 
 	absPath := filepath.Join(s.protoconfRoot, key+consts.CompiledConfigExtension)
+
+	rel, err := filepath.Rel(s.protoconfRoot, absPath)
+	if err != nil || rel == ".." || strings.HasPrefix(rel, ".."+string(filepath.Separator)) {
+		return "", errors.Join(ErrInvalidKey, fmt.Errorf("path=%s", key))
+	}
+
+	return absPath, nil
+}
+
+// Get a value given its key.
+func (s *Store) Get(ctx context.Context, key string, opts *store.ReadOptions) (*store.KVPair, error) {
+	absPath, err := s.resolveKeyPath(key)
+	if err != nil {
+		return nil, err
+	}
+
 	if _, err := os.Stat(absPath); err != nil {
 		if os.IsNotExist(err) {
 			return nil, store.ErrKeyNotFound
@@ -135,11 +176,11 @@ func (s *Store) Exists(ctx context.Context, key string, opts *store.ReadOptions)
 // Watch for changes on a key.
 func (s *Store) Watch(ctx context.Context, key string, opts *store.ReadOptions) (<-chan *store.KVPair, error) {
 	// TODO implement me
-	if key != filepath.ToSlash(filepath.Clean(key)) || key == "" {
-		return nil, fmt.Errorf("invalid path to watch, path=%s", key)
+	absPath, err := s.resolveKeyPath(key)
+	if err != nil {
+		return nil, err
 	}
 
-	absPath := filepath.Join(s.protoconfRoot, key+consts.CompiledConfigExtension)
 	fsCh := make(chan struct{})
 	if err := s.addWatch(absPath, fsCh); err != nil {
 		return nil, err
