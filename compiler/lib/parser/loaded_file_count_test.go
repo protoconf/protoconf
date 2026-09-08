@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/protoconf/protoconf/utils"
+	"github.com/protoconf/protoconf/utils/testdata"
 	"github.com/stretchr/testify/require"
 )
 
@@ -149,4 +150,83 @@ func TestDuplicateSymbolResolutionIsStable(t *testing.T) {
 	}
 
 	require.Equal(t, before+1, d.LoadedFileCount(), "duplicate symbol resolution must grow the count only once")
+}
+
+// TestLoadedFileCountSequenceGuard proves D-08(b): resolving eight distinct
+// configs (pkg0..pkg7) in sequence against one long-lived registry grows the
+// loaded-file count by a bounded delta per symbol -- corpus.pkgK's closure
+// is a subset of {pkg0..pkgK} since GenerateCorpus only imports strictly
+// earlier protos, so the delta after resolving pkgK can never exceed K+1 --
+// and the total after all eight stays far below the 60-file corpus.
+//
+// Low-index symbols only (pkg0..pkg7) are deliberate: a high-index symbol's
+// closure can legitimately span most of the corpus, which would make the
+// bound meaningless.
+func TestLoadedFileCountSequenceGuard(t *testing.T) {
+	root := t.TempDir()
+	require.NoError(t, testdata.GenerateCorpus(root, 60))
+	src := filepath.Join(root, "src")
+	d, p := newLoadedFileCountRegistry(t, src)
+
+	before := d.LoadedFileCount()
+	prev := before
+	for i := 0; i <= 7; i++ {
+		url := fmt.Sprintf("type.googleapis.com/corpus.pkg%d.Msg%d", i, i)
+		mt, err := p.TypeResolver.FindMessageByURL(url)
+		require.NoErrorf(t, err, "resolving pkg%d", i)
+		require.NotNil(t, mt)
+
+		current := d.LoadedFileCount()
+		require.LessOrEqualf(t, current-prev, i+1, "resolving pkg%d grew the count by more than its {pkg0..pkg%d} closure bound", i, i)
+		prev = current
+	}
+
+	total := d.LoadedFileCount() - before
+	require.LessOrEqual(t, total, 8, "eight resolutions must not exceed a total delta of 8")
+	require.Less(t, total, 60, "total must stay strictly below the corpus file count")
+}
+
+// TestRepeatedResolutionOfSameSymbolCostsNothingExtra proves the SAFE-03
+// adjacency edge from the sequence side: resolving the same symbol five
+// times in a row grows LoadedFileCount only on the first call.
+func TestRepeatedResolutionOfSameSymbolCostsNothingExtra(t *testing.T) {
+	root := t.TempDir()
+	require.NoError(t, testdata.GenerateCorpus(root, 60))
+	src := filepath.Join(root, "src")
+	d, p := newLoadedFileCountRegistry(t, src)
+
+	url := "type.googleapis.com/corpus.pkg3.Msg3"
+	_, err := p.TypeResolver.FindMessageByURL(url)
+	require.NoError(t, err)
+	afterFirst := d.LoadedFileCount()
+
+	for i := 0; i < 4; i++ {
+		_, err := p.TypeResolver.FindMessageByURL(url)
+		require.NoError(t, err)
+	}
+
+	require.Equal(t, afterFirst, d.LoadedFileCount(), "repeated resolution of the same symbol must cost nothing extra")
+}
+
+// TestTwoSymbolsInOneFileShareOneLoad proves the SAFE-03 adjacency edge:
+// two distinct top-level messages declared in the same file (corpus.pkg5's
+// entry point Msg5 and its bulk message Msg5Part1, per
+// utils/testdata/corpus.go's protoFile naming rule) grow the loaded-file
+// count only on the first resolution.
+func TestTwoSymbolsInOneFileShareOneLoad(t *testing.T) {
+	root := t.TempDir()
+	require.NoError(t, testdata.GenerateCorpus(root, 60))
+	src := filepath.Join(root, "src")
+	d, p := newLoadedFileCountRegistry(t, src)
+
+	before := d.LoadedFileCount()
+
+	_, err := p.TypeResolver.FindMessageByURL("type.googleapis.com/corpus.pkg5.Msg5")
+	require.NoError(t, err)
+	afterFirst := d.LoadedFileCount()
+	require.Greater(t, afterFirst, before)
+
+	_, err = p.TypeResolver.FindMessageByURL("type.googleapis.com/corpus.pkg5.Msg5Part1")
+	require.NoError(t, err)
+	require.Equal(t, afterFirst, d.LoadedFileCount(), "a second message in the same file must add zero")
 }
