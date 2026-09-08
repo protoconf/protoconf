@@ -140,9 +140,16 @@ Plans:
 **Plans**: 4 plans
 
 Plans:
+**Wave 1**
 
 - [ ] 13-01-PLAN.md — Tracer: scoped lexical scan tier + one shared tier chain on `RegistryTypeResolver`, proven end-to-end by a nested `Any` through `parser.ReadConfig` (wave 1)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 13-02-PLAN.md — Symbol index: parse-without-link build with nested-type recursion, content-keyed `.protoconf_cache` persistence, wired in as Tier 3 (wave 2)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 13-03-PLAN.md — D-02: delete the whole-tree eager fallback, engineer the hard error, replace the operator-observability contract in kind (wave 3)
 - [ ] 13-04-PLAN.md — CONS-05: route `loadMutable`'s second resolution through the shared `TypeResolver` (wave 3)
 
