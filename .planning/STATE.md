@@ -3,18 +3,18 @@ gsd_state_version: "1.0"
 milestone: v2.0
 milestone_name: Compiler Startup Performance (Planned)
 current_phase: 14
-current_phase_name: non-compiler-consumer-correctness
+current_phase_name: Non-Compiler Consumer Correctness
 status: executing
-stopped_at: Completed 14-06-PLAN.md
-last_updated: "2026-09-08T15:35:48.543Z"
+stopped_at: Completed 14-09-PLAN.md
+last_updated: "2026-09-08T16:10:11.720Z"
 last_activity: 2026-09-08
 last_activity_desc: Phase 14 execution started
-state_head: e30cc253a91506283358f68a1e14feebb23fd037
+state_head: ee398bbc820213da7da3f5b36f3dc3c2b015246f
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 22
-  completed_plans: 21
+  completed_plans: 22
   percent: 0
 ---
 
@@ -29,8 +29,8 @@ See: .planning/PROJECT.md (updated 2026-09-04)
 
 ## Current Position
 
-Phase: 14 (non-compiler-consumer-correctness) — READY TO EXECUTE
-Plan: 8 of 8
+Phase: 14 (Non-Compiler Consumer Correctness) — EXECUTING
+Plan: 2 of 9
 Status: Ready to execute
 Last activity: 2026-09-08 — Phase 14 execution started
 
@@ -107,6 +107,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 14 P07 | 35min | 2 tasks | 2 files |
 | Phase 14 P05 | 30min | 2 tasks | 4 files |
 | Phase 14 P06 | 25min | 2 tasks | 1 files |
+| Phase 14 P09 | 15min | 5 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -207,6 +208,8 @@ Recent decisions affecting current work:
 - [Phase 14]: Task 1's 16 clients wrap the same fixture type (test.v1.TestMessage), resolved once before the writer wave starts, rather than 16 distinct types -- Task 2 owns forcing independent first-time resolutions under concurrency.
 - [Phase 14]: GenReflectionUI is invoked with a bare grpc.NewServer() per the plan's literal instruction (no reflection registered), so standalone.HandlerViaReflection fails with Unimplemented on every call -- harmless, since collectExamples() (the concurrency-relevant read of mutable_config/) runs and completes before that failure.
 - [Phase 14]: Phase 14: SAFE-02 validated for the mutation server via 3/3 lock-removed runs of TestMutationServerResolverTightLoopIsRaceFree reporting WARNING: DATA RACE on recordFileLocked's map write, restored via git checkout -- utils/utils.go byte-identical.
+- [Phase 14]: [Phase 14-09]: Symlink-inside-protoconfRoot escape accepted as risk (T-14-24) rather than fixed — filepath.EvalSymlinks would close it at a stat-syscall cost on the agent's hot read path; planting such a symlink already requires config-repo write access, a strictly larger compromise than the unauthenticated remote read this plan closes
+- [Phase 14]: [Phase 14-09]: resolveKeyPath stays private to agent/filekv, not hoisted for MutateConfig's second call site — the two roots (protoconfRoot vs protoconfRoot/mutable_config) and failure shapes (store.KVPair errors vs logError-wrapped gRPC errors) differ; the plan scoped this as one local containment check at one call site
 
 ### Pending Todos
 
@@ -239,6 +242,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-08T14:16:09.752Z
-Stopped at: Completed 14-06-PLAN.md
+Last session: 2026-09-08T16:10:11.691Z
+Stopped at: Completed 14-09-PLAN.md
 Resume file: None
