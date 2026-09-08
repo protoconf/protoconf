@@ -68,7 +68,7 @@ observable success criteria, only an artifact.
 ### Safety Under Concurrency
 
 - [x] **SAFE-01**: Concurrent compiles against one shared compiler are race-free under `go test -race`
-- [ ] **SAFE-02**: Concurrent requests against a long-lived mutation server or agent are race-free under `go test -race`
+- [x] **SAFE-02**: Concurrent requests against a long-lived mutation server or agent are race-free under `go test -race`
 - [x] **SAFE-03**: A long-running process serving many different configs does not accumulate the full registry — the lazy set stays proportional to what was actually demanded
 
 ### Verification
@@ -140,7 +140,7 @@ Acknowledged, deferred beyond this milestone.
 | CONS-02 | Phase 14 | Complete |
 | CONS-03 | Phase 14 | Complete |
 | CONS-04 | Phase 14 | Complete |
-| SAFE-02 | Phase 14 | Pending |
+| SAFE-02 | Phase 14 | Complete |
 | SAFE-03 | Phase 14 | Complete |
 | GATE-01 | Phase 15 | Pending |
 | GATE-02 | Phase 15 | Pending |
