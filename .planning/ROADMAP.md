@@ -167,12 +167,12 @@ Plans:
   5. A long-running process handling many different configs over time keeps its loaded-file count proportional to what was actually demanded — it never jumps to the full repository count after one unusual request.
 
 **Measured impact**: Correctness-only — the "no regression, no silent wrong answers" pass. None of these four consumers were ever on the 200ms compile budget.
-**Plans**: 8 plans in 4 waves
+**Plans**: 1/8 plans executed in 4 waves
 
 Plans:
 **Wave 1** *(tracer — the whole architecture proven end-to-end on one consumer first)*
 
-- [ ] 14-01-PLAN.md — Inserter tracer slice: lazy construction + both type-URL/`Any` resolution sites on the shared tiered resolver, proven on-demand against the construction snapshot (CONS-02)
+- [x] 14-01-PLAN.md — Inserter tracer slice: lazy construction + both type-URL/`Any` resolution sites on the shared tiered resolver, proven on-demand against the construction snapshot (CONS-02)
 
 **Wave 2** *(blocked on Wave 1)*
 
@@ -221,5 +221,5 @@ Phases execute in numeric order: 1 → 2 → ... → 10 → 11 → 12 → 13 →
 | 11. Concurrency-Safe Lazy Registry Core | v2.0 | 5/5 | Complete    | 2026-09-07 |
 | 12. Growable Resolver Views & Race Safety | v2.0 | 4/4 | Complete    | 2026-09-08 |
 | 13. Exact Symbol Index & Shared Type-URL Resolution | v2.0 | 4/4 | Complete    | 2026-09-08 |
-| 14. Non-Compiler Consumer Correctness | v2.0 | 0/TBD | Not started | - |
+| 14. Non-Compiler Consumer Correctness | v2.0 | 1/8 | In Progress|  |
 | 15. Verification, Decision & Gate Flip | v2.0 | 0/TBD | Not started | - |
