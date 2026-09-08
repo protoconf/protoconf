@@ -310,6 +310,35 @@ func (d *DescriptorRegistry) SymbolFile(fullName string) (string, bool, error) {
 	return path, ok, nil
 }
 
+// LoadSymbolByIndex is Tier 3 (D-01): the exact symbol index, consulted
+// only after the scan tier (Tier 2) has missed. Returns false immediately
+// when the registry has no ImportPaths (every eager registry, D-03). On an
+// index hit it calls ParseOne on the indexed path and re-checks
+// MessageRegistry, returning true only when that succeeds -- the index
+// answers a PATH and nothing else; it must never construct or return a
+// protoreflect.MessageType or *desc.MessageDescriptor itself, which would
+// bypass ParseOne's transitive-import handling and the canonical-pointer
+// contract (RSLV-03) and create a second source of truth for descriptors.
+func (d *DescriptorRegistry) LoadSymbolByIndex(fullName string) bool {
+	d.mu.RLock()
+	importPaths := d.ImportPaths
+	d.mu.RUnlock()
+	if len(importPaths) == 0 {
+		return false
+	}
+
+	path, ok, err := d.SymbolFile(fullName)
+	if err != nil || !ok {
+		return false
+	}
+	if _, err := d.ParseOne(path); err != nil {
+		return false
+	}
+	url := "type.googleapis.com/" + fullName
+	md, mErr := d.MessageRegistry.FindMessageTypeByUrl(url)
+	return mErr == nil && md != nil
+}
+
 // IndexBuildCount reports how many times the symbol index has been built
 // from a parse (as opposed to served from CacheDir). Test-only observable:
 // no log line, no CLI surface. Safe to call concurrently.
