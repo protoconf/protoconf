@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/dynamic"
 	"github.com/protoconf/protoconf/compiler/lib/parser"
 	"github.com/protoconf/protoconf/compiler/starproto"
@@ -174,9 +175,12 @@ func (l *starlarkLoader) loadMutable(modulePath string) (starlark.StringDict, er
 		return nil, errors.Join(ErrLoadMutable, fmt.Errorf("file=%s", filename), err)
 	}
 
-	mt, err := l.parser.TypeResolver.FindMessageByURL(protoconfValue.Value.TypeUrl)
+	// GetValue()/GetTypeUrl() are nil-safe: a mutable config whose "value"
+	// field is absent must fail loudly (naming the file), never panic on a
+	// nil *anypb.Any (T-13-17).
+	mt, err := l.parser.TypeResolver.FindMessageByURL(protoconfValue.GetValue().GetTypeUrl())
 	if err != nil {
-		return nil, err
+		return nil, errors.Join(ErrReadMutable, fmt.Errorf("file=%s", filename), err)
 	}
 	new := dynamicpb.NewMessage(mt.Descriptor())
 	err = protoconfValue.Value.UnmarshalTo(new)
@@ -184,15 +188,16 @@ func (l *starlarkLoader) loadMutable(modulePath string) (starlark.StringDict, er
 		return nil, errors.Join(ErrReadMutable, fmt.Errorf("file=%s", filename), err)
 	}
 
-	d, err := l.moduleService.GetProtoRegistry().MessageRegistry.FindMessageTypeByUrl(protoconfValue.Value.TypeUrl)
+	// mt was already resolved above through the one shared chokepoint
+	// (l.parser.TypeResolver); derive the *desc.MessageDescriptor dynamic.NewMessage
+	// needs from it directly instead of resolving the same TypeUrl a second
+	// time by reaching into the module service's registry (CONS-05).
+	d, err := desc.WrapMessage(mt.Descriptor())
 	if err != nil {
-		return nil, err
+		return nil, errors.Join(ErrReadMutable, fmt.Errorf("file=%s", filename), err)
 	}
 	message := dynamic.NewMessage(d)
 
-	if err != nil {
-		return nil, err
-	}
 	b, err := proto.Marshal(new)
 	if err != nil {
 		return nil, err
