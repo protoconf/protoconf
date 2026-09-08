@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"crypto/subtle"
+	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
@@ -92,7 +93,15 @@ func bearerTokenInterceptor(expectedToken string) grpc.UnaryServerInterceptor {
 	}
 }
 
-type exampleFunc func(path string, msg proto.Message) standalone.Example
+// exampleFunc builds a grpcui example from a path and the request payload.
+// The payload is passed as already-marshalled JSON rather than a
+// proto.Message: grpcui's standalone.ExampleRequest.MarshalJSON runs
+// protojson.Marshal with no Resolver, i.e. against protoregistry.GlobalTypes,
+// which cannot resolve a nested Any whose type lives only in the user's
+// .proto tree. Marshalling here with the shared TypeResolver and handing
+// grpcui a json.RawMessage routes it through marshalData's default branch,
+// which passes the bytes through untouched.
+type exampleFunc func(path string, data any) standalone.Example
 
 func (c *cliCommand) Run(args []string) int {
 	return c.run(context.Background(), args)
@@ -390,14 +399,14 @@ func (s *ProtoconfMutationServer) Init(rpcServer *grpc.Server) {
 						return interceptor(ctx, in, info, handler)
 					},
 				})
-				s.exampleMaker[string(method.Input().FullName())] = func(path string, msg proto.Message) standalone.Example {
+				s.exampleMaker[string(method.Input().FullName())] = func(path string, data any) standalone.Example {
 					return standalone.Example{
 						Name:    path,
 						Service: string(svc.FullName()),
 						Method:  string(method.Name()),
 						Request: standalone.ExampleRequest{
 							Metadata: []standalone.ExampleMetadataPair{{Name: "path", Value: path}},
-							Data:     msg,
+							Data:     data,
 						},
 					}
 				}
@@ -604,7 +613,9 @@ func (s *ProtoconfMutationServer) GenReflectionUI(ctx context.Context, rpcServer
 			logger.Error("error reading config", "path", path, "err", err)
 			return nil
 		}
-		mt, err := s.parser.LocalResolver.FindMessageByURL(value.GetValue().GetTypeUrl())
+		// TypeResolver, not LocalResolver: LocalResolver is a construction-time
+		// snapshot and cannot see a type parsed lazily after it (CONS-05).
+		mt, err := s.parser.TypeResolver.FindMessageByURL(value.GetValue().GetTypeUrl())
 		if err != nil {
 			logger.Error("error finding message", "url", value.GetValue().GetTypeUrl(), "err", err)
 			return err
@@ -620,7 +631,13 @@ func (s *ProtoconfMutationServer) GenReflectionUI(ctx context.Context, rpcServer
 		path = strings.TrimSuffix(path, consts.CompiledConfigExtension)
 		logger.Debug("example", "path", path, "value", dynamic)
 		if f, ok := s.exampleMaker[string(mt.Descriptor().FullName())]; ok {
-			examples = append(examples, f(path, dynamic))
+			// Marshal here, with the shared resolver, so a nested Any resolves.
+			data, err := protojson.MarshalOptions{Resolver: s.parser.TypeResolver}.Marshal(dynamic)
+			if err != nil {
+				logger.Error("error marshaling example", "path", path, "err", err)
+				return nil
+			}
+			examples = append(examples, f(path, json.RawMessage(data)))
 		}
 
 		return nil
