@@ -5,17 +5,17 @@ milestone_name: Compiler Startup Performance (Planned)
 current_phase: 13
 current_phase_name: Exact Symbol Index & Shared Type-URL Resolution
 status: executing
-stopped_at: Phase 13 context gathered
-last_updated: "2026-09-08T03:24:56.239Z"
+stopped_at: Completed 13-01-PLAN.md
+last_updated: "2026-09-08T03:58:38.599Z"
 last_activity: 2026-09-08
-last_activity_desc: Phase 12 complete, transitioned to Phase 13
-state_head: 08e3232c336d622433a15d2d31b17f4ad06cf924
+last_activity_desc: Phase 13 execution started
+state_head: 19e9c8ef751d5127eab9433ca09a832f6a3573a9
 progress:
   total_phases: 5
-  completed_phases: 1
+  completed_phases: 0
   total_plans: 13
-  completed_plans: 9
-  percent: 20
+  completed_plans: 10
+  percent: 0
 ---
 
 # Project State
@@ -29,12 +29,12 @@ See: .planning/PROJECT.md (updated 2026-09-04)
 
 ## Current Position
 
-Phase: 13 (Exact Symbol Index & Shared Type-URL Resolution) — READY TO EXECUTE
-Plan: Not started
+Phase: 13 (Exact Symbol Index & Shared Type-URL Resolution) — EXECUTING
+Plan: 2 of 4
 Status: Ready to execute
-Last activity: 2026-09-08 — Phase 12 complete, transitioned to Phase 13
+Last activity: 2026-09-08 — Phase 13 execution started
 
-Progress: [██░░░░░░░░] 20%
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
@@ -94,6 +94,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 12 P02 | 28min | 3 tasks | 4 files |
 | Phase 12 P03 | 25min | 2 tasks | 2 files |
 | Phase 12 P04 | 25min | 2 tasks | 2 files |
+| Phase 13 P01 | 40min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -174,6 +175,8 @@ Recent decisions affecting current work:
 - [Phase 12]: Deleted the dead config.protoResolver field instead of rewiring it to the growable TypeResolver — A frozen construction-time snapshot with zero readers is a stale-resolution hazard; a future consumer should read c.parser.TypeResolver directly
 - [Phase 12]: Proved SAFE-01 with two race tests: extended TestConcurrentCompile with a post-g.Wait() resolver-view assertion block, and added a dedicated utils.TestRegisterFileRacesRangeFiles with unpaced tight-loop readers forcing the RegisterFile-vs-RangeFiles interleaving continuously. — TestConcurrentCompile's goroutines spend most of their time inside protoparse.ParseFiles with no lock held, so the read/write window is rare there; only a dedicated test with continuously-running readers reliably forces it. Sanity-checked the dedicated test's failure-detection capability by temporarily removing the lock and confirming WARNING: DATA RACE before restoring.
 - [Phase 12]: [Phase 12-04]: Fallback for eager-registry hand-registered files lives in ParseFilesX (errors.Is on ErrNoGrowableResolver), not in DescriptorRegistry.FindFileByPath, keeping FindFileByPath's sentinel contract intact for growable_resolver_test.go Test 3 and other callers.
+- [Phase 13]: [Phase 13] protojson's unmarshalAny discards the wrapped resolver error's identity through its own internal/errors.New; errors.Is(readConfigErr, protoregistry.NotFound) can never hold on a ReadConfig-returned error — Verified against go.mod-pinned google.golang.org/protobuf v1.36.12 source; pinned the sentinel contract at the resolver boundary (direct FindMessageByURL call) instead
+- [Phase 13]: [Phase 13] scanCandidateLimit = 32 needed no adjustment after edge-case testing — The 33-file candidate-limit stress test confirms the escalation boundary fires exactly at the constant's derivation
 
 ### Pending Todos
 
@@ -206,6 +209,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-08T02:41:02.435Z
-Stopped at: Phase 13 context gathered
-Resume file: .planning/phases/13-exact-symbol-index-shared-type-url-resolution/13-CONTEXT.md
+Last session: 2026-09-08T03:58:38.580Z
+Stopped at: Completed 13-01-PLAN.md
+Resume file: None

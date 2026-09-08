@@ -49,13 +49,13 @@ observable success criteria, only an artifact.
 
 - [ ] **TYPE-01**: A symbol index maps every message symbol under `src/`, nested types included, to the file that declares it
 - [ ] **TYPE-02**: The index is built by parsing without linking, so its cost is proportional to parsing alone
-- [ ] **TYPE-03**: A type URL nested inside an `Any` field, at any depth, resolves through the index — this is the case that broke the original lazy design
+- [x] **TYPE-03**: A type URL nested inside an `Any` field, at any depth, resolves through the index — this is the case that broke the original lazy design
 - [ ] **TYPE-04**: Only the files actually referenced by resolved symbols are linked; building the index links nothing
 - [ ] **TYPE-05**: The index is persisted under `.protoconf_cache` and keyed by content, so a warm run does not rebuild it
 - [ ] **TYPE-06**: A change to any `.proto` under `src/` invalidates the cached index, and a stale index is never served
 - [ ] **TYPE-07**: The index is built on first need, so a consumer that resolves no unknown symbol never pays for it
 - [ ] **TYPE-08**: Type-URL resolution is a single shared code path used by every consumer, not duplicated per call site
-- [ ] **TYPE-09**: `parser.ReadConfig` resolves every nested `@type` in a materialized config, at any depth, through that path
+- [x] **TYPE-09**: `parser.ReadConfig` resolves every nested `@type` in a materialized config, at any depth, through that path
 
 ### Consumer Correctness
 
@@ -129,13 +129,13 @@ Acknowledged, deferred beyond this milestone.
 | SAFE-01 | Phase 12 | Complete |
 | TYPE-01 | Phase 13 | Pending |
 | TYPE-02 | Phase 13 | Pending |
-| TYPE-03 | Phase 13 | Pending |
+| TYPE-03 | Phase 13 | Complete |
 | TYPE-04 | Phase 13 | Pending |
 | TYPE-05 | Phase 13 | Pending |
 | TYPE-06 | Phase 13 | Pending |
 | TYPE-07 | Phase 13 | Pending |
 | TYPE-08 | Phase 13 | Pending |
-| TYPE-09 | Phase 13 | Pending |
+| TYPE-09 | Phase 13 | Complete |
 | CONS-05 | Phase 13 | Pending |
 | CONS-02 | Phase 14 | Pending |
 | CONS-03 | Phase 14 | Pending |

@@ -137,12 +137,12 @@ Plans:
   4. When resolution does require the index — an unknown, custom-type symbol — looking it up returns the file that declares it, including for a nested type, and only the files actually referenced by resolved symbols get linked afterward; building the index itself parses every file under `src/` but links none of them.
 
 **Measured impact**: Correctness/infrastructure only — not required to hit the 200ms compile-path target, which Phases 11-12 already deliver. This phase exists so type-URL resolution never falls back to the 4.6s eager path, and criterion 3 guards that the compiler's dominant production case (mutable `google.protobuf.Value`) stays on the near-zero-cost global-seed path rather than paying for an index it doesn't need.
-**Plans**: 4 plans
+**Plans**: 1/4 plans executed
 
 Plans:
 **Wave 1**
 
-- [ ] 13-01-PLAN.md — Tracer: scoped lexical scan tier + one shared tier chain on `RegistryTypeResolver`, proven end-to-end by a nested `Any` through `parser.ReadConfig` (wave 1)
+- [x] 13-01-PLAN.md — Tracer: scoped lexical scan tier + one shared tier chain on `RegistryTypeResolver`, proven end-to-end by a nested `Any` through `parser.ReadConfig` (wave 1)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -203,6 +203,6 @@ Phases execute in numeric order: 1 → 2 → ... → 10 → 11 → 12 → 13 →
 | 1-10. (see v1.0 table above) | v1.0 | 23/23 | Complete | 2026-03-31 |
 | 11. Concurrency-Safe Lazy Registry Core | v2.0 | 5/5 | Complete    | 2026-09-07 |
 | 12. Growable Resolver Views & Race Safety | v2.0 | 4/4 | Complete    | 2026-09-08 |
-| 13. Exact Symbol Index & Shared Type-URL Resolution | v2.0 | 0/TBD | Not started | - |
+| 13. Exact Symbol Index & Shared Type-URL Resolution | v2.0 | 1/4 | In Progress|  |
 | 14. Non-Compiler Consumer Correctness | v2.0 | 0/TBD | Not started | - |
 | 15. Verification, Decision & Gate Flip | v2.0 | 0/TBD | Not started | - |
