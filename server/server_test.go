@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -21,8 +22,11 @@ import (
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/reflection/grpc_reflection_v1"
 	"google.golang.org/grpc/status"
+	"google.golang.org/grpc/test/bufconn"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/dynamicpb"
 )
@@ -659,6 +663,78 @@ func TestInitRegistersCustomService(t *testing.T) {
 		methodNames = append(methodNames, m.Name)
 	}
 	require.ElementsMatch(t, []string{"PutTestMessage", "PutValidateMe"}, methodNames)
+}
+
+// TestReflectionDescribesCustomAndBuiltinServices is the D-06 regression
+// test: a client that can list a service via gRPC reflection must also be
+// able to describe it. It proves this over a real ServerReflectionInfo
+// round trip for a src/-declared custom service (test.v1.TestService), the
+// current mutation service (protoconf.v1.ProtoconfMutationService), and the
+// legacy hand-registered mutation service (v1.ProtoconfMutationService).
+func TestReflectionDescribesCustomAndBuiltinServices(t *testing.T) {
+	protoconfRoot := testdata.SmallTestDir()
+	s, err := NewProtoconfMutationServer(protoconfRoot)
+	require.NoError(t, err)
+
+	buffer := 1024 * 1024
+	lis := bufconn.Listen(buffer)
+	rpcServer := grpc.NewServer()
+	s.Init(rpcServer)
+
+	go func() {
+		_ = rpcServer.Serve(lis)
+	}()
+	t.Cleanup(func() {
+		rpcServer.Stop()
+		lis.Close()
+	})
+
+	conn, err := grpc.NewClient("passthrough:///bufnet",
+		grpc.WithContextDialer(func(context.Context, string) (net.Conn, error) {
+			return lis.Dial()
+		}),
+		grpc.WithTransportCredentials(insecure.NewCredentials()))
+	require.NoError(t, err)
+	t.Cleanup(func() { conn.Close() })
+
+	client := grpc_reflection_v1.NewServerReflectionClient(conn)
+	stream, err := client.ServerReflectionInfo(context.Background())
+	require.NoError(t, err)
+	t.Cleanup(func() { _ = stream.CloseSend() })
+
+	symbols := []string{
+		"test.v1.TestService",
+		"protoconf.v1.ProtoconfMutationService",
+		"v1.ProtoconfMutationService",
+	}
+	for _, symbol := range symbols {
+		require.NoError(t, stream.Send(&grpc_reflection_v1.ServerReflectionRequest{
+			MessageRequest: &grpc_reflection_v1.ServerReflectionRequest_FileContainingSymbol{
+				FileContainingSymbol: symbol,
+			},
+		}), "symbol %s: send failed", symbol)
+		resp, err := stream.Recv()
+		require.NoError(t, err, "symbol %s: recv failed", symbol)
+		require.Nil(t, resp.GetErrorResponse(), "symbol %s: unexpected error response: %v", symbol, resp.GetErrorResponse())
+		fdResp := resp.GetFileDescriptorResponse()
+		require.NotNil(t, fdResp, "symbol %s: expected a file descriptor response", symbol)
+		require.NotEmpty(t, fdResp.GetFileDescriptorProto(), "symbol %s: expected a non-empty file descriptor list", symbol)
+	}
+
+	require.NoError(t, stream.Send(&grpc_reflection_v1.ServerReflectionRequest{
+		MessageRequest: &grpc_reflection_v1.ServerReflectionRequest_ListServices{
+			ListServices: "",
+		},
+	}))
+	resp, err := stream.Recv()
+	require.NoError(t, err)
+	listResp := resp.GetListServicesResponse()
+	require.NotNil(t, listResp)
+	names := make([]string, 0, len(listResp.GetService()))
+	for _, svc := range listResp.GetService() {
+		names = append(names, svc.GetName())
+	}
+	require.Subset(t, names, symbols)
 }
 
 // TestInitWithNoCustomServices asserts the empty edge: a protoconf root whose
