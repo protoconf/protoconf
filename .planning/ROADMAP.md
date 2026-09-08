@@ -108,7 +108,7 @@ Plans:
   3. Two concurrent compiles against one shared compiler, each reaching a proto the other hasn't touched, complete without error and without a data race under `go test -race`.
 
 **Measured impact**: Moves the numbers — this phase eliminates the 260ms resolver-snapshot rebuild. Together with Phase 11, this closes the full 6.97s → ~200ms compile-path gap; everything after this phase is correctness work protecting consumers that were never on this budget.
-**Plans**: 3/3 plans executed
+**Plans**: 4 plans (3 executed, 1 gap closure pending)
 
 Plans:
 **Wave 1**
@@ -119,6 +119,10 @@ Plans:
 
 - [x] 12-02-PLAN.md — `ParseFilesX` returns the registry's canonical descriptor on a resolver hit, pointer-identity gate for load A → load B → re-reference A, and deletion of the dead `config.protoResolver` field (RSLV-03)
 - [x] 12-03-PLAN.md — Race proofs: `TestConcurrentCompile` gains resolver-view assertions, plus a dedicated `utils` test racing `RegisterFile` against `RangeFiles`/`FindFileByPath` (SAFE-01)
+
+**Wave 3** *(gap closure — blocked on Wave 2 completion)*
+
+- [ ] 12-04-PLAN.md — Gap closure for `12-VERIFICATION.md`'s one failed truth: `ParseFilesX` falls back to the raw `p.FilesResolver` field when `p.registry.FindFileByPath` reports `ErrNoGrowableResolver`, so an eager registry's hand-registered external files (the mutation server's six well-known protos) resolve again, plus the red-to-green regression test the change should have shipped with (RSLV-03)
 
 ### Phase 13: Exact Symbol Index & Shared Type-URL Resolution
 
