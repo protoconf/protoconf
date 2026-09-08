@@ -5,16 +5,16 @@ milestone_name: Compiler Startup Performance (Planned)
 current_phase: 14
 current_phase_name: Non-Compiler Consumer Correctness
 status: executing
-stopped_at: Phase 14 context gathered
-last_updated: "2026-09-08T12:09:03.442Z"
+stopped_at: Completed 14-01-PLAN.md
+last_updated: "2026-09-08T12:24:54.332Z"
 last_activity: 2026-09-08
-last_activity_desc: Phase 13 complete, transitioned to Phase 14
-state_head: 8d2db65b537ac417b5c796cc7af232b2160479d2
+last_activity_desc: Phase 14 execution started
+state_head: 939d7144c194039ed145311fb58fc6c3c644daaa
 progress:
   total_phases: 5
   completed_phases: 3
   total_plans: 21
-  completed_plans: 13
+  completed_plans: 14
   percent: 60
 ---
 
@@ -29,10 +29,10 @@ See: .planning/PROJECT.md (updated 2026-09-04)
 
 ## Current Position
 
-Phase: 14 (Non-Compiler Consumer Correctness) — READY TO EXECUTE
-Plan: Not started
+Phase: 14 (Non-Compiler Consumer Correctness) — EXECUTING
+Plan: 2 of 8
 Status: Ready to execute
-Last activity: 2026-09-08 — Phase 13 complete, transitioned to Phase 14
+Last activity: 2026-09-08 — Phase 14 execution started
 
 Progress: [██████░░░░] 60%
 
@@ -99,6 +99,7 @@ Progress: [██████░░░░] 60%
 | Phase 13 P02 | 55min | 3 tasks | 8 files |
 | Phase 13 P03 | 55min | 3 tasks | 12 files |
 | Phase 13 P04 | 45min | 2 tasks | 4 files |
+| Phase 14 P01 | 15min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -186,6 +187,7 @@ Recent decisions affecting current work:
 - [Phase 13]: Deleted (not re-pointed) utils/growable_resolver_test.go's TestParseAllRegistersIntoFilesResolver and TestFilesResolverRegistrationErrorsStayZero. — Their registration-diff behavior lived entirely inside ParseAll's own deleted diff loop; no production caller runs Import/Parse on a lazy registry, so re-pointing would only test reimplemented ParseAll glue with no real analog.
 - [Phase 13]: 13-04: Closed CONS-05 -- loadMutable resolves the mutable value's type once via desc.WrapMessage(mt.Descriptor()) instead of a second direct MessageRegistry lookup, which could return (nil,nil) on a cold registry and panic downstream; also fixed a nil-panic on an absent mutable-config value via GetValue()/GetTypeUrl().
 - [Phase 13]: 13-04: The literal plan fixture (top-level TestMessage value, nested inner Any) does not itself force loadMutable's bypass to fail, since parser.ReadConfig pre-warms the same MessageRegistry before either lookup runs; the RED test isolates the divergence with a cold moduleService instead.
+- [Phase 14]: [Phase 14-01]: D-02 diagnostic surfaces from parser.ReadConfig's protojson unmarshal of the Any field, not XXXinsertVersion's later FindMessageByURL — both route through the same resolveTiers chain so the error text is identical either way — Verified with scratch tests before writing the fixture-based assertion
 
 ### Pending Todos
 
@@ -218,6 +220,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-08T10:51:21.771Z
-Stopped at: Phase 14 context gathered
-Resume file: .planning/phases/14-non-compiler-consumer-correctness/14-CONTEXT.md
+Last session: 2026-09-08T12:24:54.304Z
+Stopped at: Completed 14-01-PLAN.md
+Resume file: None
