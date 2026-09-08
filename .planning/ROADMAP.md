@@ -167,7 +167,7 @@ Plans:
   5. A long-running process handling many different configs over time keeps its loaded-file count proportional to what was actually demanded — it never jumps to the full repository count after one unusual request.
 
 **Measured impact**: Correctness-only — the "no regression, no silent wrong answers" pass. None of these four consumers were ever on the 200ms compile budget.
-**Plans**: 8/8 plans executed in 4 waves
+**Plans**: 8/9 plans executed in 5 waves (14-09 is gap closure from `14-VERIFICATION.md`)
 
 Plans:
 **Wave 1** *(tracer — the whole architecture proven end-to-end on one consumer first)*
@@ -189,6 +189,10 @@ Plans:
 
 - [x] 14-05-PLAN.md — `mutate` CLI flip, `NewLazyModuleService` doc-comment truth, and the repo-wide single-resolution-path end-state gate (CONS-02, CONS-03, CONS-04)
 - [x] 14-06-PLAN.md — SAFE-02 mutation server: bufconn e2e with N concurrent clients plus a dedicated tight-loop race test (SAFE-02)
+
+**Wave 5** *(gap closure — the one failed truth in `14-VERIFICATION.md`)*
+
+- [ ] 14-09-PLAN.md — `agent/filekv` path containment: one validated key-to-path helper shared by `Get` and `Watch`, traversal tests proven capable of failing, and the two false threat-model mitigation claims corrected (CONS-03)
 
 ### Phase 15: Verification, Decision & Gate Flip
 
