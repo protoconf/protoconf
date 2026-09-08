@@ -218,7 +218,11 @@ func (c *Compiler) CompileFileAsync(ctx context.Context, cancel context.CancelCa
 			}
 		}
 		registry := c.ModuleService.GetProtoRegistry()
-		slog.Info("compile finished", "file", filename, "protoFilesLoaded", registry.LoadedFileCount(), "eagerFallback", registry.FellBackToEager())
+		slog.Info("compile finished", "file", filename,
+			"protoFilesLoaded", registry.LoadedFileCount(),
+			"symbolIndexBuilds", registry.IndexBuildCount(),
+			"symbolIndexCacheHits", registry.IndexCacheHitCount(),
+			"scanResolutions", registry.ScanResolutionCount())
 		cancel(nil)
 	}()
 	return ch, errCh

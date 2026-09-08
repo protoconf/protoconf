@@ -62,10 +62,9 @@ type DescriptorRegistry struct {
 	// ErrLazyParseDisabled.
 	ImportPaths []string
 
-	mu            sync.RWMutex // guards FileRegistry, lazyLoaded, eagerFallback on the lazy path
-	group         singleflight.Group
-	lazyLoaded    map[string]struct{}
-	eagerFallback bool
+	mu         sync.RWMutex // guards FileRegistry, lazyLoaded on the lazy path
+	group      singleflight.Group
+	lazyLoaded map[string]struct{}
 
 	// filesResolver, when non-nil, is the growable *protoregistry.Files view
 	// for a lazy registry (ImportPaths non-empty). Built once by the first
@@ -124,7 +123,8 @@ type DescriptorRegistry struct {
 	// afterParseHook, when non-nil, runs inside ParseOne's singleflight
 	// closure after parser.ParseFiles returns and before d.mu is taken for
 	// the insert. It exists so a test can deterministically force the
-	// ParseOne/ParseAll interleaving that used to hand callers a
+	// interleaving where some other writer inserts the same path into
+	// FileRegistry first, which would otherwise hand callers a
 	// non-canonical descriptor pointer; nil in every production path, so
 	// it costs one nil check.
 	afterParseHook func()
@@ -397,10 +397,10 @@ func (d *DescriptorRegistry) ParseOne(path string) (*desc.FileDescriptor, error)
 		// Return the CANONICAL registry entry, not the descriptor this
 		// goroutine just parsed. recordFileLocked is a no-op when the path
 		// is already present, so if anything inserted it while we parsed
-		// outside the lock — ParseAll holds d.mu across its whole
-		// whole-tree parse and can land exactly here — returning fds[0]
-		// would hand this caller a different pointer than every map lookup
-		// sees, breaking ParseOne's own pointer-identity contract.
+		// outside the lock — another writer can land exactly here —
+		// returning fds[0] would hand this caller a different pointer than
+		// every map lookup sees, breaking ParseOne's own pointer-identity
+		// contract.
 		// Keyed by GetName(), which is what recordFileLocked stores under;
 		// it normally equals path, and the fallback keeps a divergence from
 		// turning into a nil return.
@@ -455,42 +455,6 @@ func (d *DescriptorRegistry) recordFileLocked(fd *desc.FileDescriptor) {
 	}
 }
 
-// ParseAll performs the D-03 whole-tree eager fallback exactly once per
-// registry: fired only when a type-URL lookup misses both the
-// construction-time snapshot and the growable MessageRegistry, so a registry
-// that a lazy-by-path lookup structurally cannot answer (no protoFile hint,
-// nothing parsed yet) still resolves correctly instead of failing the
-// compile. A no-op if the fallback already fired or the registry is not
-// configured for on-demand parsing.
-func (d *DescriptorRegistry) ParseAll() error {
-	d.mu.Lock()
-	defer d.mu.Unlock()
-	if d.eagerFallback || len(d.ImportPaths) == 0 {
-		return nil
-	}
-	before := make(map[string]struct{}, len(d.FileRegistry))
-	for k := range d.FileRegistry {
-		before[k] = struct{}{}
-	}
-	// Import's own LookupImport closure touches FileRegistry without
-	// locking, which is safe here only because this goroutine already
-	// holds the write lock for the whole call.
-	err := d.Import(d.Parse, []*regexp.Regexp{}, d.ImportPaths...)
-	for k := range d.FileRegistry {
-		if _, ok := before[k]; !ok {
-			d.lazyLoaded[k] = struct{}{}
-			// Import/Parse write FileRegistry directly, bypassing
-			// recordFileLocked, so this diff loop is the one place the
-			// fallback's newly-present files are identified — the same
-			// insert point registerFileLocked already serves from
-			// recordFileLocked (D-02: one diff, one key set).
-			d.registerFileLocked(d.FileRegistry[k])
-		}
-	}
-	d.eagerFallback = true
-	return err
-}
-
 // FindFileByPath delegates to the growable filesResolver, returning
 // ErrNoGrowableResolver when none is armed (eager registry, D-03). The read
 // lock is mandatory: a locally-constructed *protoregistry.Files gates its
@@ -539,8 +503,9 @@ func (d *DescriptorRegistry) FilesResolverRegistrationErrorCount() int {
 }
 
 // LoadedFileCount reports how many proto files have been loaded on the lazy
-// path (either via ParseOne or, once, via the ParseAll fallback) — the
-// operator-visible count for LAZY-05. Safe to call concurrently with ParseOne.
+// path via ParseOne (directly, or indirectly through the scan/index tiers,
+// both of which call it) — the operator-visible count for LAZY-05. Safe to
+// call concurrently with ParseOne.
 func (d *DescriptorRegistry) LoadedFileCount() int {
 	d.mu.RLock()
 	defer d.mu.RUnlock()
@@ -568,14 +533,6 @@ func (d *DescriptorRegistry) LoadedFileCount() int {
 // the G-11-7 guard read 0 for a dependency that parsed fine.
 func (d *DescriptorRegistry) LocalFileCount() int {
 	return len(d.localFiles)
-}
-
-// FellBackToEager reports whether the D-03 whole-tree eager fallback has
-// fired for this registry.
-func (d *DescriptorRegistry) FellBackToEager() bool {
-	d.mu.RLock()
-	defer d.mu.RUnlock()
-	return d.eagerFallback
 }
 
 type ParserFunc func(parser *protoparse.Parser, files []string) error

@@ -103,11 +103,12 @@ func TestSymbolScanRespectsCandidateLimit(t *testing.T) {
 }
 
 // TestLoadSymbolByScanRacesParseOne mirrors
-// TestParseAllConcurrentWithParseOneDoesNotDeadlock's structure exactly
-// (utils/parse_all_deadlock_test.go), swapping ParseAll for LoadSymbolByScan:
-// the lock-discipline contract (Phase 11) is that d.mu is never held across
-// symbolScanCandidates or ParseOne, so racing the two tiers must never
-// deadlock and must preserve ParseOne's pointer-identity contract.
+// TestIndexBuildRacesParseOne's structure exactly
+// (utils/index_build_deadlock_test.go), swapping the index tier for
+// LoadSymbolByScan: the lock-discipline contract (Phase 11) is that d.mu is
+// never held across symbolScanCandidates or ParseOne, so racing the two
+// tiers must never deadlock and must preserve ParseOne's pointer-identity
+// contract.
 func TestLoadSymbolByScanRacesParseOne(t *testing.T) {
 	const fileCount = 6
 	src, paths := deadlockCorpus(t, fileCount)

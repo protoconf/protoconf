@@ -53,8 +53,9 @@ func NewParserWithDescriptorRegistry(registry *utils.DescriptorRegistry) *Parser
 // then falls through to resolveTiers: the registry's growable
 // MessageRegistry (populated as ParseOne lazily parses files, and
 // nested-type-aware via MessageRegistry.AddFile), then the D-01 scoped
-// lexical scan tier, and finally the D-03 whole-tree eager fallback on a
-// last miss (13-03 deletes this last tier).
+// lexical scan tier, then the 13-02 exact symbol index, and finally a hard
+// NotFound-wrapping error on exhaustion (D-02): the whole-tree eager
+// fallback this chain used to retry against is gone, deleted by 13-03.
 type RegistryTypeResolver struct {
 	registry *utils.DescriptorRegistry
 	snapshot *protoregistry.Types
@@ -69,9 +70,12 @@ func NewRegistryTypeResolver(registry *utils.DescriptorRegistry, snapshot *proto
 // snapshot (Tier 0) lookup misses: Tier 1 (the growable MessageRegistry),
 // then Tier 2 (the D-01 scoped lexical scan, re-checking Tier 1 on a hit),
 // then Tier 3 (the 13-02 exact symbol index, re-checking Tier 1 on a hit --
-// reached only when the scan found no candidate or none verified), then
-// the existing D-03 whole-tree ParseAll fallback (13-03 deletes this), then
-// a hard NotFound error naming display.
+// reached only when the scan found no candidate or none verified), then a
+// hard NotFound-wrapping error (D-02) naming the unresolved symbol, the
+// import roots searched, and the symbol index's build/cache state -- the
+// whole-tree eager fallback this chain used to retry against one last time
+// is gone (13-03 deletes it), so an exhausted chain fails fast instead of
+// parsing everything under the import roots.
 func (r *RegistryTypeResolver) resolveTiers(url, display string) (protoreflect.MessageType, error) {
 	if md, mErr := r.registry.MessageRegistry.FindMessageTypeByUrl(url); mErr == nil && md != nil {
 		return dynamicpb.NewMessageType(md.UnwrapMessage()), nil
@@ -86,14 +90,8 @@ func (r *RegistryTypeResolver) resolveTiers(url, display string) (protoreflect.M
 			return dynamicpb.NewMessageType(md.UnwrapMessage()), nil
 		}
 	}
-	// Trigger the D-03 fallback and retry once regardless of ParseAll's own
-	// error: a partial whole-tree parse may still have registered the
-	// requested type before hitting an unrelated broken file elsewhere.
-	_ = r.registry.ParseAll()
-	if md, mErr := r.registry.MessageRegistry.FindMessageTypeByUrl(url); mErr == nil && md != nil {
-		return dynamicpb.NewMessageType(md.UnwrapMessage()), nil
-	}
-	return nil, fmt.Errorf("%w: %s", protoregistry.NotFound, display)
+	return nil, fmt.Errorf("%w: %s not found in import roots %v (symbol index: %s)",
+		protoregistry.NotFound, display, r.registry.ImportPaths, r.registry.IndexState())
 }
 
 func (r *RegistryTypeResolver) FindMessageByURL(url string) (protoreflect.MessageType, error) {
