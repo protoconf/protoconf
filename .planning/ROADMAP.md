@@ -167,7 +167,7 @@ Plans:
   5. A long-running process handling many different configs over time keeps its loaded-file count proportional to what was actually demanded — it never jumps to the full repository count after one unusual request.
 
 **Measured impact**: Correctness-only — the "no regression, no silent wrong answers" pass. None of these four consumers were ever on the 200ms compile budget.
-**Plans**: 2/8 plans executed in 4 waves
+**Plans**: 3/8 plans executed in 4 waves
 
 Plans:
 **Wave 1** *(tracer — the whole architecture proven end-to-end on one consumer first)*
@@ -177,7 +177,7 @@ Plans:
 **Wave 2** *(blocked on Wave 1)*
 
 - [x] 14-02-PLAN.md — `agent/filekv` lazy construction, with a test proving `Get` serves a type the snapshot never held (CONS-03)
-- [ ] 14-03-PLAN.md — Mutation server lazy construction, `MutateConfig` marshal on the tiered resolver, and reflection completeness restored via the retained discovery parse (CONS-04, SAFE-02)
+- [x] 14-03-PLAN.md — Mutation server lazy construction, `MutateConfig` marshal on the tiered resolver, and reflection completeness restored via the retained discovery parse (CONS-04, SAFE-02)
 
 **Wave 3** *(blocked on Wave 2)*
 
@@ -221,5 +221,5 @@ Phases execute in numeric order: 1 → 2 → ... → 10 → 11 → 12 → 13 →
 | 11. Concurrency-Safe Lazy Registry Core | v2.0 | 5/5 | Complete    | 2026-09-07 |
 | 12. Growable Resolver Views & Race Safety | v2.0 | 4/4 | Complete    | 2026-09-08 |
 | 13. Exact Symbol Index & Shared Type-URL Resolution | v2.0 | 4/4 | Complete    | 2026-09-08 |
-| 14. Non-Compiler Consumer Correctness | v2.0 | 2/8 | In Progress|  |
+| 14. Non-Compiler Consumer Correctness | v2.0 | 3/8 | In Progress|  |
 | 15. Verification, Decision & Gate Flip | v2.0 | 0/TBD | Not started | - |

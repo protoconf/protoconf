@@ -5,17 +5,17 @@ milestone_name: Compiler Startup Performance (Planned)
 current_phase: 14
 current_phase_name: Non-Compiler Consumer Correctness
 status: executing
-stopped_at: Completed 14-02-PLAN.md
-last_updated: "2026-09-08T12:48:12.722Z"
+stopped_at: Completed 14-03-PLAN.md
+last_updated: "2026-09-08T12:59:17.477Z"
 last_activity: 2026-09-08
 last_activity_desc: Phase 14 execution started
-state_head: 4d5f7d924d20d06c08f3d8c3a726bd598a8d2dc4
+state_head: 5f7e27a6137f1e6b8f0f3978d5585ae9613624d7
 progress:
   total_phases: 5
-  completed_phases: 3
+  completed_phases: 1
   total_plans: 21
-  completed_plans: 15
-  percent: 60
+  completed_plans: 16
+  percent: 20
 ---
 
 # Project State
@@ -30,11 +30,11 @@ See: .planning/PROJECT.md (updated 2026-09-04)
 ## Current Position
 
 Phase: 14 (Non-Compiler Consumer Correctness) — EXECUTING
-Plan: 3 of 8
+Plan: 4 of 8
 Status: Ready to execute
 Last activity: 2026-09-08 — Phase 14 execution started
 
-Progress: [██████░░░░] 60%
+Progress: [██░░░░░░░░] 20%
 
 ## Performance Metrics
 
@@ -101,6 +101,7 @@ Progress: [██████░░░░] 60%
 | Phase 13 P04 | 45min | 2 tasks | 4 files |
 | Phase 14 P01 | 15min | 2 tasks | 2 files |
 | Phase 14 P02 | 22min | 2 tasks | 2 files |
+| Phase 14 P03 | 12min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -191,6 +192,8 @@ Recent decisions affecting current work:
 - [Phase 14]: [Phase 14-01]: D-02 diagnostic surfaces from parser.ReadConfig's protojson unmarshal of the Any field, not XXXinsertVersion's later FindMessageByURL — both route through the same resolveTiers chain so the error text is identical either way — Verified with scratch tests before writing the fixture-based assertion
 - [Phase 14]: [Phase 14-02] agent/filekv flipped to lib.NewLazyModuleService (D-01), a one-line diff -- Get already routes through parser.ReadConfig's tiered TypeResolver, no second edit needed — Proven, not assumed: TestGetResolvesTypeAbsentFromConstructionSnapshot shows the type is absent from the construction snapshot both before and after a successful Get
 - [Phase 14]: [Phase 14-02] TDD task 2's four proof tests committed as a single test(14-02) commit with no feat/refactor -- Task 1 already shipped the only implementation change, matching 14-01's precedent — No new implementation exists for GREEN to make pass; the tests exist purely to prove Task 1's flip correct
+- [Phase 14]: [Phase 14-03] Mutation server flipped to lib.NewLazyModuleService (D-01) and MutateConfig's marshal resolver swapped to s.parser.TypeResolver (D-03)
+- [Phase 14]: [Phase 14-03] Init mirrors six well-known files onto the retained discovery-registry resolver and wires both reflection.ServerOptions.DescriptorResolver fields to it (D-06), proven by TestReflectionDescribesCustomAndBuiltinServices; no new struct field added, preserving D-04 narrowness
 
 ### Pending Todos
 
@@ -223,6 +226,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-08T12:48:12.695Z
-Stopped at: Completed 14-02-PLAN.md
+Last session: 2026-09-08T12:59:17.453Z
+Stopped at: Completed 14-03-PLAN.md
 Resume file: None
