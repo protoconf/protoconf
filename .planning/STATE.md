@@ -5,16 +5,16 @@ milestone_name: Compiler Startup Performance (Planned)
 current_phase: 13
 current_phase_name: Exact Symbol Index & Shared Type-URL Resolution
 status: executing
-stopped_at: Completed 13-01-PLAN.md
-last_updated: "2026-09-08T03:58:38.599Z"
+stopped_at: Completed 13-02-PLAN.md
+last_updated: "2026-09-08T05:32:33.791Z"
 last_activity: 2026-09-08
 last_activity_desc: Phase 13 execution started
-state_head: 19e9c8ef751d5127eab9433ca09a832f6a3573a9
+state_head: c376bbabab40bb39b48ba3596a0795dd2868aab4
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 13
-  completed_plans: 10
+  completed_plans: 11
   percent: 0
 ---
 
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-04)
 ## Current Position
 
 Phase: 13 (Exact Symbol Index & Shared Type-URL Resolution) — EXECUTING
-Plan: 2 of 4
+Plan: 3 of 4
 Status: Ready to execute
 Last activity: 2026-09-08 — Phase 13 execution started
 
@@ -95,6 +95,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 12 P03 | 25min | 2 tasks | 2 files |
 | Phase 12 P04 | 25min | 2 tasks | 2 files |
 | Phase 13 P01 | 40min | 2 tasks | 5 files |
+| Phase 13 P02 | 55min | 3 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -177,6 +178,7 @@ Recent decisions affecting current work:
 - [Phase 12]: [Phase 12-04]: Fallback for eager-registry hand-registered files lives in ParseFilesX (errors.Is on ErrNoGrowableResolver), not in DescriptorRegistry.FindFileByPath, keeping FindFileByPath's sentinel contract intact for growable_resolver_test.go Test 3 and other callers.
 - [Phase 13]: [Phase 13] protojson's unmarshalAny discards the wrapped resolver error's identity through its own internal/errors.New; errors.Is(readConfigErr, protoregistry.NotFound) can never hold on a ReadConfig-returned error — Verified against go.mod-pinned google.golang.org/protobuf v1.36.12 source; pinned the sentinel contract at the resolver boundary (direct FindMessageByURL call) instead
 - [Phase 13]: [Phase 13] scanCandidateLimit = 32 needed no adjustment after edge-case testing — The 33-file candidate-limit stress test confirms the escalation boundary fires exactly at the constant's derivation
+- [Phase 13]: 13-02: exact symbol index built via ParseFilesButDoNotLink, persisted content-keyed under .protoconf_cache (dirhash.HashDir), wired as Tier 3 behind the D-01 scan tier; measured 1.2s cold build / ~30ms dirhash / ~13.6ms warm cache read on the 799-proto corpus
 
 ### Pending Todos
 
@@ -209,6 +211,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-08T03:58:38.580Z
-Stopped at: Completed 13-01-PLAN.md
+Last session: 2026-09-08T05:32:33.772Z
+Stopped at: Completed 13-02-PLAN.md
 Resume file: None
