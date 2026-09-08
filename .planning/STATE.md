@@ -12,10 +12,10 @@ last_activity_desc: Phase 12 complete, transitioned to Phase 13
 state_head: 3d7e11753c876824aa66c18db94c693c49992a5e
 progress:
   total_phases: 5
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 9
   completed_plans: 9
-  percent: 20
+  percent: 40
 ---
 
 # Project State
@@ -25,7 +25,7 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-04)
 
 **Core value:** Every component must be testable, consistent, and free of runtime surprises
-**Current focus:** Phase 12 — Growable Resolver Views & Race Safety
+**Current focus:** Phase 13 — Exact Symbol Index & Shared Type-URL Resolution
 
 ## Current Position
 
@@ -34,7 +34,7 @@ Plan: Not started
 Status: Ready to plan
 Last activity: 2026-09-08 — Phase 12 complete, transitioned to Phase 13
 
-Progress: [██░░░░░░░░] 20%
+Progress: [████░░░░░░] 40%
 
 ## Performance Metrics
 
