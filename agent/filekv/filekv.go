@@ -67,7 +67,7 @@ func New(ctx context.Context, endpoints []string, options *Config) (*Store, erro
 	if err != nil {
 		return nil, err
 	}
-	ms, err := lib.NewModuleService(absRoot)
+	ms, err := lib.NewLazyModuleService(absRoot)
 	if err != nil {
 		return nil, fmt.Errorf("error creating module service: %w", err)
 	}
