@@ -68,13 +68,20 @@ func NewRegistryTypeResolver(registry *utils.DescriptorRegistry, snapshot *proto
 // FindMessageByURL and FindMessageByName delegate to after their own
 // snapshot (Tier 0) lookup misses: Tier 1 (the growable MessageRegistry),
 // then Tier 2 (the D-01 scoped lexical scan, re-checking Tier 1 on a hit),
-// then the existing D-03 whole-tree ParseAll fallback (13-03 deletes this),
-// then a hard NotFound error naming display.
+// then Tier 3 (the 13-02 exact symbol index, re-checking Tier 1 on a hit --
+// reached only when the scan found no candidate or none verified), then
+// the existing D-03 whole-tree ParseAll fallback (13-03 deletes this), then
+// a hard NotFound error naming display.
 func (r *RegistryTypeResolver) resolveTiers(url, display string) (protoreflect.MessageType, error) {
 	if md, mErr := r.registry.MessageRegistry.FindMessageTypeByUrl(url); mErr == nil && md != nil {
 		return dynamicpb.NewMessageType(md.UnwrapMessage()), nil
 	}
 	if r.registry.LoadSymbolByScan(strings.TrimPrefix(url, "type.googleapis.com/")) {
+		if md, mErr := r.registry.MessageRegistry.FindMessageTypeByUrl(url); mErr == nil && md != nil {
+			return dynamicpb.NewMessageType(md.UnwrapMessage()), nil
+		}
+	}
+	if r.registry.LoadSymbolByIndex(strings.TrimPrefix(url, "type.googleapis.com/")) {
 		if md, mErr := r.registry.MessageRegistry.FindMessageTypeByUrl(url); mErr == nil && md != nil {
 			return dynamicpb.NewMessageType(md.UnwrapMessage()), nil
 		}
