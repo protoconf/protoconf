@@ -3,6 +3,9 @@ package filekv
 import (
 	"context"
 	"encoding/base64"
+	"errors"
+	"os"
+	"path/filepath"
 	"testing"
 	"time"
 
@@ -12,6 +15,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/reflect/protoregistry"
 )
 
 func newTestStore(t *testing.T) *Store {
@@ -187,6 +191,132 @@ func TestWatch_DeliversSameKVPairAsGet(t *testing.T) {
 	watchCancel()
 	for range ch {
 	}
+}
+
+// newOnDemandFixture builds a temp protoconf root containing a proto type
+// (ondemand.v1.Thing) that only the on-demand lazy tiers can resolve --
+// nothing parses it at construction -- alongside a materialized config that
+// references a type declared nowhere under src/, for the unresolvable-type
+// diagnostic test. The directory layout mirrors the package name
+// (src/ondemand/v1/) because the scan tier narrows its walk to the
+// package-derived directory when it exists (utils/symbol_scan.go).
+func newOnDemandFixture(t *testing.T) string {
+	t.Helper()
+	root := t.TempDir()
+
+	protoDir := filepath.Join(root, "src", "ondemand", "v1")
+	require.NoError(t, os.MkdirAll(protoDir, 0755))
+	protoSrc := "syntax = \"proto3\";\npackage ondemand.v1;\n\nmessage Thing {\n    string x = 1;\n}\n"
+	require.NoError(t, os.WriteFile(filepath.Join(protoDir, "thing.proto"), []byte(protoSrc), 0644))
+
+	configDir := filepath.Join(root, "materialized_config")
+	require.NoError(t, os.MkdirAll(configDir, 0755))
+
+	goodJSON := `{"protoFile":"ondemand/v1/thing.proto","value":{"@type":"type.googleapis.com/ondemand.v1.Thing","x":"hello"}}`
+	require.NoError(t, os.WriteFile(filepath.Join(configDir, "ondemand.materialized_JSON"), []byte(goodJSON), 0644))
+
+	badJSON := `{"protoFile":"ondemand/v1/thing.proto","value":{"@type":"type.googleapis.com/absent.v1.NoSuchMessage","x":"hello"}}`
+	require.NoError(t, os.WriteFile(filepath.Join(configDir, "unresolvable.materialized_JSON"), []byte(badJSON), 0644))
+
+	return root
+}
+
+func newOnDemandStore(t *testing.T) *Store {
+	t.Helper()
+	root := newOnDemandFixture(t)
+	ctx := context.Background()
+	s, err := New(ctx, []string{}, &Config{ProtoconfRoot: root})
+	require.NoError(t, err)
+	require.NotNil(t, s)
+	t.Cleanup(func() { _ = s.Close() })
+	return s
+}
+
+// TestGetResolvesTypeAbsentFromConstructionSnapshot proves CONS-03
+// on-demand: type.googleapis.com/ondemand.v1.Thing is genuinely absent from
+// s.parser's construction-time snapshot (*protoregistry.Types, written only
+// at construction and never after) both before and after a Get that
+// resolves it, while Get itself succeeds and returns the correctly resolved
+// type URL -- resolution happened through the tiered TypeResolver's lazy
+// tiers, not a pre-seeded snapshot.
+func TestGetResolvesTypeAbsentFromConstructionSnapshot(t *testing.T) {
+	s := newOnDemandStore(t)
+	ctx := context.Background()
+
+	const url = "type.googleapis.com/ondemand.v1.Thing"
+
+	// Before Get: absent from the construction-time snapshot.
+	_, err := s.parser.LocalResolver.FindMessageByURL(url) // planner-discipline-allow: LocalResolver
+	require.Error(t, err)
+	assert.True(t, errors.Is(err, protoregistry.NotFound), "expected protoregistry.NotFound, got: %v", err)
+
+	pair, err := s.Get(ctx, "materialized_config/ondemand", nil)
+	require.NoError(t, err)
+	require.NotNil(t, pair)
+
+	// After Get: the snapshot object is fixed at construction and never
+	// grows -- still absent.
+	_, err = s.parser.LocalResolver.FindMessageByURL(url) // planner-discipline-allow: LocalResolver
+	require.Error(t, err)
+	assert.True(t, errors.Is(err, protoregistry.NotFound), "expected protoregistry.NotFound after Get, got: %v", err)
+
+	b, err := base64.StdEncoding.DecodeString(string(pair.Value))
+	require.NoError(t, err)
+	protoconfValue := &protoconfvalue.ProtoconfValue{}
+	require.NoError(t, proto.Unmarshal(b, protoconfValue))
+	assert.Equal(t, url, protoconfValue.GetValue().GetTypeUrl())
+}
+
+// TestGetIsIdempotentForSameKey proves repeat Get calls for the same key
+// return byte-identical values -- the on-demand parse is memoised, not
+// repeated on every call.
+func TestGetIsIdempotentForSameKey(t *testing.T) {
+	s := newOnDemandStore(t)
+	ctx := context.Background()
+
+	pair1, err := s.Get(ctx, "materialized_config/ondemand", nil)
+	require.NoError(t, err)
+	require.NotNil(t, pair1)
+
+	pair2, err := s.Get(ctx, "materialized_config/ondemand", nil)
+	require.NoError(t, err)
+	require.Equal(t, pair1.Value, pair2.Value)
+
+	pair3, err := s.Get(ctx, "materialized_config/ondemand", nil)
+	require.NoError(t, err)
+	require.Equal(t, pair1.Value, pair3.Value)
+}
+
+// TestGetUnresolvableTypeReturnsDiagnostic proves that a type URL naming a
+// symbol declared nowhere under src/ surfaces the Phase 13 D-02 diagnostic
+// (naming the symbol, "not found", and the symbol index state) rather than
+// a zero-value or partially-populated KVPair.
+func TestGetUnresolvableTypeReturnsDiagnostic(t *testing.T) {
+	s := newOnDemandStore(t)
+	ctx := context.Background()
+
+	pair, err := s.Get(ctx, "materialized_config/unresolvable", nil)
+	require.Error(t, err)
+	require.Nil(t, pair)
+	assert.Contains(t, err.Error(), "not found")
+	assert.Contains(t, err.Error(), "absent.v1.NoSuchMessage")
+	assert.Contains(t, err.Error(), "symbol index:")
+}
+
+// TestGetRejectsTraversalKey pins the existing traversal guard as a
+// regression: it is the only thing preventing a caller-supplied key from
+// escaping protoconfRoot, and D-01's construction flip must not weaken it.
+func TestGetRejectsTraversalKey(t *testing.T) {
+	s := newTestStore(t)
+	ctx := context.Background()
+
+	pair, err := s.Get(ctx, "../etc/passwd", nil)
+	require.Error(t, err)
+	require.Nil(t, pair)
+
+	pair, err = s.Get(ctx, "", nil)
+	require.Error(t, err)
+	require.Nil(t, pair)
 }
 
 func TestWatch_ContextCancellation(t *testing.T) {
