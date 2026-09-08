@@ -1,11 +1,16 @@
 package utils
 
 import (
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
+	"sort"
+	"strconv"
+	"strings"
 
 	"github.com/jhump/protoreflect/desc/protoparse"
+	"golang.org/x/mod/sumdb/dirhash"
 	"google.golang.org/protobuf/types/descriptorpb"
 )
 
@@ -117,12 +122,117 @@ func indexFileDescriptorProto(index map[string]string, fd *descriptorpb.FileDesc
 	}
 }
 
-// ensureSymbolIndex builds -- or, once Task 2's persistence lands, loads --
-// the symbol index exactly once per registry, collapsing concurrent
-// callers via singleflight (d.group, the same field ParseOne uses -- no
-// second Group). d.mu is never held across buildSymbolIndex, which calls
-// into protoparse (Phase 11 lock discipline; utils/parse_all_deadlock_test.go
-// guards this class of inversion).
+// symbolIndexContentKey hashes every root with dirhash.HashDir(root, "",
+// dirhash.Hash1) and joins the per-root results together with the root
+// path itself, so a multi-root registry cannot collide with a single-root
+// one. dirhash hashes every file under the root, not only .proto files --
+// a strict superset of TYPE-06's "any .proto edit invalidates" contract,
+// which is intentional: the staleness check must be one-way, and hashing
+// more can only ever cause more rebuilding, never a stale serve.
+func symbolIndexContentKey(roots []string) (string, error) {
+	var b strings.Builder
+	for _, root := range roots {
+		h, err := dirhash.HashDir(root, "", dirhash.Hash1)
+		if err != nil {
+			return "", err
+		}
+		fmt.Fprintf(&b, "%s=%s;", root, h)
+	}
+	return b.String(), nil
+}
+
+// writeSymbolIndexCache writes index to path as a versioned, content-keyed,
+// line-oriented text file: line 1 is symbolIndexHeader, the content key,
+// and the entry count; each following line is "<symbol>\t<path>", sorted
+// by symbol so the file is byte-identical across builds of the same tree.
+// The write goes to path+".tmp" and is renamed into place, so a partial
+// write is never visible as a cache file.
+func writeSymbolIndexCache(path, contentKey string, index map[string]string) error {
+	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+		return err
+	}
+
+	symbols := make([]string, 0, len(index))
+	for s := range index {
+		symbols = append(symbols, s)
+	}
+	sort.Strings(symbols)
+
+	var b strings.Builder
+	fmt.Fprintf(&b, "%s %s %d\n", symbolIndexHeader, contentKey, len(index))
+	for _, s := range symbols {
+		fmt.Fprintf(&b, "%s\t%s\n", s, index[s])
+	}
+
+	tmp := path + ".tmp"
+	if err := os.WriteFile(tmp, []byte(b.String()), 0o644); err != nil {
+		return err
+	}
+	return os.Rename(tmp, path)
+}
+
+// loadSymbolIndexCache reads and validates a cache file written by
+// writeSymbolIndexCache, refusing it -- returning an error, never a
+// partial map -- on any of: a first line that does not start with
+// symbolIndexHeader; a stored content key that differs from contentKey; an
+// entry count that differs from the number of parsed entries; or a line
+// without exactly one tab. This is registry.Load's checksum gate re-applied
+// to the symbol index: validate before trusting, refuse and rebuild on any
+// mismatch, never serve stale or partial data.
+func loadSymbolIndexCache(path, contentKey string) (map[string]string, error) {
+	raw, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+
+	lines := strings.Split(string(raw), "\n")
+	if len(lines) > 0 && lines[len(lines)-1] == "" {
+		lines = lines[:len(lines)-1]
+	}
+	if len(lines) == 0 {
+		return nil, fmt.Errorf("symbol index cache %s: empty file", path)
+	}
+
+	header := lines[0]
+	first := strings.IndexByte(header, ' ')
+	last := strings.LastIndexByte(header, ' ')
+	if first == -1 || last == -1 || first == last || header[:first] != symbolIndexHeader {
+		return nil, fmt.Errorf("symbol index cache %s: unrecognised header %q", path, header)
+	}
+	storedKey := header[first+1 : last]
+	if storedKey != contentKey {
+		return nil, fmt.Errorf("symbol index cache %s: content key mismatch", path)
+	}
+	wantCount, err := strconv.Atoi(header[last+1:])
+	if err != nil {
+		return nil, fmt.Errorf("symbol index cache %s: bad entry count: %w", path, err)
+	}
+
+	entries := lines[1:]
+	if len(entries) != wantCount {
+		return nil, fmt.Errorf("symbol index cache %s: entry count mismatch: header says %d, found %d", path, wantCount, len(entries))
+	}
+
+	index := make(map[string]string, wantCount)
+	for _, line := range entries {
+		parts := strings.Split(line, "\t")
+		if len(parts) != 2 {
+			return nil, fmt.Errorf("symbol index cache %s: malformed entry line %q", path, line)
+		}
+		index[parts[0]] = parts[1]
+	}
+	return index, nil
+}
+
+// ensureSymbolIndex builds or loads the symbol index exactly once per
+// registry, collapsing concurrent callers via singleflight (d.group, the
+// same field ParseOne uses -- no second Group). When CacheDir is set, a
+// content-key-validated cache hit installs the index without a parse; a
+// miss or refusal builds and then persists, and a persistence failure
+// leaves indexState recording why but never fails the build -- an
+// in-memory index is still a correct index. d.mu is never held across
+// buildSymbolIndex, which calls into protoparse (Phase 11 lock discipline;
+// utils/parse_all_deadlock_test.go guards this class of inversion).
 func (d *DescriptorRegistry) ensureSymbolIndex() error {
 	d.mu.RLock()
 	built := d.symbolIndex != nil
@@ -135,9 +245,27 @@ func (d *DescriptorRegistry) ensureSymbolIndex() error {
 		d.mu.RLock()
 		alreadyBuilt := d.symbolIndex != nil
 		roots := d.ImportPaths
+		cacheDir := d.CacheDir
 		d.mu.RUnlock()
 		if alreadyBuilt {
 			return nil, nil
+		}
+
+		var contentKey string
+		var keyErr error
+		if cacheDir != "" {
+			contentKey, keyErr = symbolIndexContentKey(roots)
+			if keyErr == nil {
+				cachePath := filepath.Join(cacheDir, symbolIndexCacheFile)
+				if index, loadErr := loadSymbolIndexCache(cachePath, contentKey); loadErr == nil {
+					d.mu.Lock()
+					d.symbolIndex = index
+					d.indexCacheHits++
+					d.indexState = "cache hit"
+					d.mu.Unlock()
+					return nil, nil
+				}
+			}
 		}
 
 		index, buildErr := buildSymbolIndex(roots)
@@ -145,10 +273,23 @@ func (d *DescriptorRegistry) ensureSymbolIndex() error {
 			return nil, buildErr
 		}
 
+		state := "rebuilt"
+		if cacheDir != "" {
+			switch {
+			case keyErr != nil:
+				state = fmt.Sprintf("unavailable: %s", keyErr)
+			default:
+				cachePath := filepath.Join(cacheDir, symbolIndexCacheFile)
+				if writeErr := writeSymbolIndexCache(cachePath, contentKey, index); writeErr != nil {
+					state = fmt.Sprintf("unavailable: %s", writeErr)
+				}
+			}
+		}
+
 		d.mu.Lock()
 		d.symbolIndex = index
 		d.indexBuilds++
-		d.indexState = "rebuilt"
+		d.indexState = state
 		d.mu.Unlock()
 		return nil, nil
 	})
