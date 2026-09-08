@@ -20,3 +20,23 @@ and `git log -1 -- agent/legacy.go` shows the offending commit
 (`ac77547`) predates this phase entirely. `go vet ./compiler/... ./utils/...`
 — the scope this plan's own task-level acceptance criteria require — is
 clean.
+
+## 13-02: `go test -race ./...` hang in `github.com/protoconf/protoconf/agent`
+
+A whole-repo `go test -race ./...` run (this plan's own `<verification>`
+block) reports `FAIL github.com/protoconf/protoconf/agent 602.107s` with a
+goroutine dump rooted in `github.com/stephenafamo/orchestra`'s
+`Conductor.playWithLogger`/`conductPlayer` (`sync.WaitGroup.Wait` stuck for
+9 minutes) — a hang in mutation-server process orchestration, not in any
+proto-parsing or type-resolution path this plan touches.
+
+Confirmed out of scope: `agent/*.go` is not in this plan's `files` list
+(`utils/utils.go`, `utils/symbol_index.go`, `utils/symbol_index_test.go`,
+`utils/symbol_index_cache_test.go`, `compiler/lib/module_service.go`,
+`compiler/lib/parser/parser.go`, `compiler/lib/parser/nested_any_test.go`,
+`compiler/lib/index_not_built_test.go`), and neither `utils/symbol_index.go`
+nor the `resolveTiers` change is reachable from `agent/agent_test.go`'s
+orchestra-based process-lifecycle tests. `go test -race
+./compiler/... ./utils/...` — the scope this plan's own task-level
+acceptance criteria require, matching 13-01's precedent for the
+impractical-whole-repo-race-run finding — is fully green.
