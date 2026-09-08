@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
@@ -303,20 +304,106 @@ func TestGetUnresolvableTypeReturnsDiagnostic(t *testing.T) {
 	assert.Contains(t, err.Error(), "symbol index:")
 }
 
-// TestGetRejectsTraversalKey pins the existing traversal guard as a
-// regression: it is the only thing preventing a caller-supplied key from
-// escaping protoconfRoot, and D-01's construction flip must not weaken it.
+// newTraversalFixture builds a temp protoconf root containing a real,
+// resolvable ondemand.v1.Thing type, and a sibling directory OUTSIDE the
+// root holding a schema-valid materialized config whose payload is a
+// distinctive secret string that appears nowhere else in the repository.
+// It returns the root and the secret payload so a traversal key
+// ("../secret/leak") can be asserted to never reach the caller -- a
+// substring assertion against the payload is unambiguous.
+func newTraversalFixture(t *testing.T) (root string, secretPayload string) {
+	t.Helper()
+	base := t.TempDir()
+
+	root = filepath.Join(base, "protoconfRoot")
+	protoDir := filepath.Join(root, "src", "ondemand", "v1")
+	require.NoError(t, os.MkdirAll(protoDir, 0755))
+	protoSrc := "syntax = \"proto3\";\npackage ondemand.v1;\n\nmessage Thing {\n    string x = 1;\n}\n"
+	require.NoError(t, os.WriteFile(filepath.Join(protoDir, "thing.proto"), []byte(protoSrc), 0644))
+	require.NoError(t, os.MkdirAll(filepath.Join(root, "materialized_config"), 0755))
+
+	secretDir := filepath.Join(base, "secret")
+	require.NoError(t, os.MkdirAll(secretDir, 0755))
+	secretPayload = "TOP-SECRET-OUTSIDE-ROOT-14-09"
+	leakJSON := fmt.Sprintf(`{"protoFile":"ondemand/v1/thing.proto","value":{"@type":"type.googleapis.com/ondemand.v1.Thing","x":%q}}`, secretPayload)
+	require.NoError(t, os.WriteFile(filepath.Join(secretDir, "leak.materialized_JSON"), []byte(leakJSON), 0644))
+
+	return root, secretPayload
+}
+
+func newTraversalStore(t *testing.T, root string) *Store {
+	t.Helper()
+	ctx := context.Background()
+	s, err := New(ctx, []string{}, &Config{ProtoconfRoot: root})
+	require.NoError(t, err)
+	require.NotNil(t, s)
+	t.Cleanup(func() { _ = s.Close() })
+	return s
+}
+
+// TestGetRejectsTraversalKey proves a caller-supplied key cannot read a
+// file outside protoconfRoot through Get. The fixture plants a real,
+// readable, schema-valid materialized config at the traversal target, so
+// this test fails on a *successful* read rather than passing on
+// os.Stat's ErrNotExist -- that gap is exactly what 14-VERIFICATION.md
+// recorded against the previous version of this test, which asserted
+// only require.Error against a fixture with no file at the traversed
+// location.
 func TestGetRejectsTraversalKey(t *testing.T) {
-	s := newTestStore(t)
+	root, secretPayload := newTraversalFixture(t)
+	s := newTraversalStore(t, root)
 	ctx := context.Background()
 
-	pair, err := s.Get(ctx, "../etc/passwd", nil)
+	pair, err := s.Get(ctx, "../secret/leak", nil)
 	require.Error(t, err)
 	require.Nil(t, pair)
+	assert.NotContains(t, err.Error(), secretPayload)
+	// Guard the content assertion: if a traversal somehow returned a
+	// non-nil pair (the leak vector), decode it and fail explicitly on
+	// the secret payload rather than letting require.Nil above be the
+	// only line standing between this test and a false pass.
+	if pair != nil {
+		b, decodeErr := base64.StdEncoding.DecodeString(string(pair.Value))
+		require.NoError(t, decodeErr)
+		protoconfValue := &protoconfvalue.ProtoconfValue{}
+		require.NoError(t, proto.Unmarshal(b, protoconfValue))
+		assert.NotContains(t, protoconfValue.String(), secretPayload)
+	}
 
 	pair, err = s.Get(ctx, "", nil)
 	require.Error(t, err)
 	require.Nil(t, pair)
+}
+
+// TestWatchRejectsTraversalKey proves Watch needs its own guard: addWatch
+// registers the escaped absolute path with fsnotify before the
+// goroutine's first Get runs, so Get's validation does not cover Watch.
+func TestWatchRejectsTraversalKey(t *testing.T) {
+	root, _ := newTraversalFixture(t)
+	s := newTraversalStore(t, root)
+	ctx := context.Background()
+
+	ch, err := s.Watch(ctx, "../secret/leak", nil)
+	require.Error(t, err)
+	require.Nil(t, ch)
+
+	ch, err = s.Watch(ctx, "", nil)
+	require.Error(t, err)
+	require.Nil(t, ch)
+}
+
+// TestGetMissingKeyIsNotAnInvalidKey pins the error-class boundary Task 2
+// must not blur: a legitimate key naming a config that genuinely does not
+// exist under the root still returns store.ErrKeyNotFound, not the
+// invalid-key error the traversal guard produces.
+func TestGetMissingKeyIsNotAnInvalidKey(t *testing.T) {
+	root, _ := newTraversalFixture(t)
+	s := newTraversalStore(t, root)
+	ctx := context.Background()
+
+	_, err := s.Get(ctx, "materialized_config/absent", nil)
+	require.Error(t, err)
+	assert.True(t, errors.Is(err, store.ErrKeyNotFound))
 }
 
 func TestWatch_ContextCancellation(t *testing.T) {
