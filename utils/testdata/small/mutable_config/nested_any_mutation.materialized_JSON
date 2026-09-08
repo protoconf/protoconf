@@ -1,0 +1,10 @@
+{
+  "value":  {
+    "@type":  "type.googleapis.com/test.v1.TestMessage",
+    "stringValue":  "outer",
+    "anyField":  {
+      "@type":  "type.googleapis.com/test.v1.MessageWithSubMessage.SubMessage",
+      "value":  "deep"
+    }
+  }
+}
