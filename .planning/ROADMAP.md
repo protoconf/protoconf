@@ -56,7 +56,7 @@ Full phase detail archived under `.planning/milestones/v1.0-phases/`.
 
 - [x] **Phase 11: Concurrency-Safe Lazy Registry Core** - `GetProtoRegistry()` stops bulk-parsing `src/`; parse-on-demand is memoised and thread-safe; the mutation server's service catalog survives the switch (completed 2026-09-07)
 - [x] **Phase 12: Growable Resolver Views & Race Safety** - Resolvers grow incrementally instead of snapshotting, and concurrent compiles are proven race-free (completed 2026-09-08)
-- [ ] **Phase 13: Exact Symbol Index & Shared Type-URL Resolution** - Every message symbol under `src/`, nested types included, resolves to its declaring file via a persisted, content-keyed, parse-without-link index, consulted through one shared resolution path that every nested `Any` lookup — including the compiler's own mutable-config load — resolves through
+- [x] **Phase 13: Exact Symbol Index & Shared Type-URL Resolution** - Every message symbol under `src/`, nested types included, resolves to its declaring file via a persisted, content-keyed, parse-without-link index, consulted through one shared resolution path that every nested `Any` lookup — including the compiler's own mutable-config load — resolves through (completed 2026-09-08)
 - [ ] **Phase 14: Non-Compiler Consumer Correctness** - Mutation server, inserter, agent, and reflection UI resolve types correctly and safely with no regression
 - [ ] **Phase 15: Verification, Decision & Gate Flip** - The scaling gate flips green, the error-surface change is documented, and the milestone's numbers are recorded
 
@@ -203,6 +203,6 @@ Phases execute in numeric order: 1 → 2 → ... → 10 → 11 → 12 → 13 →
 | 1-10. (see v1.0 table above) | v1.0 | 23/23 | Complete | 2026-03-31 |
 | 11. Concurrency-Safe Lazy Registry Core | v2.0 | 5/5 | Complete    | 2026-09-07 |
 | 12. Growable Resolver Views & Race Safety | v2.0 | 4/4 | Complete    | 2026-09-08 |
-| 13. Exact Symbol Index & Shared Type-URL Resolution | v2.0 | 4/4 | In Progress|  |
+| 13. Exact Symbol Index & Shared Type-URL Resolution | v2.0 | 4/4 | Complete    | 2026-09-08 |
 | 14. Non-Compiler Consumer Correctness | v2.0 | 0/TBD | Not started | - |
 | 15. Verification, Decision & Gate Flip | v2.0 | 0/TBD | Not started | - |
