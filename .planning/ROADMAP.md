@@ -108,7 +108,7 @@ Plans:
   3. Two concurrent compiles against one shared compiler, each reaching a proto the other hasn't touched, complete without error and without a data race under `go test -race`.
 
 **Measured impact**: Moves the numbers — this phase eliminates the 260ms resolver-snapshot rebuild. Together with Phase 11, this closes the full 6.97s → ~200ms compile-path gap; everything after this phase is correctness work protecting consumers that were never on this budget.
-**Plans**: 4 plans (3 executed, 1 gap closure pending)
+**Plans**: 4/4 plans executed (3 executed, 1 gap closure pending)
 
 Plans:
 **Wave 1**
@@ -122,7 +122,7 @@ Plans:
 
 **Wave 3** *(gap closure — blocked on Wave 2 completion)*
 
-- [ ] 12-04-PLAN.md — Gap closure for `12-VERIFICATION.md`'s one failed truth: `ParseFilesX` falls back to the raw `p.FilesResolver` field when `p.registry.FindFileByPath` reports `ErrNoGrowableResolver`, so an eager registry's hand-registered external files (the mutation server's six well-known protos) resolve again, plus the red-to-green regression test the change should have shipped with (RSLV-03)
+- [x] 12-04-PLAN.md — Gap closure for `12-VERIFICATION.md`'s one failed truth: `ParseFilesX` falls back to the raw `p.FilesResolver` field when `p.registry.FindFileByPath` reports `ErrNoGrowableResolver`, so an eager registry's hand-registered external files (the mutation server's six well-known protos) resolve again, plus the red-to-green regression test the change should have shipped with (RSLV-03)
 
 ### Phase 13: Exact Symbol Index & Shared Type-URL Resolution
 
@@ -192,7 +192,7 @@ Phases execute in numeric order: 1 → 2 → ... → 10 → 11 → 12 → 13 →
 |-------|-----------|-----------------|--------|-----------|
 | 1-10. (see v1.0 table above) | v1.0 | 23/23 | Complete | 2026-03-31 |
 | 11. Concurrency-Safe Lazy Registry Core | v2.0 | 5/5 | Complete    | 2026-09-07 |
-| 12. Growable Resolver Views & Race Safety | v2.0 | 3/3 | In Progress|  |
+| 12. Growable Resolver Views & Race Safety | v2.0 | 4/4 | In Progress|  |
 | 13. Exact Symbol Index & Shared Type-URL Resolution | v2.0 | 0/TBD | Not started | - |
 | 14. Non-Compiler Consumer Correctness | v2.0 | 0/TBD | Not started | - |
 | 15. Verification, Decision & Gate Flip | v2.0 | 0/TBD | Not started | - |
