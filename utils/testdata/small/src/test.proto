@@ -58,7 +58,6 @@ message MessageWithSubMessage {
     }
 
     SubMessage sub = 1;
-    google.protobuf.Any any_field = 2;
 }
 
 message BufValidate {

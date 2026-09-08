@@ -12,23 +12,11 @@ import (
 )
 
 // nestedAnyOutput mirrors the JSON shape the nested_any_mutation fixture
-// carries: a top-level MessageWithSubMessage whose own "sub" field and
-// whose any_field (a depth-2 nested google.protobuf.Any,
-// test.v1.MessageWithSubMessage.SubMessage) both resolve correctly. The
-// outer type is deliberately NOT test.v1.TestMessage or test.v1.ValidateMe
-// (test.proto's two RPC-input types): GenReflectionUI's example-JSON
-// encoding (server/server.go, out of this phase's D-03 scope) hardcodes a
-// resolver-less protojson.Marshal for any RPC-input mutable config, so a
-// populated Any field on either of those types crashes an unrelated,
-// already-passing test the moment this fixture's file exists in the shared
-// small testdata tree. MessageWithSubMessage carries no exampleMaker entry,
-// sidestepping that call entirely while still resolving through the exact
-// same shared chain.
+// carries: a top-level TestMessage whose any_field unpacks to a depth-2
+// nested google.protobuf.Any (test.v1.MessageWithSubMessage.SubMessage).
 type nestedAnyOutput struct {
-	Sub struct {
-		Value string `json:"value"`
-	} `json:"sub"`
-	AnyField struct {
+	StringValue string `json:"stringValue"`
+	AnyField    struct {
 		Type  string `json:"@type"`
 		Value string `json:"value"`
 	} `json:"anyField"`
@@ -87,7 +75,7 @@ func TestLoadMutableResolvesNestedAny(t *testing.T) {
 		Value nestedAnyOutput `json:"value"`
 	}
 	require.NoError(t, json.Unmarshal(b, &out))
-	require.Equal(t, "outer", out.Value.Sub.Value)
+	require.Equal(t, "outer", out.Value.StringValue)
 	require.Equal(t, "type.googleapis.com/test.v1.MessageWithSubMessage.SubMessage", out.Value.AnyField.Type)
 	require.Equal(t, "deep", out.Value.AnyField.Value)
 }
