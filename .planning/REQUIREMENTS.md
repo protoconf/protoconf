@@ -54,7 +54,7 @@ observable success criteria, only an artifact.
 - [x] **TYPE-05**: The index is persisted under `.protoconf_cache` and keyed by content, so a warm run does not rebuild it
 - [x] **TYPE-06**: A change to any `.proto` under `src/` invalidates the cached index, and a stale index is never served
 - [x] **TYPE-07**: The index is built on first need, so a consumer that resolves no unknown symbol never pays for it
-- [ ] **TYPE-08**: Type-URL resolution is a single shared code path used by every consumer, not duplicated per call site
+- [x] **TYPE-08**: Type-URL resolution is a single shared code path used by every consumer, not duplicated per call site
 - [x] **TYPE-09**: `parser.ReadConfig` resolves every nested `@type` in a materialized config, at any depth, through that path
 
 ### Consumer Correctness
@@ -134,7 +134,7 @@ Acknowledged, deferred beyond this milestone.
 | TYPE-05 | Phase 13 | Complete |
 | TYPE-06 | Phase 13 | Complete |
 | TYPE-07 | Phase 13 | Complete |
-| TYPE-08 | Phase 13 | Pending |
+| TYPE-08 | Phase 13 | Complete |
 | TYPE-09 | Phase 13 | Complete |
 | CONS-05 | Phase 13 | Pending |
 | CONS-02 | Phase 14 | Pending |

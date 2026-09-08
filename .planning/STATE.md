@@ -5,16 +5,16 @@ milestone_name: Compiler Startup Performance (Planned)
 current_phase: 13
 current_phase_name: Exact Symbol Index & Shared Type-URL Resolution
 status: executing
-stopped_at: Completed 13-02-PLAN.md
-last_updated: "2026-09-08T05:32:33.791Z"
+stopped_at: Completed 13-03-PLAN.md
+last_updated: "2026-09-08T06:01:59.463Z"
 last_activity: 2026-09-08
 last_activity_desc: Phase 13 execution started
-state_head: c376bbabab40bb39b48ba3596a0795dd2868aab4
+state_head: 684a731a4b055ff6b09f228fe9b07651f33831fe
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 13
-  completed_plans: 11
+  completed_plans: 12
   percent: 0
 ---
 
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-04)
 ## Current Position
 
 Phase: 13 (Exact Symbol Index & Shared Type-URL Resolution) — EXECUTING
-Plan: 3 of 4
+Plan: 4 of 4
 Status: Ready to execute
 Last activity: 2026-09-08 — Phase 13 execution started
 
@@ -96,6 +96,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 12 P04 | 25min | 2 tasks | 2 files |
 | Phase 13 P01 | 40min | 2 tasks | 5 files |
 | Phase 13 P02 | 55min | 3 tasks | 8 files |
+| Phase 13 P03 | 55min | 3 tasks | 12 files |
 
 ## Accumulated Context
 
@@ -179,6 +180,8 @@ Recent decisions affecting current work:
 - [Phase 13]: [Phase 13] protojson's unmarshalAny discards the wrapped resolver error's identity through its own internal/errors.New; errors.Is(readConfigErr, protoregistry.NotFound) can never hold on a ReadConfig-returned error — Verified against go.mod-pinned google.golang.org/protobuf v1.36.12 source; pinned the sentinel contract at the resolver boundary (direct FindMessageByURL call) instead
 - [Phase 13]: [Phase 13] scanCandidateLimit = 32 needed no adjustment after edge-case testing — The 33-file candidate-limit stress test confirms the escalation boundary fires exactly at the constant's derivation
 - [Phase 13]: 13-02: exact symbol index built via ParseFilesButDoNotLink, persisted content-keyed under .protoconf_cache (dirhash.HashDir), wired as Tier 3 behind the D-01 scan tier; measured 1.2s cold build / ~30ms dirhash / ~13.6ms warm cache read on the 799-proto corpus
+- [Phase 13]: D-02 executed: deleted DescriptorRegistry.ParseAll, its eagerFallback latch, and FellBackToEager(). Developer confirmed option 1 at the Task 1 checkpoint. — Orchestrator's grep found exactly one non-test caller of each (parser.go's resolution chain and the compile-finished log line, both handled by this plan), so no carve-out for a surviving caller (option 3) was needed.
+- [Phase 13]: Deleted (not re-pointed) utils/growable_resolver_test.go's TestParseAllRegistersIntoFilesResolver and TestFilesResolverRegistrationErrorsStayZero. — Their registration-diff behavior lived entirely inside ParseAll's own deleted diff loop; no production caller runs Import/Parse on a lazy registry, so re-pointing would only test reimplemented ParseAll glue with no real analog.
 
 ### Pending Todos
 
@@ -211,6 +214,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-08T05:32:33.772Z
-Stopped at: Completed 13-02-PLAN.md
+Last session: 2026-09-08T06:01:59.442Z
+Stopped at: Completed 13-03-PLAN.md
 Resume file: None
