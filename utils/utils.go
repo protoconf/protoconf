@@ -89,6 +89,13 @@ type DescriptorRegistry struct {
 	// Test-only (D-06).
 	registrationErrors int
 
+	// scanResolutions counts how many times the D-01 lexical scan tier
+	// (LoadSymbolByScan, utils/symbol_scan.go) has answered a lookup by
+	// confirming a candidate via a real ParseOne plus a MessageRegistry
+	// re-check. Guarded by mu. Test-only observable, mirroring the Phase 12
+	// D-05/D-06 counter precedent: no log line, no CLI surface.
+	scanResolutions int
+
 	// afterParseHook, when non-nil, runs inside ParseOne's singleflight
 	// closure after parser.ParseFiles returns and before d.mu is taken for
 	// the insert. It exists so a test can deterministically force the
