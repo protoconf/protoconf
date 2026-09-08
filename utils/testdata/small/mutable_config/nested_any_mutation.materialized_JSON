@@ -1,7 +1,9 @@
 {
   "value":  {
-    "@type":  "type.googleapis.com/test.v1.TestMessage",
-    "stringValue":  "outer",
+    "@type":  "type.googleapis.com/test.v1.MessageWithSubMessage",
+    "sub":  {
+      "value":  "outer"
+    },
     "anyField":  {
       "@type":  "type.googleapis.com/test.v1.MessageWithSubMessage.SubMessage",
       "value":  "deep"
