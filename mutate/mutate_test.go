@@ -2,14 +2,17 @@ package mutate
 
 import (
 	"fmt"
+	"net"
 	"os"
 	"path/filepath"
 	"testing"
 
 	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/dynamic"
+	"github.com/protoconf/protoconf/server"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"google.golang.org/grpc"
 
 	// testutil imported for NewAny helper
 	_ "github.com/protoconf/protoconf/testutil"
@@ -228,6 +231,85 @@ func TestRun_InvalidServer(t *testing.T) {
 		"-addr=localhost:19999",
 	})
 	assert.NotEqual(t, 0, code, "invalid protoconf root should return non-zero exit code")
+}
+
+// ---------------------------------------------------------------------------
+// TestMutateExitsOneOnUnresolvableMessage / TestMutateResolvesMessageAbsentFromConstructionSnapshot
+// ---------------------------------------------------------------------------
+
+// TestMutateExitsOneOnUnresolvableMessage pins mutate's abort shape (D-02):
+// a -msg naming a message declared nowhere under src/ must return exit code
+// exactly 1, not the inserter's skip-and-continue exit 0. Resolution fails
+// before the gRPC dial, so no server is needed.
+func TestMutateExitsOneOnUnresolvableMessage(t *testing.T) {
+	cmd, err := Command()
+	require.NoError(t, err)
+
+	root := t.TempDir()
+	code := cmd.Run([]string{
+		"-proto=test.proto",
+		"-path=test/path",
+		"-msg=absent.v1.NoSuchMessage",
+		"-field=x=hello",
+		"-root=" + root,
+		"-addr=localhost:19999",
+	})
+	assert.Equal(t, 1, code, "unresolvable message should abort with exit code 1")
+}
+
+// newOndemandMutateFixture builds a temp protoconf root containing a proto
+// type (ondemand.v1.Thing) declared only under src/ -- absent from the
+// construction-time snapshot both mutate's own resolver and the mutation
+// server's resolver would have if either parsed eagerly. Directory layout
+// mirrors the package name (src/ondemand/v1/) so the scan tier's
+// package-derived-directory narrowing (utils/symbol_scan.go) finds it,
+// matching the fixture shape verified in 14-01/14-02.
+func newOndemandMutateFixture(t *testing.T) string {
+	t.Helper()
+	root := t.TempDir()
+
+	protoDir := filepath.Join(root, "src", "ondemand", "v1")
+	require.NoError(t, os.MkdirAll(protoDir, 0755))
+	protoSrc := "syntax = \"proto3\";\npackage ondemand.v1;\n\nmessage Thing {\n    string x = 1;\n}\n"
+	require.NoError(t, os.WriteFile(filepath.Join(protoDir, "thing.proto"), []byte(protoSrc), 0644))
+
+	return root
+}
+
+// TestMutateResolvesMessageAbsentFromConstructionSnapshot proves CONS-02/04's
+// mutate leg of D-03: a message declared only in src/ (absent from mutate's
+// construction-time snapshot) resolves through the tiered TypeResolver, the
+// RPC reaches a real mutation server, and the mutable config file is
+// written to disk.
+func TestMutateResolvesMessageAbsentFromConstructionSnapshot(t *testing.T) {
+	root := newOndemandMutateFixture(t)
+
+	srv, err := server.NewProtoconfMutationServer(root)
+	require.NoError(t, err)
+
+	lis, err := net.Listen("tcp", "127.0.0.1:0")
+	require.NoError(t, err)
+	rpcServer := grpc.NewServer()
+	srv.Init(rpcServer)
+	go rpcServer.Serve(lis)
+	defer rpcServer.Stop()
+
+	cmd, err := Command()
+	require.NoError(t, err)
+
+	code := cmd.Run([]string{
+		"-proto=ondemand/v1/thing.proto",
+		"-path=ondemand",
+		"-msg=ondemand.v1.Thing",
+		"-field=x=hello",
+		"-root=" + root,
+		"-addr=" + lis.Addr().String(),
+	})
+	assert.Equal(t, 0, code, "resolvable-but-absent-from-snapshot message should succeed")
+
+	written := filepath.Join(root, "mutable_config", "ondemand.materialized_JSON")
+	_, statErr := os.Stat(written)
+	assert.NoError(t, statErr, "expected mutable config file to be written")
 }
 
 // writeConfigJSON writes a minimal mutate config JSON file setting addr and returns its path.

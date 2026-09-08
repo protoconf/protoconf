@@ -64,14 +64,14 @@ func (c *cliCommand) Run(args []string) int {
 		slog.Error("failed to get root path", "error", err)
 		return 1
 	}
-	ms, err := lib.NewModuleService(root)
+	ms, err := lib.NewLazyModuleService(root)
 	if err != nil {
 		slog.Error("error creating module service", "error", err)
 		return 1
 	}
 	ms.LoadFromLockFile()
 	parser := parser.NewParserWithDescriptorRegistry(ms.GetProtoRegistry())
-	anyResolver := parser.LocalResolver
+	anyResolver := parser.TypeResolver
 
 	messageType, err := anyResolver.FindMessageByName(protoreflect.FullName(c.config.ProtoMsg))
 
