@@ -167,7 +167,7 @@ Plans:
   5. A long-running process handling many different configs over time keeps its loaded-file count proportional to what was actually demanded — it never jumps to the full repository count after one unusual request.
 
 **Measured impact**: Correctness-only — the "no regression, no silent wrong answers" pass. None of these four consumers were ever on the 200ms compile budget.
-**Plans**: 8/9 plans executed in 5 waves (14-09 is gap closure from `14-VERIFICATION.md`)
+**Plans**: 9/9 plans executed in 5 waves (14-09 is gap closure from `14-VERIFICATION.md`)
 
 Plans:
 **Wave 1** *(tracer — the whole architecture proven end-to-end on one consumer first)*
@@ -192,7 +192,7 @@ Plans:
 
 **Wave 5** *(gap closure — the one failed truth in `14-VERIFICATION.md`)*
 
-- [ ] 14-09-PLAN.md — Path containment on both caller-supplied-path trust boundaries: one validated key-to-path helper shared by `filekv`'s `Get` and `Watch`, a containment check on `MutateConfig`'s write path placed before every side effect, traversal tests proven capable of failing, and the two false threat-model mitigation claims corrected (CONS-03 + the phase goal's safety clause)
+- [x] 14-09-PLAN.md — Path containment on both caller-supplied-path trust boundaries: one validated key-to-path helper shared by `filekv`'s `Get` and `Watch`, a containment check on `MutateConfig`'s write path placed before every side effect, traversal tests proven capable of failing, and the two false threat-model mitigation claims corrected (CONS-03 + the phase goal's safety clause)
 
 ### Phase 15: Verification, Decision & Gate Flip
 
@@ -225,5 +225,5 @@ Phases execute in numeric order: 1 → 2 → ... → 10 → 11 → 12 → 13 →
 | 11. Concurrency-Safe Lazy Registry Core | v2.0 | 5/5 | Complete    | 2026-09-07 |
 | 12. Growable Resolver Views & Race Safety | v2.0 | 4/4 | Complete    | 2026-09-08 |
 | 13. Exact Symbol Index & Shared Type-URL Resolution | v2.0 | 4/4 | Complete    | 2026-09-08 |
-| 14. Non-Compiler Consumer Correctness | v2.0 | 8/8 | In Progress|  |
+| 14. Non-Compiler Consumer Correctness | v2.0 | 9/9 | In Progress|  |
 | 15. Verification, Decision & Gate Flip | v2.0 | 0/TBD | Not started | - |
