@@ -1,6 +1,6 @@
 ---
 phase: 11-concurrency-safe-lazy-registry-core
-verified: 2026-09-07T21:50:00Z
+verified: 2026-09-08T14:35:00Z
 status: passed
 score: 25/25 must-have truths verified (5 roadmap success criteria + 6 requirement IDs + 14 gap-closure plan truths across 11-04/11-05), plus 7 pre-existing backstop/decision items closed via 11-UAT.md human sign-off (8 tests total, 7 pass, 1 issue whose gap is resolved)
 behavior_unverified: 0
@@ -31,8 +31,9 @@ covered_files:
   - mod/command_test.go
   - server/server.go
   - utils/utils.go
-covered_digest: "v1:sha256:cf8aeaf31ae52d8ec3a11ce0c879f4aaedd0f6680b45647f4f9f1ea7be32d29d"
+covered_digest: "v1:sha256:560fca92a5955957f6ab2f8e22fc20496fd2531ba4f92a6de035551b0d33133f"
 re_verification:
+  latest_pass: "2026-09-08T14:35:00Z — re-verified at HEAD after Phase 12/13 rewrote 8 covered source files. Verdict unchanged: passed. See ## Re-Verification After Downstream Drift."
   previous_status: human_needed
   previous_score: 25/25 must-have truths (5 roadmap success criteria + 6 requirement IDs + 14 gap-closure plan truths), 1 open human_verification item (WR-02)
   gaps_closed: []
@@ -45,7 +46,7 @@ human_verification_closed:
 # Phase 11: Concurrency-Safe Lazy Registry Core Verification Report
 
 **Phase Goal:** A compile no longer pays for the whole repository's proto tree, and the mutation server's service catalog doesn't silently go dark under that change.
-**Verified:** 2026-09-07T21:50:00Z
+**Verified:** 2026-09-08T14:35:00Z (re-verified after downstream drift; original pass 2026-09-07T21:50:00Z)
 **Status:** passed
 **Re-verification:** Yes — the prior VERIFICATION.md (2026-09-07T21:15Z, `status: human_needed`) is stale. Two files changed since it was written: `utils/utils.go` (commit `3005e5a`, the fix for its own single open `human_verification` item, WR-02) and `11-UAT.md` (commits `dc2973a`, `4bd43aa`, recording that item's resolution). Nothing else in the previously-covered file set moved (confirmed via `git log --oneline` and `git status`). `11-SECURITY.md` is new since the prior report and is added to `covered_files` here.
 
@@ -210,3 +211,52 @@ verification marks the report stale -- and UAT necessarily completes after verif
 workflow. Recomputing the digest records that the verdict covers the current contents. It is NOT
 a re-verification: no truth was re-derived here, and none needed to be, because no verified
 artifact other than that one UAT result field changed.
+
+---
+
+## Re-Verification After Downstream Drift (2026-09-08)
+
+`verification.status` reported `stale`. The cause is **not** a Phase 11 artifact change — it is
+`covered_digest` drift from downstream phases. `git diff --stat 5800eaf..HEAD` over the 25-file
+`covered_files` list shows 8 changed paths, every one of them rewritten by Phase 12 or Phase 13:
+`utils/utils.go`, `compiler/lib/parser/parser.go`, `compiler/lib/compiler.go`,
+`compiler/lib/starlark_loader.go`, `compiler/lib/config.go`, `compiler/lib/module_service.go`,
+`server/server.go`, and `.planning/REQUIREMENTS.md`. No Phase 11 PLAN, SUMMARY, UAT, REVIEW or
+SECURITY file moved.
+
+The digest cannot distinguish "Phase 11's own work changed" from "a later phase edited a shared
+file", so the drift is a signal to re-check, not a verdict. It was re-checked.
+
+**Two Phase 11 test files were deliberately deleted by 13-03**, together with the code they
+covered:
+
+| Deleted | Covered | Replaced by |
+|---------|---------|-------------|
+| `utils/parse_all_deadlock_test.go` | WR-01 — `ParseAll` holds `d.mu` across the whole-tree parse without deadlocking | `utils/index_build_deadlock_test.go` (same deadlock property against the symbol-index build that replaced `ParseAll`) |
+| `compiler/lib/eager_fallback_visible_test.go` | D-03's `eagerFallback` log attribute is always present | `compiler/lib/tier_observability_test.go` (pins the three tier counters that replaced the boolean) |
+
+`ParseAll` and the `eagerFallback` latch no longer exist (`feat(13-03): delete the whole-tree
+eager fallback, replace with a hard error`, `862410e`). UAT item 5's WR-01 lock-duration decision
+and UAT item 7's prohibition 2 are therefore **moot at HEAD, not regressed** — the mechanism they
+constrained was removed. `utils/lazy_parse_canonical_test.go` survived the same commit with its
+seam re-pointed at a direct locked insert; the LAZY-02 pointer-identity truth it carries is intact.
+
+**Re-run live at HEAD (2026-09-08):**
+
+- `go test -race -count=1 ./utils/... ./compiler/lib/... ./server/... ./mod/...` — all packages
+  `ok`, no `FAIL`, no `WARNING: DATA RACE`.
+- Every named Phase 11 evidence test, individually under `-race`, all PASS:
+  `TestParseOneReturnsCanonicalPointerWhenRacingConcurrentInsert` (LAZY-02 / WR-02),
+  `TestGetProtoRegistryIsSingletonUnderConcurrency` (WR-04),
+  `TestInitServiceSetIsOrderIndependent` (SC5 / CONS-01, backstop truth B2),
+  `TestModSyncFdsByteIdentical` + `TestModSyncFdsUnaffectedByConcurrentLazyCompile` (SC3 / LAZY-04),
+  `TestModSyncNeverPersistsEmptyDescriptorSet` 3/3 including `good_path_control` (G-11-7).
+- SC4 live CLI: `go run ./cmd/protoconf compile utils/testdata/small test.pconf` →
+  `compile finished file=test.pconf protoFilesLoaded=1 symbolIndexBuilds=0 symbolIndexCacheHits=0
+  scanResolutions=0`. The operator-visible loaded-proto count survives; Phase 13 replaced the
+  `eagerFallback` boolean beside it with three tier counters, which is SC4-compatible.
+- `go vet ./utils/... ./compiler/... ./mod/... ./server/...` — clean.
+
+**Verdict unchanged: `passed`.** No Phase 11 truth regressed under Phases 12–13; two were rendered
+moot by an intentional, documented deletion. `covered_digest` recomputed via
+`gsd_run query verification.fingerprint` over the same 25-file list — never hand-written.
