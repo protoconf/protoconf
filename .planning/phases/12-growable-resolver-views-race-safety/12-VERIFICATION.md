@@ -1,6 +1,6 @@
 ---
 phase: 12-growable-resolver-views-race-safety
-verified: 2026-09-08T09:00:00Z
+verified: 2026-09-08T14:55:00Z
 status: passed
 score: 10/10 must-haves verified
 covered_files:
@@ -14,6 +14,7 @@ covered_files:
   - ".planning/phases/12-growable-resolver-views-race-safety/12-04-PLAN.md"
   - ".planning/phases/12-growable-resolver-views-race-safety/12-04-SUMMARY.md"
   - ".planning/phases/12-growable-resolver-views-race-safety/12-REVIEW.md"
+  - ".planning/phases/12-growable-resolver-views-race-safety/12-UAT.md"
   - "compiler/lib/compiler.go"
   - "compiler/lib/concurrent_compile_test.go"
   - "compiler/lib/config.go"
@@ -24,10 +25,11 @@ covered_files:
   - "utils/growable_resolver_race_test.go"
   - "utils/growable_resolver_test.go"
   - "utils/utils.go"
-covered_digest: "v1:sha256:66d084ca90500e026ae3a20e58991a7ef9fe03cdce84826c5e056d0176975979"
+covered_digest: "v1:sha256:699c8f0f527177a1832713b8520bf7bfe5679a73933abb6e0ac2f9c9400c2b99"
 behavior_unverified: 0
 overrides_applied: 0
 re_verification:
+  latest_pass: "2026-09-08T14:55:00Z — re-verified at HEAD after 13-03 (862410e) rewrote 4 covered source files. Truth 4 moot (ParseAll deleted), truth 3 consolidated into TestRegistrationCountIsIncremental, truths 5 and 10 intact. Verdict unchanged: passed. See ## Re-Verification After Downstream Drift."
   previous_status: gaps_found
   previous_score: 9/10
   gaps_closed:
@@ -39,7 +41,7 @@ re_verification:
 # Phase 12: Growable Resolver Views & Race Safety Verification Report
 
 **Phase Goal:** The compiler's live resolvers grow safely and correctly as new protos are demanded mid-compile, without rebuilding a snapshot or racing under concurrent load.
-**Verified:** 2026-09-08T09:00:00Z
+**Verified:** 2026-09-08T14:55:00Z (re-verified after downstream drift; gap-closure pass 2026-09-08T09:00:00Z)
 **Status:** passed
 **Re-verification:** Yes — after gap closure (plan 12-04)
 
@@ -167,3 +169,50 @@ The advisory items carried forward from the initial verification (WR-01: public 
 
 _Verified: 2026-09-08T09:00:00Z_
 _Verifier: Claude (gsd-verifier)_
+
+---
+
+## Re-Verification After Downstream Drift (2026-09-08)
+
+`verification.status` reported `stale`. The cause is `covered_digest` drift from Phase 13, not a
+Phase 12 artifact change. Of the 20 `covered_files`, five moved since the 09:00Z sign-off — four in
+one commit, `862410e` (`feat(13-03): delete the whole-tree eager fallback, replace with a hard
+error`): `utils/utils.go`, `compiler/lib/parser/parser.go`, `compiler/lib/compiler.go`,
+`utils/growable_resolver_test.go`; plus `.planning/REQUIREMENTS.md` (`35bf4dd`, 13-04). No Phase 12
+PLAN, SUMMARY or REVIEW file moved.
+
+Because 13-03 deleted the very mechanism two of this phase's truths constrain, the drift was
+re-checked truth by truth rather than re-stamped.
+
+### Truth-by-truth disposition at HEAD
+
+| # | Truth | Disposition |
+|---|-------|-------------|
+| 4 | `ParseAll`'s eager fallback registers through the same before/after diff as `lazyLoaded` — one insert point | **MOOT, not regressed.** `ParseAll` and its diff loop no longer exist. `TestParseAllRegistersIntoFilesResolver` was deleted by 13-03, which left a 19-line comment at `utils/growable_resolver_test.go:11` recording why it was deleted rather than re-pointed: the combination it exercised (ImportPaths set AND `Import`/`Parse` called directly) has no production caller outside `ParseAll` itself, so re-pointing it would assert only test-only glue. |
+| 3 | Registration-error count stays 0 across every growth path | **STILL COVERED, test consolidated.** `TestFilesResolverRegistrationErrorsStayZero` was deleted in the same commit; its zero-error assertion lives on inside `TestRegistrationCountIsIncremental`, which 13-03's comment names as the sole remaining pin on the registration-diff invariant via `ParseOne`. Re-run green under `-race`. |
+| 5 | Every eager consumer keeps byte-identical, non-cached `GetFilesResolver()` behavior (D-03) | **INTACT.** The `len(d.ImportPaths) == 0` gate survives 13-03's rewrite at `utils/utils.go:206`. |
+| 10 | An eager hand-registered file resolves through `ParseFilesX`'s wrap path (D-03) | **INTACT.** The `errors.Is(resolverErr, utils.ErrNoGrowableResolver)` fallback survives at `compiler/lib/parser/parser.go:148`, and `ErrNoGrowableResolver` is still returned by the accessor at `utils/utils.go:468`. |
+| 1, 2, 6, 7, 8, 9 | — | Unaffected; every covering test still exists and passes (below). |
+
+### Re-run live at HEAD (2026-09-08)
+
+Every surviving coverage ref, individually under `-race`, all PASS:
+`TestConcurrentCompile`, `TestReReferencedProtoKeepsPointerIdentity`,
+`TestParseFilesXResolvesEagerHandRegisteredFile` (4/4 subtests),
+`TestParserFilesResolverGrowsAfterConstruction`, `TestRegisterFileRacesRangeFiles`,
+`TestRegistrationCountIsIncremental`.
+
+### 12-03 D3 re-executed, not accepted on claim
+
+`12-03-SUMMARY.md` tagged its D3 deliverable `human_judgment: true` because the mutation
+demonstration behind it was a one-time manual act with no re-runnable artifact — the SUMMARY's
+claim was the only evidence. That claim was re-executed in this session rather than trusted:
+stripping `d.mu.RLock()/RUnlock()` from `FindFileByPath` (`utils/utils.go:465`) and `RangeFiles`
+(`:477`) produced `WARNING: DATA RACE` — write at `protoregistry.(*Files).RegisterFile` via
+`registerFileLocked`, read at `RangeFiles` via `utils.go:478` — and `git checkout -- utils/utils.go`
+restored it byte-identical (`git diff --stat` empty) and green. Recorded in `12-UAT.md` test 17.
+
+**Verdict unchanged: `passed`.** No Phase 12 truth regressed under Phase 13; one (truth 4) was
+rendered moot by an intentional, documented deletion, and one test's assertion was consolidated
+into a sibling. `12-UAT.md` is added to `covered_files` here (17/17 pass, 0 issues).
+`covered_digest` recomputed over the updated list via `computeCoveredDigest` — never hand-written.
