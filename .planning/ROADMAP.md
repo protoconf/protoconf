@@ -137,11 +137,14 @@ Plans:
   4. When resolution does require the index — an unknown, custom-type symbol — looking it up returns the file that declares it, including for a nested type, and only the files actually referenced by resolved symbols get linked afterward; building the index itself parses every file under `src/` but links none of them.
 
 **Measured impact**: Correctness/infrastructure only — not required to hit the 200ms compile-path target, which Phases 11-12 already deliver. This phase exists so type-URL resolution never falls back to the 4.6s eager path, and criterion 3 guards that the compiler's dominant production case (mutable `google.protobuf.Value`) stays on the near-zero-cost global-seed path rather than paying for an index it doesn't need.
-**Plans**: TBD
+**Plans**: 4 plans
 
 Plans:
 
-- [ ] 13-01: TBD
+- [ ] 13-01-PLAN.md — Tracer: scoped lexical scan tier + one shared tier chain on `RegistryTypeResolver`, proven end-to-end by a nested `Any` through `parser.ReadConfig` (wave 1)
+- [ ] 13-02-PLAN.md — Symbol index: parse-without-link build with nested-type recursion, content-keyed `.protoconf_cache` persistence, wired in as Tier 3 (wave 2)
+- [ ] 13-03-PLAN.md — D-02: delete the whole-tree eager fallback, engineer the hard error, replace the operator-observability contract in kind (wave 3)
+- [ ] 13-04-PLAN.md — CONS-05: route `loadMutable`'s second resolution through the shared `TypeResolver` (wave 3)
 
 ### Phase 14: Non-Compiler Consumer Correctness
 
