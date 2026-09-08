@@ -14,13 +14,31 @@ type legacyProtoconfMutationServer struct {
 }
 
 func (s *legacyProtoconfMutationServer) MutateConfig(ctx context.Context, in *protoconfmutation.ConfigMutationRequest) (*protoconfmutation.ConfigMutationResponse, error) {
+	// in and next are distinct generated types (v1.ConfigMutationRequest vs
+	// protoconf.v1.ConfigMutationRequest) with wire-compatible field numbers
+	// but different descriptors, so proto.Merge panics ("descriptor
+	// mismatch") if used here — it requires src and dst to share a
+	// descriptor. Marshal/Unmarshal instead, the standard idiom for copying
+	// between two wire-compatible-but-distinct proto message types.
+	inBytes, err := proto.Marshal(in)
+	if err != nil {
+		return nil, err
+	}
 	next := &protoconf_pb.ConfigMutationRequest{}
-	proto.Merge(next, in)
+	if err := proto.Unmarshal(inBytes, next); err != nil {
+		return nil, err
+	}
 	result, err := s.srv.MutateConfig(ctx, next)
 	if err != nil {
 		return nil, err
 	}
+	resultBytes, err := proto.Marshal(result)
+	if err != nil {
+		return nil, err
+	}
 	out := &protoconfmutation.ConfigMutationResponse{}
-	proto.Merge(out, result)
+	if err := proto.Unmarshal(resultBytes, out); err != nil {
+		return nil, err
+	}
 	return out, nil
 }
