@@ -8,61 +8,25 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// TestParseAllRegistersIntoFilesResolver pins D-02: files that reach
-// FileRegistry through the ParseAll whole-tree eager fallback must register
-// into the growable filesResolver through the same before/after diff that
-// already drives lazyLoaded — not a second, independent pass — so the two
-// sets never diverge (12-RESEARCH.md Pitfall 3).
-func TestParseAllRegistersIntoFilesResolver(t *testing.T) {
-	dir := t.TempDir()
-	require.NoError(t, testdata.GenerateCorpus(dir, 10))
-	src := filepath.Join(dir, "src")
-
-	dr := NewDescriptorRegistry()
-	dr.ImportPaths = []string{src}
-	require.NotNil(t, dr.GetFilesResolver())
-
-	_, err := dr.ParseOne("pkg7/msg7.proto")
-	require.NoError(t, err)
-
-	require.NoError(t, dr.ParseAll())
-
-	for key := range dr.FileRegistry {
-		_, err := dr.FindFileByPath(key)
-		require.NoError(t, err, "FileRegistry key %s must resolve through the growable resolver after ParseAll", key)
-	}
-	require.Equal(t, 0, dr.FilesResolverRegistrationErrorCount(),
-		"a non-zero error count is the Pitfall-3 signature: a file already registered by ParseOne being re-registered by the fallback")
-
-	countBeforeSecondCall := dr.FilesResolverRegistrationCount()
-	errorsBeforeSecondCall := dr.FilesResolverRegistrationErrorCount()
-	require.NoError(t, dr.ParseAll())
-	require.Equal(t, countBeforeSecondCall, dr.FilesResolverRegistrationCount(),
-		"a second ParseAll call must be a no-op (eagerFallback guard)")
-	require.Equal(t, errorsBeforeSecondCall, dr.FilesResolverRegistrationErrorCount())
-}
-
-// TestFilesResolverRegistrationErrorsStayZero runs the ParseOne/ParseAll
-// sequence in the opposite order: ParseAll first, then ParseOne for a path
-// the fallback already loaded. ParseOne's own early FileRegistry hit means
-// it never reaches recordFileLocked for an already-present path, so the
-// error count must stay 0 in this ordering too.
-func TestFilesResolverRegistrationErrorsStayZero(t *testing.T) {
-	dir := t.TempDir()
-	require.NoError(t, testdata.GenerateCorpus(dir, 10))
-	src := filepath.Join(dir, "src")
-
-	dr := NewDescriptorRegistry()
-	dr.ImportPaths = []string{src}
-	require.NotNil(t, dr.GetFilesResolver())
-
-	require.NoError(t, dr.ParseAll())
-	require.Equal(t, 0, dr.FilesResolverRegistrationErrorCount())
-
-	_, err := dr.ParseOne("pkg7/msg7.proto")
-	require.NoError(t, err)
-	require.Equal(t, 0, dr.FilesResolverRegistrationErrorCount())
-}
+// TestParseAllRegistersIntoFilesResolver and
+// TestFilesResolverRegistrationErrorsStayZero (D-02 disposition, 13-03):
+// deleted rather than re-pointed. Both pinned that files reaching
+// FileRegistry through the ParseAll whole-tree eager fallback's own
+// before/after diff loop registered into the growable filesResolver — a
+// mechanism that lived entirely inside ParseAll itself (utils.go's deleted
+// diff loop), not in Import/Parse. Every production caller of Import/Parse
+// (compiler/lib/module_service.go, server/server.go) always runs on an
+// EAGER registry (ImportPaths empty): GetFilesResolver's early branch
+// rebuilds a fresh resolver from FileRegistry on every call for that case,
+// so growth-through-registerFileLocked never applies to it. The combination
+// these two tests exercised — ImportPaths set (lazy) AND Import/Parse called
+// directly — has no production caller anywhere in the tree; it only ever
+// happened inside ParseAll. Re-pointing at "Import/Parse driven directly"
+// would therefore only test test-only glue reimplementing ParseAll's own
+// deleted diff loop, asserting nothing a real code path exercises.
+// TestRegistrationCountIsIncremental below already fully pins the
+// registration-diff invariant via ParseOne, the sole remaining writer into a
+// lazy/growable registry after this deletion.
 
 // TestRegistrationCountIsIncremental is RSLV-02's measurable gate: it goes
 // red under either regression shape a "fix" for staleness might reintroduce.
