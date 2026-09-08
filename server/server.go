@@ -514,7 +514,18 @@ func (s *ProtoconfMutationServer) MutateConfig(ctx context.Context, in *protocon
 	s.reports.Store(id, &protoconf_pb.ConfigMutationResponse{Uuid: id})
 	defer s.reports.Delete(id)
 	slog.Info("Mutating path", "path", in.Path)
-	filename := filepath.Join(s.protoconfRoot, consts.MutableConfigPath, filepath.Clean(in.Path)+consts.CompiledConfigExtension)
+	mutableConfigBase := filepath.Join(s.protoconfRoot, consts.MutableConfigPath)
+	filename := filepath.Join(mutableConfigBase, filepath.Clean(in.Path)+consts.CompiledConfigExtension)
+
+	// Containment check, placed before every side effect below (the
+	// protojson marshal, runScript, os.MkdirAll, os.WriteFile) -- a
+	// rejected path must fire no pre-mutation script and create no
+	// directory. Interior separators are normal usage (foo/bar means
+	// mutable_config/foo/bar.materialized_JSON) so this only rejects a
+	// path that leaves mutableConfigBase, not a path containing "/".
+	if rel, err := filepath.Rel(mutableConfigBase, filename); err != nil || rel == ".." || strings.HasPrefix(rel, ".."+string(filepath.Separator)) {
+		return nil, logError(fmt.Errorf("mutation path escapes mutable_config root, path=%s", in.Path))
+	}
 
 	resolver := s.parser.TypeResolver
 	jsonData, err := protojson.MarshalOptions{Resolver: resolver, Multiline: true}.Marshal(in.Value)
