@@ -36,6 +36,15 @@ message Outer {
 message Leaf {
   string name = 1;
 }
+
+message SiblingA {
+  string label = 1;
+}
+
+message Pair {
+  google.protobuf.Any first = 1;
+  google.protobuf.Any second = 2;
+}
 `
 
 // writeNestedAnySrc writes nestedAnyProto under a fresh src/ tree rooted at
@@ -174,4 +183,45 @@ message NeverDeclared {
 	require.ErrorIs(t, err, protoregistry.NotFound)
 	require.Equal(t, 0, registry.ScanResolutionCount(),
 		"a lexical hit inside a comment must never be counted as a scan resolution")
+}
+
+// TestReadConfigTwoSiblingAnysNamesTheFailingOne pins the diagnostic
+// requirement: when a config carries two sibling nested Any values and only
+// the second names an unresolvable symbol, the returned error must name the
+// SECOND type URL and must not also carry the first (already-resolved) one.
+func TestReadConfigTwoSiblingAnysNamesTheFailingOne(t *testing.T) {
+	src := writeNestedAnySrc(t)
+	_, p := newLazyParser(src)
+
+	pairType, err := p.TypeResolver.FindMessageByName("nested.v1.Pair")
+	require.NoError(t, err)
+	pair := dynamicpb.NewMessage(pairType.Descriptor())
+
+	const firstURL = "type.googleapis.com/nested.v1.SiblingA"
+	const secondURL = "type.googleapis.com/nested.v1.DoesNotExist"
+
+	jsonPath := filepath.Join(t.TempDir(), "pair.materialized_JSON")
+	body := `{
+  "first": {"@type": "` + firstURL + `", "label": "ok"},
+  "second": {"@type": "` + secondURL + `", "label": "boom"}
+}`
+	require.NoError(t, os.WriteFile(jsonPath, []byte(body), 0o644))
+
+	err = p.ReadConfig(jsonPath, pair)
+	require.Error(t, err)
+	require.ErrorContains(t, err, "nested.v1.DoesNotExist")
+	require.NotContains(t, err.Error(), "nested.v1.SiblingA")
+
+	// The protoregistry.NotFound sentinel contract belongs to
+	// RegistryTypeResolver.FindMessageByURL, not to whatever protojson's Any
+	// decoder does with the error afterward: protojson's unmarshalAny always
+	// re-wraps a resolver error through its own internal/errors.New (a
+	// prefixError whose Unwrap returns protojson's own "protobuf error"
+	// sentinel, discarding ours), so errors.Is(readConfigErr,
+	// protoregistry.NotFound) can never hold on the ReadConfig-returned
+	// error regardless of what the resolver returns -- verified against the
+	// go.mod-pinned google.golang.org/protobuf v1.36.12 source. Pin the
+	// sentinel at the boundary that actually owns it.
+	_, directErr := p.TypeResolver.FindMessageByURL(secondURL)
+	require.ErrorIs(t, directErr, protoregistry.NotFound)
 }
