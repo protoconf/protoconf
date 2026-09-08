@@ -57,9 +57,9 @@ Cost scales with repository size, not with the config. The config `load()`s 5 pr
 - [ ] Migrate from jhump/protoreflect/dynamic to dynamicpb
 - [x] Lazy, load-driven proto resolution — parse and link only what a config reaches (v2.0) — Validated in Phase 11: Concurrency-Safe Lazy Registry Core (LAZY-01..05)
 - [x] Resolvers as lazy views over the registry, replacing eager snapshots (v2.0) — Validated in Phase 12: Growable Resolver Views & Race Safety (RSLV-01..03, SAFE-01)
-- [ ] Exact symbol index (parse without linking) resolving type URLs, including nested Any, across all six registry consumers (v2.0)
-- [ ] Symbol index persisted under `.protoconf_cache`, content-keyed and invalidated on change (v2.0)
-- [ ] Loud (never silent) fallback when a type URL cannot be resolved (v2.0)
+- [ ] Exact symbol index (parse without linking) resolving type URLs, including nested Any, across all six registry consumers (v2.0) — Compiler consumers done in Phase 13 (TYPE-01..09, CONS-05); `inserter/`, `mutate/` and three remaining `server.go` sites are fenced off by D-03 and land in Phase 14
+- [x] Symbol index persisted under `.protoconf_cache`, content-keyed and invalidated on change (v2.0) — Validated in Phase 13: Exact Symbol Index & Shared Type-URL Resolution (TYPE-04, TYPE-05, TYPE-06)
+- [x] Loud (never silent) fallback when a type URL cannot be resolved (v2.0) — Validated in Phase 13: the whole-tree eager fallback is deleted and an exhausted chain returns a `protoregistry.NotFound`-wrapping error naming the type URL, the roots searched, and the index state (TYPE-08)
 - [x] Add TLS support for gRPC connections — Validated in Phase 5: TLS Support
 - [x] Token-based auth with credential forwarding to pre/post scripts — Validated in Phase 6: Token Auth & Script Security
 - [x] Proto-defined CLI configuration (definitions + flag generation) — Validated in Phase 7: Proto-Defined CLI Configs and Phase 8: CLI Flag Generation & Config Loading
@@ -107,6 +107,9 @@ Cost scales with repository size, not with the config. The config `load()`s 5 pr
 | Research proto-to-CLI generation | Need to find the right approach before committing to implementation | ✓ Resolved — libprotoconf `PopulateFlagSet`/`Environment` adopted in Phase 8 |
 | Track flag/env provenance from the `flag.FlagSet`, not by comparing values against defaults | Value comparison cannot distinguish "explicitly set to the default" from "unset", and loses an env var to a config file that coincidentally matches it | ✓ Shipped in Phase 8 — `command.ConfigLayerer`, after two rounds of gap closure |
 | Migrate jhump/protoreflect to dynamicpb | Official package is the recommended replacement | — Pending |
+| Delete the whole-tree eager fallback outright rather than keep it behind a warning (D-02) | Leaving the 4.6s path reachable is what this milestone exists to prevent; a scan and index blind spot should fail loudly, not silently cost 4.6s | ✓ Shipped in Phase 13 — confirmed at a one-way checkpoint after 13-01/13-02 evidence showed no uncovered resolution case |
+| Resolve every in-compiler type URL through one shared `RegistryTypeResolver` chokepoint, not per-consumer lookups | A per-consumer lookup is how `loadMutable` silently bypassed the chain (CONS-05); one chain means one place to fix and one place to observe | ✓ Shipped in Phase 13 — `resolveTiers` is the single chain both `FindMessageByURL` and `FindMessageByName` delegate to |
+| Marshal gRPC-UI examples with the shared resolver instead of handing grpcui a proto message | `standalone.ExampleRequest.MarshalJSON` hardcodes a resolver-less `protojson.Marshal` against `protoregistry.GlobalTypes`, which can never hold a type declared only in the user's `.proto` tree | ✓ Shipped in Phase 13 — caught by the regression gate; narrows CONS-04's Phase 14 surface |
 
 ## Evolution
 
@@ -126,4 +129,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-09-08 after Phase 12 completion*
+*Last updated: 2026-09-08 after Phase 13 completion*
