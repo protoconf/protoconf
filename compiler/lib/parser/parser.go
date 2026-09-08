@@ -123,6 +123,17 @@ func (p *Parser) ParseFilesX(filenames ...string) (results []*desc.FileDescripto
 		// Locked read: once filesResolver grows, this is the only reader in
 		// the tree that can observe it mid-write (T-12-01).
 		resolvedFd, resolverErr := p.registry.FindFileByPath(filename)
+		// ErrNoGrowableResolver means "this registry is eager and has no
+		// growable view" (D-03, ImportPaths empty, d.filesResolver
+		// permanently nil) — NOT "this file does not exist". On that path
+		// p.FilesResolver is the fixed, non-growing snapshot taken at
+		// construction time, which a consumer may have hand-extended
+		// (server/server.go's six well-known files). Reading it directly
+		// here is correct and race-free: nothing can grow an object the
+		// registry never armed.
+		if errors.Is(resolverErr, utils.ErrNoGrowableResolver) {
+			resolvedFd, resolverErr = p.FilesResolver.FindFileByPath(filename)
+		}
 		if resolverErr != nil {
 			parsed, parseErr := p.registry.ParseOne(filename)
 			if parseErr != nil {
