@@ -346,17 +346,31 @@ func (s *ProtoconfMutationServer) Init(rpcServer *grpc.Server) {
 	// mutation service for the process lifetime (CONS-01). This scan gets
 	// its own fresh, throwaway registry instead, mirroring Sync()'s
 	// "everything under this tree, right now, once" eager import
-	// (compiler/lib/module_service.go). Per D-02, this discovery registry is
-	// NOT wired into the reflection.NewServerV1/NewServer calls below — they
-	// keep reading s.parser.FilesResolver/LocalResolver unchanged; widening
-	// reflection completeness under a lazy registry is a later phase's
-	// decision.
+	// (compiler/lib/module_service.go). The registry is retained past service
+	// registration (as this local variable, captured by the reflection
+	// servers' own references below) and reflection reads it as its
+	// completeness backstop, so a client that can list a service can also
+	// describe it (D-06) — it is deliberately NOT reachable as a general
+	// type-URL or nested-Any resolver (D-04), and criterion 5's loaded-file
+	// counter is measured on the serving registry, never on this one.
 	discoveryRegistry := utils.NewDescriptorRegistry()
 	srcPath := filepath.Join(s.protoconfRoot, consts.SrcPath)
 	if err := discoveryRegistry.Import(discoveryRegistry.Parse, []*regexp.Regexp{}, srcPath); err != nil {
 		logger.Error("failed to parse proto files for service discovery", "path", srcPath, "error", err)
 	}
 	discoveryFiles := discoveryRegistry.GetFilesResolver()
+	// Mirror the well-known files hand-registered on the serving parser
+	// (NewProtoconfMutationServer) onto the discovery resolver: a fresh
+	// utils.NewDescriptorRegistry() only seeds paths matching
+	// globalRegexMatcher, so without this the reflection/health/legacy-
+	// mutation/agent-service descriptors would be listable but not
+	// describable once DescriptorResolver below reads discoveryFiles.
+	discoveryFiles.RegisterFile(grpc_reflection_v1.File_grpc_reflection_v1_reflection_proto)
+	discoveryFiles.RegisterFile(grpc_reflection_v1alpha.File_grpc_reflection_v1alpha_reflection_proto)
+	discoveryFiles.RegisterFile(grpc_health_v1.File_grpc_health_v1_health_proto)
+	discoveryFiles.RegisterFile(protoconfmutation.File_server_api_proto_v1_protoconf_mutation_proto)
+	discoveryFiles.RegisterFile(protoconf_pb.File_protoconf_v1_protoconf_proto)
+	discoveryFiles.RegisterFile(protoconfservice.File_agent_api_proto_v1_protoconf_service_proto)
 
 	discoveryFiles.RangeFiles(func(fd protoreflect.FileDescriptor) bool {
 		_, err := protoregistry.GlobalFiles.FindFileByPath(fd.Path())
@@ -432,14 +446,14 @@ func (s *ProtoconfMutationServer) Init(rpcServer *grpc.Server) {
 	logger.Debug("examples", "maker", s.exampleMaker)
 	reflectionServer := reflection.NewServerV1(reflection.ServerOptions{
 		Services:           rpcServer,
-		DescriptorResolver: s.parser.FilesResolver,
+		DescriptorResolver: discoveryFiles,
 		ExtensionResolver:  s.parser.LocalResolver,
 	})
 
 	grpc_reflection_v1.RegisterServerReflectionServer(rpcServer, reflectionServer)
 	grpc_reflection_v1alpha.RegisterServerReflectionServer(rpcServer, reflection.NewServer(reflection.ServerOptions{
 		Services:           rpcServer,
-		DescriptorResolver: s.parser.FilesResolver,
+		DescriptorResolver: discoveryFiles,
 		ExtensionResolver:  s.parser.LocalResolver,
 	}))
 }
