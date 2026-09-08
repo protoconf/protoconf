@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 2
+open_count: 4
 waived_count: 0
 fixed_count: 0
-total_count: 2
-last_updated: 2026-09-04T04:09:44.656Z
+total_count: 4
+last_updated: 2026-09-08T13:58:21.944Z
 ---
 
 # Broken Windows Ledger
@@ -17,6 +17,8 @@ last_updated: 2026-09-04T04:09:44.656Z
 |----|-------|------|------|------|-------------|--------|--------|-------------|-------------|
 | 1 | quick-260903-c93 | deviation | agent/command_test.go |  | Test_cliCommand_Run subtests run_consul_server and config-file_non_empty hang indefinitely (no real Consul/etcd/store backend available); confirmed pre-existing on both protovalidate-go v0.6.2 and v0.8.0, unrelated to this task | open |  | 2026-09-03T02:29:11.815Z |  |
 | 2 | quick-260904-f5j | deviation | compiler/lib/compiler.go | 355 | go vet: literal copies lock value from c.ModuleService.GetProtoRegistry().MessageRegistry (sync.RWMutex) -- pre-existing, confirmed present at baseline 20d6521, unrelated to this task, out of scope | open |  | 2026-09-04T04:09:44.656Z |  |
+| 3 | 14 | lint-warning | agent/agent_test.go | 27 | Pre-existing lostcancel vet finding (context.WithTimeoutCause discard), dates to 2024-03-17, unrelated to Phase 14 -- surfaced only because 14-05 is the first plan to run unscoped go vet ./... | open |  | 2026-09-08T13:58:21.860Z |  |
+| 4 | 14 | lint-warning | agent/legacy.go | 97 | Pre-existing unreachable-code vet finding, dates to 2024-05-27, unrelated to Phase 14 -- surfaced only because 14-05 is the first plan to run unscoped go vet ./... | open |  | 2026-09-08T13:58:21.944Z |  |
 
 ````json
 [
@@ -42,6 +44,30 @@ last_updated: 2026-09-04T04:09:44.656Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-09-04T04:09:44.656Z",
+    "resolved_at": null
+  },
+  {
+    "id": 3,
+    "kind": "lint-warning",
+    "phase": "14",
+    "file": "agent/agent_test.go",
+    "line": 27,
+    "description": "Pre-existing lostcancel vet finding (context.WithTimeoutCause discard), dates to 2024-03-17, unrelated to Phase 14 -- surfaced only because 14-05 is the first plan to run unscoped go vet ./...",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-08T13:58:21.860Z",
+    "resolved_at": null
+  },
+  {
+    "id": 4,
+    "kind": "lint-warning",
+    "phase": "14",
+    "file": "agent/legacy.go",
+    "line": 97,
+    "description": "Pre-existing unreachable-code vet finding, dates to 2024-05-27, unrelated to Phase 14 -- surfaced only because 14-05 is the first plan to run unscoped go vet ./...",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-08T13:58:21.944Z",
     "resolved_at": null
   }
 ]
