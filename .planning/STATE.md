@@ -5,17 +5,17 @@ milestone_name: Compiler Startup Performance (Planned)
 current_phase: 14
 current_phase_name: Non-Compiler Consumer Correctness
 status: executing
-stopped_at: Completed 14-08-PLAN.md
-last_updated: "2026-09-08T13:10:26.575Z"
+stopped_at: Completed 14-04-PLAN.md
+last_updated: "2026-09-08T13:25:39.495Z"
 last_activity: 2026-09-08
 last_activity_desc: Phase 14 execution started
-state_head: 7d8ec68c81e6065b4159246b7e6ef09448b5d278
+state_head: d7d4461aed4a9253f0cc013ca8813bcc2d97cfe1
 progress:
   total_phases: 5
-  completed_phases: 1
+  completed_phases: 0
   total_plans: 21
-  completed_plans: 17
-  percent: 20
+  completed_plans: 18
+  percent: 0
 ---
 
 # Project State
@@ -30,11 +30,11 @@ See: .planning/PROJECT.md (updated 2026-09-04)
 ## Current Position
 
 Phase: 14 (Non-Compiler Consumer Correctness) — EXECUTING
-Plan: 5 of 8
+Plan: 6 of 8
 Status: Ready to execute
 Last activity: 2026-09-08 — Phase 14 execution started
 
-Progress: [██░░░░░░░░] 20%
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
@@ -103,6 +103,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 14 P02 | 22min | 2 tasks | 2 files |
 | Phase 14 P03 | 12min | 2 tasks | 2 files |
 | Phase 14 P08 | 15min | 2 tasks | 1 files |
+| Phase 14 P04 | 15min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -196,6 +197,8 @@ Recent decisions affecting current work:
 - [Phase 14]: [Phase 14-03] Mutation server flipped to lib.NewLazyModuleService (D-01) and MutateConfig's marshal resolver swapped to s.parser.TypeResolver (D-03)
 - [Phase 14]: [Phase 14-03] Init mirrors six well-known files onto the retained discovery-registry resolver and wires both reflection.ServerOptions.DescriptorResolver fields to it (D-06), proven by TestReflectionDescribesCustomAndBuiltinServices; no new struct field added, preserving D-04 narrowness
 - [Phase 14]: SAFE-03 escalation guard proven on the serving *utils.DescriptorRegistry handle: a single index-tier-only resolution grows the loaded-file count by exactly one closure, never the full candidate/corpus count; eight sequential resolutions over one long-lived registry stay bounded and end far below corpus size.
+- [Phase 14]: [Phase 14] [Phase 14-04] Fingerprinting/log-on-change lives inside collectExamples (not GenReflectionUI) since the mandated two-value return signature has no room for a third failures slice; collectExamples is production-only-called-from GenReflectionUI
+- [Phase 14]: [Phase 14] [Phase 14-04] Updated TestProtoconfMutationServer_GenReflectionUI to expect a non-nil error naming bad_json/bad_proto_file -- D-05 correctly surfaces those pre-existing ReadConfig failures instead of silently swallowing them
 
 ### Pending Todos
 
@@ -228,6 +231,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-08T13:10:10.335Z
-Stopped at: Completed 14-08-PLAN.md
+Last session: 2026-09-08T13:25:39.472Z
+Stopped at: Completed 14-04-PLAN.md
 Resume file: None
