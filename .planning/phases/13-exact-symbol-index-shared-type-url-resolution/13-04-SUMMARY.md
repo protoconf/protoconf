@@ -183,6 +183,45 @@ None - no external service configuration required.
 - Plan-level `<verification>` commands re-run: `go build ./...` clean, `go vet ./...` clean except the same 3 pre-existing findings 13-01/02/03 already logged, `go test -race ./compiler/... ./utils/...` green, `go test -race ./server/... ./compiler/... ./utils/... ./inserter/... ./mutate/...` green (including the deviation-3 regression test passing again), and a completed whole-repo `go test -race ./...` green except the one pre-existing, unrelated `agent`-package 10-minute timeout (see Issues Encountered)
 - Every task's `<acceptance_criteria>` re-verified passing, including all grep-based structural checks (`FindMessageTypeByUrl` absent, `desc.WrapMessage(mt.Descriptor())` count 1, `l.parser.TypeResolver.FindMessageByURL` count 1, `load("//test.proto"` count 0 in the fixture, `test.v1.MessageWithSubMessage.SubMessage` present in the materialized_JSON fixture)
 
+## Orchestrator Addendum (post-plan, execute-phase regression gate)
+
+Deviation 3 above (`698956a`) has been **reverted** by `2e722fb`, after this plan
+returned. Recorded here so this SUMMARY does not misdescribe the tree.
+
+The phase-level regression gate independently caught the same
+`TestProtoconfMutationServer_GenReflectionUI` failure, and the developer chose
+to fix the root cause rather than retarget the fixture. `3b4db71` landed that
+fix: `GenReflectionUI` now resolves through `s.parser.TypeResolver` and
+pre-marshals each example with that resolver, handing `grpcui` a
+`json.RawMessage` that `marshalData`'s default branch emits verbatim.
+
+Deviation 3's own reasoning for keeping the retarget -- "it no longer strictly
+needs to exist given the root-cause fix, but removing it would add risk for no
+benefit" -- was measured and found wrong. The retarget pointed the fixture at
+`test.v1.MessageWithSubMessage`, which has no `exampleMaker` entry, so the
+example is never built and the server test never reaches the nested-Any
+marshal path. Keeping it would have shipped `3b4db71` with **zero** test
+coverage. Removing it is not risk for no benefit; it is what makes the fix
+tested.
+
+Verified after the revert: reverting `server/server.go` to `3b4db71~1`
+reproduces the original failure verbatim ("unable to resolve
+type.googleapis.com/test.v1.MessageWithSubMessage.SubMessage"), and with
+`3b4db71` in place `TestLoadMutableResolvesNestedAny`,
+`TestLoadMutableEmptyValueFailsLoudly` and
+`TestProtoconfMutationServer_GenReflectionUI` all pass.
+
+Consequently the "Files Changed" entry above is stale: the fixture's outer type
+is `test.v1.TestMessage` again, the `any_field` added to
+`test.v1.MessageWithSubMessage` in `test.proto` is removed, and
+`nestedAnyOutput` is back to its `StringValue` shape. This plan's own
+acceptance criteria are unaffected -- the nested symbol under test
+(`test.v1.MessageWithSubMessage.SubMessage`) is unchanged.
+
+Phase 14's CONS-04 surface narrows accordingly: `GenReflectionUI` is closed;
+`server.go:436/443/466`, `inserter/inserter.go:369` and `mutate/mutate.go:76`
+remain.
+
 ---
 *Phase: 13-exact-symbol-index-shared-type-url-resolution*
 *Completed: 2026-09-08*
