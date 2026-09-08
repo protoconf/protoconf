@@ -17,7 +17,7 @@ affects: [14-consumer-migration-and-repo-wide-grep-clean]
 actuals:
   tokens: 2184
   tasks: 2
-  commits: 5
+  commits: 8
   plan_head_before: 8c9f00e9ee6e7afd5adce7c35c7eec8e6c7afc08
 
 tech-stack:
@@ -108,7 +108,7 @@ Each task was committed atomically, following the RED-GREEN cycle for its `tdd="
 
 **Plan metadata:** `35bf4dd` (docs: complete plan, written before deviation 3 was discovered; this SUMMARY was updated in place afterward -- no second metadata commit was made solely to bump a word count)
 
-**Commit-count note:** `git rev-list --count 8c9f00e..HEAD` measures **5**, not 4 -- `d63ce39` (`docs(13): add code review report`) landed on this branch between `35bf4dd` and `698956a` from a concurrent, phase-level review process outside this plan's own task sequence (its content is a `13-REVIEW.md` covering all of Phase 13, not just this plan). It is not this plan's work and is reported here rather than silently absorbed into the count, per the "measured, never narrated" contract -- the honest reading is 4 commits belonging to this plan's own tasks, plus 1 unrelated interloper the ledger's window happens to include.
+**Commit-count note:** `git rev-list --count 8c9f00e..HEAD` measures **8**, not 6 -- two commits landed on this branch from outside this plan's own task sequence and are reported here rather than silently absorbed into the count, per the "measured, never narrated" contract: `d63ce39` (`docs(13): add code review report`, a phase-level `13-REVIEW.md`) and `3b4db71` (`fix(13): resolve gRPC-UI example Anys through the shared TypeResolver`, see "Concurrent Work Observed" below). The honest reading is 6 commits belonging to this plan's own tasks (`a6015f6`, `a0b2ec2`, `35bf4dd`, `698956a`, `b52f350`, `d31e557`), plus 2 unrelated interlopers the ledger's window happens to include.
 
 ## Files Created/Modified
 - `compiler/lib/load_mutable_nested_any_test.go` - `TestLoadMutableResolvesNestedAny` (cold-moduleService isolation + full-pipeline round-trip check), `TestLoadMutableEmptyValueFailsLoudly` (absent-value, no-panic guard)
@@ -164,23 +164,23 @@ While this plan was executing, an interloper commit (`d63ce39`, `docs(13): add c
 ## Issues Encountered
 - `go test -race ./compiler/... ./utils/...` (this plan's own scoped verification) is fully green: `compiler` 19.2s, `compiler/lib` 150.8s, `compiler/lib/parser` 27.1s, `utils` 8.1s, all `ok`. `go build ./...` and `go vet ./compiler/...` are clean.
 - A first full `go test -race ./...` run surfaced a real, this-plan-caused regression in `github.com/protoconf/protoconf/server` (`TestProtoconfMutationServer_GenReflectionUI`) -- see deviation 3. After the fix, `go test -race ./server/... ./compiler/... ./utils/... ./inserter/... ./mutate/...` is fully green, including that test passing again.
-- A second full `go test -race ./...` run (after deviation 3's fix) was still running in the background at the time this SUMMARY was finalized; 13-01/13-02/13-03 all independently recorded the same pre-existing, unrelated `github.com/protoconf/protoconf/agent` `Conductor.playWithLogger` goroutine hang (~9-10 minutes, sometimes hitting the 10-minute test timeout) under `-race` for the whole-repo run, logged to `.planning/phases/13-exact-symbol-index-shared-type-url-resolution/deferred-items.md`. The FIRST full run (pre-deviation-3-fix) reached this same `agent` package and then continued past it, confirming the hang is not universal/deterministic every run but is a known, pre-existing, unrelated flake -- nothing in this plan's files (`compiler/lib/starlark_loader.go`, its own test file, and the testdata/`test.proto` changes) is reachable from `agent`'s orchestra-based process-lifecycle tests. This plan's own scoped race run (`./compiler/... ./utils/...`) plus the broader `./server/... ./inserter/... ./mutate/...` run above are the authoritative signal per that established precedent; both are green.
+- A second full `go test -race ./...` run completed after deviation 3's fix and after the concurrent `3b4db71` fix both landed: **every package is `ok` except `github.com/protoconf/protoconf/agent`**, which failed with `panic: test timed out after 10m0s` inside `Test_cliCommand_Run/run_consul_server` (601.4s) -- the identical `orchestra.(*Conductor).playWithLogger`/`RunAgent` goroutine-tree hang 13-01/13-02/13-03 each independently recorded and logged to `.planning/phases/13-exact-symbol-index-shared-type-url-resolution/deferred-items.md`. Nothing in this plan's files (`compiler/lib/starlark_loader.go`, its own test file, and the `test.proto`/testdata changes) is reachable from `agent`'s orchestra-based process-lifecycle tests, and `agent/filekv` (a sibling package that WOULD be affected by anything in the shared registry/resolver path) passed cleanly (85.9s) in the same run. This whole-repo run is therefore green modulo the one pre-existing, unrelated, already-triaged flake -- not a regression this plan introduced.
 
 ## User Setup Required
 None - no external service configuration required.
 
 ## Next Phase Readiness
 - CONS-05 is closed: `loadMutable` is the last in-compiler consumer this milestone's shared-path work targeted (D-03), and it now routes through `l.parser.TypeResolver` exclusively.
-- Phase 14's known scope is unchanged and re-confirmed: `inserter/inserter.go:369`, `server/server.go:607`, `mutate/mutate.go:76` (CONS-02/03/04) and `compiler/lib/config.go:66/68`'s silent-skip validation call site all still bypass the shared `RegistryTypeResolver.resolveTiers` chain -- none were touched by this plan (D-03 compiler-only fence).
+- Phase 14's known scope is largely unchanged: `inserter/inserter.go:369`, `mutate/mutate.go:76` (CONS-02/03), `compiler/lib/config.go:66/68`'s silent-skip validation call site, and `server/server.go`'s OTHER `LocalResolver` call sites (extension resolution and the reflection-UI resolver, `server.go:436/443/466`) all still bypass the shared `RegistryTypeResolver.resolveTiers` chain -- none were touched by this plan (D-03 compiler-only fence). One exception, made by the concurrent `3b4db71` commit rather than this plan: `server.go`'s `GenReflectionUI` type-URL lookup now uses `s.parser.TypeResolver` instead of `LocalResolver`, narrowing (not closing) CONS-04's remaining surface.
 - ROADMAP.md success criterion 1's grep clause still completes in Phase 14, not this phase, exactly as 13-03 already recorded.
 - Phase 13 is now complete: all four plans (scan tier, symbol index + Tier 3 wiring, delete-eager-fallback, mutable-config shared path) are summarized.
 
 ## Self-Check: PASSED
 
 - All 5 key files found on disk (`compiler/lib/load_mutable_nested_any_test.go`, `utils/testdata/small/src/load_mutable_nested_any_test.pconf`, `utils/testdata/small/mutable_config/nested_any_mutation.materialized_JSON`, `utils/testdata/small/src/test.proto`, `compiler/lib/starlark_loader.go`)
-- All 4 of this plan's own commits found in git log (`a6015f6`, `a0b2ec2`, `35bf4dd`, `698956a`)
-- `commits: 5` matches `git rev-list --count 8c9f00e..HEAD` measured directly (no narrated count) -- includes 1 unrelated interloper commit (`d63ce39`, a concurrent phase-level code-review report) this plan did not make; see the Task Commits note.
-- Plan-level `<verification>` commands re-run: `go build ./...` clean, `go vet ./compiler/...` clean (whole-repo `go vet ./...` shows only the same 3 pre-existing findings 13-01/02/03 already logged), `go test -race ./compiler/... ./utils/...` green, `go test -race ./server/... ./compiler/... ./utils/... ./inserter/... ./mutate/...` green (including the deviation-3 regression test passing again); a second full `go test -race ./...` was still completing at finalization time (see Issues Encountered) -- the known, pre-existing `agent`-package timeout is not attributable to this plan
+- All 6 of this plan's own commits found in git log (`a6015f6`, `a0b2ec2`, `35bf4dd`, `698956a`, `b52f350`, `d31e557`)
+- `commits: 8` matches `git rev-list --count 8c9f00e..HEAD` measured directly (no narrated count) -- includes 2 unrelated interloper commits (`d63ce39`, `3b4db71`) this plan did not make; see the Task Commits note and "Concurrent Work Observed."
+- Plan-level `<verification>` commands re-run: `go build ./...` clean, `go vet ./...` clean except the same 3 pre-existing findings 13-01/02/03 already logged, `go test -race ./compiler/... ./utils/...` green, `go test -race ./server/... ./compiler/... ./utils/... ./inserter/... ./mutate/...` green (including the deviation-3 regression test passing again), and a completed whole-repo `go test -race ./...` green except the one pre-existing, unrelated `agent`-package 10-minute timeout (see Issues Encountered)
 - Every task's `<acceptance_criteria>` re-verified passing, including all grep-based structural checks (`FindMessageTypeByUrl` absent, `desc.WrapMessage(mt.Descriptor())` count 1, `l.parser.TypeResolver.FindMessageByURL` count 1, `load("//test.proto"` count 0 in the fixture, `test.v1.MessageWithSubMessage.SubMessage` present in the materialized_JSON fixture)
 
 ---
