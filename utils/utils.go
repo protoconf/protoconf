@@ -96,6 +96,31 @@ type DescriptorRegistry struct {
 	// D-05/D-06 counter precedent: no log line, no CLI surface.
 	scanResolutions int
 
+	// CacheDir, when non-empty, is where the symbol index (Tier 3,
+	// utils/symbol_index.go) persists under symbolIndexCacheFile. When
+	// empty, the symbol index is built in memory and never persisted --
+	// every eager registry and every test that does not care.
+	CacheDir string
+
+	// symbolIndex is the built symbol -> declaring-file-path map (13-02).
+	// nil until ensureSymbolIndex's first successful build or cache load.
+	// Guarded by mu.
+	symbolIndex map[string]string
+	// indexBuilds counts how many times the symbol index has been built
+	// from a parse (as opposed to served from CacheDir). Guarded by mu.
+	// Test-only observable: no log line, no CLI surface.
+	indexBuilds int
+	// indexCacheHits counts how many times the symbol index was served
+	// from CacheDir instead of rebuilt. Guarded by mu. Test-only
+	// observable: no log line, no CLI surface.
+	indexCacheHits int
+	// indexState records the outcome of the most recent ensureSymbolIndex
+	// call: "rebuilt", "cache hit", or "unavailable: <reason>" on a
+	// persistence failure. The empty string (its zero value, set by no
+	// code path) reads as "not consulted" via IndexState(). Guarded by mu.
+	// Test-only observable: no log line, no CLI surface.
+	indexState string
+
 	// afterParseHook, when non-nil, runs inside ParseOne's singleflight
 	// closure after parser.ParseFiles returns and before d.mu is taken for
 	// the insert. It exists so a test can deterministically force the
