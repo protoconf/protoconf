@@ -192,7 +192,7 @@ Plans:
 
 **Wave 5** *(gap closure — the one failed truth in `14-VERIFICATION.md`)*
 
-- [ ] 14-09-PLAN.md — `agent/filekv` path containment: one validated key-to-path helper shared by `Get` and `Watch`, traversal tests proven capable of failing, and the two false threat-model mitigation claims corrected (CONS-03)
+- [ ] 14-09-PLAN.md — Path containment on both caller-supplied-path trust boundaries: one validated key-to-path helper shared by `filekv`'s `Get` and `Watch`, a containment check on `MutateConfig`'s write path placed before every side effect, traversal tests proven capable of failing, and the two false threat-model mitigation claims corrected (CONS-03 + the phase goal's safety clause)
 
 ### Phase 15: Verification, Decision & Gate Flip
 
