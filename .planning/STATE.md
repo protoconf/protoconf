@@ -4,17 +4,17 @@ milestone: v2.0
 milestone_name: Compiler Startup Performance (Planned)
 current_phase: 13
 current_phase_name: Exact Symbol Index & Shared Type-URL Resolution
-status: executing
-stopped_at: Completed 13-03-PLAN.md
-last_updated: "2026-09-08T06:01:59.463Z"
+status: verifying
+stopped_at: Completed 13-04-PLAN.md
+last_updated: "2026-09-08T06:36:09.763Z"
 last_activity: 2026-09-08
 last_activity_desc: Phase 13 execution started
-state_head: 684a731a4b055ff6b09f228fe9b07651f33831fe
+state_head: a0b2ec2fc35585bbc72c4b12d4af5aa31a405dfa
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 13
-  completed_plans: 12
+  completed_plans: 13
   percent: 0
 ---
 
@@ -31,7 +31,7 @@ See: .planning/PROJECT.md (updated 2026-09-04)
 
 Phase: 13 (Exact Symbol Index & Shared Type-URL Resolution) — EXECUTING
 Plan: 4 of 4
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-09-08 — Phase 13 execution started
 
 Progress: [░░░░░░░░░░] 0%
@@ -97,6 +97,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 13 P01 | 40min | 2 tasks | 5 files |
 | Phase 13 P02 | 55min | 3 tasks | 8 files |
 | Phase 13 P03 | 55min | 3 tasks | 12 files |
+| Phase 13 P04 | 45min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -182,6 +183,8 @@ Recent decisions affecting current work:
 - [Phase 13]: 13-02: exact symbol index built via ParseFilesButDoNotLink, persisted content-keyed under .protoconf_cache (dirhash.HashDir), wired as Tier 3 behind the D-01 scan tier; measured 1.2s cold build / ~30ms dirhash / ~13.6ms warm cache read on the 799-proto corpus
 - [Phase 13]: D-02 executed: deleted DescriptorRegistry.ParseAll, its eagerFallback latch, and FellBackToEager(). Developer confirmed option 1 at the Task 1 checkpoint. — Orchestrator's grep found exactly one non-test caller of each (parser.go's resolution chain and the compile-finished log line, both handled by this plan), so no carve-out for a surviving caller (option 3) was needed.
 - [Phase 13]: Deleted (not re-pointed) utils/growable_resolver_test.go's TestParseAllRegistersIntoFilesResolver and TestFilesResolverRegistrationErrorsStayZero. — Their registration-diff behavior lived entirely inside ParseAll's own deleted diff loop; no production caller runs Import/Parse on a lazy registry, so re-pointing would only test reimplemented ParseAll glue with no real analog.
+- [Phase 13]: 13-04: Closed CONS-05 -- loadMutable resolves the mutable value's type once via desc.WrapMessage(mt.Descriptor()) instead of a second direct MessageRegistry lookup, which could return (nil,nil) on a cold registry and panic downstream; also fixed a nil-panic on an absent mutable-config value via GetValue()/GetTypeUrl().
+- [Phase 13]: 13-04: The literal plan fixture (top-level TestMessage value, nested inner Any) does not itself force loadMutable's bypass to fail, since parser.ReadConfig pre-warms the same MessageRegistry before either lookup runs; the RED test isolates the divergence with a cold moduleService instead.
 
 ### Pending Todos
 
@@ -214,6 +217,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-08T06:01:59.442Z
-Stopped at: Completed 13-03-PLAN.md
+Last session: 2026-09-08T06:35:32.110Z
+Stopped at: Completed 13-04-PLAN.md
 Resume file: None
