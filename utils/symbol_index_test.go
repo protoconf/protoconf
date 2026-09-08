@@ -1,9 +1,11 @@
 package utils
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/require"
 	"golang.org/x/sync/errgroup"
@@ -170,4 +172,61 @@ func TestIndexBuildIsSingleflighted(t *testing.T) {
 	}
 	require.NoError(t, g.Wait())
 	require.Equal(t, 1, d.IndexBuildCount())
+}
+
+// TestIndexBuildRacesParseOne mirrors
+// TestLoadSymbolByScanRacesParseOne's structure exactly (symbol_scan_test.go),
+// swapping the scan tier for the index tier: the lock-discipline contract
+// (Phase 11) is that d.mu is never held across buildSymbolIndex or ParseOne,
+// so racing the two must never deadlock and must preserve ParseOne's
+// pointer-identity contract.
+func TestIndexBuildRacesParseOne(t *testing.T) {
+	const fileCount = 6
+	src, paths := deadlockCorpus(t, fileCount)
+
+	d := NewDescriptorRegistry()
+	d.ImportPaths = []string{src}
+
+	done := make(chan error, 1)
+	go func() {
+		g := new(errgroup.Group)
+
+		for i := 0; i < fileCount; i++ {
+			i := i
+			g.Go(func() error {
+				d.LoadSymbolByIndex(fmt.Sprintf("dl.v%d.Msg%d", i, i))
+				return nil
+			})
+		}
+		for _, p := range paths {
+			p := p
+			g.Go(func() error {
+				_, err := d.ParseOne(p)
+				return err
+			})
+		}
+
+		done <- g.Wait()
+	}()
+
+	select {
+	case err := <-done:
+		require.NoError(t, err)
+	case <-time.After(30 * time.Second):
+		t.Fatal("LoadSymbolByIndex concurrent with ParseOne did not complete within 30s -- lock-discipline regression: LoadSymbolByIndex or buildSymbolIndex most likely holds d.mu across a ParseOne/protoparse call, which sync.RWMutex does not allow")
+	}
+
+	// Guard against a vacuous pass: the run must actually have loaded files.
+	require.Greater(t, d.LoadedFileCount(), 0,
+		"the run must actually have loaded files, or this test proved nothing")
+
+	for _, p := range paths {
+		fd, err := d.ParseOne(p)
+		require.NoError(t, err)
+
+		d.mu.RLock()
+		canonical := d.FileRegistry[p]
+		d.mu.RUnlock()
+		require.Same(t, canonical, fd, "ParseOne must return the canonical pointer for %s", p)
+	}
 }
