@@ -1,0 +1,4 @@
+load("mutable:nested_any_mutation", "value")
+
+def main():
+    return value
