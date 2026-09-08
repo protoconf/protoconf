@@ -148,3 +148,10 @@ None - no external service configuration required.
 ---
 *Phase: 14-non-compiler-consumer-correctness*
 *Completed: 2026-09-08*
+
+## Self-Check: PASSED
+
+- FOUND: compiler/lib/parser/loaded_file_count_test.go
+- FOUND: 280b1ee (Task 1 commit)
+- FOUND: 541fa6f (Task 2 commit)
+- FOUND: c7720c2 (SUMMARY commit)
