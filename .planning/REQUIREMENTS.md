@@ -63,7 +63,7 @@ observable success criteria, only an artifact.
 - [ ] **CONS-02**: The inserter reads and inserts materialized configs, resolving their types correctly
 - [ ] **CONS-03**: The agent's filekv store serves configs to subscribed clients, resolving their types correctly
 - [ ] **CONS-04**: `GenReflectionUI`'s periodic `mutable_config/` walk resolves every file's type, and reports rather than silently skips a file it cannot resolve
-- [ ] **CONS-05**: Compiling a config that loads a mutable config resolves the mutable value's type, and every nested `Any` within it, correctly
+- [x] **CONS-05**: Compiling a config that loads a mutable config resolves the mutable value's type, and every nested `Any` within it, correctly
 
 ### Safety Under Concurrency
 
@@ -136,7 +136,7 @@ Acknowledged, deferred beyond this milestone.
 | TYPE-07 | Phase 13 | Complete |
 | TYPE-08 | Phase 13 | Complete |
 | TYPE-09 | Phase 13 | Complete |
-| CONS-05 | Phase 13 | Pending |
+| CONS-05 | Phase 13 | Complete |
 | CONS-02 | Phase 14 | Pending |
 | CONS-03 | Phase 14 | Pending |
 | CONS-04 | Phase 14 | Pending |
