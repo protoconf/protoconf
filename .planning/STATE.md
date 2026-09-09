@@ -5,16 +5,16 @@ milestone_name: Compiler Startup Performance (Planned)
 current_phase: 15
 current_phase_name: Verification, Decision & Gate Flip
 status: executing
-stopped_at: Phase 15 context gathered
-last_updated: "2026-09-09T04:23:30.539Z"
-last_activity: 2026-09-08
-last_activity_desc: Phase 14 complete, transitioned to Phase 15
-state_head: 191148e2b7b21aa7a69a5e78d4463ff25ac7cc21
+stopped_at: Completed 15-01-PLAN.md
+last_updated: "2026-09-09T05:01:38.256Z"
+last_activity: 2026-09-09
+last_activity_desc: Phase 15 execution started
+state_head: 0c5a27ae015d95b23dc013505ed5a7e4195571e6
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 25
-  completed_plans: 22
+  completed_plans: 23
   percent: 20
 ---
 
@@ -29,10 +29,10 @@ See: .planning/PROJECT.md (updated 2026-09-04)
 
 ## Current Position
 
-Phase: 15 (Verification, Decision & Gate Flip) — READY TO EXECUTE
-Plan: Not started
+Phase: 15 (Verification, Decision & Gate Flip) — EXECUTING
+Plan: 2 of 3
 Status: Ready to execute
-Last activity: 2026-09-08 — Phase 14 complete, transitioned to Phase 15
+Last activity: 2026-09-09 — Phase 15 execution started
 
 Progress: [████████████████░░░░] 4/5 phases ([██░░░░░░░░] 20%)
 
@@ -109,6 +109,7 @@ Progress: [████████████████░░░░] 4/5 pha
 | Phase 14 P05 | 30min | 2 tasks | 4 files |
 | Phase 14 P06 | 25min | 2 tasks | 1 files |
 | Phase 14 P09 | 15min | 5 tasks | 6 files |
+| Phase 15-verification-decision-gate-flip P01 | 29min | 3 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -211,6 +212,8 @@ Recent decisions affecting current work:
 - [Phase 14]: Phase 14: SAFE-02 validated for the mutation server via 3/3 lock-removed runs of TestMutationServerResolverTightLoopIsRaceFree reporting WARNING: DATA RACE on recordFileLocked's map write, restored via git checkout -- utils/utils.go byte-identical.
 - [Phase 14]: [Phase 14-09]: Symlink-inside-protoconfRoot escape accepted as risk (T-14-24) rather than fixed — filepath.EvalSymlinks would close it at a stat-syscall cost on the agent's hot read path; planting such a symlink already requires config-repo write access, a strictly larger compromise than the unauthenticated remote read this plan closes
 - [Phase 14]: [Phase 14-09]: resolveKeyPath stays private to agent/filekv, not hoisted for MutateConfig's second call site — the two roots (protoconfRoot vs protoconfRoot/mutable_config) and failure shapes (store.KVPair errors vs logError-wrapped gRPC errors) differ; the plan scoped this as one local containment check at one call site
+- [Phase 15]: TestCompilerStartupScaling stays in the existing -race Run coverage step rather than moving to a new non-race step — Its allocation ratio is race-insensitive (0.91x plain, 1.02x under -race); moving it saves under 0.5% of an ~11.5-12min job and adds bookkeeping that can silently rot into running twice or nowhere; it also keeps its Codecov contribution
+- [Phase 15]: GATE-02 budget threshold calibrated to 160ms from a real ubuntu-latest CI observation (77.58ms, run 34311638861), per D-03's 2x rule — A threshold chosen from any number already written in a planning document (all measured on darwin/arm64) is the error D-03 exists to prevent
 
 ### Pending Todos
 
@@ -243,6 +246,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-09T03:28:25.191Z
-Stopped at: Phase 15 context gathered
-Resume file: .planning/phases/15-verification-decision-gate-flip/15-CONTEXT.md
+Last session: 2026-09-09T05:01:38.227Z
+Stopped at: Completed 15-01-PLAN.md
+Resume file: None

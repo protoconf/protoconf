@@ -213,7 +213,7 @@ Plans:
 Plans:
 **Wave 1**
 
-- [ ] 15-01-PLAN.md — Flip the allocation gate to an assertion and land a CI-calibrated wall-clock startup budget (GATE-01, GATE-02) [wave 1]
+- [x] 15-01-PLAN.md — Flip the allocation gate to an assertion and land a CI-calibrated wall-clock startup budget (GATE-01, GATE-02) [wave 1]
 - [ ] 15-02-PLAN.md — Document the compile-time validation change for operators in CHANGELOG.md and README.md (GATE-03) [wave 1]
 
 **Wave 2** *(blocked on Wave 1 completion)*
