@@ -27,6 +27,11 @@ jobs:
       - name: Build
         run: go build -v ./...
 
+      - name: Run startup budget gate
+        run: |
+          set -eo pipefail
+          go test -run '^TestCompilerStartupBudget$' -count=1 -v ./compiler/lib/... | tee /dev/stderr | grep -q 'startup budget: n='
+
       - name: Run coverage
         run: |
           # SC2155: declare and assign separately. This GOROOT export looks like

@@ -13,6 +13,11 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+// raceEnabled is flipped to true by race_detector_test.go's //go:build race
+// init() when the test binary is built with -race. Declared here so the
+// non-race build gets false by omission — no other file needs to know.
+var raceEnabled bool
+
 // TestGeneratedCorpusCompiles is a fixture test: it proves the generator
 // emits a corpus the real compiler accepts, end-to-end through NewCompiler +
 // CompileFile, with no lock file, no git repo, and no CONFIGSPACE marker. It
@@ -164,4 +169,49 @@ func TestCompilerStartupScaling(t *testing.T) {
 			"this Skip is the lazy-loading milestone's definition of done — delete it, turning this into "+
 			"require.LessOrEqual(t, allocRatio, maxRatio), once the ratio is in bounds", allocRatio, maxRatio)
 	}
+}
+
+// corpusProtos sizes the corpus TestCompilerStartupBudget compiles. Sized so
+// it costs what the real 799-proto protoconf-terraform corpus costs, not
+// merely so it has 800 files: using the ~3x per-file multiplier GATE-05
+// states, 799*3 rounds to 2400 (D-07). The ~3x figure is itself unsourced
+// and taken at face value as an accepted risk (D-08) — exposure is low
+// because measured startup cost is flat against corpus size (39ms at n=50,
+// 35ms at n=500), so a wrong multiplier moves the file count without
+// materially moving the gate's outcome.
+const corpusProtos = 2400
+
+// TestCompilerStartupBudget is GATE-02: a wall-clock assertion that
+// compiling a calibrated-size corpus completes within a CI-observed budget.
+// Unlike TestCompilerStartupScaling's allocation gate, wall clock cannot be
+// measured meaningfully under the race detector (raceEnabled skip below) or
+// under -short.
+//
+// It measures the same compileCorpus operation TestCompilerStartupScaling
+// and BenchmarkCompilerStartup already measure (D-02), so the figure stays
+// directly comparable to BASELINE.md's 6.97s breakdown. It does not run in
+// parallel with other tests in the binary (no t.Parallel()): a wall-clock
+// measurement sharing a runner with other tests measures contention, not the
+// compiler.
+func TestCompilerStartupBudget(t *testing.T) {
+	if raceEnabled {
+		t.Skip("wall-clock budget is meaningless under the race detector (~8x slowdown observed); see race_detector_test.go")
+	}
+	if testing.Short() {
+		t.Skip("budget measurement is slow; skipped under -short")
+	}
+
+	dir := t.TempDir()
+	require.NoError(t, testdata.GenerateCorpus(dir, corpusProtos))
+
+	start := time.Now()
+	require.NoError(t, compileCorpus(dir))
+	elapsed := time.Since(start)
+
+	t.Logf("startup budget: n=%d compiled in %s", corpusProtos, elapsed)
+
+	// Threshold intentionally not asserted yet. It is calibrated from a real
+	// `ubuntu-latest` GitHub Actions observation in a follow-up commit per
+	// D-03 — a threshold chosen from a number in CONTEXT.md, RESEARCH.md or
+	// BASELINE.md (all measured on darwin/arm64) is a planning error.
 }
