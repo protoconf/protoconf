@@ -149,3 +149,13 @@ None - no external service configuration required.
 ---
 *Phase: 15-verification-decision-gate-flip*
 *Completed: 2026-09-09*
+
+## Self-Check: PASSED
+
+- FOUND: compiler/lib/race_detector_test.go
+- FOUND: compiler/lib/startup_bench_test.go
+- FOUND: .github/workflows/go.yml
+- FOUND: commit 4111293 (Task 1)
+- FOUND: commit 2055877 (Task 2)
+- FOUND: commit 0c5a27a (Task 3)
+- Plan-level `<verification>` re-run: `TestCompilerStartupScaling` and `TestCompilerStartupBudget` both PASS locally; `go test -race -count=1 ./compiler/lib/...` passes with the budget test SKIPped; `go test -race -timeout 300s -skip 'Test_cliCommand_Run' ./...` passes (20/20 packages ok); GitHub Actions run 34312220627 is green end-to-end including `Run startup budget gate` and `Run coverage`.
