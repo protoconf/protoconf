@@ -291,7 +291,7 @@ func TestMutateResolvesMessageAbsentFromConstructionSnapshot(t *testing.T) {
 	require.NoError(t, err)
 	rpcServer := grpc.NewServer()
 	srv.Init(rpcServer)
-	go rpcServer.Serve(lis)
+	go func() { _ = rpcServer.Serve(lis) }()
 	defer rpcServer.Stop()
 
 	cmd, err := Command()

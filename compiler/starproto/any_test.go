@@ -10,18 +10,6 @@ import (
 	"go.starlark.net/starlark"
 )
 
-// newAnyDescriptor loads the google.protobuf.Any message descriptor.
-func newAnyDescriptor(t *testing.T) *desc.MessageDescriptor {
-	t.Helper()
-	fd, err := desc.LoadFileDescriptor("google/protobuf/any.proto")
-	require.NoError(t, err, "failed to load any.proto")
-	sym := fd.FindSymbol("google.protobuf.Any")
-	require.NotNil(t, sym)
-	msgDesc, ok := sym.(*desc.MessageDescriptor)
-	require.True(t, ok)
-	return msgDesc
-}
-
 // callNewAny invokes the any.new Starlark builtin.
 func callNewAny(t *testing.T, msg *starProtoMessage) (starlark.Value, error) {
 	t.Helper()

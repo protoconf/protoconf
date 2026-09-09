@@ -413,7 +413,7 @@ func TestWatch_ContextCancellation(t *testing.T) {
 
 	s, err := New(ctx, []string{}, &Config{ProtoconfRoot: root})
 	require.NoError(t, err)
-	defer s.Close()
+	defer func() { _ = s.Close() }()
 
 	// The path we watch: filekv constructs absPath = root + "/" + key + ".materialized_JSON"
 	// "enum_test" maps to materialized_config/enum_test.materialized_JSON in the test root

@@ -87,17 +87,6 @@ func makeDoubleFieldDescriptor(t *testing.T) *desc.FieldDescriptor {
 	return numberFD
 }
 
-// makeMessageWithField creates a dynamic.Message with a FieldDescriptor and sets a field value.
-func makeMessageWithField(t *testing.T, fieldDesc *desc.FieldDescriptor) (*dynamic.Message, *fieldValue) {
-	t.Helper()
-	msg := dynamic.NewMessage(fieldDesc.GetOwner())
-	fv := &fieldValue{
-		desc: fieldDesc,
-		msg:  msg,
-	}
-	return msg, fv
-}
-
 func TestValueToStarlark_Int64(t *testing.T) {
 	secondsFD, _ := makeDurationFieldDescriptors(t)
 	msg := dynamic.NewMessage(secondsFD.GetOwner())

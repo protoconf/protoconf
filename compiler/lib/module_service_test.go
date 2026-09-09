@@ -142,14 +142,14 @@ func TestModuleService_Sync(t *testing.T) {
 			m, err := NewModuleService(testdata.SmallTestDir())
 			require.NoError(t, err)
 			m.head = tt.head
-			m.Walk(func(r *module.RemoteRepo) error {
+			require.NoError(t, m.Walk(func(r *module.RemoteRepo) error {
 				if r.Url == "." {
 					return nil
 				}
 				r.GetterUrl, _ = getter.Detect(r.Url, testDir, getter.Detectors)
 				r.Label = repoLabel(r)
 				return nil
-			})
+			}))
 			if err := m.Sync(context.Background()); !errors.Is(err, tt.wantErr) {
 				t.Errorf("ModuleService.Sync() error = %v, wantErr %v", err, tt.wantErr)
 			}

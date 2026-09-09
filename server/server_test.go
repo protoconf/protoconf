@@ -195,15 +195,15 @@ func TestProtoconfMutationServer_ReportProgress(t *testing.T) {
 func Test_cliCommand_Run(t *testing.T) {
 	// Create a temporary directory for the protoconfRoot
 	protoconfRoot := testdata.SmallTestDir()
-	defer os.RemoveAll(protoconfRoot)
+	defer func() { _ = os.RemoveAll(protoconfRoot) }()
 
 	// Create a temporary executable file for the preMutationScript
 	preMutationScript := makeTempScript(t, "exit 0")
-	defer os.Remove(preMutationScript)
+	defer func() { _ = os.Remove(preMutationScript) }()
 
 	// Create a temporary executable file for the postMutationScript
 	postMutationScript := makeTempScript(t, "exit 0")
-	defer os.Remove(postMutationScript)
+	defer func() { _ = os.Remove(postMutationScript) }()
 
 	// Set up the command using Command() to get properly initialized cliCommand
 	cmd, err := Command()
@@ -302,8 +302,8 @@ func Test_validateScriptPath(t *testing.T) {
 	t.Run("non-executable file returns error containing not executable", func(t *testing.T) {
 		f, err := os.CreateTemp("", "test-script-*.sh")
 		require.NoError(t, err)
-		defer os.Remove(f.Name())
-		f.Close()
+		defer func() { _ = os.Remove(f.Name()) }()
+		require.NoError(t, f.Close())
 		require.NoError(t, os.Chmod(f.Name(), 0644))
 
 		err = validateScriptPath(f.Name())
@@ -326,8 +326,8 @@ func Test_validateScriptPath(t *testing.T) {
 	t.Run("valid executable temp file returns nil", func(t *testing.T) {
 		f, err := os.CreateTemp("", "test-script-*.sh")
 		require.NoError(t, err)
-		defer os.Remove(f.Name())
-		f.Close()
+		defer func() { _ = os.Remove(f.Name()) }()
+		require.NoError(t, f.Close())
 		require.NoError(t, os.Chmod(f.Name(), 0755))
 
 		err = validateScriptPath(f.Name())
@@ -337,7 +337,7 @@ func Test_validateScriptPath(t *testing.T) {
 	t.Run("directory path returns error containing directory", func(t *testing.T) {
 		dir, err := os.MkdirTemp("", "test-script-dir-*")
 		require.NoError(t, err)
-		defer os.RemoveAll(dir)
+		defer func() { _ = os.RemoveAll(dir) }()
 
 		err = validateScriptPath(dir)
 		require.Error(t, err)
@@ -691,7 +691,7 @@ func TestReflectionDescribesCustomAndBuiltinServices(t *testing.T) {
 	}()
 	t.Cleanup(func() {
 		rpcServer.Stop()
-		lis.Close()
+		_ = lis.Close()
 	})
 
 	conn, err := grpc.NewClient("passthrough:///bufnet",
@@ -700,7 +700,7 @@ func TestReflectionDescribesCustomAndBuiltinServices(t *testing.T) {
 		}),
 		grpc.WithTransportCredentials(insecure.NewCredentials()))
 	require.NoError(t, err)
-	t.Cleanup(func() { conn.Close() })
+	t.Cleanup(func() { _ = conn.Close() })
 
 	client := grpc_reflection_v1.NewServerReflectionClient(conn)
 	stream, err := client.ServerReflectionInfo(context.Background())

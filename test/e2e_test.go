@@ -137,7 +137,7 @@ func TestTLSMutation(t *testing.T) {
 
 	rpcServer := grpc.NewServer(grpc.Creds(credentials.NewTLS(serverTLS)))
 	protoconf_pb.RegisterProtoconfMutationServiceServer(rpcServer, srv)
-	go rpcServer.Serve(lis)
+	go func() { _ = rpcServer.Serve(lis) }()
 	defer rpcServer.Stop()
 
 	// Client-side TLS
@@ -148,7 +148,7 @@ func TestTLSMutation(t *testing.T) {
 	conn, err := grpc.NewClient(lis.Addr().String(),
 		grpc.WithTransportCredentials(credentials.NewTLS(clientTLS)))
 	require.NoError(t, err)
-	defer conn.Close()
+	defer func() { _ = conn.Close() }()
 
 	client := protoconf_pb.NewProtoconfMutationServiceClient(conn)
 	resp, err := client.MutateConfig(context.Background(), &protoconf_pb.ConfigMutationRequest{
@@ -201,9 +201,9 @@ func TestAuthFlow(t *testing.T) {
 	protoconf_pb.RegisterProtoconfMutationServiceServer(rpcServer, srv)
 	go func() {
 		context.AfterFunc(ctx, func() { rpcServer.GracefulStop() })
-		rpcServer.Serve(lis)
+		_ = rpcServer.Serve(lis)
 	}()
-	defer func() { lis.Close(); rpcServer.Stop() }()
+	defer func() { _ = lis.Close(); rpcServer.Stop() }()
 
 	conn, err := grpc.NewClient("passthrough:///bufnet",
 		grpc.WithContextDialer(func(context.Context, string) (net.Conn, error) {
@@ -211,7 +211,7 @@ func TestAuthFlow(t *testing.T) {
 		}),
 		grpc.WithTransportCredentials(insecure.NewCredentials()))
 	require.NoError(t, err)
-	defer conn.Close()
+	defer func() { _ = conn.Close() }()
 
 	client := protoconf_pb.NewProtoconfMutationServiceClient(conn)
 	mutReq := &protoconf_pb.ConfigMutationRequest{
@@ -324,7 +324,8 @@ func Test(t *testing.T) {
 		}
 	})
 
-	tCtx, _ := context.WithTimeout(ctx, 60*time.Second)
+	tCtx, tCancel := context.WithTimeout(ctx, 60*time.Second)
+	defer tCancel()
 	prodWatcher, err := prodAgentClient.SubscribeForConfig(tCtx, &protoconf_pb.ConfigSubscriptionRequest{Path: "load_mutable_test"})
 	assert.NoError(t, err)
 	// Get first message from prodStore
@@ -372,7 +373,7 @@ func Test(t *testing.T) {
 
 	})
 
-	devWatcher.CloseSend()
+	_ = devWatcher.CloseSend()
 
 	t.Run("get update on prodClient", func(t *testing.T) {
 		t.Run("insert to prodStore", func(t *testing.T) {
@@ -389,7 +390,7 @@ func Test(t *testing.T) {
 			"expected \n%s, got \n%s", mutationValue, prodConfigValue.Value)
 
 	})
-	prodWatcher.CloseSend()
+	_ = prodWatcher.CloseSend()
 	// ponytail: load_remote_with_load_local.pconf is skipped for the same reason as
 	// compiler_test.go's case — vizceral_repo upstream no longer ships
 	// src/services/frontend.pinc. Restore both when the module pin is refreshed.
@@ -405,10 +406,11 @@ func Test(t *testing.T) {
 		if !proto.Equal(devConfigValue.Value, expected) {
 			t.Errorf("expected \n%s, got \n%s", expected, devConfigValue.Value)
 		}
-		devWatcher.CloseSend()
+		_ = devWatcher.CloseSend()
 	})
 	t.Run("load_remote prod", func(t *testing.T) {
-		newCtx, _ := context.WithTimeout(ctx, 10*time.Second)
+		newCtx, newCancel := context.WithTimeout(ctx, 10*time.Second)
+		defer newCancel()
 		watcher, err := prodAgentClient.SubscribeForConfig(newCtx, &protoconf_pb.ConfigSubscriptionRequest{Path: "load_remote"})
 		require.NoError(t, err)
 		t.Run("insert load_remote to prod", func(t *testing.T) {
@@ -422,6 +424,6 @@ func Test(t *testing.T) {
 		if !proto.Equal(value.Value, expected) {
 			t.Errorf("expected \n%s, got \n%s", expected, value.Value)
 		}
-		watcher.CloseSend()
+		_ = watcher.CloseSend()
 	})
 }

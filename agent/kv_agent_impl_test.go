@@ -54,10 +54,10 @@ func TestProtoconfKVAgent_SubscribeForConfig(t *testing.T) {
 	require.NoError(t, err)
 	b, _ := proto.Marshal(&protoconfvalue.ProtoconfValue{Value: expects.Value})
 	t.Run("put and recv", func(t *testing.T) {
-		storeClient.Put(
+		require.NoError(t, storeClient.Put(
 			ctx, request.Path,
 			[]byte(base64.StdEncoding.EncodeToString(b)),
-			&store.WriteOptions{})
+			&store.WriteOptions{}))
 		item, err := watcher.Recv()
 		require.NoError(t, err)
 		if !proto.Equal(item.Value, expects.Value) {
@@ -66,14 +66,14 @@ func TestProtoconfKVAgent_SubscribeForConfig(t *testing.T) {
 
 	})
 	t.Run("not base 64", func(t *testing.T) {
-		storeClient.Put(ctx, request.GetPath(), []byte("Fail"), &store.WriteOptions{})
+		require.NoError(t, storeClient.Put(ctx, request.GetPath(), []byte("Fail"), &store.WriteOptions{}))
 		_, err := watcher.Recv()
 		assert.NoError(t, err)
 		// assert.Equal(t, "failed to unmarshal data received from config store", v.Error)
 
 	})
 	t.Run("not a proto message", func(t *testing.T) {
-		storeClient.Put(ctx, request.GetPath(), []byte(base64.StdEncoding.EncodeToString([]byte("Fail"))), &store.WriteOptions{})
+		require.NoError(t, storeClient.Put(ctx, request.GetPath(), []byte(base64.StdEncoding.EncodeToString([]byte("Fail"))), &store.WriteOptions{}))
 		_, err := watcher.Recv()
 		assert.NoError(t, err)
 	})
