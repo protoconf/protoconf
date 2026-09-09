@@ -59,7 +59,7 @@ func TestMutateConfigConcurrentClientsAreRaceFree(t *testing.T) {
 		context.AfterFunc(ctx, func() { rpcServer.GracefulStop() })
 		_ = rpcServer.Serve(lis)
 	}()
-	t.Cleanup(func() { lis.Close(); rpcServer.Stop() })
+	t.Cleanup(func() { _ = lis.Close(); rpcServer.Stop() })
 
 	conn, err := grpc.NewClient("passthrough:///bufnet",
 		grpc.WithContextDialer(func(context.Context, string) (net.Conn, error) {
@@ -67,7 +67,7 @@ func TestMutateConfigConcurrentClientsAreRaceFree(t *testing.T) {
 		}),
 		grpc.WithTransportCredentials(insecure.NewCredentials()))
 	require.NoError(t, err)
-	t.Cleanup(func() { conn.Close() })
+	t.Cleanup(func() { _ = conn.Close() })
 
 	client := protoconf_pb.NewProtoconfMutationServiceClient(conn)
 

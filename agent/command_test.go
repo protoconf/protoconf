@@ -12,7 +12,9 @@ var jsonConfig string
 func init() {
 	dir := os.TempDir()
 	jsonConfig = filepath.Join(dir, "config.json")
-	os.WriteFile(jsonConfig, []byte(`{}`), 0644)
+	if err := os.WriteFile(jsonConfig, []byte(`{}`), 0644); err != nil {
+		panic(err)
+	}
 }
 func Test_cliCommand_Run(t *testing.T) {
 	type args struct {
