@@ -5,17 +5,17 @@ milestone_name: Compiler Startup Performance (Planned)
 current_phase: 15
 current_phase_name: Verification, Decision & Gate Flip
 status: executing
-stopped_at: Completed 15-01-PLAN.md
-last_updated: "2026-09-09T05:01:38.256Z"
+stopped_at: Completed 15-02-PLAN.md
+last_updated: "2026-09-09T05:06:42.393Z"
 last_activity: 2026-09-09
 last_activity_desc: Phase 15 execution started
-state_head: 0c5a27ae015d95b23dc013505ed5a7e4195571e6
+state_head: a8b7d80102f73c032d881ecba478ada0ace09039
 progress:
   total_phases: 5
-  completed_phases: 1
+  completed_phases: 0
   total_plans: 25
-  completed_plans: 23
-  percent: 20
+  completed_plans: 24
+  percent: 0
 ---
 
 # Project State
@@ -30,11 +30,11 @@ See: .planning/PROJECT.md (updated 2026-09-04)
 ## Current Position
 
 Phase: 15 (Verification, Decision & Gate Flip) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 Status: Ready to execute
 Last activity: 2026-09-09 — Phase 15 execution started
 
-Progress: [████████████████░░░░] 4/5 phases ([██░░░░░░░░] 20%)
+Progress: [████████████████░░░░] 4/5 phases ([░░░░░░░░░░] 0%)
 
 ## Performance Metrics
 
@@ -110,6 +110,7 @@ Progress: [████████████████░░░░] 4/5 pha
 | Phase 14 P06 | 25min | 2 tasks | 1 files |
 | Phase 14 P09 | 15min | 5 tasks | 6 files |
 | Phase 15-verification-decision-gate-flip P01 | 29min | 3 tasks | 3 files |
+| Phase 15 P02 | 12min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -214,6 +215,7 @@ Recent decisions affecting current work:
 - [Phase 14]: [Phase 14-09]: resolveKeyPath stays private to agent/filekv, not hoisted for MutateConfig's second call site — the two roots (protoconfRoot vs protoconfRoot/mutable_config) and failure shapes (store.KVPair errors vs logError-wrapped gRPC errors) differ; the plan scoped this as one local containment check at one call site
 - [Phase 15]: TestCompilerStartupScaling stays in the existing -race Run coverage step rather than moving to a new non-race step — Its allocation ratio is race-insensitive (0.91x plain, 1.02x under -race); moving it saves under 0.5% of an ~11.5-12min job and adds bookkeeping that can silently rot into running twice or nowhere; it also keeps its Codecov contribution
 - [Phase 15]: GATE-02 budget threshold calibrated to 160ms from a real ubuntu-latest CI observation (77.58ms, run 34311638861), per D-03's 2x rule — A threshold chosen from any number already written in a planning document (all measured on darwin/arm64) is the error D-03 exists to prevent
+- [Phase 15]: D-04/D-05 executed: CHANGELOG.md and README.md document that protoconf compile no longer parses unreferenced protos, with buf named as remedy and an explicit buf-lint/buf.yaml caveat so no reader assumes protoconf already covers whole-tree validation — GATE-03 requires a written decision, not silent absorption of Phase 13/14's D-02 behavior change
 
 ### Pending Todos
 
@@ -246,6 +248,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-09T05:01:38.227Z
-Stopped at: Completed 15-01-PLAN.md
+Last session: 2026-09-09T05:06:42.367Z
+Stopped at: Completed 15-02-PLAN.md
 Resume file: None
