@@ -30,7 +30,8 @@ jobs:
       - name: Run startup budget gate
         run: |
           set -eo pipefail
-          go test -run '^TestCompilerStartupBudget$' -count=1 -v ./compiler/lib/... | tee /dev/stderr | grep -q 'startup budget: n='
+          go test -run '^TestCompilerStartupBudget$' -count=1 -v ./compiler/lib/... | tee test-budget.log
+          grep -q 'startup budget: n=' test-budget.log
 
       - name: Run coverage
         run: |
