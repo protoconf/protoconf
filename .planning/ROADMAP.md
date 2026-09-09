@@ -208,11 +208,13 @@ Plans:
   5. The real protoconf-terraform corpus (799 protos, 6.97s at baseline) is compiled once and its end-to-end time is recorded as milestone-close evidence, not a CI gate.
 
 **Measured impact**: This phase is the measurement itself — it confirms Phases 11-12 delivered the target. No new mechanism ships here.
-**Plans**: TBD
+**Plans**: 3 plans in 2 waves
 
 Plans:
 
-- [ ] 15-01: TBD
+- [ ] 15-01-PLAN.md — Flip the allocation gate to an assertion and land a CI-calibrated wall-clock startup budget (GATE-01, GATE-02) [wave 1]
+- [ ] 15-02-PLAN.md — Document the compile-time validation change for operators in CHANGELOG.md and README.md (GATE-03) [wave 1]
+- [ ] 15-03-PLAN.md — Record the milestone-close measurements and test-suite evidence in BASELINE.md (GATE-04, GATE-05) [wave 2]
 
 ## Progress
 
