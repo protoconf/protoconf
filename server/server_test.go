@@ -166,6 +166,8 @@ func TestProtoconfMutationServer_GenReflectionUI(t *testing.T) {
 	assert.Contains(t, err.Error(), "bad_proto_file")
 
 	assert.NotNil(t, httpServer.Handler)
+	require.NotNil(t, httpServer.Protocols)
+	assert.True(t, httpServer.Protocols.UnencryptedHTTP2(), "expected unencrypted HTTP/2 to be enabled")
 }
 func TestProtoconfMutationServer_ReportProgress(t *testing.T) {
 	protoconfRoot := testdata.SmallTestDir()

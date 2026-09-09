@@ -161,10 +161,11 @@ func formatFile(path string, config *cliConfig) error {
 }
 
 func computeDiff(path string, original, formatted []byte) string {
+	// bytes.Buffer.Write never returns an error, so these discards are safe.
 	var buf bytes.Buffer
-	buf.WriteString(fmt.Sprintf("diff %s\n", path))
-	buf.WriteString(fmt.Sprintf("--- %s (original)\n", path))
-	buf.WriteString(fmt.Sprintf("+++ %s (formatted)\n", path))
+	_, _ = fmt.Fprintf(&buf, "diff %s\n", path)
+	_, _ = fmt.Fprintf(&buf, "--- %s (original)\n", path)
+	_, _ = fmt.Fprintf(&buf, "+++ %s (formatted)\n", path)
 
 	origLines := strings.Split(string(original), "\n")
 	fmtLines := strings.Split(string(formatted), "\n")
@@ -186,10 +187,10 @@ func computeDiff(path string, original, formatted []byte) string {
 
 		if origLine != fmtLine {
 			if i < len(origLines) {
-				buf.WriteString(fmt.Sprintf("-%s\n", origLine))
+				_, _ = fmt.Fprintf(&buf, "-%s\n", origLine)
 			}
 			if i < len(fmtLines) {
-				buf.WriteString(fmt.Sprintf("+%s\n", fmtLine))
+				_, _ = fmt.Fprintf(&buf, "+%s\n", fmtLine)
 			}
 		}
 	}

@@ -9,7 +9,6 @@ import (
 	"github.com/protoconf/protoconf/compiler/starproto"
 	"go.starlark.net/starlark"
 	"google.golang.org/protobuf/proto"
-	pbproto "google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/protoadapt"
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/dynamicpb"
@@ -76,7 +75,7 @@ func (c *config) validate(value interface{}) error {
 		if err != nil {
 			return err
 		}
-	case pbproto.Message:
+	case proto.Message:
 		m, err := dynamic.AsDynamicMessage(protoadapt.MessageV1Of(result))
 		if err != nil {
 			return err

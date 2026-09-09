@@ -2,6 +2,7 @@ package mutate
 
 import (
 	"bytes"
+	"context"
 	"crypto/tls"
 	"flag"
 	"fmt"
@@ -24,7 +25,6 @@ import (
 	protoconf_mutate_config "github.com/protoconf/protoconf/mutate/config/v1"
 	pc "github.com/protoconf/protoconf/server/api/proto/v1"
 	"github.com/protoconf/protoconf/utils"
-	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"

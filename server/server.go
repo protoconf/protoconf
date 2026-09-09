@@ -39,8 +39,6 @@ import (
 	protoconf_server_config "github.com/protoconf/protoconf/server/config/v1"
 	"github.com/protoconf/protoconf/utils"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
-	"golang.org/x/net/http2"
-	"golang.org/x/net/http2/h2c"
 	"golang.org/x/sync/errgroup"
 
 	"google.golang.org/grpc"
@@ -826,6 +824,10 @@ func (s *ProtoconfMutationServer) GenReflectionUI(ctx context.Context, rpcServer
 			ui.ServeHTTP(w, r)
 		}
 	})
-	httpServer.Handler = h2c.NewHandler(mux, &http2.Server{})
+	httpServer.Handler = mux
+	protocols := new(http.Protocols)
+	protocols.SetHTTP1(true)
+	protocols.SetUnencryptedHTTP2(true)
+	httpServer.Protocols = protocols
 	return collectErr
 }
