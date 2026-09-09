@@ -208,13 +208,13 @@ Plans:
   5. The real protoconf-terraform corpus (799 protos, 6.97s at baseline) is compiled once and its end-to-end time is recorded as milestone-close evidence, not a CI gate.
 
 **Measured impact**: This phase is the measurement itself — it confirms Phases 11-12 delivered the target. No new mechanism ships here.
-**Plans**: 3 plans in 2 waves
+**Plans**: 2/3 plans executed in 2 waves
 
 Plans:
 **Wave 1**
 
 - [x] 15-01-PLAN.md — Flip the allocation gate to an assertion and land a CI-calibrated wall-clock startup budget (GATE-01, GATE-02) [wave 1]
-- [ ] 15-02-PLAN.md — Document the compile-time validation change for operators in CHANGELOG.md and README.md (GATE-03) [wave 1]
+- [x] 15-02-PLAN.md — Document the compile-time validation change for operators in CHANGELOG.md and README.md (GATE-03) [wave 1]
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -232,4 +232,4 @@ Phases execute in numeric order: 1 → 2 → ... → 10 → 11 → 12 → 13 →
 | 12. Growable Resolver Views & Race Safety | v2.0 | 4/4 | Complete    | 2026-09-08 |
 | 13. Exact Symbol Index & Shared Type-URL Resolution | v2.0 | 4/4 | Complete    | 2026-09-08 |
 | 14. Non-Compiler Consumer Correctness | v2.0 | 9/9 | Complete    | 2026-09-08 |
-| 15. Verification, Decision & Gate Flip | v2.0 | 0/TBD | Not started | - |
+| 15. Verification, Decision & Gate Flip | v2.0 | 2/3 | In Progress|  |
