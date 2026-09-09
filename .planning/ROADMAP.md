@@ -58,7 +58,7 @@ Full phase detail archived under `.planning/milestones/v1.0-phases/`.
 - [x] **Phase 12: Growable Resolver Views & Race Safety** - Resolvers grow incrementally instead of snapshotting, and concurrent compiles are proven race-free (completed 2026-09-08)
 - [x] **Phase 13: Exact Symbol Index & Shared Type-URL Resolution** - Every message symbol under `src/`, nested types included, resolves to its declaring file via a persisted, content-keyed, parse-without-link index, consulted through one shared resolution path that every nested `Any` lookup — including the compiler's own mutable-config load — resolves through (completed 2026-09-08)
 - [x] **Phase 14: Non-Compiler Consumer Correctness** - Mutation server, inserter, agent, and reflection UI resolve types correctly and safely with no regression (completed 2026-09-08)
-- [ ] **Phase 15: Verification, Decision & Gate Flip** - The scaling gate flips green, the error-surface change is documented, and the milestone's numbers are recorded
+- [x] **Phase 15: Verification, Decision & Gate Flip** - The scaling gate flips green, the error-surface change is documented, and the milestone's numbers are recorded (completed 2026-09-09)
 
 ## Phase Details
 
@@ -232,4 +232,4 @@ Phases execute in numeric order: 1 → 2 → ... → 10 → 11 → 12 → 13 →
 | 12. Growable Resolver Views & Race Safety | v2.0 | 4/4 | Complete    | 2026-09-08 |
 | 13. Exact Symbol Index & Shared Type-URL Resolution | v2.0 | 4/4 | Complete    | 2026-09-08 |
 | 14. Non-Compiler Consumer Correctness | v2.0 | 9/9 | Complete    | 2026-09-08 |
-| 15. Verification, Decision & Gate Flip | v2.0 | 2/3 | In Progress|  |
+| 15. Verification, Decision & Gate Flip | v2.0 | 3/3 | Complete    | 2026-09-09 |
