@@ -37,7 +37,7 @@ func listenToChanges(path string) {
 		slog.Error("Error connecting to server ", "address", address, "error", err)
 		os.Exit(1)
 	}
-	defer conn.Close()
+	defer func() { _ = conn.Close() }() // example program; nothing to do with a close error on exit
 
 	c := pc.NewProtoconfServiceClient(conn)
 	stream, err := c.SubscribeForConfig(context.Background(), &pc.ConfigSubscriptionRequest{Path: path})

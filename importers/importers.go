@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"log/slog"
 	"os"
 	"path"
 	"path/filepath"
@@ -128,8 +129,9 @@ func (i Importer) FilterFilesAndMessages(fileName, msgName string) map[string]*b
 		}
 		msg := i.GetMessageFromFile(rmsg.File, rmsg.Message)
 		if msg != nil {
-
-			file.TryAddMessage(msg)
+			if err := file.TryAddMessage(msg); err != nil {
+				slog.Error("failed to add message to file", "file", rmsg.File, "message", rmsg.Message, "error", err)
+			}
 		}
 	}
 

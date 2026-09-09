@@ -34,12 +34,14 @@ type cliConfig struct {
 func newFlagSet() (*flag.FlagSet, *cliConfig) {
 	flags := flag.NewFlagSet("", flag.ExitOnError)
 	flags.Usage = func() {
-		fmt.Fprintln(flags.Output(), "Usage: protoconf fmt [OPTION]... [path]...")
-		fmt.Fprintln(flags.Output(), "")
-		fmt.Fprintln(flags.Output(), "Format starlark files (.pinc, .pconf, .mpconf, .proto-validator, .star)")
-		fmt.Fprintln(flags.Output(), "")
-		fmt.Fprintln(flags.Output(), "If no paths are provided, formats all starlark files in the current directory recursively.")
-		fmt.Fprintln(flags.Output(), "")
+		// flags.Output() is a *bytes.Buffer (from Help) or os.Stderr -- neither ever
+		// returns a write error worth handling here.
+		_, _ = fmt.Fprintln(flags.Output(), "Usage: protoconf fmt [OPTION]... [path]...")
+		_, _ = fmt.Fprintln(flags.Output(), "")
+		_, _ = fmt.Fprintln(flags.Output(), "Format starlark files (.pinc, .pconf, .mpconf, .proto-validator, .star)")
+		_, _ = fmt.Fprintln(flags.Output(), "")
+		_, _ = fmt.Fprintln(flags.Output(), "If no paths are provided, formats all starlark files in the current directory recursively.")
+		_, _ = fmt.Fprintln(flags.Output(), "")
 		flags.PrintDefaults()
 	}
 
@@ -53,7 +55,7 @@ func newFlagSet() (*flag.FlagSet, *cliConfig) {
 
 func (c *cliCommand) Run(args []string) int {
 	flags, config := newFlagSet()
-	flags.Parse(args)
+	_ = flags.Parse(args) // flag.ExitOnError: Parse never returns a non-nil error, it exits the process instead
 
 	paths := flags.Args()
 	if len(paths) == 0 {

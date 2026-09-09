@@ -233,13 +233,17 @@ func (d *DescriptorRegistry) GetTypesResolver(regs ...*protoregistry.Files) *pro
 				for i := 0; i < fd.Messages().Len(); i++ {
 					fdm := fd.Messages().Get(i)
 					msg := dynamicpb.NewMessageType(fdm)
-					localTypes.RegisterMessage(msg)
+					if err := localTypes.RegisterMessage(msg); err != nil {
+						slog.Warn("failed to register message type", "message", fdm.FullName(), "error", err)
+					}
 				}
 			}
 			if fd.Enums().Len() > 0 {
 				for i := 0; i < fd.Enums().Len(); i++ {
 					enum := fd.Enums().Get(i)
-					localTypes.RegisterEnum(dynamicpb.NewEnumType(enum))
+					if err := localTypes.RegisterEnum(dynamicpb.NewEnumType(enum)); err != nil {
+						slog.Warn("failed to register enum type", "enum", enum.FullName(), "error", err)
+					}
 				}
 			}
 			return true
@@ -613,7 +617,7 @@ func (d *DescriptorRegistry) Load(path, checksum string) error {
 
 func find(root, ext string) []string {
 	var a []string
-	filepath.WalkDir(root, func(s string, d fs.DirEntry, e error) error {
+	if err := filepath.WalkDir(root, func(s string, d fs.DirEntry, e error) error {
 		if e != nil {
 			return e
 		}
@@ -621,6 +625,8 @@ func find(root, ext string) []string {
 			a = append(a, strings.TrimPrefix(s, root+"/"))
 		}
 		return nil
-	})
+	}); err != nil {
+		slog.Error("failed walking directory", "root", root, "error", err)
+	}
 	return a
 }

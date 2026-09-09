@@ -238,7 +238,7 @@ func (l *starlarkLoader) loadStarlarkFromModule(thread *starlark.Thread, m *Modu
 	if err != nil {
 		return nil, errors.Join(errors.New("cannot load starlark file"), err)
 	}
-	defer reader.Close()
+	defer func() { _ = reader.Close() }() // read-only handle; nothing left to do with a close error
 	moduleSource, err := io.ReadAll(reader)
 	if err != nil {
 		return nil, err
@@ -252,7 +252,7 @@ func (l *starlarkLoader) loadStarlark(thread *starlark.Thread, modulePath string
 	if err != nil {
 		return nil, errors.Join(errors.New("cannot load starlark file"), err)
 	}
-	defer reader.Close()
+	defer func() { _ = reader.Close() }() // read-only handle; nothing left to do with a close error
 	moduleSource, err := io.ReadAll(reader)
 	if err != nil {
 		return nil, err

@@ -69,7 +69,9 @@ func (c *cliCommand) Run(args []string) int {
 		slog.Error("error creating module service", "error", err)
 		return 1
 	}
-	ms.LoadFromLockFile()
+	if err := ms.LoadFromLockFile(); err != nil {
+		slog.Error("error loading from lock file", "err", err)
+	}
 	parser := parser.NewParserWithDescriptorRegistry(ms.GetProtoRegistry())
 	anyResolver := parser.TypeResolver
 
@@ -195,7 +197,7 @@ func (c *cliCommand) Run(args []string) int {
 		slog.Error("error connecting to server", "address", address, "error", err)
 		return 1
 	}
-	defer conn.Close()
+	defer func() { _ = conn.Close() }() // client conn; nothing to do with a close error before process exit
 	any, err := anypb.New(starproto.ToDynamicPb(msg))
 	if err != nil {
 		slog.Error("error marshalling message to any", "message", msg, "error", err)
@@ -275,7 +277,9 @@ func Command() (cli.Command, error) {
 	// It is no longer mutated as an accumulator (that role now belongs to layerer.fileLayer).
 	// Captures ProtoconfRoot: "./src" and ServerAddress: "localhost:4301".
 	base := proto.Clone(c.config)
-	lpc.Environment()
+	if err := lpc.Environment(); err != nil {
+		return nil, fmt.Errorf("failed to load environment configuration: %w", err)
+	}
 	c.flag = flag.NewFlagSet(string(c.config.ProtoReflect().Descriptor().FullName()), flag.ContinueOnError)
 	lpc.PopulateFlagSet(c.flag)
 	// layerer owns the accumulated config-file layer and the env/flag provenance set for

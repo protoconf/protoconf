@@ -66,7 +66,7 @@ func mutate(path string, value proto.Message, scriptMetadata string) error {
 	if err != nil {
 		return fmt.Errorf("error connecting to server address=%s err=%s", address, err)
 	}
-	defer conn.Close()
+	defer func() { _ = conn.Close() }() // example program; nothing to do with a close error on exit
 
 	c := pc.NewProtoconfMutationServiceClient(conn)
 

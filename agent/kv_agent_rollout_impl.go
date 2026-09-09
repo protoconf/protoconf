@@ -197,9 +197,11 @@ func (s *ProtoconfKVAgentRollout) SubscribeForConfig(request *protoconfservice.C
 			}
 			span.AddEvent("config update received", trace.WithAttributes(attrs...))
 			if err != nil {
-				s.sendWithLock(ctx, srv, &protoconfservice.ConfigUpdate{
+				if sendErr := s.sendWithLock(ctx, srv, &protoconfservice.ConfigUpdate{
 					Error: err.Error(),
-				}, time.Now())
+				}, time.Now()); sendErr != nil {
+					l.ErrorContext(ctx, sendErr.Error())
+				}
 				l.ErrorContext(ctx, err.Error())
 				return nil
 			}

@@ -93,8 +93,13 @@ func (c *config) validate(value interface{}) error {
 	}
 
 	pbmsg := dynamicpb.NewMessage(message.GetMessageDescriptor().UnwrapMessage())
-	b, _ := message.Marshal()
-	proto.Unmarshal(b, pbmsg)
+	b, marshalErr := message.Marshal()
+	if marshalErr != nil {
+		return errors.Join(ErrInvalidConfig, marshalErr)
+	}
+	if unmarshalErr := proto.Unmarshal(b, pbmsg); unmarshalErr != nil {
+		return errors.Join(ErrInvalidConfig, unmarshalErr)
+	}
 
 	if err := c.protoValidator.Validate(pbmsg); err != nil {
 		return errors.Join(ErrInvalidConfig, err)

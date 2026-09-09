@@ -140,14 +140,13 @@ func (c *Compiler) CompileFileAsync(ctx context.Context, cancel context.CancelCa
 	configs := make(map[string]*dynamic.Message)
 	outputs := make(map[string]*dynamic.Message)
 
-	sendErr := func(err error) error {
+	sendErr := func(err error) {
 		ch <- &protoconf_pb.CompileResponse{
 			Path:   filename,
 			Errors: []string{err.Error()},
 		}
 		errCh <- err
 		cancel(err)
-		return err
 	}
 	go func() {
 		if multiConfig {

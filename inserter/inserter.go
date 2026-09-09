@@ -144,7 +144,9 @@ func Command() (cli.Command, error) {
 	// base is the pristine factory-default snapshot handed to command.NewConfigLayerer below.
 	// It is no longer mutated as an accumulator (that role now belongs to layerer.fileLayer).
 	base := proto.Clone(c.config)
-	lpc.Environment()
+	if err := lpc.Environment(); err != nil {
+		return nil, fmt.Errorf("failed to load environment configuration: %w", err)
+	}
 	c.flag = flag.NewFlagSet(string(c.config.ProtoReflect().Descriptor().FullName()), flag.ContinueOnError)
 	lpc.PopulateFlagSet(c.flag)
 	// layerer owns the accumulated config-file layer and the env/flag provenance set for
@@ -194,7 +196,9 @@ func NewProtoconfInserter(protoconfRoot string, kvStore store.Store) *ProtoconfI
 		logger.Error("error creating module service", "error", err)
 		return nil
 	}
-	ms.LoadFromLockFile()
+	if err := ms.LoadFromLockFile(); err != nil {
+		logger.Error("error loading from lock file", "err", err)
+	}
 	protoconfRootAbs, _ := filepath.Abs(protoconfRoot)
 	gitRoot := protoconfRootAbs
 	isGit := true

@@ -3,6 +3,7 @@ package starproto
 import (
 	"fmt"
 	"hash/fnv"
+	"log/slog"
 	"sort"
 
 	"github.com/jhump/protoreflect/desc"
@@ -33,7 +34,9 @@ func ToProtoMessage(val starlark.Value) (*dynamic.Message, bool) {
 func ToDynamicPb(msg *dynamic.Message) *dynamicpb.Message {
 	mdp := msg.GetMessageDescriptor().UnwrapMessage()
 	dynamicMessage := dynamicpb.NewMessage(mdp)
-	msg.ConvertTo(dynamicMessage)
+	if err := msg.ConvertTo(dynamicMessage); err != nil {
+		slog.Error("failed to convert message to dynamicpb", "message", mdp.FullName(), "error", err)
+	}
 	return dynamicMessage
 }
 

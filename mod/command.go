@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"flag"
+	"log/slog"
 	"os"
 
 	"github.com/mitchellh/cli"
@@ -63,7 +64,10 @@ func (c *modInitCommand) Help() string {
 }
 
 func (c *modInitCommand) Run(args []string) int {
-	c.flag.Parse(args)
+	if err := c.flag.Parse(args); err != nil {
+		c.ui.Error(err.Error())
+		return 2
+	}
 	c.ui.Info(c.ms.Config.String())
 	// Init loads the lock file itself now and returns its parse error
 	// before executing CONFIGSPACE (see ModuleService.Init), so this no
@@ -84,7 +88,9 @@ func defaultModuleService(fs *flag.FlagSet) *lib.ModuleService {
 	}
 	lpc := libprotoconf.NewConfig(ms.Config)
 	lpc.SetEnvKeyPrefix("PROTOCONF_MOD")
-	lpc.Environment()
+	if err := lpc.Environment(); err != nil {
+		slog.Error("failed to load environment configuration", "error", err)
+	}
 	lpc.PopulateFlagSet(fs)
 	return ms
 }
@@ -111,9 +117,16 @@ func (c *modSyncCommand) Help() string {
 }
 
 func (c *modSyncCommand) Run(args []string) int {
-	c.flag.Parse(args)
+	if err := c.flag.Parse(args); err != nil {
+		c.ui.Error(err.Error())
+		return 2
+	}
 	err := c.ms.LoadFromLockFile()
-	defer c.ms.Lock()
+	defer func() {
+		if err := c.ms.Lock(); err != nil {
+			c.ui.Error(err.Error())
+		}
+	}()
 	if err != nil {
 		c.ui.Error(err.Error())
 		return 1
@@ -147,7 +160,10 @@ func (c *modTidyCommand) Help() string {
 }
 
 func (c *modTidyCommand) Run(args []string) int {
-	c.flag.Parse(args)
+	if err := c.flag.Parse(args); err != nil {
+		c.ui.Error(err.Error())
+		return 2
+	}
 	err := c.ms.LoadFromLockFile()
 	if err != nil {
 		c.ui.Error(err.Error())
