@@ -127,7 +127,7 @@ func (s *Store) Put(ctx context.Context, key string, value []byte, opts *store.W
 	cm, err := cmClient.Get(ctx, configMapName, v1.GetOptions{})
 	if err != nil {
 		cm = &cv1.ConfigMap{}
-		cm.ObjectMeta.Name = configMapName
+		cm.Name = configMapName
 		retryErr := retry.OnError(retry.DefaultBackoff, retryableFn, func() error {
 			cm, err = cmClient.Create(ctx, cm, v1.CreateOptions{})
 			return err

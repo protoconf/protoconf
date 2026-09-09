@@ -35,15 +35,16 @@ const (
 
 var initResolveOnce sync.Once
 
+// AllowNestedDef, AllowLambda, and AllowFloat are hardcoded true in the
+// pinned go.starlark.net version (resolve/resolve.go:110-112), so assigning
+// them here would be dead code and has been removed.
+//
+//nolint:staticcheck // resolve.Allow{Set,GlobalReassign,Recursion} are deprecated
+// package-level globals; migrating to an explicit syntax.FileOptions argument
+// requires threading options through every ExecFile call in starlark_loader.go,
+// a behavior change out of scope for this lint pass.
 func initResolveSettings() {
 	initResolveOnce.Do(func() {
-		// AllowNestedDef, AllowLambda, AllowFloat are no-ops in current
-		// go.starlark.net version (features now always enabled) but set
-		// for forward compatibility documentation.
-		resolve.AllowNestedDef = true
-		resolve.AllowLambda = true
-		resolve.AllowFloat = true
-		// These three are still operative:
 		resolve.AllowSet = true
 		resolve.AllowGlobalReassign = true
 		resolve.AllowRecursion = true

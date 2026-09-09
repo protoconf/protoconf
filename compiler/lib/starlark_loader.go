@@ -61,8 +61,6 @@ func (l *starlarkLoader) Load(thread *starlark.Thread, moduleName string) (starl
 	starlibResult, err := starlib.Loader(thread, moduleName)
 	if err == nil {
 		return starlibResult, nil
-	} else {
-		err = nil
 	}
 	var fromPath string
 	if thread.CallStackDepth() > 0 {

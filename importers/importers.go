@@ -45,17 +45,6 @@ func (i *Importer) RegisterFile(f *builder.FileBuilder) {
 	i.Files[f.GetName()] = f
 }
 
-func getFilesForBuilder(b builder.Builder, registry map[string]*builder.FileBuilder) map[string]*builder.FileBuilder {
-	file := b.GetFile()
-	registry[file.GetName()] = file
-
-	for _, child := range b.GetChildren() {
-		registry = getFilesForBuilder(child, registry)
-	}
-
-	return registry
-}
-
 type requiredMessage struct {
 	File    string
 	Message string
@@ -103,9 +92,7 @@ func (i *Importer) findRequiredMessages(fileName, msgName string) []*requiredMes
 				if len(ret) == 1 {
 					rmsgs = append(rmsgs, &requiredMessage{File: msg.GetFile().GetName(), Message: ret[0]})
 				} else if len(ret) == 2 {
-					for _, myMsg := range i.findRequiredMessages(ret[0], ret[1]) {
-						rmsgs = append(rmsgs, myMsg)
-					}
+					rmsgs = append(rmsgs, i.findRequiredMessages(ret[0], ret[1])...)
 				}
 			}
 		}

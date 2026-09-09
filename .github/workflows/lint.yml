@@ -11,9 +11,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # only-new-issues holds the line against the existing 84-issue backlog
-  # (50 errcheck, 15 govet, 15 staticcheck, 3 unused, 1 ineffassign) rather
-  # than blocking every PR on pre-existing findings.
+  # The backlog is cleared -- `golangci-lint run --max-issues-per-linter=0
+  # --max-same-issues=0` reports 0 issues at v2.13.2 (quick-260909-hv9).
+  # The gate is now absolute: only-new-issues is off, so any new finding
+  # fails the job, not just findings on changed lines.
   golangci-lint:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -27,7 +28,7 @@ jobs:
       - uses: golangci/golangci-lint-action@v9
         with:
           version: v2.13.2
-          only-new-issues: true
+          only-new-issues: false
 
   buf-breaking:
     runs-on: ubuntu-latest

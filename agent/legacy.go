@@ -95,8 +95,6 @@ func (s *legacyProtoconfServer) SubscribeForConfig(request *protoconfagent.Confi
 			}
 		}
 	}
-
-	return nil
 }
 
 func (s *legacyProtoconfServer) GetConfig(ctx context.Context, request *protoconfagent.ConfigRequest) (*protoconfagent.ConfigUpdate, error) {
