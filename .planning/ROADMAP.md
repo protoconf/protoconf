@@ -218,7 +218,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 15-03-PLAN.md — Record the milestone-close measurements and test-suite evidence in BASELINE.md (GATE-04, GATE-05) [wave 2]
+- [x] 15-03-PLAN.md — Record the milestone-close measurements and test-suite evidence in BASELINE.md (GATE-04, GATE-05) [wave 2]
 
 ## Progress
 

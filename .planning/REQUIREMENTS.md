@@ -75,9 +75,9 @@ observable success criteria, only an artifact.
 
 - [x] **GATE-01**: `TestCompilerStartupScaling`'s allocation ratio at n=50 vs n=400 is at or below 2.0x, and its `t.Skipf` branch is replaced by `require.LessOrEqual`
 - [x] **GATE-02**: Compiling the in-repo 800-proto synthetic corpus completes end-to-end in under 200ms, asserted in CI
-- [ ] **GATE-05**: The real protoconf-terraform corpus (799 protos, 6.97s at baseline) is measured once at milestone close and the number recorded as evidence — not a CI gate, since that repo is not checked in and drifts independently. Note the synthetic corpus is ~3x cheaper per file, so GATE-02 passing is a weaker claim than this one
+- [x] **GATE-05**: The real protoconf-terraform corpus (799 protos, 6.97s at baseline) is measured once at milestone close and the number recorded as evidence — not a CI gate, since that repo is not checked in and drifts independently. Note the synthetic corpus is ~3x cheaper per file, so GATE-02 passing is a weaker claim than this one
 - [x] **GATE-03**: The behaviour change to compile-time validation — a broken proto that no config loads is no longer reported — is decided deliberately and documented for operators
-- [ ] **GATE-04**: Every pre-existing test stays green, with the four validator cases and `field_type_any_test.pconf` unchanged in outcome
+- [x] **GATE-04**: Every pre-existing test stays green, with the four validator cases and `field_type_any_test.pconf` unchanged in outcome
 
 ## Future Requirements
 
@@ -145,8 +145,8 @@ Acknowledged, deferred beyond this milestone.
 | GATE-01 | Phase 15 | Complete |
 | GATE-02 | Phase 15 | Complete |
 | GATE-03 | Phase 15 | Complete |
-| GATE-04 | Phase 15 | Pending |
-| GATE-05 | Phase 15 | Pending |
+| GATE-04 | Phase 15 | Complete |
+| GATE-05 | Phase 15 | Complete |
 
 **Coverage:**
 

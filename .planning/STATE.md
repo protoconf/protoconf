@@ -4,17 +4,17 @@ milestone: v2.0
 milestone_name: Compiler Startup Performance (Planned)
 current_phase: 15
 current_phase_name: Verification, Decision & Gate Flip
-status: executing
-stopped_at: Completed 15-02-PLAN.md
-last_updated: "2026-09-09T05:06:42.393Z"
+status: verifying
+stopped_at: Completed 15-03-PLAN.md
+last_updated: "2026-09-09T05:29:32.394Z"
 last_activity: 2026-09-09
 last_activity_desc: Phase 15 execution started
-state_head: a8b7d80102f73c032d881ecba478ada0ace09039
+state_head: 435069f1f8d074d1dfe9ddd1d1a9bcff357412f7
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 25
-  completed_plans: 24
+  completed_plans: 25
   percent: 0
 ---
 
@@ -31,7 +31,7 @@ See: .planning/PROJECT.md (updated 2026-09-04)
 
 Phase: 15 (Verification, Decision & Gate Flip) — EXECUTING
 Plan: 3 of 3
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-09-09 — Phase 15 execution started
 
 Progress: [████████████████░░░░] 4/5 phases ([░░░░░░░░░░] 0%)
@@ -111,6 +111,7 @@ Progress: [████████████████░░░░] 4/5 pha
 | Phase 14 P09 | 15min | 5 tasks | 6 files |
 | Phase 15-verification-decision-gate-flip P01 | 29min | 3 tasks | 3 files |
 | Phase 15 P02 | 12min | 2 tasks | 2 files |
+| Phase 15-verification-decision-gate-flip P03 | 26min | 3 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -216,6 +217,7 @@ Recent decisions affecting current work:
 - [Phase 15]: TestCompilerStartupScaling stays in the existing -race Run coverage step rather than moving to a new non-race step — Its allocation ratio is race-insensitive (0.91x plain, 1.02x under -race); moving it saves under 0.5% of an ~11.5-12min job and adds bookkeeping that can silently rot into running twice or nowhere; it also keeps its Codecov contribution
 - [Phase 15]: GATE-02 budget threshold calibrated to 160ms from a real ubuntu-latest CI observation (77.58ms, run 34311638861), per D-03's 2x rule — A threshold chosen from any number already written in a planning document (all measured on darwin/arm64) is the error D-03 exists to prevent
 - [Phase 15]: D-04/D-05 executed: CHANGELOG.md and README.md document that protoconf compile no longer parses unreferenced protos, with buf named as remedy and an explicit buf-lint/buf.yaml caveat so no reader assumes protoconf already covers whole-tree validation — GATE-03 requires a written decision, not silent absorption of Phase 13/14's D-02 behavior change
+- [Phase 15-verification-decision-gate-flip]: [Phase 15]: [Phase 15-03] Milestone-close evidence for GATE-04/GATE-05 appended to BASELINE.md: 70.9ms local / 93.4ms CI in-process figure, 80ms hand-timed CLI figure, and 160ms calibrated threshold, all over the calibrated 2400-proto corpus; GATE-04 closed against green GitHub Actions run 34313915733 on commit cbfe79c, all five named validator/Any fixtures unchanged in outcome
 
 ### Pending Todos
 
@@ -248,6 +250,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-09T05:06:42.367Z
-Stopped at: Completed 15-02-PLAN.md
+Last session: 2026-09-09T05:29:15.043Z
+Stopped at: Completed 15-03-PLAN.md
 Resume file: None
