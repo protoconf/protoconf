@@ -2,6 +2,7 @@ package devserver
 
 import (
 	"context"
+	"errors"
 	"log/slog"
 	"net/http"
 	"os"
@@ -104,10 +105,15 @@ func (d *DevServerCommand) Run(args []string) int {
 
 	context.AfterFunc(ctx, func() {
 		slog.Info("stopping http server")
-		httpSrv.Shutdown(ctx)
+		if err := httpSrv.Shutdown(ctx); err != nil {
+			slog.Error("error shutting down http server", "error", err)
+		}
 	})
 	slog.Info("start listening", "address", httpSrv.Addr)
-	httpSrv.ListenAndServe()
+	if err := httpSrv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		slog.Error("error serving http", "error", err)
+		return 1
+	}
 
 	return 0
 }

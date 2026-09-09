@@ -60,7 +60,9 @@ func Command() (cli.Command, error) {
 	// It is no longer mutated as an accumulator (that role now belongs to layerer.fileLayer);
 	// it captures GrpcAddress: ":4300" and HttpAddress: ":4380".
 	base := proto.Clone(c.config)
-	lpc.Environment()
+	if err := lpc.Environment(); err != nil {
+		return nil, fmt.Errorf("failed to load environment configuration: %w", err)
+	}
 	c.flag = flag.NewFlagSet(string(c.config.ProtoReflect().Descriptor().FullName()), flag.ContinueOnError)
 	lpc.PopulateFlagSet(c.flag)
 

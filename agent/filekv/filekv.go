@@ -78,7 +78,9 @@ func New(ctx context.Context, endpoints []string, options *Config) (*Store, erro
 	if err != nil {
 		return nil, fmt.Errorf("error creating module service: %w", err)
 	}
-	ms.LoadFromLockFile()
+	if err := ms.LoadFromLockFile(); err != nil {
+		slog.Error("error loading from lock file", "err", err)
+	}
 
 	watcher := &Store{
 		fsnotifyWatcher: fsnotifyWatcher,

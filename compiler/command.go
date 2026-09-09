@@ -52,7 +52,11 @@ func (c *cliCommand) Run(args []string) int {
 			slog.Error("Could not create CPU profile:", "error", err)
 			os.Exit(1)
 		}
-		defer f.Close()
+		defer func() {
+			if err := f.Close(); err != nil {
+				slog.Error("Could not close CPU profile file:", "error", err)
+			}
+		}()
 		if err := pprof.StartCPUProfile(f); err != nil {
 			slog.Error("Could not start CPU profile:", "error", err)
 			os.Exit(1)
@@ -159,7 +163,11 @@ func runLocally(protoconfRoot string, config *protoconf_compiler_config.Compiler
 		if err != nil {
 			log.Fatal("Could not create memory profile:", err)
 		}
-		defer f.Close()
+		defer func() {
+			if err := f.Close(); err != nil {
+				log.Println("Could not close memory profile file:", err)
+			}
+		}()
 		runtime.GC()
 		if err := pprof.WriteHeapProfile(f); err != nil {
 			log.Fatal("Could not start memory profile:", err)
@@ -191,7 +199,9 @@ func Command() (cli.Command, error) {
 	// base is the pristine factory-default snapshot handed to command.NewConfigLayerer below.
 	// It is no longer mutated as an accumulator (that role now belongs to layerer.fileLayer).
 	base := proto.Clone(c.config)
-	lpc.Environment()
+	if err := lpc.Environment(); err != nil {
+		return nil, fmt.Errorf("failed to load environment configuration: %w", err)
+	}
 	c.flag = flag.NewFlagSet(string(c.config.ProtoReflect().Descriptor().FullName()), flag.ContinueOnError)
 	lpc.PopulateFlagSet(c.flag)
 	// layerer owns the accumulated config-file layer and the env/flag provenance set for

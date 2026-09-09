@@ -2,6 +2,7 @@ package lib
 
 import (
 	"io"
+	"log/slog"
 	"path/filepath"
 	"sync"
 
@@ -46,7 +47,9 @@ func (cpb *ProgressBar) TrackProgress(src string, currentSize, totalSize int64, 
 	ProgressBarConfig(newPb, filepath.Base(src))
 	if cpb.pool == nil {
 		cpb.pool = pb.NewPool()
-		cpb.pool.Start()
+		if err := cpb.pool.Start(); err != nil {
+			slog.Error("failed to start progress bar pool", "error", err)
+		}
 	}
 	cpb.pool.Add(newPb)
 	reader := newPb.NewProxyReader(stream)
@@ -61,8 +64,9 @@ func (cpb *ProgressBar) TrackProgress(src string, currentSize, totalSize int64, 
 			newPb.Finish()
 			cpb.pbs--
 			if cpb.pbs <= 0 {
-				cpb.pool.Stop()
+				err := cpb.pool.Stop()
 				cpb.pool = nil
+				return err
 			}
 			return nil
 		},

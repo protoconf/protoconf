@@ -204,10 +204,15 @@ func (c *cliCommand) run(ctx context.Context, args []string) int {
 	// here must not abort server startup.
 	_ = protoconfServer.GenReflectionUI(ctx, rpcServer, httpServer)
 	context.AfterFunc(ctx, func() {
-		httpServer.Shutdown(ctx)
+		if err := httpServer.Shutdown(ctx); err != nil {
+			slog.Error("error shutting down http server", "error", err)
+		}
 	})
 
-	httpServer.ListenAndServe()
+	if err := httpServer.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		slog.Error("error serving http", "error", err)
+		return 1
+	}
 
 	return 0
 }
@@ -237,7 +242,9 @@ func Command() (cli.Command, error) {
 	// base is the pristine factory-default snapshot handed to command.NewConfigLayerer below.
 	// It is no longer mutated as an accumulator (that role now belongs to layerer.fileLayer).
 	base := proto.Clone(c.config)
-	lpc.Environment()
+	if err := lpc.Environment(); err != nil {
+		return nil, fmt.Errorf("failed to load environment configuration: %w", err)
+	}
 	c.flag = flag.NewFlagSet(string(c.config.ProtoReflect().Descriptor().FullName()), flag.ContinueOnError)
 	lpc.PopulateFlagSet(c.flag)
 
@@ -335,14 +342,27 @@ func NewProtoconfMutationServer(protoconfRoot string, opts ...MutationServerOpti
 	if err != nil {
 		return nil, fmt.Errorf("failed to create module service: %w", err)
 	}
-	ms.LoadFromLockFile()
+	if err := ms.LoadFromLockFile(); err != nil {
+		slog.Error("error loading from lock file", "err", err)
+	}
 	parser := parser.NewParserWithDescriptorRegistry(ms.GetProtoRegistry())
-	parser.FilesResolver.RegisterFile(grpc_reflection_v1.File_grpc_reflection_v1_reflection_proto)
-	parser.FilesResolver.RegisterFile(grpc_reflection_v1alpha.File_grpc_reflection_v1alpha_reflection_proto)
-	parser.FilesResolver.RegisterFile(grpc_health_v1.File_grpc_health_v1_health_proto)
-	parser.FilesResolver.RegisterFile(protoconfmutation.File_server_api_proto_v1_protoconf_mutation_proto)
-	parser.FilesResolver.RegisterFile(protoconf_pb.File_protoconf_v1_protoconf_proto)
-	parser.FilesResolver.RegisterFile(protoconfservice.File_agent_api_proto_v1_protoconf_service_proto)
+	wellKnownFiles := []protoreflect.FileDescriptor{
+		grpc_reflection_v1.File_grpc_reflection_v1_reflection_proto,
+		grpc_reflection_v1alpha.File_grpc_reflection_v1alpha_reflection_proto,
+		grpc_health_v1.File_grpc_health_v1_health_proto,
+		protoconfmutation.File_server_api_proto_v1_protoconf_mutation_proto,
+		protoconf_pb.File_protoconf_v1_protoconf_proto,
+		protoconfservice.File_agent_api_proto_v1_protoconf_service_proto,
+	}
+	for _, f := range wellKnownFiles {
+		// A duplicate registration (e.g. protoconf/v1/protoconf.proto, already
+		// seeded by NewLazyModuleService's own global-registry seed) is
+		// expected, not fatal -- mirrors registerFileLocked's idiom in
+		// utils/utils.go, which never aborts the caller on a RegisterFile error.
+		if err := parser.FilesResolver.RegisterFile(f); err != nil {
+			slog.Error("failed to register well-known file", "path", f.Path(), "error", err)
+		}
+	}
 	s := &ProtoconfMutationServer{protoconfRoot: protoconfRoot, config: &protoconf_server_config.ServerConfig{}, parser: parser, reports: &sync.Map{}}
 	for _, opt := range opts {
 		opt(s)
@@ -404,12 +424,18 @@ func (s *ProtoconfMutationServer) Init(rpcServer *grpc.Server) {
 	// globalRegexMatcher, so without this the reflection/health/legacy-
 	// mutation/agent-service descriptors would be listable but not
 	// describable once DescriptorResolver below reads discoveryFiles.
-	discoveryFiles.RegisterFile(grpc_reflection_v1.File_grpc_reflection_v1_reflection_proto)
-	discoveryFiles.RegisterFile(grpc_reflection_v1alpha.File_grpc_reflection_v1alpha_reflection_proto)
-	discoveryFiles.RegisterFile(grpc_health_v1.File_grpc_health_v1_health_proto)
-	discoveryFiles.RegisterFile(protoconfmutation.File_server_api_proto_v1_protoconf_mutation_proto)
-	discoveryFiles.RegisterFile(protoconf_pb.File_protoconf_v1_protoconf_proto)
-	discoveryFiles.RegisterFile(protoconfservice.File_agent_api_proto_v1_protoconf_service_proto)
+	for _, f := range []protoreflect.FileDescriptor{
+		grpc_reflection_v1.File_grpc_reflection_v1_reflection_proto,
+		grpc_reflection_v1alpha.File_grpc_reflection_v1alpha_reflection_proto,
+		grpc_health_v1.File_grpc_health_v1_health_proto,
+		protoconfmutation.File_server_api_proto_v1_protoconf_mutation_proto,
+		protoconf_pb.File_protoconf_v1_protoconf_proto,
+		protoconfservice.File_agent_api_proto_v1_protoconf_service_proto,
+	} {
+		if err := discoveryFiles.RegisterFile(f); err != nil {
+			logger.Error("failed to register well-known file for service discovery", "path", f.Path(), "error", err)
+		}
+	}
 
 	discoveryFiles.RangeFiles(func(fd protoreflect.FileDescriptor) bool {
 		_, err := protoregistry.GlobalFiles.FindFileByPath(fd.Path())

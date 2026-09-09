@@ -120,7 +120,9 @@ func (m *ModuleService) Init(ctx context.Context, initFiles ...string) error {
 	if err := m.LoadFromLockFile(); err != nil {
 		return err
 	}
-	os.MkdirAll(m.getCacheDir(), 0755)
+	if err := os.MkdirAll(m.getCacheDir(), 0755); err != nil {
+		return fmt.Errorf("failed to create cache dir: %w", err)
+	}
 	thread := &starlark.Thread{}
 	for _, file := range initFiles {
 		filePath := filepath.Join(m.getProtoconfPath(), file)
@@ -147,7 +149,9 @@ func (m *ModuleService) Init(ctx context.Context, initFiles ...string) error {
 			// Arrays must be reseted before merge
 			msg.AdditionalProtoDirs = []string{}
 			msg.ExcludeFileRegexps = []string{}
-			dyn.MergeInto(msg)
+			if err := dyn.MergeInto(msg); err != nil {
+				return errors.Join(fmt.Errorf("failed to merge remote_repo config for %s", name), err)
+			}
 			if originalGetterUrl != msg.GetterUrl {
 				msg.Integrity = ""
 			}
@@ -302,11 +306,11 @@ func hash1(files []string, open func(string) (io.ReadCloser, error)) (string, er
 		}
 		hf := sha256.New()
 		_, err = io.Copy(hf, r)
-		r.Close()
+		_ = r.Close() // read-only handle; a failed close cannot affect the bytes already copied
 		if err != nil {
 			return "", err
 		}
-		fmt.Fprintf(h, "%x  %s\n", hf.Sum(nil), file)
+		_, _ = fmt.Fprintf(h, "%x  %s\n", hf.Sum(nil), file) // hash.Hash.Write never returns an error
 	}
 	return "h1:" + base64.StdEncoding.EncodeToString(h.Sum(nil)), nil
 }
@@ -435,7 +439,7 @@ func (m *ModuleService) GetProtoRegistry() *utils.DescriptorRegistry {
 	}
 
 	registry := utils.NewDescriptorRegistry()
-	m.Walk(func(r *module.RemoteRepo) error {
+	if err := m.Walk(func(r *module.RemoteRepo) error {
 		if r.Url == "." {
 			return nil
 		}
@@ -447,7 +451,9 @@ func (m *ModuleService) GetProtoRegistry() *utils.DescriptorRegistry {
 			ui.Error("try run `protoconf mod sync`")
 		}
 		return nil
-	})
+	}); err != nil {
+		slog.Error("failed walking modules to load file descriptor sets", "error", err)
+	}
 	srcPath := filepath.Join(m.getProtoconfPath(), consts.SrcPath)
 	if m.lazyRegistry {
 		// D-01: the compiler's construction path skips the whole-src/
@@ -480,14 +486,20 @@ func (m *ModuleService) Sync(ctx context.Context) error {
 			return err
 		}
 		if r.Integrity != "" && r.Integrity != "dummy" {
-			m.Walk(func(repo *module.RemoteRepo) error {
+			if err := m.Walk(func(repo *module.RemoteRepo) error {
 				if r.Label == repo.Label {
 					repo.Integrity = r.Integrity
 				}
 				return nil
-			})
+			}); err != nil {
+				return err
+			}
 		}
-		defer m.Lock()
+		defer func() {
+			if err := m.Lock(); err != nil {
+				slog.Error("failed to write lock file", "error", err)
+			}
+		}()
 		return m.DownloadDeps(ctx, r)
 	})
 	if err != nil {

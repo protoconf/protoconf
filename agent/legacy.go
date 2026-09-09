@@ -90,7 +90,9 @@ func (s *legacyProtoconfServer) SubscribeForConfig(request *protoconfagent.Confi
 			if err != nil {
 				return err
 			}
-			srv.Send(result)
+			if err := srv.Send(result); err != nil {
+				return err
+			}
 		}
 	}
 
