@@ -215,6 +215,27 @@ Step by step instructions to start developing with Protoconf, with an example fr
 
 7. Commit all changes under `protoconf/` (including the `.materialized_JSON` files)
 
+## What `protoconf compile` validates
+
+`protoconf compile` parses and links only the `.proto` files a config
+transitively loads. Protos under `src/` that no config reaches are not
+parsed, and errors in them — a syntax mistake, a broken reference — are not
+reported at compile time.
+
+This is deliberate, not an oversight: compile cost is proportional to what
+the config actually demands, not to how many protos happen to live in the
+repository. On a 799-proto reference corpus this took startup from 6.97s to
+under 200ms.
+
+The error still surfaces — the first time a config loads that proto.
+
+For whole-tree validation across every proto in your repository, run
+`buf lint` against your own config repository, as a step in your own CI.
+Protoconf does not do this for you: this repository's own CI runs
+`buf breaking` and does not run `buf lint`, and this repository's `buf.yaml`
+covers protoconf's own protos, not a downstream config repository. Nothing
+in protoconf runs whole-tree validation on an operator's behalf.
+
 ## Production setup
 
 1. Run your preferred key-value store (e.g. Consul)
