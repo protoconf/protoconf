@@ -21,10 +21,10 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-09-04)
+See: .planning/PROJECT.md (updated 2026-09-09)
 
 **Core value:** Every component must be testable, consistent, and free of runtime surprises
-**Current focus:** Phase 15 — Verification, Decision & Gate Flip
+**Current focus:** Milestone v2.0 complete — all five phases (11-15) done; ready for milestone close
 
 ## Current Position
 
@@ -33,7 +33,7 @@ Plan: Not started
 Status: All phases complete
 Last activity: 2026-09-09 — Phase 15 complete
 
-Progress: [████████████████░░░░] 4/5 phases ([██░░░░░░░░] 20%)
+Progress: [████████████████████] 5/5 phases ([██████████] 100%) — 25/25 plans
 
 ## Performance Metrics
 
@@ -225,9 +225,11 @@ None yet.
 
 ### Blockers/Concerns
 
-- Phase 11's mutation-server `Init()` fix (CONS-01) is a hard blocking co-requirement, not deferrable — a lazy registry with unfixed `Init()` silently drops every custom mutation service registration for the process lifetime (PITFALLS.md pitfall 1, orchestrator-verified most severe finding).
-- Phase 13's symbol index build shape (parse-without-link) and its shared type-URL resolution path are new design surface not present in prior milestones — no existing pattern in this codebase to copy; plan this phase with extra care. The two pieces are now a single merged phase (was split into 13/14 in the first draft), so both land together in one plan pass.
-- `add_validator`'s last-write-wins clobbering (BUG-01) must not be "fixed" incidentally by recoupling validator discovery to proto registry order during Phase 11 — keep `loadValidators`' filesystem-walk order explicitly decoupled from load()-driven proto order.
+- [Phase 15] The wall-clock startup gate has less headroom than one CI sample suggested. The calibrated run measured 150.2ms against the 160ms budget, roughly 6.5% clear, while the sample the threshold was derived from measured 77.6ms. The real ubuntu-latest band is wider than either number alone. Do not raise the constant in reaction to a red run; investigate the regression first.
+- [Phase 15] The CI budget-gate step pipes `go test` through `tee` into `grep -q`, so its pass signal depends on the exit code surviving a three-stage pipe under `pipefail` (15-REVIEW.md WR-01). Verified to have real teeth today, and the SIGPIPE-masking risk needs far more output than this test produces. Capture to a file and grep separately if the step ever grows noisier.
+- Security enforcement is enabled for this project and Phase 15 has no threat record. Run the secure-phase command for phase 15 if a security record is wanted before milestone close.
+
+Resolved this milestone and removed from this list: Phase 11's mutation-server `Init()` co-requirement (CONS-01, shipped), Phase 13's new symbol-index design surface (shipped and verified), and the `add_validator` ordering caution for Phase 11 (`loadValidators`' filesystem walk stayed decoupled).
 
 ### Quick Tasks Completed
 

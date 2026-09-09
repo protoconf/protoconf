@@ -29,7 +29,7 @@ Cost scales with repository size, not with the config. The config `load()`s 5 pr
 
 **Key design decision:** type URLs resolve through an exact symbol index built by parsing without linking (1.41s vs 4.64s linked on the 799-proto corpus; 138,554 symbols, nested types included), persisted under `.protoconf_cache`. `proto_file` is superseded as a resolution mechanism. Lazy loading was protoconf's original design and `proto_file` exists because of it; it failed when `Any` arrived because lazy-by-path cannot answer a symbol it was never asked to load. The index is the missing piece, not a repeat of that mistake.
 
-**Definition of done:** `TestCompilerStartupScaling`'s alloc ratio at n=50→400 drops from 7.24x to ≤2.0x, and its `t.Skipf` branch is deleted, becoming a `require.LessOrEqual`.
+**Definition of done:** `TestCompilerStartupScaling`'s alloc ratio at n=50→400 drops from 7.24x to ≤2.0x, and its `t.Skipf` branch is deleted, becoming a `require.LessOrEqual`. ✓ Met in Phase 15 — the ratio asserts at 1.02x observed in CI, and a second gate (`TestCompilerStartupBudget`, 160ms over a calibrated 2,400-proto corpus) asserts wall-clock startup in a non-race CI step.
 
 **Already shipped toward this** (v1.0 tail): `loadValidators` filesystem walk (quick 260904-f5j) and the synthetic corpus generator + scaling gate (quick 260904-fwk).
 
@@ -60,6 +60,7 @@ Cost scales with repository size, not with the config. The config `load()`s 5 pr
 - [x] Exact symbol index (parse without linking) resolving type URLs, including nested Any, across all six registry consumers (v2.0) — Validated in Phase 13 (compiler consumers: TYPE-01..09, CONS-05) and Phase 14: Non-Compiler Consumer Correctness (`inserter/`, `mutate/`, the agent's filekv store and the remaining `server.go` sites: CONS-02..04, SAFE-02, SAFE-03)
 - [x] Symbol index persisted under `.protoconf_cache`, content-keyed and invalidated on change (v2.0) — Validated in Phase 13: Exact Symbol Index & Shared Type-URL Resolution (TYPE-04, TYPE-05, TYPE-06)
 - [x] Loud (never silent) fallback when a type URL cannot be resolved (v2.0) — Validated in Phase 13: the whole-tree eager fallback is deleted and an exhausted chain returns a `protoregistry.NotFound`-wrapping error naming the type URL, the roots searched, and the index state (TYPE-08)
+- [x] Startup performance asserted in CI, not merely measured, and the milestone's closing numbers recorded as evidence (v2.0) — Validated in Phase 15: Verification, Decision & Gate Flip (GATE-01..05)
 - [x] Add TLS support for gRPC connections — Validated in Phase 5: TLS Support
 - [x] Token-based auth with credential forwarding to pre/post scripts — Validated in Phase 6: Token Auth & Script Security
 - [x] Proto-defined CLI configuration (definitions + flag generation) — Validated in Phase 7: Proto-Defined CLI Configs and Phase 8: CLI Flag Generation & Config Loading
@@ -112,6 +113,10 @@ Cost scales with repository size, not with the config. The config `load()`s 5 pr
 | Marshal gRPC-UI examples with the shared resolver instead of handing grpcui a proto message | `standalone.ExampleRequest.MarshalJSON` hardcodes a resolver-less `protojson.Marshal` against `protoregistry.GlobalTypes`, which can never hold a type declared only in the user's `.proto` tree | ✓ Shipped in Phase 13 — caught by the regression gate; narrows CONS-04's Phase 14 surface |
 | Fix the `MutateConfig` write-path escape inside Phase 14 rather than deferring it | The gap-closure plan's sibling audit found the same defect class, in a weaker form, on a write path; deferring a known unguarded `os.WriteFile` of caller-controlled content to ship a narrower fix trades a real hole for schedule neatness | ✓ Shipped in Phase 14 (14-09) — containment check precedes marshal, pre-mutation script, `MkdirAll` and `WriteFile` |
 | A test cited as a security control must be demonstrated capable of failing before its guard lands | Phase 14 shipped a traversal test that could not fail, and two threat-model rows plus a docstring then cited it as a mitigation — false assurance is worse than a known gap | ✓ Shipped in Phase 14 (14-09) — RED `--- FAIL:` output recorded verbatim in each commit body; verification independently reproduced it against the pre-fix commits |
+| Calibrate the wall-clock startup budget from an observed GitHub Actions run, never from a laptop figure (D-03) | A threshold set on developer hardware either never fires on CI or fires constantly; only the runner's own numbers bound the runner | ✓ Shipped in Phase 15 — 160ms, roughly 2x the first CI observation of 77.6ms; a later run measured 150.2ms, so the real band is wider than one sample showed |
+| Run the wall-clock gate in its own CI step without `-race` or coverage (D-01) | The race detector costs roughly 8x, which would make a wall-clock assertion measure the detector rather than the compiler | ✓ Shipped in Phase 15 — a `//go:build race` guard also skips the gate whenever it is reached under `-race` |
+| Accept that an unreferenced broken proto is no longer reported at compile time, and say so in the changelog and readme (D-04) | Lazy loading never parses a proto no config reaches; the honest answer is to name `buf` for whole-tree validation rather than quietly drop a guarantee operators relied on | ✓ Shipped in Phase 15 — both documents carry the caveat that protoconf's own CI runs `buf breaking` only, over protoconf's own protos |
+| Gate on a calibrated 2,400-proto generated corpus instead of the real 799-proto sibling checkout (D-07/D-08) | CI cannot fetch a sibling repository, so a gate depending on one is a gate that does not run; the substitution is recorded rather than presented as the real-corpus number | ✓ Shipped in Phase 15 — the baseline record states plainly that the ~3x per-file multiplier sizing the corpus is unsourced and accepted at face value |
 
 ## Evolution
 
@@ -131,4 +136,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-09-08 after Phase 14 completion*
+*Last updated: 2026-09-09 after Phase 15 completion*
