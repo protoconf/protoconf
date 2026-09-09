@@ -103,24 +103,28 @@ func BenchmarkCompilerStartup(b *testing.B) {
 	}
 }
 
-// TestCompilerStartupScaling is the only check in this file with teeth, and
-// it has none *yet*. The bug is "cost scales with repository size, not
-// config size": compiling a config that loads 5 protos should cost the same
-// whether the repo contains 50 protos or 5,000. See BASELINE.md — parsed +
-// linked 5 requested -> 7 total files in 2.7ms against a 799-proto repo that
-// eagerly cost 4,639ms, a ~1,700x gap.
+// TestCompilerStartupScaling asserts the bug this milestone fixed stays
+// fixed: "cost scales with repository size, not config size" — compiling a
+// config that loads 5 protos should cost the same whether the repo contains
+// 50 protos or 5,000. See BASELINE.md — parsed + linked 5 requested -> 7
+// total files in 2.7ms against a 799-proto repo that eagerly cost 4,639ms, a
+// ~1,700x gap.
 //
 // This measures the allocation and wall-clock ratio between n=50 and n=400
 // (not 5000: at ~4.6s per construction for 799 protos, n=400 already makes
 // the ratio unambiguous without making `go test ./...` intolerable), logs
-// both unconditionally, and gates on the allocation ratio only.
+// both unconditionally, and gates on the allocation ratio only — wall-clock
+// on a shared CI runner is not deterministic enough to assert on here; see
+// TestCompilerStartupBudget, which asserts wall-clock against a
+// CI-calibrated threshold in a dedicated non-race step instead.
 //
-// Measure-then-skip is deliberate: the body still executes on every run, so
-// it cannot silently rot into non-compiling or wrong code; it prints a live
-// number today that doubles as the generator's sanity check; and it
-// auto-greens the instant the fix lands. Deleting the t.Skipf below (turning
-// this into require.LessOrEqual(t, allocRatio, maxRatio)) is the
-// lazy-loading milestone's definition of done.
+// Measure-then-log is deliberate: the body still executes on every run, so
+// it cannot silently rot into non-compiling or wrong code, and it prints a
+// live number today that doubles as the generator's sanity check.
+//
+// The milestone's definition of done — this ratio at or below 2.0x — was
+// reached in Phase 15: the assertion below now holds (require.LessOrEqual)
+// where this test previously only measured and skipped.
 func TestCompilerStartupScaling(t *testing.T) {
 	if testing.Short() {
 		t.Skip("scaling measurement is slow; skipped under -short")
@@ -163,12 +167,7 @@ func TestCompilerStartupScaling(t *testing.T) {
 	t.Logf("scaling n=50->400: alloc ratio=%.2fx (%d -> %d bytes), wall-clock ratio=%.2fx (%s -> %s)",
 		allocRatio, alloc50, alloc400, wallRatio, elapsed50, elapsed400)
 
-	if allocRatio > maxRatio {
-		t.Skipf("compiler startup does not yet scale with config size, not repo size: "+
-			"alloc ratio=%.2fx exceeds target %.1fx (see .planning/research/compiler-performance/BASELINE.md); "+
-			"this Skip is the lazy-loading milestone's definition of done — delete it, turning this into "+
-			"require.LessOrEqual(t, allocRatio, maxRatio), once the ratio is in bounds", allocRatio, maxRatio)
-	}
+	require.LessOrEqual(t, allocRatio, maxRatio)
 }
 
 // corpusProtos sizes the corpus TestCompilerStartupBudget compiles. Sized so
