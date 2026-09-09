@@ -192,6 +192,24 @@ const corpusProtos = 2400
 // parallel with other tests in the binary (no t.Parallel()): a wall-clock
 // measurement sharing a runner with other tests measures contention, not the
 // compiler.
+// budget is calibrated from a real GitHub Actions observation, not from any
+// number in CONTEXT.md, RESEARCH.md or BASELINE.md (all measured on
+// darwin/arm64; GitHub-hosted ubuntu-latest runners are 2-core shared VMs
+// and measure differently) — per D-03, picking a threshold from a document
+// number instead of a CI run is the error this calibration step exists to
+// avoid.
+//
+// Observed: ubuntu-latest, GitHub Actions run 34311638861 (2026-09-09),
+// `startup budget: n=2400 compiled in 77.581263ms`. budget is set to
+// roughly 2x that figure, rounded to a round number of milliseconds
+// (D-03's 2x rule).
+//
+// GATE-02's text names a 200ms budget over an 800-proto corpus. This
+// threshold (160ms) is tighter than 200ms and this corpus (2400) is larger
+// than 800, so GATE-02 is satisfied strictly — do not "fix" this constant
+// back up to 200.
+const budget = 160 * time.Millisecond
+
 func TestCompilerStartupBudget(t *testing.T) {
 	if raceEnabled {
 		t.Skip("wall-clock budget is meaningless under the race detector (~8x slowdown observed); see race_detector_test.go")
@@ -207,10 +225,7 @@ func TestCompilerStartupBudget(t *testing.T) {
 	require.NoError(t, compileCorpus(dir))
 	elapsed := time.Since(start)
 
-	t.Logf("startup budget: n=%d compiled in %s", corpusProtos, elapsed)
+	t.Logf("startup budget: n=%d compiled in %s (budget %s)", corpusProtos, elapsed, budget)
 
-	// Threshold intentionally not asserted yet. It is calibrated from a real
-	// `ubuntu-latest` GitHub Actions observation in a follow-up commit per
-	// D-03 — a threshold chosen from a number in CONTEXT.md, RESEARCH.md or
-	// BASELINE.md (all measured on darwin/arm64) is a planning error.
+	require.LessOrEqual(t, elapsed, budget)
 }
