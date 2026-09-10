@@ -1,0 +1,43 @@
+{
+  "contract": "1.0.0",
+  "flavor": "core",
+  "milestone": "v2.0 — Compiler Startup Performance (Planned)",
+  "phases": [
+    {
+      "number": "1",
+      "name": "10. (see v1.0 table above)",
+      "status": "complete"
+    },
+    {
+      "number": "11",
+      "name": "Concurrency-Safe Lazy Registry Core",
+      "status": "complete"
+    },
+    {
+      "number": "12",
+      "name": "Growable Resolver Views & Race Safety",
+      "status": "complete"
+    },
+    {
+      "number": "13",
+      "name": "Exact Symbol Index & Shared Type-URL Resolution",
+      "status": "complete"
+    },
+    {
+      "number": "14",
+      "name": "Non-Compiler Consumer Correctness",
+      "status": "complete"
+    },
+    {
+      "number": "15",
+      "name": "Verification, Decision & Gate Flip",
+      "status": "complete"
+    }
+  ],
+  "next": {
+    "command": "/gsd:progress",
+    "label": "Show progress",
+    "reason": "Unsure of state — showing progress"
+  },
+  "updated_at": "2026-09-10T03:58:48.289Z"
+}

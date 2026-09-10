@@ -20,6 +20,7 @@ and `git log -1 -- agent/legacy.go` shows the offending commit
 (`ac77547`) predates this phase entirely. `go vet ./compiler/... ./utils/...`
 — the scope this plan's own task-level acceptance criteria require — is
 clean.
+  status: acknowledged
 
 ## 13-02: `go test -race ./...` hang in `github.com/protoconf/protoconf/agent`
 
