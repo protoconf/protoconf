@@ -1,0 +1,9 @@
+# GSD Agent Configuration — managed by gsd-core installer
+# GSD codex_hooks ownership: section
+
+[features]
+hooks = true
+
+[agents]
+max_depth = 1
+

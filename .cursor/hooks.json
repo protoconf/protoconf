@@ -1,0 +1,47 @@
+{
+  "hooks": {
+    "sessionStart": [
+      {
+        "type": "command",
+        "command": "\"$(for n in \"/opt/homebrew/bin/node\" \"$(command -v node)\" /usr/local/bin/node /usr/bin/node; do [ -x \"$n\" ] && { [ \"${n#/}\" != \"$n\" ] || [ \"${n#?:}\" != \"$n\" ]; } && printf '%s' \"$n\" && break; done)\" \"/Users/smintz/go/src/github.com/protoconf/protoconf/.cursor/hooks/gsd-cursor-session-start.js\"",
+        "gsd-managed": true
+      }
+    ],
+    "postToolUse": [
+      {
+        "type": "command",
+        "command": "\"$(for n in \"/opt/homebrew/bin/node\" \"$(command -v node)\" /usr/local/bin/node /usr/bin/node; do [ -x \"$n\" ] && { [ \"${n#/}\" != \"$n\" ] || [ \"${n#?:}\" != \"$n\" ]; } && printf '%s' \"$n\" && break; done)\" \"/Users/smintz/go/src/github.com/protoconf/protoconf/.cursor/hooks/gsd-cursor-post-tool.js\"",
+        "gsd-managed": true
+      }
+    ],
+    "preToolUse": [
+      {
+        "type": "command",
+        "command": "\"$(for n in \"/opt/homebrew/bin/node\" \"$(command -v node)\" /usr/local/bin/node /usr/bin/node; do [ -x \"$n\" ] && { [ \"${n#/}\" != \"$n\" ] || [ \"${n#?:}\" != \"$n\" ]; } && printf '%s' \"$n\" && break; done)\" \"/Users/smintz/go/src/github.com/protoconf/protoconf/.cursor/hooks/gsd-cursor-pre-tool.js\"",
+        "gsd-managed": true
+      }
+    ],
+    "stop": [
+      {
+        "type": "command",
+        "command": "\"$(for n in \"/opt/homebrew/bin/node\" \"$(command -v node)\" /usr/local/bin/node /usr/bin/node; do [ -x \"$n\" ] && { [ \"${n#/}\" != \"$n\" ] || [ \"${n#?:}\" != \"$n\" ]; } && printf '%s' \"$n\" && break; done)\" \"/Users/smintz/go/src/github.com/protoconf/protoconf/.cursor/hooks/gsd-cursor-stop.js\"",
+        "gsd-managed": true
+      }
+    ],
+    "subagentStart": [
+      {
+        "type": "command",
+        "command": "\"$(for n in \"/opt/homebrew/bin/node\" \"$(command -v node)\" /usr/local/bin/node /usr/bin/node; do [ -x \"$n\" ] && { [ \"${n#/}\" != \"$n\" ] || [ \"${n#?:}\" != \"$n\" ]; } && printf '%s' \"$n\" && break; done)\" \"/Users/smintz/go/src/github.com/protoconf/protoconf/.cursor/hooks/gsd-cursor-subagent-start.js\"",
+        "gsd-managed": true
+      }
+    ],
+    "subagentStop": [
+      {
+        "type": "command",
+        "command": "\"$(for n in \"/opt/homebrew/bin/node\" \"$(command -v node)\" /usr/local/bin/node /usr/bin/node; do [ -x \"$n\" ] && { [ \"${n#/}\" != \"$n\" ] || [ \"${n#?:}\" != \"$n\" ]; } && printf '%s' \"$n\" && break; done)\" \"/Users/smintz/go/src/github.com/protoconf/protoconf/.cursor/hooks/gsd-cursor-subagent-stop.js\"",
+        "gsd-managed": true
+      }
+    ]
+  },
+  "version": 1
+}

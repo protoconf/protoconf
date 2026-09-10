@@ -1,0 +1,281 @@
+@.agents/gsd-core/references/response-language-directive.md
+
+# Forensics Workflow
+
+Post-mortem investigation for failed or stuck GSD workflows. Analyzes git history,
+`.planning/` artifacts, and file system state to detect anomalies and generate a
+structured diagnostic report.
+
+**Principle:** This is a read-only investigation. Do not modify project files.
+Only write the forensic report.
+
+---
+
+## Step 1: Get Problem Description
+
+```bash
+PROBLEM="$ARGUMENTS"
+```
+
+If `$ARGUMENTS` is empty, ask the user:
+> "What went wrong? Describe the issue — e.g., 'autonomous mode got stuck on phase 3',
+> 'execute-phase failed silently', 'costs seem unusually high'."
+
+Record the problem description for the report.
+
+## Step 2: Gather Evidence
+
+Collect data from all available sources. Missing sources are fine — adapt to what exists.
+
+### 2a. Git History
+
+```bash
+# Recent commits (last 30)
+git log --oneline -30
+
+# Commits with timestamps for gap analysis
+git log --format="%H %ai %s" -30
+
+# Files changed in recent commits (detect repeated edits)
+git log --name-only --format="" -20 | sort | uniq -c | sort -rn | head -20
+
+# Uncommitted work
+git status --short
+git diff --stat
+```
+
+Record:
+- Commit timeline (dates, messages, frequency)
+- Most-edited files (potential stuck-loop indicator)
+- Uncommitted changes (potential crash/interruption indicator)
+
+### 2b. Planning State
+
+Read these files if they exist:
+- `.planning/STATE.md` — current milestone, phase, progress, blockers, last session
+- `.planning/ROADMAP.md` — phase list with status
+- `.planning/config.json` — workflow configuration
+
+Extract:
+- Current phase and its status
+- Last recorded session stop point
+- Any blockers or flags
+
+### 2c. Phase Artifacts
+
+For each phase directory in `.planning/phases/*/`:
+
+```bash
+ls .planning/phases/*/
+```
+
+For each phase, check which artifacts exist:
+- `{padded}-PLAN.md` or `{padded}-PLAN-*.md` (execution plans)
+- `{padded}-SUMMARY.md` (completion summary)
+- `{padded}-VERIFICATION.md` (quality verification)
+- `{padded}-CONTEXT.md` (design decisions)
+- `{padded}-RESEARCH.md` (pre-planning research)
+
+Track: which phases have complete artifact sets vs gaps.
+
+### 2d. Session Reports
+
+Read `.planning/reports/SESSION_REPORT.md` if it exists — extract last session outcomes,
+work completed, token estimates.
+
+### 2e. Git Worktree State
+
+```bash
+git worktree list
+```
+
+Check for orphaned worktrees (from crashed agents).
+
+## Step 3: Detect Anomalies
+
+Evaluate the gathered evidence against these anomaly patterns:
+
+### Stuck Loop Detection
+
+**Signal:** Same file appears in 3+ consecutive commits within a short time window.
+
+```bash
+# Look for files committed repeatedly in sequence
+git log --name-only --format="---COMMIT---" -20
+```
+
+Parse commit boundaries. If any file appears in 3+ consecutive commits, flag as:
+- **Confidence HIGH** if the commit messages are similar (e.g., "fix:", "fix:", "fix:" on same file)
+- **Confidence MEDIUM** if the file appears frequently but commit messages vary
+
+### Missing Artifact Detection
+
+**Signal:** Phase appears complete (has commits, is past in roadmap) but lacks expected artifacts.
+
+For each phase that should be complete:
+- PLAN.md missing → planning step was skipped
+- SUMMARY.md missing → phase was not properly closed
+- VERIFICATION.md missing → quality check was skipped
+
+### Partial-plan Drift Detection
+
+**Signal:** commits exist but SUMMARY.md is missing for the current or recently
+active plan.
+
+Run the same comparison as the execute-phase safe-resume verifier: identify the
+active plan from STATE.md/phase artifacts, search git history for that plan id,
+then compare against the expected SUMMARY.md path. If production commits exist
+but SUMMARY.md is missing, flag a high-confidence partial-plan drift anomaly.
+This usually means an executor was interrupted after implementation commits but
+before atomic close-out.
+
+### Abandoned Work Detection
+
+**Signal:** Large gap between last commit and current time, with STATE.md showing mid-execution.
+
+```bash
+# Time since last commit
+git log -1 --format="%ai"
+```
+
+If STATE.md shows an active phase but the last commit is >2 hours old and there are
+uncommitted changes, flag as potential abandonment or crash.
+
+### Crash/Interruption Detection
+
+**Signal:** Uncommitted changes + STATE.md shows mid-execution + orphaned worktrees.
+
+Combine:
+- `git status` shows modified/staged files
+- STATE.md has an active execution entry
+- `git worktree list` shows worktrees beyond the main one
+
+### Scope Drift Detection
+
+**Signal:** Recent commits touch files outside the current phase's expected scope.
+
+Read the current phase PLAN.md to determine expected file paths. Compare against
+files actually modified in recent commits. Flag any files that are clearly outside
+the phase's domain.
+
+### Test Regression Detection
+
+**Signal:** Commit messages containing "fix test", "revert", or re-commits of test files.
+
+```bash
+git log --oneline -20 | grep -iE "fix test|revert|broken|regression|fail"
+```
+
+## Step 4: Generate Report
+
+Create the forensics directory if needed:
+```bash
+mkdir -p .planning/forensics
+```
+
+Write to `.planning/forensics/report-$(date +%Y%m%d-%H%M%S).md`:
+
+```markdown
+# Forensic Report
+
+**Generated:** {ISO timestamp}
+**Problem:** {user's description}
+
+---
+
+## Evidence Summary
+
+### Git Activity
+- **Last commit:** {date} — "{message}"
+- **Commits (last 30):** {count}
+- **Time span:** {earliest} → {latest}
+- **Uncommitted changes:** {yes/no — list if yes}
+- **Active worktrees:** {count — list if >1}
+
+### Planning State
+- **Current milestone:** {version or "none"}
+- **Current phase:** {number — name — status}
+- **Last session:** {stopped_at from STATE.md}
+- **Blockers:** {any flags from STATE.md}
+
+### Artifact Completeness
+| Phase | PLAN | CONTEXT | RESEARCH | SUMMARY | VERIFICATION |
+|-------|------|---------|----------|---------|-------------|
+{for each phase: name | ✅/❌ per artifact}
+
+## Anomalies Detected
+
+### {Anomaly Type} — {Confidence: HIGH/MEDIUM/LOW}
+**Evidence:** {specific commits, files, or state data}
+**Interpretation:** {what this likely means}
+
+{repeat for each anomaly found}
+
+## Root Cause Hypothesis
+
+Based on the evidence above, the most likely explanation is:
+
+{1-3 sentence hypothesis grounded in the anomalies}
+
+## Recommended Actions
+
+1. {Specific, actionable remediation step}
+2. {Another step if applicable}
+3. {Recovery command if applicable — e.g., `/gsd-resume-work`, `/gsd-execute-phase N`}
+
+---
+
+*Report generated by `/gsd-forensics`. All paths redacted for portability.*
+```
+
+**Redaction rules:**
+- Replace absolute paths with relative paths (strip `$HOME` prefix)
+- Remove any API keys, tokens, or credentials found in git diff output
+- Truncate large diffs to first 50 lines
+
+## Step 5: Present Report
+
+Display the full forensic report inline.
+
+## Step 6: Offer Interactive Investigation
+
+> "Report saved to `.planning/forensics/report-{timestamp}.md`.
+>
+> I can dig deeper into any finding. Want me to:
+> - Trace a specific anomaly to its root cause?
+> - Read specific files referenced in the evidence?
+> - Check if a similar issue has been reported before?"
+
+If the user asks follow-up questions, answer from the evidence already gathered.
+Read additional files only if specifically needed.
+
+## Step 7: Offer Issue Creation
+
+If actionable anomalies were found (HIGH or MEDIUM confidence):
+
+> "Want me to create a GitHub issue for this? I'll format the findings and redact paths."
+
+If confirmed:
+```bash
+# Check if "bug" label exists before using it
+BUG_LABEL=$(gh label list --repo open-gsd/gsd-core --search "bug" --json name -q '.[0].name' 2>/dev/null)
+LABEL_FLAG=""
+if [ -n "$BUG_LABEL" ]; then
+  LABEL_FLAG="--label bug"
+fi
+
+gh issue create \
+  --repo open-gsd/gsd-core \
+  --title "bug: {concise description from anomaly}" \
+  $LABEL_FLAG \
+  --body "{formatted findings from report}"
+```
+
+## Step 8: Update STATE.md
+
+```bash
+_GSD_SHIM_NAME="gsd-tools.cjs"; _GSD_RUNTIME_ROOT="${RUNTIME_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}"; GSD_TOOLS="${_GSD_RUNTIME_ROOT}/gsd-core/bin/${_GSD_SHIM_NAME}"; _gsd_at() { for _p; do if [ -f "$_p" ]; then GSD_TOOLS="$_p"; return 0; fi; done; return 1; }; if _gsd_at "${_GSD_RUNTIME_ROOT}/gsd-core/bin/${_GSD_SHIM_NAME}" "${_GSD_RUNTIME_ROOT}/.agents/gsd-core/bin/${_GSD_SHIM_NAME}" "${_GSD_RUNTIME_ROOT}/.codex/gsd-core/bin/${_GSD_SHIM_NAME}"; then gsd_run() { node "$GSD_TOOLS" "$@"; }; elif unset -f gsd_run; _G="$(command -v gsd_run)"; then GSD_TOOLS="$_G"; gsd_run() { "$GSD_TOOLS" "$@"; }; elif _gsd_at "${CLAUDE_CONFIG_DIR:-.agents}/gsd-core/bin/${_GSD_SHIM_NAME}" "${HERMES_HOME:-$HOME/.hermes}/gsd-core/bin/${_GSD_SHIM_NAME}" "${CURSOR_CONFIG_DIR:-$HOME/.cursor}/gsd-core/bin/${_GSD_SHIM_NAME}" "${CODEX_HOME:-$HOME/.codex}/gsd-core/bin/${_GSD_SHIM_NAME}" "${GEMINI_CONFIG_DIR:-$HOME/.gemini}/gsd-core/bin/${_GSD_SHIM_NAME}" "${COPILOT_CONFIG_DIR:-$HOME/.copilot}/gsd-core/bin/${_GSD_SHIM_NAME}" "${WINDSURF_CONFIG_DIR:-$HOME/.codeium/windsurf}/gsd-core/bin/${_GSD_SHIM_NAME}" "${AUGMENT_CONFIG_DIR:-$HOME/.augment}/gsd-core/bin/${_GSD_SHIM_NAME}" "${TRAE_CONFIG_DIR:-$HOME/.trae}/gsd-core/bin/${_GSD_SHIM_NAME}" "${QWEN_CONFIG_DIR:-$HOME/.qwen}/gsd-core/bin/${_GSD_SHIM_NAME}" "${CODEBUDDY_CONFIG_DIR:-$HOME/.codebuddy}/gsd-core/bin/${_GSD_SHIM_NAME}" "${CLINE_CONFIG_DIR:-$HOME/.cline}/gsd-core/bin/${_GSD_SHIM_NAME}" "${GROK_AGENTS_HOME:-$HOME/.agents}/gsd-core/bin/${_GSD_SHIM_NAME}" "${ANTIGRAVITY_CONFIG_DIR:-$HOME/.gemini/antigravity}/gsd-core/bin/${_GSD_SHIM_NAME}" "${OPENCODE_CONFIG_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/opencode}/gsd-core/bin/${_GSD_SHIM_NAME}" "${KILO_CONFIG_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/kilo}/gsd-core/bin/${_GSD_SHIM_NAME}"; then gsd_run() { node "$GSD_TOOLS" "$@"; }; else echo "ERROR: gsd-tools.cjs not found at $GSD_TOOLS and gsd_run is not on PATH. Run: npx -y @opengsd/gsd-core@latest --claude --local" >&2; exit 1; fi; GSD_IDENTITY_STATUS=unverified; case "$(gsd_run runtime-identity --raw 2>/dev/null || true)" in '{"packageName":"@opengsd/gsd-core"'*'}') GSD_IDENTITY_STATUS=ok;; esac; export GSD_IDENTITY_STATUS; [ "$GSD_IDENTITY_STATUS" = ok ] || echo "WARNING: \"$GSD_TOOLS\" did not prove it is @opengsd/gsd-core - it is either a different package or an @opengsd/gsd-core older than the runtime-identity verb. See docs/how-to/diagnose-a-foreign-gsd-tools.md" >&2; if [ -n "${CLAUDE_ENV_FILE:-}" ] && [ -n "${GSD_TOOLS:-}" ]; then printf "export PATH='%s':\"\$PATH\"\n" "${GSD_TOOLS%/*}" >> "$CLAUDE_ENV_FILE" 2>/dev/null || true; fi
+gsd_run query state.record-session \
+  --stopped-at "Forensic investigation complete" \
+  --resume-file ".planning/forensics/report-{timestamp}.md"
+```

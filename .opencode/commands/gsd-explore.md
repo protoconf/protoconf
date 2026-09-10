@@ -1,0 +1,26 @@
+---
+description: Socratic ideation and idea routing — think through ideas before committing to plans
+tools:
+  read: true
+  write: true
+  bash: true
+  grep: true
+  glob: true
+  agent: true
+  question: true
+---
+<objective>
+Open-ended Socratic ideation session. Guides the developer through exploring an idea via
+probing questions, optionally spawns research, then routes outputs to the appropriate GSD
+artifacts (notes, todos, seeds, research questions, requirements, or new phases).
+
+Accepts an optional topic argument: `/gsd-explore authentication strategy`
+</objective>
+
+<execution_context>
+@/Users/smintz/go/src/github.com/protoconf/protoconf/.opencode/gsd-core/workflows/explore.md
+</execution_context>
+
+<process>
+Execute end-to-end.
+</process>

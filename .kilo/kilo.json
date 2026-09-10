@@ -1,0 +1,10 @@
+{
+  "permission": {
+    "read": {
+      "/Users/smintz/go/src/github.com/protoconf/protoconf/.kilo/gsd-core/*": "allow"
+    },
+    "external_directory": {
+      "/Users/smintz/go/src/github.com/protoconf/protoconf/.kilo/gsd-core/*": "allow"
+    }
+  }
+}

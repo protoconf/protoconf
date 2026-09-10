@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "appliedMigrations": [
+    {
+      "id": "2026-05-11-first-time-baseline-scan",
+      "appliedAt": "2026-09-10T03:32:20.992Z",
+      "journal": null,
+      "checksum": "sha256:4ec58d35b30dbf39cc56e3972146086d8d31861ecd800cf0b37a7aa94fe74c2a"
+    },
+    {
+      "id": "2026-05-11-legacy-orphan-files",
+      "appliedAt": "2026-09-10T03:32:20.992Z",
+      "journal": null,
+      "checksum": "sha256:e492698748a2436a12a55f0940f539b9bf651d8ffcac6f60cd856a6dabd6788c"
+    },
+    {
+      "id": "2026-06-02-rename-get-shit-done-to-gsd-core",
+      "appliedAt": "2026-09-10T03:32:20.992Z",
+      "journal": null,
+      "checksum": "sha256:3a9f1d97f64097fb313203d19c6d93a187a38df61dd299afa5eef73e16124e95"
+    },
+    {
+      "id": "2026-06-09-prune-stale-pristine-get-shit-done",
+      "appliedAt": "2026-09-10T03:32:20.992Z",
+      "journal": null,
+      "checksum": "sha256:6555dd044659276fbc204e81793cd92c5315d54e7316bcdd82d2c98d15a7e9e8"
+    },
+    {
+      "id": "2026-07-28-retire-config-root-commonjs-marker",
+      "appliedAt": "2026-09-10T03:32:20.992Z",
+      "journal": null,
+      "checksum": "sha256:8f2140cbe8f2dd8f7dfd52a0f6957c5edfe966c52d7e6e4d74ec7366930e0e1d"
+    }
+  ]
+}

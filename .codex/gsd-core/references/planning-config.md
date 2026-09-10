@@ -1,0 +1,516 @@
+<planning_config>
+
+Configuration options for `.planning/` directory behavior.
+
+<config_schema>
+```json
+"planning": {
+  "commit_docs": true,
+  "pr_strict": false,
+  "search_gitignored": false
+},
+"git": {
+  "branching_strategy": "none",
+  "base_branch": null,
+  "protected_branches": ["develop", "staging"],
+  "phase_branch_template": "gsd/phase-{phase}-{slug}",
+  "milestone_branch_template": "gsd/{milestone}-{slug}",
+  "quick_branch_template": null
+},
+"manager": {
+  "flags": {
+    "discuss": "",
+    "plan": "",
+    "execute": ""
+  }
+}
+```
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `commit_docs` | `true` | Whether to commit planning artifacts to git |
+| `pr_strict` | `false` | Filter mode for `$gsd-pr-branch`. `false` keeps structural planning state (STATE.md, ROADMAP.md, MILESTONES.md, PROJECT.md, REQUIREMENTS.md, milestones/) in the PR branch; `true` drops every `.planning/` path |
+| `search_gitignored` | `false` | Add `--no-ignore` to broad rg searches |
+| `git.branching_strategy` | `"none"` | Git branching approach: `"none"`, `"phase"`, or `"milestone"` |
+| `git.base_branch` | `null` (auto-detect) | Target branch for PRs and merges (e.g. `"master"`, `"develop"`). When `null`, auto-detects from `git symbolic-ref refs/remotes/origin/HEAD`, falling back to `"main"`. |
+| `git.protected_branches` | (none) | Optional array of non-empty strings naming additional shared branches that should trigger protected-branch warnings |
+| `git.create_tag` | `true` | Create git tags on milestone completion |
+| `git.phase_branch_template` | `"gsd/phase-{phase}-{slug}"` | Branch template for phase strategy |
+| `git.milestone_branch_template` | `"gsd/{milestone}-{slug}"` | Branch template for milestone strategy |
+| `git.quick_branch_template` | `null` | Optional branch template for quick-task runs |
+| `workflow.use_worktrees` | `true` | Whether executor agents run in isolated git worktrees. Set to `false` to disable worktrees — agents execute sequentially on the main working tree instead. Recommended for solo developers or when worktree merges cause issues. Note: if your branch is ahead of `origin/HEAD` (a diverged milestone or feature branch), GSD auto-degrades to sequential and prints a warning; set `worktree.baseRef:"head"` in `.codex/settings.local.json` to restore parallel execution. See the branch-divergence note below. |
+| `workflow.subagent_timeout` | `300000` | Timeout in milliseconds for parallel subagent tasks (e.g. codebase mapping). Increase for large codebases or slower models. Default: 300000 (5 minutes). |
+| `workflow.inline_plan_threshold` | `2` | Plans with this many tasks or fewer execute inline (Pattern C) instead of spawning a subagent. Avoids ~14K token spawn overhead for small plans. Set to `0` to always spawn subagents. |
+| `workflow.test_command` | `null` | Custom shell command run as the regression/test gate by execute-phase, audit-fix, and post-merge-gate. When unset, GSD auto-detects (Makefile / package.json / Cargo.toml / go.mod / pyproject.toml). Example: `npm test`. |
+| `workflow.build_command` | `null` | Custom shell command run as the build gate by the post-merge gate. When unset, the build step is skipped/auto-detected. Example: `npm run build`. |
+| `workflow.inline_plan_threshold` | `2` | Plans with this many tasks or fewer execute inline (Pattern C) instead of spawning a subagent. Avoids ~14K token spawn overhead for small plans. Set to `0` to always spawn subagents. |
+| `manager.flags.discuss` | `""` | Flags passed to `$gsd-discuss-phase` when dispatched from manager (e.g. `"--auto --analyze"`) |
+| `manager.flags.plan` | `""` | Flags passed to plan workflow when dispatched from manager |
+| `manager.flags.execute` | `""` | Flags passed to execute workflow when dispatched from manager |
+| `response_language` | `null` | Language for user-facing questions and prompts across all phases/subagents (e.g. `"Portuguese"`, `"Japanese"`, `"Spanish"`). When set, all spawned agents include a directive to respond in this language. |
+</config_schema>
+
+`git.protected_branches` has no persisted default. When it is absent, only the resolved base branch
+is protected, preserving existing project behavior. Every configured item must be a non-empty
+string. The configured list extends the resolved base branch; it never replaces the base or changes
+the resolution ladder. A match produces an advisory warning at execute-phase and ship and does not
+change `git.branching_strategy: "none"`.
+
+Matching is by exact branch name — there is no glob or prefix support, so a git-flow
+layout must name each `release/*` or `hotfix/*` branch it wants protected. An entry that
+is not a non-empty string is ignored with a warning naming it, and the remaining names
+still apply.
+
+```json
+{
+  "git": {
+    "branching_strategy": "none",
+    "protected_branches": ["develop", "staging"]
+  }
+}
+```
+
+<commit_docs_behavior>
+
+**When `commit_docs: true` (default):**
+- Planning files committed normally
+- SUMMARY.md, STATE.md, ROADMAP.md tracked in git
+- Full history of planning decisions preserved
+
+**When `commit_docs: false`:**
+- Skip all `git add`/`git commit` for `.planning/` files
+- User must add `.planning/` to `.gitignore`
+- Useful for: OSS contributions, client projects, keeping planning private
+
+**Using `node "$HOME/.codex/gsd-core/bin/gsd-tools.cjs" query` (preferred):**
+
+```bash
+# Commit with automatic commit_docs + gitignore checks:
+gsd_run query commit "docs: update state" --files .planning/STATE.md
+
+# Load config via state load (returns JSON):
+INIT=$(gsd_run query state.load)
+if [[ "$INIT" == @file:* ]]; then INIT=$(cat "${INIT#@file:}"); fi
+# commit_docs is available in the JSON output
+
+# Or use init commands which include commit_docs:
+INIT=$(gsd_run query init.execute-phase "1")
+if [[ "$INIT" == @file:* ]]; then INIT=$(cat "${INIT#@file:}"); fi
+# commit_docs is included in all init command outputs
+```
+
+**Auto-detection:** If `.planning/` is gitignored, `commit_docs` is automatically `false` regardless of config.json. This prevents git errors when users have `.planning/` in `.gitignore`.
+
+**Per-phase override:** `phase_commit_docs.<phase-id>` (e.g. `phase_commit_docs.03`) overrides `commit_docs` for one phase only, and wins over both the explicit config value and gitignore auto-detection — see `docs/CONFIGURATION.md#per-phase-override-phase_commit_docs` for the full precedence chain and examples.
+
+**Commit via CLI (handles checks automatically):**
+
+```bash
+gsd_run query commit "docs: update state" --files .planning/STATE.md
+```
+
+The CLI checks `commit_docs` config and gitignore status internally — no manual conditionals needed.
+
+</commit_docs_behavior>
+
+<search_behavior>
+
+**When `search_gitignored: false` (default):**
+- Standard rg behavior (respects .gitignore)
+- Direct path searches work: `rg "pattern" .planning/` finds files
+- Broad searches skip gitignored: `rg "pattern"` skips `.planning/`
+
+**When `search_gitignored: true`:**
+- Add `--no-ignore` to broad rg searches that should include `.planning/`
+- Only needed when searching entire repo and expecting `.planning/` matches
+
+**Note:** Most GSD operations use direct file reads or explicit paths, which work regardless of gitignore status.
+
+</search_behavior>
+
+<setup_uncommitted_mode>
+
+To use uncommitted mode:
+
+1. **Set config:**
+   ```json
+   "planning": {
+     "commit_docs": false,
+     "search_gitignored": true
+   }
+   ```
+
+2. **Add to .gitignore:**
+   ```
+   .planning/
+   ```
+
+3. **Existing tracked files:** If `.planning/` was previously tracked:
+   ```bash
+   git rm -r --cached .planning/
+   git commit -m "chore: stop tracking planning docs"
+   ```
+
+4. **Branch merges:** When using `branching_strategy: phase` or `milestone`, the `complete-milestone` workflow automatically strips `.planning/` files from staging before merge commits when `commit_docs: false`.
+
+</setup_uncommitted_mode>
+
+<branching_strategy_behavior>
+
+**Branching Strategies:**
+
+| Strategy | When branch created | Branch scope | Merge point |
+|----------|---------------------|--------------|-------------|
+| `none` | Never | N/A | N/A |
+| `phase` | At `execute-phase` start | Single phase | User merges after phase |
+| `milestone` | At first `execute-phase` of milestone | Entire milestone | At `complete-milestone` |
+
+**When `git.branching_strategy: "none"` (default):**
+- All work commits to current branch
+- Standard GSD behavior
+
+**When `git.branching_strategy: "phase"`:**
+- `execute-phase` creates/switches to a branch before execution
+- Branch name from `phase_branch_template` (e.g., `gsd/phase-03-authentication`)
+- All plan commits go to that branch
+- User merges branches manually after phase completion
+- `complete-milestone` offers to merge all phase branches
+
+**When `git.branching_strategy: "milestone"`:**
+- First `execute-phase` of milestone creates the milestone branch
+- Branch name from `milestone_branch_template` (e.g., `gsd/v1.0-mvp`)
+- All phases in milestone commit to same branch
+- `complete-milestone` offers to merge milestone branch to main
+
+**Template variables:**
+
+| Variable | Available in | Description |
+|----------|--------------|-------------|
+| `{phase}` | phase_branch_template | Zero-padded phase number (e.g., "03") |
+| `{slug}` | Both | Lowercase, hyphenated name |
+| `{milestone}` | milestone_branch_template | Milestone version (e.g., "v1.0") |
+
+**Checking the config:**
+
+Use `init execute-phase` which returns all config as JSON:
+```bash
+INIT=$(gsd_run query init.execute-phase "1")
+if [[ "$INIT" == @file:* ]]; then INIT=$(cat "${INIT#@file:}"); fi
+# JSON output includes: branching_strategy, phase_branch_template, milestone_branch_template
+```
+
+Or use `state load` for the config values:
+```bash
+INIT=$(gsd_run query state.load)
+if [[ "$INIT" == @file:* ]]; then INIT=$(cat "${INIT#@file:}"); fi
+# Parse branching_strategy, phase_branch_template, milestone_branch_template from JSON
+```
+
+**Branch creation:**
+
+```bash
+# For phase strategy
+if [ "$BRANCHING_STRATEGY" = "phase" ]; then
+  PHASE_SLUG=$(echo "$PHASE_NAME" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/--*/-/g' | sed 's/^-//;s/-$//')
+  BRANCH_NAME=$(echo "$PHASE_BRANCH_TEMPLATE" | sed "s/{phase}/$PADDED_PHASE/g" | sed "s/{slug}/$PHASE_SLUG/g")
+  git checkout -b "$BRANCH_NAME" 2>/dev/null || git checkout "$BRANCH_NAME"
+fi
+
+# For milestone strategy
+if [ "$BRANCHING_STRATEGY" = "milestone" ]; then
+  MILESTONE_SLUG=$(echo "$MILESTONE_NAME" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/--*/-/g' | sed 's/^-//;s/-$//')
+  BRANCH_NAME=$(echo "$MILESTONE_BRANCH_TEMPLATE" | sed "s/{milestone}/$MILESTONE_VERSION/g" | sed "s/{slug}/$MILESTONE_SLUG/g")
+  git checkout -b "$BRANCH_NAME" 2>/dev/null || git checkout "$BRANCH_NAME"
+fi
+```
+
+**Merge options at complete-milestone:**
+
+| Option | Git command | Result |
+|--------|-------------|--------|
+| Squash merge (recommended) | `git merge --squash` | Single clean commit per branch |
+| Merge with history | `git merge --no-ff` | Preserves all individual commits |
+| Delete without merging | `git branch -D` | Discard branch work |
+| Keep branches | (none) | Manual handling later |
+
+Squash merge is recommended — keeps main branch history clean while preserving the full development history in the branch (until deleted).
+
+**Use cases:**
+
+| Strategy | Best for |
+|----------|----------|
+| `none` | Solo development, simple projects |
+| `phase` | Code review per phase, granular rollback, team collaboration |
+| `milestone` | Release branches, staging environments, PR per version |
+
+</branching_strategy_behavior>
+
+<complete_field_reference>
+
+## Complete Field Reference
+
+Generated from `CONFIG_DEFAULTS` (configuration.cjs) and `VALID_CONFIG_KEYS` (config-schema.cjs).
+
+### Core Fields
+
+| Key | Type | Default | Allowed Values | Description |
+|-----|------|---------|----------------|-------------|
+| `model_profile` | string | `"balanced"` | `"quality"`, `"balanced"`, `"budget"`, `"adaptive"`, `"inherit"` | Model selection preset for subagents |
+| `mode` | string | `"interactive"` | `"interactive"`, `"yolo"` | Operation mode: `"interactive"` shows gates and confirmations; `"yolo"` runs autonomously without prompts |
+| `granularity` | string | (none) | `"coarse"`, `"standard"`, `"fine"` | Planning depth for phase plans (migrated from deprecated `depth`) |
+| `commit_docs` | boolean | `true` | `true`, `false` | Commit .planning/ artifacts to git (auto-false if .planning/ is gitignored) |
+| `search_gitignored` | boolean | `false` | `true`, `false` | Include gitignored paths in broad rg searches via `--no-ignore` |
+| `phase_naming` | string | `"sequential"` | `"sequential"`, `"custom"` | Phase numbering: auto-increment or arbitrary string IDs |
+| `project_code` | string\|null | `null` | Any short string | Prefix for phase dirs (e.g., `"CK"` produces `CK-01-foundation`) |
+| `response_language` | string\|null | `null` | Any language name | Language for user-facing prompts (e.g., `"Portuguese"`, `"Japanese"`) |
+| `context_window` | number | `200000` | `200000`, `1000000` | Context window size; set `1000000` for 1M-context models |
+| `resolve_model_ids` | boolean\|string | `false` | `false`, `true`, `"omit"` | Map model aliases to full the agent IDs; `"omit"` returns empty string |
+| `context` | string\|null | `null` | `"dev"`, `"research"`, `"review"` | Execution context profile that adjusts agent behavior: `"dev"` for development tasks, `"research"` for investigation/exploration, `"review"` for code review workflows |
+| `review.models.<cli>` | string\|null | `null` | Any model ID string | Per-CLI model override for $gsd-review (e.g., `review.models.gemini`). Falls back to CLI default when null. |
+| `review.max_prompt_tokens` | number\|null | `null` | Any positive integer, or `null` | Central, cross-lane default cap (in estimated tokens) on the assembled review prompt; `null` means no trim. A per-lane `review.max_prompt_tokens_per_reviewer.<slug>` value overrides it for that lane: `-1` means unset (inherits this global default), `0` means "do not trim that lane" (not unset — it is an explicit, standing opt-out). _Alias:_ `max_prompt_tokens` is the flat-key form used in `CONFIG_DEFAULTS`; `review.max_prompt_tokens` is the canonical namespaced form. |
+
+### Workflow Fields
+
+Set via `workflow.*` namespace in config.json (e.g., `"workflow": { "research": true }`).
+
+| Key | Type | Default | Allowed Values | Description |
+|-----|------|---------|----------------|-------------|
+| `workflow.research` | boolean | `true` | `true`, `false` | Run research agent before planning |
+| `workflow.plan_check` | boolean | `true` | `true`, `false` | Run plan-checker agent to validate plans. _Alias:_ `plan_checker` is the flat-key form used in `CONFIG_DEFAULTS`; `workflow.plan_check` is the canonical namespaced form. |
+| `workflow.verifier` | boolean | `true` | `true`, `false` | Run verifier agent after execution |
+| `workflow.nyquist_validation` | boolean | `true` | `true`, `false` | Enable Nyquist-inspired validation gates |
+| `workflow.auto_prune_state` | boolean | `false` | `true`, `false` | Automatically prune old STATE.md entries on phase completion (keeps 3 most recent phases) |
+| `workflow.auto_advance` | boolean | `false` | `true`, `false` | Auto-advance to next phase after completion |
+| `workflow.node_repair` | boolean | `true` | `true`, `false` | Attempt automatic repair of failed plan nodes |
+| `workflow.node_repair_budget` | number | `2` | Any positive integer | Max repair retries per failed node |
+| `workflow.smart_zone_tokens` | number | `100000` | Any positive integer | Smart-zone token budget for phase-effort estimation (#2630, ADR-2629). A phase whose estimate exceeds this is flagged with a split recommendation — advisory only, never a block. A *policy default*, not a benchmark constant: degradation begins before the advertised context window is full, but the effective ceiling is model- and task-dependent, so the calibration loop corrects it per project. _Alias:_ `smart_zone_tokens` is the flat-key form used in `CONFIG_DEFAULTS`; `workflow.smart_zone_tokens` is the canonical namespaced form. |
+| `workflow.ai_integration_phase` | boolean | `true` | `true`, `false` | Run $gsd-ai-integration-phase before planning AI system phases |
+| `workflow.api_coverage_gate` | boolean | `true` | `true`, `false` | Require an explicit API-coverage decision (full-by-default, opt-out-not-opt-in) before a phase that integrates an external API/SDK/service can seal. At plan:pre prompts a COVERAGE.md matrix; at verify:pre a blocking gate fails the seal unless the matrix exists with every non-integrated capability an explicit, reasoned opt-out (#1562) |
+| `workflow.ui_phase` | boolean | `true` | `true`, `false` | Generate UI-SPEC.md for frontend phases |
+| `workflow.ui_safety_gate` | boolean | `true` | `true`, `false` | Require safety gate approval for UI changes |
+| `workflow.text_mode` | boolean | `false` | `true`, `false` | Use plain-text numbered lists instead of AskUserQuestion menus |
+| `workflow.research_before_questions` | boolean | `false` | `true`, `false` | Run research before interactive questions in discuss phase (also honored on the `$gsd-quick` path, #3894). _Alias:_ `research_before_questions` is the flat-key form used in `CONFIG_DEFAULTS`; `workflow.research_before_questions` is the canonical namespaced form. |
+| `workflow.discuss_mode` | string | `"discuss"` | `"discuss"`, `"assumptions"` | Default mode for discuss-phase: `"discuss"` runs interactive questioning; `"assumptions"` analyzes codebase and surfaces assumptions instead |
+| `workflow.skip_discuss` | boolean | `false` | `true`, `false` | Skip discuss phase entirely |
+| `workflow.use_worktrees` | boolean | `true` | `true`, `false` | Run executor agents in isolated git worktrees |
+| `workflow.subagent_timeout` | number | `300000` | Any positive integer (ms) | Timeout for parallel subagent tasks (default: 5 minutes) |
+| `workflow.inline_plan_threshold` | number | `2` | `0`–`10` | Plans with ≤N tasks execute inline instead of spawning a subagent |
+| `workflow.test_command` | string\|null | `null` | Any shell command | Regression/test gate command run by execute-phase, audit-fix, and post-merge-gate. Unset → GSD auto-detects (Makefile / package.json / Cargo.toml / go.mod / pyproject.toml). |
+| `workflow.build_command` | string\|null | `null` | Any shell command | Build gate command run by the post-merge gate. Unset → build step auto-detected/skipped. |
+| `workflow.mvp_mode` | boolean | `false` | `true`, `false` | Persist the MVP-mode flag in config so every phase defaults to MVP framing without requiring `--mvp` on the CLI. Resolved via the chain: `--mvp` CLI flag → ROADMAP.md `**Mode:** mvp` field → this config value → `false`. When `true`, the planner, executor, verifier, and discovery surfaces (progress, stats, graphify) all treat the phase as an MVP vertical slice (UI → API → DB) of one user-visible capability. |
+| `workflow.context_guard_mode` | string | `"warn"` | `"auto"`, `"warn"`, `"off"` | Context exhaustion guard mode for `execute-phase`. Before each wave, the orchestrator self-assesses context pressure using degradation signals from `context-budget.md`. `"warn"` (default): emit a warning and recommend `$gsd-pause-work` when POOR tier is detected. `"auto"`: automatically invoke `$gsd-pause-work` before the next wave when POOR tier is detected. `"off"`: disable the guard. The guard is heuristic — no programmatic context-% API exists. |
+| `workflow.plan_chunked` | boolean | `false` | `true`, `false` | Enable chunked planning mode. When `true`, the plan-phase orchestrator splits the single long-lived planner Task into a short outline Task followed by N short per-plan Tasks (~3–5 min each). Each plan is committed individually for crash resilience. Particularly useful on Windows where long-lived Tasks may hang on stdio. Also activated by the `--chunked` flag. See `planning.chunked_parallel` below for concurrent per-plan dispatch. |
+| `workflow.specless_probe_fallback` | boolean | `true` | `true`, `false` | Gate the SPEC-less probe fallback in `plan-phase`. When `true` (default), a phase that did not supply a `## Edge Coverage` / `## Prohibitions` SPEC section (header absent or present-but-empty) runs the existing probe protocol — the deterministic `edge-probe.cjs` for edges and an in-planner LLM recall pass for prohibitions — and authors the resulting predicates into PLAN.md `must_haves` (section-level precedence: a SPEC-supplied section is never re-run or overwritten). When `false`, the fallback is skipped but the skip is recorded: plan-phase emits a visible "probe fallback disabled" marker, never a silent skip. |
+| `workflow.code_review_command` | string\|null | `null` | Any shell command | External code-review command integrated into `$gsd-ship`. The diff is piped to the command via stdin; the command must output JSON with a `verdict` field (`"APPROVED"` or `"REVISE"`). Non-zero exit or `"REVISE"` verdict blocks the ship workflow. When unset, the built-in review flow runs. Example: `my-review-tool --review`. |
+| `workflow.inline_plan_threshold` | number | `2` | `0`–`10` | Plans with ≤N tasks execute inline instead of spawning a subagent |
+| `workflow.code_review` | boolean | `true` | `true`, `false` | Enable built-in code review step in the ship workflow |
+| `workflow.code_review_depth` | string | `"standard"` | `"quick"`, `"standard"`, `"deep"` | Depth level for code review analysis in the ship workflow |
+| `workflow.code_review_depth_overrides` | array | `[]` | Array of `{paths, depth}` rule objects | Ordered path-scoped depth rules for `$gsd-code-review` (#2554). Each rule's `paths` are matched against the review's changed-file set by whole-segment directory-path prefix (`src/auth` matches `src/auth/token.ts`, never `src/authfoo/x.ts`); matching is case-sensitive. Glob syntax (`*`, `?`) is a configuration error. One matched file escalates the entire review — depth is not applied per file. Resolution order: `--depth=` flag → strongest matching rule → `workflow.code_review_depth` → `standard`. A malformed rule halts the review with a typed error rather than falling back silently. |
+| `workflow._auto_chain_active` | boolean | `false` | `true`, `false` | Internal: tracks whether autonomous chaining is active |
+| `workflow.security_enforcement` | boolean | `true` | `true`, `false` | Enable threat-model-anchored security verification via `$gsd-secure-phase`. When `false`, security checks are skipped entirely |
+| `workflow.security_asvs_level` | number | `1` | `1`, `2`, `3` | OWASP ASVS verification level. Level 1 = opportunistic, Level 2 = standard, Level 3 = comprehensive. Scales both planner threat-disposition rigor (which threats must be mitigated vs. accepted) and auditor verification depth (grep-level → boundary-placement check → full data-flow trace). See `gsd-core/references/security-asvs-levels.md`. |
+| `workflow.security_block_on` | string | `"high"` | `"critical"`, `"high"`, `"medium"`, `"low"`, `"none"` | Minimum threat severity that blocks phase advancement. The auditor counts only open threats at or above this severity toward the blocking gate (SECURITY.md `threats_open`); `none` disables severity blocking. |
+| `workflow.post_planning_gaps` | boolean | `true` | `true`, `false` | Post-planning gap report (#2493). After plans are generated, scans REQUIREMENTS.md and CONTEXT.md `<decisions>` against all PLAN.md files and emits a unified `Source \| Item \| Status` table. Non-blocking. Set to `false` to skip Step 13e of plan-phase. _Alias:_ `post_planning_gaps` is the flat-key form used in `CONFIG_DEFAULTS`; `workflow.post_planning_gaps` is the canonical namespaced form. |
+
+### Ship Fields
+
+Set via `ship.*` namespace in config.json. These fields affect `$gsd-ship` PRD-style pull request body composition only.
+
+| Key | Type | Default | Allowed Values | Description |
+|-----|------|---------|----------------|-------------|
+| `ship.pr_body_sections` | array | `[]` | Array of section objects | Append-only project-specific PR body sections. Each entry has `heading`, optional `enabled`, and one or more of `source`, `template`, or `fallback`. Disabled entries remain in onboarding config but do not render. Core sections remain required and cannot be removed or replaced. |
+
+### Git Fields
+
+Set via `git.*` namespace (e.g., `"git": { "branching_strategy": "phase" }`).
+
+| Key | Type | Default | Allowed Values | Description |
+|-----|------|---------|----------------|-------------|
+| `git.branching_strategy` | string | `"none"` | `"none"`, `"phase"`, `"milestone"` | Git branching approach for phase/milestone isolation |
+| `git.base_branch` | string\|null | `null` (auto-detect) | Any branch name | Target branch for PRs and merges; auto-detects from `origin/HEAD` when `null` |
+| `git.protected_branches` | array of non-empty strings | (none) | Non-empty branch names | Optional protected names added to the resolved base branch for execute-phase and ship warnings |
+| `git.create_tag` | boolean | `true` | `true`, `false` | Create git tags on milestone completion |
+| `git.phase_branch_template` | string | `"gsd/phase-{phase}-{slug}"` | Template with `{phase}`, `{slug}` | Branch naming template for `phase` strategy |
+| `git.milestone_branch_template` | string | `"gsd/{milestone}-{slug}"` | Template with `{milestone}`, `{slug}` | Branch naming template for `milestone` strategy |
+| `git.quick_branch_template` | string\|null | `null` | Template with `{slug}` | Optional branch template for quick-task runs |
+
+### Search & API Fields
+
+These toggle external search integrations. Auto-detected at project creation when API keys are present.
+
+| Key | Type | Default | Allowed Values | Description |
+|-----|------|---------|----------------|-------------|
+| `brave_search` | boolean | `false` | `true`, `false` | Enable Brave web search for research agent (requires `BRAVE_API_KEY`) |
+| `firecrawl` | boolean | `false` | `true`, `false` | Enable Firecrawl page scraping (requires `FIRECRAWL_API_KEY`) |
+| `exa_search` | boolean | `false` | `true`, `false` | Enable Exa semantic search (requires `EXA_API_KEY`) |
+
+### Features Fields
+
+Set via `features.*` namespace (e.g., `"features": { "thinking_partner": true }`).
+
+| Key | Type | Default | Allowed Values | Description |
+|-----|------|---------|----------------|-------------|
+| `features.thinking_partner` | boolean | `false` | `true`, `false` | Enable conditional extended thinking at workflow decision points (used by discuss-phase and plan-phase for architectural tradeoff analysis) |
+| `features.global_learnings` | boolean | `false` | `true`, `false` | Enable injection of global learnings from `~/.gsd/knowledge/` into agent prompts |
+
+### Hook Fields
+
+Set via `hooks.*` namespace (e.g., `"hooks": { "context_warnings": true }`).
+
+| Key | Type | Default | Allowed Values | Description |
+|-----|------|---------|----------------|-------------|
+| `hooks.context_warnings` | boolean | `true` | `true`, `false` | Show warnings when context budget is exceeded |
+
+### Learnings Fields
+
+Set via `learnings.*` namespace (e.g., `"learnings": { "max_inject": 5 }`). Used together with `features.global_learnings`.
+
+| Key | Type | Default | Allowed Values | Description |
+|-----|------|---------|----------------|-------------|
+| `learnings.max_inject` | number | `10` | Any positive integer | Maximum number of global learning entries to inject into agent prompts per session |
+
+### Intel Fields
+
+Set via `intel.*` namespace (e.g., `"intel": { "enabled": true }`). Controls the queryable codebase intelligence system consumed by `$gsd-map-codebase --query`.
+
+| Key | Type | Default | Allowed Values | Description |
+|-----|------|---------|----------------|-------------|
+| `intel.enabled` | boolean | `false` | `true`, `false` | Enable queryable codebase intelligence system. When `true`, `$gsd-map-codebase --query` builds and queries a JSON index in `.planning/intel/`. |
+
+### Manager Fields
+
+Set via `manager.*` namespace (e.g., `"manager": { "flags": { "discuss": "--auto" } }`).
+
+| Key | Type | Default | Allowed Values | Description |
+|-----|------|---------|----------------|-------------|
+| `manager.flags.discuss` | string | `""` | Any CLI flags string | Flags passed to `$gsd-discuss-phase` from manager (e.g., `"--auto --analyze"`) |
+| `manager.flags.plan` | string | `""` | Any CLI flags string | Flags passed to plan workflow from manager |
+| `manager.flags.execute` | string | `""` | Any CLI flags string | Flags passed to execute workflow from manager |
+
+### Advanced Fields
+
+| Key | Type | Default | Allowed Values | Description |
+|-----|------|---------|----------------|-------------|
+| `parallelization` | boolean\|object | `true` | `true`, `false`, `{ "enabled": true }` | Enable parallel wave execution; object form allows additional sub-keys |
+| `model_overrides` | object\|null | `null` | `{ "<agent-type>": "<model-id>" }` | Override model selection per agent type |
+| `agent_skills` | object | `{}` | `{ "<agent-type>": "<skill-set>" }` or `{ "<agent-type>": ["<skill-set>", "<skill-set>", ...] }` | Assign skill sets to specific agent types. Each value is a single skill-set path (string) or an array of skill-set paths — the array form assigns multiple skill sets to one agent type. Paths cannot be comma-joined into one string; each path must be its own array element |
+| `sub_repos` | array | `[]` | Array of relative path strings | Child directories with independent `.git` repos (auto-detected) |
+
+### Planning Fields
+
+These can be set at top level or nested under `planning.*` (e.g., `"planning": { "commit_docs": false }`). Both forms are equivalent; top-level takes precedence if both exist.
+
+| Key | Type | Default | Allowed Values | Description |
+|-----|------|---------|----------------|-------------|
+| `planning.commit_docs` | boolean | `true` | `true`, `false` | Alias for top-level `commit_docs` |
+| `planning.search_gitignored` | boolean | `false` | `true`, `false` | Alias for top-level `search_gitignored` |
+| `planning.chunked_parallel` | boolean | `false` | `true`, `false` | Opt-in for `workflow.plan_chunked`'s per-plan loop (§8.5.2 of `chunked-planning-mode.md`, #3777). When `true`, the runnable per-plan planners within one outline Wave are dispatched concurrently (one message, `run_in_background=true` each) instead of one at a time, honoring the outline's Wave column as the schedule (`Depends On` is expected to name only an earlier Wave and is not separately parsed — batching strictly by Wave already respects it). Gated on the negotiated `dispatch-capacity` query (#3673): a host that declares no `maxConcurrency` (capacity resolves to `1`) stays serial regardless of this setting. Default `false` is byte-identical to the pre-#3777 serial loop. Trade-off: per-plan commits interleave within a batch instead of strictly one-at-a-time, and a stalled plan's retry no longer blocks sibling plans in the same batch from having already committed. |
+
+---
+
+## Field Interactions
+
+Several config fields affect each other or trigger special behavior:
+
+1. **`commit_docs` resolution chain** -- Four tiers, highest wins: (1) `phase_commit_docs.<phase-id>` for the phase being committed, (2) an explicit `commit_docs` (or `planning.commit_docs`) value in config.json, (3) `.gitignore` auto-detection (`.planning/` in `.gitignore` resolves to `false`), (4) the manifest default (`true`). Precedence: per-phase → explicit config → gitignore auto-detect → default.
+
+2. **`branching_strategy` controls branch templates** -- The `phase_branch_template` and `milestone_branch_template` fields are only used when `branching_strategy` is set to `"phase"` or `"milestone"` respectively. When `branching_strategy` is `"none"`, all template fields are ignored.
+
+3. **`context_window` threshold triggers** -- When `context_window >= 500000`, workflows enable adaptive context enrichment: full-body reads of prior phase SUMMARYs, cross-phase context injection in plan-phase, and deeper read depth for anti-pattern references. Below 500000, only frontmatter and summaries are read.
+
+4. **`parallelization` polymorphism** -- Accepts both a simple boolean and an object with an `enabled` field. `loadConfig()` normalizes either form to a boolean. `{ "enabled": true }` is equivalent to `true`.
+
+5. **Search API keys and flags** -- `brave_search`, `firecrawl`, and `exa_search` are auto-set to `true` during project creation if the corresponding API key is detected (environment variable or `~/.gsd/<name>_api_key` file). Setting them to `true` without the API key has no effect.
+
+6. **`planning.*` and top-level equivalence** -- `planning.commit_docs` and `commit_docs` are equivalent; `planning.search_gitignored` and `search_gitignored` are equivalent. If both are set, the top-level value takes precedence.
+
+7. **`depth` to `granularity` migration** -- The deprecated `depth` key (`quick`/`standard`/`comprehensive`) is automatically migrated to `granularity` (`coarse`/`standard`/`fine`) on config load and persisted back to disk.
+
+8. **`sub_repos` auto-sync** -- On every config load, GSD scans for child directories with `.git` and updates the `sub_repos` array if the filesystem has changed. Legacy `multiRepo: true` is automatically migrated to a detected `sub_repos` array.
+
+9. **`workflow.use_worktrees` and branch divergence** -- When `use_worktrees` is `true` (default), executor worktrees are forked from `origin/HEAD` -- by the host's own harness on `dispatch.isolation: harness-worktree` runtimes (Claude Code, Cursor), or by GSD itself on `orchestrator-worktree` runtimes (Codex, OpenCode, Kimi, Kimi Code). The divergence behavior below is identical either way, because the fork base is a property of the repository rather than of whoever creates the worktree. If your current branch has commits that `origin/HEAD` does not (for example an unmerged milestone or feature branch), GSD automatically degrades to sequential execution for that run and prints a one-line `⚠ Worktree base mismatch` warning. To restore parallel execution permanently, set `worktree.baseRef:"head"` in `.codex/settings.local.json` (run `gsd_run worktree set-baseref`). This makes the harness fork worktrees from the live HEAD instead of `origin/HEAD`. Both fresh installs and upgrades of GSD Core set this automatically (no-clobber) when `use_worktrees` is enabled; you can also run the command manually at any time. Setting `workflow.use_worktrees: false` is the alternative if worktrees are not needed at all. On a runtime whose declared `dispatch.isolation` is `none`, an explicit `true` is a config the execution workflows fail closed on; `$gsd-health` reports it as warning `W025` and `$gsd-settings` offers to repair it (#2486).
+
+---
+
+## Example Configurations
+
+### Minimal -- Solo Developer
+
+```json
+{
+  "model_profile": "balanced",
+  "commit_docs": true,
+  "workflow": {
+    "research": true,
+    "plan_check": true,
+    "verifier": true,
+    "use_worktrees": false
+  }
+}
+```
+
+### Team Project with Branching
+
+```json
+{
+  "model_profile": "quality",
+  "commit_docs": true,
+  "project_code": "APP",
+  "git": {
+    "branching_strategy": "phase",
+    "base_branch": "develop",
+    "phase_branch_template": "gsd/phase-{phase}-{slug}"
+  },
+  "workflow": {
+    "research": true,
+    "plan_check": true,
+    "verifier": true,
+    "nyquist_validation": true,
+    "use_worktrees": true,
+    "discuss_mode": "discuss"
+  },
+  "manager": {
+    "flags": {
+      "discuss": "",
+      "plan": "",
+      "execute": ""
+    }
+  },
+  "response_language": "English"
+}
+```
+
+### Large Codebase -- 1M Context with Extended Timeouts
+
+```json
+{
+  "model_profile": "quality",
+  "context_window": 1000000,
+  "commit_docs": true,
+  "project_code": "MEGA",
+  "phase_naming": "sequential",
+  "git": {
+    "branching_strategy": "milestone",
+    "milestone_branch_template": "gsd/{milestone}-{slug}"
+  },
+  "workflow": {
+    "research": true,
+    "plan_check": true,
+    "verifier": true,
+    "nyquist_validation": true,
+    "subagent_timeout": 600000,
+    "use_worktrees": true,
+    "node_repair": true,
+    "node_repair_budget": 3,
+    "auto_advance": true
+  },
+  "brave_search": true,
+  "hooks": {
+    "context_warnings": true
+  }
+}
+```
+
+</complete_field_reference>
+
+</planning_config>

@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart": [
+      {
+        "type": "command",
+        "bash": "if [ -f .planning/STATE.md ]; then printf '%s' '{\"additionalContext\":\"GSD: .planning/STATE.md present - review the current phase and any blockers before acting.\"}'; else printf '%s' '{\"additionalContext\":\"GSD: no .planning/ workflow found - run /gsd-new-project to start a tracked workflow.\"}'; fi",
+        "powershell": "if (Test-Path .planning/STATE.md) { '{\"additionalContext\":\"GSD: .planning/STATE.md present - review the current phase and any blockers before acting.\"}' } else { '{\"additionalContext\":\"GSD: no .planning/ workflow found - run /gsd-new-project to start a tracked workflow.\"}' }",
+        "timeoutSec": 10
+      }
+    ],
+    "preToolUse": [
+      {
+        "type": "command",
+        "bash": "printf '%s' '{\"additionalContext\":\"GSD: confirm this tool use is in scope for the active phase before proceeding.\"}'",
+        "powershell": "'{\"additionalContext\":\"GSD: confirm this tool use is in scope for the active phase before proceeding.\"}'",
+        "timeoutSec": 10
+      }
+    ],
+    "postToolUse": [
+      {
+        "type": "command",
+        "bash": "printf '%s' '{\"additionalContext\":\"GSD: review the tool result against the active phase before continuing.\"}'",
+        "powershell": "'{\"additionalContext\":\"GSD: review the tool result against the active phase before continuing.\"}'",
+        "timeoutSec": 10
+      }
+    ],
+    "userPromptSubmitted": [
+      {
+        "type": "command",
+        "bash": "printf '%s' '{\"additionalContext\":\"GSD: check this request against .planning/STATE.md scope before acting.\"}'",
+        "powershell": "'{\"additionalContext\":\"GSD: check this request against .planning/STATE.md scope before acting.\"}'",
+        "timeoutSec": 10
+      }
+    ],
+    "sessionEnd": [
+      {
+        "type": "command",
+        "bash": "printf '%s' '{\"additionalContext\":\"GSD: update .planning/STATE.md with the session outcome before ending.\"}'",
+        "powershell": "'{\"additionalContext\":\"GSD: update .planning/STATE.md with the session outcome before ending.\"}'",
+        "timeoutSec": 10
+      }
+    ]
+  }
+}

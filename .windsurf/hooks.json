@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "pre_write_code": [
+      {
+        "command": "\"$(for n in \"/opt/homebrew/bin/node\" \"$(command -v node)\" /usr/local/bin/node /usr/bin/node; do [ -x \"$n\" ] && { [ \"${n#/}\" != \"$n\" ] || [ \"${n#?:}\" != \"$n\" ]; } && printf '%s' \"$n\" && break; done)\" \"/Users/smintz/go/src/github.com/protoconf/protoconf/.windsurf/hooks/gsd-windsurf-pre-write.js\"",
+        "gsd-managed": true
+      }
+    ],
+    "pre_run_command": [
+      {
+        "command": "\"$(for n in \"/opt/homebrew/bin/node\" \"$(command -v node)\" /usr/local/bin/node /usr/bin/node; do [ -x \"$n\" ] && { [ \"${n#/}\" != \"$n\" ] || [ \"${n#?:}\" != \"$n\" ]; } && printf '%s' \"$n\" && break; done)\" \"/Users/smintz/go/src/github.com/protoconf/protoconf/.windsurf/hooks/gsd-windsurf-pre-command.js\"",
+        "gsd-managed": true
+      }
+    ]
+  }
+}

@@ -1,0 +1,205 @@
+{
+  "_comment": "Canonical schema manifest for valid config key paths. This manifest is the single CJS source of truth for valid config keys; dynamicKeyPatterns source strings are recompiled to RegExp at runtime by config-schema.cjs. runtimeStateKeys mirrors RUNTIME_STATE_KEYS.",
+  "validKeys": [
+    "mode",
+    "granularity",
+    "parallelization",
+    "commit_docs",
+    "model_profile",
+    "search_gitignored",
+    "brave_search",
+    "firecrawl",
+    "exa_search",
+    "tavily_search",
+    "ref_search",
+    "perplexity",
+    "jina",
+    "workflow.plan_check",
+    "workflow.verifier",
+    "workflow.auto_advance",
+    "workflow.node_repair",
+    "workflow.node_repair_budget",
+    "workflow.smart_zone_tokens",
+    "workflow.human_verify_mode",
+    "workflow.text_mode",
+    "workflow.research_before_questions",
+    "workflow.discuss_mode",
+    "workflow.skip_discuss",
+    "workflow.auto_prune_state",
+    "workflow.use_worktrees",
+    "workflow.worktree_skip_hooks",
+    "workflow.code_review_command",
+    "workflow.code_review_depth_overrides",
+    "workflow.plan_bounce",
+    "workflow.plan_bounce_script",
+    "workflow.plan_bounce_passes",
+    "workflow.plan_chunked",
+    "workflow.specless_probe_fallback",
+    "workflow.plan_review_convergence",
+    "workflow.agent_hint_routing",
+    "code_quality.fallow.enabled",
+    "code_quality.fallow.scope",
+    "code_quality.fallow.profile",
+    "code_quality.fallow.mcp",
+    "ship.pr_body_sections",
+    "git.branching_strategy",
+    "git.base_branch",
+    "git.protected_branches",
+    "git.allow_default_branch_commits",
+    "git.create_tag",
+    "git.phase_branch_template",
+    "git.milestone_branch_template",
+    "git.quick_branch_template",
+    "planning.commit_docs",
+    "planning.pr_strict",
+    "planning.search_gitignored",
+    "planning.sub_repos",
+    "planning.chunked_parallel",
+    "agent_tools",
+    "review.default_reviewers",
+    "review.max_prompt_tokens",
+    "review.max_prompt_tokens_per_reviewer",
+    "review.parallel_lanes",
+    "workflow.cross_ai_execution",
+    "workflow.cross_ai_command",
+    "workflow.cross_ai_timeout",
+    "workflow.subagent_timeout",
+    "workflow.test_gate_timeout",
+    "workflow.test_command",
+    "workflow.build_command",
+    "workflow.mvp_mode",
+    "workflow.context_guard_mode",
+    "executor.stall_detect_interval_minutes",
+    "executor.stall_threshold_minutes",
+    "planner.stall_detect_interval_minutes",
+    "planner.stall_threshold_minutes",
+    "workflow.inline_plan_threshold",
+    "hooks.context_warnings",
+    "hooks.workflow_guard",
+    "workflow.context_coverage_gate",
+    "statusline.show_last_command",
+    "statusline.context_position",
+    "statusline.show_context_tokens",
+    "statusline.state_format",
+    "statusline.show_git",
+    "statusline.show_state_freshness",
+    "workflow.max_discuss_passes",
+    "features.thinking_partner",
+    "context",
+    "features.global_learnings",
+    "learnings.max_inject",
+    "project_code",
+    "phase_id_convention",
+    "phase_naming",
+    "manager.flags.discuss",
+    "manager.flags.plan",
+    "manager.flags.execute",
+    "response_language",
+    "context_window",
+    "graphify.build_timeout",
+    "graphify.auto_update",
+    "graphify.graph_path",
+    "claude_md_path",
+    "claude_md_assembly.mode",
+    "runtime",
+    "resolve_model_ids",
+    "effort.default",
+    "fast_mode.enabled",
+    "plan_review.source_grounding",
+    "plan_review.source_grounding_authority",
+    "model_policy.provider",
+    "model_policy.budget",
+    "model_policy.high",
+    "model_policy.medium",
+    "model_policy.low",
+    "agent_skills_security.trusted_global_roots",
+    "capabilities.strict_known_registries",
+    "capabilities.auto_update",
+    "security.injection_blocking"
+  ],
+  "runtimeStateKeys": [
+    "workflow._auto_chain_active"
+  ],
+  "dynamicKeyPatterns": [
+    {
+      "topLevel": "agent_tools",
+      "source": "^agent_tools\\.(\\*|[a-zA-Z0-9_-]+)$",
+      "description": "agent_tools.<selector>"
+    },
+    {
+      "topLevel": "agent_skills",
+      "source": "^agent_skills\\.[a-zA-Z0-9_-]+$",
+      "description": "agent_skills.<agent-type>"
+    },
+    {
+      "topLevel": "features",
+      "source": "^features\\.[a-zA-Z0-9_]+$",
+      "description": "features.<feature_name>"
+    },
+    {
+      "topLevel": "claude_md_assembly",
+      "source": "^claude_md_assembly\\.blocks\\.[a-zA-Z0-9_]+$",
+      "description": "claude_md_assembly.blocks.<section>"
+    },
+    {
+      "topLevel": "model_profile_overrides",
+      "source": "^model_profile_overrides\\.[a-zA-Z0-9_-]+\\.(opus|sonnet|haiku)$",
+      "description": "model_profile_overrides.<runtime>.<opus|sonnet|haiku>"
+    },
+    {
+      "topLevel": "models",
+      "source": "^models\\.(planning|discuss|research|execution|verification|completion)$",
+      "description": "models.<planning|discuss|research|execution|verification|completion>"
+    },
+    {
+      "topLevel": "granularities",
+      "source": "^granularities\\.(planning|discuss|research|execution|verification|completion)$",
+      "description": "granularities.<planning|discuss|research|execution|verification|completion>"
+    },
+    {
+      "topLevel": "dynamic_routing",
+      "source": "^dynamic_routing\\.(enabled|escalate_on_failure|max_escalations|provider_escalation|tier_models\\.(light|standard|heavy))$",
+      "description": "dynamic_routing.<enabled|escalate_on_failure|max_escalations|provider_escalation|tier_models.<light|standard|heavy>>"
+    },
+    {
+      "topLevel": "model_overrides",
+      "source": "^model_overrides\\.[a-zA-Z0-9_-]+$",
+      "description": "model_overrides.<agent-id>"
+    },
+    {
+      "topLevel": "effort",
+      "source": "^effort\\.routing_tier_defaults\\.(light|standard|heavy)$",
+      "description": "effort.routing_tier_defaults.<light|standard|heavy>"
+    },
+    {
+      "topLevel": "effort",
+      "source": "^effort\\.agent_overrides\\.[a-zA-Z0-9_-]+$",
+      "description": "effort.agent_overrides.<agent-id>"
+    },
+    {
+      "topLevel": "fast_mode",
+      "source": "^fast_mode\\.routing_tier_defaults\\.(light|standard|heavy)$",
+      "description": "fast_mode.routing_tier_defaults.<light|standard|heavy>"
+    },
+    {
+      "topLevel": "fast_mode",
+      "source": "^fast_mode\\.agent_overrides\\.[a-zA-Z0-9_-]+$",
+      "description": "fast_mode.agent_overrides.<agent-id>"
+    },
+    {
+      "topLevel": "review",
+      "source": "^review\\.reviewer_instances\\.[a-zA-Z0-9_-]+\\.(cli|model|agent)$",
+      "description": "review.reviewer_instances.<instance-name>.<cli|model|agent> (#1517)"
+    },
+    {
+      "topLevel": "model_policy",
+      "source": "^model_policy\\.runtime_tiers\\.[a-zA-Z0-9_-]+\\.(opus|sonnet|haiku)$",
+      "description": "model_policy.runtime_tiers.<runtime>.<opus|sonnet|haiku> (#3587)"
+    },
+    {
+      "topLevel": "phase_commit_docs",
+      "source": "^phase_commit_docs\\.\\d+[A-Z]?(?:\\.\\d+)*$",
+      "description": "phase_commit_docs.<phase-id> — per-phase commit_docs override (#3587). The <phase-id> segment is a hand-copy of the canonical PHASE_NUMBER_TOKEN_SOURCE grammar owned by src/phase-id.cts (#2128); this manifest is hand-maintained JSON so it cannot import that constant. Pinned against drift by the behavioral parity test in tests/commit-docs-bypass.test.cjs (folded 'phase-commit-docs' block, describe block 'E', #3587) — do not hand-edit this pattern without updating that test."
+    }
+  ]
+}
