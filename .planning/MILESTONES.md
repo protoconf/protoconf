@@ -4,6 +4,8 @@
 
 **Phases completed:** 5 phases, 25 plans, 60 tasks
 
+**Known verification overrides:** 3 newly acknowledged, 0 carried forward from a prior close (see STATE.md Deferred Items). Closed as override_closeout: all five phases held stale verification digests, invalidated in bulk by a post-verification lint and deprecation sweep across 38 files. Whole-repo `go vet ./...` was silent and the race-enabled suite green at close.
+
 **Key accomplishments:**
 
 - On-demand, singleflight-guarded proto parsing wired end-to-end through DescriptorRegistry, Parser, and the compiler's construction path, cutting `NewCompiler`+`CompileFile` on a 50-proto corpus from loading all 50 protos to loading exactly the 5 the config demands.
