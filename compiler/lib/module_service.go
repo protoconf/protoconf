@@ -192,7 +192,7 @@ func (m *ModuleService) Add(t *starlark.Thread, fn *starlark.Builtin, args starl
 	}
 	query := u.Query()
 	if strings.HasPrefix(detectedUrl, "git::") && !query.Has("depth") {
-		query.Set("depth", "0")
+		query.Set("depth", "1")
 	}
 	switch x := remoteRepo.Pin.(type) {
 	case *module.RemoteRepo_Branch:
@@ -276,9 +276,23 @@ func (m *ModuleService) Validate(r *module.RemoteRepo) (string, error) {
 		return "", ErrorRemoteRepoNoIntegrityInfo
 	}
 	repoCacheDir := filepath.Join(m.getCacheDir(), r.Label)
+	if fi, err := os.Lstat(repoCacheDir); err == nil && fi.Mode()&os.ModeSymlink != 0 {
+      return "", nil
+  }
 	h, err := dirhash.HashDir(repoCacheDir, "", hash1)
 	if errors.Is(err, os.ErrNotExist) {
 		return "", ErrorRemoteRepoNotDownloaded
+	}
+	// Any other HashDir error (e.g. an unreadable or non-copyable entry
+	// under the extracted tree) must surface as a real failure. Previously
+	// this fell through to the r.Integrity=="dummy" short-circuit below,
+	// which returned (h, nil) even though h was "" and the directory was
+	// never actually hashed -- silently stamping Integrity="" as if it were
+	// a valid hash. That empty Integrity then persists to protoconf.lock,
+	// so every subsequent `mod tidy` sees ErrorRemoteRepoNoIntegrityInfo and
+	// redownloads forever with no error ever printed.
+	if err != nil {
+		return "", errors.Join(ErrorRemoteRepoValidationFailed, err)
 	}
 	if r.Integrity != "dummy" && r.Integrity != h {
 		return "", errors.Join(
@@ -522,6 +536,16 @@ func (m *ModuleService) Sync(ctx context.Context) error {
 // If the lock file does not exist, it skips the dependency.
 // The method returns an error if any error occurs during the download process.
 func (m *ModuleService) DownloadDeps(ctx context.Context, r *module.RemoteRepo) error {
+	if r.Url == "." {
+		// r is the CONFIGSPACE sentinel/root: Walk() already recurses into
+		// every real dependency directly (walkFn is invoked once per node
+		// in the whole tree), so DownloadDeps(head) re-iterating
+		// head.GetDeps() here would redundantly re-Download/re-Validate
+		// every top-level dependency a second time within the same Sync()
+		// call. head also has no GetterUrl of its own, so it can never have
+		// a submodule lock file to merge in below.
+		return nil
+	}
 	if r.GetterUrl != "" {
 		moduleLockFile := filepath.Join(m.getCacheDir(), r.GetLabel(), m.Config.LockFile)
 		b, err := os.ReadFile(moduleLockFile)
@@ -558,15 +582,19 @@ type WalkFunction func(r *module.RemoteRepo) error
 
 func walk(head *module.RemoteRepo, walkFn WalkFunction) error {
 	var err error
-	keys := []string{}
-	deps := []*module.RemoteRepo{}
-	for k, dep := range head.GetDeps() {
+	keys := make([]string, 0, len(head.GetDeps()))
+	for k := range head.GetDeps() {
 		keys = append(keys, k)
-		deps = append(deps, dep)
 	}
+	// Sort the keys, then look each dep back up by key, so traversal order
+	// is the deterministic sorted order the code has always implied.
+	// Previously `keys` was sorted independently of a same-length `deps`
+	// slice built from the same (unordered) map range, so deps[i] no longer
+	// corresponded to keys[i] after the sort -- traversal order was actually
+	// Go's randomized map-iteration order.
 	sort.Strings(keys)
-	for i := range keys {
-		err = errors.Join(err, walk(deps[i], walkFn))
+	for _, k := range keys {
+		err = errors.Join(err, walk(head.GetDeps()[k], walkFn))
 	}
 	return errors.Join(err, walkFn(head))
 }
