@@ -1,8 +1,11 @@
 package compiler
 
 import (
+	"bytes"
 	"context"
 	"fmt"
+	"log"
+	"log/slog"
 	"net"
 	"os"
 	"path/filepath"
@@ -166,4 +169,66 @@ func Test_cliCommand_ConfigPrecedence(t *testing.T) {
 			assert.Equal(t, tt.want, cc.config.CompilerAddress)
 		})
 	}
+}
+
+// Test_cliCommand_LogLevel locks in the -log-level flag / PROTOCONF_COMPILER_LOG_LEVEL env
+// var path from CompilerConfig.LogLevel through to the process-global slog level.
+//
+// No t.Parallel() anywhere in this test: the subtests mutate process globals (slog's default
+// logger level, log's output writer) and one subtest uses t.Setenv.
+func Test_cliCommand_LogLevel(t *testing.T) {
+	resetGlobals := func(t *testing.T) {
+		t.Helper()
+		old := slog.SetLogLoggerLevel(slog.LevelInfo)
+		t.Cleanup(func() { slog.SetLogLoggerLevel(old) })
+		oldWriter := log.Writer()
+		t.Cleanup(func() { log.SetOutput(oldWriter) })
+	}
+
+	t.Run("debug_flag_enables_debug_output", func(t *testing.T) {
+		resetGlobals(t)
+
+		c, err := Command()
+		require.NoError(t, err)
+		got := c.Run([]string{"-log-level", "DEBUG"})
+		assert.Equal(t, 1, got)
+
+		assert.True(t, slog.Default().Enabled(context.Background(), slog.LevelDebug))
+
+		var buf bytes.Buffer
+		log.SetOutput(&buf)
+		slog.Debug("log-level-probe")
+		assert.Contains(t, buf.String(), "DEBUG")
+		assert.Contains(t, buf.String(), "log-level-probe")
+	})
+
+	t.Run("lowercase_accepted", func(t *testing.T) {
+		resetGlobals(t)
+
+		c, err := Command()
+		require.NoError(t, err)
+		got := c.Run([]string{"-log-level", "debug"})
+		assert.Equal(t, 1, got)
+		assert.True(t, slog.Default().Enabled(context.Background(), slog.LevelDebug))
+	})
+
+	t.Run("invalid_level_is_usage_error", func(t *testing.T) {
+		resetGlobals(t)
+
+		c, err := Command()
+		require.NoError(t, err)
+		got := c.Run([]string{"-log-level", "LOUD", "root"})
+		assert.Equal(t, 2, got)
+	})
+
+	t.Run("env_var_does_not_panic", func(t *testing.T) {
+		resetGlobals(t)
+		t.Setenv("PROTOCONF_COMPILER_LOG_LEVEL", "DEBUG")
+
+		c, err := Command()
+		require.NoError(t, err)
+		got := c.Run(nil)
+		assert.Equal(t, 1, got)
+		assert.True(t, slog.Default().Enabled(context.Background(), slog.LevelDebug))
+	})
 }
