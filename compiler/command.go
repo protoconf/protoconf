@@ -42,6 +42,15 @@ func (c *cliCommand) Run(args []string) int {
 		return 2
 	}
 
+	if c.config.LogLevel != "" {
+		var level slog.Level
+		if err := level.UnmarshalText([]byte(c.config.LogLevel)); err != nil {
+			fmt.Fprintln(os.Stderr, "invalid -log-level:", err)
+			return 2
+		}
+		slog.SetLogLoggerLevel(level)
+	}
+
 	if c.flag.NArg() < 1 {
 		c.flag.Usage()
 		return 1

@@ -24,4 +24,8 @@ message CompilerConfig {
     // If set, issue a gRPC request to the compiler service at the given address
     // instead of running the compiler locally.
     string compiler_address = 6 [json_name = "compiler-address"];
+
+    // Sets the minimum log level: DEBUG, INFO, WARN, or ERROR. Case-insensitive.
+    // An empty value means INFO.
+    string log_level = 7 [json_name = "log-level"];
 }
