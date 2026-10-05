@@ -209,7 +209,7 @@ if (!WebAssembly.instantiateStreaming) { // polyfill
 }
 const go = new Go();
 let mod, inst;
-WebAssembly.instantiateStreaming(fetch("compiler.wasm"), go.importObject).then((result) => {
+WebAssembly.instantiateStreaming(fetch("compiler.wasm", {integrity: "sha384-COMPILER_WASM_SRI_PLACEHOLDER"}), go.importObject).then((result) => {
     mod = result.module;
     inst = result.instance;
     go.run(inst);
