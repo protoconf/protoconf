@@ -28,4 +28,10 @@ message CompilerConfig {
     // Sets the minimum log level: DEBUG, INFO, WARN, or ERROR. Case-insensitive.
     // An empty value means INFO.
     string log_level = 7 [json_name = "log-level"];
+
+    // Write a Starlark execution profile to this file, in gzipped pprof format,
+    // with wall time per Starlark function and line. View it with
+    // `go tool pprof`. Only covers local compilation: with compiler_address set
+    // the file contains no samples.
+    string starlark_profile = 8 [json_name = "starlark-profile"];
 }
