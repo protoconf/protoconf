@@ -1,0 +1,11 @@
+goos: darwin
+goarch: arm64
+pkg: github.com/protoconf/protoconf/compiler/starproto
+cpu: Apple M4 Pro
+BenchmarkAnyRoundTrip-14    	     673	   1729721 ns/op	  725824 B/op	   16515 allocs/op
+BenchmarkAnyRoundTrip-14    	     692	   1727324 ns/op	  725272 B/op	   16515 allocs/op
+BenchmarkAnyRoundTrip-14    	     699	   1727408 ns/op	  728500 B/op	   16515 allocs/op
+BenchmarkAnyRoundTrip-14    	     704	   1751086 ns/op	  727909 B/op	   16517 allocs/op
+BenchmarkAnyRoundTrip-14    	     690	   1733100 ns/op	  725321 B/op	   16515 allocs/op
+PASS
+ok  	github.com/protoconf/protoconf/compiler/starproto	6.491s
