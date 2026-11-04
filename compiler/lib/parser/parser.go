@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
@@ -203,5 +204,29 @@ func (p *Parser) ReadConfig(filename string, msg proto.Message) error {
 	if err != nil {
 		return err
 	}
+	p.preloadProtoFile(configReader)
 	return protojson.UnmarshalOptions{Resolver: p.TypeResolver}.Unmarshal(configReader, msg)
+}
+
+// preloadProtoFile loads the declaring file a materialized ProtoconfValue names
+// in its protoFile field, the same exact-path load the compiler does for a
+// load()ed proto. It lets the Any @type resolve from the registry's growable
+// MessageRegistry (Tier 1) instead of the per-symbol lexical scan (Tier 2),
+// which reads and regex-matches every .proto in the symbol's package dir once
+// per distinct type -- minutes for the insert of many configs over a large
+// corpus. Best-effort: any failure (no hint, eager registry, unreadable or
+// broken file) is ignored and the tier chain still produces its own result
+// and diagnostics. A type nested inside the message body still resolves
+// through the tiers.
+func (p *Parser) preloadProtoFile(config []byte) {
+	if p.registry == nil {
+		return
+	}
+	var hint struct {
+		ProtoFile string `json:"protoFile"`
+	}
+	if json.Unmarshal(config, &hint) != nil || hint.ProtoFile == "" {
+		return
+	}
+	_, _ = p.registry.ParseOne(hint.ProtoFile)
 }
