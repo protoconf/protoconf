@@ -322,18 +322,29 @@ func mustInt(t testing.TB, v starlark.Value) int64 {
 }
 
 func TestAnyUnpackMemo_HitMatchesDecode(t *testing.T) {
-	g := execStar(t, &starlark.Thread{}, anyChainPrelude+`
-a = any.new(build())
+	th := &starlark.Thread{}
+	g1 := execStar(t, th, anyChainPrelude+`a = any.new(build())`, nil)
+	g := execStar(t, th, `
 out = any.unpack(a, FileDescriptorProto())
 ref = FileDescriptorProto()
-`, nil)
-	want, err := refDecode(t, g["a"], g["ref"])
+`, starlark.StringDict{"a": g1["a"]})
+	want, err := refDecode(t, g1["a"], g["ref"])
 	require.NoError(t, err)
 	assert.True(t, dynamic.Equal(want, g["out"].(*starProtoMessage).msg))
 }
 
+func TestAnyUnpackMemo_DoubleUnpack(t *testing.T) {
+	th := &starlark.Thread{}
+	g1 := execStar(t, th, anyChainPrelude+`a = any.new(build())`, nil)
+	a := starlark.StringDict{"a": g1["a"]}
+	o1 := execStar(t, th, `out = any.unpack(a, FileDescriptorProto())`, a)["out"]
+	o2 := execStar(t, th, `out = any.unpack(a, FileDescriptorProto())`, a)["out"]
+	assert.True(t, dynamic.Equal(o1.(*starProtoMessage).msg, o2.(*starProtoMessage).msg))
+}
+
 func TestAnyUnpackMemo_SourceMutatedAfterNew(t *testing.T) {
-	g := execStar(t, &starlark.Thread{}, anyChainPrelude+`
+	th := &starlark.Thread{}
+	g := execStar(t, th, anyChainPrelude+`
 src = build()
 a = any.new(src)
 src.package = "mutated"
@@ -356,7 +367,8 @@ o = build()
 o.package = "other"
 oa = any.new(o)
 `, nil)["oa"]
-	g := execStar(t, &starlark.Thread{}, anyChainPrelude+`
+	th := &starlark.Thread{}
+	g := execStar(t, th, anyChainPrelude+`
 a = any.new(build())
 a.value = other.value
 out = any.unpack(a, FileDescriptorProto())
@@ -370,7 +382,8 @@ ref = FileDescriptorProto()
 
 func TestAnyUnpackMemo_MergeIntoPopulatedTarget(t *testing.T) {
 	t.Run("repeated append and scalar overwrite", func(t *testing.T) {
-		g := execStar(t, &starlark.Thread{}, anyChainPrelude+`
+		th := &starlark.Thread{}
+		g := execStar(t, th, anyChainPrelude+`
 a = any.new(build())
 def pre():
     return FileDescriptorProto(name="keep.proto", dependency=["pre.proto"], message_type=[DescriptorProto(name="Pre")])
@@ -390,7 +403,8 @@ name = out.name
 		assert.True(t, dynamic.Equal(want, g["out"].(*starProtoMessage).msg))
 	})
 	t.Run("singular nested message merge", func(t *testing.T) {
-		g := execStar(t, &starlark.Thread{}, `
+		th := &starlark.Thread{}
+		g := execStar(t, th, `
 def tgt():
     return Value(struct_value=Struct(fields={"pre": Value(string_value="x")}))
 a = any.new(Value(struct_value=Struct(fields={"a": Value(number_value=1.0)})))
@@ -425,24 +439,33 @@ func TestAnyUnpackMemo_TypeMismatch(t *testing.T) {
 }
 
 func TestAnyUnpackMemo_AnyInParentField(t *testing.T) {
-	g := execStar(t, &starlark.Thread{}, anyChainPrelude+`
+	t.Run("stored in parent field and read back", func(t *testing.T) {
+		th := &starlark.Thread{}
+		g := execStar(t, th, anyChainPrelude+`
 h = Option(name="o", value=any.new(build()))
 out = any.unpack(h.value, FileDescriptorProto())
+ref = FileDescriptorProto()
+`, nil)
+		hv, err := g["h"].(*starProtoMessage).Attr("value")
+		require.NoError(t, err)
+		want, err := refDecode(t, hv, g["ref"])
+		require.NoError(t, err)
+		assert.True(t, dynamic.Equal(want, g["out"].(*starProtoMessage).msg))
+	})
+	t.Run("carried inside another Any", func(t *testing.T) {
+		th := &starlark.Thread{}
+		g := execStar(t, th, anyChainPrelude+`
+h = Option(name="o", value=any.new(build()))
 h2 = any.unpack(any.new(h), Option())
 out2 = any.unpack(h2.value, FileDescriptorProto())
-ref = FileDescriptorProto()
 ref2 = FileDescriptorProto()
 `, nil)
-	hv, err := g["h"].(*starProtoMessage).Attr("value")
-	require.NoError(t, err)
-	want, err := refDecode(t, hv, g["ref"])
-	require.NoError(t, err)
-	assert.True(t, dynamic.Equal(want, g["out"].(*starProtoMessage).msg))
-	h2v, err := g["h2"].(*starProtoMessage).Attr("value")
-	require.NoError(t, err)
-	want2, err := refDecode(t, h2v, g["ref2"])
-	require.NoError(t, err)
-	assert.True(t, dynamic.Equal(want2, g["out2"].(*starProtoMessage).msg))
+		h2v, err := g["h2"].(*starProtoMessage).Attr("value")
+		require.NoError(t, err)
+		want2, err := refDecode(t, h2v, g["ref2"])
+		require.NoError(t, err)
+		assert.True(t, dynamic.Equal(want2, g["out2"].(*starProtoMessage).msg))
+	})
 }
 
 func BenchmarkAnyRoundTrip(b *testing.B) {
