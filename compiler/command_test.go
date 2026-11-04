@@ -2,8 +2,10 @@ package compiler
 
 import (
 	"bytes"
+	"compress/gzip"
 	"context"
 	"fmt"
+	"io"
 	"log"
 	"log/slog"
 	"net"
@@ -59,6 +61,25 @@ func Test_cliCommand_Run(t *testing.T) {
 			}
 		})
 	}
+}
+
+// Test_cliCommand_StarlarkProfile checks -starlark-profile writes a finalized gzip pprof file.
+// Not parallel: the Starlark profiler is process-global.
+func Test_cliCommand_StarlarkProfile(t *testing.T) {
+	dir := testdata.SmallTestDir()
+	out := filepath.Join(t.TempDir(), "starlark.pprof")
+	c, err := Command()
+	require.NoError(t, err)
+	require.Equal(t, 0, c.Run([]string{"-starlark-profile", out, dir, "test.pconf"}))
+
+	data, err := os.ReadFile(out)
+	require.NoError(t, err)
+	require.NotEmpty(t, data)
+	// Reading to EOF verifies the gzip trailer, which only exists once StopProfile ran.
+	gz, err := gzip.NewReader(bytes.NewReader(data))
+	require.NoError(t, err)
+	_, err = io.ReadAll(gz)
+	require.NoError(t, err)
 }
 
 func Test_cliCommand_Help(t *testing.T) {
