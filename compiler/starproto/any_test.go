@@ -8,6 +8,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.starlark.net/starlark"
+	_ "google.golang.org/protobuf/types/descriptorpb"
+	_ "google.golang.org/protobuf/types/known/durationpb"
+	_ "google.golang.org/protobuf/types/known/structpb"
+	_ "google.golang.org/protobuf/types/known/typepb"
 )
 
 // callNewAny invokes the any.new Starlark builtin.
@@ -236,4 +240,220 @@ func TestAnyWrap_ValueField(t *testing.T) {
 
 	// The value should be non-None (it contains actual bytes)
 	assert.NotEqual(t, starlark.None, valueAttr)
+}
+
+// anyChainPrelude is the Starlark shared by the memo tests and the benchmark.
+// chain mirrors a hook chain: pack, unpack, mutate, repeated.
+const anyChainPrelude = `
+def build():
+    msgs = []
+    for i in range(20):
+        fields = [FieldDescriptorProto(name="f%d_%d" % (i, j), number=j + 1, json_name="f%d" % j) for j in range(10)]
+        nested = DescriptorProto(name="N%d" % i, field=[FieldDescriptorProto(name="n", number=1, json_name="n")])
+        msgs.append(DescriptorProto(name="M%d" % i, field=fields, nested_type=[nested]))
+    return FileDescriptorProto(name="bench.proto", package="bench", dependency=["a.proto", "b.proto"], message_type=msgs)
+
+def chain(cfg, steps):
+    for i in range(steps):
+        a = any.new(cfg)
+        cfg = any.unpack(a, FileDescriptorProto())
+        cfg.package = "bench%d" % i
+    return cfg
+`
+
+func anyTestPredeclared(t testing.TB, extra starlark.StringDict) starlark.StringDict {
+	t.Helper()
+	d := starlark.StringDict{"any": AnyModule}
+	for name, full := range map[string]string{
+		"FileDescriptorProto":  "google.protobuf.FileDescriptorProto",
+		"DescriptorProto":      "google.protobuf.DescriptorProto",
+		"FieldDescriptorProto": "google.protobuf.FieldDescriptorProto",
+		"Struct":               "google.protobuf.Struct",
+		"Value":                "google.protobuf.Value",
+		"Duration":             "google.protobuf.Duration",
+		"Option":               "google.protobuf.Option",
+	} {
+		md, err := desc.LoadMessageDescriptor(full)
+		require.NoError(t, err)
+		d[name] = NewMessageType(md)
+	}
+	for k, v := range extra {
+		d[k] = v
+	}
+	return d
+}
+
+// execStar runs src on the given thread and returns the globals.
+func execStar(t testing.TB, thread *starlark.Thread, src string, extra starlark.StringDict) starlark.StringDict {
+	t.Helper()
+	g, err := starlark.ExecFile(thread, "test.star", src, anyTestPredeclared(t, extra))
+	require.NoError(t, err)
+	return g
+}
+
+func anyValueBytes(t testing.TB, v starlark.Value) []byte {
+	t.Helper()
+	m, ok := v.(*starProtoMessage)
+	require.True(t, ok, "want *starProtoMessage, got %T", v)
+	b, err := m.msg.TryGetFieldByName("value")
+	require.NoError(t, err)
+	return b.([]byte)
+}
+
+// refDecode UnmarshalMerges the Any's bytes into base, the pre-memo behaviour.
+func refDecode(t testing.TB, anyVal starlark.Value, base starlark.Value) (*dynamic.Message, error) {
+	t.Helper()
+	m := base.(*starProtoMessage).msg
+	return m, m.UnmarshalMerge(anyValueBytes(t, anyVal))
+}
+
+func starStr(t testing.TB, v starlark.Value, field string) string {
+	t.Helper()
+	a, err := v.(*starProtoMessage).Attr(field)
+	require.NoError(t, err)
+	return string(a.(starlark.String))
+}
+
+func mustInt(t testing.TB, v starlark.Value) int64 {
+	t.Helper()
+	n, ok := v.(starlark.Int).Int64()
+	require.True(t, ok)
+	return n
+}
+
+func TestAnyUnpackMemo_HitMatchesDecode(t *testing.T) {
+	g := execStar(t, &starlark.Thread{}, anyChainPrelude+`
+a = any.new(build())
+out = any.unpack(a, FileDescriptorProto())
+ref = FileDescriptorProto()
+`, nil)
+	want, err := refDecode(t, g["a"], g["ref"])
+	require.NoError(t, err)
+	assert.True(t, dynamic.Equal(want, g["out"].(*starProtoMessage).msg))
+}
+
+func TestAnyUnpackMemo_SourceMutatedAfterNew(t *testing.T) {
+	g := execStar(t, &starlark.Thread{}, anyChainPrelude+`
+src = build()
+a = any.new(src)
+src.package = "mutated"
+src.message_type[0].name = "X"
+out = any.unpack(a, FileDescriptorProto())
+ref = FileDescriptorProto()
+first = out.message_type[0].name
+`, nil)
+	out := g["out"]
+	assert.Equal(t, "bench", starStr(t, out, "package"))
+	assert.Equal(t, "M0", string(g["first"].(starlark.String)))
+	want, err := refDecode(t, g["a"], g["ref"])
+	require.NoError(t, err)
+	assert.True(t, dynamic.Equal(want, out.(*starProtoMessage).msg))
+}
+
+func TestAnyUnpackMemo_ValueBytesReplaced(t *testing.T) {
+	other := execStar(t, &starlark.Thread{}, anyChainPrelude+`
+o = build()
+o.package = "other"
+oa = any.new(o)
+`, nil)["oa"]
+	g := execStar(t, &starlark.Thread{}, anyChainPrelude+`
+a = any.new(build())
+a.value = other.value
+out = any.unpack(a, FileDescriptorProto())
+ref = FileDescriptorProto()
+`, starlark.StringDict{"other": other})
+	assert.Equal(t, "other", starStr(t, g["out"], "package"))
+	want, err := refDecode(t, g["a"], g["ref"])
+	require.NoError(t, err)
+	assert.True(t, dynamic.Equal(want, g["out"].(*starProtoMessage).msg))
+}
+
+func TestAnyUnpackMemo_MergeIntoPopulatedTarget(t *testing.T) {
+	t.Run("repeated append and scalar overwrite", func(t *testing.T) {
+		g := execStar(t, &starlark.Thread{}, anyChainPrelude+`
+a = any.new(build())
+def pre():
+    return FileDescriptorProto(name="keep.proto", dependency=["pre.proto"], message_type=[DescriptorProto(name="Pre")])
+out = any.unpack(a, pre())
+ref = pre()
+n = len(out.message_type)
+first = out.message_type[0].name
+deps = list(out.dependency)
+name = out.name
+`, nil)
+		assert.Equal(t, "bench.proto", string(g["name"].(starlark.String)))
+		assert.Equal(t, "Pre", string(g["first"].(starlark.String)))
+		assert.Equal(t, int64(21), mustInt(t, g["n"]))
+		assert.Equal(t, `["pre.proto", "a.proto", "b.proto"]`, g["deps"].String())
+		want, err := refDecode(t, g["a"], g["ref"])
+		require.NoError(t, err)
+		assert.True(t, dynamic.Equal(want, g["out"].(*starProtoMessage).msg))
+	})
+	t.Run("singular nested message merge", func(t *testing.T) {
+		g := execStar(t, &starlark.Thread{}, `
+def tgt():
+    return Value(struct_value=Struct(fields={"pre": Value(string_value="x")}))
+a = any.new(Value(struct_value=Struct(fields={"a": Value(number_value=1.0)})))
+out = any.unpack(a, tgt())
+ref = tgt()
+`, nil)
+		want, err := refDecode(t, g["a"], g["ref"])
+		require.NoError(t, err)
+		assert.True(t, dynamic.Equal(want, g["out"].(*starProtoMessage).msg))
+		sv, err := g["out"].(*starProtoMessage).msg.TryGetFieldByName("struct_value")
+		require.NoError(t, err)
+		fields, err := sv.(*dynamic.Message).TryGetFieldByName("fields")
+		require.NoError(t, err)
+		assert.Len(t, fields, 2)
+	})
+}
+
+func TestAnyUnpackMemo_TypeMismatch(t *testing.T) {
+	thread := &starlark.Thread{}
+	pre := anyTestPredeclared(t, nil)
+	a := execStar(t, thread, anyChainPrelude+`a = any.new(build())`, nil)["a"]
+	dur, err := starlark.Call(thread, pre["Duration"], nil, nil)
+	require.NoError(t, err)
+	refDur, err := starlark.Call(thread, pre["Duration"], nil, nil)
+	require.NoError(t, err)
+	got, gotErr := starlark.Call(thread, AnyModule.Members["unpack"], starlark.Tuple{a, dur}, nil)
+	want, wantErr := refDecode(t, a, refDur)
+	assert.Equal(t, wantErr == nil, gotErr == nil)
+	if gotErr == nil && wantErr == nil {
+		assert.True(t, dynamic.Equal(want, got.(*starProtoMessage).msg))
+	}
+}
+
+func TestAnyUnpackMemo_AnyInParentField(t *testing.T) {
+	g := execStar(t, &starlark.Thread{}, anyChainPrelude+`
+h = Option(name="o", value=any.new(build()))
+out = any.unpack(h.value, FileDescriptorProto())
+h2 = any.unpack(any.new(h), Option())
+out2 = any.unpack(h2.value, FileDescriptorProto())
+ref = FileDescriptorProto()
+ref2 = FileDescriptorProto()
+`, nil)
+	hv, err := g["h"].(*starProtoMessage).Attr("value")
+	require.NoError(t, err)
+	want, err := refDecode(t, hv, g["ref"])
+	require.NoError(t, err)
+	assert.True(t, dynamic.Equal(want, g["out"].(*starProtoMessage).msg))
+	h2v, err := g["h2"].(*starProtoMessage).Attr("value")
+	require.NoError(t, err)
+	want2, err := refDecode(t, h2v, g["ref2"])
+	require.NoError(t, err)
+	assert.True(t, dynamic.Equal(want2, g["out2"].(*starProtoMessage).msg))
+}
+
+func BenchmarkAnyRoundTrip(b *testing.B) {
+	g := execStar(b, &starlark.Thread{}, anyChainPrelude, nil)
+	cfg, err := starlark.Call(&starlark.Thread{}, g["build"], nil, nil)
+	require.NoError(b, err)
+	chain := g["chain"]
+	b.ReportAllocs()
+	for b.Loop() {
+		if _, err := starlark.Call(&starlark.Thread{}, chain, starlark.Tuple{cfg, starlark.MakeInt(5)}, nil); err != nil {
+			b.Fatal(err)
+		}
+	}
 }
