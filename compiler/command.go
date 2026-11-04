@@ -72,6 +72,28 @@ func (c *cliCommand) Run(args []string) int {
 		}
 		defer pprof.StopCPUProfile()
 	}
+	if c.config.StarlarkProfile != "" {
+		f, err := os.Create(c.config.StarlarkProfile)
+		if err != nil {
+			slog.Error("Could not create Starlark profile", "error", err)
+			return 1
+		}
+		defer func() {
+			if err := f.Close(); err != nil {
+				slog.Error("Could not close Starlark profile file", "error", err)
+			}
+		}()
+		if err := starlark.StartProfile(f); err != nil {
+			slog.Error("Could not start Starlark profile", "error", err)
+			return 1
+		}
+		// Deferred after the file close, so it runs first and flushes into the open file.
+		defer func() {
+			if err := starlark.StopProfile(); err != nil {
+				slog.Error("Could not write Starlark profile", "error", err)
+			}
+		}()
+	}
 
 	protoconfRoot := strings.TrimSpace(c.flag.Args()[0])
 	var configs []string

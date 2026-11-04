@@ -39,9 +39,14 @@ type CompilerConfig struct {
 	CompilerAddress string `protobuf:"bytes,6,opt,name=compiler_address,json=compiler-address,proto3" json:"compiler_address,omitempty"`
 	// Sets the minimum log level: DEBUG, INFO, WARN, or ERROR. Case-insensitive.
 	// An empty value means INFO.
-	LogLevel      string `protobuf:"bytes,7,opt,name=log_level,json=log-level,proto3" json:"log_level,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	LogLevel string `protobuf:"bytes,7,opt,name=log_level,json=log-level,proto3" json:"log_level,omitempty"`
+	// Write a Starlark execution profile to this file, in gzipped pprof format,
+	// with wall time per Starlark function and line. View it with
+	// `go tool pprof`. Only covers local compilation: with compiler_address set
+	// the file contains no samples.
+	StarlarkProfile string `protobuf:"bytes,8,opt,name=starlark_profile,json=starlark-profile,proto3" json:"starlark_profile,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *CompilerConfig) Reset() {
@@ -123,11 +128,18 @@ func (x *CompilerConfig) GetLogLevel() string {
 	return ""
 }
 
+func (x *CompilerConfig) GetStarlarkProfile() string {
+	if x != nil {
+		return x.StarlarkProfile
+	}
+	return ""
+}
+
 var File_compiler_config_v1_compiler_config_proto protoreflect.FileDescriptor
 
 const file_compiler_config_v1_compiler_config_proto_rawDesc = "" +
 	"\n" +
-	"(compiler/config/v1/compiler_config.proto\x12\x1cprotoconf.compiler.config.v1\"\xf8\x01\n" +
+	"(compiler/config/v1/compiler_config.proto\x12\x1cprotoconf.compiler.config.v1\"\xa4\x02\n" +
 	"\x0eCompilerConfig\x12\x12\n" +
 	"\x04repl\x18\x01 \x01(\bR\x04repl\x12\x1a\n" +
 	"\x0fverbose_logging\x18\x02 \x01(\bR\x01V\x12,\n" +
@@ -139,7 +151,8 @@ const file_compiler_config_v1_compiler_config_proto_rawDesc = "" +
 	"memprofile\x18\x05 \x01(\tR\n" +
 	"memprofile\x12*\n" +
 	"\x10compiler_address\x18\x06 \x01(\tR\x10compiler-address\x12\x1c\n" +
-	"\tlog_level\x18\a \x01(\tR\tlog-levelBMZKgithub.com/protoconf/protoconf/compiler/config/v1;protoconf_compiler_configb\x06proto3"
+	"\tlog_level\x18\a \x01(\tR\tlog-level\x12*\n" +
+	"\x10starlark_profile\x18\b \x01(\tR\x10starlark-profileBMZKgithub.com/protoconf/protoconf/compiler/config/v1;protoconf_compiler_configb\x06proto3"
 
 var (
 	file_compiler_config_v1_compiler_config_proto_rawDescOnce sync.Once
