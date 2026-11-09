@@ -27,25 +27,6 @@ jobs:
       - name: Build
         run: go build -v ./...
 
-      # Same flags as .goreleaser.yaml, so a PR binary behaves like a release one.
-      - name: Build protoconf binaries
-        env:
-          CGO_ENABLED: "0"
-        run: |
-          for target in linux/amd64 linux/arm64 darwin/amd64 darwin/arm64; do
-            GOOS="${target%/*}" GOARCH="${target#*/}" go build \
-              -ldflags "-s -w -X github.com/protoconf/protoconf/consts.Version=0.0.0-${GITHUB_SHA::8}" \
-              -o "dist/protoconf-${target%/*}-${target#*/}" ./cmd/protoconf
-          done
-
-      # Uploaded before the tests so a flaky test does not withhold the build.
-      - name: Upload protoconf binaries
-        uses: actions/upload-artifact@v7
-        with:
-          name: protoconf-binaries
-          path: dist/
-          retention-days: 14
-
       - name: Run startup budget gate
         run: |
           set -eo pipefail
@@ -75,3 +56,36 @@ jobs:
         uses: codecov/codecov-action@v7.1.1
         with:
             token: ${{ secrets.CODECOV_TOKEN }}
+
+  # Separate job: runs beside the tests, so it cannot push build past its timeout,
+  # and a failing test does not withhold the binaries.
+  binaries:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Go
+        uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+
+      # Same flags as .goreleaser.yaml, so a PR binary behaves like a release one.
+      - name: Build protoconf binaries
+        env:
+          CGO_ENABLED: "0"
+          # The PR head, not the merge commit GitHub builds for pull_request events.
+          SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          for target in linux/amd64 linux/arm64 darwin/amd64 darwin/arm64; do
+            GOOS="${target%/*}" GOARCH="${target#*/}" go build \
+              -ldflags "-s -w -X github.com/protoconf/protoconf/consts.Version=0.0.0-${SHA::8}" \
+              -o "dist/protoconf-${target%/*}-${target#*/}" ./cmd/protoconf
+          done
+
+      - name: Upload protoconf binaries
+        uses: actions/upload-artifact@v7
+        with:
+          name: protoconf-binaries
+          path: dist/
+          retention-days: 14
