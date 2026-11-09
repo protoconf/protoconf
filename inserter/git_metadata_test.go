@@ -15,6 +15,7 @@ import (
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/go-git/go-git/v5/plumbing/storer"
+	"github.com/kvtools/valkeyrie/store"
 	"github.com/protoconf/protoconf/agent/dummykv"
 	"github.com/protoconf/protoconf/utils/testdata"
 	"github.com/stretchr/testify/assert"
@@ -263,6 +264,42 @@ func BenchmarkInsertManyConfigs(b *testing.B) {
 	b.ResetTimer()
 	for b.Loop() {
 		i.insertConfigFiles(names)
+	}
+}
+
+// slowPutStore delays every Put to stand in for a remote store such as etcd.
+type slowPutStore struct {
+	store.Store
+	latency time.Duration
+}
+
+func (s slowPutStore) Put(ctx context.Context, key string, value []byte, opts *store.WriteOptions) error {
+	time.Sleep(s.latency)
+	return s.Store.Put(ctx, key, value, opts)
+}
+
+func BenchmarkInsertParallelism(b *testing.B) {
+	for _, latency := range []time.Duration{0, 2 * time.Millisecond} {
+		i, names := newBenchInserter(b, 100, 300)
+		i.kvStore = slowPutStore{Store: i.kvStore, latency: latency}
+		b.Run(fmt.Sprintf("latency=%s/parallel", latency), func(b *testing.B) {
+			b.ReportAllocs()
+			for b.Loop() {
+				i.insertConfigFiles(names)
+			}
+		})
+		b.Run(fmt.Sprintf("latency=%s/sequential", latency), func(b *testing.B) {
+			b.ReportAllocs()
+			for b.Loop() {
+				i.prefetchLastCommits(names)
+				for _, n := range names {
+					require.NoError(b, i.InsertConfigFile(n))
+				}
+				metaMutex.Lock()
+				i.lastCommits = nil
+				metaMutex.Unlock()
+			}
+		})
 	}
 }
 
