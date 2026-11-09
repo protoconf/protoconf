@@ -285,8 +285,11 @@ func assertSameMetadata(t *testing.T, prefetched, perFile *ProtoconfInserter, na
 			continue
 		}
 		require.NoError(t, gotErr, name)
-		require.NotNil(t, got.InsertedAt, name)
-		require.NotNil(t, want.InsertedAt, name)
+		// The non-git result has no InsertedAt; both sides must agree.
+		require.Equal(t, want.InsertedAt == nil, got.InsertedAt == nil, name)
+		if want.Commit != "not_a_git_repo" {
+			require.NotNil(t, got.InsertedAt, name)
+		}
 		got.InsertedAt, want.InsertedAt = nil, nil
 		assert.True(t, proto.Equal(want, got), "%s: want %v got %v", name, want, got)
 	}
