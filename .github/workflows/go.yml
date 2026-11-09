@@ -42,7 +42,9 @@ jobs:
           export GOROOT
           # No -race: compiler/lib and server peak near 8 GB each under it, and four packages
           # at once overran the 16 GB runner, which killed the step with SIGTERM (exit 143).
-          go test -coverprofile=coverage.txt -covermode=atomic -v ./... -json > test_results.json
+          # The budget test is wall-clock: the gate step above runs it alone. Here it would
+          # share the CPU with other packages and coverage, and miss its budget.
+          go test -skip '^TestCompilerStartupBudget$' -coverprofile=coverage.txt -covermode=atomic -v ./... -json > test_results.json
 
       - name: Test report
         if: always()
