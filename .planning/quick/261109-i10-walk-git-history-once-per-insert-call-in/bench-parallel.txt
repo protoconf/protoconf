@@ -1,0 +1,18 @@
+goos: darwin
+goarch: arm64
+pkg: github.com/protoconf/protoconf/inserter
+cpu: Apple M4 Pro
+BenchmarkInsertParallelism/latency=0s/parallel-14         	       3	 237683389 ns/op	115142810 B/op	 2035291 allocs/op
+BenchmarkInsertParallelism/latency=0s/parallel-14         	       3	 230298667 ns/op	115114037 B/op	 2035195 allocs/op
+BenchmarkInsertParallelism/latency=0s/parallel-14         	       3	 233827042 ns/op	115097693 B/op	 2035140 allocs/op
+BenchmarkInsertParallelism/latency=0s/sequential-14       	       3	 231349542 ns/op	115064306 B/op	 2034884 allocs/op
+BenchmarkInsertParallelism/latency=0s/sequential-14       	       3	 232464944 ns/op	115062840 B/op	 2034889 allocs/op
+BenchmarkInsertParallelism/latency=0s/sequential-14       	       3	 231149236 ns/op	115060818 B/op	 2034886 allocs/op
+BenchmarkInsertParallelism/latency=2ms/parallel-14        	       3	 259886278 ns/op	115110554 B/op	 2035287 allocs/op
+BenchmarkInsertParallelism/latency=2ms/parallel-14        	       3	 243831458 ns/op	115092072 B/op	 2035227 allocs/op
+BenchmarkInsertParallelism/latency=2ms/parallel-14        	       3	 243085806 ns/op	115092778 B/op	 2035212 allocs/op
+BenchmarkInsertParallelism/latency=2ms/sequential-14      	       3	1902193097 ns/op	115064738 B/op	 2034885 allocs/op
+BenchmarkInsertParallelism/latency=2ms/sequential-14      	       3	1912211542 ns/op	115066621 B/op	 2034895 allocs/op
+BenchmarkInsertParallelism/latency=2ms/sequential-14      	       3	1904218306 ns/op	115060488 B/op	 2034884 allocs/op
+PASS
+ok  	github.com/protoconf/protoconf/inserter	55.283s
