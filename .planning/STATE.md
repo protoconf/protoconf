@@ -3,10 +3,10 @@ gsd_state_version: "1.0"
 milestone: v2.0
 status: Awaiting next milestone
 stopped_at: Phase 15 complete — all phases complete
-last_updated: "2026-09-25T07:42:56.952Z"
-last_activity: 2026-09-10
+last_updated: "2026-11-09T07:07:40.365Z"
+last_activity: 2026-11-09
 last_activity_desc: Milestone v2.0 completed and archived
-state_head: b48d4efe680fc513feaa6a22f7a5226d1dae81b5
+state_head: 648a87862ebe50e102d333f93f819854fc870cf1
 progress:
   total_phases: 5
   completed_phases: 5
@@ -138,6 +138,7 @@ Carried into the next milestone. Both entries above concern CI gates that shippe
 | 261104-i9e | Add -starlark-profile flag to protoconf compile | 2026-11-04 | 68815d89 | [261104-i9e-add-starlark-profile-flag-to-protoconf-c](./quick/261104-i9e-add-starlark-profile-flag-to-protoconf-c/) |
 | 261104-ikr | Benchmark any.unpack decode-skip memo (not shipped: -17.8% < 25% gate; tests+benchmark kept) | 2026-11-04 | 83214f66 | [261104-ikr-skip-decode-in-any-unpack-for-anys-packe](./quick/261104-ikr-skip-decode-in-any-unpack-for-anys-packe/) |
 | 261109-i10 | Walk git history once per insert call | 2026-11-09 | a589fb0a | [261109-i10-walk-git-history-once-per-insert-call-in](./quick/261109-i10-walk-git-history-once-per-insert-call-in/) |
+| 5 | Fix stack CI: binaries in own job, agent ErrServerStopped shutdown, isolate Starlark profile test | 2026-11-09 | 648a8786 | — |
 
 ## Session Continuity
 
