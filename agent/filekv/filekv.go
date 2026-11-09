@@ -324,7 +324,8 @@ func (w *Store) readEvents() {
 					}
 				}
 			}
-		case <-w.fsnotifyWatcher.Errors:
+		case err := <-w.fsnotifyWatcher.Errors:
+			slog.Error("file watcher failed, closing all watches", "error", err)
 			w.closeWatchers()
 			return
 		}
