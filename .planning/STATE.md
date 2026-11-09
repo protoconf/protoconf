@@ -31,7 +31,7 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 Phase: Milestone v2.0 complete
 Plan: —
 Status: Awaiting next milestone
-Last activity: 2026-11-04 - Completed quick task 261104-ikr: any.unpack memo benchmarked, not shipped
+Last activity: 2026-11-09 - Completed quick task 261109-i10: Walk git history once per insert call
 
 ## Performance Metrics
 
@@ -137,6 +137,7 @@ Carried into the next milestone. Both entries above concern CI gates that shippe
 | 260925-k4y | Add -log-level flag to protoconf compile | 2026-09-25 | c837a364 | [260925-k4y-add-log-level-flag-to-protoconf-compile](./quick/260925-k4y-add-log-level-flag-to-protoconf-compile/) |
 | 261104-i9e | Add -starlark-profile flag to protoconf compile | 2026-11-04 | 68815d89 | [261104-i9e-add-starlark-profile-flag-to-protoconf-c](./quick/261104-i9e-add-starlark-profile-flag-to-protoconf-c/) |
 | 261104-ikr | Benchmark any.unpack decode-skip memo (not shipped: -17.8% < 25% gate; tests+benchmark kept) | 2026-11-04 | 83214f66 | [261104-ikr-skip-decode-in-any-unpack-for-anys-packe](./quick/261104-ikr-skip-decode-in-any-unpack-for-anys-packe/) |
+| 261109-i10 | Walk git history once per insert call | 2026-11-09 | a589fb0a | [261109-i10-walk-git-history-once-per-insert-call-in](./quick/261109-i10-walk-git-history-once-per-insert-call-in/) |
 
 ## Session Continuity
 

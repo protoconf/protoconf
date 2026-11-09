@@ -1,0 +1,11 @@
+goos: darwin
+goarch: arm64
+pkg: github.com/protoconf/protoconf/inserter
+cpu: Apple M4 Pro
+BenchmarkInsertManyConfigs-14    	       1	12502553584 ns/op	6767257336 B/op	122885620 allocs/op
+BenchmarkInsertManyConfigs-14    	       1	12533262250 ns/op	6767262984 B/op	122885522 allocs/op
+BenchmarkInsertManyConfigs-14    	       1	12488231459 ns/op	6767219688 B/op	122885451 allocs/op
+BenchmarkInsertManyConfigs-14    	       1	12480145291 ns/op	6767194136 B/op	122885475 allocs/op
+BenchmarkInsertManyConfigs-14    	       1	12466677583 ns/op	6767251256 B/op	122885501 allocs/op
+PASS
+ok  	github.com/protoconf/protoconf/inserter	138.311s

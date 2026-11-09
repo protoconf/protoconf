@@ -1,0 +1,40 @@
+File: inserter-before.test
+Type: cpu
+Time: 2026-11-09 13:14:42 +07
+Duration: 53.29s, Total samples = 55.80s (104.70%)
+Active filters:
+   focus=insertConfigFiles
+Showing nodes accounting for 33.81s, 60.59% of 55.80s total
+Dropped 73 nodes (cum <= 0.28s)
+Showing top 30 nodes out of 59
+      flat  flat%   sum%        cum   cum%
+         0     0%     0%     34.02s 60.97%  github.com/protoconf/protoconf/inserter.(*ProtoconfInserter).GatherMetadata
+         0     0%     0%     34.02s 60.97%  github.com/protoconf/protoconf/inserter.(*ProtoconfInserter).InsertConfigFile
+         0     0%     0%     34.02s 60.97%  github.com/protoconf/protoconf/inserter.(*ProtoconfInserter).insertConfigFiles.func1
+         0     0%     0%     33.98s 60.90%  github.com/go-git/go-git/v5/plumbing/object.(*commitPathIter).Next
+         0     0%     0%     33.98s 60.90%  github.com/go-git/go-git/v5/plumbing/object.(*commitPathIter).getNextFileCommit
+    33.79s 60.56% 60.56%     33.79s 60.56%  syscall.rawsyscalln
+         0     0% 60.56%     33.79s 60.56%  syscall.syscall
+         0     0% 60.56%     33.79s 60.56%  syscall.syscalln
+         0     0% 60.56%     33.77s 60.52%  github.com/go-git/go-git/v5/storage/filesystem.(*ObjectStorage).EncodedObject
+         0     0% 60.56%     33.77s 60.52%  github.com/go-git/go-git/v5/storage/filesystem.(*ObjectStorage).getFromUnpacked
+         0     0% 60.56%     32.75s 58.69%  github.com/go-git/go-git/v5/plumbing/object.GetTree
+         0     0% 60.56%     32.09s 57.51%  github.com/go-git/go-git/v5/plumbing/object.DiffTree
+         0     0% 60.56%     32.09s 57.51%  github.com/go-git/go-git/v5/plumbing/object.DiffTreeContext (inline)
+         0     0% 60.56%     32.09s 57.51%  github.com/go-git/go-git/v5/plumbing/object.DiffTreeWithOptions
+         0     0% 60.56%     32.09s 57.51%  github.com/go-git/go-git/v5/utils/merkletrie.DiffTreeContext
+         0     0% 60.56%     31.95s 57.26%  github.com/go-git/go-git/v5/plumbing/object.(*treeNoder).Children
+         0     0% 60.56%     31.79s 56.97%  os.ignoringEINTR (inline)
+         0     0% 60.56%     31.78s 56.95%  github.com/go-git/go-billy/v5/helper/chroot.(*ChrootHelper).Open
+         0     0% 60.56%     31.78s 56.95%  github.com/go-git/go-git/v5/storage/filesystem/dotgit.(*DotGit).Object
+         0     0% 60.56%     21.05s 37.72%  github.com/go-git/go-git/v5/utils/merkletrie.diffNodes
+     0.01s 0.018% 60.57%     21.02s 37.67%  github.com/go-git/go-git/v5/utils/merkletrie.diffNodesSameName
+         0     0% 60.57%     20.94s 37.53%  github.com/go-git/go-git/v5/utils/merkletrie.(*doubleIter).compare
+     0.01s 0.018% 60.59%     20.91s 37.47%  github.com/go-git/go-git/v5/plumbing/object.(*treeNoder).NumChildren
+         0     0% 60.59%     20.91s 37.47%  github.com/go-git/go-git/v5/utils/merkletrie/noder.Path.NumChildren
+         0     0% 60.59%     16.72s 29.96%  github.com/go-git/go-git/v5/plumbing/object.transformChildren
+         0     0% 60.59%     16.71s 29.95%  github.com/go-git/go-git/v5/plumbing/object.(*TreeWalker).Next
+         0     0% 60.59%     16.43s 29.44%  github.com/go-git/go-billy/v5/osfs.(*ChrootOS).Open
+         0     0% 60.59%     16.43s 29.44%  github.com/go-git/go-billy/v5/osfs.(*ChrootOS).OpenFile (inline)
+         0     0% 60.59%     16.43s 29.44%  github.com/go-git/go-billy/v5/osfs.openFile
+         0     0% 60.59%     16.43s 29.44%  os.OpenFile
