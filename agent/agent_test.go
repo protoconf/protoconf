@@ -3,11 +3,13 @@ package agent
 import (
 	"context"
 	"errors"
+	"net"
 	"testing"
 	"time"
 
 	protoconf_agent_config "github.com/protoconf/protoconf/agent/config/v1"
 	"github.com/protoconf/protoconf/utils/testdata"
+	"google.golang.org/grpc"
 )
 
 func TestRunAgent(t *testing.T) {
@@ -45,5 +47,17 @@ func TestRunAgent(t *testing.T) {
 				t.Errorf("RunAgent() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
+	}
+}
+
+func TestServeGRPCStoppedBeforeServe(t *testing.T) {
+	lis, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		t.Fatal(err)
+	}
+	rpcServer := grpc.NewServer()
+	rpcServer.GracefulStop()
+	if err := serveGRPC(rpcServer, lis); err != nil {
+		t.Errorf("serveGRPC() on a stopped server = %v, want nil", err)
 	}
 }
