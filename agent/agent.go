@@ -182,7 +182,7 @@ func RunAgent(ctx context.Context, config *protoconf_agent_config.AgentConfig) e
 				logger.Info("protoconf grpc agent stopped")
 			})
 			logger.Info("starting protoconf agent")
-			return rpcServer.Serve(listener)
+			return serveGRPC(rpcServer, listener)
 		}),
 		"http": orchestra.NewServerPlayer(
 			&http.Server{Addr: config.HttpAddress, Handler: mux},
@@ -226,4 +226,14 @@ func newAgentMux(rpcServer *grpc.Server) (*http.ServeMux, error) {
 	mux.Handle("/metrics", promhttp.Handler())
 	mux.Handle("/", transcoder)
 	return mux, nil
+}
+
+// serveGRPC serves until the server stops. A context that ends before Serve
+// starts stops the server first, and Serve then returns ErrServerStopped:
+// that is a clean shutdown, not a failure.
+func serveGRPC(rpcServer *grpc.Server, listener net.Listener) error {
+	if err := rpcServer.Serve(listener); !errors.Is(err, grpc.ErrServerStopped) {
+		return err
+	}
+	return nil
 }
