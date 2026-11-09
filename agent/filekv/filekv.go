@@ -59,7 +59,10 @@ type Store struct {
 	protoconfRoot   string
 	watches         map[string]([]chan struct{})
 	lock            sync.Mutex
-	parser          *parser.Parser
+	// done is closed once on shutdown and ends every Watch.
+	done      chan struct{}
+	closeOnce sync.Once
+	parser    *parser.Parser
 }
 
 // New creates a new Example client.
@@ -86,6 +89,7 @@ func New(ctx context.Context, endpoints []string, options *Config) (*Store, erro
 		fsnotifyWatcher: fsnotifyWatcher,
 		protoconfRoot:   absRoot,
 		watches:         make(map[string]([]chan struct{})),
+		done:            make(chan struct{}),
 		parser:          parser.NewParserWithDescriptorRegistry(ms.GetProtoRegistry()),
 	}
 
@@ -183,7 +187,9 @@ func (s *Store) Watch(ctx context.Context, key string, opts *store.ReadOptions) 
 		return nil, err
 	}
 
-	fsCh := make(chan struct{})
+	// Buffered: readEvents never blocks on a slow or departed watcher. One pending
+	// signal is enough, since the next read sees every write before it.
+	fsCh := make(chan struct{}, 1)
 	if err := s.addWatch(absPath, fsCh); err != nil {
 		return nil, err
 	}
@@ -201,15 +207,20 @@ func (s *Store) Watch(ctx context.Context, key string, opts *store.ReadOptions) 
 			if kvPair, err := s.Get(ctx, key, opts); err != nil {
 				slog.Error("Error reading config", "Error", err)
 			} else {
-				watchCh <- kvPair
+				select {
+				case watchCh <- kvPair:
+				case <-ctx.Done():
+					return
+				case <-s.done:
+					return
+				}
 			}
 
 			select {
-			case _, ok := <-fsCh:
-				if !ok {
-					return
-				}
+			case <-fsCh:
 			case <-ctx.Done():
+				return
+			case <-s.done:
 				return
 			}
 		}
@@ -306,15 +317,11 @@ func (w *Store) readEvents() {
 				channels := append([]chan struct{}(nil), w.watches[event.Name]...)
 				w.lock.Unlock()
 
-				// ponytail: a concurrent Close can close one of these channels
-				// between the unlock above and the send below, which panics.
-				// Ceiling: fine under normal operation, since Close() is
-				// typically called once at shutdown. Upgrade path: replace
-				// channel-close-as-signal with a single shared `done` channel
-				// closed once by Close, and have Watch's select read from it
-				// instead of relying on a closed per-watch channel.
 				for _, channel := range channels {
-					channel <- struct{}{}
+					select {
+					case channel <- struct{}{}:
+					default: // a signal is already pending
+					}
 				}
 			}
 		case <-w.fsnotifyWatcher.Errors:
@@ -325,14 +332,10 @@ func (w *Store) readEvents() {
 }
 
 func (w *Store) closeWatchers() {
+	w.closeOnce.Do(func() { close(w.done) })
+
 	w.lock.Lock()
 	defer w.lock.Unlock()
-
-	for _, pathWatches := range w.watches {
-		for _, watch := range pathWatches {
-			close(watch)
-		}
-	}
 	w.watches = make(map[string]([]chan struct{}))
 }
 
