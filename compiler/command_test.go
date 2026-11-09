@@ -10,6 +10,7 @@ import (
 	"log/slog"
 	"net"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"testing"
 
@@ -64,13 +65,21 @@ func Test_cliCommand_Run(t *testing.T) {
 }
 
 // Test_cliCommand_StarlarkProfile checks -starlark-profile writes a finalized gzip pprof file.
-// Not parallel: the Starlark profiler is process-global.
+// The Starlark profiler is process-global, and compile goroutines that earlier tests leave
+// running (Test_cliCommand_Run's remote cases) race with StartProfile. So the compile runs
+// in a child copy of this test binary, which has no other Starlark threads.
 func Test_cliCommand_StarlarkProfile(t *testing.T) {
-	dir := testdata.SmallTestDir()
+	if out := os.Getenv("STARLARK_PROFILE_OUT"); out != "" {
+		c, err := Command()
+		require.NoError(t, err)
+		require.Equal(t, 0, c.Run([]string{"-starlark-profile", out, testdata.SmallTestDir(), "test.pconf"}))
+		return
+	}
 	out := filepath.Join(t.TempDir(), "starlark.pprof")
-	c, err := Command()
-	require.NoError(t, err)
-	require.Equal(t, 0, c.Run([]string{"-starlark-profile", out, dir, "test.pconf"}))
+	cmd := exec.Command(os.Args[0], "-test.run=^Test_cliCommand_StarlarkProfile$")
+	cmd.Env = append(os.Environ(), "STARLARK_PROFILE_OUT="+out)
+	output, err := cmd.CombinedOutput()
+	require.NoError(t, err, "child test failed:\n%s", output)
 
 	data, err := os.ReadFile(out)
 	require.NoError(t, err)
