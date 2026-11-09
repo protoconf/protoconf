@@ -103,22 +103,27 @@ func (c *cliCommand) Run(args []string) int {
 		protoconfRoot := strings.TrimSpace(c.flag.Args()[0])
 		inserter := NewProtoconfInserter(protoconfRoot, kvStore)
 		inserter.Prefix = c.config.Prefix
-		wg := &sync.WaitGroup{}
-		for i := 1; i < c.flag.NArg(); i++ {
-			wg.Add(1)
-			go func(path string) {
-				defer wg.Done()
-
-				configName := filepath.ToSlash(strings.TrimSpace(path))
-				if err := inserter.InsertConfigFile(configName); err != nil {
-					logger.With("key", configName, "error", err).Error("Error inserting config")
-				}
-			}(c.flag.Args()[i])
-		}
-		wg.Wait()
+		inserter.insertConfigFiles(c.flag.Args()[1:])
 	}
 
 	return 0
+}
+
+// insertConfigFiles inserts every path concurrently and logs per-file failures.
+func (i *ProtoconfInserter) insertConfigFiles(paths []string) {
+	wg := &sync.WaitGroup{}
+	for _, path := range paths {
+		wg.Add(1)
+		go func(path string) {
+			defer wg.Done()
+
+			configName := filepath.ToSlash(strings.TrimSpace(path))
+			if err := i.InsertConfigFile(configName); err != nil {
+				i.logger.With("key", configName, "error", err).Error("Error inserting config")
+			}
+		}(path)
+	}
+	wg.Wait()
 }
 
 func (c *cliCommand) Help() string {
