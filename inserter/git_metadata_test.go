@@ -19,6 +19,7 @@ import (
 	"github.com/protoconf/protoconf/utils/testdata"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"google.golang.org/protobuf/proto"
 )
 
 const matSuffix = ".materialized_JSON"
@@ -263,4 +264,71 @@ func BenchmarkInsertManyConfigs(b *testing.B) {
 	for b.Loop() {
 		i.insertConfigFiles(names)
 	}
+}
+
+// assertSameMetadata checks that the prefetched inserter returns what the
+// per-file walk returns for every name: same error text and sentinels, or the
+// same metadata apart from InsertedAt.
+func assertSameMetadata(t *testing.T, prefetched, perFile *ProtoconfInserter, names []string) {
+	t.Helper()
+	prefetched.prefetchLastCommits(names)
+	for _, name := range names {
+		path := filepath.Join(prefetched.rel, ensureConfigMaterialized(name))
+		got, gotErr := prefetched.GatherMetadata(path)
+		want, wantErr := perFile.GatherMetadata(path)
+		if wantErr != nil {
+			require.Error(t, gotErr, name)
+			assert.Equal(t, wantErr.Error(), gotErr.Error(), name)
+			for _, sentinel := range []error{io.EOF, plumbing.ErrObjectNotFound, plumbing.ErrReferenceNotFound} {
+				assert.Equal(t, errors.Is(wantErr, sentinel), errors.Is(gotErr, sentinel), "%s: %v", name, sentinel)
+			}
+			continue
+		}
+		require.NoError(t, gotErr, name)
+		require.NotNil(t, got.InsertedAt, name)
+		require.NotNil(t, want.InsertedAt, name)
+		got.InsertedAt, want.InsertedAt = nil, nil
+		assert.True(t, proto.Equal(want, got), "%s: want %v got %v", name, want, got)
+	}
+}
+
+func TestPrefetchMatchesPerFileWalk(t *testing.T) {
+	t.Run("scenario", func(t *testing.T) {
+		root, _, names := buildScenarioRepo(t)
+		pre := newGitOnlyInserter(t, root, "cfg")
+		assertSameMetadata(t, pre, newGitOnlyInserter(t, root, "cfg"), names)
+		assert.Len(t, pre.lastCommits, len(names))
+		assert.Contains(t, pre.lastCommits, "cfg/materialized_config/a.materialized_JSON")
+	})
+	t.Run("shallow", func(t *testing.T) {
+		root, _, names := buildShallowRepo(t)
+		assertSameMetadata(t, newGitOnlyInserter(t, root, "cfg"), newGitOnlyInserter(t, root, "cfg"), names)
+	})
+	t.Run("empty repo", func(t *testing.T) {
+		dir := t.TempDir()
+		_, err := git.PlainInit(dir, false)
+		require.NoError(t, err)
+		pre := newGitOnlyInserter(t, dir, "")
+		assertSameMetadata(t, pre, newGitOnlyInserter(t, dir, ""), []string{"x" + matSuffix})
+		assert.Empty(t, pre.lastCommits)
+	})
+	t.Run("non git", func(t *testing.T) {
+		assertSameMetadata(t, &ProtoconfInserter{}, &ProtoconfInserter{}, []string{"x" + matSuffix})
+	})
+	t.Run("many configs", func(t *testing.T) {
+		root, names := buildManyConfigsRepo(t, 20, 60)
+		assertSameMetadata(t, newGitOnlyInserter(t, root, ""), newGitOnlyInserter(t, root, ""), names)
+	})
+}
+
+// The prefetched map must not outlive one insert call: library callers commit
+// between inserts on the same inserter.
+func TestInsertConfigFilesClearsPrefetch(t *testing.T) {
+	quietLogger(t)
+	kv, err := dummykv.New(context.Background(), []string{}, &dummykv.Config{})
+	require.NoError(t, err)
+	i := NewProtoconfInserter(testdata.SmallTestDir(), kv)
+	require.NotNil(t, i)
+	i.insertConfigFiles([]string{"test" + matSuffix})
+	assert.Nil(t, i.lastCommits)
 }
