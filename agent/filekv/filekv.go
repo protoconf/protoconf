@@ -196,12 +196,13 @@ func (s *Store) Watch(ctx context.Context, key string, opts *store.ReadOptions) 
 		}()
 
 		for {
-			kvPair, err := s.Get(ctx, key, opts)
-			if err != nil {
+			// A failed read keeps the watch: os.WriteFile truncates before it writes, so a
+			// read can see an empty file, and the next write event retries.
+			if kvPair, err := s.Get(ctx, key, opts); err != nil {
 				slog.Error("Error reading config", "Error", err)
-				return
+			} else {
+				watchCh <- kvPair
 			}
-			watchCh <- kvPair
 
 			select {
 			case _, ok := <-fsCh:

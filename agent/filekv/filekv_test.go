@@ -426,3 +426,35 @@ func TestWatch_ContextCancellation(t *testing.T) {
 	_, err = s.Watch(watchCtx, "nonexistent-config", nil)
 	assert.Error(t, err)
 }
+
+// os.WriteFile truncates before it writes, so a watcher can read an empty file between
+// the two. That read failed and ended the watch, and the subscriber then waited forever.
+func TestWatch_SurvivesEmptyWrite(t *testing.T) {
+	s := newTestStore(t)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	key := "materialized_config/test"
+	path, err := s.resolveKeyPath(key)
+	require.NoError(t, err)
+	valid, err := os.ReadFile(path)
+	require.NoError(t, err)
+
+	ch, err := s.Watch(ctx, key, nil)
+	require.NoError(t, err)
+	first := <-ch
+	require.NotNil(t, first)
+
+	require.NoError(t, os.WriteFile(path, nil, 0o644))
+	// Give the watcher time to read the empty file before the real content lands.
+	time.Sleep(200 * time.Millisecond)
+	require.NoError(t, os.WriteFile(path, valid, 0o644))
+
+	select {
+	case got, ok := <-ch:
+		require.True(t, ok, "watch ended after reading the empty file")
+		require.Equal(t, first.Value, got.Value)
+	case <-ctx.Done():
+		t.Fatal("no update after the file was rewritten")
+	}
+}
