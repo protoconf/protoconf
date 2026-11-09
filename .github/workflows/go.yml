@@ -27,6 +27,25 @@ jobs:
       - name: Build
         run: go build -v ./...
 
+      # Same flags as .goreleaser.yaml, so a PR binary behaves like a release one.
+      - name: Build protoconf binaries
+        env:
+          CGO_ENABLED: "0"
+        run: |
+          for target in linux/amd64 linux/arm64 darwin/amd64 darwin/arm64; do
+            GOOS="${target%/*}" GOARCH="${target#*/}" go build \
+              -ldflags "-s -w -X github.com/protoconf/protoconf/consts.Version=0.0.0-${GITHUB_SHA::8}" \
+              -o "dist/protoconf-${target%/*}-${target#*/}" ./cmd/protoconf
+          done
+
+      # Uploaded before the tests so a flaky test does not withhold the build.
+      - name: Upload protoconf binaries
+        uses: actions/upload-artifact@v7
+        with:
+          name: protoconf-binaries
+          path: dist/
+          retention-days: 14
+
       - name: Run startup budget gate
         run: |
           set -eo pipefail
