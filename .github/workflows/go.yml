@@ -40,7 +40,9 @@ jobs:
           # place rather than deleted, since nothing here proves it is dead.
           GOROOT="$(go env GOROOT)"
           export GOROOT
-          go test -race -coverprofile=coverage.txt -covermode=atomic -v ./... -json > test_results.json
+          # No -race: compiler/lib and server peak near 8 GB each under it, and four packages
+          # at once overran the 16 GB runner, which killed the step with SIGTERM (exit 143).
+          go test -coverprofile=coverage.txt -covermode=atomic -v ./... -json > test_results.json
 
       - name: Test report
         if: always()
