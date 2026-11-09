@@ -7,6 +7,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"io"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -16,6 +17,7 @@ import (
 	"time"
 
 	"github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/kvtools/consul"
 	"github.com/kvtools/etcdv3"
 	"github.com/kvtools/valkeyrie"
@@ -110,20 +112,29 @@ func (c *cliCommand) Run(args []string) int {
 }
 
 // insertConfigFiles inserts every path concurrently and logs per-file failures.
+// It walks history once for all paths before the per-file work starts.
 func (i *ProtoconfInserter) insertConfigFiles(paths []string) {
+	names := make([]string, len(paths))
+	for n, path := range paths {
+		names[n] = filepath.ToSlash(strings.TrimSpace(path))
+	}
+	i.prefetchLastCommits(names)
 	wg := &sync.WaitGroup{}
-	for _, path := range paths {
+	for _, configName := range names {
 		wg.Add(1)
-		go func(path string) {
+		go func(configName string) {
 			defer wg.Done()
 
-			configName := filepath.ToSlash(strings.TrimSpace(path))
 			if err := i.InsertConfigFile(configName); err != nil {
 				i.logger.With("key", configName, "error", err).Error("Error inserting config")
 			}
-		}(path)
+		}(configName)
 	}
 	wg.Wait()
+	// The cache is per call: library callers reuse the inserter across new commits.
+	metaMutex.Lock()
+	i.lastCommits = nil
+	metaMutex.Unlock()
 }
 
 func (c *cliCommand) Help() string {
@@ -191,6 +202,13 @@ type ProtoconfInserter struct {
 	rel           string
 	logger        *slog.Logger
 	isGit         bool
+	// lastCommits is set only while insertConfigFiles runs; see prefetchLastCommits.
+	lastCommits map[string]lastCommit
+}
+
+type lastCommit struct {
+	commit *object.Commit
+	err    error
 }
 
 func NewProtoconfInserter(protoconfRoot string, kvStore store.Store) *ProtoconfInserter {
@@ -410,17 +428,109 @@ func (i *ProtoconfInserter) XXXinsertVersion(configName string, version string, 
 
 var metaMutex *sync.Mutex = &sync.Mutex{}
 
+// prefetchLastCommits walks history once and records, for every config name,
+// the commit the per-file Log{FileName} walk would return first (or its error).
+// go-git's file log diffs each commit against the next commit in iteration
+// order (not its real parent), so this walk diffs the same adjacent pairs in
+// the same order and takes the first hit per path.
+func (i *ProtoconfInserter) prefetchLastCommits(configNames []string) {
+	if !i.isGit {
+		return
+	}
+	metaMutex.Lock()
+	defer metaMutex.Unlock()
+
+	pending := make(map[string]struct{}, len(configNames))
+	for _, name := range configNames {
+		pending[filepath.Join(i.rel, ensureConfigMaterialized(name))] = struct{}{}
+	}
+	// On failure record nothing: the per-file fallback reproduces the exact error.
+	iter, err := i.repo.Log(&git.LogOptions{})
+	if err != nil {
+		return
+	}
+	defer iter.Close()
+
+	result := make(map[string]lastCommit, len(pending))
+	resolve := func(path string, c lastCommit) {
+		result[path] = c
+		delete(pending, path)
+	}
+	failAll := func(err error) {
+		for path := range pending {
+			resolve(path, lastCommit{err: err})
+		}
+	}
+	defer func() { i.lastCommits = result }()
+
+	current, err := iter.Next()
+	if err != nil {
+		failAll(err)
+		return
+	}
+	var currentTree *object.Tree
+	for len(pending) > 0 {
+		parent, err := iter.Next()
+		if err != nil {
+			if err != io.EOF {
+				failAll(err)
+				return
+			}
+			parent = nil
+		}
+		if currentTree == nil {
+			if currentTree, err = current.Tree(); err != nil {
+				failAll(err)
+				return
+			}
+		}
+		var parentTree *object.Tree
+		if parent != nil {
+			if parentTree, err = parent.Tree(); err != nil {
+				failAll(err)
+				return
+			}
+		}
+		changes, err := object.DiffTree(currentTree, parentTree)
+		if err != nil {
+			failAll(err)
+			return
+		}
+		for _, change := range changes {
+			// go-git's Change.name() is unexported; this mirrors it.
+			name := change.To.Name
+			if change.From != (object.ChangeEntry{}) {
+				name = change.From.Name
+			}
+			if _, ok := pending[name]; ok {
+				resolve(name, lastCommit{commit: current})
+			}
+		}
+		if parent == nil {
+			failAll(io.EOF)
+			return
+		}
+		current, currentTree = parent, parentTree
+	}
+}
+
 func (i *ProtoconfInserter) GatherMetadata(configFile string) (*protoconf_pb.Metadata, error) {
 	metaMutex.Lock()
 	defer metaMutex.Unlock()
 	if !i.isGit {
 		return &protoconf_pb.Metadata{Commit: "not_a_git_repo"}, nil
 	}
-	gitLog, err := i.repo.Log(&git.LogOptions{FileName: &configFile})
-	if err != nil {
-		return nil, errors.Join(err, fmt.Errorf("error getting git log for file %s", configFile))
+	var commit *object.Commit
+	var err error
+	if c, ok := i.lastCommits[configFile]; ok {
+		commit, err = c.commit, c.err
+	} else {
+		gitLog, logErr := i.repo.Log(&git.LogOptions{FileName: &configFile})
+		if logErr != nil {
+			return nil, errors.Join(logErr, fmt.Errorf("error getting git log for file %s", configFile))
+		}
+		commit, err = gitLog.Next()
 	}
-	commit, err := gitLog.Next()
 	if err != nil {
 		return nil, errors.Join(err, fmt.Errorf("error getting next git log item for file %s", configFile))
 	}
