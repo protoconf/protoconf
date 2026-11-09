@@ -56,6 +56,9 @@ func TestProtoconfKVAgentRollout_GetConfig(t *testing.T) {
 }
 
 func TestProtoconfKVAgentRollout_SubscribeForConfig(t *testing.T) {
+	// The first value is a deadline, not a rollout step. One second was too tight
+	// for a busy CI runner under -race, and later steps time from its arrival.
+	const initialValueWithin = 5 * time.Second
 	ctx := context.Background()
 	testDir := testdata.SmallTestDir()
 	kvStore, _ := dummykv.New(ctx, []string{}, &dummykv.Config{})
@@ -125,7 +128,7 @@ func TestProtoconfKVAgentRollout_SubscribeForConfig(t *testing.T) {
 						agentClient:  alphaClient,
 						request:      &protoconf_pb.ConfigSubscriptionRequest{Path: "test"},
 						expects: []*result{
-							{update: &protoconf_pb.ConfigUpdate{Value: newAny(structpb.NewStringValue("hello world!"))}, within: time.Second},
+							{update: &protoconf_pb.ConfigUpdate{Value: newAny(structpb.NewStringValue("hello world!"))}, within: initialValueWithin},
 							{update: &protoconf_pb.ConfigUpdate{Value: newAny(structpb.NewStringValue("hello protoconf!"))}, within: time.Second * 6},
 						},
 					},
@@ -134,7 +137,7 @@ func TestProtoconfKVAgentRollout_SubscribeForConfig(t *testing.T) {
 						agentClient:  betaClient,
 						request:      &protoconf_pb.ConfigSubscriptionRequest{Path: "test"},
 						expects: []*result{
-							{update: &protoconf_pb.ConfigUpdate{Value: newAny(structpb.NewStringValue("hello world!"))}, within: time.Second},
+							{update: &protoconf_pb.ConfigUpdate{Value: newAny(structpb.NewStringValue("hello world!"))}, within: initialValueWithin},
 							{update: &protoconf_pb.ConfigUpdate{Value: newAny(structpb.NewStringValue("hello protoconf!"))}, within: time.Second * 11},
 						},
 					},
@@ -143,7 +146,7 @@ func TestProtoconfKVAgentRollout_SubscribeForConfig(t *testing.T) {
 						agentClient:  prodClient,
 						request:      &protoconf_pb.ConfigSubscriptionRequest{Path: "test"},
 						expects: []*result{
-							{update: &protoconf_pb.ConfigUpdate{Value: newAny(structpb.NewStringValue("hello world!"))}, within: time.Second},
+							{update: &protoconf_pb.ConfigUpdate{Value: newAny(structpb.NewStringValue("hello world!"))}, within: initialValueWithin},
 							{update: &protoconf_pb.ConfigUpdate{Value: newAny(structpb.NewStringValue("hello protoconf!"))}, within: time.Second * 16},
 						},
 					},
